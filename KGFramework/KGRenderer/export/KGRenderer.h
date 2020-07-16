@@ -11,12 +11,12 @@
 
 namespace KG::Renderer
 {
-	struct RendererDesc
+	struct DLL RendererDesc
 	{
 		HWND hWnd;
 		HINSTANCE hInst;
 	};
-	struct RendererSetting
+	struct DLL RendererSetting
 	{
 		int clientWidth;
 		int clientHeight;
@@ -25,12 +25,11 @@ namespace KG::Renderer
 		bool isVsync = false;
 	};
 
-	class IKGRenderer
+	class DLL IKGRenderer
 	{
-	private:
+	protected:
 		RendererDesc desc;
 		RendererSetting setting;
-	protected:
 		IKGRenderer() = default;
 	public:
 		virtual ~IKGRenderer() = default;

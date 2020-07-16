@@ -42,6 +42,9 @@
     <ClCompile Include="src\KGRenderer.cpp">
       <Filter>소스 파일\Core</Filter>
     </ClCompile>
+    <ClCompile Include="include\KGDXRenderer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">
@@ -50,11 +53,14 @@
     <ClInclude Include="include\pch.h">
       <Filter>헤더 파일\etc</Filter>
     </ClInclude>
-    <ClInclude Include="include\KGRenderer.h">
+    <ClInclude Include="export\GraphicComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="export\KGRenderer.h">
       <Filter>헤더 파일\Core</Filter>
     </ClInclude>
-    <ClInclude Include="include\GraphicComponent.h">
-      <Filter>헤더 파일\Component</Filter>
+    <ClInclude Include="include\KGDXRenderer.h">
+      <Filter>헤더 파일\Core</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

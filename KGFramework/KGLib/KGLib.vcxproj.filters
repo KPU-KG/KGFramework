@@ -35,12 +35,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\framework.h">
-      <Filter>헤더 파일\etc</Filter>
-    </ClInclude>
-    <ClInclude Include="include\pch.h">
-      <Filter>헤더 파일\etc</Filter>
-    </ClInclude>
     <ClInclude Include="include\MathHelper.h">
       <Filter>헤더 파일\Utill</Filter>
     </ClInclude>
@@ -52,6 +46,15 @@
     </ClInclude>
     <ClInclude Include="include\ComponentContainer.h">
       <Filter>헤더 파일\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include_In\framework.h">
+      <Filter>헤더 파일\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="include_In\pch.h">
+      <Filter>헤더 파일\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Debug.h">
+      <Filter>헤더 파일\Utill</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
