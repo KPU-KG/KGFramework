@@ -15,6 +15,8 @@
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
 
+#include <memory>
+
 #include <wrl.h>
 #include <shellapi.h>
 #include <d3d12.h>

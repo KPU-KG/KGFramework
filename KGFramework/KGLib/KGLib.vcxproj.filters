@@ -22,6 +22,18 @@
     <Filter Include="헤더 파일\etc">
       <UniqueIdentifier>{804ed941-a6e1-4636-8811-478616dfedbd}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Core">
+      <UniqueIdentifier>{e58ac9a7-0da7-4503-a05b-45db1f8f0083}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Core\System">
+      <UniqueIdentifier>{1ba0fcd0-c294-4bf8-8ded-c7b6201f1be0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Core\Entity">
+      <UniqueIdentifier>{70ced97a-4a5e-4ac7-a93d-978a763130a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Core\Component">
+      <UniqueIdentifier>{ab1f513e-2f3f-47f3-b0d7-3092e30caf37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -30,7 +42,13 @@
     <ClCompile Include="src\KGLib.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="include\IComponent.cpp">
+    <ClCompile Include="src\IComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\TransformSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AssimpImpoter.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,12 +59,6 @@
     <ClInclude Include="include\hash.h">
       <Filter>헤더 파일\Utill</Filter>
     </ClInclude>
-    <ClInclude Include="include\IComponent.h">
-      <Filter>헤더 파일\Interface</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ComponentContainer.h">
-      <Filter>헤더 파일\Interface</Filter>
-    </ClInclude>
     <ClInclude Include="include_In\framework.h">
       <Filter>헤더 파일\etc</Filter>
     </ClInclude>
@@ -55,6 +67,30 @@
     </ClInclude>
     <ClInclude Include="include\Debug.h">
       <Filter>헤더 파일\Utill</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AssimpImpoter.h">
+      <Filter>헤더 파일\Utill</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GameObject.h">
+      <Filter>헤더 파일\Core\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Transform.h">
+      <Filter>헤더 파일\Core\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ComponentContainer.h">
+      <Filter>헤더 파일\Core\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IComponent.h">
+      <Filter>헤더 파일\Core\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IHierarchy.h">
+      <Filter>헤더 파일\Core\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ISystem.h">
+      <Filter>헤더 파일\Core\System</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TransformSystem.h">
+      <Filter>헤더 파일\Core\System</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

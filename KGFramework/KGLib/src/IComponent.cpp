@@ -1,11 +1,10 @@
 #include "pch.h"
 #include "IComponent.h"
+#include "GameObject.h"
 using namespace KG::Component;
 
 IComponent::IComponent()
 {
-	OnCreate();
-	this->SetActive(true);
 }
 
 void IComponent::SetActive(bool isActive)
@@ -17,21 +16,18 @@ void IComponent::SetActive(bool isActive)
 
 	if (this->isActive)
 	{
-		this->OnStart();
+		this->OnActive();
 	}
 	else
 	{
-		this->OnEnd();
+		this->OnDisactive();
 	}
 }
 
-void KG::Component::IComponent::Destroy()
+void KG::Component::IComponent::OnDestroy() 
 {
-	this->isDestroy = true;
-	this->OnDestroy();
+	this->systemInfo.isUsing = true;
 }
 
-bool KG::Component::IComponent::IsDestroy()
-{
-	return this->isDestroy;
-}
+REGISTER_COMPONENT_ID(IComponent);
+

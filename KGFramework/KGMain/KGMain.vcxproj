@@ -72,19 +72,19 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)KGLib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)KGLib\include;$(SolutionDir)KGRenderer\export;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)KGLib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)KGLib\include;$(SolutionDir)KGRenderer\export;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(SolutionDir)KGLib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)KGLib\include;$(SolutionDir)KGRenderer\export;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)KGLib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)KGLib\include;$(SolutionDir)KGRenderer\export;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -153,6 +153,7 @@
     <ClInclude Include="KGMain.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Setting.h" />
+    <ClInclude Include="Systems.h" />
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
@@ -171,6 +172,9 @@
   <ItemGroup>
     <ProjectReference Include="..\KGLib\KGLib.vcxproj">
       <Project>{3dee2beb-bb71-4e48-a50e-ca7725f3ba36}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\KGRenderer\KGRenderer.vcxproj">
+      <Project>{499a312c-a98f-4419-a6f9-5fb246a425c0}</Project>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

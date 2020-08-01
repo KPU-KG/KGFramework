@@ -10,20 +10,23 @@ namespace KG::Component
 	class ComponentContainer
 	{
 		std::map<KG::Utill::HashString, IComponent*> container;
-
+	public:
 		template <class Ty>
 		void AddComponent(Ty* ptr)
 		{
 			auto [it, check] = this->container.insert(
-				std::make_pair(ComponentID<std::decay_t<Ty>>::id, ptr)
+				std::make_pair(KG::Utill::HashString(ComponentID<Ty>::id), ptr)
 			);
 			assert(check);
 		}
 
 		template <class Ty>
-		void GetComponent() const
+		Ty* GetComponent() const
 		{
-			return this->container.at(ComponentID<std::decay_t<Ty>::id>);
+			return static_cast<Ty*>(
+				this->container.at( KG::Utill::HashString(ComponentID<Ty>::id) )
+				);
 		}
+
 	};
 };

@@ -1,12 +1,20 @@
 #pragma once
 #include <iostream>
+#include <numbers>
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
 
-namespace KG
+namespace KG::Math
 {
+	constexpr float  PI = 3.14159265358979f;
+	constexpr double PI_D = 3.141592653589793238463;
+	constexpr DirectX::XMFLOAT3 look = DirectX::XMFLOAT3(0, 0, 1);
+	constexpr DirectX::XMFLOAT3 up = DirectX::XMFLOAT3(0, 1, 0);
+	constexpr DirectX::XMFLOAT3 right = DirectX::XMFLOAT3(1, 0, 0);
+
+
 	namespace Vector3
 	{
 		using namespace DirectX;
@@ -238,14 +246,43 @@ namespace KG
 			XMStoreFloat4(&result, XMQuaternionIdentity());
 			return result;
 		};
+
+		inline XMFLOAT3 ToEuler(const XMFLOAT4& quaternion)
+		{
+			auto quatVec = XMLoadFloat4(&quaternion);
+			auto sqrtQuat = XMVectorMultiply(quatVec, quatVec);
+			float unit = XMVectorGetX(XMVectorSum(sqrtQuat));
+			float test = quaternion.x * quaternion.w - quaternion.y * quaternion.z;
+			XMFLOAT3 v;
+
+			if (test > 0.4995f * unit)
+			{ // singularity at north pole
+				v.y = 2.0f * atan2(quaternion.y, quaternion.x);
+				v.x = PI / 2;
+				v.z = 0;
+				return v;
+			}
+			if (test < -0.4995f * unit)
+			{ // singularity at south pole
+				v.y = -2.0f * atan2(quaternion.y, quaternion.x);
+				v.x = -PI / 2;
+				v.z = 0;
+				return v;
+			}
+			XMFLOAT4 q = XMFLOAT4(quaternion.w, quaternion.z, quaternion.x, quaternion.y);
+			v.y = atan2(2.0f * q.x * q.w + 2.0f * q.y * q.z, 1 - 2.0f * (q.z * q.z + q.w * q.w));     // Yaw
+			v.x = asin(2.0f * (q.x * q.z - q.w * q.y));                             // Pitch
+			v.z = atan2(2.0f * q.x * q.y + 2.0f * q.z * q.w, 1 - 2.0f * (q.y * q.y + q.z * q.z));      // Roll
+			return v;
+		}
 	}
 	
 
-	DirectX::XMFLOAT4 RandomColor()
+	inline DirectX::XMFLOAT4 RandomColor()
 	{
 		return DirectX::XMFLOAT4(rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX), 1.0f);
 	}
-	float RandomFloat()
+	inline float RandomFloat()
 	{
 		return rand() / float(RAND_MAX);
 	}

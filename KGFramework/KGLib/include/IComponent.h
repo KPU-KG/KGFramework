@@ -1,34 +1,45 @@
 #pragma once
 #include "hash.h"
-
+namespace KG::Core
+{
+	class GameObject;
+};
 namespace KG::Component
 {
 	template<typename Ty>
 	struct ComponentID;
 
-#define REGISTER_COMPONENT_ID(X) template <> struct ComponentID<X> \
-		{ static KG::Utill::ID id; } ; KG::Utill::ID ComponentID<X>::id = #X##_id
+#define REGISTER_COMPONENT_ID(X) template <> struct KG::Component::ComponentID<X> \
+		{ static KG::Utill::ID id; } ; KG::Utill::ID KG::Component::ComponentID<X>::id = #X##_id
+
+	struct SystemInformation
+	{
+		bool isUsing = false;
+	};
 
 	class IComponent
 	{
-	private:
+	protected:
+		KG::Core::GameObject* gameObject = nullptr;
 		bool isActive = false;
-		bool isDestroy = false;
 	public:
+		SystemInformation systemInfo;
+
 		IComponent();
 		void SetActive(bool isActive);
-		void Destroy();
-		bool IsDestroy();
-
-		//Virtual Function
-	private:
-		virtual void OnCreate() {};
-		virtual void OnStart() {};
-		virtual void OnEnd() {};
-		virtual void OnDestroy() {};
+		KG::Core::GameObject* GetGameObject() const
+		{
+			return this->gameObject;
+		}
+	protected:
+		virtual void OnCreate(KG::Core::GameObject* gameObject) { this->gameObject = gameObject; };
+		virtual void OnActive() {};
+		virtual void OnDisactive() {};
+		virtual void OnDestroy();
 	public:
 		virtual void Update(float timeElapsed) {};
+		void PostUse() { this->systemInfo.isUsing = true; };
+		bool isUsing() { return this->systemInfo.isUsing == true; };
 
 	};
-	REGISTER_COMPONENT_ID(IComponent);
 }
