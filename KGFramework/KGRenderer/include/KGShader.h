@@ -35,6 +35,11 @@ namespace KG::Renderer
 		}
 	}
 
+	struct MaterialConstant
+	{
+
+	};
+
 	class IShader
 	{
 	protected:

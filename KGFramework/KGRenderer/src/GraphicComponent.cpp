@@ -50,8 +50,25 @@ void KG::Component::Render3DComponent::RegisterTransform(TransformComponent* tra
 	this->transform = transform;
 }
 
+void KG::Component::Render3DComponent::RegisterMaterial(MaterialComponent* material)
+{
+	this->material = material;
+}
+
+void KG::Component::MaterialComponent::InitializeShader(const KG::Utill::HashString& shaderID)
+{
+}
+
+void KG::Component::MaterialComponent::OnDestroy()
+{
+	this->shaders.clear();
+	IRenderComponent::OnDestroy();
+}
 
 REGISTER_COMPONENT_ID(KG::Component::IRenderComponent);
 REGISTER_COMPONENT_ID(KG::Component::CameraComponent);
 REGISTER_COMPONENT_ID(KG::Component::Render3DComponent);
 REGISTER_COMPONENT_ID(KG::Component::LightComponent);
+REGISTER_COMPONENT_ID(KG::Component::MaterialComponent);
+REGISTER_COMPONENT_ID(KG::Component::GeometryComponent);
+

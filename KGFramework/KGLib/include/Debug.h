@@ -1,5 +1,21 @@
 #pragma once
+#include <sstream>
 
-#define NotImplement(X) OutputDebugString(L""#X"는 아직 구현되지 않았습니다.")
+#define TOSTRING(X) #X
 
-#define DebugMessage(X) OutputDebugString(X)
+#if defined(_DEBUG) | defined(DEBUG)
+
+
+#define DebugStream(P, X)\
+	std::wstringstream debugStream;\
+	debugStream << PROJECT_NAME << " : " << P << " : " << X << std::endl;\
+	OutputDebugString(debugStream.str().data())
+
+#define DebugNormalMessage(X) DebugStream("NORMAL_LOG", X)
+#define DebugErrorMessage(X) DebugStream("ERROR_LOG", X)
+#define NotImplement(X) DebugNormalMessage(L""#X"는 아직 구현되지 않았습니다.")
+
+#else
+#define DebugNormalMessage(X)
+#define NotImplement(X)
+#endif

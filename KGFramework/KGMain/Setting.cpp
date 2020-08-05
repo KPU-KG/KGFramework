@@ -1,6 +1,8 @@
 #include "Setting.h"
+#include "Debug.h"
 #include <filesystem>
 #include <fstream>
+#include <Windows.h>
 
 using namespace KG;
 Setting KG::Setting::Load()
@@ -24,4 +26,5 @@ void KG::Setting::Save(const Setting& data)
 	out << data.clientHeight << std::endl;
 	out << std::boolalpha << data.fullScreen << std::endl;
 	out << std::boolalpha << data.isVsync << std::endl;
+	DebugNormalMessage(L"세팅값을 저장하였습니다.");
 }

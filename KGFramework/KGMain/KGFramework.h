@@ -33,7 +33,6 @@ namespace KG
 		bool Initialize(const EngineDesc& engineDesc, const Setting& setting);
 		void OnProcess();
 		void OnClose();
-
 	private:
 		std::wstring windowText = L"KG Framework : FPS : ##########";
 		void UpdateWindowText();

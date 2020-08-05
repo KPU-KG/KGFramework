@@ -1,6 +1,7 @@
 #include "KGFramework.h"
 #include "KGRenderer.h"
 #include "Systems.h"
+#include "Debug.h"
 
 KG::GameFramework::GameFramework()
 {
@@ -10,20 +11,25 @@ KG::GameFramework::~GameFramework()
 }
 KG::GameFramework::GameFramework(const GameFramework& rhs)
 {
+	assert(false);
 }
 KG::GameFramework& KG::GameFramework::operator=(const GameFramework& rhs)
 {
+	assert(false);
 	return *this;
 }
 KG::GameFramework::GameFramework(GameFramework&& rhs)
 {
+	assert(false);
 }
 KG::GameFramework& KG::GameFramework::operator=(GameFramework&& rhs)
 {
+	assert(false);
 	return *this;
 }
 bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& setting)
 {
+	DebugNormalMessage("Initialize");
 	//Desc·ù ¼¼ÆÃ
 	this->engineDesc = engineDesc;
 	this->setting = setting;
@@ -52,6 +58,9 @@ void KG::GameFramework::OnProcess()
 {
 	this->timer.Tick();
 	this->UpdateWindowText();
+
+	this->renderer->Update();
+	this->renderer->Render();
 }
 
 void KG::GameFramework::OnClose()

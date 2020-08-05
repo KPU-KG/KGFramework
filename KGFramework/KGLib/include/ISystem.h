@@ -47,10 +47,13 @@ namespace KG::System
 	{
 	protected:
 		ComponentPooler<Ty> pool;
+		virtual void OnGetNewComponent(Ty* ty) {}
 	public:
 		virtual IComponent* GetNewComponent()
 		{
-			return this->pool.GetNewComponent();
+			auto* target = this->pool.GetNewComponent();
+			this->OnGetNewComponent(target);
+			return target;
 		}
 	};
 };

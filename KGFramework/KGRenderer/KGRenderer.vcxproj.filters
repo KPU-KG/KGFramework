@@ -31,6 +31,9 @@
     <Filter Include="헤더 파일\Resource">
       <UniqueIdentifier>{2bc8bb58-6fe0-42e5-9311-6d386decb79b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Core\DirectX">
+      <UniqueIdentifier>{9ac19abb-5b10-410a-a1fc-6d1ee624a470}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -60,6 +63,9 @@
     <ClCompile Include="src\ResourceContainer.cpp">
       <Filter>소스 파일\Core</Filter>
     </ClCompile>
+    <ClCompile Include="GraphicSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">
@@ -74,29 +80,38 @@
     <ClInclude Include="export\KGRenderer.h">
       <Filter>헤더 파일\Core</Filter>
     </ClInclude>
-    <ClInclude Include="include\KGDXRenderer.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
     <ClInclude Include="include\D3D12Helper.h">
       <Filter>헤더 파일\etc</Filter>
     </ClInclude>
-    <ClInclude Include="include\KGGeometry.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\KGShader.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ResourceContainer.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ShaderData.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\KGGraphicBuffer.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
     <ClInclude Include="include\KGRenderQueue.h">
       <Filter>헤더 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="GraphicSystem.h">
+      <Filter>헤더 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KGDXRenderer.h">
+      <Filter>헤더 파일\Core\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KGGraphicBuffer.h">
+      <Filter>헤더 파일\Core\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KGShader.h">
+      <Filter>헤더 파일\Core\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShaderData.h">
+      <Filter>헤더 파일\Core\DirectX</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ResourceContainer.h">
+      <Filter>헤더 파일\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="KGResourceLoader.h">
+      <Filter>헤더 파일\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KGGeometry.h">
+      <Filter>헤더 파일\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="ResourceStruct.h">
+      <Filter>헤더 파일\Resource</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

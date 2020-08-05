@@ -50,6 +50,12 @@ namespace KG::Renderer
 		virtual void Render() = 0;
 		virtual void Update() = 0;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) = 0;
+		
+		virtual KG::Component::Render3DComponent* GetNewRenderComponent() = 0;
+		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent(const KG::Utill::HashString& id) = 0;
+		virtual KG::Component::CameraComponent* GetNewCameraComponent() = 0;
+		virtual KG::Component::LightComponent* GetNewLightComponent() = 0;
+
 	};
 	DLL KG::Renderer::IKGRenderer*  GetD3D12Renderer();
 }

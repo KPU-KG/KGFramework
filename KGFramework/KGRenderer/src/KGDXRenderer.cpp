@@ -6,13 +6,36 @@
 #include <sstream>
 
 using namespace KG::Renderer;
+
 KG::Renderer::KGDXRenderer::KGDXRenderer()
 {
 }
 
+KG::Renderer::KGDXRenderer::~KGDXRenderer()
+{
+	TryRelease(dxgiFactory);
+	TryRelease(swapChain);
+	TryRelease(d3dDevice);
+	TryRelease(rtvDescriptorHeap);
+	TryRelease(depthStencilBuffer);
+	TryRelease(dsvDescriptorHeap);
+	TryRelease(commandQueue);
+	TryRelease(mainCommandAllocator);
+	TryRelease(mainCommandList);
+	TryRelease(fence);
+
+	for (auto*& ptr : this->renderTargetBuffers)
+	{
+		TryRelease(ptr);
+	}
+	DebugNormalMessage("Close D3D12 Renderer");
+}
+
 void KGDXRenderer::Initialize()
 {
+	DebugNormalMessage("Initilize D3D12 Renderer");
 	this->CreateD3DDevice();
+	this->QueryHardwareFeature();
 	this->CreateCommandQueueAndList();
 	this->CreateSwapChain();
 	this->CreateRtvDescriptorHeaps();
@@ -23,16 +46,119 @@ void KGDXRenderer::Initialize()
 
 void KGDXRenderer::Render()
 {
+	HRESULT hResult = this->mainCommandAllocator->Reset();
+	hResult = this->mainCommandList->Reset(this->mainCommandAllocator, nullptr);
+
+	D3D12_RESOURCE_BARRIER d3dResourceBarrier;
+	::ZeroMemory(&d3dResourceBarrier, sizeof(decltype(d3dResourceBarrier)));
+	d3dResourceBarrier.Type = D3D12_RESOURCE_BARRIER_TYPE::D3D12_RESOURCE_BARRIER_TYPE_TRANSITION;
+	d3dResourceBarrier.Flags = D3D12_RESOURCE_BARRIER_FLAGS::D3D12_RESOURCE_BARRIER_FLAG_NONE;
+	d3dResourceBarrier.Transition.pResource = this->renderTargetBuffers[this->swapChainBufferIndex];
+	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATE_PRESENT;
+	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATE_RENDER_TARGET;
+	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	this->mainCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+	d3dRtvCPUDescriptorHandle.ptr += (this->swapChainBufferIndex * this->rtvDescriptorSize);
+
+	float clearColor[4] = { 0.0f, 0.0f, 25.0f / 256.0f, 1.0f };
+	this->mainCommandList->ClearRenderTargetView(d3dRtvCPUDescriptorHandle, clearColor, 0, nullptr);
+
+	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+
+	this->mainCommandList->ClearDepthStencilView(d3dDsvCPUDescriptorHandle,
+		D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr);
+
+	this->mainCommandList->OMSetRenderTargets(1, &d3dRtvCPUDescriptorHandle, true, &d3dDsvCPUDescriptorHandle);
+
+
+	d3dResourceBarrier.Transition.StateBefore = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
+	d3dResourceBarrier.Transition.StateAfter = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PRESENT;
+	d3dResourceBarrier.Transition.Subresource = D3D12_RESOURCE_BARRIER_ALL_SUBRESOURCES;
+	this->mainCommandList->ResourceBarrier(1, &d3dResourceBarrier);
+
+	hResult = this->mainCommandList->Close();
+
+	ID3D12CommandList* d3dCommandLists[] = { this->mainCommandList };
+	this->commandQueue->ExecuteCommandLists(1, d3dCommandLists);
+
+
+	DXGI_PRESENT_PARAMETERS dxgiPresentParameters;
+	dxgiPresentParameters.DirtyRectsCount = 0;
+	dxgiPresentParameters.pDirtyRects = nullptr;
+	dxgiPresentParameters.pScrollRect = nullptr;
+	dxgiPresentParameters.pScrollOffset = nullptr;
+	this->swapChain->Present1(this->setting.isVsync, 0, &dxgiPresentParameters);
+
+	this->swapChainBufferIndex = this->swapChain->GetCurrentBackBufferIndex();
+
+	this->MoveToNextFrame();
 }
 
 void KG::Renderer::KGDXRenderer::Update()
 {
-	NotImplement(KGDXRenderer::Update);
+	static bool impleFlag = false;
+	if (!impleFlag)
+	{
+		NotImplement(KGDXRenderer::Update);
+		impleFlag = !impleFlag;
+	}
 }
 
 void KGDXRenderer::OnChangeSettings(const RendererSetting& prev, const RendererSetting& next)
 {
 	NotImplement(KGDXRenderer::OnChangeSettings);
+}
+
+KG::Component::Render3DComponent* KG::Renderer::KGDXRenderer::GetNewRenderComponent()
+{
+	return nullptr;
+}
+
+KG::Component::GeometryComponent* KG::Renderer::KGDXRenderer::GetNewGeomteryComponent(const KG::Utill::HashString& id)
+{
+	return nullptr;
+}
+
+KG::Component::CameraComponent* KG::Renderer::KGDXRenderer::GetNewCameraComponent()
+{
+	return nullptr;
+}
+
+KG::Component::LightComponent* KG::Renderer::KGDXRenderer::GetNewLightComponent()
+{
+	return nullptr;
+}
+
+void KG::Renderer::KGDXRenderer::QueryHardwareFeature()
+{
+	D3D12_FEATURE_DATA_D3D12_OPTIONS featureSupport;
+	ZeroDesc(featureSupport);
+
+	d3dDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &featureSupport, sizeof(featureSupport));
+
+	switch (featureSupport.ResourceBindingTier)
+	{
+	case D3D12_RESOURCE_BINDING_TIER_1:
+	{
+		DebugNormalMessage("D3D12 RESOURCE BINDING TIER : 1");
+	}
+	break;
+
+	case D3D12_RESOURCE_BINDING_TIER_2:
+	{
+		DebugNormalMessage("D3D12 RESOURCE BINDING TIER : 2");
+	}
+	break;
+
+	case D3D12_RESOURCE_BINDING_TIER_3:
+	{
+		DebugNormalMessage("D3D12 RESOURCE BINDING TIER: 3");
+	}
+	break;
+	}
+
 }
 
 void KG::Renderer::KGDXRenderer::CreateD3DDevice()
@@ -61,10 +187,7 @@ void KG::Renderer::KGDXRenderer::CreateD3DDevice()
 		}
 		if (SUCCEEDED(::D3D12CreateDevice(d3dAdapter, D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&this->d3dDevice))))
 		{
-			std::wstringstream wss;
-			wss << L"KGFrameWork : Init as Adapter : ";
-			wss << dxgiAdapterDesc.Description << std::endl;;
-			DebugMessage(wss.str().data());
+			DebugNormalMessage("Init as Adapter : " << dxgiAdapterDesc.Description);
 			break;
 		}
 	}
@@ -88,13 +211,14 @@ void KG::Renderer::KGDXRenderer::CreateD3DDevice()
 	this->hFenceEvent = ::CreateEvent(nullptr, false, false, nullptr);
 	this->fenceValue = 0;
 	TryRelease(d3dAdapter);
-;}
+	;
+}
 
 void KG::Renderer::KGDXRenderer::CreateSwapChain()
 {
 	RECT clientRect;
 	::GetClientRect(this->desc.hWnd, &clientRect);
-	this->setting.clientWidth= clientRect.right - clientRect.left;
+	this->setting.clientWidth = clientRect.right - clientRect.left;
 	this->setting.clientHeight = clientRect.bottom - clientRect.top;
 
 	DXGI_SWAP_CHAIN_DESC1 dxgiSwapChainDesc;
@@ -214,4 +338,109 @@ void KG::Renderer::KGDXRenderer::CreateDepthStencilView()
 
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	this->d3dDevice->CreateDepthStencilView(this->depthStencilBuffer, nullptr, d3dDsvCPUDescriptorHandle);
+}
+
+void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
+{
+	D3D12_ROOT_PARAMETER pd3dRootParameters[5]{};
+
+	// 0 : Space 0 : CBV 0 : Camera Data
+	pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[0].Descriptor.ShaderRegister = 0;
+	pd3dRootParameters[0].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	// 1 : Space 0 : CBV 1 : Pass Data
+
+	pd3dRootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[1].Descriptor.ShaderRegister = 1;
+	pd3dRootParameters[1].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	// 2 : Space 0 : SRV 0 : Instance Data
+	pd3dRootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+	pd3dRootParameters[2].Descriptor.ShaderRegister = 0;
+	pd3dRootParameters[2].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+	// 3 : Space 1 : SRV 0 : Texture Data1
+	pd3dRootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+	pd3dRootParameters[3].Descriptor.ShaderRegister = 0;
+	pd3dRootParameters[3].Descriptor.RegisterSpace = 1;
+	pd3dRootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
+
+	// 4 : Space 1 : SRV 0 : Texture Data1
+	pd3dRootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+	pd3dRootParameters[4].Descriptor.ShaderRegister = 0;
+	pd3dRootParameters[4].Descriptor.RegisterSpace = 2;
+	pd3dRootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
+	//여기 텍스처 배열 묶는거 확인하기
+	//생각해보니 Descriptor Table에도 테이블 갯수 ( 디스크립터 레인지 ) 확인해야하는데
+	//이러면 동적 갯수 어케함??
+
+
+	pd3dRootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[1].Descriptor.ShaderRegister = 1;
+	pd3dRootParameters[1].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+
+	pd3dRootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+	pd3dRootParameters[2].Descriptor.ShaderRegister = 0;
+	pd3dRootParameters[2].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	pd3dRootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[3].Descriptor.ShaderRegister = 2;
+	pd3dRootParameters[3].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	pd3dRootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+	pd3dRootParameters[4].Descriptor.ShaderRegister = 3;
+	pd3dRootParameters[4].Descriptor.RegisterSpace = 0;
+	pd3dRootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	//pd3dRootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE::D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	//pd3dRootParameters[3].DescriptorTable.NumDescriptorRanges = 2;
+	//pd3dRootParameters[3].DescriptorTable.pDescriptorRanges;
+
+
+	D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags =
+		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
+
+	D3D12_ROOT_SIGNATURE_DESC d3dRootSignatureDesc;
+
+	ZeroDesc(d3dRootSignatureDesc);
+	d3dRootSignatureDesc.NumParameters = _countof(pd3dRootParameters);
+	d3dRootSignatureDesc.pParameters = pd3dRootParameters;
+	d3dRootSignatureDesc.NumStaticSamplers = 0;
+	d3dRootSignatureDesc.pStaticSamplers = NULL;
+	d3dRootSignatureDesc.Flags = d3dRootSignatureFlags;
+
+	ID3DBlob* pd3dSignatureBlob = nullptr;
+	ID3DBlob* pd3dErrorBlob = nullptr;
+
+	auto result = ::D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
+	this->d3dDevice->CreateRootSignature(0, pd3dSignatureBlob->GetBufferPointer(), pd3dSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&this->generalRootSignature));
+	TryRelease(pd3dSignatureBlob);
+	TryRelease(pd3dErrorBlob);
+}
+
+void KG::Renderer::KGDXRenderer::MoveToNextFrame()
+{
+	this->swapChainBufferIndex = this->swapChain->GetCurrentBackBufferIndex();
+	const UINT64 fenceValue = ++this->fenceValue;
+	HRESULT hResult = this->commandQueue->Signal(this->fence, fenceValue);
+	if (FAILED(hResult))
+	{
+		throw hResult;
+	}
+	if (this->fence->GetCompletedValue() < fenceValue)
+	{
+		hResult = this->fence->SetEventOnCompletion(fenceValue, this->hFenceEvent);
+		::WaitForSingleObject(this->hFenceEvent, INFINITE);
+	}
 }

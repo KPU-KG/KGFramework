@@ -1,10 +1,11 @@
 #pragma once
+#include <dxgi1_4.h>
 #include <d3d12.h>
 #include <vector>
 #include "KGRenderer.h"
 namespace KG::Renderer
 {
-	using Microsoft::WRL::ComPtr;
+
 	using std::vector;
 	class KGDXRenderer : public IKGRenderer
 	{
@@ -28,12 +29,16 @@ namespace KG::Renderer
 		ID3D12CommandAllocator* mainCommandAllocator = nullptr;
 		ID3D12GraphicsCommandList* mainCommandList = nullptr;
 
+		ID3D12RootSignature* generalRootSignature = nullptr;
+
 		ID3D12Fence* fence = nullptr;
 		UINT64 fenceValue = 0;
 		HANDLE hFenceEvent = 0;
 
 		bool isWireFrame = false;
 	private:
+		void QueryHardwareFeature();
+
 		void CreateD3DDevice();
 		void CreateSwapChain();
 		void CreateRtvDescriptorHeaps();
@@ -42,12 +47,20 @@ namespace KG::Renderer
 		void CreateRenderTargetView();
 		void CreateDepthStencilView();
 
+		void CreateGeneralRootSignature();
+
+		void MoveToNextFrame();
 	public:
 		KGDXRenderer();
-
+		~KGDXRenderer();
 		virtual void Initialize() override;
 		virtual void Render() override;
 		virtual void Update() override;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) override;
+
+		virtual KG::Component::Render3DComponent* GetNewRenderComponent() override;
+		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent(const KG::Utill::HashString& id) override;
+		virtual KG::Component::CameraComponent* GetNewCameraComponent() override;
+		virtual KG::Component::LightComponent* GetNewLightComponent() override;
 	};
 }

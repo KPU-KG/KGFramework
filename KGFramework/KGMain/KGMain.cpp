@@ -52,7 +52,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     {
         if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
         {
-            //if (!::TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+            if (!::TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
             {
                 ::TranslateMessage(&msg);
                 ::DispatchMessage(&msg);
