@@ -168,6 +168,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="GraphicSystem.cpp" />
+    <ClCompile Include="KGResourceLoader.cpp" />
     <ClCompile Include="src\D3D12Helper.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\GraphicComponent.cpp" />

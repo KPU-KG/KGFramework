@@ -36,6 +36,7 @@ namespace KG::Renderer
 		HANDLE hFenceEvent = 0;
 
 		bool isWireFrame = false;
+		static inline KGDXRenderer* instance = nullptr;
 	private:
 		void QueryHardwareFeature();
 
@@ -62,5 +63,8 @@ namespace KG::Renderer
 		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent(const KG::Utill::HashString& id) override;
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() override;
 		virtual KG::Component::LightComponent* GetNewLightComponent() override;
+
+		static KGDXRenderer* GetInstance();
+		ID3D12RootSignature* GetGeneralRootSignature() const;
 	};
 }

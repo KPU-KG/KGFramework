@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    targetNamespace="KGResource.xsd"
+    xmlns="KGResource.xsd"
+    elementFormDefault="qualified">
+
+  <xs:element name="Root">
+    <xs:complexType>
+      <xs:sequence>
+
+        <xs:element name="GraphicShaderSet" minOccurs ="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:all>
+              <xs:element name="VertexShader" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:attribute name="fileDir" type="xs:anyURI" use="required"/>
+                  <xs:attribute name="entry" type="xs:string" use="required"/>
+                  <xs:attribute name="type" use="required">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:enumeration value="vs_5_0"/>
+                        <xs:enumeration value="vs_5_1"/>
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="DomainShader" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                  <xs:attribute name="fileDir" type="xs:anyURI" use="required"/>
+                  <xs:attribute name="entry" type="xs:string" use="required"/>
+                  <xs:attribute name="type" use="required">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:enumeration value="ds_5_0"/>
+                        <xs:enumeration value="ds_5_1"/>
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="GeometryShader" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                  <xs:attribute name="fileDir" type="xs:anyURI" use="required"/>
+                  <xs:attribute name="entry" type="xs:string" use="required"/>
+                  <xs:attribute name="type" use="required">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:enumeration value="gs_5_0"/>
+                        <xs:enumeration value="gs_5_1"/>
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="HullShader" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                  <xs:attribute name="fileDir" type="xs:anyURI" use="required"/>
+                  <xs:attribute name="entry" type="xs:string" use="required"/>
+                  <xs:attribute name="type" use="required">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:enumeration value="hs_5_0"/>
+                        <xs:enumeration value="hs_5_1"/>
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="PixelShader" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:attribute name="fileDir" type="xs:anyURI" use="required"/>
+                  <xs:attribute name="entry" type="xs:string" use="required"/>
+                  <xs:attribute name="type" use="required">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:enumeration value="ps_5_0"/>
+                        <xs:enumeration value="ps_5_1"/>
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                </xs:complexType>
+              </xs:element>
+
+            </xs:all>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+            <xs:attribute name="hash" type="xs:unsignedInt" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+
+        <xs:element name="ComputeShaderSet" minOccurs ="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:all>
+              
+              <xs:element name="ComputeShader" minOccurs="1" maxOccurs="1">
+                <xs:complexType>
+                  <xs:attribute name="fileDir" type="xs:anyURI" use="required"/>
+                  <xs:attribute name="entry" type="xs:string" use="required"/>
+                  <xs:attribute name="type" use="required">
+                    <xs:simpleType>
+                      <xs:restriction base="xs:string">
+                        <xs:enumeration value="cs_5_0"/>
+                        <xs:enumeration value="cs_5_1"/>
+                      </xs:restriction>
+                    </xs:simpleType>
+                  </xs:attribute>
+                </xs:complexType>
+              </xs:element>
+
+            </xs:all>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+            <xs:attribute name="hash" type="xs:unsignedInt" use="optional"/>
+          </xs:complexType>
+        </xs:element>
+        
+        
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

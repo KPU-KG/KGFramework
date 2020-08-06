@@ -33,6 +33,7 @@ KG::Renderer::KGDXRenderer::~KGDXRenderer()
 
 void KGDXRenderer::Initialize()
 {
+	KGDXRenderer::instance = this;
 	DebugNormalMessage("Initilize D3D12 Renderer");
 	this->CreateD3DDevice();
 	this->QueryHardwareFeature();
@@ -129,6 +130,16 @@ KG::Component::CameraComponent* KG::Renderer::KGDXRenderer::GetNewCameraComponen
 KG::Component::LightComponent* KG::Renderer::KGDXRenderer::GetNewLightComponent()
 {
 	return nullptr;
+}
+
+KG::Renderer::KGDXRenderer* KG::Renderer::KGDXRenderer::GetInstance()
+{
+	return KGDXRenderer::instance;
+}
+
+ID3D12RootSignature* KG::Renderer::KGDXRenderer::GetGeneralRootSignature() const
+{
+	return this->generalRootSignature;
 }
 
 void KG::Renderer::KGDXRenderer::QueryHardwareFeature()
@@ -363,46 +374,36 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 	pd3dRootParameters[2].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
-	// 3 : Space 1 : SRV 0 : Texture Data1
-	pd3dRootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-	pd3dRootParameters[3].Descriptor.ShaderRegister = 0;
-	pd3dRootParameters[3].Descriptor.RegisterSpace = 1;
+
+	// 3 : Space 1 : SRV 0 : Texture Data1 // unbounded
+
+	D3D12_DESCRIPTOR_RANGE txtureData1Range;
+	ZeroDesc(txtureData1Range);
+	txtureData1Range.BaseShaderRegister = 0;
+	txtureData1Range.NumDescriptors = -1;
+	txtureData1Range.OffsetInDescriptorsFromTableStart = 0;
+	txtureData1Range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	txtureData1Range.RegisterSpace = 1;
+
+	pd3dRootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[3].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[3].DescriptorTable.pDescriptorRanges = &txtureData1Range;
 	pd3dRootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
 
-	// 4 : Space 1 : SRV 0 : Texture Data1
-	pd3dRootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-	pd3dRootParameters[4].Descriptor.ShaderRegister = 0;
-	pd3dRootParameters[4].Descriptor.RegisterSpace = 2;
+	// 4 : Space 2 : SRV 0 : Texture Data2 // unbounded
+
+	D3D12_DESCRIPTOR_RANGE txtureData2Range;
+	ZeroDesc(txtureData2Range);
+	txtureData2Range.BaseShaderRegister = 0;
+	txtureData2Range.NumDescriptors = -1;
+	txtureData2Range.OffsetInDescriptorsFromTableStart = 0;
+	txtureData2Range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+	txtureData2Range.RegisterSpace = 2;
+	
+	pd3dRootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+	pd3dRootParameters[4].DescriptorTable.NumDescriptorRanges = 1;
+	pd3dRootParameters[4].DescriptorTable.pDescriptorRanges = &txtureData2Range;
 	pd3dRootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
-	//여기 텍스처 배열 묶는거 확인하기
-	//생각해보니 Descriptor Table에도 테이블 갯수 ( 디스크립터 레인지 ) 확인해야하는데
-	//이러면 동적 갯수 어케함??
-
-
-	pd3dRootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	pd3dRootParameters[1].Descriptor.ShaderRegister = 1;
-	pd3dRootParameters[1].Descriptor.RegisterSpace = 0;
-	pd3dRootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-
-	pd3dRootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-	pd3dRootParameters[2].Descriptor.ShaderRegister = 0;
-	pd3dRootParameters[2].Descriptor.RegisterSpace = 0;
-	pd3dRootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-	pd3dRootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	pd3dRootParameters[3].Descriptor.ShaderRegister = 2;
-	pd3dRootParameters[3].Descriptor.RegisterSpace = 0;
-	pd3dRootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-	pd3dRootParameters[4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	pd3dRootParameters[4].Descriptor.ShaderRegister = 3;
-	pd3dRootParameters[4].Descriptor.RegisterSpace = 0;
-	pd3dRootParameters[4].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-	//pd3dRootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE::D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-	//pd3dRootParameters[3].DescriptorTable.NumDescriptorRanges = 2;
-	//pd3dRootParameters[3].DescriptorTable.pDescriptorRanges;
 
 
 	D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags =

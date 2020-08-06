@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Root xmlns="KGResource.xsd">
+  <GraphicShaderSet id="defaultShader">
+    <VertexShader fileDir="" entry="" type="vs_5_0"/>
+    <PixelShader fileDir="" entry="" type="ps_5_0"/>
+  </GraphicShaderSet>
+</Root>

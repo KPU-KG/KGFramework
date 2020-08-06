@@ -15,6 +15,20 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KGRenderer", "KGRenderer\KG
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KGLib", "KGLib\KGLib.vcxproj", "{3DEE2BEB-BB71-4E48-A50E-CA7725F3BA36}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Resource", "Resource", "{1C3E5F5B-2584-476E-8547-6C9D578E07B9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XSL", "XSL", "{E0388BA3-9056-4D90-BAC5-B45247984D32}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\XML\ResourceDefine.xsd = Resource\Resource\XML\ResourceDefine.xsd
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XML", "XML", "{85D78402-5B3A-48F7-8603-F728338BBA95}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderCode.xml = Resource\Resource\ShaderCode.xml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShaderCode", "ShaderCode", "{612EE3CC-1D6B-4E8F-8C11-7510E32215FA}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -36,6 +50,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{E0388BA3-9056-4D90-BAC5-B45247984D32} = {1C3E5F5B-2584-476E-8547-6C9D578E07B9}
+		{85D78402-5B3A-48F7-8603-F728338BBA95} = {1C3E5F5B-2584-476E-8547-6C9D578E07B9}
+		{612EE3CC-1D6B-4E8F-8C11-7510E32215FA} = {1C3E5F5B-2584-476E-8547-6C9D578E07B9}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EA476DDC-7B81-4DFD-9585-518EB4B6393F}

@@ -40,6 +40,21 @@ namespace KG::Renderer
 
 	};
 
+	class FutureIShader
+	{
+	protected:
+		bool isWireFrame = false;
+		ID3D12PipelineState* normalPso = nullptr;
+		ID3D12PipelineState* wireframePso = nullptr;
+	public:
+		virtual D3D12_RASTERIZER_DESC CreateRasterizerState();
+		virtual D3D12_BLEND_DESC CreateBlendState();
+		virtual D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+		virtual void CreateShader();
+		virtual void Set(ID3D12GraphicsCommandList* pd3dCommandList);
+		void SetWireframe(bool wireframe);
+	};
+
 	class IShader
 	{
 	protected:

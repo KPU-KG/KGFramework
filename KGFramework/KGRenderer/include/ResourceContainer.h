@@ -22,7 +22,6 @@ namespace KG::Renderer
 		{
 			this->AddResource(id, std::make_unique<Ty>(std::forward<Type>(parameters)...));
 		}
-
 		IShader* GetShader(KG::Utill::_ID id);
 		Geometry* GetGeometry(KG::Utill::_ID id);
 	};

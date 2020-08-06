@@ -5,4 +5,11 @@ namespace KG::Resource
 	{
 
 	};
+
+	struct PureGeometry
+	{
+
+	};
+
+
 };
