@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GeometrySet xmlns="KGResource.xsd">
+    <Geometry id="cube" fileDir="Resource/Geometry/cube.fbx" hash_id="3056789162"/>
+</GeometrySet>

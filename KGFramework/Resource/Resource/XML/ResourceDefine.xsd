@@ -4,7 +4,7 @@
     xmlns="KGResource.xsd"
     elementFormDefault="qualified">
 
-  <xs:element name="Root">
+  <xs:element name="ShaderSet">
     <xs:complexType>
       <xs:sequence>
 
@@ -88,7 +88,17 @@
 
             </xs:all>
             <xs:attribute name="id" type="xs:string" use="required"/>
-            <xs:attribute name="hash" type="xs:unsignedInt" use="optional"/>
+            <xs:attribute name="hash_id" type="xs:unsignedInt" use="optional"/>
+            <xs:attribute name="renderPriority" type="xs:int" use="required"/>
+            <xs:attribute name="enableBackfaceCulling" type="xs:boolean" use="required"/>
+            <xs:attribute name="shaderType" use="required">
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:enumeration value="opaque"/>
+                  <xs:enumeration value="transparent"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
           </xs:complexType>
         </xs:element>
 
@@ -118,6 +128,20 @@
         </xs:element>
         
         
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="GeometrySet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Geometry" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+            <xs:attribute name="hash_id" type="xs:unsignedInt" use="optional"/>
+            <xs:attribute name="fileDir" type="xs:anyURI" use="required"/>
+          </xs:complexType>
+        </xs:element>
       </xs:sequence>
     </xs:complexType>
   </xs:element>

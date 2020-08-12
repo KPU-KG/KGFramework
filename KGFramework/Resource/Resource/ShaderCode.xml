@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Root xmlns="KGResource.xsd">
-  <GraphicShaderSet id="defaultShader">
-    <VertexShader fileDir="" entry="" type="vs_5_0"/>
-    <PixelShader fileDir="" entry="" type="ps_5_0"/>
-  </GraphicShaderSet>
-</Root>
+<ShaderSet xmlns="KGResource.xsd">
+    <GraphicShaderSet id="default" shaderType="opaque" enableBackfaceCulling="1" renderPriority="5000" hash_id="2341425516">
+        <VertexShader fileDir="Resource/ShaderScript/DefaultShader.hlsl" entry="DefaultVertexFuction" type="vs_5_1"/>
+        <PixelShader fileDir="Resource/ShaderScript/DefaultShader.hlsl" entry="DefaultPixelFuction" type="ps_5_1"/>
+    </GraphicShaderSet>
+</ShaderSet>

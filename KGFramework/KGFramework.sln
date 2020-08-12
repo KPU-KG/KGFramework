@@ -24,10 +24,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XSL", "XSL", "{E0388BA3-905
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XML", "XML", "{85D78402-5B3A-48F7-8603-F728338BBA95}"
 	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\GeometrySet.xml = Resource\Resource\GeometrySet.xml
 		Resource\Resource\ShaderCode.xml = Resource\Resource\ShaderCode.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShaderCode", "ShaderCode", "{612EE3CC-1D6B-4E8F-8C11-7510E32215FA}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\DefaultShader.hlsl = Resource\Resource\ShaderScript\DefaultShader.hlsl
+		Resource\Resource\ShaderScript\GlobalDefine.hlsl = Resource\Resource\ShaderScript\GlobalDefine.hlsl
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

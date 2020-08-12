@@ -47,13 +47,17 @@ namespace KG::Renderer
 	template <class Ty>
 	struct PooledBuffer
 	{
-		bool isUse = false;
+		bool isUsing = false;
 		UploadBuffer buffer;
 		Ty* mappedData = nullptr;
 		PooledBuffer(ID3D12Device* device, size_t count)
 			:buffer(device, count * sizeof(Ty))
 		{
 			this->buffer.resource->Map(0, nullptr, (void**)&this->mappedData);
+		}
+		size_t GetSize() const
+		{
+			return this->buffer.bufferSize;
 		}
 	};
 
@@ -89,7 +93,7 @@ namespace KG::Renderer
 		{
 			auto result = std::find_if(
 				this->bufferPool.begin(), this->bufferPool.end(),
-				[](auto& a) {return a.isUsed == false; }
+				[]( BufferType& a) { return a.isUsing == false; }
 			);
 			if (result == this->bufferPool.end())
 			{
@@ -103,11 +107,11 @@ namespace KG::Renderer
 	};
 
 
-	constexpr std::array<size_t, 10> defaultFixedSize = { 1, 4, 16, 32, 64, 128, 256, 512, 1024, 2048 };
-	constexpr std::array<size_t, 10> defaultReservedSize = { 100, 50, 25, 15, 10 , 10, 10, 5, 5, 1 };
 	template<class Ty, size_t fixed_pool = 10>
 	struct BufferPool
 	{
+		constexpr static std::array<size_t, 10> defaultFixedSize = { 1, 4, 16, 32, 64, 128, 256, 512, 1024, 2048 };
+		constexpr static std::array<size_t, 10> defaultReservedSize = { 100, 50, 25, 15, 10 , 10, 10, 5, 5, 1 };
 		ID3D12Device* device = nullptr;
 		std::map<size_t, SameCountBufferPool<Ty>> pool;
 		std::array<size_t, fixed_pool> fixedSize;
@@ -141,9 +145,12 @@ namespace KG::Renderer
 				return *(it + 1);
 			}
 		}
-		PooledBuffer<Ty>* GetNewBuffer(size_t size)
+		PooledBuffer<Ty>* GetNewBuffer(size_t count)
 		{
-			size_t bufferSize = this->GetSize(size);
+			size_t bufferSize = this->GetSize(count);
+			auto buffer = pool.at( bufferSize ).GetNewBuffer();
+			buffer->isUsing = true;
+			return buffer;
 		}
 	};
 };

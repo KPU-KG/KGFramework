@@ -3,9 +3,10 @@
 #include <d3d12.h>
 #include <vector>
 #include "KGRenderer.h"
+#include "KGMacroUtill.h"
 namespace KG::Renderer
 {
-
+	class KGRenderEngine;
 	using std::vector;
 	class KGDXRenderer : public IKGRenderer
 	{
@@ -36,6 +37,10 @@ namespace KG::Renderer
 		HANDLE hFenceEvent = 0;
 
 		bool isWireFrame = false;
+
+		struct GraphicSystems;
+		std::unique_ptr<GraphicSystems> graphicSystems = nullptr;
+		std::unique_ptr<KGRenderEngine> renderEngine = nullptr;
 		static inline KGDXRenderer* instance = nullptr;
 	private:
 		void QueryHardwareFeature();
@@ -54,17 +59,36 @@ namespace KG::Renderer
 	public:
 		KGDXRenderer();
 		~KGDXRenderer();
+		KGDXRenderer( const KGDXRenderer& ) = delete;
+		KGDXRenderer( KGDXRenderer&& ) = delete;
+		KGDXRenderer& operator=( const KGDXRenderer& ) = delete;
+		KGDXRenderer& operator=( KGDXRenderer&& ) = delete;
+
+
+
 		virtual void Initialize() override;
 		virtual void Render() override;
 		virtual void Update() override;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) override;
 
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() override;
-		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent(const KG::Utill::HashString& id) override;
+		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent( const KG::Utill::HashString& id ) override;
+		virtual KG::Component::MaterialComponent* GetNewMaterialComponent( const KG::Utill::HashString& id ) override;
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() override;
 		virtual KG::Component::LightComponent* GetNewLightComponent() override;
 
+		auto GetD3DDevice() const
+		{
+			return this->d3dDevice;
+		};
+		auto GetFenceValue() const
+		{
+			return this->fenceValue;
+		};
+
 		static KGDXRenderer* GetInstance();
 		ID3D12RootSignature* GetGeneralRootSignature() const;
+		KGRenderEngine* GetRenderEngine() const;
+		
 	};
 }

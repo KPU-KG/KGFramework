@@ -31,6 +31,8 @@ namespace KG
 		GameFramework& operator=(GameFramework&& rhs);
 
 		bool Initialize(const EngineDesc& engineDesc, const Setting& setting);
+
+		void OnTestInit();
 		void OnProcess();
 		void OnClose();
 	private:

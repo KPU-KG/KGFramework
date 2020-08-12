@@ -173,6 +173,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\tinyxml2.cpp" />
+    <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\TransformSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -184,6 +185,7 @@
     <ClInclude Include="include\IComponent.h" />
     <ClInclude Include="include\IHierarchy.h" />
     <ClInclude Include="include\ISystem.h" />
+    <ClInclude Include="include\KGMacroUtill.h" />
     <ClInclude Include="include\MathHelper.h" />
     <ClInclude Include="include\tinyxml2.h" />
     <ClInclude Include="include\Transform.h" />

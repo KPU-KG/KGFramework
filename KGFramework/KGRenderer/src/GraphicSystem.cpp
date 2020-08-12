@@ -28,3 +28,15 @@ void KG::System::MaterialSystem::OnPostUpdate(float elapsedTime)
 void KG::System::MaterialSystem::OnPreRender()
 {
 }
+
+void KG::System::GeometrySystem::OnUpdate( float elapsedTime )
+{
+}
+
+void KG::System::GeometrySystem::OnPostUpdate( float elapsedTime )
+{
+}
+
+void KG::System::GeometrySystem::OnPreRender()
+{
+}

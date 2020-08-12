@@ -157,6 +157,7 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="ComponentRegister.cpp" />
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="KGFramework.cpp" />
     <ClCompile Include="KGMain.cpp" />

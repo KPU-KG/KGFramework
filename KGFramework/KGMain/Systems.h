@@ -5,5 +5,6 @@ namespace KG
 {
 	struct Systems
 	{
+		KG::System::TransformSystem transformSystem;
 	};
 };

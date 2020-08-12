@@ -1,36 +1,51 @@
 #include "pch.h"
+#include <map>
+#include <mutex>
+#include "Debug.h"
 #include "ResourceContainer.h"
 #include "KGShader.h"
 #include "KGGeometry.h"
+#include "KGResourceLoader.h"
 
-using namespace KG::Renderer;
-void KG::Renderer::ResourceContainer::AddResource(KG::Utill::_ID id, Geometry* ptr)
+std::unique_ptr<KG::Resource::ResourceContainer> KG::Resource::ResourceContainer::instance = nullptr;
+
+KG::Resource::ResourceContainer::ResourceContainer()
 {
-	this->geometry.insert(std::make_pair(id, std::unique_ptr<Geometry>(ptr)));
+	DebugNormalMessage( TOSTRING( ResourceContainer ) << " : Initialize" );
 }
 
-void KG::Renderer::ResourceContainer::AddResource(KG::Utill::_ID id, IShader* ptr)
+KG::Resource::ResourceContainer::~ResourceContainer()
 {
-	this->shader.insert(std::make_pair(id, std::unique_ptr<IShader>(ptr)));
+	DebugNormalMessage( TOSTRING( ResourceContainer ) << " : Removed" );
 }
 
-void KG::Renderer::ResourceContainer::AddResource(KG::Utill::_ID id, std::unique_ptr<Geometry>&& ptr)
+KG::Renderer::Shader* KG::Resource::ResourceContainer::LoadShader( const KG::Utill::HashString& id )
 {
-	this->geometry.insert(std::make_pair(id, std::move(ptr)));
+	auto metaData = ResourceLoader::LoadShaderSetFromFile( "Resource/ShaderCode.xml", id );
+	return &this->shaders.emplace( id, metaData ).first->second;
 }
 
-void KG::Renderer::ResourceContainer::AddResource(KG::Utill::_ID id, std::unique_ptr<IShader>&& ptr)
+KG::Renderer::Geometry* KG::Resource::ResourceContainer::LoadGeometry( const KG::Utill::HashString& id )
 {
-	this->shader.insert(std::make_pair(id, std::move(ptr)));
+	auto metaData = ResourceLoader::LoadGeometrySetFromFile( "Resource/GeometrySet.xml", id );
+	auto* geo = &this->geometrys.emplace( id, metaData ).first->second;
+	return geo;
 }
 
-IShader* KG::Renderer::ResourceContainer::GetShader(KG::Utill::_ID id)
+void KG::Resource::ResourceContainer::Clear()
 {
-	return this->shader.at(id).get();
+	this->shaders.clear();
+	this->geometrys.clear();
+	DebugNormalMessage( TOSTRING( ResourceContainer ) << "All Resource Cleared" );
 }
 
-Geometry* KG::Renderer::ResourceContainer::GetGeometry(KG::Utill::_ID id)
+KG::Resource::ResourceContainer* KG::Resource::ResourceContainer::GetInstance()
 {
-	return this->geometry.at(id).get();
+	//static std::once_flag onceFlags;
+	//std::call_once( onceFlags, []() {ResourceContainer::instance = std::make_unique<ResourceContainer>(); } );
+	if ( ResourceContainer::instance.get() == nullptr )
+	{
+		ResourceContainer::instance = std::make_unique<ResourceContainer>();
+	}
+	return ResourceContainer::instance.get();
 }
-

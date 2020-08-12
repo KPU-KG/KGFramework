@@ -34,6 +34,9 @@
     <Filter Include="헤더 파일\Core\DirectX">
       <UniqueIdentifier>{9ac19abb-5b10-410a-a1fc-6d1ee624a470}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Core\Buffer">
+      <UniqueIdentifier>{921794e5-97b5-40a3-87f9-e34fddc121c2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -63,11 +66,11 @@
     <ClCompile Include="src\ResourceContainer.cpp">
       <Filter>소스 파일\Core</Filter>
     </ClCompile>
-    <ClCompile Include="GraphicSystem.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="src\GraphicSystem.cpp">
+      <Filter>소스 파일\Core</Filter>
     </ClCompile>
-    <ClCompile Include="KGResourceLoader.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="src\KGResourceLoader.cpp">
+      <Filter>소스 파일\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -89,9 +92,6 @@
     <ClInclude Include="include\KGRenderQueue.h">
       <Filter>헤더 파일\Core</Filter>
     </ClInclude>
-    <ClInclude Include="GraphicSystem.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
     <ClInclude Include="include\KGDXRenderer.h">
       <Filter>헤더 파일\Core\DirectX</Filter>
     </ClInclude>
@@ -107,14 +107,26 @@
     <ClInclude Include="include\ResourceContainer.h">
       <Filter>헤더 파일\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="KGResourceLoader.h">
-      <Filter>헤더 파일\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="include\KGGeometry.h">
       <Filter>헤더 파일\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="ResourceStruct.h">
+    <ClInclude Include="export\ResourceMetaData.h">
       <Filter>헤더 파일\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="BuddyAllocator.h">
+      <Filter>헤더 파일\Core\Buffer</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BuddyAllocator.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GraphicSystem.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KGResourceLoader.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ResourceStruct.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

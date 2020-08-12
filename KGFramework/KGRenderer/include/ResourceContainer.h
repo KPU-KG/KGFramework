@@ -4,25 +4,27 @@
 #include "hash.h"
 #include "KGGeometry.h"
 #include "KGShader.h"
-namespace KG::Renderer
+namespace KG::Resource
 {
-	class Geometry;
-	class IShader;
 	class ResourceContainer
 	{
-		std::map<KG::Utill::_ID, std::unique_ptr<Geometry>> geometry;
-		std::map<KG::Utill::_ID, std::unique_ptr<IShader>> shader;
+	private:
+		std::map<KG::Utill::HashString, KG::Renderer::Shader> shaders;
+		std::map<KG::Utill::HashString, KG::Renderer::Geometry> geometrys;
+
+		static std::unique_ptr<ResourceContainer> instance;
 	public:
-		void AddResource(KG::Utill::_ID id, Geometry* ptr);
-		void AddResource(KG::Utill::_ID id, IShader* ptr);
-		void AddResource(KG::Utill::_ID id, std::unique_ptr<Geometry>&& ptr);
-		void AddResource(KG::Utill::_ID id, std::unique_ptr<IShader>&& ptr);
-		template <class Ty ,typename... Type>
-		void EmplaceResource(KG::Utill::_ID id, Type&&... parameters...)
-		{
-			this->AddResource(id, std::make_unique<Ty>(std::forward<Type>(parameters)...));
-		}
-		IShader* GetShader(KG::Utill::_ID id);
-		Geometry* GetGeometry(KG::Utill::_ID id);
+		ResourceContainer();
+		~ResourceContainer();
+
+		ResourceContainer( const ResourceContainer& other ) = delete;
+		ResourceContainer( ResourceContainer&& other ) = delete;
+		ResourceContainer& operator=( const ResourceContainer& other ) = delete;
+		ResourceContainer& operator=( ResourceContainer&& other ) = delete;
+
+		KG::Renderer::Shader* LoadShader(const KG::Utill::HashString& id);
+		KG::Renderer::Geometry* LoadGeometry( const KG::Utill::HashString& id );
+		void Clear();
+		static ResourceContainer* GetInstance();
 	};
-}
+};

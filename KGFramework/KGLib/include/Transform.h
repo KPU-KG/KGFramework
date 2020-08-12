@@ -235,6 +235,5 @@ namespace KG::Component
 		}
 
 	};
-
-	REGISTER_COMPONENT_ID(TransformComponent);
+	REGISTER_COMPONENT_ID( KG::Component::TransformComponent );
 }

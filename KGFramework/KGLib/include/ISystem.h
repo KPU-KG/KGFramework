@@ -23,7 +23,7 @@ namespace KG::System
 			);
 			if (result == componentPool.end())
 			{
-				this->componentPool.emplace_back();
+				return &this->componentPool.emplace_back();
 			}
 			else 
 			{

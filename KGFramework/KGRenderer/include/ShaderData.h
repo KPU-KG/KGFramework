@@ -6,5 +6,6 @@ namespace KG::Renderer
 	struct ObjectData
 	{
 		XMFLOAT4X4 world;
+		unsigned materialIndex;
 	};
 };

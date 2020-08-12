@@ -81,5 +81,8 @@
     <ClCompile Include="KGFramework.cpp">
       <Filter>소스 파일\Framework</Filter>
     </ClCompile>
+    <ClCompile Include="ComponentRegister.cpp">
+      <Filter>소스 파일\Framework</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

@@ -10,6 +10,12 @@ using namespace KG::Utill;
 MeshData KG::Utill::ModelData::processMesh(aiMesh* mesh, const aiScene* scene)
 {
 	MeshData data;
+	for ( unsigned int i = 0; i < mesh->mNumFaces; i++ )
+	{
+		aiFace face = mesh->mFaces[i];
+		for ( unsigned int j = 0; j < face.mNumIndices; j++ )
+			data.indices.push_back( face.mIndices[j] );
+	}
 	data.positions.reserve(mesh->mNumVertices);
 	data.normals.reserve(mesh->mNumVertices);
 	auto textureCount = std::count_if(std::begin(mesh->mTextureCoords), std::end(mesh->mTextureCoords), [](const auto ptr) {return ptr != nullptr; });
@@ -56,4 +62,5 @@ void KG::Utill::ModelData::LoadModel(const std::string& path)
 		OutputDebugString(ss.str().c_str());
 	}
 	std::string directory = path.substr(0, path.find_last_of('/'));
+	this->processNode( scene->mRootNode , scene );
 }

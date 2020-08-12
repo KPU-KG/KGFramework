@@ -1,6 +1,5 @@
 #pragma once
 #include <iostream>
-#include <numbers>
 #include <DirectXMath.h>
 #include <DirectXPackedVector.h>
 #include <DirectXColors.h>
