@@ -1,6 +1,7 @@
 #pragma once
-#include "IComponent.h"
+#include <d3d12.h>
 #include <vector>
+#include "IComponent.h"
 
 #define EXTERNC extern "C"
 #ifdef EXPORTS
@@ -36,12 +37,49 @@ namespace KG::Component
 	{
 	public:
 		virtual void OnPreRender() {};
-		virtual void OnRender() {};
+		virtual void OnRender( ID3D12GraphicsCommandList* commadList) {};
 	};
 
 	class DLL CameraComponent : public IRenderComponent
 	{
 		friend Render3DComponent;
+		// User Data
+		float fovY = 90.0f;
+		float aspectRatio = 16.0f/9.0f;
+		float nearZ = 0.01f;
+		float farZ = 1000.0f;
+
+		TransformComponent* transform;
+		ID3D12Resource* cameraBuffer = nullptr;
+
+		struct CameraData;
+		CameraData* cameraData = nullptr;
+		CameraData* mappedCameraData = nullptr;
+
+		bool ProjDirty = true;
+		void OnProjDirty() { ProjDirty = true; }
+		void RefreshCameraData();
+	public:
+		bool isVisible = true;
+
+		void CalculateViewMatrix();
+		void CalculateProjectionMatrix();
+
+		void SetFovY( float value ) { OnProjDirty(); this->fovY = value; };
+		void SetAspectRatio( float value ) { OnProjDirty(); this->aspectRatio = value; };
+		void SetNearZ( float value ) { OnProjDirty(); this->nearZ = value; };
+		void SetFarZ( float value ) { OnProjDirty(); this->farZ = value; };
+
+		auto GetFovY( ) { return this->fovY; };
+		auto GetAspectRatio( ) { return this->aspectRatio; };
+		auto GetNearZ( ) { return this->nearZ; };
+		auto GetFarZ( ) { return this->farZ; };
+
+		virtual void OnDestroy() override;
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
+
+		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
 	};
 
 
@@ -51,16 +89,17 @@ namespace KG::Component
 		GeometryComponent* geometry = nullptr;
 		MaterialComponent* material = nullptr;
 		KG::Renderer::KGRenderJob* renderJob = nullptr;
-	public:
-		bool isVisible = true;
-		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
-		virtual void OnRender() override;
-		virtual void OnPreRender() override;
-		void SetVisible( bool visible );
+
 		void SetRenderJob( KG::Renderer::KGRenderJob* renderJob );
 		void RegisterTransform( TransformComponent* transform );
 		void RegisterMaterial( MaterialComponent* material );
 		void RegisterGeometry( GeometryComponent* geometry );
+	public:
+		bool isVisible = true;
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;
+		virtual void OnPreRender() override;
+		void SetVisible( bool visible );
 	};
 
 	class DLL GeometryComponent : public IRenderComponent
@@ -88,13 +127,12 @@ namespace KG::Component
 		void InitializeShader( const KG::Utill::HashString& shaderID );
 		unsigned GetMaterialIndex() const;
 	};
+	REGISTER_COMPONENT_ID( LightComponent );
+	REGISTER_COMPONENT_ID( CameraComponent );
+	REGISTER_COMPONENT_ID( Render3DComponent );
+	REGISTER_COMPONENT_ID( GeometryComponent );
+	REGISTER_COMPONENT_ID( MaterialComponent );
 
-	REGISTER_COMPONENT_ID( KG::Component::IRenderComponent );
-	REGISTER_COMPONENT_ID( KG::Component::CameraComponent );
-	REGISTER_COMPONENT_ID( KG::Component::Render3DComponent );
-	REGISTER_COMPONENT_ID( KG::Component::LightComponent );
-	REGISTER_COMPONENT_ID( KG::Component::MaterialComponent );
-	REGISTER_COMPONENT_ID( KG::Component::GeometryComponent );
 }
 //대충 텍스처 류는 전부 디스크립터 힙에 배치
 //메테리얼 뷰는 셰이더 올라갈때 묶음  CBV 2번

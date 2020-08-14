@@ -4,6 +4,7 @@
 namespace KG::Utill
 {
 	using hashType = unsigned;
+	struct HashString;
 
 #ifdef _DEBUG
 	using ID = const char const*;
@@ -100,7 +101,7 @@ constexpr KG::Utill::hashType operator""_hash(const char* s, size_t count)
 /// <param name="s">오버로딩할 문자열입니다.</param>
 /// <param name="count">문자열의 길이입니다. ( 자동으로 채워집니다. )</param>
 /// <returns> 디버그 모드에서는 std::string, 릴리즈 모드에서는 unsigned로 간주됩니다.</returns>
-constexpr auto operator""_id(const char* s, size_t count)
+constexpr auto operator""_id( const char* s, size_t count )
 {
-	return KG::Utill::GetID(s, count);
-}
+	return KG::Utill::GetID( s, count );
+};

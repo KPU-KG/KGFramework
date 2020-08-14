@@ -20,6 +20,10 @@ namespace KG::Renderer
 
 		vector<ID3D12Resource*> renderTargetBuffers;
 		ID3D12DescriptorHeap* rtvDescriptorHeap = nullptr;
+
+		vector<ID3D12Resource*> gbufferTargetBuffers;
+		ID3D12DescriptorHeap* gbufferDescriptorHeap = nullptr;
+
 		UINT rtvDescriptorSize = 0;
 
 		ID3D12Resource* depthStencilBuffer = nullptr;
@@ -52,6 +56,9 @@ namespace KG::Renderer
 		void CreateCommandQueueAndList();
 		void CreateRenderTargetView();
 		void CreateDepthStencilView();
+
+		void CreateGBuffer();
+		void CreateGBufferDescriptorHeaps();
 
 		void CreateGeneralRootSignature();
 

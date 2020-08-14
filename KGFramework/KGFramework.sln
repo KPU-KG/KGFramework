@@ -31,7 +31,15 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShaderCode", "ShaderCode", "{612EE3CC-1D6B-4E8F-8C11-7510E32215FA}"
 	ProjectSection(SolutionItems) = preProject
 		Resource\Resource\ShaderScript\DefaultShader.hlsl = Resource\Resource\ShaderScript\DefaultShader.hlsl
+		Resource\Resource\ShaderScript\DeferredDefaultShader.hlsl = Resource\Resource\ShaderScript\DeferredDefaultShader.hlsl
+		Resource\Resource\ShaderScript\DeferredDefine.hlsl = Resource\Resource\ShaderScript\DeferredDefine.hlsl
 		Resource\Resource\ShaderScript\GlobalDefine.hlsl = Resource\Resource\ShaderScript\GlobalDefine.hlsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{85EDFD5A-179A-491B-B1BC-1CD4CC6BDB20}"
+	ProjectSection(SolutionItems) = preProject
+		Doc\GBufferFormat.txt = Doc\GBufferFormat.txt
+		Doc\RootParameter.txt = Doc\RootParameter.txt
 	EndProjectSection
 EndProject
 Global
@@ -42,16 +50,16 @@ Global
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{4883D189-E844-4E93-A4F4-EBB922FFAB56}.Debug|x64.ActiveCfg = Debug|x64
 		{4883D189-E844-4E93-A4F4-EBB922FFAB56}.Debug|x64.Build.0 = Debug|x64
-		{4883D189-E844-4E93-A4F4-EBB922FFAB56}.Release|x64.ActiveCfg = Debug|x64
-		{4883D189-E844-4E93-A4F4-EBB922FFAB56}.Release|x64.Build.0 = Debug|x64
+		{4883D189-E844-4E93-A4F4-EBB922FFAB56}.Release|x64.ActiveCfg = Release|x64
+		{4883D189-E844-4E93-A4F4-EBB922FFAB56}.Release|x64.Build.0 = Release|x64
 		{499A312C-A98F-4419-A6F9-5FB246A425C0}.Debug|x64.ActiveCfg = Debug|x64
 		{499A312C-A98F-4419-A6F9-5FB246A425C0}.Debug|x64.Build.0 = Debug|x64
-		{499A312C-A98F-4419-A6F9-5FB246A425C0}.Release|x64.ActiveCfg = Debug|x64
-		{499A312C-A98F-4419-A6F9-5FB246A425C0}.Release|x64.Build.0 = Debug|x64
+		{499A312C-A98F-4419-A6F9-5FB246A425C0}.Release|x64.ActiveCfg = Release|x64
+		{499A312C-A98F-4419-A6F9-5FB246A425C0}.Release|x64.Build.0 = Release|x64
 		{3DEE2BEB-BB71-4E48-A50E-CA7725F3BA36}.Debug|x64.ActiveCfg = Debug|x64
 		{3DEE2BEB-BB71-4E48-A50E-CA7725F3BA36}.Debug|x64.Build.0 = Debug|x64
-		{3DEE2BEB-BB71-4E48-A50E-CA7725F3BA36}.Release|x64.ActiveCfg = Debug|x64
-		{3DEE2BEB-BB71-4E48-A50E-CA7725F3BA36}.Release|x64.Build.0 = Debug|x64
+		{3DEE2BEB-BB71-4E48-A50E-CA7725F3BA36}.Release|x64.ActiveCfg = Release|x64
+		{3DEE2BEB-BB71-4E48-A50E-CA7725F3BA36}.Release|x64.Build.0 = Release|x64
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

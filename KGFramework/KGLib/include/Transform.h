@@ -7,7 +7,7 @@ namespace KG::Component
 {
 	using KG::Core::IHierarchy;
 	using namespace DirectX;
-	class TransformComponent : public IHierarchy<TransformComponent>, public IComponent	
+	class TransformComponent : public IHierarchy<TransformComponent>, public IComponent
 	{
 		mutable bool isDirtyGlobal = true; // 부모 상태 변화
 		mutable bool isDirtyLocal = true; // 본인 상태 변화
@@ -16,28 +16,41 @@ namespace KG::Component
 		mutable XMFLOAT4X4 globalWorldMatrix;
 		mutable XMFLOAT4X4 localWorldMatrix;
 	public:
-		XMFLOAT3 position;
-		XMFLOAT4 rotation; //사원수
-		XMFLOAT3 scale;
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) 
+		{
+			IComponent::OnCreate( gameObject );
+			position = XMFLOAT3( 0, 0, 0 );
+			rotation = XMFLOAT4( 0, 0, 0, 1 ); //사원수
+			scale = XMFLOAT3( 1, 1, 1 );
+		};
+
+		XMFLOAT3 position = XMFLOAT3( 0, 0, 0 );
+		XMFLOAT4 rotation = XMFLOAT4( 0, 0, 0, 1 ); //사원수
+		XMFLOAT3 scale = XMFLOAT3( 1, 1, 1);
 
 		//Position
 		XMFLOAT3 GetPosition() const
 		{
 			return this->position;
 		}
-		void SetPosition(const XMFLOAT3& position)
+		XMFLOAT3 GetWorldPosition() const
+		{
+			const auto& worldMatrix = this->GetGlobalWorldMatrix();
+			return XMFLOAT3( worldMatrix._41 / worldMatrix._44, worldMatrix._42 / worldMatrix._44, worldMatrix._43 / worldMatrix._44 );
+		}
+		void SetPosition( const XMFLOAT3& position )
 		{
 			this->position = position;
 			this->isDirtyLocal = true;
 		}
-		void XM_CALLCONV SetPosition(const FXMVECTOR& position)
+		void XM_CALLCONV SetPosition( const FXMVECTOR& position )
 		{
-			XMStoreFloat3(&this->position, position);
+			XMStoreFloat3( &this->position, position );
 			this->isDirtyLocal = true;
 		}
-		void SetPosition(float x, float y, float z)
+		void SetPosition( float x, float y, float z )
 		{
-			this->SetPosition(XMFLOAT3(x, y, z));
+			this->SetPosition( XMFLOAT3( x, y, z ) );
 		}
 
 		//Quaternion
@@ -45,34 +58,34 @@ namespace KG::Component
 		{
 			return this->rotation;
 		}
-		void XM_CALLCONV SetRotation(const FXMVECTOR& rotation)
+		void XM_CALLCONV SetRotation( const FXMVECTOR& rotation )
 		{
-			XMStoreFloat4(&this->rotation, rotation);
+			XMStoreFloat4( &this->rotation, rotation );
 			this->isDirtyLocal = true;
 		}
-		void SetRotation(const XMFLOAT4& rotation)
+		void SetRotation( const XMFLOAT4& rotation )
 		{
 			this->rotation = rotation;
 			this->isDirtyLocal = true;
 		}
-		void SetRotation(float x, float y, float z, float w)
+		void SetRotation( float x, float y, float z, float w )
 		{
-			this->SetRotation(XMFLOAT4(x, y, z, w));
+			this->SetRotation( XMFLOAT4( x, y, z, w ) );
 		}
 
 		//EulerAngle
 		XMFLOAT3 GetEulerAngle() const
 		{
-			return KG::Math::Quaternion::ToEuler(this->rotation);
+			return KG::Math::Quaternion::ToEuler( this->rotation );
 		}
-		void SetEulerAngle(const XMFLOAT3& angle)
+		void SetEulerAngle( const XMFLOAT3& angle )
 		{
-			auto angleQuat = XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3(&angle));
-			this->SetRotation(angleQuat);
+			auto angleQuat = XMQuaternionRotationRollPitchYawFromVector( XMLoadFloat3( &angle ) );
+			this->SetRotation( angleQuat );
 		}
-		void SetEulerAngle(float x, float y, float z)
+		void SetEulerAngle( float x, float y, float z )
 		{
-			this->SetEulerAngle(XMFLOAT3(x, y, z));
+			this->SetEulerAngle( XMFLOAT3( x, y, z ) );
 		}
 
 		//Scale
@@ -80,25 +93,25 @@ namespace KG::Component
 		{
 			return this->scale;
 		}
-		void SetScale(const XMFLOAT3& scale)
+		void SetScale( const XMFLOAT3& scale )
 		{
 			this->scale = scale;
 			this->isDirtyLocal = true;
 		}
-		void SetScale(float x, float y, float z)
+		void SetScale( float x, float y, float z )
 		{
-			this->SetScale(XMFLOAT3(x, y, z));
+			this->SetScale( XMFLOAT3( x, y, z ) );
 		}
 
-		void Translate(const XMFLOAT3& move)
+		void Translate( const XMFLOAT3& move )
 		{
 			using namespace KG::Math;
-			this->SetPosition(Vector3::Add(this->position, move));
+			this->SetPosition( Vector3::Add( this->position, move ) );
 		}
-		void Translate(float x, float y, float z)
+		void Translate( float x, float y, float z )
 		{
 			using namespace KG::Math;
-			this->SetPosition(Vector3::Add(this->position, XMFLOAT3(x, y, z)));
+			this->SetPosition( Vector3::Add( this->position, XMFLOAT3( x, y, z ) ) );
 		}
 
 
@@ -106,38 +119,38 @@ namespace KG::Component
 		{
 			this->isDirtyLocal = true;
 		}
-		void TurnOnGlobalDirtyFlag(bool onTree = true)
+		void TurnOnGlobalDirtyFlag( bool onTree = true )
 		{
 			this->isDirtyGlobal = true;
-			if (!onTree)
+			if ( !onTree )
 			{
 				this->FunctionChild(
-					[](TransformComponent* ptr) 
+					[]( TransformComponent* ptr )
 					{
-						ptr->TurnOnGlobalDirtyFlag(false);
+						ptr->TurnOnGlobalDirtyFlag( false );
 					}
 				);
 			}
 		}
 
-		void XM_CALLCONV Rotate(const FXMVECTOR& quaternion)
+		void XM_CALLCONV Rotate( const FXMVECTOR& quaternion )
 		{
-			auto srcQuatVector = XMLoadFloat4(&this->rotation);
-			auto result = XMQuaternionMultiply(srcQuatVector, quaternion);
-			XMStoreFloat4(&this->rotation, result);
+			auto srcQuatVector = XMLoadFloat4( &this->rotation );
+			auto result = XMQuaternionMultiply( srcQuatVector, quaternion );
+			XMStoreFloat4( &this->rotation, result );
 			this->isDirtyLocal = true;
 		}
-		void Rotate(const XMFLOAT4& quaternion)
+		void Rotate( const XMFLOAT4& quaternion )
 		{
-			this->Rotate(XMLoadFloat4(&quaternion));
+			this->Rotate( XMLoadFloat4( &quaternion ) );
 		}
-		void RotateEuler(XMFLOAT3 euler)
+		void RotateEuler( XMFLOAT3 euler )
 		{
-			this->Rotate(XMQuaternionRotationRollPitchYawFromVector(XMLoadFloat3(&euler)));
+			this->Rotate( XMQuaternionRotationRollPitchYawFromVector( XMLoadFloat3( &euler ) ) );
 		}
-		void RotateEuler(float x, float y, float z)
+		void RotateEuler( float x, float y, float z )
 		{
-			this->Rotate(XMQuaternionRotationRollPitchYaw(x, y, z));
+			this->Rotate( XMQuaternionRotationRollPitchYaw( XMConvertToRadians(x), XMConvertToRadians(y), XMConvertToRadians(z) ) );
 		}
 
 		void Update()
@@ -147,14 +160,14 @@ namespace KG::Component
 
 		const XMFLOAT4X4& GetLocalWorldMatrix() const
 		{
-			if (this->isDirtyLocal&& !isUseRawMatrix)
+			if ( this->isDirtyLocal && !isUseRawMatrix )
 			{
-				auto rotMat = XMMatrixRotationQuaternion(XMLoadFloat4(&this->rotation));
-				auto scaleMat = XMMatrixScalingFromVector(XMLoadFloat3(&this->scale));
-				auto tralationMat = XMMatrixTranslationFromVector(XMLoadFloat3(&this->position));
+				auto rotMat = XMMatrixRotationQuaternion( XMLoadFloat4( &this->rotation ) );
+				auto scaleMat = XMMatrixScalingFromVector( XMLoadFloat3( &this->scale ) );
+				auto tralationMat = XMMatrixTranslationFromVector( XMLoadFloat3( &this->position ) );
 
 				//최적화 필요
-				XMStoreFloat4x4(&this->localWorldMatrix, scaleMat * rotMat * tralationMat);
+				XMStoreFloat4x4( &this->localWorldMatrix, scaleMat * rotMat * tralationMat );
 
 				this->isDirtyLocal = false;
 			}
@@ -162,12 +175,19 @@ namespace KG::Component
 		}
 		const XMFLOAT4X4& GetGlobalWorldMatrix() const
 		{
-			if (this->isDirtyGlobal)
+			if ( this->isDirtyGlobal )
 			{
-				auto parentMatrix = XMLoadFloat4x4(&this->parent->GetGlobalWorldMatrix());
-				auto thisMatrix = XMLoadFloat4x4(&this->GetLocalWorldMatrix());
-				XMStoreFloat4x4(&this->globalWorldMatrix, parentMatrix * thisMatrix);
-
+				if ( this->parent )
+				{
+					auto parentMatrix = XMLoadFloat4x4( &this->parent->GetGlobalWorldMatrix() );
+					auto thisMatrix = XMLoadFloat4x4( &this->GetLocalWorldMatrix() );
+					XMStoreFloat4x4( &this->globalWorldMatrix, parentMatrix * thisMatrix );
+				}
+				else
+				{
+					auto thisMatrix = XMLoadFloat4x4( &this->GetLocalWorldMatrix() );
+					XMStoreFloat4x4( &this->globalWorldMatrix, thisMatrix );
+				}
 				this->isDirtyGlobal = false;
 			}
 			return this->globalWorldMatrix;
@@ -175,27 +195,27 @@ namespace KG::Component
 
 		XMFLOAT3 GetLook() const
 		{
-			if (isUseRawMatrix)
+			if ( isUseRawMatrix )
 			{
 				return XMFLOAT3(
 					this->localWorldMatrix._31,
 					this->localWorldMatrix._32,
 					this->localWorldMatrix._33
-					);
+				);
 			}
-			else 
+			else
 			{
-				auto p = XMLoadFloat3(&KG::Math::look);
-				auto q = XMLoadFloat4(&this->rotation);
-				auto qc = XMQuaternionConjugate(q);
-				auto r = q * p * qc;
+				auto p = XMLoadFloat3( &KG::Math::look );
+				auto q = XMLoadFloat4( &this->rotation );
+				auto r = XMVector3Rotate( p, q );
 				XMFLOAT3 result;
-				XMStoreFloat3(&result, r);
+				XMStoreFloat3( &result, r );
+				return result;
 			}
 		}
 		XMFLOAT3 GetUp() const
 		{
-			if (isUseRawMatrix)
+			if ( isUseRawMatrix )
 			{
 				return XMFLOAT3(
 					this->localWorldMatrix._21,
@@ -205,17 +225,17 @@ namespace KG::Component
 			}
 			else
 			{
-				auto p = XMLoadFloat3(&KG::Math::up);
-				auto q = XMLoadFloat4(&this->rotation);
-				auto qc = XMQuaternionConjugate(q);
-				auto r = q * p * qc;
+				auto p = XMLoadFloat3( &KG::Math::up );
+				auto q = XMLoadFloat4( &this->rotation );
+				auto r = XMVector3Rotate( p, q );
 				XMFLOAT3 result;
-				XMStoreFloat3(&result, r);
+				XMStoreFloat3( &result, r );
+				return result;
 			}
 		}
 		XMFLOAT3 GetRight() const
 		{
-			if (isUseRawMatrix)
+			if ( isUseRawMatrix )
 			{
 				return XMFLOAT3(
 					this->localWorldMatrix._11,
@@ -225,13 +245,34 @@ namespace KG::Component
 			}
 			else
 			{
-				auto p = XMLoadFloat3(&KG::Math::right);
-				auto q = XMLoadFloat4(&this->rotation);
-				auto qc = XMQuaternionConjugate(q);
-				auto r = q * p * qc;
+				auto p = XMLoadFloat3( &KG::Math::right );
+				auto q = XMLoadFloat4( &this->rotation );
+				auto r = XMVector3Rotate( p, q );
 				XMFLOAT3 result;
-				XMStoreFloat3(&result, r);
+				XMStoreFloat3( &result, r );
+				return result;
 			}
+		}
+		XMFLOAT3 GlobalTransformNormal( const XMFLOAT3& normal ) const
+		{
+			auto p = XMLoadFloat3( &normal );
+			auto m = XMLoadFloat4x4( &this->GetGlobalWorldMatrix() );
+			auto r = XMVector3TransformNormal( p, m );
+			XMFLOAT3 result;
+			XMStoreFloat3( &result, r );
+			return result;
+		}
+		XMFLOAT3 GetWorldLook() const
+		{
+			return GlobalTransformNormal( Math::look );
+		}
+		XMFLOAT3 GetWorldUp() const
+		{
+			return GlobalTransformNormal( Math::up );
+		}
+		XMFLOAT3 GetWorldRight() const
+		{
+			return GlobalTransformNormal( Math::right );
 		}
 
 	};

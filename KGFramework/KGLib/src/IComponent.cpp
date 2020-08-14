@@ -28,6 +28,3 @@ void KG::Component::IComponent::OnDestroy()
 {
 	this->systemInfo.isUsing = true;
 }
-
-REGISTER_COMPONENT_ID(IComponent);
-

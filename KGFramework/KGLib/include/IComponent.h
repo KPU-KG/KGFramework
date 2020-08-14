@@ -6,11 +6,13 @@ namespace KG::Core
 };
 namespace KG::Component
 {
-	template<typename Ty>
+
+	template <class Ty> 
 	struct ComponentID;
 
 #define REGISTER_COMPONENT_ID(X) template <> struct KG::Component::ComponentID<X> \
-		{ inline static KG::Utill::ID id =  #X##_id; }
+		{ inline static constexpr KG::Utill::_ID id() {return #X##_id;}\
+		  inline static constexpr const char* name() {return #X;} }
 
 	struct SystemInformation
 	{
@@ -36,10 +38,12 @@ namespace KG::Component
 		virtual void OnDisactive() {};
 		virtual void OnDestroy();
 	public:
-		virtual void OnCreate(KG::Core::GameObject* gameObject) { this->gameObject = gameObject; };
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) { this->gameObject = gameObject; };
 		virtual void Update(float timeElapsed) {};
+		virtual void Destroy() { this->OnDestroy(); };
 		void PostUse() { this->systemInfo.isUsing = true; };
 		bool isUsing() { return this->systemInfo.isUsing == true; };
 
 	};
+	REGISTER_COMPONENT_ID( IComponent );
 }

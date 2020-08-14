@@ -4,6 +4,7 @@
 #include <type_traits>
 #include <assert.h>
 #include "hash.h"
+#include "Debug.h"
 #include "IComponent.h"
 namespace KG::Component
 {
@@ -12,18 +13,18 @@ namespace KG::Component
 		std::map<KG::Utill::HashString, IComponent*> container;
 	public:
 		template <class Ty>
-		void AddComponent(Ty* ptr)
+		void AddComponent( Ty* ptr )
 		{
-			auto [it, check] = this->container.insert(
-				std::make_pair(KG::Utill::HashString(ComponentID<Ty>::id), ptr)
+			auto [it, already] = this->container.insert(
+				std::make_pair( KG::Utill::HashString( ComponentID<Ty>::id() ), ptr )
 			);
-			assert(check);
+			DebugAssertion( already , ComponentID<Ty>::name() << L"는 이미 게임오브젝트에 포함되어있습니다. " );
 		}
 
 		template <class Ty>
 		Ty* GetComponent() const
 		{
-			auto it = this->container.find(KG::Utill::HashString(ComponentID<Ty>::id));
+			auto it = this->container.find( KG::Utill::HashString( ComponentID<Ty>::id() ) );
 			return (it != this->container.end()) ? static_cast<Ty*>(it->second) : nullptr;
 		}
 

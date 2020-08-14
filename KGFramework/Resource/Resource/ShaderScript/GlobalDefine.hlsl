@@ -10,8 +10,8 @@ cbuffer CameraData : register(b0)
 	float4x4 view;
 	float4x4 projection;
 	float4x4 viewProjection;
-	float4 cameraWorldPosition;
-	float4 look;
+	float3 cameraWorldPosition;
+	float3 look;
 };
 cbuffer PassData : register(b1)
 {

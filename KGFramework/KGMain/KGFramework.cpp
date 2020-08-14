@@ -63,12 +63,29 @@ bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting&
 void KG::GameFramework::OnTestInit()
 {
 	static KG::Core::GameObject testGameObject;
-	auto mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( "default"_id ) );
-	auto geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "cube"_id ) );
-	auto ren = this->renderer->GetNewRenderComponent();
-	testGameObject.AddComponent( mat );
-	testGameObject.AddComponent( geo );
-	testGameObject.AddComponent( ren );
+	static KG::Core::GameObject testCameraObject;
+
+	{
+		auto* tran = this->system->transformSystem.GetNewComponent();
+		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( "deferredDefault"_id ) );
+		auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "sniper"_id ) );
+		auto* ren = this->renderer->GetNewRenderComponent();
+		testGameObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
+		testGameObject.AddComponent( mat );
+		testGameObject.AddComponent( geo );
+		testGameObject.AddComponent( ren );
+		testGameObject.GetComponent<KG::Component::TransformComponent>()->Translate( 0, 0, 0.0f );
+		testGameObject.GetComponent<KG::Component::TransformComponent>()->RotateEuler( 0.0f, 90.0f, 0.0f );
+
+	}
+
+	{
+		auto* tran = this->system->transformSystem.GetNewComponent();
+		auto* cam = this->renderer->GetNewCameraComponent();
+		testCameraObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
+		testCameraObject.AddComponent( cam );
+		testCameraObject.GetComponent<KG::Component::TransformComponent>()->Translate( 0, 0, -100.0f );
+	}
 }
 
 void KG::GameFramework::OnProcess()

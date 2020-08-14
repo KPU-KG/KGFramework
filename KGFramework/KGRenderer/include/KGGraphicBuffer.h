@@ -57,7 +57,7 @@ namespace KG::Renderer
 		}
 		size_t GetSize() const
 		{
-			return this->buffer.bufferSize;
+			return this->buffer.bufferSize / sizeof(Ty);
 		}
 	};
 
