@@ -17,7 +17,7 @@ namespace KG::Core
 		template <class Ty>
 		auto AddComponent(Ty* cmp) 
 		{
-			cmp->OnCreate( this );
+			cmp->Create( this );
 			return this->components.AddComponent<Ty>(cmp);
 		}
 	};

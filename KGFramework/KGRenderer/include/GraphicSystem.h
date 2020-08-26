@@ -38,4 +38,14 @@ namespace KG::System
 		virtual void OnPostUpdate( float elapsedTime ) override;
 		virtual void OnPreRender() override;
 	};
+
+	struct LightSystem : public IComponentSystem<LightComponent>
+	{
+	protected:
+		virtual void OnGetNewComponent( LightComponent* target ) override;
+	public:
+		virtual void OnUpdate( float elapsedTime ) override;
+		virtual void OnPostUpdate( float elapsedTime ) override;
+		virtual void OnPreRender() override;
+	};
 }

@@ -1,7 +1,11 @@
 #pragma once
 #include <d3d12.h>
 #include <vector>
+#include <deque>
+#include <queue>
+#include <set>
 #include <tuple>
+#include <functional>
 #include "KGGraphicBuffer.h"
 namespace KG::Renderer
 {
@@ -15,9 +19,9 @@ namespace KG::Renderer
 		int objectSize = 0;
 		int visibleSize = 0;
 		int updateCount = 0;
-		BufferPool<ObjectData>* bufferPool;
+		BufferPool<ObjectData>* bufferPool = nullptr;
 		PooledBuffer<ObjectData>* objectBuffer = nullptr;
-		
+
 		bool CheckBufferFull() const;
 		void GetNewBuffer();
 
@@ -35,21 +39,49 @@ namespace KG::Renderer
 		static bool OrderCompare( const KGRenderJob& a, const KGRenderJob& b );
 	};
 
+	struct KGRenderJobOrderComparer
+	{
+		bool operator()( const KGRenderJob* a, const KGRenderJob* b ) const
+		{
+			return KGRenderJob::OrderCompare( *a, *b );
+		}
+	};
+
 	class KGRenderEngine
 	{
 		Shader* currentShader = nullptr;
 		Geometry* currentGeometry = nullptr;
-		bool renderJobsDirty = false;
-		std::vector<KGRenderJob> renderJobs; // 일단 제거 알고리즘은 없음 / 한번 생성된 조합이면 0이 됬더라도 다시 생길 가능성이 있다고 생각
+
+		using PassJobs = std::set<KGRenderJob*, KGRenderJobOrderComparer>;
+		std::deque<KGRenderJob> pool;
+		std::vector<PassJobs> pass;
+
+		using PassEnterFunction = std::function<void( ID3D12GraphicsCommandList*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE )>;
+		PassEnterFunction OnPassEnterEvent[4];
+		PassEnterFunction OnRenderEndEvent;
+
 		BufferPool<ObjectData> bufferPool; // 이거 추후에 버디 얼로케이터 같은 걸로 바꿔야 함
 
 		KGRenderJob& CreateRenderJob( const KGRenderJob& job );
 	public:
 		KGRenderEngine( ID3D12Device* device );
 		KGRenderJob* GetRenderJob( Shader* shader, Geometry* geometry );
-		void Render( ID3D12GraphicsCommandList* cmdList );
+		void Render( ID3D12GraphicsCommandList* cmdList, ID3D12Resource* rt, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle );
 		void ClearJobs();
-		void SortJobs();
 		void ClearUpdateCount();
+		const PassEnterFunction& GetPassEnterEventFunction( size_t pass )
+		{
+			return this->OnPassEnterEvent[pass];
+		}
+
+		void SetPassEnterEventFunction( size_t pass, const PassEnterFunction& function )
+		{
+			this->OnPassEnterEvent[pass] = function;
+		}
+
+		void SetRenderEndEventFunction( const PassEnterFunction& function )
+		{
+			OnRenderEndEvent = function;
+		}
 	};
 }

@@ -1,11 +1,11 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ShaderSet xmlns="KGResource.xsd">
-    <GraphicShaderSet id="default" shaderType="opaque" enableBackfaceCulling="0" renderPriority="5000" hash_id="2341425516">
-        <VertexShader fileDir="Resource/ShaderScript/DefaultShader.hlsl" entry="DefaultVertexFuction" type="vs_5_1"/>
-        <PixelShader fileDir="Resource/ShaderScript/DefaultShader.hlsl" entry="DefaultPixelFuction" type="ps_5_1"/>
-    </GraphicShaderSet>
-    <GraphicShaderSet id="deferredDefault" shaderType="opaque" enableBackfaceCulling="0" renderPriority="5000" hash_id="1156521651">
+    <GraphicShaderSet id="deferredDefault" shaderType="opaque" enableBackfaceCulling="true" enableDepthCliping="true" blendOp="opaque" renderPriority="5000" hash_id="1156521651">
         <VertexShader fileDir="Resource/ShaderScript/DeferredDefaultShader.hlsl" entry="DefaultVertexFuction" type="vs_5_1"/>
         <PixelShader fileDir="Resource/ShaderScript/DeferredDefaultShader.hlsl" entry="DefaultPixelFuction" type="ps_5_1"/>
+    </GraphicShaderSet>
+    <GraphicShaderSet id="directionalLight" shaderType="lightPass" enableBackfaceCulling="false" enableDepthCliping="false" blendOp="lightPass" renderPriority="5000" hash_id="3219771761">
+        <VertexShader fileDir="Resource/ShaderScript/lightShader.hlsl" entry="DirectionalLightVertexFuction" type="vs_5_1"/>
+        <PixelShader fileDir="Resource/ShaderScript/lightShader.hlsl" entry="DirectionalLightPixelFuction" type="ps_5_1"/>
     </GraphicShaderSet>
 </ShaderSet>

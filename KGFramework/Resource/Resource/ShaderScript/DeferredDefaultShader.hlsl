@@ -1,5 +1,13 @@
 #include "GlobalDefine.hlsl"
 #include "DeferredDefine.hlsl"
+#include "GBufferDefine.hlsl"
+
+struct MaterialData
+{
+    float4 color;
+};
+
+ConstantBuffer<MaterialData> materialData : register(b0, space1);
 
 struct VSOutput
 {
@@ -12,8 +20,9 @@ struct VSOutput
 VSOutput DefaultVertexFuction(VertexData input, uint InstanceID : SV_InstanceID)
 {
     VSOutput result;
-    
+    //float4x4 vp = viewProjection;
     float4x4 wvp = mul(objectInfo[InstanceID].world, mul(view, projection));
+    //float4x4 wvp = mul(objectInfo[InstanceID].world, mul(view, projection));
     result.position = mul(float4(input.position, 1), wvp);
     result.worldPosition = mul(float4(input.position, 1), objectInfo[InstanceID].world);
     result.worldNormal = mul(float4(input.normal, 0), objectInfo[InstanceID].world);
@@ -24,19 +33,21 @@ VSOutput DefaultVertexFuction(VertexData input, uint InstanceID : SV_InstanceID)
 GBufferOut DefaultPixelFuction(VSOutput input)
 {
     PixelResult result;
+    result.albedo = float3(1, 1, 1);
+    result.reserve0 = 1.0f;
     
-    result.diffuse = float3(1, 0, 0);
-    result.reserve0 = 1;
+    result.specular = 0.0f;
+    result.metailic = 1.0f;
+    result.roughness = 0.25f;
+    result.emssion = 0.0f;
     
-    result.specular = float3(0, 1, 0);
-    result.roughness = 1;
+    result.wNormal = normalize(input.worldNormal.xyz);
+    result.reflection = 1.0f;
     
-    result.wNormal = normalize(input.worldNormal).xyz;
-    result.reflection = 1;
+    result.light = float3(1, 0, 0);
+    result.reserve1 = 1.0f;
     
-    result.light = float3(0, 0, 0);
-    result.emission = 1;
-    
-    return PixelEncode(result);
+    GBufferOut bufferResult = PixelEncode(result);
+    return bufferResult;
 }
 

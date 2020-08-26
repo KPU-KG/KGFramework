@@ -52,7 +52,8 @@ void KG::Utill::ModelData::processNode(aiNode* node, const aiScene* scene)
 void KG::Utill::ModelData::LoadModel(const std::string& path)
 {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_GenNormals);
+	//const aiScene* scene = importer.ReadFile( path, aiProcess_Triangulate | aiProcess_FlipUVs );
+	const aiScene* scene = importer.ReadFile( path, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality );
 	//flag = process http://assimp.sourceforge.net/lib_html/postprocess_8h.html
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)

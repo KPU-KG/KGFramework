@@ -2,11 +2,13 @@
 #include <dxgi1_4.h>
 #include <d3d12.h>
 #include <vector>
+#include <functional>
 #include "KGRenderer.h"
 #include "KGMacroUtill.h"
 namespace KG::Renderer
 {
 	class KGRenderEngine;
+	class DescriptorHeapManager;
 	using std::vector;
 	class KGDXRenderer : public IKGRenderer
 	{
@@ -23,8 +25,11 @@ namespace KG::Renderer
 
 		vector<ID3D12Resource*> gbufferTargetBuffers;
 		ID3D12DescriptorHeap* gbufferDescriptorHeap = nullptr;
+		D3D12_CPU_DESCRIPTOR_HANDLE gbufferDescritorHandles[4];
+		D3D12_RESOURCE_BARRIER gbufferResourceBarrierCache[4];
 
 		UINT rtvDescriptorSize = 0;
+		UINT srvDescriptorSize = 0;
 
 		ID3D12Resource* depthStencilBuffer = nullptr;
 		ID3D12DescriptorHeap* dsvDescriptorHeap = nullptr;
@@ -45,6 +50,7 @@ namespace KG::Renderer
 		struct GraphicSystems;
 		std::unique_ptr<GraphicSystems> graphicSystems = nullptr;
 		std::unique_ptr<KGRenderEngine> renderEngine = nullptr;
+		std::unique_ptr<DescriptorHeapManager> descriptorHeapManager = nullptr;
 		static inline KGDXRenderer* instance = nullptr;
 	private:
 		void QueryHardwareFeature();
@@ -53,6 +59,7 @@ namespace KG::Renderer
 		void CreateSwapChain();
 		void CreateRtvDescriptorHeaps();
 		void CreateDsvDescriptorHeaps();
+		void CreateSRVDescriptorHeaps();
 		void CreateCommandQueueAndList();
 		void CreateRenderTargetView();
 		void CreateDepthStencilView();
@@ -62,7 +69,23 @@ namespace KG::Renderer
 
 		void CreateGeneralRootSignature();
 
+		void CreateGbufferSRV();
+		
+		void RegisterPassEnterFunction();
+
 		void MoveToNextFrame();
+
+		D3D12_RESOURCE_BARRIER* GetGBufferTrasitionBarriers( D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after);
+
+		D3D12_RESOURCE_BARRIER* GetLightBufferTrasitionBarriers
+		( D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after,
+			D3D12_RESOURCE_STATES lightBefore, D3D12_RESOURCE_STATES lightAfter );
+
+		void ClearGBuffer( ID3D12GraphicsCommandList* cmdList, float r, float g, float b, float a );
+
+		D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentRenderTargetHandle() const;
+		D3D12_CPU_DESCRIPTOR_HANDLE& GetCurrentDepthStencilHandle() const;
+		ID3D12Resource* GetCurrentRenderTarget() const;
 	public:
 		KGDXRenderer();
 		~KGDXRenderer();
@@ -75,7 +98,7 @@ namespace KG::Renderer
 
 		virtual void Initialize() override;
 		virtual void Render() override;
-		virtual void Update() override;
+		virtual void Update(float elapsedTime) override;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) override;
 
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() override;

@@ -48,7 +48,7 @@ namespace KG::Renderer
 		}
 		virtual void Initialize() = 0;
 		virtual void Render() = 0;
-		virtual void Update() = 0;
+		virtual void Update(float elaspedTime) = 0;
 		virtual void OnChangeSettings( const RendererSetting& prev, const RendererSetting& next ) = 0;
 
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() = 0;

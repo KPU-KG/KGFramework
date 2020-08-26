@@ -60,3 +60,23 @@ void KG::System::CameraSystem::OnPostUpdate( float elapsedTime )
 void KG::System::CameraSystem::OnPreRender()
 {
 }
+
+void KG::System::LightSystem::OnGetNewComponent( LightComponent* target )
+{
+}
+
+void KG::System::LightSystem::OnUpdate( float elapsedTime )
+{
+}
+
+void KG::System::LightSystem::OnPostUpdate( float elapsedTime )
+{
+}
+
+void KG::System::LightSystem::OnPreRender()
+{
+	for ( auto& com : this->pool )
+	{
+		com.OnPreRender();
+	}
+}

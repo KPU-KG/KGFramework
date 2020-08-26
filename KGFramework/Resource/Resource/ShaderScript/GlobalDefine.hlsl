@@ -10,22 +10,20 @@ cbuffer CameraData : register(b0)
 	float4x4 view;
 	float4x4 projection;
 	float4x4 viewProjection;
-	float3 cameraWorldPosition;
-	float3 look;
-};
-cbuffer PassData : register(b1)
-{
 	
-}
-
-struct InstanceData
-{
-	float4x4 world;
-	uint materialIndex;
+    float4x4 inverseView;
+    float4x4 inverseProjection;
+    float4x4 inverseViewProjection;
+	
+	float3 cameraWorldPosition;
+    float1 pad0;
+	float3 look;
+    float1 pad1;
 };
 
-StructuredBuffer<InstanceData> objectInfo : register(t0);
-
-Texture2D<float4> shaderTexture1[] : register(t0, space1);
-
-Texture2D<float4> shaderTexture2[] : register(t0, space2);
+SamplerState gsamPointWrap : register(s0);
+SamplerState gsamPointClamp : register(s1);
+SamplerState gsamLinearWrap : register(s2);
+SamplerState gsamLinearClamp : register(s3);
+SamplerState gsamAnisotoropicWrap : register(s4);
+SamplerState gsamAnisotoropicClamp : register(s5);

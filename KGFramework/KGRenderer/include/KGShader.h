@@ -3,6 +3,7 @@
 #include <memory>
 #include "MathHelper.h"
 #include "ResourceMetadata.h"
+#include "DynamicConstantBufferManager.h"
 namespace KG::Renderer
 {
 	using namespace DirectX;
@@ -19,8 +20,10 @@ namespace KG::Renderer
 
 	enum ShaderType
 	{
-		Opaque,
-		Transparent
+		Opaque = 0,
+		Transparent = 2,
+		LightPass = 1,
+		PostProcess = 3
 	};
 
 	constexpr const char* ConvertToShaderString(ShaderTarget target)
@@ -55,6 +58,9 @@ namespace KG::Renderer
 		ID3D12PipelineState* wireframePso = nullptr;
 		unsigned renderPriority = 0;
 		ShaderType shaderType = ShaderType::Opaque;
+		std::unique_ptr<Resource::DynamicConstantBufferManager> materialBuffer;
+
+		void CreateMaterialBuffer(const KG::Resource::Metadata::ShaderSetData& data );
 	public:
 		Shader( const KG::Resource::Metadata::ShaderSetData& data );
 		~Shader();

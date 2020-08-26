@@ -37,12 +37,17 @@ namespace KG::Component
 		virtual void OnActive() {};
 		virtual void OnDisactive() {};
 		virtual void OnDestroy();
+		virtual void OnCreate( KG::Core::GameObject* gameObject ){};
 	public:
-		virtual void OnCreate( KG::Core::GameObject* gameObject ) { this->gameObject = gameObject; };
+		void Create( KG::Core::GameObject* gameObject ) {
+			this->gameObject = gameObject;
+			PostUse(); 
+			this->OnCreate( gameObject );
+		}
 		virtual void Update(float timeElapsed) {};
 		virtual void Destroy() { this->OnDestroy(); };
 		void PostUse() { this->systemInfo.isUsing = true; };
-		bool isUsing() { return this->systemInfo.isUsing == true; };
+		bool isUsing() const { return this->systemInfo.isUsing == true; };
 
 	};
 	REGISTER_COMPONENT_ID( IComponent );

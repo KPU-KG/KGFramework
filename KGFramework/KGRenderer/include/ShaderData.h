@@ -5,7 +5,22 @@ namespace KG::Renderer
 	using namespace DirectX;
 	struct ObjectData
 	{
-		XMFLOAT4X4 world;
-		unsigned materialIndex;
+		union
+		{
+			struct object
+			{
+				XMFLOAT4X4 world;
+				unsigned materialIndex;
+			} object;
+			struct light
+			{
+				XMFLOAT3 Strength;
+				float FalloffStart;
+				XMFLOAT3 Direction;
+				float FalloffEnd;
+				XMFLOAT3 Position;
+				float SpotPower;
+			} light;
+		};
 	};
 };

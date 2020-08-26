@@ -96,7 +96,7 @@ ID3D12Resource* KG::Renderer::CreateBufferResource(ID3D12Device* pd3dDevice, ID3
 
 }
 
-ID3D12Resource* KG::Renderer::CreateRenderTargetResource( ID3D12Device* pd3dDevice, size_t width, size_t height )
+ID3D12Resource* KG::Renderer::CreateRenderTargetResource( ID3D12Device* pd3dDevice, size_t width, size_t height, DXGI_FORMAT format )
 {
 	ID3D12Resource* pd3dBuffer = nullptr;
 
@@ -116,21 +116,21 @@ ID3D12Resource* KG::Renderer::CreateRenderTargetResource( ID3D12Device* pd3dDevi
 	d3dResourceDesc.Height = height;
 	d3dResourceDesc.DepthOrArraySize = 1;
 	d3dResourceDesc.MipLevels = 1;
-	d3dResourceDesc.Format = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
+	d3dResourceDesc.Format = format;
 	d3dResourceDesc.SampleDesc.Count = 1;
 	d3dResourceDesc.SampleDesc.Quality = 0;
 	d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE | D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET ;
+	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE | D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
-	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE;
+	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
 	//D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 	D3D12_CLEAR_VALUE clearValue;
 	clearValue.Color[0] = 0.0f;
 	clearValue.Color[1] = 0.0f;
 	clearValue.Color[2] = 0.0f;
-	clearValue.Color[3] = 0.0f;
-	clearValue.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
+	clearValue.Color[3] = 1.0f;
+	clearValue.Format = format;
 
 	HRESULT hResult = pd3dDevice->CreateCommittedResource(
 		&d3dHeapPropertiesDesc, D3D12_HEAP_FLAG_NONE, &d3dResourceDesc,

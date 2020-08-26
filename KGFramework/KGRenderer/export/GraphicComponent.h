@@ -1,6 +1,7 @@
 #pragma once
 #include <d3d12.h>
 #include <vector>
+#include <DirectXMath.h>
 #include "IComponent.h"
 
 #define EXTERNC extern "C"
@@ -19,6 +20,7 @@ namespace KG::Renderer
 	class KGRenderJob;
 	class Shader;
 	class Geometry;
+	class RenderTexture;
 	struct MaterialConstant;
 }
 namespace KG::System
@@ -49,8 +51,12 @@ namespace KG::Component
 		float nearZ = 0.01f;
 		float farZ = 1000.0f;
 
+		ID3D12Resource* renderTarget = nullptr;
+		D3D12_CPU_DESCRIPTOR_HANDLE renderTargetHandle;
+		D3D12_RESOURCE_STATES defaultRTState = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
+
 		TransformComponent* transform;
-		ID3D12Resource* cameraBuffer = nullptr;
+		ID3D12Resource* cameraDataBuffer = nullptr;
 
 		struct CameraData;
 		CameraData* cameraData = nullptr;
@@ -59,8 +65,12 @@ namespace KG::Component
 		bool ProjDirty = true;
 		void OnProjDirty() { ProjDirty = true; }
 		void RefreshCameraData();
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+		virtual void OnDestroy() override;
 	public:
 		bool isVisible = true;
+		bool isMainCamera = true;
+		//Viewport 설정 필요
 
 		void CalculateViewMatrix();
 		void CalculateProjectionMatrix();
@@ -75,11 +85,21 @@ namespace KG::Component
 		auto GetNearZ( ) { return this->nearZ; };
 		auto GetFarZ( ) { return this->farZ; };
 
-		virtual void OnDestroy() override;
-		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
 
 		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
+		void EndCameraRender( ID3D12GraphicsCommandList* commandList );
+
+		void SetRenderTarget( ID3D12Resource* renderTarget, D3D12_CPU_DESCRIPTOR_HANDLE renderTargetHandle,  D3D12_RESOURCE_STATES defaultRTState );
+		
+		auto GetRenderTarget() const
+		{
+			return this->renderTarget;
+		}
+		auto GetRenderTargetViewHandle() const
+		{
+			return this->renderTargetHandle;
+		}
 	};
 
 
@@ -94,9 +114,9 @@ namespace KG::Component
 		void RegisterTransform( TransformComponent* transform );
 		void RegisterMaterial( MaterialComponent* material );
 		void RegisterGeometry( GeometryComponent* geometry );
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
 	public:
 		bool isVisible = true;
-		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;
 		virtual void OnPreRender() override;
 		void SetVisible( bool visible );
@@ -111,8 +131,37 @@ namespace KG::Component
 	};
 	class DLL LightComponent : public IRenderComponent
 	{
-		friend Render3DComponent;
+		KG::Renderer::KGRenderJob* renderJob = nullptr;
+		TransformComponent* transform = nullptr;
+		void SetRenderJob( KG::Renderer::KGRenderJob* renderJob );
+		bool isDirty = true;
+		struct
+		{
+			DirectX::XMFLOAT3 Strength;
+			float FalloffStart;
+			DirectX::XMFLOAT3 Direction;
+			float FalloffEnd;
+			DirectX::XMFLOAT3 Position;
+			float SpotPower;
+		} light;
+		KG::Renderer::Shader* currentShader = nullptr;
+		KG::Renderer::Geometry* currentGeometry = nullptr;
+		void RegisterTransform( TransformComponent* transform );
 
+		inline static KG::Renderer::Shader* directionalLightShader = nullptr;
+		inline static KG::Renderer::Shader* spotLightShader = nullptr;
+		inline static KG::Renderer::Shader* pointLightShader = nullptr;
+
+		inline static KG::Renderer::Geometry* directionalLightGeometry = nullptr;
+		inline static KG::Renderer::Geometry* spotLightGeometry = nullptr;
+		inline static KG::Renderer::Geometry* pointLightGeometry = nullptr;
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+	public:
+		void SetDirectionalLight(const DirectX::XMFLOAT3& strength, const DirectX::XMFLOAT3& direction);
+		bool isVisible = true;
+		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;
+		virtual void OnPreRender() override;
+		void SetVisible( bool visible );
 	};
 
 	class DLL MaterialComponent : public IRenderComponent

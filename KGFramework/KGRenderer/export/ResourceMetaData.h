@@ -2,11 +2,6 @@
 #include <string>
 namespace KG::Resource::Metadata
 {
-	enum ShaderType
-	{
-		Opaque = 0,
-		Transparent = 1
-	};
 	struct ShaderCodeData
 	{
 		bool isEnable = false;
@@ -23,8 +18,10 @@ namespace KG::Resource::Metadata
 		ShaderCodeData pixelShader;
 
 		bool enableCullBackface;
+		bool enableDepthCliping;
+		std::string blendOpType;
 		int renderPriority;
-		ShaderType shaderType;
+		int shaderType;
 	};
 
 

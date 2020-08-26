@@ -3,6 +3,7 @@
 #include "MathHelper.h"
 #include "IHierarchy.h"
 #include "IComponent.h"
+#include "Debug.h"
 namespace KG::Component
 {
 	using KG::Core::IHierarchy;
@@ -15,18 +16,18 @@ namespace KG::Component
 
 		mutable XMFLOAT4X4 globalWorldMatrix;
 		mutable XMFLOAT4X4 localWorldMatrix;
-	public:
-		virtual void OnCreate( KG::Core::GameObject* gameObject ) 
-		{
-			IComponent::OnCreate( gameObject );
-			position = XMFLOAT3( 0, 0, 0 );
-			rotation = XMFLOAT4( 0, 0, 0, 1 ); //사원수
-			scale = XMFLOAT3( 1, 1, 1 );
-		};
 
 		XMFLOAT3 position = XMFLOAT3( 0, 0, 0 );
 		XMFLOAT4 rotation = XMFLOAT4( 0, 0, 0, 1 ); //사원수
 		XMFLOAT3 scale = XMFLOAT3( 1, 1, 1);
+
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) 
+		{
+			position = XMFLOAT3( 0, 0, 0 );
+			rotation = XMFLOAT4( 0, 0, 0, 1 ); //사원수
+			scale = XMFLOAT3( 1, 1, 1 );
+		};
+	public:
 
 		//Position
 		XMFLOAT3 GetPosition() const
@@ -41,12 +42,12 @@ namespace KG::Component
 		void SetPosition( const XMFLOAT3& position )
 		{
 			this->position = position;
-			this->isDirtyLocal = true;
+			TurnOnLocalDirtyFlag();
 		}
 		void XM_CALLCONV SetPosition( const FXMVECTOR& position )
 		{
 			XMStoreFloat3( &this->position, position );
-			this->isDirtyLocal = true;
+			TurnOnLocalDirtyFlag();
 		}
 		void SetPosition( float x, float y, float z )
 		{
@@ -61,12 +62,12 @@ namespace KG::Component
 		void XM_CALLCONV SetRotation( const FXMVECTOR& rotation )
 		{
 			XMStoreFloat4( &this->rotation, rotation );
-			this->isDirtyLocal = true;
+			TurnOnLocalDirtyFlag();
 		}
 		void SetRotation( const XMFLOAT4& rotation )
 		{
 			this->rotation = rotation;
-			this->isDirtyLocal = true;
+			TurnOnLocalDirtyFlag();
 		}
 		void SetRotation( float x, float y, float z, float w )
 		{
@@ -96,7 +97,7 @@ namespace KG::Component
 		void SetScale( const XMFLOAT3& scale )
 		{
 			this->scale = scale;
-			this->isDirtyLocal = true;
+			TurnOnLocalDirtyFlag();
 		}
 		void SetScale( float x, float y, float z )
 		{
@@ -118,6 +119,7 @@ namespace KG::Component
 		void TurnOnLocalDirtyFlag()
 		{
 			this->isDirtyLocal = true;
+			TurnOnGlobalDirtyFlag();
 		}
 		void TurnOnGlobalDirtyFlag( bool onTree = true )
 		{
@@ -138,7 +140,7 @@ namespace KG::Component
 			auto srcQuatVector = XMLoadFloat4( &this->rotation );
 			auto result = XMQuaternionMultiply( srcQuatVector, quaternion );
 			XMStoreFloat4( &this->rotation, result );
-			this->isDirtyLocal = true;
+			this->TurnOnLocalDirtyFlag();
 		}
 		void Rotate( const XMFLOAT4& quaternion )
 		{
@@ -189,6 +191,7 @@ namespace KG::Component
 					XMStoreFloat4x4( &this->globalWorldMatrix, thisMatrix );
 				}
 				this->isDirtyGlobal = false;
+				//DebugNormalMessage( "GlobalWorldMatrixChange" );
 			}
 			return this->globalWorldMatrix;
 		}

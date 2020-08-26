@@ -75,6 +75,9 @@
     <ClCompile Include="src\KGRenderQueue.cpp">
       <Filter>소스 파일\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\DescriptorHeapManager.cpp">
+      <Filter>소스 파일\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">
@@ -135,6 +138,24 @@
       <Filter>헤더 파일\Core</Filter>
     </ClInclude>
     <ClInclude Include="include\RootParameterIndex.h">
+      <Filter>헤더 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\d3dx12.h">
+      <Filter>헤더 파일\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RenderTexture.h">
+      <Filter>헤더 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DescriptorHeapManager.h">
+      <Filter>헤더 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IndexAllocator.h">
+      <Filter>헤더 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DynamicData.h">
+      <Filter>헤더 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DynamicConstantBufferManager.h">
       <Filter>헤더 파일\Core</Filter>
     </ClInclude>
   </ItemGroup>

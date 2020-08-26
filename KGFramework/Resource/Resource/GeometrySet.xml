@@ -3,4 +3,12 @@
     <Geometry id="cube" fileDir="Resource/Geometry/cube.fbx" hash_id="3056789162"/>
     <Geometry id="monkey" fileDir="Resource/Geometry/monkey.fbx" hash_id="356469458"/>
     <Geometry id="sniper" fileDir="Resource/Geometry/SK_Wep_SniperSwat_01.fbx" hash_id="3726780520"/>
+    <Geometry id="cone" fileDir="Resource/Geometry/cone.fbx" hash_id="3062218812"/>
+    <Geometry id="plane" fileDir="Resource/Geometry/plane.fbx" hash_id="3536424569"/>
+    <Geometry id="sphere" fileDir="Resource/Geometry/sphere.fbx" hash_id="1851956114"/>
+    <Geometry id="heli" fileDir="Resource/Geometry/polygonHeist/SkeletalVehicles/SK_Veh_Helicopter_01.fbx" hash_id="2737932245"/>
+    <Geometry id="test" fileDir="Resource/Geometry/test_heli.fbx" hash_id="3546725221"/>
+    <Geometry id="lightSphere" fileDir="Resource/Geometry/LightCull/sphere.fbx" hash_id="1556496656"/>
+    <Geometry id="lightCone" fileDir="Resource/Geometry/LightCull/cone.fbx" hash_id="2357238414"/>
+    <Geometry id="lightPlane" fileDir="Resource/Geometry/LightCull/plane.fbx" hash_id="3958547087"/>
 </GeometrySet>

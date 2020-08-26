@@ -11,8 +11,8 @@ using namespace KG::Renderer;
 
 KGRenderJob& KG::Renderer::KGRenderEngine::CreateRenderJob( const KGRenderJob& job )
 {
-	this->renderJobsDirty = true;
-	auto& inst = this->renderJobs.emplace_back( job );
+	auto& inst = this->pool.emplace_back( job );
+	this->pass[job.shader->GetShaderType()].emplace( &inst );
 	inst.bufferPool = &this->bufferPool;
 	return inst;
 }
@@ -20,6 +20,7 @@ KGRenderJob& KG::Renderer::KGRenderEngine::CreateRenderJob( const KGRenderJob& j
 KG::Renderer::KGRenderEngine::KGRenderEngine( ID3D12Device* device )
 	:bufferPool( device, BufferPool<ObjectData>::defaultFixedSize, BufferPool<ObjectData>::defaultReservedSize )
 {
+	this->pass.resize( 4 );
 }
 
 KGRenderJob* KG::Renderer::KGRenderEngine::GetRenderJob( Shader* shader, Geometry* geometry )
@@ -28,37 +29,63 @@ KGRenderJob* KG::Renderer::KGRenderEngine::GetRenderJob( Shader* shader, Geometr
 	target.shader = shader;
 	target.geometry = geometry;
 
-	auto [start, end] = std::equal_range( renderJobs.begin(), renderJobs.end(), target, KGRenderJob::OrderCompare );
-	auto result = std::find_if( start, end, [=]( const KGRenderJob& job ) { return job.geometry == geometry; } );
+	//정렬을 Dirty플래그 써서 한번만 하기로 되있는데
+	//여기서 
+	auto& renderJobs = this->pass[target.shader->GetShaderType()];
+	auto result = renderJobs.find( &target );
+	//auto result = std::find_if( start, end, [=]( const KGRenderJob& job ) { return job.geometry == geometry; } );
 
-	KGRenderJob* resultJob = result != end ? &*result : &CreateRenderJob( target );
+	KGRenderJob* resultJob = nullptr;
+	if ( result == renderJobs.end() )
+	{
+		resultJob = &CreateRenderJob( target );
+	}
+	else
+	{
+		resultJob = *result;
+	}
+
+	//KGRenderJob* resultJob = result != end ? &*result : &CreateRenderJob( target );
 	return resultJob;
 }
 
-void KG::Renderer::KGRenderEngine::Render( ID3D12GraphicsCommandList* cmdList )
+void KG::Renderer::KGRenderEngine::Render( ID3D12GraphicsCommandList* cmdList, ID3D12Resource* rt, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle )
 {
-	for ( KGRenderJob& job : this->renderJobs )
+	for ( size_t i = 0; i < this->pass.size(); ++i )
 	{
-		job.Render( cmdList, this->currentShader );
+		if ( this->OnPassEnterEvent[i] )
+		{
+			this->OnPassEnterEvent[i]( cmdList, rt, rtvHandle );
+		}
+		for ( KGRenderJob* job : pass[i] )
+		{
+			job->Render( cmdList, this->currentShader );
+		}
 	}
+	this->OnRenderEndEvent( cmdList, rt, rtvHandle );
 }
 
 void KG::Renderer::KGRenderEngine::ClearJobs()
 {
-	this->renderJobs.clear();
-}
-
-void KG::Renderer::KGRenderEngine::SortJobs()
-{
-	std::sort( renderJobs.begin(), renderJobs.end(), KGRenderJob::OrderCompare );
+	for ( auto& renderJobs : this->pass )
+	{
+		renderJobs.clear();
+	}
 }
 
 void KG::Renderer::KGRenderEngine::ClearUpdateCount()
 {
-	for ( KGRenderJob& job : this->renderJobs )
+	for ( KGRenderJob& job : this->pool )
 	{
 		job.ClearCount();
 	}
+	//for ( auto& renderJobs : pass )
+	//{
+	//	for ( KGRenderJob* job : renderJobs )
+	//	{
+	//		job.ClearCount();
+	//	}
+	//}
 }
 
 
@@ -137,6 +164,7 @@ bool KG::Renderer::KGRenderJob::GeometryCompare( const KGRenderJob& a, const KGR
 
 bool KG::Renderer::KGRenderJob::OrderCompare( const KGRenderJob& a, const KGRenderJob& b )
 {
-	return std::make_tuple( a.shader->GetShaderType(), a.shader->GetRenderPriority(), (int)a.shader ) <
-		std::make_tuple( b.shader->GetShaderType(), b.shader->GetRenderPriority(), (int)b.shader );
+	return std::make_tuple( a.shader->GetRenderPriority(), (int)a.shader, (int)a.geometry ) <
+		std::make_tuple( b.shader->GetRenderPriority(), (int)b.shader, (int)b.geometry );
 }
+

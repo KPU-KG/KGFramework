@@ -22,6 +22,14 @@ namespace KG::System
 			:srcPool( srcPool )
 		{
 			mainIterator = this->srcPool->begin();
+			while ( mainIterator != srcPool->end() )
+			{
+				if ( mainIterator->isUsing() || mainIterator == srcPool->end() )
+				{
+					break;
+				}
+				++mainIterator;
+			}
 		}
 
 		UsingComponentIterator( std::deque<Ty>* srcPool, class std::deque<Ty>::iterator iter )
@@ -37,7 +45,7 @@ namespace KG::System
 			do
 			{
 				++mainIterator;
-				if ( mainIterator == srcPool->end() || mainIterator->isUsing() )
+				if ( mainIterator == srcPool->end() || mainIterator->isUsing())
 				{
 					break;
 				}
@@ -48,7 +56,7 @@ namespace KG::System
 		{
 			return *this->mainIterator;
 		}
-		ThisType operator++( int )
+		ThisType operator++( int ) const
 		{
 			ThisType copy = ThisType( *this );
 			do
@@ -59,17 +67,17 @@ namespace KG::System
 					break;
 				}
 			} while ( mainIterator != srcPool->end() );
-			return *this;
+			return copy;
 		}
 		Ty* operator->() const
 		{
 			return &*this->mainIterator;
 		}
-		bool operator==( const ThisType& other )
+		bool operator==( const ThisType& other ) const
 		{
 			return this->mainIterator == other.mainIterator;
 		}
-		bool operator!=( const ThisType& other )
+		bool operator!=( const ThisType& other ) const
 		{
 			return this->mainIterator != other.mainIterator;
 		}
@@ -88,7 +96,7 @@ namespace KG::System
 		{
 			auto result = std::find_if(
 				componentPool.begin(), componentPool.end(),
-				[]( Ty& a ) { return a.isUsing(); }
+				[]( Ty& a ) { return !a.isUsing(); }
 			);
 			if ( result == componentPool.end() )
 			{

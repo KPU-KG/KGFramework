@@ -3,6 +3,7 @@
 #include "KGResourceLoader.h"
 #include "hash.h"
 #include "debug.h"
+#include "KGShader.h"
 #include "ResourceMetaData.h"
 
 #include <array>
@@ -29,10 +30,14 @@ constexpr std::string_view shaderTargetElementName[] = {
 	"PixelShader",
 };
 
-static KG::Resource::Metadata::ShaderType GetShaderType( const std::string_view& type )
+static int GetShaderType( const std::string_view& type )
 {
-	if ( type == "opaque" ) return KG::Resource::Metadata::ShaderType::Opaque;
-	if ( type == "transparent" ) return KG::Resource::Metadata::ShaderType::Transparent;
+	if ( type == "opaque" ) return KG::Renderer::ShaderType::Opaque;
+	if ( type == "lightPass" ) return KG::Renderer::ShaderType::LightPass;
+	if ( type == "transparent" ) return KG::Renderer::ShaderType::Transparent;
+	if ( type == "postProcess" ) return KG::Renderer::ShaderType::PostProcess;
+
+	DebugAssertion( false, L"Shader Type is UnknownType" );
 }
 
 static KG::Resource::Metadata::ShaderCodeData LoadShaderCodes( const tinyxml2::XMLElement* element )
@@ -72,7 +77,9 @@ KG::Resource::Metadata::ShaderSetData KG::Resource::ResourceLoader::LoadShaderSe
 		{
 			data.shaderType = GetShaderType( shaderSets->Attribute( "shaderType" ) );
 			data.renderPriority = std::atoi( shaderSets->Attribute( "renderPriority" ) );
-			data.enableCullBackface = std::atoi( shaderSets->Attribute( "enableBackfaceCulling" ) );
+			data.enableCullBackface = shaderSets->BoolAttribute( "enableBackfaceCulling" );
+			data.enableDepthCliping = shaderSets->BoolAttribute( "enableDepthCliping" );
+			data.blendOpType = shaderSets->Attribute( "blendOp" );
 
 			auto vsElement = shaderSets->FirstChildElement( shaderTargetElementName[VS].data() );
 			data.vertexShader = LoadShaderCodes( vsElement );
