@@ -4,6 +4,7 @@
 #include "Setting.h"
 #include "GameTimer.h"
 #include "KGRenderer.h"
+#include "InputManager.h"
 #include <memory>
 namespace KG
 {
@@ -22,6 +23,7 @@ namespace KG
 		GameTimer timer;
 		std::unique_ptr<Systems> system;
 		std::unique_ptr<KG::Renderer::IKGRenderer> renderer;
+		std::unique_ptr<KG::Input::InputManager> input;
 	public:
 		GameFramework();
 		~GameFramework();

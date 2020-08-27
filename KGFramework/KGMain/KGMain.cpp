@@ -9,6 +9,7 @@
 
 
 KG::GameFramework gameFramework;
+POINT mousePositionBuffer;
 
 
 // 전역 변수:
@@ -172,6 +173,15 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
             EndPaint(hWnd, &ps);
         }
+        break;
+    case WM_LBUTTONDOWN:
+    case WM_RBUTTONDOWN:
+    case WM_LBUTTONUP:
+    case WM_RBUTTONUP:
+    case WM_MOUSEMOVE:
+        break;
+    case WM_KEYDOWN:
+    case WM_KEYUP:
         break;
     case WM_DESTROY:
         PostQuitMessage(0);

@@ -5,6 +5,7 @@
 
 #include "GameObject.h"
 #include "LambdaComponent.h"
+#include "InputManager.h"
 
 
 KG::GameFramework::GameFramework()
@@ -53,6 +54,9 @@ bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting&
 
 	this->renderer->Initialize( renderDesc, renderSetting );
 
+	//인풋
+	this->input = std::unique_ptr<KG::Input::InputManager>( KG::Input::InputManager::GetInputManager() );
+
 	//자원 미리 할당
 	this->windowText.reserve( 100 );
 
@@ -72,22 +76,25 @@ void KG::GameFramework::OnTestInit()
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
-		static_cast<KG::Component::LambdaComponent*>(lam)->PostFunction(
-			[]( KG::Core::GameObject* gameObject, float elapsedTime ) 
+		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+			[]( KG::Core::GameObject* gameObject, float elapsedTime )
 			{
 				static bool tos = false;
 				auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
-				auto value = GetKeyState( VK_SPACE );
-				//DebugNormalMessage( "Key Input Value : " << value);
-				if ( value & 0x0001 )
+				using namespace KG::Input;
+
+				if ( InputManager::GetInputManager()->GetKeyState( VK_SPACE ) == KeyState::Down )
 				{
+					DebugNormalMessage( "Toggle Changed" );
 					tos = !tos;
 				}
-				if(	tos )
-					trans->RotateEuler(0.0f, 180.0f * elapsedTime, 0.0f);
-				auto euler = trans->GetEulerAngle();
-				//DebugNormalMessage( "Key Input Value : " << std::boolalpha << tos );
-				//DebugNormalMessage( "rotation : " << euler );
+				if( tos )
+					trans->RotateEuler( 0.0f, 180.0f * elapsedTime, 0.0f );
+
+				if ( InputManager::GetInputManager()->GetKeyState( VK_ESCAPE ) == KeyState::Down )
+				{
+					PostQuitMessage( 0 );
+				}
 			}
 		);
 		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( "deferredDefault"_id ) );
@@ -107,9 +114,48 @@ void KG::GameFramework::OnTestInit()
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* cam = this->renderer->GetNewCameraComponent();
+		auto* lam = this->system->lambdaSystem.GetNewComponent();
+		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+			[]( KG::Core::GameObject* gameObject, float elapsedTime )
+			{
+				auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+				using namespace KG::Input;
+				auto input = InputManager::GetInputManager();
+				if ( input->IsTouching( 'W' ))
+				{
+					trans->Translate( trans->GetLook() * elapsedTime);
+				}
+				if ( input->IsTouching( 'A' ) )
+				{
+					trans->Translate( trans->GetRight() * elapsedTime * -1 );
+				}
+				if ( input->IsTouching( 'S' ) )
+				{
+					trans->Translate( trans->GetLook() * elapsedTime * -1 );
+				}
+				if ( input->IsTouching( 'D' ) )
+				{
+					trans->Translate( trans->GetRight() * elapsedTime );
+				}
+
+				if ( input->IsTouching( VK_LBUTTON ) )
+				{
+					auto delta = input->GetDeltaMousePosition();
+					if ( delta.x )
+					{
+						trans->RotateAxis( Math::up, delta.x * 0.3f );
+					}
+					if ( delta.y )
+					{
+						trans->RotateAxis( trans->GetRight(), delta.y * 0.3f );
+					}
+				}
+			}
+		);
 		testCameraObject.name = "camera";
-		testCameraObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
+		testCameraObject.AddComponent( tran );
 		testCameraObject.AddComponent( cam );
+		testCameraObject.AddComponent( lam );
 		testCameraObject.GetComponent<KG::Component::TransformComponent>()->Translate( 0, 0, -2.0f );
 	}
 
@@ -170,6 +216,8 @@ void KG::GameFramework::OnProcess()
 {
 	this->timer.Tick();
 	this->UpdateWindowText();
+	//DebugNormalMessage( "OnUpdated");
+	this->input->ProcessInput( this->engineDesc.hWnd );
 	this->system->OnUpdate( this->timer.GetTimeElapsed() );
 	this->renderer->Update( this->timer.GetTimeElapsed() );
 	this->renderer->Render();

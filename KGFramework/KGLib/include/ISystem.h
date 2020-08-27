@@ -139,7 +139,7 @@ namespace KG::System
 		ComponentPooler<Ty> pool;
 		virtual void OnGetNewComponent( Ty* ty ) {}
 	public:
-		virtual IComponent* GetNewComponent()
+		virtual Ty* GetNewComponent()
 		{
 			auto* target = this->pool.GetNewComponent();
 			this->OnGetNewComponent( target );

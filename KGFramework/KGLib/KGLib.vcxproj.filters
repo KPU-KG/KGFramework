@@ -104,5 +104,8 @@
     <ClInclude Include="include\KGMacroUtill.h">
       <Filter>헤더 파일\Utill</Filter>
     </ClInclude>
+    <ClInclude Include="include\InputManager.h">
+      <Filter>헤더 파일\Utill</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

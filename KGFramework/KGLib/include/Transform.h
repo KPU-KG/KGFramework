@@ -19,9 +19,9 @@ namespace KG::Component
 
 		XMFLOAT3 position = XMFLOAT3( 0, 0, 0 );
 		XMFLOAT4 rotation = XMFLOAT4( 0, 0, 0, 1 ); //사원수
-		XMFLOAT3 scale = XMFLOAT3( 1, 1, 1);
+		XMFLOAT3 scale = XMFLOAT3( 1, 1, 1 );
 
-		virtual void OnCreate( KG::Core::GameObject* gameObject ) 
+		virtual void OnCreate( KG::Core::GameObject* gameObject )
 		{
 			position = XMFLOAT3( 0, 0, 0 );
 			rotation = XMFLOAT4( 0, 0, 0, 1 ); //사원수
@@ -146,13 +146,18 @@ namespace KG::Component
 		{
 			this->Rotate( XMLoadFloat4( &quaternion ) );
 		}
-		void RotateEuler( XMFLOAT3 euler )
+
+		void RotateAxis( const XMFLOAT3& axis, float angle )
+		{
+			this->Rotate( XMQuaternionRotationAxis( XMLoadFloat3( &axis ), XMConvertToRadians( angle ) ) );
+		}
+		void RotateEuler( const XMFLOAT3& euler )
 		{
 			this->Rotate( XMQuaternionRotationRollPitchYawFromVector( XMLoadFloat3( &euler ) ) );
 		}
 		void RotateEuler( float x, float y, float z )
 		{
-			this->Rotate( XMQuaternionRotationRollPitchYaw( XMConvertToRadians(x), XMConvertToRadians(y), XMConvertToRadians(z) ) );
+			this->Rotate( XMQuaternionRotationRollPitchYaw( XMConvertToRadians( x ), XMConvertToRadians( y ), XMConvertToRadians( z ) ) );
 		}
 
 		void Update()

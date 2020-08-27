@@ -184,6 +184,7 @@
     <ClInclude Include="include\hash.h" />
     <ClInclude Include="include\IComponent.h" />
     <ClInclude Include="include\IHierarchy.h" />
+    <ClInclude Include="include\InputManager.h" />
     <ClInclude Include="include\ISystem.h" />
     <ClInclude Include="include\KGMacroUtill.h" />
     <ClInclude Include="include\MathHelper.h" />
