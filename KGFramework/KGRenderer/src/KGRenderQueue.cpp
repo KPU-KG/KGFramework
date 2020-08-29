@@ -54,15 +54,20 @@ void KG::Renderer::KGRenderEngine::Render( ID3D12GraphicsCommandList* cmdList, I
 	for ( size_t i = 0; i < this->pass.size(); ++i )
 	{
 		if ( this->OnPassEnterEvent[i] )
-		{
 			this->OnPassEnterEvent[i]( cmdList, rt, rtvHandle );
-		}
+		
 		for ( KGRenderJob* job : pass[i] )
 		{
+			if ( this->OnPassPreRenderEvent[i] )
+				this->OnPassPreRenderEvent[i]( cmdList, rt, rtvHandle );
+
 			job->Render( cmdList, this->currentShader );
+
+			if ( this->OnPassEndRenderEvent[i] )
+				this->OnPassEndRenderEvent[i]( cmdList, rt, rtvHandle );
 		}
 	}
-	this->OnRenderEndEvent( cmdList, rt, rtvHandle );
+	this->OnPassEndEvent( cmdList, rt, rtvHandle );
 }
 
 void KG::Renderer::KGRenderEngine::ClearJobs()
@@ -107,7 +112,6 @@ void KG::Renderer::KGRenderJob::OnObjectAdd( bool isVisible )
 {
 	this->objectSize += 1;
 
-	if ( CheckBufferFull() ) GetNewBuffer();
 	if ( isVisible ) OnVisibleAdd();
 }
 
@@ -129,6 +133,7 @@ void KG::Renderer::KGRenderJob::OnVisibleRemove()
 
 int KG::Renderer::KGRenderJob::GetUpdateCount()
 {
+	if ( CheckBufferFull() ) GetNewBuffer();
 	auto result = this->updateCount;
 	this->updateCount++;
 	return result;

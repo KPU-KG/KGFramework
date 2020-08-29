@@ -12,7 +12,14 @@ D3D12_RASTERIZER_DESC KG::Renderer::Shader::CreateRasterizerState( const KG::Res
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
 	ZeroDesc( d3dRasterizerDesc );
 	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-	d3dRasterizerDesc.CullMode = data.enableCullBackface ? D3D12_CULL_MODE_BACK : D3D12_CULL_MODE_NONE;
+	if ( data.shaderType == ShaderType::LightPass )
+	{
+		d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_FRONT;
+	}
+	else 
+	{
+		d3dRasterizerDesc.CullMode = data.enableCullBackface ? D3D12_CULL_MODE_BACK : D3D12_CULL_MODE_NONE;
+	}
 	d3dRasterizerDesc.FrontCounterClockwise = false;
 	d3dRasterizerDesc.DepthBias = 0;
 	d3dRasterizerDesc.DepthBiasClamp = 0.0f;
@@ -87,12 +94,12 @@ D3D12_DEPTH_STENCIL_DESC KG::Renderer::Shader::CreateDepthStencilState( const KG
 		d3dDepthStencilDesc.StencilWriteMask = 0x00;
 		d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
 		d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-		d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
-		d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+		d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE;
+		d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
 		d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
 		d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
 		d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
-		d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+		d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
 	}
 		break;
 	case ShaderType::LightPass:
@@ -257,7 +264,7 @@ void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::Sha
 		d3dPipelineStateDesc.NumRenderTargets = 4;
 		d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
 		d3dPipelineStateDesc.RTVFormats[1] = DXGI_FORMAT_R8G8B8A8_UNORM;
-		d3dPipelineStateDesc.RTVFormats[2] = DXGI_FORMAT_R10G10B10A2_UNORM;
+		d3dPipelineStateDesc.RTVFormats[2] = DXGI_FORMAT_R16G16_SNORM;
 		d3dPipelineStateDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	}
 	else 

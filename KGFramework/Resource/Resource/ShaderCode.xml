@@ -8,4 +8,8 @@
         <VertexShader fileDir="Resource/ShaderScript/lightShader.hlsl" entry="DirectionalLightVertexFuction" type="vs_5_1"/>
         <PixelShader fileDir="Resource/ShaderScript/lightShader.hlsl" entry="DirectionalLightPixelFuction" type="ps_5_1"/>
     </GraphicShaderSet>
+    <GraphicShaderSet id="pointLight" shaderType="lightPass" enableBackfaceCulling="false" enableDepthCliping="false" blendOp="lightPass" renderPriority="5000" hash_id="3287582747">
+        <VertexShader fileDir="Resource/ShaderScript/lightShader.hlsl" entry="PointLightVertexFuction" type="vs_5_1"/>
+        <PixelShader fileDir="Resource/ShaderScript/lightShader.hlsl" entry="PointLightPixelFuction" type="ps_5_1"/>
+    </GraphicShaderSet>
 </ShaderSet>

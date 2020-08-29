@@ -157,7 +157,8 @@ namespace KG::Component
 		inline static KG::Renderer::Geometry* pointLightGeometry = nullptr;
 		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
 	public:
-		void SetDirectionalLight(const DirectX::XMFLOAT3& strength, const DirectX::XMFLOAT3& direction);
+		void SetDirectionalLight( const DirectX::XMFLOAT3& strength, const DirectX::XMFLOAT3& direction );
+		void SetPointLight( const DirectX::XMFLOAT3& strength, float fallOffStart, float fallOffEnd );
 		bool isVisible = true;
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;
 		virtual void OnPreRender() override;

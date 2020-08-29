@@ -136,18 +136,20 @@ namespace KG::Renderer
 			{
 				return size;
 			}
-			if (*it == size || it + 1 == fixedSize.end())
+			else 
 			{
-				return size;
-			}
-			else
-			{
-				return *(it + 1);
+				return *it;
 			}
 		}
 		PooledBuffer<Ty>* GetNewBuffer(size_t count)
 		{
 			size_t bufferSize = this->GetSize(count);
+			if ( pool.count( bufferSize ) == 0 )
+			{
+				pool.emplace(
+					std::make_pair( bufferSize, SameCountBufferPool<Ty>( device, bufferSize, 1 ) )
+				);
+			}
 			auto buffer = pool.at( bufferSize ).GetNewBuffer();
 			buffer->isUsing = true;
 			return buffer;

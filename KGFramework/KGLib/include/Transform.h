@@ -23,9 +23,9 @@ namespace KG::Component
 
 		virtual void OnCreate( KG::Core::GameObject* gameObject )
 		{
-			position = XMFLOAT3( 0, 0, 0 );
-			rotation = XMFLOAT4( 0, 0, 0, 1 ); //사원수
-			scale = XMFLOAT3( 1, 1, 1 );
+			//position = XMFLOAT3( 0, 0, 0 );
+			//rotation = XMFLOAT4( 0, 0, 0, 1 ); //사원수
+			//scale = XMFLOAT3( 1, 1, 1 );
 		};
 	public:
 

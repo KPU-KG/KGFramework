@@ -32,6 +32,7 @@ namespace KG::Renderer
 		UINT srvDescriptorSize = 0;
 
 		ID3D12Resource* depthStencilBuffer = nullptr;
+		ID3D12Resource* depthStencilBackBuffer = nullptr;
 		ID3D12DescriptorHeap* dsvDescriptorHeap = nullptr;
 		UINT dsvDescriptoSize = 0;
 		

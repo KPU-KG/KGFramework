@@ -1,4 +1,5 @@
-#include "GBufferDefine.hlsl"
+#ifndef __LIGHT_DEFINE__
+#define __LIGHT_DEFINE__
 
 struct LightData
 {
@@ -19,3 +20,5 @@ Texture2D InputGBuffer1 : register(t2);
 Texture2D InputGBuffer2 : register(t3);
 Texture2D InputGBuffer3 : register(t4);
 Texture2D InputGBuffer4 : register(t5);
+
+#endif

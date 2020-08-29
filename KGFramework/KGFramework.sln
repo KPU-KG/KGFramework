@@ -38,6 +38,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{85
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Define", "Define", "{101E8511-0519-49FC-97D5-93D6ECB9E702}"
 	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\CustomLight.hlsl = Resource\Resource\ShaderScript\CustomLight.hlsl
 		Resource\Resource\ShaderScript\DeferredDefaultShader.hlsl = Resource\Resource\ShaderScript\DeferredDefaultShader.hlsl
 		Resource\Resource\ShaderScript\LightShader.hlsl = Resource\Resource\ShaderScript\LightShader.hlsl
 	EndProjectSection

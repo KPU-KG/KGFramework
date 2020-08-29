@@ -1,3 +1,5 @@
+#ifndef __GLOBAL_DEFINE__
+#define __GLOBAL_DEFINE__
 struct VertexData
 {
 	float3 position : POSITION;
@@ -27,3 +29,4 @@ SamplerState gsamLinearWrap : register(s2);
 SamplerState gsamLinearClamp : register(s3);
 SamplerState gsamAnisotoropicWrap : register(s4);
 SamplerState gsamAnisotoropicClamp : register(s5);
+#endif

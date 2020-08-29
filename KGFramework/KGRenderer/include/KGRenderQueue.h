@@ -57,8 +57,15 @@ namespace KG::Renderer
 		std::vector<PassJobs> pass;
 
 		using PassEnterFunction = std::function<void( ID3D12GraphicsCommandList*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE )>;
+		using PassPreRenderFunction = std::function<void( ID3D12GraphicsCommandList*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE )>;
+		using PassEndRenderFunction = std::function<void( ID3D12GraphicsCommandList*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE )>;
+		using PassEndFunction = std::function<void( ID3D12GraphicsCommandList*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE )>;
+
 		PassEnterFunction OnPassEnterEvent[4];
-		PassEnterFunction OnRenderEndEvent;
+		PassPreRenderFunction OnPassPreRenderEvent[4];
+		PassEndRenderFunction OnPassEndRenderEvent[4];
+
+		PassEndFunction OnPassEndEvent;
 
 		BufferPool<ObjectData> bufferPool; // 이거 추후에 버디 얼로케이터 같은 걸로 바꿔야 함
 
@@ -79,9 +86,20 @@ namespace KG::Renderer
 			this->OnPassEnterEvent[pass] = function;
 		}
 
-		void SetRenderEndEventFunction( const PassEnterFunction& function )
+		void SetPassPreRenderEventFunction( size_t pass, const PassEnterFunction& function )
 		{
-			OnRenderEndEvent = function;
+			this->OnPassPreRenderEvent[pass] = function;
+		}
+
+		void SetPassEndRenderEventFunction( size_t pass, const PassEnterFunction& function )
+		{
+			this->OnPassEndRenderEvent[pass] = function;
+		}
+
+
+		void SetPassEndEventFunction( const PassEnterFunction& function )
+		{
+			OnPassEndEvent = function;
 		}
 	};
 }

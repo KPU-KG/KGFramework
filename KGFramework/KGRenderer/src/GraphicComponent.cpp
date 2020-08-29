@@ -124,7 +124,7 @@ void KG::Component::CameraComponent::RefreshCameraData()
 	this->cameraData->cameraWorldPosition = this->transform->GetWorldPosition();
 	this->cameraData->look = this->transform->GetWorldLook();
 
-	this->cameraData->viewProjection = KG::Math::Matrix4x4::Multiply( this->cameraData->view, this->cameraData->projection );
+	this->cameraData->viewProjection = KG::Math::Matrix4x4::Multiply( this->cameraData->projection ,  this->cameraData->view  );
 	this->cameraData->inverseViewProjection = KG::Math::Matrix4x4::Multiply( this->cameraData->inverseProjection, this->cameraData->inverseView );
 }
 
@@ -251,6 +251,24 @@ void KG::Component::LightComponent::SetDirectionalLight( const DirectX::XMFLOAT3
 	this->currentGeometry = this->directionalLightGeometry;
 }
 
+void KG::Component::LightComponent::SetPointLight( const DirectX::XMFLOAT3& strength, float fallOffStart, float fallOffEnd )
+{
+	isDirty = true;
+	this->light.Strength = strength;
+	this->light.FalloffStart = fallOffStart;
+	this->light.FalloffEnd = fallOffEnd;
+	if ( this->pointLightShader == nullptr )
+	{
+		this->pointLightShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader( Utill::HashString( "pointLight"_id ) );
+	}
+	if ( this->pointLightGeometry == nullptr )
+	{
+		this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "sphere"_id ) );
+	}
+	this->currentShader = this->pointLightShader;
+	this->currentGeometry = this->pointLightGeometry;
+}
+
 void KG::Component::LightComponent::OnCreate( KG::Core::GameObject* gameObject )
 {
 	IRenderComponent::OnCreate( gameObject );
@@ -272,12 +290,6 @@ void KG::Component::LightComponent::OnPreRender()
 		int updateCount = this->renderJob->GetUpdateCount();
 		this->light.Position = this->transform->GetWorldPosition();
 		std::memcpy( &this->renderJob->objectBuffer->mappedData[updateCount].light, &this->light, sizeof( this->light ) );
-		//this->renderJob->objectBuffer->mappedData[updateCount].light.Direction = this->light.Direction;
-		//this->renderJob->objectBuffer->mappedData[updateCount].light.FalloffEnd = this->light.FalloffEnd;
-		//this->renderJob->objectBuffer->mappedData[updateCount].light.Strength = this->light.Strength;
-		//this->renderJob->objectBuffer->mappedData[updateCount].light.FalloffStart = this->light.FalloffStart;
-		//this->renderJob->objectBuffer->mappedData[updateCount].light.Position = this->light.Position;
-		//this->renderJob->objectBuffer->mappedData[updateCount].light.SpotPower = this->light.SpotPower;
 	}
 }
 
