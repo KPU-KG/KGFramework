@@ -11,6 +11,8 @@
 #include "DescriptorHeapManager.h"
 #include "d3dx12.h"
 
+#include "Texture.h"
+
 
 using namespace KG::Renderer;
 
@@ -126,6 +128,8 @@ void KGDXRenderer::Render()
 	HRESULT hResult = this->mainCommandAllocator->Reset();
 	hResult = this->mainCommandList->Reset( this->mainCommandAllocator, nullptr );
 
+	KG::Resource::ResourceContainer::GetInstance()->Process( this->mainCommandList );
+
 	this->mainCommandList->SetGraphicsRootSignature( this->generalRootSignature );
 	ID3D12DescriptorHeap* heaps[] = { this->descriptorHeapManager->Get() };
 	this->mainCommandList->SetDescriptorHeaps( 1, heaps );
@@ -186,6 +190,13 @@ KG::Component::GeometryComponent* KG::Renderer::KGDXRenderer::GetNewGeomteryComp
 KG::Component::MaterialComponent* KG::Renderer::KGDXRenderer::GetNewMaterialComponent( const KG::Utill::HashString& id )
 {
 	auto* mat = static_cast<KG::Component::MaterialComponent*>(this->graphicSystems->materialSystem.GetNewComponent());
+	mat->InitializeMaterial( id );
+	return mat;
+}
+
+KG::Component::MaterialComponent* KG::Renderer::KGDXRenderer::GetNewMaterialComponentFromShader( const KG::Utill::HashString& id )
+{
+	auto* mat = static_cast<KG::Component::MaterialComponent*>(this->graphicSystems->materialSystem.GetNewComponent());
 	mat->InitializeShader( id );
 	return mat;
 }
@@ -213,6 +224,11 @@ ID3D12RootSignature* KG::Renderer::KGDXRenderer::GetGeneralRootSignature() const
 KGRenderEngine* KG::Renderer::KGDXRenderer::GetRenderEngine() const
 {
 	return this->renderEngine.get();
+}
+
+DescriptorHeapManager* KG::Renderer::KGDXRenderer::GetDescriptorHeapManager() const
+{
+	return this->descriptorHeapManager.get();
 }
 
 D3D12_RESOURCE_BARRIER* KG::Renderer::KGDXRenderer::GetGBufferTrasitionBarriers( D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after )
@@ -530,9 +546,9 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 	pd3dRootParameters[RootParameterIndex::InstanceData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
 	// 1 : Space 1 : CBV 0 : Material Data : 2
-	pd3dRootParameters[RootParameterIndex::MaterialData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	pd3dRootParameters[RootParameterIndex::MaterialData].Descriptor.ShaderRegister = 0;
-	pd3dRootParameters[RootParameterIndex::MaterialData].Descriptor.RegisterSpace = 1;
+	pd3dRootParameters[RootParameterIndex::MaterialData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+	pd3dRootParameters[RootParameterIndex::MaterialData].Descriptor.ShaderRegister = 1;
+	pd3dRootParameters[RootParameterIndex::MaterialData].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[RootParameterIndex::MaterialData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
 
 	// 2 : Space 0 : CBV 0 : Camera Data : 2
@@ -582,7 +598,7 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 
 	D3D12_DESCRIPTOR_RANGE GbufferRange;
 	ZeroDesc( GbufferRange );
-	GbufferRange.BaseShaderRegister = 1;
+	GbufferRange.BaseShaderRegister = 2;
 	GbufferRange.NumDescriptors = 5;
 	GbufferRange.OffsetInDescriptorsFromTableStart = 0;
 	GbufferRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
@@ -592,32 +608,6 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 	pd3dRootParameters[RootParameterIndex::GBufferHeap].DescriptorTable.NumDescriptorRanges = 1;
 	pd3dRootParameters[RootParameterIndex::GBufferHeap].DescriptorTable.pDescriptorRanges = &GbufferRange;
 	pd3dRootParameters[RootParameterIndex::GBufferHeap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
-
-
-	//pd3dRootParameters[RootParameterIndex::GBuffer0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-	//pd3dRootParameters[RootParameterIndex::GBuffer0].Descriptor.ShaderRegister = 1;
-	//pd3dRootParameters[RootParameterIndex::GBuffer0].Descriptor.RegisterSpace = 0;
-	//pd3dRootParameters[RootParameterIndex::GBuffer0].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
-
-	//pd3dRootParameters[RootParameterIndex::GBuffer1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-	//pd3dRootParameters[RootParameterIndex::GBuffer1].Descriptor.ShaderRegister = 2;
-	//pd3dRootParameters[RootParameterIndex::GBuffer1].Descriptor.RegisterSpace = 0;
-	//pd3dRootParameters[RootParameterIndex::GBuffer1].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
-
-	//pd3dRootParameters[RootParameterIndex::GBuffer2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-	//pd3dRootParameters[RootParameterIndex::GBuffer2].Descriptor.ShaderRegister = 3;
-	//pd3dRootParameters[RootParameterIndex::GBuffer2].Descriptor.RegisterSpace = 0;
-	//pd3dRootParameters[RootParameterIndex::GBuffer2].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
-
-	//pd3dRootParameters[RootParameterIndex::GBuffer3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-	//pd3dRootParameters[RootParameterIndex::GBuffer3].Descriptor.ShaderRegister = 4;
-	//pd3dRootParameters[RootParameterIndex::GBuffer3].Descriptor.RegisterSpace = 0;
-	//pd3dRootParameters[RootParameterIndex::GBuffer3].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
-
-	//pd3dRootParameters[RootParameterIndex::GBuffer4].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-	//pd3dRootParameters[RootParameterIndex::GBuffer4].Descriptor.ShaderRegister = 5;
-	//pd3dRootParameters[RootParameterIndex::GBuffer4].Descriptor.RegisterSpace = 0;
-	//pd3dRootParameters[RootParameterIndex::GBuffer4].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
 
 	D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags =
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
@@ -687,6 +677,8 @@ void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
 			cmdList->OMSetRenderTargets( 4, this->gbufferDescritorHandles, false, dsv );
 
 			this->ClearGBuffer( this->mainCommandList, 0, 0, 0, 1 );
+
+			cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::Texture1Heap, this->descriptorHeapManager->GetGPUHandle( 0 ) );
 
 			this->mainCommandList->ClearDepthStencilView( this->GetCurrentDepthStencilHandle(), D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr );
 		} );

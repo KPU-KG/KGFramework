@@ -9,7 +9,7 @@ namespace KG::Resource
 		template<typename Ty>
 		Ty& Get( size_t index, size_t offsetOfByte )
 		{
-			Ty* ptr = reinterpret_cast<Ty*>(buffer.data() + (elementSize * index) + offsetOfByte);
+			Ty* ptr = reinterpret_cast<Ty*>(buffer + (elementSize * index) + offsetOfByte);
 			return *ptr;
 		}
 	};

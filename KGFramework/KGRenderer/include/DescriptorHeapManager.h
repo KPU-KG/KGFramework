@@ -26,12 +26,16 @@ namespace KG::Renderer
 		/// 서술자힙에 저장할 수 있는 서술자의 최대 개수입니다.
 		/// </summary>
 		size_t numMaxDescriptor = 0;
+
+		ID3D12Device* device = nullptr;
+
+		D3D12_DESCRIPTOR_HEAP_DESC heapDesc;
 	public:
 		DescriptorHeapManager() {};
 		~DescriptorHeapManager();
 
 		/// <summary>
-		/// 서술자힙 매지너를 초기화합니다.
+		/// 서술자힙 매니저를 초기화합니다.
 		/// </summary>
 		/// <param name="device">ID3D12Device 인터페이스 포인터입니다.</param>
 		/// <param name="heapDesc">생성할 서술자 힙의 명세입니다.</param>
@@ -84,6 +88,8 @@ namespace KG::Renderer
 		/// <seealso cref="DescriptorManager::Get"/>
 		/// <returns>해당 서술자힙의 인터페이스 포인터입니다.</returns>
 		ID3D12DescriptorHeap* operator-> () const;
+
+		void Resize(size_t size);
 
 	};
 }

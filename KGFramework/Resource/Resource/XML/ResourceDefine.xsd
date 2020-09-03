@@ -91,6 +91,7 @@
             <xs:attribute name="renderPriority" type="xs:int" use="required"/>
             <xs:attribute name="enableBackfaceCulling" type="xs:boolean" use="required"/>
             <xs:attribute name="enableDepthCliping" type="xs:boolean" use="required"/>
+            <xs:attribute name="materialParameterSize" type="xs:int" use="required"/>
             <xs:attribute name="blendOp" use="required">
               <xs:simpleType>
                 <xs:restriction base="xs:string">
@@ -152,6 +153,142 @@
             <xs:attribute name="id" type="xs:string" use="required"/>
             <xs:attribute name="hash_id" type="xs:unsignedInt" use="optional"/>
             <xs:attribute name="fileDir" type="xs:anyURI" use="required"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="TextureSet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Texture" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+            <xs:attribute name="hash_id" type="xs:unsignedInt" use="optional"/>
+            <xs:attribute name="fileDir" type="xs:anyURI" use="required"/>
+            <xs:attribute name="format" use="required">
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:enumeration value="DDS"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+
+            <xs:attribute name="dimension" use="required">
+              <xs:simpleType>
+                <xs:restriction base="xs:string">
+                  <xs:enumeration value="Buffer"/>
+                  <xs:enumeration value="Texture1D"/>
+                  <xs:enumeration value="Texture1DArray"/>
+                  <xs:enumeration value="Texture2D"/>
+                  <xs:enumeration value="Texture2DArray"/>
+                  <xs:enumeration value="Texture2DMS"/>
+                  <xs:enumeration value="Texture2DMSArray"/>
+                  <xs:enumeration value="Texture3D"/>
+                  <xs:enumeration value="TextureCube"/>
+                  <xs:enumeration value="TextureCubeArray"/>
+                </xs:restriction>
+              </xs:simpleType>
+            </xs:attribute>
+
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+
+  <xs:group name="MaterialValue">
+    <xs:choice>
+      <xs:element name="Texture">
+        <xs:complexType>
+          <xs:attribute name="byte" type="xs:int" fixed="4" use="required"/>
+          <xs:attribute name="comment" type="xs:string" use="optional"/>
+          <xs:attribute name="id" type="xs:string" use="required"/>
+          <xs:attribute name="hash_id" type="xs:unsignedInt" use="optional"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="FLOAT1">
+        <xs:complexType>
+          <xs:attribute name="byte" type="xs:int" fixed="8" use="required"/>
+          <xs:attribute name="comment" type="xs:string" use="optional"/>
+          <xs:attribute name="x" type="xs:float" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="FLOAT2">
+        <xs:complexType>
+          <xs:attribute name="byte" type="xs:int" fixed="8" use="required"/>
+          <xs:attribute name="comment" type="xs:string" use="optional"/>
+          <xs:attribute name="x" type="xs:float" use="required"/>
+          <xs:attribute name="y" type="xs:float" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="FLOAT3">
+        <xs:complexType>
+          <xs:attribute name="byte" type="xs:int" fixed="12" use="required"/>
+          <xs:attribute name="comment" type="xs:string" use="optional"/>
+          <xs:attribute name="x" type="xs:float" use="required"/>
+          <xs:attribute name="y" type="xs:float" use="required"/>
+          <xs:attribute name="z" type="xs:float" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="FLOAT4">
+        <xs:complexType>
+          <xs:attribute name="byte" type="xs:int" fixed="16" use="required"/>
+          <xs:attribute name="comment" type="xs:string" use="optional"/>
+          <xs:attribute name="x" type="xs:float" use="required"/>
+          <xs:attribute name="y" type="xs:float" use="required"/>
+          <xs:attribute name="z" type="xs:float" use="required"/>
+          <xs:attribute name="w" type="xs:float" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Color4">
+        <xs:complexType>
+          <xs:attribute name="byte" type="xs:int" fixed="16" use="required"/>
+          <xs:attribute name="comment" type="xs:string" use="optional"/>
+          <xs:attribute name="r" type="xs:float" use="required"/>
+          <xs:attribute name="g" type="xs:float" use="required"/>
+          <xs:attribute name="b" type="xs:float" use="required"/>
+          <xs:attribute name="a" type="xs:float" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Color3">
+        <xs:complexType>
+          <xs:attribute name="byte" type="xs:int" fixed="12" use="required"/>
+          <xs:attribute name="comment" type="xs:string" use="optional"/>
+          <xs:attribute name="r" type="xs:float" use="required"/>
+          <xs:attribute name="g" type="xs:float" use="required"/>
+          <xs:attribute name="b" type="xs:float" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="ColorCode">
+        <xs:complexType>
+          <xs:attribute name="byte" type="xs:int" fixed="16" use="required"/>
+          <xs:attribute name="comment" type="xs:string" use="optional"/>
+          <xs:attribute name="code" type="xs:string" use="required"/>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Padding">
+        <xs:complexType>
+          <xs:attribute name="byte" type="xs:int" use="required"/>
+        </xs:complexType>
+      </xs:element>
+    </xs:choice>
+  </xs:group>
+
+  <xs:element name="MaterialSet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="Material" minOccurs="0" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:group ref="MaterialValue" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+            <xs:attribute name="id" type="xs:string" use="required"/>
+            <xs:attribute name="hash_id" type="xs:unsignedInt" use="optional"/>
+            <xs:attribute name="shaderID" type="xs:string" use="required"/>
+            <xs:attribute name="shaderHashID" type="xs:unsignedInt" use="optional"/>
           </xs:complexType>
         </xs:element>
       </xs:sequence>

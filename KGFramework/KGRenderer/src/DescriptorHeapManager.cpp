@@ -10,11 +10,12 @@ KG::Renderer::DescriptorHeapManager::~DescriptorHeapManager()
 
 void KG::Renderer::DescriptorHeapManager::Initialize( ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_DESC heapDesc, size_t descriptorSize )
 {
-	this->numMaxDescriptor = heapDesc.NumDescriptors;
+	this->heapDesc = heapDesc;
+	this->numMaxDescriptor = this->heapDesc.NumDescriptors;
 	this->descriptorSize = descriptorSize;
 
 	this->allocator.Resize( this->numMaxDescriptor );
-	device->CreateDescriptorHeap( &heapDesc, IID_PPV_ARGS( &this->_heap ) );
+	device->CreateDescriptorHeap( &this->heapDesc, IID_PPV_ARGS( &this->_heap ) );
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::DescriptorHeapManager::GetCPUHandle( size_t _index ) const
@@ -33,6 +34,10 @@ D3D12_GPU_DESCRIPTOR_HANDLE KG::Renderer::DescriptorHeapManager::GetGPUHandle( s
 
 size_t KG::Renderer::DescriptorHeapManager::RequestEmptyIndex()
 {
+	if ( this->allocator.isFull() ) 
+	{
+		this->Resize( this->numMaxDescriptor * 2 );
+	}
 	return this->allocator.RequestEmptyIndex();
 }
 
@@ -54,4 +59,24 @@ ID3D12DescriptorHeap* const* KG::Renderer::DescriptorHeapManager::GetAddressOf()
 ID3D12DescriptorHeap* KG::Renderer::DescriptorHeapManager::operator->() const
 {
 	return this->Get();
+}
+
+void KG::Renderer::DescriptorHeapManager::Resize( size_t size )
+{
+	heapDesc.NumDescriptors = size;
+	this->descriptorSize = descriptorSize;
+
+	this->allocator.Resize( this->numMaxDescriptor );
+
+	ID3D12DescriptorHeap* newHeap;
+	device->CreateDescriptorHeap( &heapDesc, IID_PPV_ARGS( &newHeap ) );
+
+	device->CopyDescriptorsSimple( 
+		this->numMaxDescriptor, 
+		this->_heap->GetCPUDescriptorHandleForHeapStart(),
+		newHeap->GetCPUDescriptorHandleForHeapStart(),
+		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
+	this->numMaxDescriptor = heapDesc.NumDescriptors;
+	this->_heap->Release();
+	this->_heap = newHeap;
 }

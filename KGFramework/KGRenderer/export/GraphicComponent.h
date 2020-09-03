@@ -173,7 +173,9 @@ namespace KG::Component
 		KG::Renderer::Shader* shaders = nullptr;
 		KG::Renderer::MaterialConstant* shaderDatas = nullptr;
 		virtual void OnDestroy() override;
+		size_t materialIndex = 0;
 	public:
+		void InitializeMaterial( const KG::Utill::HashString& materialID );
 		void InitializeShader( const KG::Utill::HashString& shaderID );
 		unsigned GetMaterialIndex() const;
 	};

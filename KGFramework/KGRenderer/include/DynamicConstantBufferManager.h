@@ -5,6 +5,33 @@
 #include <d3d12.h>
 namespace KG::Resource
 {
+	struct DynamicConstantBufferManager;
+	struct DynamicElementInterface
+	{
+		friend DynamicConstantBufferManager;
+	private:
+		DynamicBufferReader dynamicCPU;
+		DynamicBufferReader dynamicGPU;
+		size_t index;
+		DynamicElementInterface( DynamicBufferReader dynamicCPU , DynamicBufferReader dynamicGPU , size_t index)
+			:dynamicCPU( dynamicCPU ), dynamicGPU( dynamicGPU ), index(index)
+		{
+
+		}
+	public:
+		template<typename Ty>
+		const Ty& Get(size_t offsetByte )
+		{
+			return this->dynamicCPU.Get<Ty>( index, offsetByte );
+		}
+
+		template<typename Ty>
+		void Set(size_t offsetByte, const Ty& value )
+		{
+			this->dynamicCPU.Get<Ty>( index, offsetByte ) = value;
+			this->dynamicGPU.Get<Ty>( index, offsetByte ) = value;
+		}
+	};
 	struct DynamicConstantBufferManager
 	{
 		Utill::IndexBackAllocator allocator;
@@ -13,19 +40,20 @@ namespace KG::Resource
 		DynamicBufferReader dynamicGPU;
 		size_t elementSize;
 		size_t elementCount;
+		ID3D12Device* device;
 	public:
 		DynamicConstantBufferManager( ID3D12Device* device, size_t elementSize, size_t elementCount )
 		{
+			this->device = device;
 			this->elementSize = elementSize;
 			this->elementCount = elementCount;
 
-			allocator.Resize( elementCount );
 			dynamicCPU.elementSize = elementSize;
 			dynamicGPU.elementSize = elementSize;
 
-			dynamicCPU.buffer = new std::byte[elementSize * elementCount];
-			this->buffer = Renderer::CreateUploadHeapBuffer( device, elementSize * elementCount );
-			this->buffer->Map( 0, nullptr, (void**)&this->dynamicGPU.buffer );
+			allocator.Resize( elementCount );
+
+			Resize( elementCount );
 		}
 		~DynamicConstantBufferManager()
 		{
@@ -35,13 +63,21 @@ namespace KG::Resource
 		}
 		void Resize(size_t newElementCount)
 		{
+			DebugNormalMessage( "ResizeDynamicBuffer" );
 			std::byte* newBuffer = new std::byte[elementSize * newElementCount];
 			allocator.Resize( newElementCount );
+
+			KG::Renderer::TryRelease( this->buffer );
+			this->buffer = Renderer::CreateUploadHeapBuffer( device, elementSize * newElementCount );
+			this->buffer->Map( 0, nullptr, (void**)&this->dynamicGPU.buffer );
+
 			if ( this->dynamicCPU.buffer != nullptr )
 			{
 				std::memcpy( newBuffer, this->dynamicCPU.buffer, elementSize * elementCount );
+				std::memcpy( this->dynamicGPU.buffer, this->dynamicCPU.buffer, elementSize * elementCount );
 				delete this->dynamicCPU.buffer;
 			}
+
 			this->dynamicCPU.buffer = newBuffer;
 			this->elementCount = newElementCount;
 		}
@@ -54,16 +90,9 @@ namespace KG::Resource
 			this->allocator.ReleaseIndex( index );
 		}
 
-		template<typename Ty>
-		const Ty& Get(size_t index, size_t offsetByte)
+		DynamicElementInterface GetElement(size_t index)
 		{
-			return this->dynamicCPU.Get<Ty>( index, offsetByte );
-		}
-
-		template<typename Ty>
-		void Set( size_t index, size_t offsetByte, const Ty& value)
-		{
-			return this->dynamicGPU.Get<Ty>( index, offsetByte ) = value;
+			return DynamicElementInterface( this->dynamicCPU, this->dynamicGPU, index );
 		}
 		
 		auto GetBuffer()
@@ -71,4 +100,5 @@ namespace KG::Resource
 			return this->buffer;
 		}
 	};
+
 }

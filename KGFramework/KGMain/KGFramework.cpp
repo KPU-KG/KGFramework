@@ -7,7 +7,6 @@
 #include "LambdaComponent.h"
 #include "InputManager.h"
 
-
 KG::GameFramework::GameFramework()
 {
 	this->system = std::make_unique<Systems>();
@@ -85,10 +84,11 @@ void KG::GameFramework::OnTestInit()
 				using namespace KG::Input;
 
 				if ( InputManager::GetInputManager()->GetKeyState( VK_SPACE ) == KeyState::Down )
-				{
+				{ 
 					DebugNormalMessage( "Toggle Changed" );
 					tos = !tos;
 				}
+
 				if ( tos )
 					trans->RotateEuler( 0.0f, 180.0f * elapsedTime, 0.0f );
 
@@ -98,11 +98,11 @@ void KG::GameFramework::OnTestInit()
 				}
 			}
 		);
-		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( "deferredDefault"_id ) );
+		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( "GrassMaterial"_id ) );
 		auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "test"_id ) );
 		auto* ren = this->renderer->GetNewRenderComponent();
 		testGameObject.name = "meshObject0";
-		testGameObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
+		testGameObject.AddComponent( tran );
 		testGameObject.AddComponent( mat );
 		testGameObject.AddComponent( lam );
 		testGameObject.AddComponent( geo );
@@ -114,7 +114,7 @@ void KG::GameFramework::OnTestInit()
 	}
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
-		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( "deferredDefault"_id ) );
+		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( "GrassMaterial"_id ) );
 		auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "plane"_id ) );
 		auto* ren = this->renderer->GetNewRenderComponent();
 		testPlaneObject.name = "plane";
@@ -192,21 +192,21 @@ void KG::GameFramework::OnTestInit()
 			size_t index = cdas * y + x;
 			{
 				auto* tran = this->system->transformSystem.GetNewComponent();
-				//auto* lam = this->system->lambdaSystem.GetNewComponent();
-				//static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
-				//	[]( KG::Core::GameObject* gameObject, float elapsedTime )
-				//	{
-				//		auto tran = gameObject->GetComponent<KG::Component::TransformComponent>();
-				//		tran->RotateEuler( 0.0f, 30.0f * elapsedTime, 0.0f );
-				//	}
-				//);
-				auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( "deferredDefault"_id ) );
-				auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( (x & 1) !=  (y & 1) ? "cube"_id : "sphere"_id ) );
+				auto* lam = this->system->lambdaSystem.GetNewComponent();
+				static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+					[]( KG::Core::GameObject* gameObject, float elapsedTime )
+					{
+						auto tran = gameObject->GetComponent<KG::Component::TransformComponent>();
+						tran->RotateEuler( 0.0f, 90.0f * elapsedTime, 0.0f );
+					}
+				);
+				auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? "GrassMaterial"_id : "TileMaterial"_id ) );
+				auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( (x & 1) !=  (y & 1) ? "cube"_id : "cone"_id ) );
 				auto* ren = this->renderer->GetNewRenderComponent();
 				testCubeObjects[index].name = "meshObject0";
 				testCubeObjects[index].AddComponent( tran );
 				testCubeObjects[index].AddComponent( mat );
-				//testCubeObjects[index].AddComponent( lam );
+				testCubeObjects[index].AddComponent( lam );
 				testCubeObjects[index].AddComponent( geo );
 				testCubeObjects[index].AddComponent( ren );
 				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
@@ -226,7 +226,7 @@ void KG::GameFramework::OnTestInit()
 				testPointLightObjects[index].AddComponent( light );
 				testPointLightObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
 
-				tran->Translate( 0.5f, 0, 0 );
+				tran->Translate( 0.5f, 0, 0.5f );
 			}
 
 		}
@@ -237,7 +237,7 @@ void KG::GameFramework::OnTestInit()
 		auto* light = this->renderer->GetNewLightComponent();
 		testLightObject.name = "Light";
 		testLightObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
-		light->SetDirectionalLight( DirectX::XMFLOAT3( 0.1f, 0.1f, 0.1f ) * 1, DirectX::XMFLOAT3( 0.0f, -1.0f, 0.0f) );
+		light->SetDirectionalLight( DirectX::XMFLOAT3( 0.1f, 0.1f, 0.1f ) * 5, DirectX::XMFLOAT3( 0.0f, -1.0f, 0.0f) );
 		testLightObject.AddComponent( light );
 	}
 

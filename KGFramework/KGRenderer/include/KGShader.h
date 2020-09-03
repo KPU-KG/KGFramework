@@ -1,6 +1,8 @@
 #pragma once
 #include <d3d12.h>
+#include <map>
 #include <memory>
+#include "hash.h"
 #include "MathHelper.h"
 #include "ResourceMetadata.h"
 #include "DynamicConstantBufferManager.h"
@@ -45,11 +47,6 @@ namespace KG::Renderer
 		}
 	}
 
-	struct MaterialConstant
-	{
-
-	};
-
 	class Shader
 	{
 	private:
@@ -59,8 +56,9 @@ namespace KG::Renderer
 		unsigned renderPriority = 0;
 		ShaderType shaderType = ShaderType::Opaque;
 		std::unique_ptr<Resource::DynamicConstantBufferManager> materialBuffer;
-
+		std::map<KG::Utill::HashString, size_t> materialIndex;
 		void CreateMaterialBuffer(const KG::Resource::Metadata::ShaderSetData& data );
+
 	public:
 		Shader( const KG::Resource::Metadata::ShaderSetData& data );
 		~Shader();
@@ -71,6 +69,10 @@ namespace KG::Renderer
 		auto GetShaderType() const { return this->shaderType; }
 		auto GetRenderPriority() const { return this->renderPriority; }
 
+		size_t GetMaterialIndex( const KG::Utill::HashString& ID );
+		bool CheckMaterialLoaded( const KG::Utill::HashString& ID );
+		size_t RequestMaterialIndex( const KG::Utill::HashString& ID );
+		Resource::DynamicElementInterface GetMaterialElement( const KG::Utill::HashString& ID );
 	private:
 		static D3D12_RASTERIZER_DESC CreateRasterizerState(const KG::Resource::Metadata::ShaderSetData& data);
 		static D3D12_BLEND_DESC CreateBlendState(const KG::Resource::Metadata::ShaderSetData& data);

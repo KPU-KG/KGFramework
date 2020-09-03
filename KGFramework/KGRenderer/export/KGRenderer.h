@@ -54,6 +54,7 @@ namespace KG::Renderer
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() = 0;
 		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent( const KG::Utill::HashString& id ) = 0;
 		virtual KG::Component::MaterialComponent* GetNewMaterialComponent( const KG::Utill::HashString& id ) = 0;
+		virtual KG::Component::MaterialComponent* GetNewMaterialComponentFromShader( const KG::Utill::HashString& id ) = 0;
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() = 0;
 		virtual KG::Component::LightComponent* GetNewLightComponent() = 0;
 

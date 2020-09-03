@@ -171,7 +171,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="export\Texture.cpp" />
     <ClCompile Include="src\D3D12Helper.cpp" />
+    <ClCompile Include="src\DDSTextureLoader.cpp" />
     <ClCompile Include="src\DescriptorHeapManager.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\GraphicComponent.cpp" />
@@ -195,8 +197,10 @@
     <ClInclude Include="export\GraphicComponent.h" />
     <ClInclude Include="export\KGRenderer.h" />
     <ClInclude Include="export\ResourceMetaData.h" />
+    <ClInclude Include="export\Texture.h" />
     <ClInclude Include="include\BuddyAllocator.h" />
     <ClInclude Include="include\CameraData.h" />
+    <ClInclude Include="include\DDSTextureLoader.h" />
     <ClInclude Include="include\DynamicData.h" />
     <ClInclude Include="include\DynamicConstantBufferManager.h" />
     <ClInclude Include="include\D3D12Helper.h" />
@@ -217,6 +221,7 @@
     <ClInclude Include="include\ShaderData.h" />
     <ClInclude Include="include\pch.h" />
     <ClInclude Include="include\ResourceContainer.h" />
+    <ClInclude Include="src\TextureDescriptorManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KGLib\KGLib.vcxproj">

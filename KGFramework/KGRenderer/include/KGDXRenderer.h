@@ -105,6 +105,7 @@ namespace KG::Renderer
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() override;
 		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent( const KG::Utill::HashString& id ) override;
 		virtual KG::Component::MaterialComponent* GetNewMaterialComponent( const KG::Utill::HashString& id ) override;
+		virtual KG::Component::MaterialComponent* GetNewMaterialComponentFromShader( const KG::Utill::HashString& id ) override;
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() override;
 		virtual KG::Component::LightComponent* GetNewLightComponent() override;
 
@@ -120,6 +121,7 @@ namespace KG::Renderer
 		static KGDXRenderer* GetInstance();
 		ID3D12RootSignature* GetGeneralRootSignature() const;
 		KGRenderEngine* GetRenderEngine() const;
+		DescriptorHeapManager* GetDescriptorHeapManager() const;
 		
 	};
 }

@@ -17,9 +17,14 @@ namespace KG::Utill
 			: checker( max )
 		{
 		}
+		bool isFull() const
+		{
+			return this->checker.size() == csr;
+		}
+
 		index_type RequestEmptyIndex()
 		{
-			DebugAssertion( this->checker.size() != csr, L"µğ½ºÅ©¸³ÅÍ Èü ¸Å´ÏÀú°¡ ²ËÃ¡½À´Ï´Ù." );
+			DebugAssertion( !this->isFull(), L"µğ½ºÅ©¸³ÅÍ Èü ¸Å´ÏÀú°¡ ²ËÃ¡½À´Ï´Ù." );
 			if ( this->emptyCounter == 0 )
 			{
 				auto result = this->csr;

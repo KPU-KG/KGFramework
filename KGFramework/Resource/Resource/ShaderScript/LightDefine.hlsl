@@ -15,10 +15,10 @@ struct LightData
 
 StructuredBuffer<LightData> lightInfo : register(t0);
 
-Texture2D InputGBuffer0 : register(t1);
-Texture2D InputGBuffer1 : register(t2);
-Texture2D InputGBuffer2 : register(t3);
-Texture2D InputGBuffer3 : register(t4);
-Texture2D InputGBuffer4 : register(t5);
+Texture2D InputGBuffer0 : register(t2);
+Texture2D InputGBuffer1 : register(t3);
+Texture2D InputGBuffer2 : register(t4);
+Texture2D InputGBuffer3 : register(t5);
+Texture2D InputGBuffer4 : register(t6);
 
 #endif

@@ -1,0 +1,7 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<TextureSet xmlns="KGResource.xsd">
+    <Texture id="tile" fileDir="Resource/Texture/tile.dds" dimension="Texture2D" format="DDS" hash_id="3550634569"/>
+    <Texture id="brick" fileDir="Resource/Texture/bricks.dds" dimension="Texture2D" format="DDS" hash_id="3359382744"/>
+    <Texture id="brick2" fileDir="Resource/Texture/bricks2.dds" dimension="Texture2D" format="DDS" hash_id="1061636506"/>
+    <Texture id="grass" fileDir="Resource/Texture/grass.dds" dimension="Texture2D" format="DDS" hash_id="3681460185"/>
+</TextureSet>

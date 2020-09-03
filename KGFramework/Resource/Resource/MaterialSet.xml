@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<MaterialSet xmlns="KGResource.xsd">
+  <Material id="GrassMaterial" shaderID="deferredDefault" hash_id="3363944734" shaderHashID="1156521651">
+    <Texture byte="4" comment="albedoTexture" id="grass" hash_id="3681460185"/>
+    <FLOAT2 byte="8" comment="UVsize" x="0.5" y="0.5"/>
+    <Padding byte="4"/>
+    <ColorCode byte="16" comment="albedoColor" code="96AAEB"/>
+  </Material>
+  <Material id="TileMaterial" shaderID="deferredDefault" hash_id="2114707342" shaderHashID="1156521651">
+    <Texture byte="4" comment="albedoTexture" id="tile" hash_id="3550634569"/>
+    <FLOAT2 byte="8" comment="UVsize" x="0.5" y="0.5"/>
+    <Padding byte="4"/>
+    <ColorCode byte="16" comment="albedoColor" code="FF748C"/>
+  </Material>
+</MaterialSet>

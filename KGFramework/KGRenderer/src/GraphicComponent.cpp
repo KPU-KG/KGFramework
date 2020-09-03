@@ -12,6 +12,7 @@
 #include "KGDXRenderer.h"
 #include "KGGeometry.h"
 #include "ResourceContainer.h"
+#include "KGResourceLoader.h"
 #include "D3D12Helper.h"
 #include "RootParameterIndex.h"
 #include "RenderTexture.h"
@@ -28,7 +29,10 @@ void KG::Component::Render3DComponent::OnPreRender()
 	int updateCount = this->renderJob->GetUpdateCount();
 	auto mat = Math::Matrix4x4::Transpose( this->transform->GetGlobalWorldMatrix() );
 	this->renderJob->objectBuffer->mappedData[updateCount].object.world = mat;
-	this->renderJob->objectBuffer->mappedData[updateCount].object.materialIndex = this->material->GetMaterialIndex();
+	if ( this->material )
+	{
+		this->renderJob->objectBuffer->mappedData[updateCount].object.materialIndex = this->material->GetMaterialIndex();
+	}
 }
 
 void KG::Component::Render3DComponent::OnCreate( KG::Core::GameObject* gameObject )
@@ -77,6 +81,14 @@ void KG::Component::Render3DComponent::RegisterGeometry( GeometryComponent* geom
 	this->geometry = geometry;
 }
 
+void KG::Component::MaterialComponent::InitializeMaterial( const KG::Utill::HashString& materialID )
+{
+	auto* inst = KG::Resource::ResourceContainer::GetInstance();
+	auto [index, shaderId] = inst->LoadMaterial( materialID );
+	this->materialIndex = index;
+	this->InitializeShader( shaderId );
+}
+
 void KG::Component::MaterialComponent::InitializeShader( const KG::Utill::HashString& shaderID )
 {
 	auto* inst = KG::Resource::ResourceContainer::GetInstance();
@@ -85,7 +97,7 @@ void KG::Component::MaterialComponent::InitializeShader( const KG::Utill::HashSt
 
 unsigned KG::Component::MaterialComponent::GetMaterialIndex() const
 {
-	return 0;
+	return this->materialIndex;
 }
 
 void KG::Component::MaterialComponent::OnDestroy()

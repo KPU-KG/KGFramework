@@ -7,6 +7,25 @@
 #include "RootParameterIndex.h"
 
 using namespace KG::Renderer;
+size_t KG::Renderer::Shader::GetMaterialIndex( const KG::Utill::HashString& ID )
+{
+	return this->materialIndex.at( ID );
+}
+bool KG::Renderer::Shader::CheckMaterialLoaded( const KG::Utill::HashString& ID )
+{
+	return this->materialIndex.count( ID );
+}
+size_t KG::Renderer::Shader::RequestMaterialIndex( const KG::Utill::HashString& ID )
+{
+	auto index = this->materialBuffer->RequestEmptyIndex();
+	this->materialIndex.emplace( ID, index );
+	return index;
+}
+KG::Resource::DynamicElementInterface KG::Renderer::Shader::GetMaterialElement( const KG::Utill::HashString& ID )
+{
+	auto index = this->GetMaterialIndex( ID );
+	return this->materialBuffer->GetElement( index );
+}
 D3D12_RASTERIZER_DESC KG::Renderer::Shader::CreateRasterizerState( const KG::Resource::Metadata::ShaderSetData& data )
 {
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
@@ -137,7 +156,7 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata( const KG::Resource:
 {
 	UINT nCompileFlags = 0;
 #if defined(_DEBUG)
-	nCompileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+	nCompileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION ;
 #endif
 
 	ID3DBlob* errorblob;
@@ -145,7 +164,7 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata( const KG::Resource:
 	static std::wstring buffer;
 	buffer.assign( data.fileDir.begin(), data.fileDir.end() );
 	HRESULT hr = ::D3DCompileFromFile( buffer.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, data.entry.c_str(),
-		data.type.c_str(), nCompileFlags, 0, &shaderBlob, &errorblob );
+		data.type.c_str(), nCompileFlags | D3DCOMPILE_ENABLE_UNBOUNDED_DESCRIPTOR_TABLES, 0, &shaderBlob, &errorblob );
 
 	if ( errorblob != nullptr )
 	{
@@ -157,9 +176,13 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata( const KG::Resource:
 void KG::Renderer::Shader::CreateMaterialBuffer( const KG::Resource::Metadata::ShaderSetData& data )
 {
 	auto device = KG::Renderer::KGDXRenderer::GetInstance()->GetD3DDevice();
-	auto elementSize = 64;
-	auto elementCount = 100;
-	materialBuffer = std::make_unique<KG::Resource::DynamicConstantBufferManager>( device, elementSize, elementCount );
+	auto elementSize = data.materialParameterSize;
+	auto elementCount = 10;
+	if ( elementSize > 0 )
+	{
+		DebugNormalMessage( "Create Material Buffer" );
+		materialBuffer = std::make_unique<KG::Resource::DynamicConstantBufferManager>( device, elementSize, elementCount );
+	}
 }
 
 KG::Renderer::Shader::Shader( const KG::Resource::Metadata::ShaderSetData& data )
@@ -178,7 +201,7 @@ void KG::Renderer::Shader::Set( ID3D12GraphicsCommandList* pd3dCommandList )
 	pd3dCommandList->SetPipelineState( this->isWireFrame ? this->wireframePso : this->normalPso );
 	if ( this->materialBuffer )
 	{
-		pd3dCommandList->SetGraphicsRootConstantBufferView( RootParameterIndex::MaterialData, this->materialBuffer->GetBuffer()->GetGPUVirtualAddress() );
+		pd3dCommandList->SetGraphicsRootShaderResourceView( RootParameterIndex::MaterialData, this->materialBuffer->GetBuffer()->GetGPUVirtualAddress() );
 	}
 }
 
@@ -201,6 +224,8 @@ void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::Sha
 
 	this->renderPriority = data.renderPriority;
 	this->shaderType = (ShaderType)data.shaderType;
+
+	this->CreateMaterialBuffer( data );
 
 	//VS
 	if ( data.vertexShader.isEnable )

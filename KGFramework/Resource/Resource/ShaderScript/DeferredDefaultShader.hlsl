@@ -4,10 +4,13 @@
 
 struct MaterialData
 {
+    uint TextureIndex;
+    float2 UVSize;
+    float pad;
     float4 color;
 };
 
-ConstantBuffer<MaterialData> materialData : register(b0, space1);
+StructuredBuffer<MaterialData> materialData : register(t1);
 
 struct VSOutput
 {
@@ -15,6 +18,7 @@ struct VSOutput
     float4 worldPosition : WPOSITION;
     float4 worldNormal : WNORMAL;
     float2 uv : TEXCOORD;
+    uint InstanceID : SV_InstanceID;
 };
 
 VSOutput DefaultVertexFuction(VertexData input, uint InstanceID : SV_InstanceID)
@@ -27,13 +31,17 @@ VSOutput DefaultVertexFuction(VertexData input, uint InstanceID : SV_InstanceID)
     result.worldPosition = mul(float4(input.position, 1), objectInfo[InstanceID].world);
     result.worldNormal = mul(float4(input.normal, 0), objectInfo[InstanceID].world);
     result.uv = input.uv;
+    result.InstanceID = InstanceID; 
     return result;
 }
 
 GBufferOut DefaultPixelFuction(VSOutput input)
 {
     PixelResult result;
-    result.albedo = float3(1, 1, 1);
+    
+    MaterialData mat = materialData[objectInfo[input.InstanceID].materialIndex];
+    
+    result.albedo = shaderTexture1[mat.TextureIndex].Sample(gsamAnisotoropicWrap, input.uv).xyz * mat.color.xyz;
     result.reflection = 1.0f;
     
     result.specular = 0.0f;

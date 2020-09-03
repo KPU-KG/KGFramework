@@ -21,21 +21,61 @@ KG::Resource::ResourceContainer::~ResourceContainer()
 
 KG::Renderer::Shader* KG::Resource::ResourceContainer::LoadShader( const KG::Utill::HashString& id )
 {
-	auto metaData = ResourceLoader::LoadShaderSetFromFile( "Resource/ShaderCode.xml", id );
-	return &this->shaders.emplace( id, metaData ).first->second;
+	if ( this->shaders.count( id ) )
+	{
+		return &this->shaders.at( id );
+	}
+	else 
+	{
+		auto metaData = ResourceLoader::LoadShaderSetFromFile( "Resource/ShaderCode.xml", id );
+		return &this->shaders.emplace( id, metaData ).first->second;
+	}
 }
 
 KG::Renderer::Geometry* KG::Resource::ResourceContainer::LoadGeometry( const KG::Utill::HashString& id )
 {
-	auto metaData = ResourceLoader::LoadGeometrySetFromFile( "Resource/GeometrySet.xml", id );
-	auto* geo = &this->geometrys.emplace( id, metaData ).first->second;
-	return geo;
+	if ( this->geometrys.count( id ) )
+	{
+		return &this->geometrys.at( id );
+	}
+	else
+	{
+		auto metaData = ResourceLoader::LoadGeometrySetFromFile( "Resource/GeometrySet.xml", id );
+		return &this->geometrys.emplace( id, metaData ).first->second;
+	}
+}
+
+KG::Resource::Texture* KG::Resource::ResourceContainer::LoadTexture( const KG::Utill::HashString& id )
+{
+	if ( this->textures.count( id ) )
+	{
+		return &this->textures.at( id );
+	}
+	else
+	{
+		auto metaData = ResourceLoader::LoadTextureFromFile( "Resource/TextureSet.xml", id );
+		return &this->textures.emplace( id, metaData ).first->second;
+	}
+}
+
+std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceContainer::LoadMaterial( const KG::Utill::HashString& id )
+{
+	if ( this->materials.count( id ) )
+	{
+		return this->materials.at( id );
+	}
+	else
+	{
+		auto result = KG::Resource::ResourceLoader::LoadMaterialFromFile( "Resource/MaterialSet.xml", id );
+		return this->materials.emplace( id, result ).first->second;
+	}
 }
 
 void KG::Resource::ResourceContainer::Clear()
 {
 	this->shaders.clear();
 	this->geometrys.clear();
+	this->textures.clear();
 	DebugNormalMessage( TOSTRING( ResourceContainer ) << "All Resource Cleared" );
 }
 
@@ -48,4 +88,12 @@ KG::Resource::ResourceContainer* KG::Resource::ResourceContainer::GetInstance()
 		ResourceContainer::instance = std::make_unique<ResourceContainer>();
 	}
 	return ResourceContainer::instance.get();
+}
+
+void KG::Resource::ResourceContainer::Process( ID3D12GraphicsCommandList* cmdList )
+{
+	for ( auto& [key, value] : this->textures )
+	{
+		value.Process( cmdList );
+	}
 }

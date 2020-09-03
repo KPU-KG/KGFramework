@@ -16,5 +16,7 @@ namespace KG::Resource
 	{
 		static Metadata::ShaderSetData LoadShaderSetFromFile( const std::string& xmlDir, const KG::Utill::HashString& targetID );
 		static Metadata::GeometrySetData LoadGeometrySetFromFile( const std::string& xmlDir, const KG::Utill::HashString& targetID );
+		static Metadata::TextureData LoadTextureFromFile( const std::string& xmlDir, const KG::Utill::HashString& targetID );
+		static std::pair<size_t, KG::Utill::HashString> LoadMaterialFromFile( const std::string& xmlDir, const KG::Utill::HashString& targetID );
 	};
 };

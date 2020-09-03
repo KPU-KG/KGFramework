@@ -78,6 +78,12 @@
     <ClCompile Include="src\DescriptorHeapManager.cpp">
       <Filter>소스 파일\Core</Filter>
     </ClCompile>
+    <ClCompile Include="export\Texture.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DDSTextureLoader.cpp">
+      <Filter>소스 파일\etc</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">
@@ -156,6 +162,15 @@
       <Filter>헤더 파일\Core</Filter>
     </ClInclude>
     <ClInclude Include="include\DynamicConstantBufferManager.h">
+      <Filter>헤더 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="export\Texture.h">
+      <Filter>헤더 파일\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DDSTextureLoader.h">
+      <Filter>헤더 파일\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="src\TextureDescriptorManager.h">
       <Filter>헤더 파일\Core</Filter>
     </ClInclude>
   </ItemGroup>
