@@ -18,13 +18,19 @@ MeshData KG::Utill::ModelData::processMesh(aiMesh* mesh, const aiScene* scene)
 	}
 	data.positions.reserve(mesh->mNumVertices);
 	data.normals.reserve(mesh->mNumVertices);
+	data.biTangent.reserve( mesh->mNumVertices );
+	data.tangent.reserve( mesh->mNumVertices );
+
+
 	auto textureCount = std::count_if(std::begin(mesh->mTextureCoords), std::end(mesh->mTextureCoords), [](const auto ptr) {return ptr != nullptr; });
 	data.uvs.resize(textureCount);
 
 	for (size_t i = 0; i < mesh->mNumVertices; i++)
 	{
 		data.positions.push_back(XMFLOAT3(mesh->mVertices[i].x, mesh->mVertices[i].y, mesh->mVertices[i].z));
-		data.normals.push_back(XMFLOAT3(mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z));
+		data.normals.push_back( XMFLOAT3( mesh->mNormals[i].x, mesh->mNormals[i].y, mesh->mNormals[i].z ) );
+		data.tangent.push_back( XMFLOAT3( mesh->mTangents[i].x, mesh->mTangents[i].y, mesh->mTangents[i].z ) );
+		data.biTangent.push_back( XMFLOAT3( mesh->mBitangents[i].x, mesh->mBitangents[i].y, mesh->mBitangents[i].z ) );
 
 		for (size_t j = 0; j < textureCount; j++)
 		{
@@ -53,7 +59,7 @@ void KG::Utill::ModelData::LoadModel(const std::string& path)
 {
 	Assimp::Importer importer;
 	//const aiScene* scene = importer.ReadFile( path, aiProcess_Triangulate | aiProcess_FlipUVs );
-	const aiScene* scene = importer.ReadFile( path, aiProcess_Triangulate | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality );
+	const aiScene* scene = importer.ReadFile( path, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality );
 	//flag = process http://assimp.sourceforge.net/lib_html/postprocess_8h.html
 
 	if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)

@@ -17,6 +17,8 @@ namespace KG::Utill
 		std::vector<UINT> indices;
 		std::vector<XMFLOAT3> positions;
 		std::vector<XMFLOAT3> normals;
+		std::vector<XMFLOAT3> tangent;
+		std::vector<XMFLOAT3> biTangent;
 		std::vector<std::vector<XMFLOAT2>> uvs;
 	};
 	struct ModelData

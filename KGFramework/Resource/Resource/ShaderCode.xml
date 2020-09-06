@@ -4,6 +4,10 @@
         <VertexShader fileDir="Resource/ShaderScript/DeferredDefaultShader.hlsl" entry="DefaultVertexFuction" type="vs_5_1"/>
         <PixelShader fileDir="Resource/ShaderScript/DeferredDefaultShader.hlsl" entry="DefaultPixelFuction" type="ps_5_1"/>
     </GraphicShaderSet>
+    <GraphicShaderSet id="PBRDefault" shaderType="opaque" enableBackfaceCulling="true" enableDepthCliping="true" blendOp="opaque" renderPriority="5000" materialParameterSize="32" hash_id="3533550914">
+        <VertexShader fileDir="Resource/ShaderScript/PBRDeferredDefaultShader.hlsl" entry="DefaultVertexFuction" type="vs_5_1"/>
+        <PixelShader fileDir="Resource/ShaderScript/PBRDeferredDefaultShader.hlsl" entry="DefaultPixelFuction" type="ps_5_1"/>
+    </GraphicShaderSet>
     <GraphicShaderSet id="directionalLight" shaderType="lightPass" enableBackfaceCulling="false" enableDepthCliping="false" blendOp="lightPass" renderPriority="5000" materialParameterSize="0" hash_id="3219771761">
         <VertexShader fileDir="Resource/ShaderScript/lightShader.hlsl" entry="DirectionalLightVertexFuction" type="vs_5_1"/>
         <PixelShader fileDir="Resource/ShaderScript/lightShader.hlsl" entry="DirectionalLightPixelFuction" type="ps_5_1"/>

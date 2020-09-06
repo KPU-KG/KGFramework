@@ -4,7 +4,9 @@ struct VertexData
 {
 	float3 position : POSITION;
 	float3 normal : NORMAL;
-	float2 uv : TEXCOORD;
+	float3 tangent : TANGENT;
+	float3 bitangent : BITANGENT;
+    float2 uv : TEXCOORD;
 };
 
 cbuffer CameraData : register(b0)

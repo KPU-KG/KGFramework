@@ -73,6 +73,9 @@ void KG::GameFramework::OnTestInit()
 	static KG::Core::GameObject testLightObject;
 	static KG::Core::GameObject testPointLightObjects[10000];
 
+
+	constexpr auto texOne = "PBRStone"_id;
+	constexpr auto texTwo = "TileMaterial"_id;
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
@@ -84,7 +87,7 @@ void KG::GameFramework::OnTestInit()
 				using namespace KG::Input;
 
 				if ( InputManager::GetInputManager()->GetKeyState( VK_SPACE ) == KeyState::Down )
-				{ 
+				{
 					DebugNormalMessage( "Toggle Changed" );
 					tos = !tos;
 				}
@@ -98,7 +101,7 @@ void KG::GameFramework::OnTestInit()
 				}
 			}
 		);
-		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( "GrassMaterial"_id ) );
+		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( texOne ) );
 		auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "test"_id ) );
 		auto* ren = this->renderer->GetNewRenderComponent();
 		testGameObject.name = "meshObject0";
@@ -114,7 +117,7 @@ void KG::GameFramework::OnTestInit()
 	}
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
-		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( "GrassMaterial"_id ) );
+		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( texOne ) );
 		auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "plane"_id ) );
 		auto* ren = this->renderer->GetNewRenderComponent();
 		testPlaneObject.name = "plane";
@@ -124,7 +127,7 @@ void KG::GameFramework::OnTestInit()
 		testPlaneObject.AddComponent( ren );
 		testPlaneObject.GetComponent<KG::Component::TransformComponent>()->Translate( 15.0f, -0.5f, 15.0f );
 		testPlaneObject.GetComponent<KG::Component::TransformComponent>()->RotateEuler( 90.0f, 0.0f, 0.0f );
-		testPlaneObject.GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3(1,1,1) * 20);
+		testPlaneObject.GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) * 20 );
 
 	}
 	{
@@ -200,8 +203,8 @@ void KG::GameFramework::OnTestInit()
 						tran->RotateEuler( 0.0f, 90.0f * elapsedTime, 0.0f );
 					}
 				);
-				auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? "GrassMaterial"_id : "TileMaterial"_id ) );
-				auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( (x & 1) !=  (y & 1) ? "cube"_id : "cone"_id ) );
+				auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? texOne : texTwo ) );
+				auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( (x & 1) !=  (y & 1) ? "sphere"_id : "cone"_id ) );
 				auto* ren = this->renderer->GetNewRenderComponent();
 				testCubeObjects[index].name = "meshObject0";
 				testCubeObjects[index].AddComponent( tran );
@@ -237,7 +240,7 @@ void KG::GameFramework::OnTestInit()
 		auto* light = this->renderer->GetNewLightComponent();
 		testLightObject.name = "Light";
 		testLightObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
-		light->SetDirectionalLight( DirectX::XMFLOAT3( 0.1f, 0.1f, 0.1f ) * 5, DirectX::XMFLOAT3( 0.0f, -1.0f, 0.0f) );
+		light->SetDirectionalLight( DirectX::XMFLOAT3( 0.1f, 0.1f, 0.1f ) * 9, DirectX::XMFLOAT3( 0.0f, -1.0f, -1.0f) );
 		testLightObject.AddComponent( light );
 	}
 

@@ -6,7 +6,7 @@ namespace KG::Utill
 	using hashType = unsigned;
 	struct HashString;
 
-#ifdef _DEBUG
+#ifdef _DEBUG_ID
 	using ID = const char const*;
 	using _ID = const char const*;
 #else
@@ -20,7 +20,7 @@ namespace KG::Utill
 		return ((count ? Hash(s, count - 1) : 11u) ^ s[count]) * 31u;
 	}
 
-#ifdef _DEBUG
+#ifdef _DEBUG_ID
 	constexpr const char* GetID(const char* s, size_t count)
 	{
 		return s;
@@ -36,7 +36,7 @@ namespace KG::Utill
 	struct HashString
 	{
 		hashType value;
-#ifdef _DEBUG
+#ifdef _DEBUG_ID
 		std::string srcString = "NotDefined";
 #endif
 		HashString(hashType hash)
@@ -47,7 +47,7 @@ namespace KG::Utill
 		HashString(const std::string& str)
 		{
 			this->value = Hash(str.c_str(), str.length());
-#ifdef _DEBUG
+#ifdef _DEBUG_ID
 			this->srcString = str;
 #endif
 		}
@@ -55,7 +55,7 @@ namespace KG::Utill
 		HashString(const HashString& other)
 			:value(other.value)
 		{
-#ifdef _DEBUG
+#ifdef _DEBUG_ID
 			this->srcString = other.srcString;
 #endif
 		}
@@ -81,6 +81,7 @@ namespace KG::Utill
 
 
 };
+
 
 /// <summary>
 /// 문자열 해싱을 위한 연산자 오버로딩 입니다.

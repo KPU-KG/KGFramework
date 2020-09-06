@@ -13,8 +13,10 @@ namespace KG::Renderer
 	{
 		XMFLOAT3 position;
 		XMFLOAT3 normal;
+		XMFLOAT3 tangent;
+		XMFLOAT3 bitangent;
 		XMFLOAT2 uv;
-		static const std::array<D3D12_INPUT_ELEMENT_DESC, 3> inputElementDesc;
+		static const std::array<D3D12_INPUT_ELEMENT_DESC, 5> inputElementDesc;
 		static D3D12_INPUT_LAYOUT_DESC GetInputLayoutDesc();
 	};
 

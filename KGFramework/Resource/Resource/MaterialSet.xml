@@ -1,15 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
 <MaterialSet xmlns="KGResource.xsd">
-  <Material id="GrassMaterial" shaderID="deferredDefault" hash_id="3363944734" shaderHashID="1156521651">
-    <Texture byte="4" comment="albedoTexture" id="grass" hash_id="3681460185"/>
-    <FLOAT2 byte="8" comment="UVsize" x="0.5" y="0.5"/>
-    <Padding byte="4"/>
-    <ColorCode byte="16" comment="albedoColor" code="96AAEB"/>
-  </Material>
-  <Material id="TileMaterial" shaderID="deferredDefault" hash_id="2114707342" shaderHashID="1156521651">
-    <Texture byte="4" comment="albedoTexture" id="tile" hash_id="3550634569"/>
-    <FLOAT2 byte="8" comment="UVsize" x="0.5" y="0.5"/>
-    <Padding byte="4"/>
-    <ColorCode byte="16" comment="albedoColor" code="FF748C"/>
-  </Material>
+    <Material id="GrassMaterial" shaderID="deferredDefault" hash_id="3363944734" shaderHashID="1156521651">
+        <Texture byte="4" comment="albedoTexture" id="grass" hash_id="3681460185"/>
+        <FLOAT2 byte="8" comment="UVsize" x="0.5" y="0.5"/>
+        <Padding byte="4"/>
+        <ColorCode byte="16" comment="albedoColor" code="96AAEB"/>
+    </Material>
+    <Material id="TileMaterial" shaderID="deferredDefault" hash_id="2114707342" shaderHashID="1156521651">
+        <Texture byte="4" comment="albedoTexture" id="tile" hash_id="3550634569"/>
+        <FLOAT2 byte="8" comment="UVsize" x="0.5" y="0.5"/>
+        <Padding byte="4"/>
+        <ColorCode byte="16" comment="albedoColor" code="FF748C"/>
+    </Material>
+    <Material id="PBRMetal" shaderID="PBRDefault" hash_id="1858199364" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="metal_color" hash_id="1743296994"/>
+        <Texture byte="4" comment="normalTexture" id="metal_normal" hash_id="2012282528"/>
+        <Texture byte="4" comment="metalicTexture" id="metal_metalic" hash_id="2937800030"/>
+        <Texture byte="4" comment="roughnessTexture" id="metal_rough" hash_id="2279019576"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="4" y="4"/>
+        <Padding byte="4"/>
+        <ColorCode byte="16" comment="albedoColor" code="FF748C"/>
+    </Material>
+    <Material id="PBRStone" shaderID="PBRDefault" hash_id="3285393814" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="stone_color" hash_id="2588833116"/>
+        <Texture byte="4" comment="normalTexture" id="stone_normal" hash_id="1485242834"/>
+        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughnessTexture" id="stone_rough" hash_id="1634846598"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="4" y="4"/>
+        <Padding byte="4"/>
+        <ColorCode byte="16" comment="albedoColor" code="FF748C"/>
+    </Material>
 </MaterialSet>
