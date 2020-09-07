@@ -35,7 +35,6 @@ inline DirectX::XMFLOAT4 operator*( float scalar, const DirectX::XMFLOAT4& vecto
 }
 
 
-
 namespace KG::Math
 {
 	constexpr float  PI = 3.14159265358979f;

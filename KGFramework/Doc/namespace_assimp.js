@@ -1,0 +1,57 @@
+var namespace_assimp =
+[
+    [ "Formatter", null, [
+      [ "basic_formatter", "class_assimp_1_1_formatter_1_1basic__formatter.html", "class_assimp_1_1_formatter_1_1basic__formatter" ]
+    ] ],
+    [ "Intern", null, [
+      [ "ByteSwapper", "struct_assimp_1_1_intern_1_1_byte_swapper.html", "struct_assimp_1_1_intern_1_1_byte_swapper" ],
+      [ "ByteSwapper< T, false >", "struct_assimp_1_1_intern_1_1_byte_swapper_3_01_t_00_01false_01_4.html", "struct_assimp_1_1_intern_1_1_byte_swapper_3_01_t_00_01false_01_4" ],
+      [ "divides", "struct_assimp_1_1_intern_1_1divides.html", "struct_assimp_1_1_intern_1_1divides" ],
+      [ "Getter", "struct_assimp_1_1_intern_1_1_getter.html", "struct_assimp_1_1_intern_1_1_getter" ],
+      [ "Getter< SwapEndianess, T, false >", "struct_assimp_1_1_intern_1_1_getter_3_01_swap_endianess_00_01_t_00_01false_01_4.html", "struct_assimp_1_1_intern_1_1_getter_3_01_swap_endianess_00_01_t_00_01false_01_4" ],
+      [ "minus", "struct_assimp_1_1_intern_1_1minus.html", "struct_assimp_1_1_intern_1_1minus" ],
+      [ "multiplies", "struct_assimp_1_1_intern_1_1multiplies.html", "struct_assimp_1_1_intern_1_1multiplies" ],
+      [ "plus", "struct_assimp_1_1_intern_1_1plus.html", "struct_assimp_1_1_intern_1_1plus" ]
+    ] ],
+    [ "Profiling", null, [
+      [ "Profiler", "class_assimp_1_1_profiling_1_1_profiler.html", "class_assimp_1_1_profiling_1_1_profiler" ]
+    ] ],
+    [ "AttachmentInfo", "struct_assimp_1_1_attachment_info.html", "struct_assimp_1_1_attachment_info" ],
+    [ "BaseImporter", "class_assimp_1_1_base_importer.html", "class_assimp_1_1_base_importer" ],
+    [ "Bitmap", "class_assimp_1_1_bitmap.html", "class_assimp_1_1_bitmap" ],
+    [ "BlobIOStream", "class_assimp_1_1_blob_i_o_stream.html", "class_assimp_1_1_blob_i_o_stream" ],
+    [ "BlobIOSystem", "class_assimp_1_1_blob_i_o_system.html", "class_assimp_1_1_blob_i_o_system" ],
+    [ "BoneWithHash", "struct_assimp_1_1_bone_with_hash.html", "struct_assimp_1_1_bone_with_hash" ],
+    [ "ByteSwap", "class_assimp_1_1_byte_swap.html", "class_assimp_1_1_byte_swap" ],
+    [ "CIrrXML_IOStreamReader", "class_assimp_1_1_c_irr_x_m_l___i_o_stream_reader.html", "class_assimp_1_1_c_irr_x_m_l___i_o_stream_reader" ],
+    [ "CommentRemover", "class_assimp_1_1_comment_remover.html", null ],
+    [ "DefaultIOStream", "class_assimp_1_1_default_i_o_stream.html", "class_assimp_1_1_default_i_o_stream" ],
+    [ "DefaultIOSystem", "class_assimp_1_1_default_i_o_system.html", "class_assimp_1_1_default_i_o_system" ],
+    [ "DefaultLogger", "class_assimp_1_1_default_logger.html", "class_assimp_1_1_default_logger" ],
+    [ "Exporter", "class_assimp_1_1_exporter.html", "class_assimp_1_1_exporter" ],
+    [ "ExportProperties", "class_assimp_1_1_export_properties.html", "class_assimp_1_1_export_properties" ],
+    [ "Importer", "class_assimp_1_1_importer.html", "class_assimp_1_1_importer" ],
+    [ "IOStream", "class_assimp_1_1_i_o_stream.html", "class_assimp_1_1_i_o_stream" ],
+    [ "IOStreamBuffer", "class_assimp_1_1_i_o_stream_buffer.html", "class_assimp_1_1_i_o_stream_buffer" ],
+    [ "IOSystem", "class_assimp_1_1_i_o_system.html", "class_assimp_1_1_i_o_system" ],
+    [ "LineSplitter", "class_assimp_1_1_line_splitter.html", "class_assimp_1_1_line_splitter" ],
+    [ "LogFunctions", "class_assimp_1_1_log_functions.html", null ],
+    [ "Logger", "class_assimp_1_1_logger.html", "class_assimp_1_1_logger" ],
+    [ "LogStream", "class_assimp_1_1_log_stream.html", "class_assimp_1_1_log_stream" ],
+    [ "MemoryIOStream", "class_assimp_1_1_memory_i_o_stream.html", "class_assimp_1_1_memory_i_o_stream" ],
+    [ "MemoryIOSystem", "class_assimp_1_1_memory_i_o_system.html", "class_assimp_1_1_memory_i_o_system" ],
+    [ "NodeAttachmentInfo", "struct_assimp_1_1_node_attachment_info.html", "struct_assimp_1_1_node_attachment_info" ],
+    [ "NullLogger", "class_assimp_1_1_null_logger.html", "class_assimp_1_1_null_logger" ],
+    [ "ProgressHandler", "class_assimp_1_1_progress_handler.html", "class_assimp_1_1_progress_handler" ],
+    [ "SceneCombiner", "class_assimp_1_1_scene_combiner.html", null ],
+    [ "SceneHelper", "struct_assimp_1_1_scene_helper.html", "struct_assimp_1_1_scene_helper" ],
+    [ "SGSpatialSort", "class_assimp_1_1_s_g_spatial_sort.html", "class_assimp_1_1_s_g_spatial_sort" ],
+    [ "SkeletonMeshBuilder", "class_assimp_1_1_skeleton_mesh_builder.html", "class_assimp_1_1_skeleton_mesh_builder" ],
+    [ "SpatialSort", "class_assimp_1_1_spatial_sort.html", "class_assimp_1_1_spatial_sort" ],
+    [ "StandardShapes", "class_assimp_1_1_standard_shapes.html", null ],
+    [ "StreamReader", "class_assimp_1_1_stream_reader.html", "class_assimp_1_1_stream_reader" ],
+    [ "StreamWriter", "class_assimp_1_1_stream_writer.html", "class_assimp_1_1_stream_writer" ],
+    [ "Subdivider", "class_assimp_1_1_subdivider.html", "class_assimp_1_1_subdivider" ],
+    [ "Vertex", "class_assimp_1_1_vertex.html", "class_assimp_1_1_vertex" ],
+    [ "ZipArchiveIOSystem", "class_assimp_1_1_zip_archive_i_o_system.html", "class_assimp_1_1_zip_archive_i_o_system" ]
+];

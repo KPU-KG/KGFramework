@@ -6,8 +6,10 @@
 #include "hash.h"
 #include "Debug.h"
 #include "IComponent.h"
+
 namespace KG::Component
 {
+	/// @brief 
 	class ComponentContainer
 	{
 		std::map<KG::Utill::HashString, IComponent*> container;

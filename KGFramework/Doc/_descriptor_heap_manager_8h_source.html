@@ -1,0 +1,158 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "https://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=9"/>
+<meta name="generator" content="Doxygen 1.8.17"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>KGFramework: C:/Users/aksgh/OneDrive/Graduation/KGFramework/KGRenderer/include/DescriptorHeapManager.h 소스 파일</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="jquery.js"></script>
+<script type="text/javascript" src="dynsections.js"></script>
+<link href="navtree.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="resize.js"></script>
+<script type="text/javascript" src="navtreedata.js"></script>
+<script type="text/javascript" src="navtree.js"></script>
+<link href="search/search.css" rel="stylesheet" type="text/css"/>
+<script type="text/javascript" src="search/searchdata.js"></script>
+<script type="text/javascript" src="search/search.js"></script>
+<link href="doxygen.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="top"><!-- do not remove this div, it is closed by doxygen! -->
+<div id="titlearea">
+<table cellspacing="0" cellpadding="0">
+ <tbody>
+ <tr style="height: 56px;">
+  <td id="projectalign" style="padding-left: 0.5em;">
+   <div id="projectname">KGFramework
+   &#160;<span id="projectnumber">MATERIAL_END</span>
+   </div>
+   <div id="projectbrief">졸업작품 프레임워크입니다.</div>
+  </td>
+ </tr>
+ </tbody>
+</table>
+</div>
+<!-- end header part -->
+<!-- 다음에 의해 생성됨 :  Doxygen 1.8.17 -->
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+var searchBox = new SearchBox("searchBox", "search",false,'검색');
+/* @license-end */
+</script>
+<script type="text/javascript" src="menudata.js"></script>
+<script type="text/javascript" src="menu.js"></script>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(function() {
+  initMenu('',true,false,'search.php','검색');
+  $(document).ready(function() { init_search(); });
+});
+/* @license-end */</script>
+<div id="main-nav"></div>
+</div><!-- top -->
+<div id="side-nav" class="ui-resizable side-nav-resizable">
+  <div id="nav-tree">
+    <div id="nav-tree-contents">
+      <div id="nav-sync" class="sync"></div>
+    </div>
+  </div>
+  <div id="splitbar" style="-moz-user-select:none;" 
+       class="ui-resizable-handle">
+  </div>
+</div>
+<script type="text/javascript">
+/* @license magnet:?xt=urn:btih:cf05388f2679ee054f2beb29a391d25f4e673ac3&amp;dn=gpl-2.0.txt GPL-v2 */
+$(document).ready(function(){initNavTree('_descriptor_heap_manager_8h_source.html',''); initResizable(); });
+/* @license-end */
+</script>
+<div id="doc-content">
+<!-- window showing the filter options -->
+<div id="MSearchSelectWindow"
+     onmouseover="return searchBox.OnSearchSelectShow()"
+     onmouseout="return searchBox.OnSearchSelectHide()"
+     onkeydown="return searchBox.OnSearchSelectKey(event)">
+</div>
+
+<!-- iframe showing the search results (closed by default) -->
+<div id="MSearchResultsWindow">
+<iframe src="javascript:void(0)" frameborder="0" 
+        name="MSearchResults" id="MSearchResults">
+</iframe>
+</div>
+
+<div class="header">
+  <div class="headertitle">
+<div class="title">DescriptorHeapManager.h</div>  </div>
+</div><!--header-->
+<div class="contents">
+<div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;debug.h&quot;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &quot;IndexAllocator.h&quot;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;d3d12.h&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>KG::Renderer</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;{</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html">   12</a></span>&#160;    <span class="keyword">class </span><a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html">DescriptorHeapManager</a></div>
+<div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;    {</div>
+<div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160;        <span class="keyword">using</span> <a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html">this_type</a> = <a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html">DescriptorHeapManager</a>;</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;    <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;        ID3D12DescriptorHeap* _heap = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;        <span class="keywordtype">size_t</span> descriptorSize = 0;</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;        <a class="code" href="class_k_g_1_1_utill_1_1_index_back_allocator.html">Utill::IndexBackAllocator</a> allocator;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;        <span class="keywordtype">size_t</span> numMaxDescriptor = 0;</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;        ID3D12Device* device = <span class="keyword">nullptr</span>;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;        D3D12_DESCRIPTOR_HEAP_DESC heapDesc;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;        <a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html">DescriptorHeapManager</a>() {};</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;        ~<a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html">DescriptorHeapManager</a>();</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#ad3b64c3d91b5df3b06ef0ad470e4f735">Initialize</a>( ID3D12Device* device, D3D12_DESCRIPTOR_HEAP_DESC heapDesc, <span class="keywordtype">size_t</span> descriptorSize );</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;        D3D12_CPU_DESCRIPTOR_HANDLE <a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#acb87adce554aacd85671fbab0ef27795">GetCPUHandle</a>( <span class="keywordtype">size_t</span> _index ) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;        D3D12_GPU_DESCRIPTOR_HANDLE <a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#a8a29c7c4bd1038d62ebc15bf159a5888">GetGPUHandle</a>( <span class="keywordtype">size_t</span> _index ) <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160; </div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordtype">size_t</span> <a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#abf3648dab12305b9f2b4c8eb5721bb0a">RequestEmptyIndex</a>();</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordtype">void</span> <a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#a55b4def22442a2728fe2054bb706f101">ReleaseHandleAtIndex</a>( <span class="keywordtype">size_t</span> index );</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160; </div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        ID3D12DescriptorHeap* <a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#ad78020e4fff38e7b552e113956b7cc82">Get</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;        ID3D12DescriptorHeap* <span class="keyword">const</span>* <a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#aa57718a584b488155abdaa1c327581ee">GetAddressOf</a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        ID3D12DescriptorHeap* <a class="code" href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#a9e11fb1a8bf7b8b9891b84c83b0259a9">operator-&gt; </a>() <span class="keyword">const</span>;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        <span class="keywordtype">void</span> Resize(<span class="keywordtype">size_t</span> size);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    };</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}</div>
+</div><!-- fragment --></div><!-- contents -->
+</div><!-- doc-content -->
+<div class="ttc" id="aclass_k_g_1_1_renderer_1_1_descriptor_heap_manager_html_a9e11fb1a8bf7b8b9891b84c83b0259a9"><div class="ttname"><a href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#a9e11fb1a8bf7b8b9891b84c83b0259a9">KG::Renderer::DescriptorHeapManager::operator-&gt;</a></div><div class="ttdeci">ID3D12DescriptorHeap * operator-&gt;() const</div><div class="ttdoc">해당 서술자힙의 인터페이스 포인터입니다. Get()과 동일합니다.</div><div class="ttdef"><b>Definition:</b> DescriptorHeapManager.cpp:59</div></div>
+<div class="ttc" id="aclass_k_g_1_1_renderer_1_1_descriptor_heap_manager_html_acb87adce554aacd85671fbab0ef27795"><div class="ttname"><a href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#acb87adce554aacd85671fbab0ef27795">KG::Renderer::DescriptorHeapManager::GetCPUHandle</a></div><div class="ttdeci">D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle(size_t _index) const</div><div class="ttdoc">해당 인덱스의 서술자힙 핸들을 구합니다.</div><div class="ttdef"><b>Definition:</b> DescriptorHeapManager.cpp:21</div></div>
+<div class="ttc" id="aclass_k_g_1_1_renderer_1_1_descriptor_heap_manager_html_abf3648dab12305b9f2b4c8eb5721bb0a"><div class="ttname"><a href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#abf3648dab12305b9f2b4c8eb5721bb0a">KG::Renderer::DescriptorHeapManager::RequestEmptyIndex</a></div><div class="ttdeci">size_t RequestEmptyIndex()</div><div class="ttdoc">비어있는 핸들의 인덱스를 구합니다.</div><div class="ttdef"><b>Definition:</b> DescriptorHeapManager.cpp:35</div></div>
+<div class="ttc" id="aclass_k_g_1_1_renderer_1_1_descriptor_heap_manager_html_a8a29c7c4bd1038d62ebc15bf159a5888"><div class="ttname"><a href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#a8a29c7c4bd1038d62ebc15bf159a5888">KG::Renderer::DescriptorHeapManager::GetGPUHandle</a></div><div class="ttdeci">D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle(size_t _index) const</div><div class="ttdoc">해당 인덱스의 서술자힙 핸들을 구합니다.</div><div class="ttdef"><b>Definition:</b> DescriptorHeapManager.cpp:28</div></div>
+<div class="ttc" id="aclass_k_g_1_1_renderer_1_1_descriptor_heap_manager_html_ad78020e4fff38e7b552e113956b7cc82"><div class="ttname"><a href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#ad78020e4fff38e7b552e113956b7cc82">KG::Renderer::DescriptorHeapManager::Get</a></div><div class="ttdeci">ID3D12DescriptorHeap * Get() const</div><div class="ttdoc">해당 서술자힙의 인터페이스 포인터를 구합니다.</div><div class="ttdef"><b>Definition:</b> DescriptorHeapManager.cpp:49</div></div>
+<div class="ttc" id="aclass_k_g_1_1_utill_1_1_index_back_allocator_html"><div class="ttname"><a href="class_k_g_1_1_utill_1_1_index_back_allocator.html">KG::Utill::IndexBackAllocator</a></div><div class="ttdef"><b>Definition:</b> IndexAllocator.h:6</div></div>
+<div class="ttc" id="aclass_k_g_1_1_renderer_1_1_descriptor_heap_manager_html_ad3b64c3d91b5df3b06ef0ad470e4f735"><div class="ttname"><a href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#ad3b64c3d91b5df3b06ef0ad470e4f735">KG::Renderer::DescriptorHeapManager::Initialize</a></div><div class="ttdeci">void Initialize(ID3D12Device *device, D3D12_DESCRIPTOR_HEAP_DESC heapDesc, size_t descriptorSize)</div><div class="ttdoc">서술자힙 매니저를 초기화합니다.</div><div class="ttdef"><b>Definition:</b> DescriptorHeapManager.cpp:11</div></div>
+<div class="ttc" id="aclass_k_g_1_1_renderer_1_1_descriptor_heap_manager_html_aa57718a584b488155abdaa1c327581ee"><div class="ttname"><a href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#aa57718a584b488155abdaa1c327581ee">KG::Renderer::DescriptorHeapManager::GetAddressOf</a></div><div class="ttdeci">ID3D12DescriptorHeap *const  * GetAddressOf() const</div><div class="ttdoc">해당 서술자힙의 인터페이스 포인터의 포인터 (포인터의 주소)를 구합니다.</div><div class="ttdef"><b>Definition:</b> DescriptorHeapManager.cpp:54</div></div>
+<div class="ttc" id="aclass_k_g_1_1_renderer_1_1_descriptor_heap_manager_html_a55b4def22442a2728fe2054bb706f101"><div class="ttname"><a href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html#a55b4def22442a2728fe2054bb706f101">KG::Renderer::DescriptorHeapManager::ReleaseHandleAtIndex</a></div><div class="ttdeci">void ReleaseHandleAtIndex(size_t index)</div><div class="ttdoc">해당 인덱스의 핸들을 무효화합니다.</div><div class="ttdef"><b>Definition:</b> DescriptorHeapManager.cpp:44</div></div>
+<div class="ttc" id="aclass_k_g_1_1_renderer_1_1_descriptor_heap_manager_html"><div class="ttname"><a href="class_k_g_1_1_renderer_1_1_descriptor_heap_manager.html">KG::Renderer::DescriptorHeapManager</a></div><div class="ttdoc">서술자힙을 대신 관리해주는 클래스입니다.</div><div class="ttdef"><b>Definition:</b> DescriptorHeapManager.h:12</div></div>
+<!-- start footer part -->
+<div id="nav-path" class="navpath"><!-- id is needed for treeview function! -->
+  <ul>
+    <li class="navelem"><a class="el" href="dir_eb1f204f22bed475c531668d121c61c4.html">KGRenderer</a></li><li class="navelem"><a class="el" href="dir_7331ee26a670811ba740418831868190.html">include</a></li><li class="navelem"><b>DescriptorHeapManager.h</b></li>
+    <li class="footer">다음에 의해 생성됨 : 
+    <a href="http://www.doxygen.org/index.html">
+    <img class="footer" src="doxygen.png" alt="doxygen"/></a> 1.8.17 </li>
+  </ul>
+</div>
+</body>
+</html>

@@ -32,6 +32,7 @@ KG::GameFramework& KG::GameFramework::operator=( GameFramework&& rhs )
 	assert( false );
 	return *this;
 }
+
 bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting& setting )
 {
 	DebugNormalMessage( "Initialize" );
@@ -74,7 +75,7 @@ void KG::GameFramework::OnTestInit()
 	static KG::Core::GameObject testPointLightObjects[10000];
 
 
-	constexpr auto texOne = "PBRStone"_id;
+	constexpr auto texOne = "PBRMetal"_id;
 	constexpr auto texTwo = "TileMaterial"_id;
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();

@@ -13,7 +13,6 @@ void KG::System::TransformSystem::OnGetNewComponent( TransformComponent* tran )
 	tran->SetScale( 1, 1, 1 );
 }
 
-
 void KG::System::TransformSystem::OnUpdate(float elapsedTime)
 {
 }
