@@ -4,7 +4,6 @@
 #include <vector>
 #include <functional>
 #include "KGRenderer.h"
-#include "KGMacroUtill.h"
 namespace KG::Renderer
 {
 	class KGRenderEngine;
