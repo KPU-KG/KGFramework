@@ -1,0 +1,24 @@
+# Universal Windows Platform
+trigger:
+- master
+
+pool:
+  vmImage: 'windows-latest'
+
+variables:
+  solution: '**/*.sln'
+  buildPlatform: 'x64'
+  buildConfiguration: 'Debug'
+  appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\\'
+
+steps:
+- task: VSBuild@1
+  inputs:
+    solution: '**\*.sln'
+    vsVersion: '16.0'
+    platform: 'x64'
+    msbuildArchitecture: 'x64'
+    createLogFile: true
+# Build a Universal Windows Platform project using Visual Studio.
+# Add steps that test and distribute an app, save build artifacts, and more:
+# https://aka.ms/yaml
