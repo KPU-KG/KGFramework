@@ -262,7 +262,6 @@
     <ClInclude Include="include\IHierarchy.h" />
     <ClInclude Include="include\InputManager.h" />
     <ClInclude Include="include\ISystem.h" />
-    <ClInclude Include="include\KGMacroUtill.h" />
     <ClInclude Include="include\MathHelper.h" />
     <ClInclude Include="include\tinyxml2.h" />
     <ClInclude Include="include\Transform.h" />
