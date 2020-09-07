@@ -29,7 +29,7 @@
 *.lai
 *.la
 *.a
-*.lib
+
 
 # Executables
 *.exe
@@ -57,6 +57,7 @@ mono_crash.*
 
 # Build results
 [Dd]ebug/
+[Dd]ebug_ID/
 [Dd]ebugPublic/
 [Rr]elease/
 [Rr]eleases/
