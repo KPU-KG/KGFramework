@@ -16,4 +16,12 @@
         <VertexShader fileDir="Resource/ShaderScript/lightShader.hlsl" entry="PointLightVertexFuction" type="vs_5_1"/>
         <PixelShader fileDir="Resource/ShaderScript/lightShader.hlsl" entry="PointLightPixelFuction" type="ps_5_1"/>
     </GraphicShaderSet>
+    <GraphicShaderSet id="ambientLight" shaderType="lightPass" enableBackfaceCulling="false" enableDepthCliping="false" blendOp="lightPass" renderPriority="5000" materialParameterSize="0" hash_id="2215342157">
+        <VertexShader fileDir="Resource/ShaderScript/lightShader.hlsl" entry="AmbientLightVertexFuction" type="vs_5_1"/>
+        <PixelShader fileDir="Resource/ShaderScript/lightShader.hlsl" entry="AmbientLightPixelFuction" type="ps_5_1"/>
+    </GraphicShaderSet>
+    <GraphicShaderSet id="skyBox" shaderType="postProcess" enableBackfaceCulling="false" enableDepthCliping="true" blendOp="opaque" renderPriority="5000" materialParameterSize="4" hash_id="2914058763">
+        <VertexShader fileDir="Resource/ShaderScript/SkyBox.hlsl" entry="SKYMAP_VS" type="vs_5_1"/>
+        <PixelShader fileDir="Resource/ShaderScript/SkyBox.hlsl" entry="SKYMAP_PS" type="ps_5_1"/>
+    </GraphicShaderSet>
 </ShaderSet>

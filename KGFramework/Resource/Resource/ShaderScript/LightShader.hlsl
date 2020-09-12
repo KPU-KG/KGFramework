@@ -56,16 +56,19 @@ float4 DirectionalLightPixelFuction(VSOutput input) : SV_Target0
     
     LightData lightData = lightInfo[input.InstanceID];
     float3 calcWorldPosition = DepthToWorldPosition(depth, input.projPosition.xy);
-    float3 cameraDirection = cameraWorldPosition - calcWorldPosition;
+    float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
     
-    return CustomLightCalculator(lightData, pixelData, normalize(-lightData.Direction), normalize(cameraDirection), 1.0f);
+    return CustomLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(-cameraDirection), 1.0f);
 }
 
 
  // PointLight
 float CalcAttenuation(float distance, float falloffStart, float falloffEnd)
 {
-    return saturate((falloffEnd - distance) / (falloffEnd - falloffStart));
+    float d = pow(distance, 2);
+    float r = pow(falloffEnd, 2);
+    return pow(saturate(1 - pow(d / r, 2)), 2);
+    //return pow(saturate((falloffEnd - distance) / (falloffEnd - falloffStart)), 2);
 }
 
 VSOutput PointLightVertexFuction(VertexData input, uint InstanceID : SV_InstanceID)
@@ -96,14 +99,47 @@ float4 PointLightPixelFuction(VSOutput input, bool isFrontFace : SV_IsFrontFace)
     LightData lightData = lightInfo[input.InstanceID];
     float3 calcWorldPosition = DepthToWorldPosition(depth, input.projPosition.xy);
     
-    float3 cameraDirection = cameraWorldPosition - calcWorldPosition;
-    float3 lightDirection = lightData.Position - calcWorldPosition;
+    //float3 cameraDirection = look;
+    float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
+    float3 lightDirection = calcWorldPosition - lightData.Position;
     
     float distance = length(lightDirection);
     
     float atten = CalcAttenuation(distance, lightData.FalloffStart, lightData.FalloffEnd);
     
-    return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(cameraDirection), atten);
+    return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(-cameraDirection), atten);
 }
 
 
+//Ambient Light
+
+VSOutput AmbientLightVertexFuction(VertexData input, uint InstanceID : SV_InstanceID)
+{
+    VSOutput result;
+    result.position = float4(input.position, 1.0f);
+    result.InstanceID = InstanceID;
+    result.projPosition = result.position;
+    return result;
+    
+}
+
+float4 AmbientLightPixelFuction(VSOutput input) : SV_Target0
+{
+    input.projPosition /= input.projPosition.w;
+    float2 uv = ProjPositionToUV(input.projPosition.xy);
+    PixelResult pixelData = PixelDecode(
+    InputGBuffer0.Sample(gsamPointWrap, uv),
+    InputGBuffer1.Sample(gsamPointWrap, uv),
+    InputGBuffer2.Sample(gsamPointWrap, uv),
+    InputGBuffer3.Sample(gsamPointWrap, uv)
+    );
+    
+
+    float depth = InputGBuffer4.Sample(gsamPointWrap, uv).x;
+    
+    LightData lightData = lightInfo[input.InstanceID];
+    float3 calcWorldPosition = DepthToWorldPosition(depth, input.projPosition.xy);
+    float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
+    
+    return CustomAmbientLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(-cameraDirection), 1.0f);
+}

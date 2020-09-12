@@ -20,7 +20,15 @@
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="4" y="4"/>
         <Padding byte="4"/>
-        <ColorCode byte="16" comment="albedoColor" code="FF748C"/>
+    </Material>
+    <Material id="PBRGold" shaderID="PBRDefault" hash_id="865398089" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="gold_color" hash_id="2645906875"/>
+        <Texture byte="4" comment="normalTexture" id="gold_normal" hash_id="1448593827"/>
+        <Texture byte="4" comment="metalicTexture" id="gold_metalic" hash_id="2667758115"/>
+        <Texture byte="4" comment="roughnessTexture" id="gold_rough" hash_id="414237009"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="4" y="4"/>
+        <Padding byte="4"/>
     </Material>
     <Material id="PBRStone" shaderID="PBRDefault" hash_id="3285393814" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="stone_color" hash_id="2588833116"/>
@@ -30,6 +38,20 @@
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="4" y="4"/>
         <Padding byte="4"/>
-        <ColorCode byte="16" comment="albedoColor" code="FF748C"/>
+    </Material>
+    <Material id="PBRTile" shaderID="PBRDefault" hash_id="441810431" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="tile_color" hash_id="319263237"/>
+        <Texture byte="4" comment="normalTexture" id="tile_normal" hash_id="973327093"/>
+        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughnessTexture" id="tile_rough" hash_id="1273007583"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="4" y="4"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="SkySunSet" shaderID="skyBox" hash_id="2048061870" shaderHashID="2914058763">
+        <Texture byte="4" comment="skymacTexture" id="skySunset" hash_id="1553201454"/>
+    </Material>
+    <Material id="SkySnow" shaderID="skyBox" hash_id="4111474821" shaderHashID="2914058763">
+        <Texture byte="4" comment="skymacTexture" id="skySnow" hash_id="3953192677"/>
     </Material>
 </MaterialSet>

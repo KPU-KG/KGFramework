@@ -281,6 +281,23 @@ void KG::Component::LightComponent::SetPointLight( const DirectX::XMFLOAT3& stre
 	this->currentGeometry = this->pointLightGeometry;
 }
 
+KG::Component::DirectionalLightRef KG::Component::LightComponent::GetDirectionalLightRef()
+{
+	this->UpdateChanged();
+	return DirectionalLightRef(this->light);
+}
+
+KG::Component::PointLightRef KG::Component::LightComponent::GetPointLightRef()
+{
+	this->UpdateChanged();
+	return PointLightRef( this->light );
+}
+
+void KG::Component::LightComponent::UpdateChanged()
+{
+	this->isDirty = true;
+}
+
 void KG::Component::LightComponent::OnCreate( KG::Core::GameObject* gameObject )
 {
 	IRenderComponent::OnCreate( gameObject );

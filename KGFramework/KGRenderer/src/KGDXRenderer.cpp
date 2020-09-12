@@ -691,16 +691,13 @@ void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
 				D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE ) );
 			cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle( 0 ) );
 			auto dsvHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-			dsvHandle.ptr += this->dsvDescriptoSize;
 			cmdList->OMSetRenderTargets( 1, &rtvHandle, true, nullptr );
 		} );
 
 	this->renderEngine->SetPassPreRenderEventFunction( ShaderType::LightPass,
 		[this]( ID3D12GraphicsCommandList* cmdList, ID3D12Resource* rt, D3D12_CPU_DESCRIPTOR_HANDLE  rtvHandle )
 		{
-			auto dsvHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-			dsvHandle.ptr += this->dsvDescriptoSize;
-			cmdList->ClearDepthStencilView( dsvHandle, D3D12_CLEAR_FLAG_STENCIL, 0.0f, 0, 0, nullptr );
+
 		} );
 
 
@@ -712,6 +709,8 @@ void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
 	this->renderEngine->SetPassEnterEventFunction( ShaderType::PostProcess,
 		[this]( ID3D12GraphicsCommandList* cmdList, ID3D12Resource* rt, D3D12_CPU_DESCRIPTOR_HANDLE  rtvHandle )
 		{
+			auto dsvHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+			cmdList->OMSetRenderTargets( 1, &rtvHandle, true, &dsvHandle );
 			//cmdList->ResourceBarrier( 4, this->GetGBufferTrasitionBarriers( D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_COPY_SOURCE ) );
 			//cmdList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( rt, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_COPY_DEST ) );
 
@@ -813,7 +812,7 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers()
 		D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressV
 		D3D12_TEXTURE_ADDRESS_MODE_CLAMP,  // addressW
 		0.0f,                              // mipLODBias
-		8 );                                // maxAnisotropy
+		16 );                                // maxAnisotropy
 
 	return {
 		pointWrap, pointClamp,

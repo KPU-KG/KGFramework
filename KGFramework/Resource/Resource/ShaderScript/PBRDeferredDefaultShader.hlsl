@@ -6,7 +6,7 @@ struct MaterialData
 {
     uint ColorTextureIndex;
     uint NormalTextureIndex;
-    uint MetailicTextureIndex;
+    uint MetalicTextureIndex;
     uint RoughnessTextureIndex;
     float SpecularValue;
     float2 UVSize;
@@ -56,12 +56,12 @@ GBufferOut DefaultPixelFuction(VSOutput input)
     float2 uv = mul(input.uv, uvScale);
     
     
-    result.albedo = shaderTexture1[mat.ColorTextureIndex].Sample(gsamAnisotoropicWrap, uv).xyz;
+    result.albedo = shaderTexture[mat.ColorTextureIndex].Sample(gsamAnisotoropicWrap, uv).xyz;
     result.reflection = 1.0f;
     
     result.specular = 0.0f;
-    result.metailic = shaderTexture1[mat.MetailicTextureIndex].Sample(gsamAnisotoropicWrap, uv).xyz;
-    result.roughness = shaderTexture1[mat.RoughnessTextureIndex].Sample(gsamAnisotoropicWrap, uv).xyz;
+    result.metalic = shaderTexture[mat.MetalicTextureIndex].Sample(gsamAnisotoropicWrap, uv).xxx;
+    result.roughness = shaderTexture[mat.RoughnessTextureIndex].Sample(gsamAnisotoropicWrap, uv).xxx;
     result.emssion = 0.0f;
     
     float3x3 TBN = float3x3(
@@ -70,7 +70,7 @@ GBufferOut DefaultPixelFuction(VSOutput input)
         normalize(input.worldNormal.xyz)
     );
     //TBN = transpose(TBN);
-    float3 normalMap = shaderTexture1[mat.NormalTextureIndex].Sample(gsamAnisotoropicWrap, uv).xyz;
+    float3 normalMap = shaderTexture[mat.NormalTextureIndex].Sample(gsamAnisotoropicWrap, uv).xyz;
     normalMap = normalMap * 2 - 1.0f;
     result.wNormal = normalize(mul(normalMap, TBN));
     //result.wNormal = input.worldNormal;

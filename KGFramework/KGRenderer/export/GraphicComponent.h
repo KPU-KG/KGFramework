@@ -39,7 +39,7 @@ namespace KG::Component
 	{
 	public:
 		virtual void OnPreRender() {};
-		virtual void OnRender( ID3D12GraphicsCommandList* commadList) {};
+		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) {};
 	};
 
 	class DLL CameraComponent : public IRenderComponent
@@ -47,7 +47,7 @@ namespace KG::Component
 		friend Render3DComponent;
 		// User Data
 		float fovY = 90.0f;
-		float aspectRatio = 16.0f/9.0f;
+		float aspectRatio = 16.0f / 9.0f;
 		float nearZ = 0.01f;
 		float farZ = 1000.0f;
 
@@ -80,18 +80,18 @@ namespace KG::Component
 		void SetNearZ( float value ) { OnProjDirty(); this->nearZ = value; };
 		void SetFarZ( float value ) { OnProjDirty(); this->farZ = value; };
 
-		auto GetFovY( ) { return this->fovY; };
-		auto GetAspectRatio( ) { return this->aspectRatio; };
-		auto GetNearZ( ) { return this->nearZ; };
-		auto GetFarZ( ) { return this->farZ; };
+		auto GetFovY() { return this->fovY; };
+		auto GetAspectRatio() { return this->aspectRatio; };
+		auto GetNearZ() { return this->nearZ; };
+		auto GetFarZ() { return this->farZ; };
 
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
 
 		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
 		void EndCameraRender( ID3D12GraphicsCommandList* commandList );
 
-		void SetRenderTarget( ID3D12Resource* renderTarget, D3D12_CPU_DESCRIPTOR_HANDLE renderTargetHandle,  D3D12_RESOURCE_STATES defaultRTState );
-		
+		void SetRenderTarget( ID3D12Resource* renderTarget, D3D12_CPU_DESCRIPTOR_HANDLE renderTargetHandle, D3D12_RESOURCE_STATES defaultRTState );
+
 		auto GetRenderTarget() const
 		{
 			return this->renderTarget;
@@ -129,21 +129,63 @@ namespace KG::Component
 	public:
 		void InitializeGeometry( const KG::Utill::HashString& shaderID );
 	};
+
+	struct LightData
+	{
+		DirectX::XMFLOAT3 Strength;
+		float FalloffStart;
+		DirectX::XMFLOAT3 Direction;
+		float FalloffEnd;
+		DirectX::XMFLOAT3 Position;
+		float SpotPower;
+	};
+
+	//struct LightRef
+	//{
+	//	DirectX::XMFLOAT3& Strength;
+	//	float& FalloffStart;
+	//	DirectX::XMFLOAT3& Direction;
+	//	float& FalloffEnd;
+	//	DirectX::XMFLOAT3& Position;
+	//	float& SpotPower;
+	//	LightRef( LightData& light )
+	//		:
+	//		Strength( light.Strength ),
+	//		FalloffStart( light.FalloffStart ),
+	//		Direction( light.Direction ),
+	//		FalloffEnd( light.FalloffEnd ),
+	//		Position( light.Position ),
+	//		SpotPower( light.SpotPower )
+	//	{
+	//	};
+	//};
+
+	struct PointLightRef
+	{
+		DirectX::XMFLOAT3& Strength;
+		float& FalloffStart;
+		float& FalloffEnd;
+		PointLightRef( LightData& light )
+			: Strength( light.Strength ), FalloffStart( light.FalloffStart ), FalloffEnd( light.FalloffEnd )
+		{
+		};
+	};
+	struct DirectionalLightRef
+	{
+		DirectX::XMFLOAT3& Strength;
+		DirectX::XMFLOAT3& Direction;
+		DirectionalLightRef( LightData& light )
+			: Strength( light.Strength ), Direction( light.Direction )
+		{
+		};
+	};
 	class DLL LightComponent : public IRenderComponent
 	{
 		KG::Renderer::KGRenderJob* renderJob = nullptr;
 		TransformComponent* transform = nullptr;
 		void SetRenderJob( KG::Renderer::KGRenderJob* renderJob );
 		bool isDirty = true;
-		struct
-		{
-			DirectX::XMFLOAT3 Strength;
-			float FalloffStart;
-			DirectX::XMFLOAT3 Direction;
-			float FalloffEnd;
-			DirectX::XMFLOAT3 Position;
-			float SpotPower;
-		} light;
+		LightData light;
 		KG::Renderer::Shader* currentShader = nullptr;
 		KG::Renderer::Geometry* currentGeometry = nullptr;
 		void RegisterTransform( TransformComponent* transform );
@@ -159,6 +201,11 @@ namespace KG::Component
 	public:
 		void SetDirectionalLight( const DirectX::XMFLOAT3& strength, const DirectX::XMFLOAT3& direction );
 		void SetPointLight( const DirectX::XMFLOAT3& strength, float fallOffStart, float fallOffEnd );
+		DirectionalLightRef GetDirectionalLightRef();
+		PointLightRef GetPointLightRef();
+
+		void UpdateChanged();
+
 		bool isVisible = true;
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;
 		virtual void OnPreRender() override;

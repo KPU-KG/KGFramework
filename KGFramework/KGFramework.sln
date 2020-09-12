@@ -38,15 +38,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{85
 		Doc\RootParameter.txt = Doc\RootParameter.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Define", "Define", "{101E8511-0519-49FC-97D5-93D6ECB9E702}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shader", "Shader", "{101E8511-0519-49FC-97D5-93D6ECB9E702}"
 	ProjectSection(SolutionItems) = preProject
 		Resource\Resource\ShaderScript\CustomLight.hlsl = Resource\Resource\ShaderScript\CustomLight.hlsl
 		Resource\Resource\ShaderScript\DeferredDefaultShader.hlsl = Resource\Resource\ShaderScript\DeferredDefaultShader.hlsl
 		Resource\Resource\ShaderScript\LightShader.hlsl = Resource\Resource\ShaderScript\LightShader.hlsl
 		Resource\Resource\ShaderScript\PBRDeferredDefaultShader.hlsl = Resource\Resource\ShaderScript\PBRDeferredDefaultShader.hlsl
+		Resource\Resource\ShaderScript\SkyBox.hlsl = Resource\Resource\ShaderScript\SkyBox.hlsl
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shader", "Shader", "{7E5B965C-F158-4CF8-BF1C-949020349362}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Define", "Define", "{7E5B965C-F158-4CF8-BF1C-949020349362}"
 	ProjectSection(SolutionItems) = preProject
 		Resource\Resource\ShaderScript\DeferredDefine.hlsl = Resource\Resource\ShaderScript\DeferredDefine.hlsl
 		Resource\Resource\ShaderScript\GBufferDefine.hlsl = Resource\Resource\ShaderScript\GBufferDefine.hlsl

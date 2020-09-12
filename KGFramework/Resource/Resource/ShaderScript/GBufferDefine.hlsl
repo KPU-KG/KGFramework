@@ -6,7 +6,7 @@ struct PixelResult
     float1 reflection;
     
     float1 specular;
-    float1 metailic;
+    float1 metalic;
     float1 roughness;
     float1 emssion;
     
@@ -72,7 +72,7 @@ GBufferOut PixelEncode(PixelResult pix)
     result.gbuffer0.w = pix.reflection;
     
     result.gbuffer1.x = pix.specular;
-    result.gbuffer1.y = pix.metailic;
+    result.gbuffer1.y = pix.metalic;
     result.gbuffer1.z = pix.roughness;
     result.gbuffer1.w = pix.emssion;
     
@@ -91,7 +91,7 @@ PixelResult PixelDecode(float4 gbuffer0, float4 gbuffer1, float4 gbuffer2, float
     result.reflection = gbuffer0.w;
     
     result.specular =gbuffer1.x;
-    result.metailic = gbuffer1.y;
+    result.metalic = gbuffer1.y;
     result.roughness = gbuffer1.z;
     result.emssion = gbuffer1.w;
     

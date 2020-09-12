@@ -41,11 +41,11 @@ GBufferOut DefaultPixelFuction(VSOutput input)
     
     MaterialData mat = materialData[objectInfo[input.InstanceID].materialIndex];
     
-    result.albedo = shaderTexture1[mat.TextureIndex].Sample(gsamAnisotoropicWrap, input.uv).xyz * mat.color.xyz;
+    result.albedo = shaderTexture[mat.TextureIndex].Sample(gsamAnisotoropicWrap, input.uv).xyz * mat.color.xyz;
     result.reflection = 1.0f;
     
     result.specular = 0.0f;
-    result.metailic = 1.0f;
+    result.metalic = 1.0f;
     result.roughness = 0.25f;
     result.emssion = 0.0f;
     
