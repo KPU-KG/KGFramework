@@ -78,7 +78,7 @@ void KG::GameFramework::OnTestInit()
 
 
 	constexpr auto texOne = "PBRTile"_id;
-	constexpr auto texTwo = "PBRStone"_id;
+	constexpr auto texTwo = "PBRTile"_id;
 	constexpr auto texThree = "PBRGold"_id;
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
