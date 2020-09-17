@@ -100,6 +100,8 @@ void KGDXRenderer::Initialize()
 {
 	KGDXRenderer::instance = this;
 	DebugNormalMessage( "Initilize D3D12 Renderer" );
+	DebugNormalMessage( "RECT : " << this->setting.clientWidth << " , " << this->setting.clientHeight );
+
 	this->CreateD3DDevice();
 	this->QueryHardwareFeature();
 	this->CreateCommandQueueAndList();

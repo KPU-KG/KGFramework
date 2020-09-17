@@ -9,6 +9,7 @@
 #include "Transform.h"
 #include "MathHelper.h"
 #include "GameObject.h"
+#include "KGRenderer.h"
 #include "KGDXRenderer.h"
 #include "KGGeometry.h"
 #include "ResourceContainer.h"
@@ -167,6 +168,28 @@ void KG::Component::CameraComponent::CalculateProjectionMatrix()
 	this->ProjDirty = false;
 }
 
+void KG::Component::CameraComponent::SetDefaultRender( float width, float height )
+{
+	D3D12_VIEWPORT viewport;
+	viewport.TopLeftX = 0;
+	viewport.TopLeftY = 0;
+	viewport.Width = width;
+	viewport.Height = height;
+	viewport.MinDepth = 0;
+	viewport.MaxDepth = 1;
+
+	this->SetViewport( viewport );
+
+	D3D12_RECT scissorRect;
+	scissorRect.left = 0;
+	scissorRect.right = width;
+	scissorRect.top = 0;
+	scissorRect.bottom = height;
+
+	this->SetScissorRect( scissorRect );
+
+}
+
 void KG::Component::CameraComponent::OnDestroy()
 {
 	this->cameraDataBuffer->Unmap( 0, nullptr );
@@ -198,23 +221,8 @@ void KG::Component::CameraComponent::SetCameraRender( ID3D12GraphicsCommandList*
 	std::memcpy( this->mappedCameraData, this->cameraData, sizeof( CameraData ) );
 	commandList->SetGraphicsRootConstantBufferView( RootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress() );
 
-	D3D12_VIEWPORT viewport;
-	viewport.TopLeftX = float( 0 );
-	viewport.TopLeftY = float( 0 );
-	viewport.Width = float( 1600 );
-	viewport.Height = float( 900 );
-	viewport.MinDepth = 0;
-	viewport.MaxDepth = 1;
-
-	D3D12_RECT rect;
-	rect.left = 0;
-	rect.top = 0;
-	rect.right = 1600;
-	rect.bottom = 900;
-
-
-	commandList->RSSetViewports( 1, &viewport );
-	commandList->RSSetScissorRects( 1, &rect );
+	commandList->RSSetViewports( 1, &this->viewport );
+	commandList->RSSetScissorRects( 1, &this->scissorRect );
 
 	commandList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( this->renderTarget, this->defaultRTState, D3D12_RESOURCE_STATE_RENDER_TARGET ) );
 

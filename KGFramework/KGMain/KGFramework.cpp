@@ -50,6 +50,7 @@ bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting&
 	KG::Renderer::RendererSetting renderSetting;
 	renderSetting.clientWidth = this->setting.clientWidth;
 	renderSetting.clientHeight = this->setting.clientHeight;
+	DebugNormalMessage( "RECT : " << renderSetting.clientWidth << " , " << renderSetting.clientHeight );
 	renderSetting.isVsync = this->setting.isVsync;
 
 	this->renderer->Initialize( renderDesc, renderSetting );
@@ -98,6 +99,7 @@ void KG::GameFramework::OnTestInit()
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* cam = this->renderer->GetNewCameraComponent();
+		cam->SetDefaultRender( this->setting.clientWidth, this->setting.clientHeight );
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
 		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
 			[]( KG::Core::GameObject* gameObject, float elapsedTime )

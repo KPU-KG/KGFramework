@@ -22,6 +22,7 @@ namespace KG::Renderer
 	class Geometry;
 	class RenderTexture;
 	struct MaterialConstant;
+	struct RendererSetting;
 }
 namespace KG::System
 {
@@ -42,6 +43,7 @@ namespace KG::Component
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) {};
 	};
 
+
 	class DLL CameraComponent : public IRenderComponent
 	{
 		friend Render3DComponent;
@@ -50,6 +52,9 @@ namespace KG::Component
 		float aspectRatio = 16.0f / 9.0f;
 		float nearZ = 0.01f;
 		float farZ = 1000.0f;
+
+		D3D12_VIEWPORT viewport;
+		D3D12_RECT scissorRect;
 
 		ID3D12Resource* renderTarget = nullptr;
 		D3D12_CPU_DESCRIPTOR_HANDLE renderTargetHandle;
@@ -79,11 +84,16 @@ namespace KG::Component
 		void SetAspectRatio( float value ) { OnProjDirty(); this->aspectRatio = value; };
 		void SetNearZ( float value ) { OnProjDirty(); this->nearZ = value; };
 		void SetFarZ( float value ) { OnProjDirty(); this->farZ = value; };
+		void SetViewport( const D3D12_VIEWPORT& viewport ) { this->viewport = viewport; };
+		void SetScissorRect( const D3D12_RECT& rect ) { this->scissorRect = rect; };
+		void SetDefaultRender( float width, float height );
 
-		auto GetFovY() { return this->fovY; };
-		auto GetAspectRatio() { return this->aspectRatio; };
-		auto GetNearZ() { return this->nearZ; };
-		auto GetFarZ() { return this->farZ; };
+		auto GetFovY() const { return this->fovY; };
+		auto GetAspectRatio() const { return this->aspectRatio; };
+		auto GetNearZ() const { return this->nearZ; };
+		auto GetFarZ() const { return this->farZ; };
+		auto GetViewport() const { return this->viewport; };
+		auto GetScissorRect() const { return this->scissorRect; };
 
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
 
