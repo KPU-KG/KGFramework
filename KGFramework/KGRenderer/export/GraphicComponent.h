@@ -112,6 +112,10 @@ namespace KG::Component
 		}
 	};
 
+	class DLL CubeCameraComponent : public IRenderComponent
+	{
+		CameraComponent cameraPool[6];
+	};
 
 	class DLL Render3DComponent : public IRenderComponent
 	{
