@@ -21,7 +21,6 @@ SkyBoxOut SKYMAP_VS(VertexData vIn)
     SkyBoxOut vOut;
     vOut.PosL = vIn.position;
     float4 posW = float4(vIn.position + cameraWorldPosition, 1.0f);
-    
     vOut.PosH = mul(posW, viewProjection).xyww;
     return vOut;
 }
@@ -29,7 +28,7 @@ SkyBoxOut SKYMAP_VS(VertexData vIn)
 float4 SKYMAP_PS(SkyBoxOut pIn) : SV_Target
 {
     MaterialData mat = materialData[0];
-    return shaderTextureCube[mat.SkyBoxTextureIndex].Sample(gsamAnisotoropicWrap, pIn.PosL);
+    return shaderTextureCube[mat.SkyBoxTextureIndex].Sample(gsamAnisotoropicWrap, normalize(pIn.PosL));
 }
 
 

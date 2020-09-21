@@ -115,7 +115,8 @@ float4 CustomAmbientLightCalculator(LightData light, PixelResult info, float3 li
  
     float3 kd = lerp(float3(1, 1, 1) - F, float3(0.0f, 0.0f, 0.0f), 1.0f.xxx - info.metalic.xxx);
     float3 reflec = reflect(-cameraDir, info.wNormal);
-    return float4(kd * shaderTextureCube[16].Sample(gsamAnisotoropicWrap, reflec).rgb * info.albedo, 1.0f);
+    return float4(kd * shaderTextureCube[13].Sample(gsamAnisotoropicWrap, reflec).rgb * info.albedo, 1.0f);
+    
 }
 
 #endif
