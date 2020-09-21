@@ -15,6 +15,7 @@ namespace KG::Resource
 	struct Texture
 	{
 		Texture( const Metadata::TextureData& data );
+		Texture( ID3D12Resource* resource, const D3D12_SHADER_RESOURCE_VIEW_DESC& srvDesc );
 
 		//임시로 ComPtr 사용 / 수업 진행하여 텍스처 로더 구현을 배우거나 추후에 구현 
 		ComPtr<ID3D12Resource> resource = nullptr;
@@ -22,15 +23,20 @@ namespace KG::Resource
 		UINT uploadFenceValue = 0;
 		KG::Renderer::DescriptorHeapManager* heapManager = nullptr;
 
+		bool isDestroy = false;
 		size_t index;
 		Metadata::TextureData metaData;
 		void CreateFromMetadata( const Metadata::TextureData& data );
+		void CreateFromRuntimeData( ID3D12Resource* resource, const D3D12_SHADER_RESOURCE_VIEW_DESC& srvDesc );
 
 		//D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle() const;
 		//D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const;
 
 		//size_t GetIndex() const;
 
+		D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
+
+		void CreateDefaultSRVDesc();
 		D3D12_SHADER_RESOURCE_VIEW_DESC GetDescriptorDesc() const;
 
 		void RequestIndex();
