@@ -121,6 +121,18 @@ namespace KG::Renderer
 		ID3D12RootSignature* GetGeneralRootSignature() const;
 		KGRenderEngine* GetRenderEngine() const;
 		DescriptorHeapManager* GetDescriptorHeapManager() const;
-		
+		UINT GetRTVSize() const
+		{
+			return this->rtvDescriptorSize;
+		};
+		UINT GetSRVSize() const 
+		{
+			return this->srvDescriptorSize;
+		};
+		UINT GetDSVSize() const
+		{
+			return this->dsvDescriptoSize;
+		};
+
 	};
 }
