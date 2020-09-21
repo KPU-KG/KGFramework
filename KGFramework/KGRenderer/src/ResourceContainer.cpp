@@ -58,6 +58,19 @@ KG::Resource::Texture* KG::Resource::ResourceContainer::LoadTexture( const KG::U
 	}
 }
 
+KG::Resource::Texture* KG::Resource::ResourceContainer::CreateTexture( const KG::Utill::HashString& id, ID3D12Resource* resource, const D3D12_SHADER_RESOURCE_VIEW_DESC& srvDesc )
+{
+	if ( this->textures.count( id ) )
+	{
+		DebugErrorMessage( id.value << L"는 이미 존재하는 텍스처입니다." );
+		return &this->textures.at( id );
+	}
+	else
+	{
+		return &this->textures.emplace( id, resource, srvDesc ).first->second;
+	}
+}
+
 std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceContainer::LoadMaterial( const KG::Utill::HashString& id )
 {
 	if ( this->materials.count( id ) )

@@ -28,6 +28,7 @@ namespace KG::Resource
 		KG::Renderer::Shader* LoadShader(const KG::Utill::HashString& id);
 		KG::Renderer::Geometry* LoadGeometry( const KG::Utill::HashString& id );
 		KG::Resource::Texture* LoadTexture( const KG::Utill::HashString& id );
+		KG::Resource::Texture* CreateTexture( const KG::Utill::HashString& id, ID3D12Resource* resource, const D3D12_SHADER_RESOURCE_VIEW_DESC& srvDesc);
 		std::pair<size_t, KG::Utill::HashString> LoadMaterial( const KG::Utill::HashString& id );
 		
 		void Clear();
