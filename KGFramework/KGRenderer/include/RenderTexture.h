@@ -26,12 +26,17 @@ namespace KG::Renderer
 		std::array<D3D12_CPU_DESCRIPTOR_HANDLE, 4> gbufferHandle;
 		ID3D12DescriptorHeap* gbufferDescriptorHeap = nullptr;
 		ID3D12DescriptorHeap* gbufferSRVHeap = nullptr;
-		std::array<D3D12_RESOURCE_BARRIER, 4> gBufferResourceBarrier;
 
 		//Depth
 		ID3D12Resource* depthStencilBuffer = nullptr;
 		ID3D12DescriptorHeap* dsvDescriptorHeap = nullptr;
 		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
+
+		//Barrier
+		D3D12_RESOURCE_STATES renderTargetState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		D3D12_RESOURCE_STATES gbufferState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+		D3D12_RESOURCE_STATES depthStencilState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+		std::array<D3D12_RESOURCE_BARRIER, 6> resourceBarrier;
 
 	private:
 		void CreateRenderTarget();
@@ -63,7 +68,11 @@ namespace KG::Renderer
 
 		D3D12_CPU_DESCRIPTOR_HANDLE GetGBufferRTVHandle( size_t index );
 
-		D3D12_RESOURCE_BARRIER* GBufferTransition( D3D12_RESOURCE_STATES prev, D3D12_RESOURCE_STATES next );
+		std::pair<size_t, D3D12_RESOURCE_BARRIER*> BarrierTransition(
+			D3D12_RESOURCE_STATES renderTargetState,
+			D3D12_RESOURCE_STATES gbufferState,
+			D3D12_RESOURCE_STATES depthStencilState
+		);
 
 		void ClearGBuffer( ID3D12GraphicsCommandList* cmdList, float r, float g, float b, float a );
 

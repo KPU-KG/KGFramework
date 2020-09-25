@@ -231,7 +231,13 @@ void KG::Component::CameraComponent::SetCameraRender( ID3D12GraphicsCommandList*
 	commandList->RSSetViewports( 1, &this->viewport );
 	commandList->RSSetScissorRects( 1, &this->scissorRect );
 
-	commandList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( this->renderTexture->renderTarget, this->defaultRTState, D3D12_RESOURCE_STATE_RENDER_TARGET ) );
+	TryResourceBarrier( commandList,
+		this->renderTexture->BarrierTransition(
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_DEPTH_WRITE
+		)
+	);
 
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	commandList->ClearRenderTargetView( this->renderTexture->GetRenderTargetRTVHandle(), clearColor, 0, nullptr );
@@ -240,7 +246,13 @@ void KG::Component::CameraComponent::SetCameraRender( ID3D12GraphicsCommandList*
 
 void KG::Component::CameraComponent::EndCameraRender( ID3D12GraphicsCommandList* commandList )
 {
-	commandList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( this->renderTexture->renderTarget, D3D12_RESOURCE_STATE_RENDER_TARGET, this->defaultRTState ) );
+	TryResourceBarrier( commandList,
+		this->renderTexture->BarrierTransition(
+			D3D12_RESOURCE_STATE_COMMON,
+			D3D12_RESOURCE_STATE_COMMON,
+			D3D12_RESOURCE_STATE_COMMON
+		)
+	);
 }
 
 void KG::Component::CameraComponent::SetRenderTexture( KG::Renderer::RenderTexture* renderTexture )

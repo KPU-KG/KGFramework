@@ -244,7 +244,7 @@ void KG::Renderer::RenderTexture::CopyGBufferSRV()
 
 D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::RenderTexture::GetRenderTargetRTVHandle()
 {
-	return this->GetRenderTargetRTVHandle(this->currentIndex);
+	return this->GetRenderTargetRTVHandle( this->currentIndex );
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::RenderTexture::GetRenderTargetRTVHandle( size_t index )
@@ -261,13 +261,35 @@ D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::RenderTexture::GetGBufferRTVHandle( si
 	return handle;
 }
 
-D3D12_RESOURCE_BARRIER* KG::Renderer::RenderTexture::GBufferTransition( D3D12_RESOURCE_STATES prev, D3D12_RESOURCE_STATES next )
+std::pair<size_t, D3D12_RESOURCE_BARRIER*> KG::Renderer::RenderTexture::BarrierTransition(
+	D3D12_RESOURCE_STATES renderTargetState,
+	D3D12_RESOURCE_STATES gbufferState,
+	D3D12_RESOURCE_STATES depthStencilState
+)
 {
-	for ( size_t i = 0; i < 4; i++ )
+	size_t csr = 0;
+	if ( this->desc.useRenderTarget && renderTargetState != this->renderTargetState )
 	{
-		this->gBufferResourceBarrier[i] = CD3DX12_RESOURCE_BARRIER::Transition( this->gbufferTextures[i], prev, next );
+		this->resourceBarrier[csr] = CD3DX12_RESOURCE_BARRIER::Transition( this->renderTarget, this->renderTargetState, renderTargetState );
+		this->renderTargetState = renderTargetState;
+		csr += 1;
 	}
-	return this->gBufferResourceBarrier.data();
+	if ( this->desc.useDeferredRender && gbufferState != this->gbufferState )
+	{
+		for ( size_t i = 0; i < 4; i++ )
+		{
+			this->resourceBarrier[csr] = CD3DX12_RESOURCE_BARRIER::Transition( this->gbufferTextures[i], this->gbufferState, gbufferState );
+			csr += 1;
+		}
+		this->gbufferState = gbufferState;
+	}
+	if ( this->desc.useDepthStencilBuffer && depthStencilState != this->depthStencilState )
+	{
+		this->resourceBarrier[csr] = CD3DX12_RESOURCE_BARRIER::Transition( this->depthStencilBuffer, this->depthStencilState, depthStencilState );
+		this->depthStencilState = depthStencilState;
+		csr += 1;
+	}
+	return std::pair<size_t, D3D12_RESOURCE_BARRIER*>( csr, this->resourceBarrier.data() );
 }
 
 void KG::Renderer::RenderTexture::ClearGBuffer( ID3D12GraphicsCommandList* cmdList, float r, float g, float b, float a )

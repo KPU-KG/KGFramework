@@ -39,6 +39,14 @@ namespace KG::Renderer
 		}
 	}
 
+	inline void TryResourceBarrier( ID3D12GraphicsCommandList* commandList, const std::pair<size_t, D3D12_RESOURCE_BARRIER*>& barrier )
+	{
+		if ( barrier.first )
+		{
+			commandList->ResourceBarrier( barrier.first, barrier.second );
+		}
+	}
+
 	template<typename Ty>
 	inline void ZeroDesc(Ty& desc)
 	{
@@ -87,3 +95,6 @@ namespace KG::Renderer
 	ID3D12Resource* CreateUploadHeapBuffer(ID3D12Device* device, size_t bufferSize);
 };
 
+using KG::Renderer::ThrowIfFailed;
+using KG::Renderer::TryRelease;
+using KG::Renderer::TryResourceBarrier;

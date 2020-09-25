@@ -134,7 +134,35 @@ void KGDXRenderer::Render()
 
 		if ( camera.isMainCamera )
 		{
+			TryResourceBarrier( this->mainCommandList,
+				camera.GetRenderTexture().BarrierTransition(
+					D3D12_RESOURCE_STATE_COPY_SOURCE,
+					D3D12_RESOURCE_STATE_COMMON,
+					D3D12_RESOURCE_STATE_COMMON
+					)
+				);
+
+			this->mainCommandList->ResourceBarrier( 1, 
+				&CD3DX12_RESOURCE_BARRIER::Transition( 
+					this->renderTargetBuffers[this->swapChainBufferIndex],
+					D3D12_RESOURCE_STATE_PRESENT,
+					D3D12_RESOURCE_STATE_COPY_DEST )
+			);
 			this->mainCommandList->CopyResource( this->renderTargetBuffers[this->swapChainBufferIndex], camera.GetRenderTexture().renderTarget );
+			this->mainCommandList->ResourceBarrier( 1,
+				&CD3DX12_RESOURCE_BARRIER::Transition(
+					this->renderTargetBuffers[this->swapChainBufferIndex],
+					D3D12_RESOURCE_STATE_COPY_DEST,
+					D3D12_RESOURCE_STATE_PRESENT )
+			);
+
+			TryResourceBarrier( this->mainCommandList,
+				camera.GetRenderTexture().BarrierTransition(
+					D3D12_RESOURCE_STATE_COMMON,
+					D3D12_RESOURCE_STATE_COMMON,
+					D3D12_RESOURCE_STATE_COMMON
+				)
+			);
 		}
 	}
 
@@ -520,7 +548,13 @@ void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
 	this->renderEngine->SetPassEnterEventFunction( ShaderType::Opaque,
 		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
 		{
-			cmdList->ResourceBarrier( 4, renderTexture.GBufferTransition( D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET ) );
+			TryResourceBarrier( cmdList,
+				renderTexture.BarrierTransition(
+					D3D12_RESOURCE_STATE_RENDER_TARGET,
+					D3D12_RESOURCE_STATE_RENDER_TARGET,
+					D3D12_RESOURCE_STATE_DEPTH_WRITE
+				)
+			);
 
 			cmdList->OMSetRenderTargets( 4, renderTexture.gbufferHandle.data(), false, &renderTexture.dsvHandle );
 
@@ -534,9 +568,13 @@ void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
 	this->renderEngine->SetPassEnterEventFunction( ShaderType::LightPass,
 		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
 		{
-			cmdList->ResourceBarrier( 4, renderTexture.GBufferTransition( D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE ) );
-			cmdList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( renderTexture.depthStencilBuffer, D3D12_RESOURCE_STATE_DEPTH_WRITE,
-				D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE ) );
+			TryResourceBarrier( cmdList,
+				renderTexture.BarrierTransition(
+				D3D12_RESOURCE_STATE_RENDER_TARGET,
+				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+				D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+				)
+			);
 			cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle( 0 ) );
 			cmdList->OMSetRenderTargets( 1, &renderTexture.GetRenderTargetRTVHandle(), true, nullptr );
 		} );
@@ -569,7 +607,13 @@ void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
 	this->renderEngine->SetPassEndEventFunction(
 		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
 		{
-			cmdList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( renderTexture.depthStencilBuffer, D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_DEPTH_WRITE ) );
+			TryResourceBarrier( cmdList,
+				renderTexture.BarrierTransition(
+					D3D12_RESOURCE_STATE_RENDER_TARGET,
+					D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+					D3D12_RESOURCE_STATE_DEPTH_WRITE
+				)
+			);
 		} );
 
 }
