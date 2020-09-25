@@ -7,6 +7,7 @@
 #include <tuple>
 #include <functional>
 #include "KGGraphicBuffer.h"
+#include "RenderTexture.h"
 namespace KG::Renderer
 {
 	class Shader;
@@ -56,10 +57,10 @@ namespace KG::Renderer
 		std::deque<KGRenderJob> pool;
 		std::vector<PassJobs> pass;
 
-		using PassEnterFunction = std::function<void( ID3D12GraphicsCommandList*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE )>;
-		using PassPreRenderFunction = std::function<void( ID3D12GraphicsCommandList*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE )>;
-		using PassEndRenderFunction = std::function<void( ID3D12GraphicsCommandList*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE )>;
-		using PassEndFunction = std::function<void( ID3D12GraphicsCommandList*, ID3D12Resource*, D3D12_CPU_DESCRIPTOR_HANDLE )>;
+		using PassEnterFunction = std::function<void( ID3D12GraphicsCommandList*, RenderTexture& )>;
+		using PassPreRenderFunction = std::function<void( ID3D12GraphicsCommandList*, RenderTexture& )>;
+		using PassEndRenderFunction = std::function<void( ID3D12GraphicsCommandList*, RenderTexture& )>;
+		using PassEndFunction = std::function<void( ID3D12GraphicsCommandList*, RenderTexture& )>;
 
 		PassEnterFunction OnPassEnterEvent[4];
 		PassPreRenderFunction OnPassPreRenderEvent[4];
@@ -73,7 +74,7 @@ namespace KG::Renderer
 	public:
 		KGRenderEngine( ID3D12Device* device );
 		KGRenderJob* GetRenderJob( Shader* shader, Geometry* geometry );
-		void Render( ID3D12GraphicsCommandList* cmdList, ID3D12Resource* rt, D3D12_CPU_DESCRIPTOR_HANDLE rtvHandle );
+		void Render( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture );
 		void ClearJobs();
 		void ClearUpdateCount();
 		const PassEnterFunction& GetPassEnterEventFunction( size_t pass )

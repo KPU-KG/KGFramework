@@ -20,7 +20,8 @@ namespace KG::Renderer
 	class KGRenderJob;
 	class Shader;
 	class Geometry;
-	class RenderTexture;
+	struct RenderTexture;
+	struct RenderTextureDesc;
 	struct MaterialConstant;
 	struct RendererSetting;
 }
@@ -56,8 +57,9 @@ namespace KG::Component
 		D3D12_VIEWPORT viewport;
 		D3D12_RECT scissorRect;
 
-		ID3D12Resource* renderTarget = nullptr;
-		D3D12_CPU_DESCRIPTOR_HANDLE renderTargetHandle;
+		bool isRenderTexureCreatedInCamera = false;
+		KG::Renderer::RenderTexture* renderTexture = nullptr;
+
 		D3D12_RESOURCE_STATES defaultRTState = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
 
 		TransformComponent* transform;
@@ -100,15 +102,12 @@ namespace KG::Component
 		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
 		void EndCameraRender( ID3D12GraphicsCommandList* commandList );
 
-		void SetRenderTarget( ID3D12Resource* renderTarget, D3D12_CPU_DESCRIPTOR_HANDLE renderTargetHandle, D3D12_RESOURCE_STATES defaultRTState );
+		void SetRenderTexture(KG::Renderer::RenderTexture* renderTexture);
+		void InitializeRenderTexture(const KG::Renderer::RenderTextureDesc& desc);
 
-		auto GetRenderTarget() const
+		auto& GetRenderTexture()
 		{
-			return this->renderTarget;
-		}
-		auto GetRenderTargetViewHandle() const
-		{
-			return this->renderTargetHandle;
+			return *this->renderTexture;
 		}
 	};
 

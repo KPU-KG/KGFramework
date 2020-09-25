@@ -264,6 +264,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_ID|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\RenderTexture.cpp" />
     <ClCompile Include="src\ResourceContainer.cpp" />
   </ItemGroup>
   <ItemGroup>

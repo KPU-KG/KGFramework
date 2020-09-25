@@ -198,6 +198,12 @@ void KG::Component::CameraComponent::OnDestroy()
 	this->cameraData = nullptr;
 	this->transform = nullptr;
 	TryRelease( this->cameraDataBuffer );
+
+	if ( this->isRenderTexureCreatedInCamera )
+	{
+		delete this->renderTexture;
+	}
+
 	IRenderComponent::OnDestroy();
 }
 
@@ -218,29 +224,36 @@ void KG::Component::CameraComponent::OnRender( ID3D12GraphicsCommandList* comman
 void KG::Component::CameraComponent::SetCameraRender( ID3D12GraphicsCommandList* commandList )
 {
 	this->RefreshCameraData();
+	this->renderTexture->CopyGBufferSRV();
 	std::memcpy( this->mappedCameraData, this->cameraData, sizeof( CameraData ) );
 	commandList->SetGraphicsRootConstantBufferView( RootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress() );
 
 	commandList->RSSetViewports( 1, &this->viewport );
 	commandList->RSSetScissorRects( 1, &this->scissorRect );
 
-	commandList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( this->renderTarget, this->defaultRTState, D3D12_RESOURCE_STATE_RENDER_TARGET ) );
+	commandList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( this->renderTexture->renderTarget, this->defaultRTState, D3D12_RESOURCE_STATE_RENDER_TARGET ) );
 
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	commandList->ClearRenderTargetView( this->renderTargetHandle, clearColor, 0, nullptr );
+	commandList->ClearRenderTargetView( this->renderTexture->GetRenderTargetRTVHandle(), clearColor, 0, nullptr );
 
 }
 
 void KG::Component::CameraComponent::EndCameraRender( ID3D12GraphicsCommandList* commandList )
 {
-	commandList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( this->renderTarget, D3D12_RESOURCE_STATE_RENDER_TARGET, this->defaultRTState ) );
+	commandList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( this->renderTexture->renderTarget, D3D12_RESOURCE_STATE_RENDER_TARGET, this->defaultRTState ) );
 }
 
-void KG::Component::CameraComponent::SetRenderTarget( ID3D12Resource* renderTarget, D3D12_CPU_DESCRIPTOR_HANDLE renderTargetHandle, D3D12_RESOURCE_STATES defaultRTState )
+void KG::Component::CameraComponent::SetRenderTexture( KG::Renderer::RenderTexture* renderTexture )
 {
-	this->renderTarget = renderTarget;
-	this->renderTargetHandle = renderTargetHandle;
-	this->defaultRTState = defaultRTState;
+	this->isRenderTexureCreatedInCamera = false;
+	this->renderTexture = renderTexture;
+}
+
+void KG::Component::CameraComponent::InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc )
+{
+	this->isRenderTexureCreatedInCamera = true;
+	this->renderTexture = new KG::Renderer::RenderTexture();
+	this->renderTexture->Initialize( desc );
 }
 
 void KG::Component::LightComponent::SetRenderJob( KG::Renderer::KGRenderJob* renderJob )

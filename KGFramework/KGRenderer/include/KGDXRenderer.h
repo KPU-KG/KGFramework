@@ -22,17 +22,8 @@ namespace KG::Renderer
 		vector<ID3D12Resource*> renderTargetBuffers;
 		ID3D12DescriptorHeap* rtvDescriptorHeap = nullptr;
 
-		vector<ID3D12Resource*> gbufferTargetBuffers;
-		ID3D12DescriptorHeap* gbufferDescriptorHeap = nullptr;
-		D3D12_CPU_DESCRIPTOR_HANDLE gbufferDescritorHandles[4];
-		D3D12_RESOURCE_BARRIER gbufferResourceBarrierCache[4];
-
 		UINT rtvDescriptorSize = 0;
 		UINT srvDescriptorSize = 0;
-
-		ID3D12Resource* depthStencilBuffer = nullptr;
-		ID3D12Resource* depthStencilBackBuffer = nullptr;
-		ID3D12DescriptorHeap* dsvDescriptorHeap = nullptr;
 		UINT dsvDescriptoSize = 0;
 		
 		ID3D12CommandQueue* commandQueue = nullptr;
@@ -58,33 +49,20 @@ namespace KG::Renderer
 		void CreateD3DDevice();
 		void CreateSwapChain();
 		void CreateRtvDescriptorHeaps();
-		void CreateDsvDescriptorHeaps();
 		void CreateSRVDescriptorHeaps();
 		void CreateCommandQueueAndList();
 		void CreateRenderTargetView();
-		void CreateDepthStencilView();
 
-		void CreateGBuffer();
-		void CreateGBufferDescriptorHeaps();
 
 		void CreateGeneralRootSignature();
 
-		void CreateGbufferSRV();
+		void AllocateGBufferHeap();
 		
 		void RegisterPassEnterFunction();
 
 		void MoveToNextFrame();
 
-		D3D12_RESOURCE_BARRIER* GetGBufferTrasitionBarriers( D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after);
-
-		D3D12_RESOURCE_BARRIER* GetLightBufferTrasitionBarriers
-		( D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after,
-			D3D12_RESOURCE_STATES lightBefore, D3D12_RESOURCE_STATES lightAfter );
-
-		void ClearGBuffer( ID3D12GraphicsCommandList* cmdList, float r, float g, float b, float a );
-
 		D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentRenderTargetHandle() const;
-		D3D12_CPU_DESCRIPTOR_HANDLE& GetCurrentDepthStencilHandle() const;
 		ID3D12Resource* GetCurrentRenderTarget() const;
 	public:
 		KGDXRenderer();

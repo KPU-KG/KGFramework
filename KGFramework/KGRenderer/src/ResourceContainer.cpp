@@ -25,7 +25,7 @@ KG::Renderer::Shader* KG::Resource::ResourceContainer::LoadShader( const KG::Uti
 	{
 		return &this->shaders.at( id );
 	}
-	else 
+	else
 	{
 		auto metaData = ResourceLoader::LoadShaderSetFromFile( "Resource/ShaderCode.xml", id );
 		return &this->shaders.emplace( id, metaData ).first->second;
@@ -67,7 +67,7 @@ KG::Resource::Texture* KG::Resource::ResourceContainer::CreateTexture( const KG:
 	}
 	else
 	{
-		return &this->textures.emplace( id, resource, srvDesc ).first->second;
+		return &this->textures.emplace( id, KG::Resource::Texture( resource, srvDesc ) ).first->second;
 	}
 }
 

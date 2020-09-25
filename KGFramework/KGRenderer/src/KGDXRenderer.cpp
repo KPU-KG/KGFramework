@@ -76,9 +76,6 @@ KG::Renderer::KGDXRenderer::~KGDXRenderer()
 	TryRelease( swapChain );
 	TryRelease( d3dDevice );
 	TryRelease( rtvDescriptorHeap );
-	TryRelease( gbufferDescriptorHeap );
-	TryRelease( depthStencilBuffer );
-	TryRelease( dsvDescriptorHeap );
 	TryRelease( commandQueue );
 	TryRelease( mainCommandAllocator );
 	TryRelease( mainCommandList );
@@ -86,10 +83,6 @@ KG::Renderer::KGDXRenderer::~KGDXRenderer()
 	TryRelease( fence );
 
 	for ( auto*& ptr : this->renderTargetBuffers )
-	{
-		TryRelease( ptr );
-	}
-	for ( auto*& ptr : this->gbufferTargetBuffers )
 	{
 		TryRelease( ptr );
 	}
@@ -107,18 +100,15 @@ void KGDXRenderer::Initialize()
 	this->CreateCommandQueueAndList();
 	this->CreateSwapChain();
 	this->CreateRtvDescriptorHeaps();
-	this->CreateDsvDescriptorHeaps();
 	this->CreateRenderTargetView();
-	this->CreateDepthStencilView();
 	this->CreateGeneralRootSignature();
-	this->CreateGBuffer();
-	this->CreateGBufferDescriptorHeaps();
+
 
 	this->renderEngine = std::make_unique<KGRenderEngine>( this->d3dDevice );
 	this->graphicSystems = std::make_unique<GraphicSystems>();
 
 	this->CreateSRVDescriptorHeaps();
-	this->CreateGbufferSRV();
+	this->AllocateGBufferHeap();
 
 	this->RegisterPassEnterFunction();
 }
@@ -138,13 +128,14 @@ void KGDXRenderer::Render()
 
 	for ( KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem )
 	{
+		camera.SetCameraRender( this->mainCommandList );
+		this->renderEngine->Render( this->mainCommandList, camera.GetRenderTexture());
+		camera.EndCameraRender( this->mainCommandList );
+
 		if ( camera.isMainCamera )
 		{
-			camera.SetRenderTarget( this->renderTargetBuffers[this->swapChainBufferIndex], this->GetCurrentRenderTargetHandle(), D3D12_RESOURCE_STATE_PRESENT );
+			this->mainCommandList->CopyResource( this->renderTargetBuffers[this->swapChainBufferIndex], camera.GetRenderTexture().renderTarget );
 		}
-		camera.SetCameraRender( this->mainCommandList );
-		this->renderEngine->Render( this->mainCommandList, camera.GetRenderTarget(), camera.GetRenderTargetViewHandle() );
-		camera.EndCameraRender( this->mainCommandList );
 	}
 
 	hResult = this->mainCommandList->Close();
@@ -231,34 +222,6 @@ KGRenderEngine* KG::Renderer::KGDXRenderer::GetRenderEngine() const
 DescriptorHeapManager* KG::Renderer::KGDXRenderer::GetDescriptorHeapManager() const
 {
 	return this->descriptorHeapManager.get();
-}
-
-D3D12_RESOURCE_BARRIER* KG::Renderer::KGDXRenderer::GetGBufferTrasitionBarriers( D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after )
-{
-	for ( size_t i = 0; i < 4; i++ )
-	{
-		this->gbufferResourceBarrierCache[i] = CD3DX12_RESOURCE_BARRIER::Transition( this->gbufferTargetBuffers[i], before, after );
-	}
-	return this->gbufferResourceBarrierCache;
-}
-
-D3D12_RESOURCE_BARRIER* KG::Renderer::KGDXRenderer::GetLightBufferTrasitionBarriers( D3D12_RESOURCE_STATES before, D3D12_RESOURCE_STATES after, D3D12_RESOURCE_STATES lightBefore, D3D12_RESOURCE_STATES lightAfter )
-{
-	for ( size_t i = 0; i < 3; i++ )
-	{
-		this->gbufferResourceBarrierCache[i] = CD3DX12_RESOURCE_BARRIER::Transition( this->gbufferTargetBuffers[i], before, after );
-	}
-	this->gbufferResourceBarrierCache[3] = CD3DX12_RESOURCE_BARRIER::Transition( this->gbufferTargetBuffers[3], lightBefore, lightAfter );
-	return this->gbufferResourceBarrierCache;
-}
-
-void KG::Renderer::KGDXRenderer::ClearGBuffer( ID3D12GraphicsCommandList* cmdList, float r, float g, float b, float a )
-{
-	float clearGbufferColor[4] = { r, g, b, a };
-	for ( auto& handle : this->gbufferDescritorHandles )
-	{
-		cmdList->ClearRenderTargetView( handle, clearGbufferColor, 0, nullptr );
-	}
 }
 
 void KG::Renderer::KGDXRenderer::QueryHardwareFeature()
@@ -404,20 +367,6 @@ void KG::Renderer::KGDXRenderer::CreateRtvDescriptorHeaps()
 	this->rtvDescriptorSize = this->d3dDevice->GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_RTV );
 }
 
-void KG::Renderer::KGDXRenderer::CreateDsvDescriptorHeaps()
-{
-	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
-	ZeroDesc( d3dDescriptorHeapDesc );
-
-	d3dDescriptorHeapDesc.NumDescriptors = 2;
-	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
-	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	d3dDescriptorHeapDesc.NodeMask = 0;
-
-	HRESULT hResult = this->d3dDevice->CreateDescriptorHeap( &d3dDescriptorHeapDesc, IID_PPV_ARGS( &this->dsvDescriptorHeap ) );
-	this->dsvDescriptoSize = this->d3dDevice->GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_DSV );
-}
-
 void KG::Renderer::KGDXRenderer::CreateSRVDescriptorHeaps()
 {
 	this->descriptorHeapManager = std::make_unique<DescriptorHeapManager>();
@@ -456,86 +405,6 @@ void KG::Renderer::KGDXRenderer::CreateRenderTargetView()
 	}
 }
 
-void KG::Renderer::KGDXRenderer::CreateDepthStencilView()
-{
-	D3D12_RESOURCE_DESC d3dResourceDesc;
-	ZeroDesc( d3dResourceDesc );
-	d3dResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION::D3D12_RESOURCE_DIMENSION_TEXTURE2D;
-	d3dResourceDesc.Alignment = 0;
-	d3dResourceDesc.Width = this->setting.clientWidth;
-	d3dResourceDesc.Height = this->setting.clientHeight;
-	d3dResourceDesc.DepthOrArraySize = 1;
-	d3dResourceDesc.MipLevels = 1;
-	d3dResourceDesc.Format = DXGI_FORMAT::DXGI_FORMAT_R24G8_TYPELESS;
-	//d3dResourceDesc.Format = DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT;
-	d3dResourceDesc.SampleDesc.Count = this->setting.msaa4xEnable ? 4 : 1;
-	d3dResourceDesc.SampleDesc.Quality = this->setting.msaa4xEnable ? this->setting.msaa4xQualityLevel - 1 : 0;
-	d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT::D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAGS::D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
-
-	D3D12_HEAP_PROPERTIES d3dHeapProperties;
-	ZeroDesc( d3dHeapProperties );
-	d3dHeapProperties.Type = D3D12_HEAP_TYPE::D3D12_HEAP_TYPE_DEFAULT;
-	d3dHeapProperties.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY::D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
-	d3dHeapProperties.MemoryPoolPreference = D3D12_MEMORY_POOL::D3D12_MEMORY_POOL_UNKNOWN;
-	d3dHeapProperties.CreationNodeMask = 1;
-	d3dHeapProperties.VisibleNodeMask = 1;
-
-	D3D12_DEPTH_STENCIL_VIEW_DESC d3dDepthStencillViewDesc;
-	d3dDepthStencillViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	d3dDepthStencillViewDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-	d3dDepthStencillViewDesc.Texture2D.MipSlice = 0;
-	d3dDepthStencillViewDesc.Flags = D3D12_DSV_FLAG_NONE;
-
-
-	D3D12_CLEAR_VALUE d3dClearValue;
-	d3dClearValue.Format = DXGI_FORMAT::DXGI_FORMAT_D24_UNORM_S8_UINT;
-	d3dClearValue.DepthStencil.Depth = 1.0f;
-	d3dClearValue.DepthStencil.Stencil = 0;
-
-	this->d3dDevice->CreateCommittedResource( &d3dHeapProperties, D3D12_HEAP_FLAGS::D3D12_HEAP_FLAG_NONE,
-		&d3dResourceDesc, D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_DEPTH_WRITE, &d3dClearValue, IID_PPV_ARGS( &this->depthStencilBuffer ) );
-
-
-	this->d3dDevice->CreateCommittedResource( &d3dHeapProperties, D3D12_HEAP_FLAGS::D3D12_HEAP_FLAG_NONE,
-		&d3dResourceDesc, D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_DEPTH_WRITE, &d3dClearValue, IID_PPV_ARGS( &this->depthStencilBackBuffer ) );
-
-	D3D12_CPU_DESCRIPTOR_HANDLE d3dDsvCPUDescriptorHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-	this->d3dDevice->CreateDepthStencilView( this->depthStencilBuffer, &d3dDepthStencillViewDesc, d3dDsvCPUDescriptorHandle );
-	d3dDsvCPUDescriptorHandle.ptr += this->dsvDescriptoSize;
-	this->d3dDevice->CreateDepthStencilView( this->depthStencilBackBuffer, &d3dDepthStencillViewDesc, d3dDsvCPUDescriptorHandle );
-}
-
-void KG::Renderer::KGDXRenderer::CreateGBuffer()
-{
-	this->gbufferTargetBuffers.resize( 4 );
-	this->gbufferTargetBuffers[0] = CreateRenderTargetResource( this->d3dDevice, this->setting.clientWidth, this->setting.clientHeight, DXGI_FORMAT_R8G8B8A8_UNORM );
-	this->gbufferTargetBuffers[1] = CreateRenderTargetResource( this->d3dDevice, this->setting.clientWidth, this->setting.clientHeight, DXGI_FORMAT_R8G8B8A8_UNORM );
-	this->gbufferTargetBuffers[2] = CreateRenderTargetResource( this->d3dDevice, this->setting.clientWidth, this->setting.clientHeight, DXGI_FORMAT_R16G16_SNORM );
-	//this->gbufferTargetBuffers[2] = CreateRenderTargetResource( this->d3dDevice, this->setting.clientWidth, this->setting.clientHeight, DXGI_FORMAT_R10G10B10A2_UNORM );
-	this->gbufferTargetBuffers[3] = CreateRenderTargetResource( this->d3dDevice, this->setting.clientWidth, this->setting.clientHeight, DXGI_FORMAT_R8G8B8A8_UNORM );
-}
-
-void KG::Renderer::KGDXRenderer::CreateGBufferDescriptorHeaps()
-{
-	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
-	ZeroDesc( d3dDescriptorHeapDesc );
-
-	d3dDescriptorHeapDesc.NumDescriptors = 4;
-	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
-	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	d3dDescriptorHeapDesc.NodeMask = 0;
-
-	HRESULT hResult = this->d3dDevice->CreateDescriptorHeap( &d3dDescriptorHeapDesc, IID_PPV_ARGS( &this->gbufferDescriptorHeap ) );
-
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvCpuDescHandle = this->gbufferDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-	for ( size_t i = 0; i < 4; i++ )
-	{
-		this->d3dDevice->CreateRenderTargetView( this->gbufferTargetBuffers[i], nullptr, rtvCpuDescHandle );
-		this->gbufferDescritorHandles[i] = rtvCpuDescHandle;
-		rtvCpuDescHandle.ptr += this->rtvDescriptorSize;
-	}
-}
 
 void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 {
@@ -636,83 +505,58 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 	TryRelease( pd3dErrorBlob );
 }
 
-void KG::Renderer::KGDXRenderer::CreateGbufferSRV()
+void KG::Renderer::KGDXRenderer::AllocateGBufferHeap()
 {
 	for ( size_t i = 0; i < 5; i++ )
 	{
 		auto index = this->descriptorHeapManager->RequestEmptyIndex();
 		DebugNormalMessage( L"디스크립터 힙 G-Buffer용 초기화 : " << index );
 	}
-	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
-	ZeroDesc( srvDesc );
-	for ( size_t i = 0; i < 4; i++ )
-	{
-		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc.Format = this->gbufferTargetBuffers[i]->GetDesc().Format;
-		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-		srvDesc.Texture2D.MostDetailedMip = 0;
-		srvDesc.Texture2D.MipLevels = this->gbufferTargetBuffers[i]->GetDesc().MipLevels;
-		srvDesc.Texture2D.ResourceMinLODClamp = 0;
-		this->d3dDevice->CreateShaderResourceView( this->gbufferTargetBuffers[i], &srvDesc, this->descriptorHeapManager->GetCPUHandle( i ) );
-	}
-
-	//깊이 G버퍼
-	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.Texture2D.MipLevels = this->depthStencilBuffer->GetDesc().MipLevels;
-	srvDesc.Texture2D.ResourceMinLODClamp = 0;
-	this->d3dDevice->CreateShaderResourceView( this->depthStencilBuffer, &srvDesc, this->descriptorHeapManager->GetCPUHandle( 4 ) );
-
 }
 
 void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
 {
 
 	this->renderEngine->SetPassEnterEventFunction( ShaderType::Opaque,
-		[this]( ID3D12GraphicsCommandList* cmdList, ID3D12Resource* rt, D3D12_CPU_DESCRIPTOR_HANDLE  rtvHandle )
+		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
 		{
-			cmdList->ResourceBarrier( 4, this->GetGBufferTrasitionBarriers( D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET ) );
+			cmdList->ResourceBarrier( 4, renderTexture.GBufferTransition( D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_RENDER_TARGET ) );
 
-			D3D12_CPU_DESCRIPTOR_HANDLE dsv[] = { this->GetCurrentDepthStencilHandle() };
-			cmdList->OMSetRenderTargets( 4, this->gbufferDescritorHandles, false, dsv );
+			cmdList->OMSetRenderTargets( 4, renderTexture.gbufferHandle.data(), false, &renderTexture.dsvHandle );
 
-			this->ClearGBuffer( this->mainCommandList, 0, 0, 0, 1 );
+			renderTexture.ClearGBuffer( this->mainCommandList, 0, 0, 0, 1 );
 
 			cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::Texture1Heap, this->descriptorHeapManager->GetGPUHandle( 0 ) );
 
-			this->mainCommandList->ClearDepthStencilView( this->GetCurrentDepthStencilHandle(), D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr );
+			this->mainCommandList->ClearDepthStencilView( renderTexture.dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr );
 		} );
 
 	this->renderEngine->SetPassEnterEventFunction( ShaderType::LightPass,
-		[this]( ID3D12GraphicsCommandList* cmdList, ID3D12Resource* rt, D3D12_CPU_DESCRIPTOR_HANDLE  rtvHandle )
+		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
 		{
-			cmdList->ResourceBarrier( 4, this->GetGBufferTrasitionBarriers( D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE ) );
-			cmdList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( this->depthStencilBuffer, D3D12_RESOURCE_STATE_DEPTH_WRITE,
+			cmdList->ResourceBarrier( 4, renderTexture.GBufferTransition( D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE ) );
+			cmdList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( renderTexture.depthStencilBuffer, D3D12_RESOURCE_STATE_DEPTH_WRITE,
 				D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE ) );
 			cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle( 0 ) );
-			auto dsvHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-			cmdList->OMSetRenderTargets( 1, &rtvHandle, true, nullptr );
+			cmdList->OMSetRenderTargets( 1, &renderTexture.GetRenderTargetRTVHandle(), true, nullptr );
 		} );
 
 	this->renderEngine->SetPassPreRenderEventFunction( ShaderType::LightPass,
-		[this]( ID3D12GraphicsCommandList* cmdList, ID3D12Resource* rt, D3D12_CPU_DESCRIPTOR_HANDLE  rtvHandle )
+		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
 		{
 
 		} );
 
 
 	this->renderEngine->SetPassEnterEventFunction( ShaderType::Transparent,
-		[]( ID3D12GraphicsCommandList* cmdList, ID3D12Resource* rt, D3D12_CPU_DESCRIPTOR_HANDLE  rtvHandle )
+		[]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
 		{
 		} );
 
 	this->renderEngine->SetPassEnterEventFunction( ShaderType::PostProcess,
-		[this]( ID3D12GraphicsCommandList* cmdList, ID3D12Resource* rt, D3D12_CPU_DESCRIPTOR_HANDLE  rtvHandle )
+		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
 		{
-			auto dsvHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-			cmdList->OMSetRenderTargets( 1, &rtvHandle, true, &dsvHandle );
+			cmdList->OMSetRenderTargets( 1, &renderTexture.GetRenderTargetRTVHandle(), true, &renderTexture.dsvHandle );
 			//cmdList->ResourceBarrier( 4, this->GetGBufferTrasitionBarriers( D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_COPY_SOURCE ) );
 			//cmdList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( rt, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_COPY_DEST ) );
 
@@ -723,9 +567,9 @@ void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
 		} );
 
 	this->renderEngine->SetPassEndEventFunction(
-		[this]( ID3D12GraphicsCommandList* cmdList, ID3D12Resource* rt, D3D12_CPU_DESCRIPTOR_HANDLE  rtvHandle )
+		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
 		{
-			cmdList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( this->depthStencilBuffer, D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_DEPTH_WRITE ) );
+			cmdList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( renderTexture.depthStencilBuffer, D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_DEPTH_WRITE ) );
 		} );
 
 }
@@ -751,13 +595,6 @@ D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::KGDXRenderer::GetCurrentRenderTargetHa
 	D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	d3dRtvCPUDescriptorHandle.ptr += (this->swapChainBufferIndex * this->rtvDescriptorSize);
 	return d3dRtvCPUDescriptorHandle;
-}
-
-D3D12_CPU_DESCRIPTOR_HANDLE& KG::Renderer::KGDXRenderer::GetCurrentDepthStencilHandle() const
-{
-	static D3D12_CPU_DESCRIPTOR_HANDLE handle;
-	handle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-	return handle;
 }
 
 ID3D12Resource* KG::Renderer::KGDXRenderer::GetCurrentRenderTarget() const

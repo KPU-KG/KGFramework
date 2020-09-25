@@ -3,6 +3,7 @@
 #include "Systems.h"
 #include "Debug.h"
 
+
 #include "GameObject.h"
 #include "LambdaComponent.h"
 #include "InputManager.h"
@@ -99,6 +100,15 @@ void KG::GameFramework::OnTestInit()
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* cam = this->renderer->GetNewCameraComponent();
+		//프레임워크에서 카메라 세팅 // 
+		KG::Renderer::RenderTextureDesc renderTextureDesc;
+		renderTextureDesc.useDeferredRender = true;
+		renderTextureDesc.useCubeRender = false;
+		renderTextureDesc.useDepthStencilBuffer = true;
+		renderTextureDesc.useRenderTarget = true;
+		renderTextureDesc.width = this->setting.clientWidth;
+		renderTextureDesc.height = this->setting.clientHeight;
+		cam->InitializeRenderTexture(renderTextureDesc);
 		cam->SetDefaultRender( this->setting.clientWidth, this->setting.clientHeight );
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
 		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(

@@ -13,6 +13,18 @@
 
 namespace KG::Renderer
 {
+	struct DLL RenderTextureDesc
+	{
+		size_t width;
+		size_t height;
+		bool useCubeRender = false;
+		bool useRenderTarget = true;
+		bool useDeferredRender = true;
+		bool useDepthStencilBuffer = true;
+		KG::Utill::HashString renderTargetTextureId = KG::Utill::HashString( 0 );
+		KG::Utill::HashString depthBufferTextureId = KG::Utill::HashString( 0 );
+	};
+
 	struct DLL RendererDesc
 	{
 		HWND hWnd;

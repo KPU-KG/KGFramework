@@ -70,6 +70,7 @@ void KG::Resource::Texture::UploadToDescriptorHeap()
 	auto renderer = KG::Renderer::KGDXRenderer::GetInstance();
 	auto device = renderer->GetD3DDevice();
 	auto descHeap = renderer->GetDescriptorHeapManager();
+	//여기서 예외 발생
 	DebugNormalMessage( L"리소스 뷰 생성" );
 	device->CreateShaderResourceView( this->resource.Get(), &this->GetDescriptorDesc(), descHeap->GetCPUHandle( this->index ) );
 	DebugNormalMessage( L"리소스 뷰 종료" );
@@ -99,6 +100,7 @@ void KG::Resource::Texture::LoadResource( ID3D12GraphicsCommandList* cmdList )
 		this->resource,
 		this->uploadBuffer
 	);
+	this->CreateDefaultSRVDesc();
 	UploadToDescriptorHeap();
 }
 
