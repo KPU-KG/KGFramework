@@ -1,6 +1,7 @@
 #pragma once
 #include <d3d12.h>
 #include <vector>
+#include <array>
 #include <DirectXMath.h>
 #include "IComponent.h"
 
@@ -60,8 +61,6 @@ namespace KG::Component
 		bool isRenderTexureCreatedInCamera = false;
 		KG::Renderer::RenderTexture* renderTexture = nullptr;
 
-		D3D12_RESOURCE_STATES defaultRTState = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
-
 		TransformComponent* transform;
 		ID3D12Resource* cameraDataBuffer = nullptr;
 
@@ -111,10 +110,34 @@ namespace KG::Component
 		}
 	};
 
-	class DLL CubeCameraComponent : public IRenderComponent
-	{
-		CameraComponent cameraPool[6];
-	};
+	//class DLL CubeCameraComponent : public IRenderComponent
+	//{
+	//	friend Render3DComponent;
+	//	std::array<CameraComponent, 6> cameras;
+
+	//	KG::Renderer::RenderTexture* renderTexture = nullptr;
+
+	//	TransformComponent* transform;
+	//	ID3D12Resource* cameraDataBuffer = nullptr;
+
+	//	struct CameraData;
+	//	CameraData* cameraData = nullptr;
+	//	CameraData* mappedCameraData = nullptr;
+
+	//	bool ProjDirty = true;
+	//	void OnProjDirty() { ProjDirty = true; }
+	//	virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+	//	virtual void OnDestroy() override;
+	//public:
+	//	bool isVisible = true;
+	//	virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
+	//	void InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc );
+
+	//	auto& GetRenderTexture()
+	//	{
+	//		return *this->renderTexture;
+	//	}
+	//};
 
 	class DLL Render3DComponent : public IRenderComponent
 	{
@@ -172,6 +195,7 @@ namespace KG::Component
 	//	{
 	//	};
 	//};
+
 
 	struct PointLightRef
 	{
