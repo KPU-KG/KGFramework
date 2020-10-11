@@ -10,7 +10,10 @@ namespace KG::Renderer
 			struct object
 			{
 				XMFLOAT4X4 world;
-				unsigned materialIndex;
+				UINT materialIndex;
+				UINT environmentMapIndex;
+				UINT pad1;
+				UINT pad2;
 			} object;
 			struct light
 			{
@@ -20,6 +23,9 @@ namespace KG::Renderer
 				float FalloffEnd;
 				XMFLOAT3 Position;
 				float SpotPower;
+				UINT shadowMapIndex;
+				XMFLOAT3 pad1;
+				XMFLOAT4 pad2;
 			} light;
 		};
 	};

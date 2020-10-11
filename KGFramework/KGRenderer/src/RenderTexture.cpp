@@ -98,17 +98,13 @@ void KG::Renderer::RenderTexture::CreateGBufferSRView()
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	ZeroDesc( srvDesc );
 
-	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
-	ZeroDesc( d3dDescriptorHeapDesc );
+	auto descManager = KGDXRenderer::GetInstance()->GetDescriptorHeapManager();
+	this->gbufferSRVIndex = descManager->RequestEmptyIndex();
+	descManager->RequestEmptyIndex();
+	descManager->RequestEmptyIndex();
+	descManager->RequestEmptyIndex();
+	descManager->RequestEmptyIndex();
 
-	d3dDescriptorHeapDesc.NumDescriptors = 5;
-	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
-	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-	d3dDescriptorHeapDesc.NodeMask = 0;
-
-	HRESULT hResult = device->CreateDescriptorHeap( &d3dDescriptorHeapDesc, IID_PPV_ARGS( &this->gbufferSRVHeap ) );
-
-	D3D12_CPU_DESCRIPTOR_HANDLE cpuHandle = this->gbufferSRVHeap->GetCPUDescriptorHandleForHeapStart();
 	for ( size_t i = 0; i < 4; i++ )
 	{
 		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
@@ -117,8 +113,7 @@ void KG::Renderer::RenderTexture::CreateGBufferSRView()
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		srvDesc.Texture2D.MipLevels = this->gbufferTextures[i]->GetDesc().MipLevels;
 		srvDesc.Texture2D.ResourceMinLODClamp = 0;
-		device->CreateShaderResourceView( this->gbufferTextures[i], &srvDesc, cpuHandle );
-		cpuHandle.ptr += srvSize;
+		device->CreateShaderResourceView( this->gbufferTextures[i], &srvDesc, descManager->GetCPUHandle( this->gbufferSRVIndex + i ) );
 	}
 
 	//±íÀÌ G¹öÆÛ
@@ -128,7 +123,7 @@ void KG::Renderer::RenderTexture::CreateGBufferSRView()
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = this->depthStencilBuffer->GetDesc().MipLevels;
 	srvDesc.Texture2D.ResourceMinLODClamp = 0;
-	device->CreateShaderResourceView( this->depthStencilBuffer, &srvDesc, cpuHandle );
+	device->CreateShaderResourceView( this->depthStencilBuffer, &srvDesc, descManager->GetCPUHandle( this->gbufferSRVIndex + 4 ) );
 
 }
 
@@ -164,13 +159,34 @@ void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
 	this->dsvHandle = dsvCpuDescHandle;
 }
 
+UINT KG::Renderer::RenderTexture::PostRenderTargetSRV()
+{
+	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
+	auto srvSize = KGDXRenderer::GetInstance()->GetSRVSize();
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	ZeroDesc( srvDesc );
+
+	auto descManager = KGDXRenderer::GetInstance()->GetDescriptorHeapManager();
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = this->renderTarget->GetDesc().Format;
+	srvDesc.ViewDimension = this->desc.useCubeRender ? D3D12_SRV_DIMENSION_TEXTURECUBE : D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.MipLevels = this->renderTarget->GetDesc().MipLevels;
+	srvDesc.Texture2D.ResourceMinLODClamp = 0;
+
+	this->renderTargetSRVIndex = descManager->RequestEmptyIndex();
+	device->CreateShaderResourceView( this->renderTarget, &srvDesc, descManager->GetCPUHandle( this->renderTargetSRVIndex ) );
+	return this->renderTargetSRVIndex;
+}
+
 KG::Resource::Texture* KG::Renderer::RenderTexture::PostRenderTargetTexture()
 {
 	auto resourceContainer = KG::Resource::ResourceContainer::GetInstance();
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Format = this->renderTarget->GetDesc().Format;
-	srvDesc.ViewDimension = this->desc.useCubeRender ? D3D12_SRV_DIMENSION_TEXTURE2D : D3D12_SRV_DIMENSION_TEXTURECUBE;
+	srvDesc.ViewDimension = this->desc.useCubeRender ? D3D12_SRV_DIMENSION_TEXTURECUBE : D3D12_SRV_DIMENSION_TEXTURE2D;
 	if ( this->desc.useCubeRender )
 	{
 		srvDesc.TextureCube.MostDetailedMip = 0;
@@ -184,7 +200,30 @@ KG::Resource::Texture* KG::Renderer::RenderTexture::PostRenderTargetTexture()
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 	}
-	return resourceContainer->CreateTexture( this->desc.renderTargetTextureId, this->renderTarget, srvDesc );
+	this->renderTargetTexture = resourceContainer->CreateTexture( this->desc.renderTargetTextureId, this->renderTarget, srvDesc );
+	return this->renderTargetTexture;
+}
+
+UINT KG::Renderer::RenderTexture::PostDepthStencilSRV()
+{
+	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
+	auto srvSize = KGDXRenderer::GetInstance()->GetSRVSize();
+	auto descManager = KGDXRenderer::GetInstance()->GetDescriptorHeapManager();
+
+	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
+	ZeroDesc( srvDesc );
+
+	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+	srvDesc.Format = this->renderTarget->GetDesc().Format;
+	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	srvDesc.Texture2D.MipLevels = 1;
+	srvDesc.Texture2D.PlaneSlice = 0;
+	srvDesc.Texture2D.MostDetailedMip = 0;
+	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+
+	this->depthStencilSRVIndex = descManager->RequestEmptyIndex();
+	device->CreateShaderResourceView( this->depthStencilBuffer, &srvDesc, descManager->GetCPUHandle( this->depthStencilSRVIndex ) );
+	return this->depthStencilSRVIndex;
 }
 
 KG::Resource::Texture* KG::Renderer::RenderTexture::PostDepthStencilTexture()
@@ -199,7 +238,8 @@ KG::Resource::Texture* KG::Renderer::RenderTexture::PostDepthStencilTexture()
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 
-	return resourceContainer->CreateTexture( this->desc.depthBufferTextureId, this->depthStencilBuffer, srvDesc );
+	this->depthStencilTexture = resourceContainer->CreateTexture( this->desc.depthBufferTextureId, this->depthStencilBuffer, srvDesc );
+	return this->depthStencilTexture;
 }
 
 void KG::Renderer::RenderTexture::Initialize( const RenderTextureDesc& desc )
@@ -221,25 +261,24 @@ void KG::Renderer::RenderTexture::Initialize( const RenderTextureDesc& desc )
 		this->CreateGBufferRTView();
 		this->CreateGBufferSRView();
 	}
+
 	if ( this->desc.renderTargetTextureId.value )
 	{
 		this->PostRenderTargetTexture();
 	}
+	else if(this->desc.uploadSRVRenderTarget )
+	{
+		this->PostRenderTargetSRV();
+	}
+
 	if ( this->desc.depthBufferTextureId.value )
 	{
 		this->PostDepthStencilTexture();
 	}
-}
-
-void KG::Renderer::RenderTexture::CopyGBufferSRV()
-{
-	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
-	auto descManager = KGDXRenderer::GetInstance()->GetDescriptorHeapManager();
-	device->CopyDescriptorsSimple( 5,
-		descManager->GetCPUHandle( 0 ),
-		this->gbufferSRVHeap->GetCPUDescriptorHandleForHeapStart(),
-		D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV
-	);
+	else if ( this->desc.uploadSRVDepthBuffer )
+	{
+		this->PostDepthStencilSRV();
+	}
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::RenderTexture::GetRenderTargetRTVHandle()

@@ -182,27 +182,6 @@ namespace KG::Component
 		float SpotPower;
 	};
 
-	//struct LightRef
-	//{
-	//	DirectX::XMFLOAT3& Strength;
-	//	float& FalloffStart;
-	//	DirectX::XMFLOAT3& Direction;
-	//	float& FalloffEnd;
-	//	DirectX::XMFLOAT3& Position;
-	//	float& SpotPower;
-	//	LightRef( LightData& light )
-	//		:
-	//		Strength( light.Strength ),
-	//		FalloffStart( light.FalloffStart ),
-	//		Direction( light.Direction ),
-	//		FalloffEnd( light.FalloffEnd ),
-	//		Position( light.Position ),
-	//		SpotPower( light.SpotPower )
-	//	{
-	//	};
-	//};
-
-
 	struct PointLightRef
 	{
 		DirectX::XMFLOAT3& Strength;
@@ -213,6 +192,7 @@ namespace KG::Component
 		{
 		};
 	};
+
 	struct DirectionalLightRef
 	{
 		DirectX::XMFLOAT3& Strength;
@@ -222,6 +202,7 @@ namespace KG::Component
 		{
 		};
 	};
+
 	class DLL LightComponent : public IRenderComponent
 	{
 		KG::Renderer::KGRenderJob* renderJob = nullptr;

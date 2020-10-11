@@ -21,6 +21,8 @@ namespace KG::Renderer
 		bool useRenderTarget = true;
 		bool useDeferredRender = true;
 		bool useDepthStencilBuffer = true;
+		bool uploadSRVRenderTarget = false;
+		bool uploadSRVDepthBuffer = false;
 		KG::Utill::HashString renderTargetTextureId = KG::Utill::HashString( 0 );
 		KG::Utill::HashString depthBufferTextureId = KG::Utill::HashString( 0 );
 	};
@@ -46,6 +48,7 @@ namespace KG::Renderer
 	protected:
 		RendererDesc desc;
 		RendererSetting setting;
+		KG::Utill::HashString skymapMaterialId;
 		IKGRenderer() = default;
 	public:
 		virtual ~IKGRenderer() = default;
@@ -63,11 +66,21 @@ namespace KG::Renderer
 		virtual void Update(float elaspedTime) = 0;
 		virtual void OnChangeSettings( const RendererSetting& prev, const RendererSetting& next ) = 0;
 
+		virtual void SetSkymapMaterialId( const KG::Utill::HashString& id )
+		{
+			this->skymapMaterialId = id;
+		}
+		virtual KG::Utill::HashString GetSkymapMaterialId() const
+		{
+			return this->skymapMaterialId;
+		}
+
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() = 0;
 		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent( const KG::Utill::HashString& id ) = 0;
 		virtual KG::Component::MaterialComponent* GetNewMaterialComponent( const KG::Utill::HashString& id ) = 0;
 		virtual KG::Component::MaterialComponent* GetNewMaterialComponentFromShader( const KG::Utill::HashString& id ) = 0;
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() = 0;
+		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() = 0;
 		virtual KG::Component::LightComponent* GetNewLightComponent() = 0;
 
 	};

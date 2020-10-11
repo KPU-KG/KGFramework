@@ -20,17 +20,21 @@ namespace KG::Renderer
 		//RenderTarget
 		ID3D12Resource* renderTarget = nullptr;
 		ID3D12DescriptorHeap* rtvDescriptorHeap = nullptr;
+		UINT renderTargetSRVIndex = -1;
+		KG::Resource::Texture* renderTargetTexture = nullptr;
 
 		//GBuffer
 		std::array<ID3D12Resource*, 4> gbufferTextures = { nullptr, nullptr, nullptr, nullptr };
 		std::array<D3D12_CPU_DESCRIPTOR_HANDLE, 4> gbufferHandle;
 		ID3D12DescriptorHeap* gbufferDescriptorHeap = nullptr;
-		ID3D12DescriptorHeap* gbufferSRVHeap = nullptr;
+			UINT gbufferSRVIndex = -1;
 
 		//Depth
 		ID3D12Resource* depthStencilBuffer = nullptr;
 		ID3D12DescriptorHeap* dsvDescriptorHeap = nullptr;
 		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
+		UINT depthStencilSRVIndex = -1;
+		KG::Resource::Texture* depthStencilTexture = nullptr;
 
 		//Barrier
 		D3D12_RESOURCE_STATES renderTargetState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
@@ -53,14 +57,14 @@ namespace KG::Renderer
 
 		void CreateDepthStencilBufferView();
 
+		UINT PostRenderTargetSRV();
 		KG::Resource::Texture* PostRenderTargetTexture();
 
+		UINT PostDepthStencilSRV();
 		KG::Resource::Texture* PostDepthStencilTexture();
 
 	public:
 		void Initialize( const RenderTextureDesc& desc );
-
-		void CopyGBufferSRV();
 
 		D3D12_CPU_DESCRIPTOR_HANDLE GetRenderTargetRTVHandle();
 

@@ -8,6 +8,8 @@ struct InstanceData
 {
     float4x4 world;
     uint materialIndex;
+    uint environmentMapIndex;
+    uint2 padding;
 };
 StructuredBuffer<InstanceData> objectInfo : register(t0);
 

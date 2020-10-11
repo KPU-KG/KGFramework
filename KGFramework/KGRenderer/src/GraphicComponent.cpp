@@ -36,6 +36,13 @@ void KG::Component::Render3DComponent::OnPreRender()
 	{
 		this->renderJob->objectBuffer->mappedData[updateCount].object.materialIndex = this->material->GetMaterialIndex();
 	}
+	if ( this->reflectionProbe )
+	{
+
+	}
+	else 
+	{
+	}
 }
 
 void KG::Component::Render3DComponent::OnCreate( KG::Core::GameObject* gameObject )
@@ -61,6 +68,11 @@ void KG::Component::Render3DComponent::SetVisible( bool visible )
 	{
 		this->renderJob->OnVisibleRemove();
 	}
+}
+
+void KG::Component::Render3DComponent::SetReflectionProbe( CubeCameraComponent* probe )
+{
+	this->reflectionProbe = probe;
 }
 
 void KG::Component::Render3DComponent::SetRenderJob( KG::Renderer::KGRenderJob* renderJob )
@@ -322,7 +334,7 @@ void KG::Component::CubeCameraComponent::OnCreate( KG::Core::GameObject* gameObj
 	{
 		cameras[i].SetCubeRender( i );
 	}
-	//Ä«ï¿½Þ¶ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ®
+	//Ä«¸Þ¶ó µ¥ÀÌÅÍ ¾÷µ¥ÀÌÆ®
 }
 
 void KG::Component::CubeCameraComponent::OnDestroy()

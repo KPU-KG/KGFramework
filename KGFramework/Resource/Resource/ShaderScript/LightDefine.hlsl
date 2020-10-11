@@ -9,8 +9,9 @@ struct LightData
     float FalloffEnd;
     float3 Position;
     float SpotPower;
-    float4 padding0;
-    uint padding1;
+    uint shadowMapIndex;
+    float3 padding0;
+    float4 padding1;
 };
 
 StructuredBuffer<LightData> lightInfo : register(t0);

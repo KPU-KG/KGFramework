@@ -1,5 +1,12 @@
 #pragma once
 #include <d3d12.h>
+#include <pix3.h>
+#include <pix3_win.h>
+#include <PIXEvents.h>
+#include <PIXEventsCommon.h>
+
+
+
 namespace KG::Renderer
 {
 	template<typename Ty>
