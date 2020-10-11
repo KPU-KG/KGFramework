@@ -40,7 +40,6 @@ void KG::Renderer::RenderTexture::CreateRenderTargetView()
 		rtvDesc.Texture2DArray.MipSlice = 0;
 		rtvDesc.Texture2DArray.PlaneSlice = 0;
 
-
 		for ( size_t i = 0; i < 6; i++ )
 		{
 			rtvDesc.Texture2DArray.FirstArraySlice = i;
@@ -63,7 +62,7 @@ void KG::Renderer::RenderTexture::CreateGBuffer()
 	this->gbufferTextures[0] = CreateRenderTargetResource( device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM );
 	this->gbufferTextures[1] = CreateRenderTargetResource( device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM );
 	this->gbufferTextures[2] = CreateRenderTargetResource( device, this->desc.width, this->desc.height, DXGI_FORMAT_R16G16_SNORM );
-	this->gbufferTextures[3] = CreateRenderTargetResource( device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM );
+	this->gbufferTextures[3] = CreateRenderTargetResource( device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UINT );
 }
 
 void KG::Renderer::RenderTexture::CreateGBufferRTView()
@@ -279,11 +278,6 @@ void KG::Renderer::RenderTexture::Initialize( const RenderTextureDesc& desc )
 	{
 		this->PostDepthStencilSRV();
 	}
-}
-
-D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::RenderTexture::GetRenderTargetRTVHandle()
-{
-	return this->GetRenderTargetRTVHandle( this->currentIndex );
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::RenderTexture::GetRenderTargetRTVHandle( size_t index )

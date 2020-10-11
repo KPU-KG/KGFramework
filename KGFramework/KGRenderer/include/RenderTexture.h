@@ -14,7 +14,6 @@ namespace KG::Renderer
 {
 	struct RenderTexture
 	{
-		size_t currentIndex;
 		RenderTextureDesc desc;
 
 		//RenderTarget
@@ -27,7 +26,7 @@ namespace KG::Renderer
 		std::array<ID3D12Resource*, 4> gbufferTextures = { nullptr, nullptr, nullptr, nullptr };
 		std::array<D3D12_CPU_DESCRIPTOR_HANDLE, 4> gbufferHandle;
 		ID3D12DescriptorHeap* gbufferDescriptorHeap = nullptr;
-			UINT gbufferSRVIndex = -1;
+		UINT gbufferSRVIndex = -1;
 
 		//Depth
 		ID3D12Resource* depthStencilBuffer = nullptr;
@@ -37,9 +36,9 @@ namespace KG::Renderer
 		KG::Resource::Texture* depthStencilTexture = nullptr;
 
 		//Barrier
-		D3D12_RESOURCE_STATES renderTargetState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-		D3D12_RESOURCE_STATES gbufferState = D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
-		D3D12_RESOURCE_STATES depthStencilState = D3D12_RESOURCE_STATE_DEPTH_WRITE;
+		D3D12_RESOURCE_STATES renderTargetState = D3D12_RESOURCE_STATE_COMMON;
+		D3D12_RESOURCE_STATES gbufferState = D3D12_RESOURCE_STATE_COMMON;
+		D3D12_RESOURCE_STATES depthStencilState = D3D12_RESOURCE_STATE_COMMON;
 		std::array<D3D12_RESOURCE_BARRIER, 6> resourceBarrier;
 
 	private:
@@ -65,8 +64,6 @@ namespace KG::Renderer
 
 	public:
 		void Initialize( const RenderTextureDesc& desc );
-
-		D3D12_CPU_DESCRIPTOR_HANDLE GetRenderTargetRTVHandle();
 
 		D3D12_CPU_DESCRIPTOR_HANDLE GetRenderTargetRTVHandle( size_t index );
 

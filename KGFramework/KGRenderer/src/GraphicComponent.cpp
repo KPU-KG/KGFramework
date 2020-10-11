@@ -38,10 +38,13 @@ void KG::Component::Render3DComponent::OnPreRender()
 	}
 	if ( this->reflectionProbe )
 	{
-
+		this->renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
+			this->reflectionProbe->GetRenderTexture().renderTargetSRVIndex;
 	}
 	else 
 	{
+		this->renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
+			KG::Resource::ResourceContainer::GetInstance()->LoadTexture( KG::Renderer::KGDXRenderer::GetInstance()->GetSkymapTexutreId() )->index;
 	}
 }
 
@@ -255,8 +258,8 @@ void KG::Component::CameraComponent::OnDestroy()
 	if ( this->isRenderTexureCreatedInCamera )
 	{
 		this->renderTexture->Release();
+		delete this->renderTexture;
 	}
-	delete this->renderTexture;
 
 	IRenderComponent::OnDestroy();
 }
@@ -291,8 +294,8 @@ void KG::Component::CameraComponent::SetCameraRender( ID3D12GraphicsCommandList*
 			D3D12_RESOURCE_STATE_DEPTH_WRITE
 		)
 	);
-	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
-	commandList->ClearRenderTargetView( this->renderTexture->GetRenderTargetRTVHandle(), clearColor, 0, nullptr );
+	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
+	commandList->ClearRenderTargetView( this->renderTexture->GetRenderTargetRTVHandle(this->cubeIndex), clearColor, 0, nullptr );
 }
 
 void KG::Component::CameraComponent::EndCameraRender( ID3D12GraphicsCommandList* commandList )
@@ -306,12 +309,11 @@ void KG::Component::CameraComponent::EndCameraRender( ID3D12GraphicsCommandList*
 	);
 }
 
-void KG::Component::CameraComponent::SetRenderTexture( const KG::Renderer::RenderTexture& renderTexture, int index )
+void KG::Component::CameraComponent::SetRenderTexture( KG::Renderer::RenderTexture* renderTexture, int index )
 {
 	this->isRenderTexureCreatedInCamera = false;
-	this->renderTexture = new KG::Renderer::RenderTexture();
-	*this->renderTexture = renderTexture;
-	this->renderTexture->currentIndex = index;
+	this->cubeIndex = index;
+	this->renderTexture = renderTexture;
 }
 
 void KG::Component::CameraComponent::InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc )
@@ -354,7 +356,7 @@ void KG::Component::CubeCameraComponent::InitializeRenderTexture( const KG::Rend
 
 	for ( size_t i = 0; i < 6; i++ )
 	{
-		this->cameras[i].SetRenderTexture( *this->renderTexture, i );
+		this->cameras[i].SetRenderTexture( this->renderTexture, i );
 		this->cameras[i].SetDefaultRender();
 	}
 }

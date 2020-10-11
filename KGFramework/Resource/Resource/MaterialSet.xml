@@ -21,6 +21,15 @@
         <FLOAT2 byte="8" comment="UVsize" x="4" y="4"/>
         <Padding byte="4"/>
     </Material>
+    <Material id="PBRMetal2" shaderID="PBRDefault" hash_id="1769561230" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="metal2_color" hash_id="4166432880"/>
+        <Texture byte="4" comment="normalTexture" id="metal2_normal" hash_id="3072785766"/>
+        <Texture byte="4" comment="metalicTexture" id="metal2_metalic" hash_id="1082922672"/>
+        <Texture byte="4" comment="roughnessTexture" id="metal2_rough" hash_id="399534762"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="4" y="4"/>
+        <Padding byte="4"/>
+    </Material>
     <Material id="PBRGold" shaderID="PBRDefault" hash_id="865398089" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="gold_color" hash_id="2645906875"/>
         <Texture byte="4" comment="normalTexture" id="gold_normal" hash_id="1448593827"/>

@@ -80,8 +80,8 @@ void KG::GameFramework::OnTestInit()
 	static KG::Core::GameObject testAmbientObject;
 
 
-	constexpr auto texOne = "PBRTile"_id;
-	constexpr auto texTwo = "PBRTile"_id;
+	constexpr auto texOne = "PBRMetal"_id;
+	constexpr auto texTwo = "PBRMetal2"_id;
 	constexpr auto texThree = "PBRGold"_id;
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
@@ -109,7 +109,7 @@ void KG::GameFramework::OnTestInit()
 		renderTextureDesc.useRenderTarget = true;
 		renderTextureDesc.width = this->setting.clientWidth;
 		renderTextureDesc.height = this->setting.clientHeight;
-		cam->InitializeRenderTexture(renderTextureDesc);
+		cam->InitializeRenderTexture( renderTextureDesc );
 		cam->SetDefaultRender();
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
 		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
@@ -165,25 +165,7 @@ void KG::GameFramework::OnTestInit()
 		testCameraObject.GetComponent<KG::Component::TransformComponent>()->Translate( 0, 0, -2.0f );
 	}
 
-	{
-		auto* tran = this->system->transformSystem.GetNewComponent();
-		auto* cam = this->renderer->GetNewCubeCameraComponent();
-		//프레임워크에서 카메라 세팅 // 
-		KG::Renderer::RenderTextureDesc renderTextureDesc;
-		renderTextureDesc.useDeferredRender = true;
-		renderTextureDesc.useCubeRender = true;
-		renderTextureDesc.useDepthStencilBuffer = true;
-		renderTextureDesc.useRenderTarget = true;
-		renderTextureDesc.width = 128;
-		renderTextureDesc.height = 128;
-		cam->InitializeRenderTexture( renderTextureDesc );
-		testCubeCameraObject.name = "camera";
-		testCubeCameraObject.AddComponent( tran );
-		testCubeCameraObject.AddComponent( cam );
-		testCubeCameraObject.GetComponent<KG::Component::TransformComponent>()->Translate( 0, 0, -2.0f );
-	}
-
-	constexpr size_t cdas = 30;
+	constexpr size_t cdas = 3;
 	for ( size_t y = 0; y < cdas; y++ )
 	{
 		for ( size_t x = 0; x < cdas; x++ )
@@ -205,16 +187,28 @@ void KG::GameFramework::OnTestInit()
 					}
 				);
 				auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? texThree : texTwo ) );
-				auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( (x & 1) !=  (y & 1) ? "sphere"_id : "cube"_id ) );
+				auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? "sphere"_id : "cube"_id ) );
+				auto* evn = this->renderer->GetNewCubeCameraComponent();
+				KG::Renderer::RenderTextureDesc renderTextureDesc;
+				renderTextureDesc.useDeferredRender = true;
+				renderTextureDesc.useCubeRender = true;
+				renderTextureDesc.useDepthStencilBuffer = true;
+				renderTextureDesc.useRenderTarget = true;
+				renderTextureDesc.uploadSRVRenderTarget = true;
+				renderTextureDesc.width = 128;
+				renderTextureDesc.height = 128;
+				evn->InitializeRenderTexture( renderTextureDesc );
 				auto* ren = this->renderer->GetNewRenderComponent();
 				testCubeObjects[index].name = "meshObject0";
 				testCubeObjects[index].AddComponent( tran );
 				testCubeObjects[index].AddComponent( mat );
 				testCubeObjects[index].AddComponent( lam );
 				testCubeObjects[index].AddComponent( geo );
+				testCubeObjects[index].AddComponent( evn );
 				testCubeObjects[index].AddComponent( ren );
 				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
-				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3(1,1,1) * 0.25f );
+				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) * 0.25f );
+				testCubeObjects[index].GetComponent<KG::Component::Render3DComponent>()->SetReflectionProbe( evn );
 			}
 
 			{
@@ -244,7 +238,7 @@ void KG::GameFramework::OnTestInit()
 
 				auto color = Math::RandomColor();
 
-				light->SetPointLight( DirectX::XMFLOAT3( color.x, color.y, color.z), 0.1f, 1.0f );
+				light->SetPointLight( DirectX::XMFLOAT3( color.x, color.y, color.z ), 0.1f, 1.0f );
 
 				testPointLightObjects[index].AddComponent( tran );
 				testPointLightObjects[index].AddComponent( light );
@@ -284,7 +278,7 @@ void KG::GameFramework::OnTestInit()
 		);
 		testLightObject.name = "Light";
 		testLightObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
-		light->SetDirectionalLight( DirectX::XMFLOAT3( 0.1f, 0.1f, 0.1f ) * 5, DirectX::XMFLOAT3( 0.0f, -1.0f, -1.0f) );
+		light->SetDirectionalLight( DirectX::XMFLOAT3( 0.1f, 0.1f, 0.1f ) * 5, DirectX::XMFLOAT3( 0.0f, -1.0f, -1.0f ) );
 		testLightObject.AddComponent( light );
 		testLightObject.AddComponent( lam );
 
@@ -314,6 +308,7 @@ void KG::GameFramework::OnTestInit()
 		testAmbientObject.AddComponent( ren );
 
 	}
+	this->renderer->SetSkymapTextureId( KG::Utill::HashString( "skySnow" ) );
 
 
 

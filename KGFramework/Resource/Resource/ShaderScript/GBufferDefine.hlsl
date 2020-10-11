@@ -3,7 +3,7 @@
 struct PixelResult
 {
     float3 albedo;
-    float1 reflection;
+    float reflection;
     
     float1 specular;
     float1 metalic;
@@ -12,8 +12,8 @@ struct PixelResult
     
     float3 wNormal;
     
-    float3 light;
-    float1 reserve0;
+    uint environmentMap;
+    uint3 reserve0;
 };
 
 struct GBufferOut
@@ -21,7 +21,7 @@ struct GBufferOut
     float4 gbuffer0 : SV_Target0;
     float4 gbuffer1 : SV_Target1;
     float4 gbuffer2 : SV_Target2;
-    float4 gbuffer3 : SV_Target3;
+    uint4 gbuffer3 : SV_Target3;
 };
 
 float3 SNORMTOUNORM(float3 normal)
@@ -78,13 +78,13 @@ GBufferOut PixelEncode(PixelResult pix)
     
     result.gbuffer2.xy = EncodeNormal(pix.wNormal);
     
-    result.gbuffer3.xyz = pix.light;
-    result.gbuffer3.w = pix.reserve0;
+    result.gbuffer3.x = pix.environmentMap;
+    result.gbuffer3.yzw = pix.reserve0;
     
     return result;
 }
 
-PixelResult PixelDecode(float4 gbuffer0, float4 gbuffer1, float4 gbuffer2, float4 gbuffer3)
+PixelResult PixelDecode(float4 gbuffer0, float4 gbuffer1, float4 gbuffer2, uint4 gbuffer3)
 {
     PixelResult result;
     result.albedo = gbuffer0.xyz;
@@ -98,8 +98,8 @@ PixelResult PixelDecode(float4 gbuffer0, float4 gbuffer1, float4 gbuffer2, float
     
     result.wNormal = normalize(DecodeNormal(gbuffer2.xy));
     
-    result.light = gbuffer3.xyz;
-    result.reserve0 = gbuffer3.w;
+    result.environmentMap = gbuffer3.x;
+    result.reserve0 = gbuffer3.yzw;
     
     return result;
 }

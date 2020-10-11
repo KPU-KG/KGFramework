@@ -137,7 +137,7 @@ void KGDXRenderer::Render()
 		{
 			PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 0 ), "Cube Camera Render : Camera %d", camera.GetCubeIndex() );
 			camera.SetCameraRender( this->mainCommandList );
-			this->renderEngine->Render( this->mainCommandList, camera.GetRenderTexture() );
+			this->renderEngine->Render( this->mainCommandList, camera );
 			camera.EndCameraRender( this->mainCommandList );
 			PIXEndEvent( mainCommandList );
 		}
@@ -157,7 +157,7 @@ void KGDXRenderer::Render()
 	{
 		PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "Normal Camera Render : Camera %d", _cameraCount++ );
 		camera.SetCameraRender( this->mainCommandList );
-		this->renderEngine->Render( this->mainCommandList, camera.GetRenderTexture());
+		this->renderEngine->Render( this->mainCommandList, camera);
 		camera.EndCameraRender( this->mainCommandList );
 
 		if ( camera.isMainCamera )
@@ -436,7 +436,7 @@ void KG::Renderer::KGDXRenderer::CreateSRVDescriptorHeaps()
 	this->descriptorHeapManager = std::make_unique<DescriptorHeapManager>();
 	D3D12_DESCRIPTOR_HEAP_DESC srvHeapDesc = {};
 	// ! ¼­¼úÀÚ °¹¼ö
-	srvHeapDesc.NumDescriptors = 100;
+	srvHeapDesc.NumDescriptors = 120000;
 	srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
 	srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	this->srvDescriptorSize = this->d3dDevice->GetDescriptorHandleIncrementSize( D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
@@ -582,59 +582,53 @@ void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
 {
 
 	this->renderEngine->SetPassEnterEventFunction( ShaderType::Opaque,
-		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
+		[this]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
 		{
 			PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "Opaque Render" );
-			TryResourceBarrier( cmdList,
-				renderTexture.BarrierTransition(
-					D3D12_RESOURCE_STATE_RENDER_TARGET,
-					D3D12_RESOURCE_STATE_RENDER_TARGET,
-					D3D12_RESOURCE_STATE_DEPTH_WRITE
-				)
-			);
 
-			cmdList->OMSetRenderTargets( 4, renderTexture.gbufferHandle.data(), false, &renderTexture.dsvHandle );
+			cmdList->OMSetRenderTargets( 4, camera.GetRenderTexture().gbufferHandle.data(), false, &camera.GetRenderTexture().dsvHandle );
 
-			renderTexture.ClearGBuffer( this->mainCommandList, 0, 0, 0, 0 );
+			camera.GetRenderTexture().ClearGBuffer( this->mainCommandList, 0, 0, 0, 0 );
 
 			cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::Texture1Heap, this->descriptorHeapManager->GetGPUHandle( 0 ) );
 
-			this->mainCommandList->ClearDepthStencilView( renderTexture.dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr );
+			this->mainCommandList->ClearDepthStencilView( camera.GetRenderTexture().dsvHandle,
+				D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr );
 		} );
 
 	this->renderEngine->SetPassEnterEventFunction( ShaderType::LightPass,
-		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
+		[this]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
 		{
 			PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "Light Pass Render" );
 			TryResourceBarrier( cmdList,
-				renderTexture.BarrierTransition(
+				camera.GetRenderTexture().BarrierTransition(
 				D3D12_RESOURCE_STATE_RENDER_TARGET,
 				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 				D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
 				)
 			);
-			cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle( renderTexture.gbufferSRVIndex ) );
-			cmdList->OMSetRenderTargets( 1, &renderTexture.GetRenderTargetRTVHandle(), true, nullptr );
+			cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle( camera.GetRenderTexture().gbufferSRVIndex ) );
+			cmdList->OMSetRenderTargets( 1, &camera.GetRenderTexture().GetRenderTargetRTVHandle(camera.GetCubeIndex()), true, nullptr );
 		} );
 
 	this->renderEngine->SetPassPreRenderEventFunction( ShaderType::LightPass,
-		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
+		[this]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
 		{
 
 		} );
 
 
 	this->renderEngine->SetPassEnterEventFunction( ShaderType::Transparent,
-		[]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
+		[]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
 		{
 			PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "Transparent Pass Render" );
 		} );
 
 	this->renderEngine->SetPassEnterEventFunction( ShaderType::PostProcess,
-		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
+		[this]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
 		{
 			PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "PostProcess Pass Render" );
-			cmdList->OMSetRenderTargets( 1, &renderTexture.GetRenderTargetRTVHandle(), true, &renderTexture.dsvHandle );
+			cmdList->OMSetRenderTargets( 1, &camera.GetRenderTexture().GetRenderTargetRTVHandle(camera.GetCubeIndex()), true, &camera.GetRenderTexture().dsvHandle );
 			//cmdList->ResourceBarrier( 4, this->GetGBufferTrasitionBarriers( D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_COPY_SOURCE ) );
 			//cmdList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( rt, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_COPY_DEST ) );
 
@@ -645,10 +639,10 @@ void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
 		} );
 
 	this->renderEngine->SetPassEndEventFunction(
-		[this]( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
+		[this]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
 		{
 			TryResourceBarrier( cmdList,
-				renderTexture.BarrierTransition(
+				camera.GetRenderTexture().BarrierTransition(
 					D3D12_RESOURCE_STATE_RENDER_TARGET,
 					D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 					D3D12_RESOURCE_STATE_DEPTH_WRITE

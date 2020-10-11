@@ -57,10 +57,10 @@ namespace KG::Renderer
 		std::deque<KGRenderJob> pool;
 		std::vector<PassJobs> pass;
 
-		using PassEnterFunction = std::function<void( ID3D12GraphicsCommandList*, RenderTexture& )>;
-		using PassPreRenderFunction = std::function<void( ID3D12GraphicsCommandList*, RenderTexture& )>;
-		using PassEndRenderFunction = std::function<void( ID3D12GraphicsCommandList*, RenderTexture& )>;
-		using PassEndFunction = std::function<void( ID3D12GraphicsCommandList*, RenderTexture& )>;
+		using PassEnterFunction = std::function<void( ID3D12GraphicsCommandList*, KG::Component::CameraComponent& )>;
+		using PassPreRenderFunction = std::function<void( ID3D12GraphicsCommandList*, KG::Component::CameraComponent& )>;
+		using PassEndRenderFunction = std::function<void( ID3D12GraphicsCommandList*, KG::Component::CameraComponent& )>;
+		using PassEndFunction = std::function<void( ID3D12GraphicsCommandList*, KG::Component::CameraComponent& )>;
 
 		PassEnterFunction OnPassEnterEvent[4];
 		PassPreRenderFunction OnPassPreRenderEvent[4];
@@ -74,7 +74,7 @@ namespace KG::Renderer
 	public:
 		KGRenderEngine( ID3D12Device* device );
 		KGRenderJob* GetRenderJob( Shader* shader, Geometry* geometry );
-		void Render( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture );
+		void Render( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
 		void ClearJobs();
 		void ClearUpdateCount();
 		const PassEnterFunction& GetPassEnterEventFunction( size_t pass )

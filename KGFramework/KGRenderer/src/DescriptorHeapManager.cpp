@@ -15,6 +15,7 @@ void KG::Renderer::DescriptorHeapManager::Initialize( ID3D12Device* device, D3D1
 	this->descriptorSize = descriptorSize;
 
 	this->allocator.Resize( this->numMaxDescriptor );
+	this->device = device;
 	device->CreateDescriptorHeap( &this->heapDesc, IID_PPV_ARGS( &this->_heap ) );
 }
 
@@ -64,17 +65,18 @@ ID3D12DescriptorHeap* KG::Renderer::DescriptorHeapManager::operator->() const
 void KG::Renderer::DescriptorHeapManager::Resize( size_t size )
 {
 	heapDesc.NumDescriptors = size;
+	heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
 	this->descriptorSize = descriptorSize;
 
-	this->allocator.Resize( this->numMaxDescriptor );
+	this->allocator.Resize( size );
 
 	ID3D12DescriptorHeap* newHeap;
 	device->CreateDescriptorHeap( &heapDesc, IID_PPV_ARGS( &newHeap ) );
 
 	device->CopyDescriptorsSimple( 
 		this->numMaxDescriptor, 
-		this->_heap->GetCPUDescriptorHandleForHeapStart(),
 		newHeap->GetCPUDescriptorHandleForHeapStart(),
+		this->_heap->GetCPUDescriptorHandleForHeapStart(),
 		D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV );
 	this->numMaxDescriptor = heapDesc.NumDescriptors;
 	this->_heap->Release();

@@ -122,14 +122,14 @@ ID3D12Resource* KG::Renderer::CreateRenderTargetResource( ID3D12Device* pd3dDevi
 	d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE | D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
-	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
 	//D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 	D3D12_CLEAR_VALUE clearValue;
 	clearValue.Color[0] = 0.0f;
 	clearValue.Color[1] = 0.0f;
 	clearValue.Color[2] = 0.0f;
-	clearValue.Color[3] = 1.0f;
+	clearValue.Color[3] = 0.0f;
 	clearValue.Format = format;
 
 	HRESULT hResult = pd3dDevice->CreateCommittedResource(
@@ -165,14 +165,14 @@ ID3D12Resource* KG::Renderer::CreateCubeRenderTargetResource( ID3D12Device* pd3d
 	d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE | D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
 
-	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE;
+	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
 	//D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
 
 	D3D12_CLEAR_VALUE clearValue;
 	clearValue.Color[0] = 0.0f;
 	clearValue.Color[1] = 0.0f;
 	clearValue.Color[2] = 0.0f;
-	clearValue.Color[3] = 1.0f;
+	clearValue.Color[3] = 0.0f;
 	clearValue.Format = format;
 
 	HRESULT hResult = pd3dDevice->CreateCommittedResource(
@@ -208,7 +208,7 @@ ID3D12Resource* KG::Renderer::CreateDepthStencilResource( ID3D12Device* pd3dDevi
 	d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
 	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_DEPTH_STENCIL;
 
-	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_DEPTH_WRITE;
+	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
 
 	D3D12_CLEAR_VALUE clearValue;
 	clearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;

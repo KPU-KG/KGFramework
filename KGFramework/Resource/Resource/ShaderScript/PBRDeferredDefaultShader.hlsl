@@ -57,7 +57,7 @@ GBufferOut DefaultPixelFuction(VSOutput input)
     
     
     result.albedo = shaderTexture[mat.ColorTextureIndex].Sample(gsamAnisotoropicWrap, uv).xyz;
-    result.reflection = 1.0f;
+    result.reflection = objectInfo[input.InstanceID].environmentMapIndex / 12000.0f;
     
     result.specular = 0.0f;
     result.metalic = shaderTexture[mat.MetalicTextureIndex].Sample(gsamAnisotoropicWrap, uv).xxx;
@@ -75,8 +75,8 @@ GBufferOut DefaultPixelFuction(VSOutput input)
     result.wNormal = normalize(mul(normalMap, TBN));
     //result.wNormal = input.worldNormal;
     
-    result.light = float3(1, 0, 0);
-    result.reserve0 = 1.0f;
+    result.environmentMap = objectInfo[input.InstanceID].environmentMapIndex;
+    result.reserve0 = 1.0f.xxx;
     
     GBufferOut bufferResult = PixelEncode(result);
     return bufferResult;

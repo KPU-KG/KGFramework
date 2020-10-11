@@ -131,7 +131,7 @@ float4 AmbientLightPixelFuction(VSOutput input) : SV_Target0
     InputGBuffer0.Sample(gsamPointWrap, uv),
     InputGBuffer1.Sample(gsamPointWrap, uv),
     InputGBuffer2.Sample(gsamPointWrap, uv),
-    InputGBuffer3.Sample(gsamPointWrap, uv)
+    InputGBuffer3.Load(input.position)
     );
     
 
@@ -141,5 +141,5 @@ float4 AmbientLightPixelFuction(VSOutput input) : SV_Target0
     float3 calcWorldPosition = DepthToWorldPosition(depth, input.projPosition.xy);
     float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
     
-    return CustomAmbientLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(-cameraDirection), 1.0f);
+    return CustomAmbientLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(cameraDirection), 1.0f);
 }

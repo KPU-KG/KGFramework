@@ -13,6 +13,11 @@
     <Texture id="metal_metalic" fileDir="Resource/Texture/cc0_metal/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2937800030"/>
     <Texture id="metal_normal" fileDir="Resource/Texture/cc0_metal/normal.dds" dimension="Texture2D" format="DDS" hash_id="2012282528"/>
     <Texture id="metal_rough" fileDir="Resource/Texture/cc0_metal/rough.dds" dimension="Texture2D" format="DDS" hash_id="2279019576"/>
+    <!--Metal2 PBR-->
+    <Texture id="metal2_color" fileDir="Resource/Texture/cc0_metal2/color.dds" dimension="Texture2D" format="DDS" hash_id="4166432880"/>
+    <Texture id="metal2_metalic" fileDir="Resource/Texture/cc0_metal2/metalic.dds" dimension="Texture2D" format="DDS" hash_id="1082922672"/>
+    <Texture id="metal2_normal" fileDir="Resource/Texture/cc0_metal2/normal.dds" dimension="Texture2D" format="DDS" hash_id="3072785766"/>
+    <Texture id="metal2_rough" fileDir="Resource/Texture/cc0_metal2/rough.dds" dimension="Texture2D" format="DDS" hash_id="399534762"/>
     <!--Stone PBR-->
     <Texture id="stone_color" fileDir="Resource/Texture/cc0_PavingStone/color.dds" dimension="Texture2D" format="DDS" hash_id="2588833116"/>
     <!--<Texture id="stone_metalic" fileDir="Resource/Texture/cc0_PavingStone/metalic.dds" dimension="Texture2D" format="DDS"/>-->

@@ -48,7 +48,7 @@ namespace KG::Renderer
 	protected:
 		RendererDesc desc;
 		RendererSetting setting;
-		KG::Utill::HashString skymapMaterialId;
+		KG::Utill::HashString skymapTextureId = KG::Utill::HashString(0);
 		IKGRenderer() = default;
 	public:
 		virtual ~IKGRenderer() = default;
@@ -66,13 +66,13 @@ namespace KG::Renderer
 		virtual void Update(float elaspedTime) = 0;
 		virtual void OnChangeSettings( const RendererSetting& prev, const RendererSetting& next ) = 0;
 
-		virtual void SetSkymapMaterialId( const KG::Utill::HashString& id )
+		virtual void SetSkymapTextureId( const KG::Utill::HashString& id )
 		{
-			this->skymapMaterialId = id;
+			this->skymapTextureId = id;
 		}
-		virtual KG::Utill::HashString GetSkymapMaterialId() const
+		virtual KG::Utill::HashString GetSkymapTexutreId() const
 		{
-			return this->skymapMaterialId;
+			return this->skymapTextureId;
 		}
 
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() = 0;

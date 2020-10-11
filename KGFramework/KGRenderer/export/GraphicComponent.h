@@ -109,13 +109,14 @@ namespace KG::Component
 		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
 		void EndCameraRender( ID3D12GraphicsCommandList* commandList );
 
-		void SetRenderTexture(const KG::Renderer::RenderTexture& renderTexture, int index = 0);
+		void SetRenderTexture(KG::Renderer::RenderTexture* renderTexture, int index = 0);
 		void InitializeRenderTexture(const KG::Renderer::RenderTextureDesc& desc);
 
 		auto& GetRenderTexture()
 		{
 			return *this->renderTexture;
 		}
+
 	};
 
 	class DLL CubeCameraComponent : public IRenderComponent

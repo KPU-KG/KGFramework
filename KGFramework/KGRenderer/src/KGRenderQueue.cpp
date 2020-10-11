@@ -49,25 +49,25 @@ KGRenderJob* KG::Renderer::KGRenderEngine::GetRenderJob( Shader* shader, Geometr
 	return resultJob;
 }
 
-void KG::Renderer::KGRenderEngine::Render( ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture )
+void KG::Renderer::KGRenderEngine::Render( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
 {
 	for ( size_t i = 0; i < this->pass.size(); ++i )
 	{
 		if ( this->OnPassEnterEvent[i] )
-			this->OnPassEnterEvent[i]( cmdList, renderTexture );
+			this->OnPassEnterEvent[i]( cmdList, camera );
 
 		for ( KGRenderJob* job : pass[i] )
 		{
 			if ( this->OnPassPreRenderEvent[i] )
-				this->OnPassPreRenderEvent[i]( cmdList, renderTexture );
+				this->OnPassPreRenderEvent[i]( cmdList, camera );
 
 			job->Render( cmdList, this->currentShader );
 
 			if ( this->OnPassEndRenderEvent[i] )
-				this->OnPassEndRenderEvent[i]( cmdList, renderTexture );
+				this->OnPassEndRenderEvent[i]( cmdList, camera );
 		}
 	}
-	this->OnPassEndEvent( cmdList, renderTexture );
+	this->OnPassEndEvent( cmdList, camera );
 }
 
 void KG::Renderer::KGRenderEngine::ClearJobs()
