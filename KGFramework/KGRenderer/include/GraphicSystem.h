@@ -39,6 +39,17 @@ namespace KG::System
 		virtual void OnPreRender() override;
 	};
 
+	struct CubeCameraSystem : public IComponentSystem<CubeCameraComponent>
+	{
+	protected:
+		virtual void OnGetNewComponent( CubeCameraComponent* target ) override;
+	public:
+		virtual void OnUpdate( float elapsedTime ) override;
+		virtual void OnPostUpdate( float elapsedTime ) override;
+		virtual void OnPreRender() override;
+	};
+
+
 	struct LightSystem : public IComponentSystem<LightComponent>
 	{
 	protected:

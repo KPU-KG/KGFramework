@@ -37,6 +37,8 @@ namespace KG::Component
 	class MaterialComponent;
 	class GeometryComponent;
 	class Render3DComponent;
+	class CubeCameraComponent;
+	class CameraComponent;
 
 	class DLL IRenderComponent : public IComponent
 	{
@@ -49,6 +51,7 @@ namespace KG::Component
 	class DLL CameraComponent : public IRenderComponent
 	{
 		friend Render3DComponent;
+		friend CubeCameraComponent;
 		// User Data
 		float fovY = 90.0f;
 		float aspectRatio = 16.0f / 9.0f;
@@ -63,6 +66,9 @@ namespace KG::Component
 
 		TransformComponent* transform;
 		ID3D12Resource* cameraDataBuffer = nullptr;
+
+		bool isCubeRenderer = false;
+		int cubeIndex = 0;
 
 		struct CameraData;
 		CameraData* cameraData = nullptr;
@@ -87,7 +93,8 @@ namespace KG::Component
 		void SetFarZ( float value ) { OnProjDirty(); this->farZ = value; };
 		void SetViewport( const D3D12_VIEWPORT& viewport ) { this->viewport = viewport; };
 		void SetScissorRect( const D3D12_RECT& rect ) { this->scissorRect = rect; };
-		void SetDefaultRender( float width, float height );
+		void SetDefaultRender();
+		void SetCubeRender(int index);
 
 		auto GetFovY() const { return this->fovY; };
 		auto GetAspectRatio() const { return this->aspectRatio; };
@@ -95,13 +102,14 @@ namespace KG::Component
 		auto GetFarZ() const { return this->farZ; };
 		auto GetViewport() const { return this->viewport; };
 		auto GetScissorRect() const { return this->scissorRect; };
+		auto GetCubeIndex() const { return this->cubeIndex; };
 
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
 
 		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
 		void EndCameraRender( ID3D12GraphicsCommandList* commandList );
 
-		void SetRenderTexture(KG::Renderer::RenderTexture* renderTexture);
+		void SetRenderTexture(const KG::Renderer::RenderTexture& renderTexture, int index = 0);
 		void InitializeRenderTexture(const KG::Renderer::RenderTextureDesc& desc);
 
 		auto& GetRenderTexture()
@@ -110,40 +118,37 @@ namespace KG::Component
 		}
 	};
 
-	//class DLL CubeCameraComponent : public IRenderComponent
-	//{
-	//	friend Render3DComponent;
-	//	std::array<CameraComponent, 6> cameras;
+	class DLL CubeCameraComponent : public IRenderComponent
+	{
+		friend Render3DComponent;
+		std::array<CameraComponent, 6> cameras;
 
-	//	KG::Renderer::RenderTexture* renderTexture = nullptr;
+		KG::Renderer::RenderTexture* renderTexture = nullptr;
 
-	//	TransformComponent* transform;
-	//	ID3D12Resource* cameraDataBuffer = nullptr;
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+		virtual void OnDestroy() override;
+	public:
+		bool isVisible = true;
+		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
+		void InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc );
 
-	//	struct CameraData;
-	//	CameraData* cameraData = nullptr;
-	//	CameraData* mappedCameraData = nullptr;
+		auto& GetRenderTexture()
+		{
+			return *this->renderTexture;
+		}
 
-	//	bool ProjDirty = true;
-	//	void OnProjDirty() { ProjDirty = true; }
-	//	virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
-	//	virtual void OnDestroy() override;
-	//public:
-	//	bool isVisible = true;
-	//	virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
-	//	void InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc );
-
-	//	auto& GetRenderTexture()
-	//	{
-	//		return *this->renderTexture;
-	//	}
-	//};
+		auto& GetCameras()
+		{
+			return this->cameras;
+		}
+	};
 
 	class DLL Render3DComponent : public IRenderComponent
 	{
 		TransformComponent* transform = nullptr;
 		GeometryComponent* geometry = nullptr;
 		MaterialComponent* material = nullptr;
+		CubeCameraComponent* reflectionProbe = nullptr;
 		KG::Renderer::KGRenderJob* renderJob = nullptr;
 
 		void SetRenderJob( KG::Renderer::KGRenderJob* renderJob );
@@ -156,6 +161,7 @@ namespace KG::Component
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;
 		virtual void OnPreRender() override;
 		void SetVisible( bool visible );
+		void SetReflectionProbe( CubeCameraComponent* probe );
 	};
 
 	class DLL GeometryComponent : public IRenderComponent
@@ -265,6 +271,7 @@ namespace KG::Component
 	};
 	REGISTER_COMPONENT_ID( LightComponent );
 	REGISTER_COMPONENT_ID( CameraComponent );
+	REGISTER_COMPONENT_ID( CubeCameraComponent );
 	REGISTER_COMPONENT_ID( Render3DComponent );
 	REGISTER_COMPONENT_ID( GeometryComponent );
 	REGISTER_COMPONENT_ID( MaterialComponent );

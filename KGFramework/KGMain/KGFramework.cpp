@@ -73,6 +73,7 @@ void KG::GameFramework::OnTestInit()
 	static KG::Core::GameObject testPlaneObject;
 	static KG::Core::GameObject testCubeObjects[10000];
 	static KG::Core::GameObject testCameraObject;
+	static KG::Core::GameObject testCubeCameraObject;
 	static KG::Core::GameObject testLightObject;
 	static KG::Core::GameObject testPointLightObjects[10000];
 	static KG::Core::GameObject testSkyObject;
@@ -109,7 +110,7 @@ void KG::GameFramework::OnTestInit()
 		renderTextureDesc.width = this->setting.clientWidth;
 		renderTextureDesc.height = this->setting.clientHeight;
 		cam->InitializeRenderTexture(renderTextureDesc);
-		cam->SetDefaultRender( this->setting.clientWidth, this->setting.clientHeight );
+		cam->SetDefaultRender();
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
 		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
 			[]( KG::Core::GameObject* gameObject, float elapsedTime )
@@ -162,6 +163,24 @@ void KG::GameFramework::OnTestInit()
 		testCameraObject.AddComponent( cam );
 		testCameraObject.AddComponent( lam );
 		testCameraObject.GetComponent<KG::Component::TransformComponent>()->Translate( 0, 0, -2.0f );
+	}
+
+	{
+		auto* tran = this->system->transformSystem.GetNewComponent();
+		auto* cam = this->renderer->GetNewCubeCameraComponent();
+		//프레임워크에서 카메라 세팅 // 
+		KG::Renderer::RenderTextureDesc renderTextureDesc;
+		renderTextureDesc.useDeferredRender = true;
+		renderTextureDesc.useCubeRender = true;
+		renderTextureDesc.useDepthStencilBuffer = true;
+		renderTextureDesc.useRenderTarget = true;
+		renderTextureDesc.width = 128;
+		renderTextureDesc.height = 128;
+		cam->InitializeRenderTexture( renderTextureDesc );
+		testCubeCameraObject.name = "camera";
+		testCubeCameraObject.AddComponent( tran );
+		testCubeCameraObject.AddComponent( cam );
+		testCubeCameraObject.GetComponent<KG::Component::TransformComponent>()->Translate( 0, 0, -2.0f );
 	}
 
 	constexpr size_t cdas = 30;

@@ -21,6 +21,8 @@
 
 using namespace KG::Renderer;
 
+#pragma region Render3DComponent
+
 void KG::Component::Render3DComponent::OnRender( ID3D12GraphicsCommandList* commadList )
 {
 }
@@ -82,6 +84,10 @@ void KG::Component::Render3DComponent::RegisterGeometry( GeometryComponent* geom
 	this->geometry = geometry;
 }
 
+#pragma endregion
+
+#pragma region MaterialComponent
+
 void KG::Component::MaterialComponent::InitializeMaterial( const KG::Utill::HashString& materialID )
 {
 	auto* inst = KG::Resource::ResourceContainer::GetInstance();
@@ -106,12 +112,19 @@ void KG::Component::MaterialComponent::OnDestroy()
 	IRenderComponent::OnDestroy();
 }
 
+#pragma endregion
+
+#pragma region GeometryComponent
+
 void KG::Component::GeometryComponent::InitializeGeometry( const KG::Utill::HashString& shaderID )
 {
 	auto* inst = KG::Resource::ResourceContainer::GetInstance();
 	this->geometry = inst->LoadGeometry( shaderID );
 }
 
+#pragma endregion
+
+#pragma region CameraComponent
 
 struct KG::Component::CameraComponent::CameraData
 {
@@ -137,15 +150,36 @@ void KG::Component::CameraComponent::RefreshCameraData()
 	this->cameraData->cameraWorldPosition = this->transform->GetWorldPosition();
 	this->cameraData->look = this->transform->GetWorldLook();
 
-	this->cameraData->viewProjection = KG::Math::Matrix4x4::Multiply( this->cameraData->projection ,  this->cameraData->view  );
+	this->cameraData->viewProjection = KG::Math::Matrix4x4::Multiply( this->cameraData->projection, this->cameraData->view );
 	this->cameraData->inverseViewProjection = KG::Math::Matrix4x4::Multiply( this->cameraData->inverseProjection, this->cameraData->inverseView );
 }
 
+static constexpr XMFLOAT3 cubeLook[6] =
+{
+	XMFLOAT3( 1.0f, 0.0f, 0.0f ),
+	XMFLOAT3( -1.0f, 0.0f, 0.0f ),
+	XMFLOAT3( 0.0f, 1.0f, 0.0f ),
+	XMFLOAT3( 0.0f, -1.0f, 0.0f ),
+	XMFLOAT3( 0.0f, 0.0f, 1.0f ),
+	XMFLOAT3( 0.0f, 0.0f, -1.0f )
+};
+
+static constexpr XMFLOAT3 cubeUp[6] =
+{
+	XMFLOAT3( 0.0f, 1.0f, 0.0f ),
+	XMFLOAT3( 0.0f, 1.0f, 0.0f ),
+	XMFLOAT3( 0.0f, 0.0f, -1.0f ),
+	XMFLOAT3( 0.0f, 0.0f, +1.0f ),
+	XMFLOAT3( 0.0f, 1.0f, 0.0f ),
+	XMFLOAT3( 0.0f, 1.0f, 0.0f ),
+};
+
 void KG::Component::CameraComponent::CalculateViewMatrix()
 {
+
 	auto position = this->transform->GetPosition();
-	auto look = this->transform->GetLook();
-	auto up = this->transform->GetUp();
+	auto look = this->isCubeRenderer ? cubeLook[this->cubeIndex] : this->transform->GetLook();
+	auto up = this->isCubeRenderer ? cubeUp[this->cubeIndex] : this->transform->GetUp();
 	auto view = DirectX::XMMatrixLookToLH(
 		XMLoadFloat3( &position ),
 		XMLoadFloat3( &look ),
@@ -168,13 +202,13 @@ void KG::Component::CameraComponent::CalculateProjectionMatrix()
 	this->ProjDirty = false;
 }
 
-void KG::Component::CameraComponent::SetDefaultRender( float width, float height )
+void KG::Component::CameraComponent::SetDefaultRender()
 {
 	D3D12_VIEWPORT viewport;
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
-	viewport.Width = width;
-	viewport.Height = height;
+	viewport.Width = this->renderTexture->desc.width;
+	viewport.Height = this->renderTexture->desc.height;
 	viewport.MinDepth = 0;
 	viewport.MaxDepth = 1;
 
@@ -182,12 +216,19 @@ void KG::Component::CameraComponent::SetDefaultRender( float width, float height
 
 	D3D12_RECT scissorRect;
 	scissorRect.left = 0;
-	scissorRect.right = width;
+	scissorRect.right = this->renderTexture->desc.width;
 	scissorRect.top = 0;
-	scissorRect.bottom = height;
+	scissorRect.bottom = this->renderTexture->desc.height;
 
 	this->SetScissorRect( scissorRect );
+}
 
+void KG::Component::CameraComponent::SetCubeRender( int index )
+{
+	this->isCubeRenderer = true;
+	this->cubeIndex = index;
+	this->fovY = 90.0f;
+	this->aspectRatio = 1.0f;
 }
 
 void KG::Component::CameraComponent::OnDestroy()
@@ -201,8 +242,9 @@ void KG::Component::CameraComponent::OnDestroy()
 
 	if ( this->isRenderTexureCreatedInCamera )
 	{
-		delete this->renderTexture;
+		this->renderTexture->Release();
 	}
+	delete this->renderTexture;
 
 	IRenderComponent::OnDestroy();
 }
@@ -224,7 +266,6 @@ void KG::Component::CameraComponent::OnRender( ID3D12GraphicsCommandList* comman
 void KG::Component::CameraComponent::SetCameraRender( ID3D12GraphicsCommandList* commandList )
 {
 	this->RefreshCameraData();
-	this->renderTexture->CopyGBufferSRV();
 	std::memcpy( this->mappedCameraData, this->cameraData, sizeof( CameraData ) );
 	commandList->SetGraphicsRootConstantBufferView( RootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress() );
 
@@ -238,10 +279,8 @@ void KG::Component::CameraComponent::SetCameraRender( ID3D12GraphicsCommandList*
 			D3D12_RESOURCE_STATE_DEPTH_WRITE
 		)
 	);
-
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 1.0f };
 	commandList->ClearRenderTargetView( this->renderTexture->GetRenderTargetRTVHandle(), clearColor, 0, nullptr );
-
 }
 
 void KG::Component::CameraComponent::EndCameraRender( ID3D12GraphicsCommandList* commandList )
@@ -255,10 +294,12 @@ void KG::Component::CameraComponent::EndCameraRender( ID3D12GraphicsCommandList*
 	);
 }
 
-void KG::Component::CameraComponent::SetRenderTexture( KG::Renderer::RenderTexture* renderTexture )
+void KG::Component::CameraComponent::SetRenderTexture( const KG::Renderer::RenderTexture& renderTexture, int index )
 {
 	this->isRenderTexureCreatedInCamera = false;
-	this->renderTexture = renderTexture;
+	this->renderTexture = new KG::Renderer::RenderTexture();
+	*this->renderTexture = renderTexture;
+	this->renderTexture->currentIndex = index;
 }
 
 void KG::Component::CameraComponent::InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc )
@@ -267,6 +308,48 @@ void KG::Component::CameraComponent::InitializeRenderTexture( const KG::Renderer
 	this->renderTexture = new KG::Renderer::RenderTexture();
 	this->renderTexture->Initialize( desc );
 }
+
+#pragma endregion
+
+#pragma region CubeCameraComponent
+
+void KG::Component::CubeCameraComponent::OnCreate( KG::Core::GameObject* gameObject )
+{
+	for ( auto& camera : this->cameras )
+		camera.OnCreate( gameObject );
+
+	for ( size_t i = 0; i < 6; i++ )
+	{
+		cameras[i].SetCubeRender( i );
+	}
+	//ī�޶� ������ ������Ʈ
+}
+
+void KG::Component::CubeCameraComponent::OnDestroy()
+{
+	for ( auto& camera : this->cameras )
+		camera.OnDestroy();
+}
+
+void KG::Component::CubeCameraComponent::OnRender( ID3D12GraphicsCommandList* commandList )
+{
+}
+
+void KG::Component::CubeCameraComponent::InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc )
+{
+	this->renderTexture = new KG::Renderer::RenderTexture();
+	this->renderTexture->Initialize( desc );
+
+	for ( size_t i = 0; i < 6; i++ )
+	{
+		this->cameras[i].SetRenderTexture( *this->renderTexture, i );
+		this->cameras[i].SetDefaultRender();
+	}
+}
+
+#pragma endregion
+
+#pragma region LightComponent
 
 void KG::Component::LightComponent::SetRenderJob( KG::Renderer::KGRenderJob* renderJob )
 {
@@ -317,7 +400,7 @@ void KG::Component::LightComponent::SetPointLight( const DirectX::XMFLOAT3& stre
 KG::Component::DirectionalLightRef KG::Component::LightComponent::GetDirectionalLightRef()
 {
 	this->UpdateChanged();
-	return DirectionalLightRef(this->light);
+	return DirectionalLightRef( this->light );
 }
 
 KG::Component::PointLightRef KG::Component::LightComponent::GetPointLightRef()
@@ -369,3 +452,5 @@ void KG::Component::LightComponent::SetVisible( bool visible )
 		this->renderJob->OnVisibleRemove();
 	}
 }
+
+#pragma endregion

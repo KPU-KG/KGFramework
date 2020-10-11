@@ -177,4 +177,7 @@
       <Filter>헤더 파일\Core</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
 </Project>

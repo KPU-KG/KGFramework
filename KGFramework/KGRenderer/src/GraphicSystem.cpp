@@ -80,3 +80,19 @@ void KG::System::LightSystem::OnPreRender()
 		com.OnPreRender();
 	}
 }
+
+void KG::System::CubeCameraSystem::OnGetNewComponent( CubeCameraComponent* target )
+{
+}
+
+void KG::System::CubeCameraSystem::OnUpdate( float elapsedTime )
+{
+}
+
+void KG::System::CubeCameraSystem::OnPostUpdate( float elapsedTime )
+{
+}
+
+void KG::System::CubeCameraSystem::OnPreRender()
+{
+}
