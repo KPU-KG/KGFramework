@@ -114,8 +114,9 @@ float4 CustomAmbientLightCalculator(LightData light, PixelResult info, float3 li
     float G = gaSchlickGGX(NDotL, NDotV, info.roughness);
  
     float3 kd = lerp(float3(1, 1, 1) - F, float3(0.0f, 0.0f, 0.0f), 1.0f.xxx - info.metalic.xxx);
-    //float3 reflec = reflect(-cameraDir, info.wNormal);
     float3 reflec = reflect(cameraDir, info.wNormal);
+
+    
     float3 envPixel = shaderTextureCube[info.environmentMap].Sample(gsamAnisotoropicWrap, normalize(reflec)).rgb;
     return float4(F * envPixel * info.albedo, 1.0f);
 }

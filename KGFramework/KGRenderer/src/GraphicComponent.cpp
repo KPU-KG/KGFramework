@@ -41,7 +41,7 @@ void KG::Component::Render3DComponent::OnPreRender()
 		this->renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
 			this->reflectionProbe->GetRenderTexture().renderTargetSRVIndex;
 	}
-	else 
+	else
 	{
 		this->renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
 			KG::Resource::ResourceContainer::GetInstance()->LoadTexture( KG::Renderer::KGDXRenderer::GetInstance()->GetSkymapTexutreId() )->index;
@@ -192,7 +192,7 @@ static constexpr XMFLOAT3 cubeUp[6] =
 void KG::Component::CameraComponent::CalculateViewMatrix()
 {
 
-	auto position = this->transform->GetPosition();
+	auto position = this->transform->GetWorldPosition();
 	auto look = this->isCubeRenderer ? cubeLook[this->cubeIndex] : this->transform->GetLook();
 	auto up = this->isCubeRenderer ? cubeUp[this->cubeIndex] : this->transform->GetUp();
 	auto view = DirectX::XMMatrixLookToLH(
@@ -295,7 +295,10 @@ void KG::Component::CameraComponent::SetCameraRender( ID3D12GraphicsCommandList*
 		)
 	);
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	commandList->ClearRenderTargetView( this->renderTexture->GetRenderTargetRTVHandle(this->cubeIndex), clearColor, 0, nullptr );
+	if ( this->renderTexture->desc.useRenderTarget )
+	{
+		commandList->ClearRenderTargetView( this->renderTexture->GetRenderTargetRTVHandle( this->cubeIndex ), clearColor, 0, nullptr );
+	}
 }
 
 void KG::Component::CameraComponent::EndCameraRender( ID3D12GraphicsCommandList* commandList )
@@ -329,6 +332,7 @@ void KG::Component::CameraComponent::InitializeRenderTexture( const KG::Renderer
 
 void KG::Component::CubeCameraComponent::OnCreate( KG::Core::GameObject* gameObject )
 {
+	IRenderComponent::OnCreate( gameObject );
 	for ( auto& camera : this->cameras )
 		camera.OnCreate( gameObject );
 
@@ -391,6 +395,7 @@ void KG::Component::LightComponent::SetDirectionalLight( const DirectX::XMFLOAT3
 	}
 	this->currentShader = this->directionalLightShader;
 	this->currentGeometry = this->directionalLightGeometry;
+	this->lightType = LightType::DirectionalLight;
 }
 
 void KG::Component::LightComponent::SetPointLight( const DirectX::XMFLOAT3& strength, float fallOffStart, float fallOffEnd )
@@ -409,6 +414,7 @@ void KG::Component::LightComponent::SetPointLight( const DirectX::XMFLOAT3& stre
 	}
 	this->currentShader = this->pointLightShader;
 	this->currentGeometry = this->pointLightGeometry;
+	this->lightType = LightType::PointLight;
 }
 
 KG::Component::DirectionalLightRef KG::Component::LightComponent::GetDirectionalLightRef()
@@ -443,10 +449,10 @@ void KG::Component::LightComponent::OnRender( ID3D12GraphicsCommandList* commadL
 
 void KG::Component::LightComponent::OnPreRender()
 {
-	if ( this->isDirty )
+	//if ( this->isDirty )
 	{
-		this->isDirty = false;
 		int updateCount = this->renderJob->GetUpdateCount();
+		this->isDirty = false;
 		this->light.Position = this->transform->GetWorldPosition();
 		std::memcpy( &this->renderJob->objectBuffer->mappedData[updateCount].light, &this->light, sizeof( this->light ) );
 	}
@@ -467,4 +473,79 @@ void KG::Component::LightComponent::SetVisible( bool visible )
 	}
 }
 
+void KG::Component::LightComponent::SetCastShadow( bool shadow )
+{
+	this->castShadow = shadow;
+}
+
+void KG::Component::LightComponent::SetShadowCasterTextureIndex( UINT index )
+{
+	this->light.shadowMapIndex = index;
+}
+
 #pragma endregion
+
+void KG::Component::ShadowCasterComponent::InitializeAsPointLightShadow()
+{
+	this->cubeCamera = new CubeCameraComponent();
+	this->cubeCamera->OnCreate( this->gameObject );
+	RenderTextureDesc desc;
+	desc.useCubeRender = true;
+	desc.useDeferredRender = false;
+	desc.useDeferredRender = false;
+	desc.useDepthStencilBuffer = true;
+	desc.uploadSRVDepthBuffer = true;
+	desc.uploadSRVRenderTarget = false;
+	desc.width = 256;
+	desc.height = 256;
+	this->cubeCamera->InitializeRenderTexture( desc );
+}
+
+void KG::Component::ShadowCasterComponent::InitializeAsDirectionalLightShadow()
+{
+	this->camera = new CameraComponent();
+	this->camera->SetDefaultRender();
+	this->camera->OnCreate( this->gameObject );
+}
+
+void KG::Component::ShadowCasterComponent::OnCreate( KG::Core::GameObject* gameObject )
+{
+	IRenderComponent::OnCreate( gameObject );
+	auto lightComponent = gameObject->GetComponent<LightComponent>();
+	lightComponent->SetCastShadow( true );
+	switch ( lightComponent->GetLightType() )
+	{
+	case LightType::DirectionalLight:
+		break;
+	case LightType::PointLight:
+		this->InitializeAsPointLightShadow();
+		lightComponent->SetShadowCasterTextureIndex( this->cubeCamera->GetRenderTexture().depthStencilSRVIndex );
+		break;
+	case LightType::SpotLight:
+		break;
+	default:
+		break;
+	}
+}
+
+void KG::Component::ShadowCasterComponent::OnDestroy()
+{
+	if ( this->camera )
+	{
+		this->camera->OnDestroy();
+		delete this->camera;
+	}
+	else if ( this->cubeCamera )
+	{
+		this->cubeCamera->OnDestroy();
+		delete this->cubeCamera;
+	}
+}
+
+KG::Component::ShadowCasterComponent::Cameras KG::Component::ShadowCasterComponent::GetCameras()
+{
+	Cameras result;
+	result.b = this->isPointLightShadow() ? &this->cubeCamera->cameras[0] : this->camera;
+	result.e = this->isPointLightShadow() ? std::next( result.b, 6 ) : std::next( result.b, 1 );
+	return result;
+}

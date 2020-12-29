@@ -82,6 +82,7 @@ namespace KG::Renderer
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() = 0;
 		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() = 0;
 		virtual KG::Component::LightComponent* GetNewLightComponent() = 0;
+		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() = 0;
 
 	};
 	DLL KG::Renderer::IKGRenderer* GetD3D12Renderer();

@@ -35,7 +35,7 @@ D3D12_RASTERIZER_DESC KG::Renderer::Shader::CreateRasterizerState( const KG::Res
 	{
 		d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_FRONT;
 	}
-	else 
+	else
 	{
 		d3dRasterizerDesc.CullMode = data.enableCullBackface ? D3D12_CULL_MODE_BACK : D3D12_CULL_MODE_NONE;
 	}
@@ -120,7 +120,7 @@ D3D12_DEPTH_STENCIL_DESC KG::Renderer::Shader::CreateDepthStencilState( const KG
 		d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
 		d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
 	}
-		break;
+	break;
 	case ShaderType::LightPass:
 	{
 		d3dDepthStencilDesc.DepthEnable = false;
@@ -138,7 +138,7 @@ D3D12_DEPTH_STENCIL_DESC KG::Renderer::Shader::CreateDepthStencilState( const KG
 		d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
 		d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
 	}
-		break;
+	break;
 	case ShaderType::Transparent:
 		break;
 	case ShaderType::PostProcess:
@@ -170,7 +170,7 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata( const KG::Resource:
 {
 	UINT nCompileFlags = 0;
 #if defined(_DEBUG)
-	nCompileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION ;
+	nCompileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif
 
 	ID3DBlob* errorblob;
@@ -307,7 +307,7 @@ void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::Sha
 		d3dPipelineStateDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UINT;
 		//d3dPipelineStateDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	}
-	else 
+	else
 	{
 		d3dPipelineStateDesc.NumRenderTargets = 1;
 		d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -325,4 +325,156 @@ void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::Sha
 	TryRelease( domainShader );
 	TryRelease( hullShader );
 	TryRelease( geometryShader );
+}
+
+KG::Renderer::ShadowMapRenderShader::~ShadowMapRenderShader()
+{
+	TryRelease( pso );
+}
+
+void KG::Renderer::ShadowMapRenderShader::Create()
+{
+	ID3D10Blob* vertexShader = nullptr;
+	ID3D10Blob* pixelShader = nullptr;
+	ID3D10Blob* geometryShader = nullptr;
+
+	D3D12_GRAPHICS_PIPELINE_STATE_DESC d3dPipelineStateDesc;
+	ZeroDesc( d3dPipelineStateDesc );
+	d3dPipelineStateDesc.pRootSignature = KGDXRenderer::GetInstance()->GetGeneralRootSignature();
+
+	//VS
+	{
+		vertexShader = CompileShader( "Resource/ShaderScript/ShadowDepthRenderShader.hlsl", "DepthVertexFunction", ShaderTarget::VS_5_1 );
+		D3D12_SHADER_BYTECODE byteCode;
+		byteCode.pShaderBytecode = vertexShader->GetBufferPointer();
+		byteCode.BytecodeLength = vertexShader->GetBufferSize();
+		d3dPipelineStateDesc.VS = byteCode;
+	}
+
+	//PS
+	{
+		pixelShader = CompileShader( "Resource/ShaderScript/ShadowDepthRenderShader.hlsl", "DepthPixelFunction", ShaderTarget::PS_5_1 );
+		D3D12_SHADER_BYTECODE byteCode;
+		byteCode.pShaderBytecode = pixelShader->GetBufferPointer();
+		byteCode.BytecodeLength = pixelShader->GetBufferSize();
+		d3dPipelineStateDesc.PS = byteCode;
+	}
+
+	//GS
+	//{
+	//	geometryShader = CompileShader( "Resource/ShaderScript/ShadowDepthRenderShader.hlsl", "DepthVertexFunction", ShaderTarget::VS_5_1 );
+	//	D3D12_SHADER_BYTECODE byteCode;
+	//	byteCode.pShaderBytecode = geometryShader->GetBufferPointer();
+	//	byteCode.BytecodeLength = geometryShader->GetBufferSize();
+	//	d3dPipelineStateDesc.GS = byteCode;
+	//}
+
+	d3dPipelineStateDesc.RasterizerState = CreateRasterizerState();
+	d3dPipelineStateDesc.BlendState = CreateBlendState();
+	d3dPipelineStateDesc.DepthStencilState = CreateDepthStencilState();
+	d3dPipelineStateDesc.InputLayout = NormalVertex::GetInputLayoutDesc();
+	d3dPipelineStateDesc.SampleMask = UINT_MAX;
+	d3dPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	d3dPipelineStateDesc.NumRenderTargets = 0;
+	d3dPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	d3dPipelineStateDesc.SampleDesc.Count = 1;
+	auto d3dDevice = KGDXRenderer::GetInstance()->GetD3DDevice();
+	d3dDevice->CreateGraphicsPipelineState( &d3dPipelineStateDesc, IID_PPV_ARGS( &this->pso ) );
+
+	TryRelease( vertexShader );
+	TryRelease( pixelShader );
+	TryRelease( geometryShader );
+
+}
+
+void KG::Renderer::ShadowMapRenderShader::Set( ID3D12GraphicsCommandList* pd3dCommandList )
+{
+	pd3dCommandList->SetPipelineState( this->pso );
+}
+
+ID3D10Blob* KG::Renderer::ShadowMapRenderShader::CompileShader( const std::string& name, const std::string& entry, const ShaderTarget target )
+{
+	UINT nCompileFlags = 0;
+#if defined(_DEBUG)
+	nCompileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
+#endif
+
+	ID3DBlob* errorblob;
+	ID3DBlob* shaderBlob;
+	static std::wstring buffer;
+	buffer.assign( name.begin(), name.end() );
+	HRESULT hr = ::D3DCompileFromFile( buffer.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, entry.c_str(),
+		ConvertToShaderString( target ), nCompileFlags | D3DCOMPILE_ENABLE_UNBOUNDED_DESCRIPTOR_TABLES, 0, &shaderBlob, &errorblob );
+
+	if ( errorblob != nullptr )
+	{
+		DebugErrorMessage( L"셰이더 컴파일 오류" << (char*)errorblob->GetBufferPointer() );
+	}
+	return shaderBlob;
+}
+
+D3D12_RASTERIZER_DESC KG::Renderer::ShadowMapRenderShader::CreateRasterizerState()
+{
+	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
+	ZeroDesc( d3dRasterizerDesc );
+	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
+	d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_FRONT;
+	d3dRasterizerDesc.FrontCounterClockwise = false;
+	d3dRasterizerDesc.DepthBias = 100000;
+	d3dRasterizerDesc.DepthBiasClamp = 0.0f;
+	d3dRasterizerDesc.SlopeScaledDepthBias = 1.0f;
+	d3dRasterizerDesc.DepthClipEnable = true;
+	d3dRasterizerDesc.MultisampleEnable = false;
+	d3dRasterizerDesc.AntialiasedLineEnable = false;
+	d3dRasterizerDesc.ForcedSampleCount = 0;
+	d3dRasterizerDesc.ConservativeRaster = D3D12_CONSERVATIVE_RASTERIZATION_MODE_OFF;
+	return d3dRasterizerDesc;
+}
+
+D3D12_BLEND_DESC KG::Renderer::ShadowMapRenderShader::CreateBlendState()
+{
+	D3D12_BLEND_DESC d3dBlendDesc;
+	ZeroDesc( d3dBlendDesc );
+
+	d3dBlendDesc.AlphaToCoverageEnable = false;
+	d3dBlendDesc.IndependentBlendEnable = false;
+	d3dBlendDesc.RenderTarget[0].BlendEnable = false;
+	d3dBlendDesc.RenderTarget[0].LogicOpEnable = false;
+	d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+	d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+	d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+	d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+	d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+
+	return d3dBlendDesc;
+}
+
+D3D12_DEPTH_STENCIL_DESC KG::Renderer::ShadowMapRenderShader::CreateDepthStencilState()
+{
+	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
+	ZeroDesc( d3dDepthStencilDesc );
+	d3dDepthStencilDesc.DepthEnable = true;
+	d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
+	d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+	d3dDepthStencilDesc.StencilEnable = false;
+	d3dDepthStencilDesc.StencilReadMask = 0x00;
+	d3dDepthStencilDesc.StencilWriteMask = 0x00;
+	d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE;
+	d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
+	d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+	d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
+	return d3dDepthStencilDesc;
+}
+
+ShadowMapRenderShader* KG::Renderer::ShadowMapRenderShader::GetInstance()
+{
+	static ShadowMapRenderShader inst;
+	return &inst;
 }

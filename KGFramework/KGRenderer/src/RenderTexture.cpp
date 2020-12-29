@@ -129,7 +129,9 @@ void KG::Renderer::RenderTexture::CreateGBufferSRView()
 void KG::Renderer::RenderTexture::CreateDepthStencilBuffer()
 {
 	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
-	this->depthStencilBuffer = CreateDepthStencilResource( device, this->desc.width, this->desc.height );
+	this->depthStencilBuffer = this->isCubeDepth() ?
+		CreateCubeDepthStencilResource(device, this->desc.width, this->desc.height )
+		:CreateDepthStencilResource( device, this->desc.width, this->desc.height );
 }
 
 void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
@@ -140,22 +142,44 @@ void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
 	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
 	ZeroDesc( d3dDescriptorHeapDesc );
 
-	d3dDescriptorHeapDesc.NumDescriptors = 1;
+	d3dDescriptorHeapDesc.NumDescriptors = this->isCubeDepth() ? 6 : 1;
 	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	d3dDescriptorHeapDesc.NodeMask = 0;
 
 	HRESULT hResult = device->CreateDescriptorHeap( &d3dDescriptorHeapDesc, IID_PPV_ARGS( &this->dsvDescriptorHeap ) );
 
-	D3D12_DEPTH_STENCIL_VIEW_DESC d3dDepthStencillViewDesc;
-	d3dDepthStencillViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	d3dDepthStencillViewDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
-	d3dDepthStencillViewDesc.Texture2D.MipSlice = 0;
-	d3dDepthStencillViewDesc.Flags = D3D12_DSV_FLAG_NONE;
 
-	D3D12_CPU_DESCRIPTOR_HANDLE dsvCpuDescHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-	device->CreateDepthStencilView( this->depthStencilBuffer, &d3dDepthStencillViewDesc, dsvCpuDescHandle );
-	this->dsvHandle = dsvCpuDescHandle;
+
+	if ( this->isCubeDepth() )
+	{
+		D3D12_DEPTH_STENCIL_VIEW_DESC d3dDepthStencillViewDesc;
+		d3dDepthStencillViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		d3dDepthStencillViewDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2DARRAY;
+		d3dDepthStencillViewDesc.Texture2DArray.MipSlice = 0;
+		d3dDepthStencillViewDesc.Flags = D3D12_DSV_FLAG_NONE;
+
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvCpuDescHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+		for ( size_t i = 0; i < 6; i++ )
+		{
+			d3dDepthStencillViewDesc.Texture2DArray.FirstArraySlice = i;
+			d3dDepthStencillViewDesc.Texture2DArray.ArraySize = 1;
+
+			device->CreateDepthStencilView( this->depthStencilBuffer, &d3dDepthStencillViewDesc, dsvCpuDescHandle );
+			dsvCpuDescHandle.ptr += KGDXRenderer::GetInstance()->GetDSVSize();
+		}
+	}
+	else
+	{
+		D3D12_DEPTH_STENCIL_VIEW_DESC d3dDepthStencillViewDesc;
+		d3dDepthStencillViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+		d3dDepthStencillViewDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
+		d3dDepthStencillViewDesc.Texture2D.MipSlice = 0;
+		d3dDepthStencillViewDesc.Flags = D3D12_DSV_FLAG_NONE;
+
+		D3D12_CPU_DESCRIPTOR_HANDLE dsvCpuDescHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
+		device->CreateDepthStencilView( this->depthStencilBuffer, &d3dDepthStencillViewDesc, dsvCpuDescHandle );
+	}
 }
 
 UINT KG::Renderer::RenderTexture::PostRenderTargetSRV()
@@ -213,13 +237,21 @@ UINT KG::Renderer::RenderTexture::PostDepthStencilSRV()
 	ZeroDesc( srvDesc );
 
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.Format = this->renderTarget->GetDesc().Format;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-	srvDesc.Texture2D.PlaneSlice = 0;
-	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
-
+	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	srvDesc.ViewDimension = this->isCubeDepth() ? D3D12_SRV_DIMENSION_TEXTURECUBE : D3D12_SRV_DIMENSION_TEXTURE2D;
+	if ( this->isCubeDepth() )
+	{
+		srvDesc.TextureCube.MostDetailedMip = 0;
+		srvDesc.TextureCube.MipLevels = 1;
+		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+	}
+	else
+	{
+		srvDesc.Texture2D.MipLevels = 1;
+		srvDesc.Texture2D.PlaneSlice = 0;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+	}
 	this->depthStencilSRVIndex = descManager->RequestEmptyIndex();
 	device->CreateShaderResourceView( this->depthStencilBuffer, &srvDesc, descManager->GetCPUHandle( this->depthStencilSRVIndex ) );
 	return this->depthStencilSRVIndex;
@@ -230,12 +262,21 @@ KG::Resource::Texture* KG::Renderer::RenderTexture::PostDepthStencilTexture()
 	auto resourceContainer = KG::Resource::ResourceContainer::GetInstance();
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.Format = this->renderTarget->GetDesc().Format;
-	srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
-	srvDesc.Texture2D.MipLevels = 1;
-	srvDesc.Texture2D.PlaneSlice = 0;
-	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
+	srvDesc.ViewDimension = this->isCubeDepth() ? D3D12_SRV_DIMENSION_TEXTURECUBE : D3D12_SRV_DIMENSION_TEXTURE2D;
+	if ( this->isCubeDepth() )
+	{
+		srvDesc.TextureCube.MostDetailedMip = 0;
+		srvDesc.TextureCube.MipLevels = 1;
+		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+	}
+	else
+	{
+		srvDesc.Texture2D.MipLevels = 1;
+		srvDesc.Texture2D.PlaneSlice = 0;
+		srvDesc.Texture2D.MostDetailedMip = 0;
+		srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
+	}
 
 	this->depthStencilTexture = resourceContainer->CreateTexture( this->desc.depthBufferTextureId, this->depthStencilBuffer, srvDesc );
 	return this->depthStencilTexture;
@@ -284,6 +325,16 @@ D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::RenderTexture::GetRenderTargetRTVHandl
 {
 	CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE( this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart() );
 	handle.Offset( index, KGDXRenderer::GetInstance()->GetRTVSize() );
+	return handle;
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::RenderTexture::GetDSVHandle( size_t index )
+{
+	CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE( this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart() );
+	if ( this->isCubeDepth() )
+	{
+		handle.Offset( index, KGDXRenderer::GetInstance()->GetDSVSize() );
+	}
 	return handle;
 }
 
@@ -347,4 +398,9 @@ void KG::Renderer::RenderTexture::Release()
 		TryRelease( this->gbufferTextures[i] );
 	}
 	TryRelease( this->gbufferDescriptorHeap );
+}
+
+bool KG::Renderer::RenderTexture::isCubeDepth() const
+{
+	return this->desc.useCubeRender && (this->desc.uploadSRVDepthBuffer || this->desc.depthBufferTextureId.value != 0);
 }

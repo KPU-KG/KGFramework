@@ -107,7 +107,16 @@ float4 PointLightPixelFuction(VSOutput input, bool isFrontFace : SV_IsFrontFace)
     
     float atten = CalcAttenuation(distance, lightData.FalloffStart, lightData.FalloffEnd);
     
-    return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(-cameraDirection), atten);
+        
+    float far = 1000.0f;
+    float near = 0.01f;
+    
+    //float value = (far / (far - near)) - ((far * near) / ((far - near) * distance));
+    float value = distance / far;
+    
+    float uShadow = shadowCubeTexture[lightData.shadowMapIndex].SampleCmpLevelZero(gsamAnisotoropicCompClamp, normalize(lightDirection), value);
+    
+    return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(-cameraDirection), atten * uShadow);
 }
 
 

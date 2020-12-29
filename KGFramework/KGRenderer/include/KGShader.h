@@ -80,4 +80,20 @@ namespace KG::Renderer
 	public:
 		static ID3D10Blob* CompileShaderFromMetadata(const KG::Resource::Metadata::ShaderCodeData& data);
 	};
+
+	class ShadowMapRenderShader
+	{
+		ID3D12PipelineState* pso = nullptr;
+	public:
+		~ShadowMapRenderShader();
+		void Create();
+		void Set( ID3D12GraphicsCommandList* pd3dCommandList );
+		static ID3D10Blob* CompileShader(const std::string& name, const std::string& entry,  const ShaderTarget target);
+		static ShadowMapRenderShader* GetInstance();
+	private:
+		static D3D12_RASTERIZER_DESC CreateRasterizerState();
+		static D3D12_BLEND_DESC CreateBlendState();
+		static D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState();
+	};
+
 }

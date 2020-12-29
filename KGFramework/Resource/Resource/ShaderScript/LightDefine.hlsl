@@ -22,4 +22,7 @@ Texture2D InputGBuffer2 : register(t4);
 Texture2D<uint4> InputGBuffer3 : register(t5);
 Texture2D InputGBuffer4 : register(t6);
 
+Texture2D<float> shadowTexture[] : register(t0, space1);
+TextureCube<float> shadowCubeTexture[] : register(t0, space1);
+
 #endif

@@ -96,3 +96,19 @@ void KG::System::CubeCameraSystem::OnPostUpdate( float elapsedTime )
 void KG::System::CubeCameraSystem::OnPreRender()
 {
 }
+
+void KG::System::ShadowCasterSystem::OnGetNewComponent( ShadowCasterComponent* target )
+{
+}
+
+void KG::System::ShadowCasterSystem::OnUpdate( float elapsedTime )
+{
+}
+
+void KG::System::ShadowCasterSystem::OnPostUpdate( float elapsedTime )
+{
+}
+
+void KG::System::ShadowCasterSystem::OnPreRender()
+{
+}

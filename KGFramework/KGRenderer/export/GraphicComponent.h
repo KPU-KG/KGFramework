@@ -2,6 +2,7 @@
 #include <d3d12.h>
 #include <vector>
 #include <array>
+#include <memory>
 #include <DirectXMath.h>
 #include "IComponent.h"
 
@@ -38,6 +39,8 @@ namespace KG::Component
 	class GeometryComponent;
 	class Render3DComponent;
 	class CubeCameraComponent;
+	class ShadowCasterComponent;
+	class LightComponent;
 	class CameraComponent;
 
 	class DLL IRenderComponent : public IComponent
@@ -52,6 +55,7 @@ namespace KG::Component
 	{
 		friend Render3DComponent;
 		friend CubeCameraComponent;
+		friend ShadowCasterComponent;
 		// User Data
 		float fovY = 90.0f;
 		float aspectRatio = 16.0f / 9.0f;
@@ -122,6 +126,7 @@ namespace KG::Component
 	class DLL CubeCameraComponent : public IRenderComponent
 	{
 		friend Render3DComponent;
+		friend ShadowCasterComponent;
 		std::array<CameraComponent, 6> cameras;
 
 		KG::Renderer::RenderTexture* renderTexture = nullptr;
@@ -173,6 +178,33 @@ namespace KG::Component
 		void InitializeGeometry( const KG::Utill::HashString& shaderID );
 	};
 
+	class DLL ShadowCasterComponent : public IRenderComponent
+	{
+		friend LightComponent;
+		CubeCameraComponent* cubeCamera = nullptr;
+		CameraComponent* camera = nullptr;
+		void InitializeAsPointLightShadow();
+		void InitializeAsDirectionalLightShadow();
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+		virtual void OnDestroy() override;
+		struct Cameras
+		{
+			CameraComponent* b;
+			CameraComponent* e;
+			CameraComponent* begin() { return b; }
+			CameraComponent* end() { return e; }
+		};
+
+	public:
+		bool isPointLightShadow() const { return this->cubeCamera != nullptr; };
+		bool isDirectionalLightShadow() const { return this->camera != nullptr; };
+		auto& GetRenderTexture()
+		{
+			return this->cubeCamera ? this->cubeCamera->GetRenderTexture() : this->camera->GetRenderTexture();
+		}
+		Cameras GetCameras();
+	};
+	
 	struct LightData
 	{
 		DirectX::XMFLOAT3 Strength;
@@ -181,6 +213,9 @@ namespace KG::Component
 		float FalloffEnd;
 		DirectX::XMFLOAT3 Position;
 		float SpotPower;
+		UINT shadowMapIndex;
+		DirectX::XMFLOAT3 pad1;
+		DirectX::XMFLOAT4 pad2;
 	};
 
 	struct PointLightRef
@@ -203,6 +238,12 @@ namespace KG::Component
 		{
 		};
 	};
+	enum class LightType
+	{
+		DirectionalLight,
+		PointLight,
+		SpotLight
+	};
 
 	class DLL LightComponent : public IRenderComponent
 	{
@@ -210,6 +251,8 @@ namespace KG::Component
 		TransformComponent* transform = nullptr;
 		void SetRenderJob( KG::Renderer::KGRenderJob* renderJob );
 		bool isDirty = true;
+		bool castShadow = false;
+		LightType lightType = LightType::DirectionalLight;
 		LightData light;
 		KG::Renderer::Shader* currentShader = nullptr;
 		KG::Renderer::Geometry* currentGeometry = nullptr;
@@ -235,6 +278,10 @@ namespace KG::Component
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;
 		virtual void OnPreRender() override;
 		void SetVisible( bool visible );
+		void SetCastShadow( bool shadow );
+		bool isCastShadow() const { return this->castShadow; }
+		auto GetLightType() const { return this->lightType; }
+		void SetShadowCasterTextureIndex(UINT index);
 	};
 
 	class DLL MaterialComponent : public IRenderComponent
@@ -254,6 +301,7 @@ namespace KG::Component
 	REGISTER_COMPONENT_ID( LightComponent );
 	REGISTER_COMPONENT_ID( CameraComponent );
 	REGISTER_COMPONENT_ID( CubeCameraComponent );
+	REGISTER_COMPONENT_ID( ShadowCasterComponent );
 	REGISTER_COMPONENT_ID( Render3DComponent );
 	REGISTER_COMPONENT_ID( GeometryComponent );
 	REGISTER_COMPONENT_ID( MaterialComponent );

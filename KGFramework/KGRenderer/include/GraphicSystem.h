@@ -49,6 +49,15 @@ namespace KG::System
 		virtual void OnPreRender() override;
 	};
 
+	struct ShadowCasterSystem : public IComponentSystem<ShadowCasterComponent>
+	{
+	protected:
+		virtual void OnGetNewComponent( ShadowCasterComponent* target ) override;
+	public:
+		virtual void OnUpdate( float elapsedTime ) override;
+		virtual void OnPostUpdate( float elapsedTime ) override;
+		virtual void OnPreRender() override;
+	};
 
 	struct LightSystem : public IComponentSystem<LightComponent>
 	{

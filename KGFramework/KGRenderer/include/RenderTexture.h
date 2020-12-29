@@ -31,7 +31,6 @@ namespace KG::Renderer
 		//Depth
 		ID3D12Resource* depthStencilBuffer = nullptr;
 		ID3D12DescriptorHeap* dsvDescriptorHeap = nullptr;
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvHandle;
 		UINT depthStencilSRVIndex = -1;
 		KG::Resource::Texture* depthStencilTexture = nullptr;
 
@@ -66,6 +65,7 @@ namespace KG::Renderer
 		void Initialize( const RenderTextureDesc& desc );
 
 		D3D12_CPU_DESCRIPTOR_HANDLE GetRenderTargetRTVHandle( size_t index );
+		D3D12_CPU_DESCRIPTOR_HANDLE GetDSVHandle( size_t index );
 
 		D3D12_CPU_DESCRIPTOR_HANDLE GetGBufferRTVHandle( size_t index );
 
@@ -78,6 +78,8 @@ namespace KG::Renderer
 		void ClearGBuffer( ID3D12GraphicsCommandList* cmdList, float r, float g, float b, float a );
 
 		void Release();
+
+		bool isCubeDepth() const;
 	};
 
 }

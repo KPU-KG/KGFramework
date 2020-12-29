@@ -1,5 +1,6 @@
 #pragma once
 #include "hash.h"
+#include "Debug.h"
 namespace KG::Core
 {
 	class GameObject;
@@ -40,6 +41,7 @@ namespace KG::Component
 		virtual void OnCreate( KG::Core::GameObject* gameObject ){};
 	public:
 		void Create( KG::Core::GameObject* gameObject ) {
+			DebugNormalMessage( "Create Function Called" );
 			this->gameObject = gameObject;
 			PostUse(); 
 			this->OnCreate( gameObject );

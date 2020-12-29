@@ -31,4 +31,6 @@ SamplerState gsamLinearWrap : register(s2);
 SamplerState gsamLinearClamp : register(s3);
 SamplerState gsamAnisotoropicWrap : register(s4);
 SamplerState gsamAnisotoropicClamp : register(s5);
+SamplerComparisonState gsamAnisotoropicCompClamp : register(s6);
+SamplerComparisonState gsamLinearCompClamp : register(s6);
 #endif

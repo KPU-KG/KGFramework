@@ -24,7 +24,7 @@ namespace KG::Renderer
 
 		UINT rtvDescriptorSize = 0;
 		UINT srvDescriptorSize = 0;
-		UINT dsvDescriptoSize = 0;
+		UINT dsvDescriptorSize = 0;
 		
 		ID3D12CommandQueue* commandQueue = nullptr;
 		ID3D12CommandAllocator* mainCommandAllocator = nullptr;
@@ -86,6 +86,7 @@ namespace KG::Renderer
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() override;
 		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() override;
 		virtual KG::Component::LightComponent* GetNewLightComponent() override;
+		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() override;
 
 		auto GetD3DDevice() const
 		{
@@ -110,7 +111,7 @@ namespace KG::Renderer
 		};
 		UINT GetDSVSize() const
 		{
-			return this->dsvDescriptoSize;
+			return this->dsvDescriptorSize;
 		};
 
 	};

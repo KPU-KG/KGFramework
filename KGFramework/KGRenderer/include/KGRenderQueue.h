@@ -50,6 +50,7 @@ namespace KG::Renderer
 
 	class KGRenderEngine
 	{
+		constexpr static size_t PassCount = 4;
 		Shader* currentShader = nullptr;
 		Geometry* currentGeometry = nullptr;
 
@@ -62,9 +63,9 @@ namespace KG::Renderer
 		using PassEndRenderFunction = std::function<void( ID3D12GraphicsCommandList*, KG::Component::CameraComponent& )>;
 		using PassEndFunction = std::function<void( ID3D12GraphicsCommandList*, KG::Component::CameraComponent& )>;
 
-		PassEnterFunction OnPassEnterEvent[4];
-		PassPreRenderFunction OnPassPreRenderEvent[4];
-		PassEndRenderFunction OnPassEndRenderEvent[4];
+		PassEnterFunction OnPassEnterEvent[PassCount];
+		PassPreRenderFunction OnPassPreRenderEvent[PassCount];
+		PassEndRenderFunction OnPassEndRenderEvent[PassCount];
 
 		PassEndFunction OnPassEndEvent;
 
@@ -75,6 +76,7 @@ namespace KG::Renderer
 		KGRenderEngine( ID3D12Device* device );
 		KGRenderJob* GetRenderJob( Shader* shader, Geometry* geometry );
 		void Render( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
+		void Render( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera, std::array<bool, PassCount> renderFilter );
 		void ClearJobs();
 		void ClearUpdateCount();
 		const PassEnterFunction& GetPassEnterEventFunction( size_t pass )
