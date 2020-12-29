@@ -169,19 +169,20 @@ void KGDXRenderer::Render()
 					D3D12_RESOURCE_STATE_COMMON
 					)
 				);
-
+			auto barrierOne = CD3DX12_RESOURCE_BARRIER::Transition(
+				this->renderTargetBuffers[this->swapChainBufferIndex],
+				D3D12_RESOURCE_STATE_PRESENT,
+				D3D12_RESOURCE_STATE_COPY_DEST );
 			this->mainCommandList->ResourceBarrier( 1, 
-				&CD3DX12_RESOURCE_BARRIER::Transition( 
-					this->renderTargetBuffers[this->swapChainBufferIndex],
-					D3D12_RESOURCE_STATE_PRESENT,
-					D3D12_RESOURCE_STATE_COPY_DEST )
+				&barrierOne
 			);
 			this->mainCommandList->CopyResource( this->renderTargetBuffers[this->swapChainBufferIndex], camera.GetRenderTexture().renderTarget );
+			auto barrierTwo = CD3DX12_RESOURCE_BARRIER::Transition(
+				this->renderTargetBuffers[this->swapChainBufferIndex],
+				D3D12_RESOURCE_STATE_COPY_DEST,
+				D3D12_RESOURCE_STATE_PRESENT );
 			this->mainCommandList->ResourceBarrier( 1,
-				&CD3DX12_RESOURCE_BARRIER::Transition(
-					this->renderTargetBuffers[this->swapChainBufferIndex],
-					D3D12_RESOURCE_STATE_COPY_DEST,
-					D3D12_RESOURCE_STATE_PRESENT )
+				&barrierTwo
 			);
 
 			TryResourceBarrier( this->mainCommandList,
@@ -608,7 +609,8 @@ void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
 				)
 			);
 			cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle( camera.GetRenderTexture().gbufferSRVIndex ) );
-			cmdList->OMSetRenderTargets( 1, &camera.GetRenderTexture().GetRenderTargetRTVHandle(camera.GetCubeIndex()), true, nullptr );
+			auto rtvHandle = camera.GetRenderTexture().GetRenderTargetRTVHandle( camera.GetCubeIndex() );
+			cmdList->OMSetRenderTargets( 1, &rtvHandle, true, nullptr );
 		} );
 
 	this->renderEngine->SetPassPreRenderEventFunction( ShaderType::LightPass,
@@ -628,7 +630,8 @@ void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
 		[this]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
 		{
 			PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "PostProcess Pass Render" );
-			cmdList->OMSetRenderTargets( 1, &camera.GetRenderTexture().GetRenderTargetRTVHandle(camera.GetCubeIndex()), true, &camera.GetRenderTexture().dsvHandle );
+			auto rtvHandle = camera.GetRenderTexture().GetRenderTargetRTVHandle( camera.GetCubeIndex() );
+			cmdList->OMSetRenderTargets( 1, &rtvHandle, true, &camera.GetRenderTexture().dsvHandle );
 			//cmdList->ResourceBarrier( 4, this->GetGBufferTrasitionBarriers( D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_COPY_SOURCE ) );
 			//cmdList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( rt, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_COPY_DEST ) );
 

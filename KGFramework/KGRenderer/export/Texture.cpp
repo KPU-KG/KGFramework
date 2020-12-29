@@ -71,7 +71,8 @@ void KG::Resource::Texture::UploadToDescriptorHeap()
 	auto device = renderer->GetD3DDevice();
 	auto descHeap = renderer->GetDescriptorHeapManager();
 	DebugNormalMessage( L"府家胶 轰 积己" );
-	device->CreateShaderResourceView( this->resource.Get(), &this->GetDescriptorDesc(), descHeap->GetCPUHandle( this->index ) );
+	auto descDesc = this->GetDescriptorDesc();
+	device->CreateShaderResourceView( this->resource.Get(), &descDesc, descHeap->GetCPUHandle( this->index ) );
 }
 
 void KG::Resource::Texture::ReleaseFromDescriptorHeap()
