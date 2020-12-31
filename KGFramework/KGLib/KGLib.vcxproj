@@ -237,6 +237,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ObjectContainer.cpp" />
     <ClCompile Include="src\AssimpImpoter.cpp" />
     <ClCompile Include="src\IComponent.cpp" />
     <ClCompile Include="src\KGLib.cpp" />
@@ -268,6 +269,7 @@
     <ClInclude Include="include\TransformSystem.h" />
     <ClInclude Include="include_In\framework.h" />
     <ClInclude Include="include_In\pch.h" />
+    <ClInclude Include="ObjectContainer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
