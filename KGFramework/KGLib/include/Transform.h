@@ -17,8 +17,6 @@ namespace KG::Component
 		mutable XMFLOAT4X4 globalWorldMatrix;
 		mutable XMFLOAT4X4 localWorldMatrix;
 
-		XMFLOAT4X4 localPivotTransform;
-
 		XMFLOAT3 position = XMFLOAT3( 0, 0, 0 );
 		XMFLOAT4 rotation = XMFLOAT4( 0, 0, 0, 1 ); //사원수
 		XMFLOAT3 scale = XMFLOAT3( 1, 1, 1 );
@@ -31,11 +29,6 @@ namespace KG::Component
 		};
 	public:
 
-		XMFLOAT4X4 GetPiviot() const
-		{
-			return this->localPivotTransform;
-		}
-
 		//Position
 		XMFLOAT3 GetPosition() const
 		{
@@ -46,12 +39,6 @@ namespace KG::Component
 			const auto& worldMatrix = this->GetGlobalWorldMatrix();
 			return XMFLOAT3( worldMatrix._41 / worldMatrix._44, worldMatrix._42 / worldMatrix._44, worldMatrix._43 / worldMatrix._44 );
 		}
-
-		void SetPivot(const XMFLOAT4X4 pivot)
-		{
-			this->localPivotTransform = pivot;
-		}
-
 		void SetPosition( const XMFLOAT3& position )
 		{
 			this->position = position;
@@ -182,14 +169,12 @@ namespace KG::Component
 		{
 			if ( this->isDirtyLocal && !isUseRawMatrix )
 			{
-
-				auto pivotMat = XMLoadFloat4x4( &this->localPivotTransform );
 				auto rotMat = XMMatrixRotationQuaternion( XMLoadFloat4( &this->rotation ) );
 				auto scaleMat = XMMatrixScalingFromVector( XMLoadFloat3( &this->scale ) );
 				auto tralationMat = XMMatrixTranslationFromVector( XMLoadFloat3( &this->position ) );
 
 				//최적화 필요
-				XMStoreFloat4x4( &this->localWorldMatrix, pivotMat * scaleMat * rotMat * tralationMat );
+				XMStoreFloat4x4( &this->localWorldMatrix, scaleMat * rotMat * tralationMat );
 
 				this->isDirtyLocal = false;
 			}
