@@ -237,10 +237,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ObjectContainer.cpp" />
     <ClCompile Include="src\AssimpImpoter.cpp" />
     <ClCompile Include="src\IComponent.cpp" />
     <ClCompile Include="src\KGLib.cpp" />
+    <ClCompile Include="src\ObjectContainer.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_ID|Win32'">Create</PrecompiledHeader>
@@ -264,12 +264,12 @@
     <ClInclude Include="include\InputManager.h" />
     <ClInclude Include="include\ISystem.h" />
     <ClInclude Include="include\MathHelper.h" />
+    <ClInclude Include="include\ObjectContainer.h" />
     <ClInclude Include="include\tinyxml2.h" />
     <ClInclude Include="include\Transform.h" />
     <ClInclude Include="include\TransformSystem.h" />
     <ClInclude Include="include_In\framework.h" />
     <ClInclude Include="include_In\pch.h" />
-    <ClInclude Include="ObjectContainer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

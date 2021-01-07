@@ -6,17 +6,25 @@
 #include <string_view>
 #include "D3D12Helper.h"
 #include "ResourceMetaData.h"
+namespace KG::Utill
+{
+	class MeshData;
+}
 namespace KG::Renderer
 {
 	using namespace DirectX;
+
 	struct NormalVertex
 	{
 		XMFLOAT3 position;
 		XMFLOAT3 normal;
 		XMFLOAT3 tangent;
 		XMFLOAT3 bitangent;
-		XMFLOAT2 uv;
-		static const std::array<D3D12_INPUT_ELEMENT_DESC, 5> inputElementDesc;
+		XMFLOAT2 uv0;
+		XMFLOAT2 uv1;
+		XMUINT4 boneId;
+		XMFLOAT4 boneWeight;
+		static const std::array<D3D12_INPUT_ELEMENT_DESC, 8> inputElementDesc;
 		static D3D12_INPUT_LAYOUT_DESC GetInputLayoutDesc();
 	};
 
@@ -25,7 +33,7 @@ namespace KG::Renderer
 	{
 	public:
 		Geometry() = default;
-		Geometry( const KG::Resource::Metadata::GeometrySetData& metadata );
+		Geometry( const KG::Utill::MeshData& data );
 		virtual ~Geometry();
 	protected:
 		std::vector<NormalVertex> vertices;
@@ -47,8 +55,7 @@ namespace KG::Renderer
 		/// @param nInstance 렌더할 지오메트리의 인스턴스 갯수입니다.
 		virtual void Render(ID3D12GraphicsCommandList* commandList, UINT nInstance);
 		void Load( ID3D12Device* device, ID3D12GraphicsCommandList* commandList );
-		void CreateFromAssimp( const std::string& fileDir );
-		void CreateFromMetadata( const KG::Resource::Metadata::GeometrySetData& metadata );
+		void CreateFromMeshData( const KG::Utill::MeshData& data );
 		auto IsLoaded() const
 		{
 			return this->vertexBuffer != nullptr;

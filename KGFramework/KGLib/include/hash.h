@@ -65,7 +65,7 @@ namespace KG::Utill
 		/// @brief 문자열을 해싱하여 생성합니다.
 		/// 디버그모드에서 원본 문자열을 저장합니다.
 		/// @param str 해싱하여 저장할 문자열입니다.
-		HashString(const std::string& str)
+		HashString(const std::string& str = "NotDefined")
 		{
 			this->value = Hash(str.c_str(), str.length());
 #ifdef _DEBUG_ID

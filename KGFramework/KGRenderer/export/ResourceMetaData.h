@@ -29,6 +29,7 @@ namespace KG::Resource::Metadata
 	struct GeometrySetData
 	{
 		std::string fileDir;
+		bool isRawMesh = false;
 	};
 
 	enum Dimension

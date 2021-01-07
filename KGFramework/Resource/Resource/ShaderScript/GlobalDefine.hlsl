@@ -6,7 +6,10 @@ struct VertexData
 	float3 normal : NORMAL;
 	float3 tangent : TANGENT;
 	float3 bitangent : BITANGENT;
-    float2 uv : TEXCOORD;
+    float2 uv : TEXCOORD0;
+    float2 uv1 : TEXCOORD1;
+    uint4 bone : BONE;
+    float4 weight : WEIGHT;
 };
 
 cbuffer CameraData : register(b0)

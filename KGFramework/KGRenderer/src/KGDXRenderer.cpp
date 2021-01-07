@@ -233,10 +233,10 @@ KG::Component::Render3DComponent* KG::Renderer::KGDXRenderer::GetNewRenderCompon
 	return static_cast<KG::Component::Render3DComponent*>(this->graphicSystems->render3DSystem.GetNewComponent());
 }
 
-KG::Component::GeometryComponent* KG::Renderer::KGDXRenderer::GetNewGeomteryComponent( const KG::Utill::HashString& id )
+KG::Component::GeometryComponent* KG::Renderer::KGDXRenderer::GetNewGeomteryComponent( const KG::Utill::HashString& id, UINT index )
 {
 	auto* geo = static_cast<KG::Component::GeometryComponent*>(this->graphicSystems->geometrySystem.GetNewComponent());
-	geo->InitializeGeometry( id );
+	geo->InitializeGeometry( id, index );
 	return geo;
 }
 
@@ -267,6 +267,11 @@ KG::Component::CubeCameraComponent* KG::Renderer::KGDXRenderer::GetNewCubeCamera
 KG::Component::LightComponent* KG::Renderer::KGDXRenderer::GetNewLightComponent()
 {
 	return static_cast<KG::Component::LightComponent*>(this->graphicSystems->lightSystem.GetNewComponent());
+}
+
+KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container )
+{
+	return KG::Resource::ResourceContainer::GetInstance()->CreateObjectFromModel( id, container );
 }
 
 KG::Renderer::KGDXRenderer* KG::Renderer::KGDXRenderer::GetInstance()

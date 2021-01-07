@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include "ISystem.h"
 #include "GraphicComponent.h"
+#include "ObjectContainer.h"
 
 #define EXTERNC extern "C"
 #ifdef EXPORTS
@@ -76,12 +77,13 @@ namespace KG::Renderer
 		}
 
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() = 0;
-		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent( const KG::Utill::HashString& id ) = 0;
+		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent( const KG::Utill::HashString& id, UINT index = 0 ) = 0;
 		virtual KG::Component::MaterialComponent* GetNewMaterialComponent( const KG::Utill::HashString& id ) = 0;
 		virtual KG::Component::MaterialComponent* GetNewMaterialComponentFromShader( const KG::Utill::HashString& id ) = 0;
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() = 0;
 		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() = 0;
 		virtual KG::Component::LightComponent* GetNewLightComponent() = 0;
+		virtual KG::Core::GameObject* LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container ) = 0;
 
 	};
 	DLL KG::Renderer::IKGRenderer* GetD3D12Renderer();

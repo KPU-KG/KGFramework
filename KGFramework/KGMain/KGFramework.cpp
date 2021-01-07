@@ -85,17 +85,17 @@ void KG::GameFramework::OnTestInit()
 	constexpr auto texTwo = "PBRMetal2"_id;
 	constexpr auto texThree = "PBRGold"_id;
 	{
-		auto* tran = this->system->transformSystem.GetNewComponent();
-		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( texOne ) );
-		auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "soldier"_id ) );
-		auto* ren = this->renderer->GetNewRenderComponent();
-		testPlaneObject.name = "plane";
-		testPlaneObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
-		testPlaneObject.AddComponent( mat );
-		testPlaneObject.AddComponent( geo );
-		testPlaneObject.AddComponent( ren );
-		testPlaneObject.GetComponent<KG::Component::TransformComponent>()->Translate( 0.0f, 0.0f, 0.0f );
-		testPlaneObject.GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) );
+		//auto* tran = this->system->transformSystem.GetNewComponent();
+		//auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( texOne ) );
+		//auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "soldier"_id ) );
+		//auto* ren = this->renderer->GetNewRenderComponent();
+		//testPlaneObject.name = "plane";
+		//testPlaneObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
+		//testPlaneObject.AddComponent( mat );
+		//testPlaneObject.AddComponent( geo );
+		//testPlaneObject.AddComponent( ren );
+		//testPlaneObject.GetComponent<KG::Component::TransformComponent>()->Translate( 0.0f, 0.0f, 0.0f );
+		//testPlaneObject.GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) );
 	}
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();

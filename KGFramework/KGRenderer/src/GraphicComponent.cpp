@@ -131,10 +131,10 @@ void KG::Component::MaterialComponent::OnDestroy()
 
 #pragma region GeometryComponent
 
-void KG::Component::GeometryComponent::InitializeGeometry( const KG::Utill::HashString& shaderID )
+void KG::Component::GeometryComponent::InitializeGeometry( const KG::Utill::HashString& geometryID, UINT index )
 {
 	auto* inst = KG::Resource::ResourceContainer::GetInstance();
-	this->geometry = inst->LoadGeometry( shaderID );
+	this->geometry = inst->LoadGeometry( geometryID, index );
 }
 
 #pragma endregion

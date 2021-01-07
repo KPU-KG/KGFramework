@@ -5,13 +5,16 @@
 #include "AssimpImpoter.h"
 #include "KGDXRenderer.h"
 
-const std::array<D3D12_INPUT_ELEMENT_DESC, 5> KG::Renderer::NormalVertex::inputElementDesc
+const std::array<D3D12_INPUT_ELEMENT_DESC, 8> KG::Renderer::NormalVertex::inputElementDesc
 {
 	D3D12_INPUT_ELEMENT_DESC{ "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	D3D12_INPUT_ELEMENT_DESC{ "NORMAL", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 12, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	D3D12_INPUT_ELEMENT_DESC{ "TANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 24, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
 	D3D12_INPUT_ELEMENT_DESC{ "BITANGENT", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 36, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
-	D3D12_INPUT_ELEMENT_DESC{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 48, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
+	D3D12_INPUT_ELEMENT_DESC{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 48, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	D3D12_INPUT_ELEMENT_DESC{ "TEXCOORD", 1, DXGI_FORMAT_R32G32_FLOAT, 0, 56, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	D3D12_INPUT_ELEMENT_DESC{ "BONE", 0, DXGI_FORMAT_R32G32B32A32_UINT, 0, 64, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 },
+	D3D12_INPUT_ELEMENT_DESC{ "WEIGHT", 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 80, D3D12_INPUT_CLASSIFICATION_PER_VERTEX_DATA, 0 }
 };
 
 D3D12_INPUT_LAYOUT_DESC KG::Renderer::NormalVertex::GetInputLayoutDesc()
@@ -23,9 +26,9 @@ D3D12_INPUT_LAYOUT_DESC KG::Renderer::NormalVertex::GetInputLayoutDesc()
 	return desc;
 }
 
-KG::Renderer::Geometry::Geometry( const KG::Resource::Metadata::GeometrySetData& metadata )
+KG::Renderer::Geometry::Geometry( const KG::Utill::MeshData& data )
 {
-	this->CreateFromMetadata( metadata );
+	this->CreateFromMeshData( data );
 }
 
 KG::Renderer::Geometry::~Geometry()
@@ -80,25 +83,28 @@ void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandLi
 	this->indexBufferView.Format = DXGI_FORMAT_R32_UINT;
 }
 
-void KG::Renderer::Geometry::CreateFromAssimp( const std::string& fileDir )
+void KG::Renderer::Geometry::CreateFromMeshData( const KG::Utill::MeshData& data )
 {
-	using KG::Utill::ModelData;
-	ModelData data;
-	data.LoadModel( fileDir );
-	size_t index = 0;
-	this->indices = std::move( data.meshes[index].indices );
-	this->vertices.resize( data.meshes[index].positions.size() );
-	for ( size_t i = 0; i < data.meshes[index].positions.size(); i++ )
+	this->indices = std::move( data.indices );
+	this->vertices.resize( data.positions.size() );
+	for ( size_t i = 0; i < data.positions.size(); i++ )
 	{
-		this->vertices[i].position = data.meshes[index].positions[i];
-		this->vertices[i].normal = data.meshes[index].normals[i];
-		this->vertices[i].tangent = data.meshes[index].tangent[i];
-		this->vertices[i].bitangent = data.meshes[index].biTangent[i];
-		this->vertices[i].uv = data.meshes[index].uvs[0][i];
-	}
-}
+		this->vertices[i].position = data.positions[i];
+		this->vertices[i].normal = data.normals[i];
+		this->vertices[i].tangent = data.tangent[i];
+		this->vertices[i].bitangent = data.biTangent[i];
+		this->vertices[i].uv0 = data.uvs[0][i];
 
-void KG::Renderer::Geometry::CreateFromMetadata( const KG::Resource::Metadata::GeometrySetData& metadata )
-{
-	this->CreateFromAssimp( metadata.fileDir );
+		if ( data.uvs.size() > 1 )
+		{
+			this->vertices[i].uv1 = data.uvs[1][i];
+		}
+
+		if ( data.bones.size() > 0 )
+		{
+			auto bone = data.vertexBone[i];
+			this->vertices[i].boneId = XMUINT4( bone[0].bondId, bone[1].bondId, bone[2].bondId, bone[3].bondId );
+			this->vertices[i].boneWeight = XMFLOAT4( bone[0].boneWeight, bone[1].boneWeight, bone[2].boneWeight, bone[3].boneWeight );
+		}
+	}
 }

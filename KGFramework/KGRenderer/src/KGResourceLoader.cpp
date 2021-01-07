@@ -141,6 +141,7 @@ KG::Resource::Metadata::GeometrySetData KG::Resource::ResourceLoader::LoadGeomet
 		if ( hash_id == targetID.value )
 		{
 			data.fileDir = shaderSets->Attribute( "fileDir" );
+			data.isRawMesh = shaderSets->BoolAttribute( "rawMesh" );
 			break;
 		}
 		else

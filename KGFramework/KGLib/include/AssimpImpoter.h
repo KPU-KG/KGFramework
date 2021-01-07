@@ -3,15 +3,35 @@
 #include <sstream>
 #include <Windows.h>
 #include <vector>
+#include <deque>
+#include <array>
+#include <map>
 #include <DirectXMath.h>
 #include <algorithm>
+
+#include "hash.h"
+
 class aiMesh;
 class aiScene;
 class aiNode;
 
+
 namespace KG::Utill
 {
 	using namespace DirectX;
+
+	struct VertexBoneData
+	{
+		UINT bondId;
+		float boneWeight;
+	};
+
+	struct BoneData
+	{
+		KG::Utill::HashString nodeId;
+		XMFLOAT4X4 offsetMatrix;
+	};
+
 	struct MeshData
 	{
 		std::vector<UINT> indices;
@@ -20,15 +40,35 @@ namespace KG::Utill
 		std::vector<XMFLOAT3> tangent;
 		std::vector<XMFLOAT3> biTangent;
 		std::vector<std::vector<XMFLOAT2>> uvs;
+		std::vector<std::array<VertexBoneData, 4>> vertexBone;
+
+		std::vector<BoneData> bones;
 	};
-	struct ModelData
+
+	struct ModelNode
 	{
-		std::vector<MeshData> meshes;
-	private:
-		static MeshData processMesh(aiMesh* mesh, const aiScene* scene);
-		void processNode(aiNode* node, const aiScene* scene);
-	public:
-		void LoadModel(const std::string& path);
+		KG::Utill::HashString nodeId;
+
+		ModelNode* child = nullptr;
+		ModelNode* sibling = nullptr;
+
+		XMFLOAT3 position;
+		XMFLOAT4 rotation;
+		XMFLOAT3 scale;
+
+		std::vector<UINT> meshs;
+
+		void AddChild( ModelNode* node );
+		void AddSibling( ModelNode* node );
+	};
+
+	struct ImportData
+	{
+		std::vector<MeshData> meshs;
+		std::deque<ModelNode> nodes;
+		ModelNode* root = nullptr;
+		void LoadFromPathAssimp( const std::string& path );
+		ModelNode* ProcessNode( const aiNode* node, const aiScene* scene );
 	};
 }
 

@@ -153,6 +153,7 @@
             <xs:attribute name="id" type="xs:string" use="required"/>
             <xs:attribute name="hash_id" type="xs:unsignedInt" use="optional"/>
             <xs:attribute name="fileDir" type="xs:anyURI" use="required"/>
+            <xs:attribute name="rawMesh" type="xs:boolean" default="false"/>
           </xs:complexType>
         </xs:element>
       </xs:sequence>

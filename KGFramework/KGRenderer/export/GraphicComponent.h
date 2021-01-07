@@ -170,7 +170,7 @@ namespace KG::Component
 		friend Render3DComponent;
 		KG::Renderer::Geometry* geometry = nullptr;
 	public:
-		void InitializeGeometry( const KG::Utill::HashString& shaderID );
+		void InitializeGeometry( const KG::Utill::HashString& geometryID, UINT index );
 	};
 
 	struct LightData

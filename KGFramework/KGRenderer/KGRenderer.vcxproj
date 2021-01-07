@@ -252,6 +252,7 @@
     <ClCompile Include="src\GraphicSystem.cpp" />
     <ClCompile Include="src\KGDXRenderer.cpp" />
     <ClCompile Include="src\KGGeometry.cpp" />
+    <ClCompile Include="src\KGModel.cpp" />
     <ClCompile Include="src\KGRenderer.cpp" />
     <ClCompile Include="src\KGRenderQueue.cpp" />
     <ClCompile Include="src\KGResourceLoader.cpp" />
@@ -287,6 +288,7 @@
     <ClInclude Include="include\KGDXRenderer.h" />
     <ClInclude Include="include\KGGeometry.h" />
     <ClInclude Include="include\KGGraphicBuffer.h" />
+    <ClInclude Include="include\KGModel.h" />
     <ClInclude Include="include\KGRenderQueue.h" />
     <ClInclude Include="include\KGResourceLoader.h" />
     <ClInclude Include="include\KGShader.h" />
