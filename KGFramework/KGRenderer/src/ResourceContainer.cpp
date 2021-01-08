@@ -131,49 +131,84 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceContainer::LoadMa
 	}
 }
 
-void KG::Resource::ResourceContainer::ConvertNodeToObject( const KG::Utill::HashString& id, KG::Core::GameObject* object, KG::Utill::ModelNode* node )
+void KG::Resource::ResourceContainer::ConvertNodeToObject( const KG::Utill::HashString& id, KG::Core::GameObject* object, KG::Utill::ModelNode* node, const MaterialMatch& materials )
 {
-	if ( !node->meshs.empty() )
+
+	object->id = KG::Utill::HashString( node->name );
+	auto* renderer = KG::Renderer::KGDXRenderer::GetInstance();
+	object->AddComponent( renderer->GetNewGeomteryComponent() );
+	object->AddComponent( renderer->GetNewMaterialComponent() );
+
+	auto* tran = object->GetComponent<KG::Component::TransformComponent>();
+	tran->SetPosition( node->position );
+	tran->SetRotation( node->rotation );
+	tran->SetScale( node->scale );
+	if ( node->meshs.size() != 0 )
 	{
-		auto* renderer = KG::Renderer::KGDXRenderer::GetInstance();
-		auto index = node->meshs[0];
-		object->AddComponent( renderer->GetNewGeomteryComponent( id, index ) );
+		auto* geo = object->GetComponent<KG::Component::GeometryComponent>();
+		auto* mat = object->GetComponent<KG::Component::MaterialComponent>();
+		auto& materialSet = materials.GetMaterial( object->id );
+		for ( size_t i = 0; i < node->meshs.size(); i++ )
+		{
+			auto index = node->meshs[i];
+			geo->InitializeGeometry( id, index, i );
+		}
+		for ( size_t i = 0; i < materialSet.size(); i++ )
+		{
+			mat->InitializeMaterial( materialSet[i], i );
+		}
+		object->AddComponent( renderer->GetNewRenderComponent() );
 	}
+
 }
 
-KG::Core::GameObject* KG::Resource::ResourceContainer::CreateObjectFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container )
+KG::Core::GameObject* KG::Resource::ResourceContainer::CreateObjectFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const MaterialMatch& materials )
 {
-	auto& frame = this->models[id].data;
+	auto& frame = this->LoadModel(id)->data;
 	std::stack<std::pair<KG::Core::GameObject*, KG::Utill::ModelNode*>> modelStack;
 	auto* rootObject = container.CreateNewObject();
 	auto* rootModelNode = frame.root;
 
 	for ( size_t i = 0; i < frame.meshs.size(); i++ )
 	{
-		this->geometrys.emplace( std::make_pair( id, i ), frame.meshs[i] );
+		this->CreateGeometry( id, i , frame.meshs[i] );
 	}
 
+	this->ConvertNodeToObject( id, rootObject, rootModelNode, materials );
+
+
 	modelStack.push( std::make_pair( rootObject, rootModelNode ) );
-	while ( modelStack.empty() )
+	while ( !modelStack.empty() )
 	{
 		auto* object = modelStack.top().first;
 		auto* node = modelStack.top().second;
-		if ( node->child != nullptr && !object->GetComponent<KG::Component::TransformComponent>()->hasChild() )
+		auto* transform = object->GetComponent<KG::Component::TransformComponent>();
+		if ( node->child != nullptr && !transform->hasChild() )
 		{
 			auto* childObject = container.CreateNewObject();
 			auto* childNode = node->child;
-			this->ConvertNodeToObject( id, childObject, childNode );
+			this->ConvertNodeToObject( id, childObject, childNode, materials );
+			transform->AddChild( childObject->GetComponent<KG::Component::TransformComponent>() );
 			modelStack.push( std::make_pair( childObject, childNode ) );
 		}
-		if ( node->sibling != nullptr && !object->GetComponent<KG::Component::TransformComponent>()->hasSibiling() )
+		else if ( node->sibling != nullptr && !transform->hasSibiling() )
 		{
 			auto* siblingObject = container.CreateNewObject();
 			auto* siblingNode = node->sibling;
-			this->ConvertNodeToObject( id, siblingObject, siblingNode );
+			this->ConvertNodeToObject( id, siblingObject, siblingNode, materials );
+			transform->AddSibiling( siblingObject->GetComponent<KG::Component::TransformComponent>() );
 			modelStack.push( std::make_pair( siblingObject, siblingNode ) );
 		}
-		modelStack.pop();
+		else 
+		{
+			modelStack.pop();
+		}
 	}
+	auto rootPosition = rootObject->GetTransform()->GetPosition();
+	auto rootScale = rootObject->GetTransform()->GetScale();
+	float scaleFactor = 0.01f;
+	rootObject->GetTransform()->SetPosition( 0, 0, 0 );
+	rootObject->GetTransform()->SetScale( rootScale.x * scaleFactor, rootScale.y * scaleFactor, rootScale.z * scaleFactor );
 	return rootObject;
 }
 
@@ -203,3 +238,30 @@ void KG::Resource::ResourceContainer::Process( ID3D12GraphicsCommandList* cmdLis
 		value.Process( cmdList );
 	}
 }
+
+void KG::Resource::MaterialMatch::SetDefaultMaterial( const MaterialSet& materials )
+{
+	this->defaultMaterial = materials;
+}
+
+void KG::Resource::MaterialMatch::SetDefaultMaterial( MaterialSet&& materials )
+{
+	this->defaultMaterial = std::move(materials);
+}
+
+void KG::Resource::MaterialMatch::AddMaterial( const KG::Utill::HashString& objectId, const MaterialSet& materials )
+{
+	this->materialMap.emplace( objectId, materials );
+}
+
+void KG::Resource::MaterialMatch::AddMaterial( const KG::Utill::HashString& objectId, MaterialSet&& materials )
+{
+	this->materialMap.emplace( objectId, std::move(materials) );
+}
+
+const KG::Resource::MaterialSet& KG::Resource::MaterialMatch::GetMaterial( const KG::Utill::HashString& objectId ) const
+{
+	auto result = this->materialMap.find( objectId );
+	return (result == this->materialMap.end()) ? this->defaultMaterial : result->second;
+}
+

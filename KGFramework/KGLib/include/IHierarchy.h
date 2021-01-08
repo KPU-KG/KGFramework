@@ -69,6 +69,7 @@ namespace KG::Core
 		void AddSibiling(ThisType* obj)
 		{
 			IHierarchy<Ty>* csr = this;
+			obj->SetParent( (Ty*)this->parent );
 			while (true)
 			{
 				if (csr->hasSibiling())

@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <string_view>
 #include <assert.h>
 namespace KG::Utill
 {
@@ -65,13 +66,14 @@ namespace KG::Utill
 		/// @brief 문자열을 해싱하여 생성합니다.
 		/// 디버그모드에서 원본 문자열을 저장합니다.
 		/// @param str 해싱하여 저장할 문자열입니다.
-		HashString(const std::string& str = "NotDefined")
+		HashString(const std::string& str)
 		{
 			this->value = Hash(str.c_str(), str.length());
 #ifdef _DEBUG_ID
 			this->srcString = str;
 #endif
 		}
+
 
 		/// @brief 복사생성자입니다.
 		HashString(const HashString& other)

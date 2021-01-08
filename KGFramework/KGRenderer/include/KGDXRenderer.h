@@ -80,13 +80,15 @@ namespace KG::Renderer
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) override;
 
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() override;
-		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent( const KG::Utill::HashString& id, UINT index = 0 ) override;
+		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent() override;
+		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent( const KG::Utill::HashString& id, UINT subMeshIndex = 0 ) override;
+		virtual KG::Component::MaterialComponent* GetNewMaterialComponent() override;
 		virtual KG::Component::MaterialComponent* GetNewMaterialComponent( const KG::Utill::HashString& id ) override;
 		virtual KG::Component::MaterialComponent* GetNewMaterialComponentFromShader( const KG::Utill::HashString& id ) override;
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() override;
 		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() override;
 		virtual KG::Component::LightComponent* GetNewLightComponent() override;
-		virtual KG::Core::GameObject* LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container ) override;
+		virtual KG::Core::GameObject* LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials ) override;
 
 		auto GetD3DDevice() const
 		{

@@ -29,22 +29,26 @@ void KG::Component::Render3DComponent::OnRender( ID3D12GraphicsCommandList* comm
 
 void KG::Component::Render3DComponent::OnPreRender()
 {
-	int updateCount = this->renderJob->GetUpdateCount();
-	auto mat = Math::Matrix4x4::Transpose( this->transform->GetGlobalWorldMatrix() );
-	this->renderJob->objectBuffer->mappedData[updateCount].object.world = mat;
-	if ( this->material )
+	for ( size_t i = 0; i < this->renderJobs.size(); i++ )
 	{
-		this->renderJob->objectBuffer->mappedData[updateCount].object.materialIndex = this->material->GetMaterialIndex();
-	}
-	if ( this->reflectionProbe )
-	{
-		this->renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
-			this->reflectionProbe->GetRenderTexture().renderTargetSRVIndex;
-	}
-	else 
-	{
-		this->renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
-			KG::Resource::ResourceContainer::GetInstance()->LoadTexture( KG::Renderer::KGDXRenderer::GetInstance()->GetSkymapTexutreId() )->index;
+		auto* renderJob = this->renderJobs[i];
+		int updateCount = renderJob->GetUpdateCount();
+		auto mat = Math::Matrix4x4::Transpose( this->transform->GetGlobalWorldMatrix() );
+		renderJob->objectBuffer->mappedData[updateCount].object.world = mat;
+		if ( this->material )
+		{
+			renderJob->objectBuffer->mappedData[updateCount].object.materialIndex = this->material->GetMaterialIndex(this->jobMaterialIndexs[i]);
+		}
+		if ( this->reflectionProbe )
+		{
+			renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
+				this->reflectionProbe->GetRenderTexture().renderTargetSRVIndex;
+		}
+		else 
+		{
+			renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
+				KG::Resource::ResourceContainer::GetInstance()->LoadTexture( KG::Renderer::KGDXRenderer::GetInstance()->GetSkymapTexutreId() )->index;
+		}
 	}
 }
 
@@ -54,22 +58,37 @@ void KG::Component::Render3DComponent::OnCreate( KG::Core::GameObject* gameObjec
 	this->RegisterTransform( gameObject->GetComponent<TransformComponent>() );
 	this->RegisterMaterial( gameObject->GetComponent<MaterialComponent>() );
 	this->RegisterGeometry( gameObject->GetComponent<GeometryComponent>() );
-	auto job = KG::Renderer::KGDXRenderer::GetInstance()->GetRenderEngine()->GetRenderJob( this->material->shaders, this->geometry->geometry );
-	this->SetRenderJob( job );
+	auto geometryCount = this->geometry->geometrys.size();
+	auto materialCount = this->material->materialIndexs.size();
+
+	if ( materialCount != 1 && geometryCount != materialCount )
+	{
+		DebugErrorMessage( "Material Count Not Matched Geometry" );
+	}
+	for ( size_t i = 0; i < geometryCount; i++ )
+	{
+		auto materialIndex = materialCount == 1 ? 0 : i;
+		auto job = KG::Renderer::KGDXRenderer::GetInstance()->GetRenderEngine()->GetRenderJob( this->material->shaders[i], this->geometry->geometrys[i] );
+		this->AddRenderJob( job, materialIndex );
+	}
+	//조건문 넣고 렌더잡 만들자
 }
 
 void KG::Component::Render3DComponent::SetVisible( bool visible )
 {
-	if ( this->isVisible == visible )
-		return;
-	this->isVisible = visible;
-	if ( this->isVisible )
+	for ( auto* renderJob : this->renderJobs )
 	{
-		this->renderJob->OnVisibleAdd();
-	}
-	else
-	{
-		this->renderJob->OnVisibleRemove();
+		if ( this->isVisible == visible )
+			return;
+		this->isVisible = visible;
+		if ( this->isVisible )
+		{
+			renderJob->OnVisibleAdd();
+		}
+		else
+		{
+			renderJob->OnVisibleRemove();
+		}
 	}
 }
 
@@ -78,10 +97,11 @@ void KG::Component::Render3DComponent::SetReflectionProbe( CubeCameraComponent* 
 	this->reflectionProbe = probe;
 }
 
-void KG::Component::Render3DComponent::SetRenderJob( KG::Renderer::KGRenderJob* renderJob )
+void KG::Component::Render3DComponent::AddRenderJob( KG::Renderer::KGRenderJob* renderJob, UINT materialIndex )
 {
-	this->renderJob = renderJob;
-	this->renderJob->OnObjectAdd( this->isVisible );
+	this->renderJobs.push_back( renderJob );
+	this->jobMaterialIndexs.push_back( materialIndex );
+	renderJob->OnObjectAdd( this->isVisible );
 }
 
 void KG::Component::Render3DComponent::RegisterTransform( TransformComponent* transform )
@@ -103,23 +123,31 @@ void KG::Component::Render3DComponent::RegisterGeometry( GeometryComponent* geom
 
 #pragma region MaterialComponent
 
-void KG::Component::MaterialComponent::InitializeMaterial( const KG::Utill::HashString& materialID )
+void KG::Component::MaterialComponent::InitializeMaterial( const KG::Utill::HashString& materialID, UINT slotIndex )
 {
 	auto* inst = KG::Resource::ResourceContainer::GetInstance();
 	auto [index, shaderId] = inst->LoadMaterial( materialID );
-	this->materialIndex = index;
-	this->InitializeShader( shaderId );
+	if ( this->materialIndexs.size() < slotIndex + 1 )
+	{
+		this->materialIndexs.resize( slotIndex + 1 );
+	}
+	this->materialIndexs[slotIndex] = index;
+	this->InitializeShader( shaderId, slotIndex );
 }
 
-void KG::Component::MaterialComponent::InitializeShader( const KG::Utill::HashString& shaderID )
+void KG::Component::MaterialComponent::InitializeShader( const KG::Utill::HashString& shaderID, UINT slotIndex )
 {
 	auto* inst = KG::Resource::ResourceContainer::GetInstance();
-	this->shaders = inst->LoadShader( shaderID );
+	if ( this->shaders.size() < slotIndex + 1 )
+	{
+		this->shaders.resize( slotIndex + 1 );
+	}
+	this->shaders[slotIndex] = inst->LoadShader( shaderID );
 }
 
-unsigned KG::Component::MaterialComponent::GetMaterialIndex() const
+unsigned KG::Component::MaterialComponent::GetMaterialIndex( UINT slotIndex ) const
 {
-	return this->materialIndex;
+	return this->materialIndexs.size() != 0 ? this->materialIndexs[slotIndex] : 0;
 }
 
 void KG::Component::MaterialComponent::OnDestroy()
@@ -131,10 +159,14 @@ void KG::Component::MaterialComponent::OnDestroy()
 
 #pragma region GeometryComponent
 
-void KG::Component::GeometryComponent::InitializeGeometry( const KG::Utill::HashString& geometryID, UINT index )
+void KG::Component::GeometryComponent::InitializeGeometry( const KG::Utill::HashString& geometryID, UINT subMeshIndex, UINT slotIndex )
 {
 	auto* inst = KG::Resource::ResourceContainer::GetInstance();
-	this->geometry = inst->LoadGeometry( geometryID, index );
+	if ( this->geometrys.size() < slotIndex + 1 )
+	{
+		this->geometrys.resize( slotIndex + 1 );
+	}
+	this->geometrys[slotIndex] =  inst->LoadGeometry( geometryID, subMeshIndex );
 }
 
 #pragma endregion

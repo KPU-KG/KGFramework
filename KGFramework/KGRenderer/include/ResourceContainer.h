@@ -2,6 +2,7 @@
 #include <map>
 #include <memory>
 #include "hash.h"
+#include "KGDXRenderer.h"
 #include "KGGeometry.h"
 #include "KGModel.h"
 #include "KGShader.h"
@@ -39,8 +40,8 @@ namespace KG::Resource
 		std::pair<size_t, KG::Utill::HashString> LoadMaterial( const KG::Utill::HashString& id );
 		
 
-		void ConvertNodeToObject( const KG::Utill::HashString& id, KG::Core::GameObject* object, KG::Utill::ModelNode* node );
-		KG::Core::GameObject* CreateObjectFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container );
+		void ConvertNodeToObject( const KG::Utill::HashString& id, KG::Core::GameObject* object, KG::Utill::ModelNode* node, const MaterialMatch& materials );
+		KG::Core::GameObject* CreateObjectFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const MaterialMatch& materials );
 
 		void Clear();
 		static ResourceContainer* GetInstance();

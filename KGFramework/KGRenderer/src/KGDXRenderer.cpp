@@ -233,11 +233,23 @@ KG::Component::Render3DComponent* KG::Renderer::KGDXRenderer::GetNewRenderCompon
 	return static_cast<KG::Component::Render3DComponent*>(this->graphicSystems->render3DSystem.GetNewComponent());
 }
 
+KG::Component::GeometryComponent* KG::Renderer::KGDXRenderer::GetNewGeomteryComponent()
+{
+	auto* geo = static_cast<KG::Component::GeometryComponent*>(this->graphicSystems->geometrySystem.GetNewComponent());
+	return geo;
+}
+
 KG::Component::GeometryComponent* KG::Renderer::KGDXRenderer::GetNewGeomteryComponent( const KG::Utill::HashString& id, UINT index )
 {
 	auto* geo = static_cast<KG::Component::GeometryComponent*>(this->graphicSystems->geometrySystem.GetNewComponent());
 	geo->InitializeGeometry( id, index );
 	return geo;
+}
+
+KG::Component::MaterialComponent* KG::Renderer::KGDXRenderer::GetNewMaterialComponent()
+{
+	auto* mat = static_cast<KG::Component::MaterialComponent*>(this->graphicSystems->materialSystem.GetNewComponent());
+	return mat;
 }
 
 KG::Component::MaterialComponent* KG::Renderer::KGDXRenderer::GetNewMaterialComponent( const KG::Utill::HashString& id )
@@ -269,9 +281,9 @@ KG::Component::LightComponent* KG::Renderer::KGDXRenderer::GetNewLightComponent(
 	return static_cast<KG::Component::LightComponent*>(this->graphicSystems->lightSystem.GetNewComponent());
 }
 
-KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container )
+KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials )
 {
-	return KG::Resource::ResourceContainer::GetInstance()->CreateObjectFromModel( id, container );
+	return KG::Resource::ResourceContainer::GetInstance()->CreateObjectFromModel( id, container, materials );
 }
 
 KG::Renderer::KGDXRenderer* KG::Renderer::KGDXRenderer::GetInstance()

@@ -81,6 +81,14 @@ void KG::GameFramework::OnTestInit()
 	static KG::Core::GameObject testAnimationObject;
 
 
+	KG::Core::ObjectContainer oc;
+	oc.PostTransformSystem( &this->system->transformSystem );
+	KG::Resource::MaterialMatch match;
+	match.SetDefaultMaterial( { "soldierHead"_id, "soldierBody"_id } );
+	auto* ptr = this->renderer->LoadFromModel( "soldier"_id, oc, match );
+	ptr->GetComponent<KG::Component::TransformComponent>()->Translate( 0, 2, 0 );
+	ptr->GetComponent<KG::Component::TransformComponent>()->RotateEuler( 0, 180, 0 );
+
 	constexpr auto texOne = "PBRMetal"_id;
 	constexpr auto texTwo = "PBRMetal2"_id;
 	constexpr auto texThree = "PBRGold"_id;
@@ -178,6 +186,8 @@ void KG::GameFramework::OnTestInit()
 		testCameraObject.AddComponent( lam );
 		testCameraObject.GetComponent<KG::Component::TransformComponent>()->Translate( 0, 0, -2.0f );
 	}
+
+
 
 	constexpr size_t cdas = 3;
 	for ( size_t y = 0; y < cdas; y++ )

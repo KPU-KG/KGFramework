@@ -238,6 +238,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="src\AssimpImpoter.cpp" />
+    <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\IComponent.cpp" />
     <ClCompile Include="src\KGLib.cpp" />
     <ClCompile Include="src\ObjectContainer.cpp" />

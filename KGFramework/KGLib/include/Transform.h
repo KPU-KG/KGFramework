@@ -188,7 +188,7 @@ namespace KG::Component
 				{
 					auto parentMatrix = XMLoadFloat4x4( &this->parent->GetGlobalWorldMatrix() );
 					auto thisMatrix = XMLoadFloat4x4( &this->GetLocalWorldMatrix() );
-					XMStoreFloat4x4( &this->globalWorldMatrix, parentMatrix * thisMatrix );
+					XMStoreFloat4x4( &this->globalWorldMatrix, thisMatrix * parentMatrix );
 				}
 				else
 				{

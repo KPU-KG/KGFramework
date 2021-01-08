@@ -28,7 +28,7 @@ namespace KG::Utill
 
 	struct BoneData
 	{
-		KG::Utill::HashString nodeId;
+		KG::Utill::HashString nodeId = KG::Utill::HashString(0);
 		XMFLOAT4X4 offsetMatrix;
 	};
 
@@ -47,8 +47,8 @@ namespace KG::Utill
 
 	struct ModelNode
 	{
-		KG::Utill::HashString nodeId;
-
+		KG::Utill::HashString nodeId = KG::Utill::HashString( 0 );
+		std::string name;
 		ModelNode* child = nullptr;
 		ModelNode* sibling = nullptr;
 

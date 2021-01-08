@@ -21,7 +21,6 @@ static MeshData ConvertMesh(const aiMesh* mesh)
 	data.biTangent.reserve( mesh->mNumVertices );
 	data.tangent.reserve( mesh->mNumVertices );
 
-
 	auto textureCount = std::count_if(std::begin(mesh->mTextureCoords), std::end(mesh->mTextureCoords), [](const auto ptr) {return ptr != nullptr; });
 	data.uvs.resize(textureCount);
 
@@ -123,15 +122,15 @@ void KG::Utill::ImportData::LoadFromPathAssimp( const std::string& path )
 			this->meshs.push_back( ConvertMesh( scene->mMeshes[i] ) );
 		}
 		this->root = this->ProcessNode( scene->mRootNode, scene );
+		//this->root = this->ProcessNode( scene->mRootNode->mChildren[0], scene );
 	}
 }
 
 ModelNode* KG::Utill::ImportData::ProcessNode( const aiNode* node, const aiScene* scene )
 {
 	auto& importNode = this->nodes.emplace_back();
-
+	importNode.name = node->mName.C_Str();
 	importNode.nodeId = KG::Utill::HashString(node->mName.C_Str());
-
 	aiVector3D position;
 	aiQuaternion rotation;
 	aiVector3D scale;

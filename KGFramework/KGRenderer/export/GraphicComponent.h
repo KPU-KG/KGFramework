@@ -150,9 +150,9 @@ namespace KG::Component
 		GeometryComponent* geometry = nullptr;
 		MaterialComponent* material = nullptr;
 		CubeCameraComponent* reflectionProbe = nullptr;
-		KG::Renderer::KGRenderJob* renderJob = nullptr;
-
-		void SetRenderJob( KG::Renderer::KGRenderJob* renderJob );
+		std::vector<KG::Renderer::KGRenderJob*> renderJobs;
+		std::vector<UINT> jobMaterialIndexs;
+		void AddRenderJob( KG::Renderer::KGRenderJob* renderJob, UINT materialIndex );
 		void RegisterTransform( TransformComponent* transform );
 		void RegisterMaterial( MaterialComponent* material );
 		void RegisterGeometry( GeometryComponent* geometry );
@@ -168,9 +168,9 @@ namespace KG::Component
 	class DLL GeometryComponent : public IRenderComponent
 	{
 		friend Render3DComponent;
-		KG::Renderer::Geometry* geometry = nullptr;
+		std::vector<KG::Renderer::Geometry*> geometrys;
 	public:
-		void InitializeGeometry( const KG::Utill::HashString& geometryID, UINT index );
+		void InitializeGeometry( const KG::Utill::HashString& geometryID, UINT subMeshIndex = 0, UINT slotIndex = 0 );
 	};
 
 	struct LightData
@@ -242,14 +242,14 @@ namespace KG::Component
 		friend Render3DComponent;
 	protected:
 		KG::System::ISystem* materialSystem = nullptr;
-		KG::Renderer::Shader* shaders = nullptr;
-		KG::Renderer::MaterialConstant* shaderDatas = nullptr;
+		std::vector<KG::Renderer::Shader*> shaders;
+		std::vector<KG::Renderer::MaterialConstant*> shaderDatas;
 		virtual void OnDestroy() override;
-		size_t materialIndex = 0;
+		std::vector<UINT> materialIndexs;
 	public:
-		void InitializeMaterial( const KG::Utill::HashString& materialID );
-		void InitializeShader( const KG::Utill::HashString& shaderID );
-		unsigned GetMaterialIndex() const;
+		void InitializeMaterial( const KG::Utill::HashString& materialID, UINT slotIndex = 0 );
+		void InitializeShader( const KG::Utill::HashString& shaderID, UINT slotIndex = 0 );
+		unsigned GetMaterialIndex(UINT slotIndex = 0) const;
 	};
 	REGISTER_COMPONENT_ID( LightComponent );
 	REGISTER_COMPONENT_ID( CameraComponent );

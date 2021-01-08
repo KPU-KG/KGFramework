@@ -2,6 +2,10 @@
 #include <string>
 #include "IComponent.h"
 #include "ComponentContainer.h"
+namespace KG::Component
+{
+	class TransformComponent;
+}
 namespace KG::Core
 {
 	using KG::Component::ComponentContainer;
@@ -9,10 +13,11 @@ namespace KG::Core
 	{
 		ComponentContainer components;
 	public:
+		KG::Utill::HashString id = KG::Utill::HashString(0);
 		std::string name;
 
 		template <class Ty>
-		auto GetComponent() { return this->components.GetComponent<Ty>(); }
+		auto GetComponent() const { return this->components.GetComponent<Ty>(); }
 
 		template <class Ty>
 		auto AddComponent(Ty* cmp) 
@@ -20,5 +25,7 @@ namespace KG::Core
 			cmp->Create( this );
 			return this->components.AddComponent<Ty>(cmp);
 		}
+
+		KG::Component::TransformComponent* GetTransform() const;
 	};
 }

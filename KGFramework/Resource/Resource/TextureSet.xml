@@ -34,8 +34,8 @@
     <Texture id="gold_normal" fileDir="Resource/Texture/cc0_gold/normal.dds" dimension="Texture2D" format="DDS" hash_id="1448593827"/>
     <Texture id="gold_rough" fileDir="Resource/Texture/cc0_gold/rough.dds" dimension="Texture2D" format="DDS" hash_id="414237009"/>
     <!--Soldier-->
-    <Texture id="soldier_head_albedo" fileDir="Resource/Geometry/animation/Unity_soldier_Head_DIF_01.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="soldier_haed_normal" fileDir="Resource/Geometry/animation/Unity_Soldier_Head_NMM_01.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="soldier_body_albedo" fileDir="Resource/Geometry/animation/Soldier_Body_Albedo.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="soldier_body_normal" fileDir="Resource/Geometry/animation/Soldier_Body_Normal.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="soldier_head_albedo" fileDir="Resource/Geometry/animation/Unity_soldier_Head_DIF_01.dds" dimension="Texture2D" format="DDS" hash_id="1073280886"/>
+    <Texture id="soldier_haed_normal" fileDir="Resource/Geometry/animation/Unity_Soldier_Head_NMM_01.dds" dimension="Texture2D" format="DDS" hash_id="4052277792"/>
+    <Texture id="soldier_body_albedo" fileDir="Resource/Geometry/animation/Soldier_Body_Albedo.dds" dimension="Texture2D" format="DDS" hash_id="2332798320"/>
+    <Texture id="soldier_body_normal" fileDir="Resource/Geometry/animation/Soldier_Body_Normal.dds" dimension="Texture2D" format="DDS" hash_id="4117762142"/>
 </TextureSet>
