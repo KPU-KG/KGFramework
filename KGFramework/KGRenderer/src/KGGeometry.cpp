@@ -75,7 +75,7 @@ void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandLi
 	this->vertexBufferView.StrideInBytes = sizeof( NormalVertex );
 	this->vertexBufferView.SizeInBytes = sizeof( NormalVertex ) * this->vertices.size();
 
-	this->indexBuffer = CreateBufferResource( device, commandList, (void*)this->indices.data(), this->indices.size() * sizeof( size_t ),
+	this->indexBuffer = CreateBufferResource( device, commandList, (void*)this->indices.data(), this->indices.size() * sizeof( UINT ),
 		D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_INDEX_BUFFER, &this->indexUploadBuffer );
 
 	this->indexBufferView.BufferLocation = this->indexBuffer->GetGPUVirtualAddress();

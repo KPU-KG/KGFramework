@@ -5,8 +5,6 @@
 #include <functional>
 namespace KG::Component
 {
-
-
 	class LambdaComponent : public IComponent
 	{
 	private:

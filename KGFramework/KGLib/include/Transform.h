@@ -121,7 +121,7 @@ namespace KG::Component
 			this->isDirtyLocal = true;
 			TurnOnGlobalDirtyFlag();
 		}
-		void TurnOnGlobalDirtyFlag( bool onTree = true )
+		void TurnOnGlobalDirtyFlag( bool onTree = false )
 		{
 			this->isDirtyGlobal = true;
 			if ( !onTree )
@@ -129,7 +129,7 @@ namespace KG::Component
 				this->FunctionChild(
 					[]( TransformComponent* ptr )
 					{
-						ptr->TurnOnGlobalDirtyFlag( false );
+						ptr->TurnOnGlobalDirtyFlag( true );
 					}
 				);
 			}

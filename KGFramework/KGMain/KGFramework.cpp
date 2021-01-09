@@ -81,30 +81,11 @@ void KG::GameFramework::OnTestInit()
 	static KG::Core::GameObject testAnimationObject;
 
 
-	KG::Core::ObjectContainer oc;
-	oc.PostTransformSystem( &this->system->transformSystem );
-	KG::Resource::MaterialMatch match;
-	match.SetDefaultMaterial( { "soldierHead"_id, "soldierBody"_id } );
-	auto* ptr = this->renderer->LoadFromModel( "soldier"_id, oc, match );
-	ptr->GetComponent<KG::Component::TransformComponent>()->Translate( 0, 2, 0 );
-	ptr->GetComponent<KG::Component::TransformComponent>()->RotateEuler( 0, 180, 0 );
+
 
 	constexpr auto texOne = "PBRMetal"_id;
 	constexpr auto texTwo = "PBRMetal2"_id;
 	constexpr auto texThree = "PBRGold"_id;
-	{
-		//auto* tran = this->system->transformSystem.GetNewComponent();
-		//auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( texOne ) );
-		//auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "soldier"_id ) );
-		//auto* ren = this->renderer->GetNewRenderComponent();
-		//testPlaneObject.name = "plane";
-		//testPlaneObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
-		//testPlaneObject.AddComponent( mat );
-		//testPlaneObject.AddComponent( geo );
-		//testPlaneObject.AddComponent( ren );
-		//testPlaneObject.GetComponent<KG::Component::TransformComponent>()->Translate( 0.0f, 0.0f, 0.0f );
-		//testPlaneObject.GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) );
-	}
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( texOne ) );
@@ -333,6 +314,25 @@ void KG::GameFramework::OnTestInit()
 
 	}
 	this->renderer->SetSkymapTextureId( KG::Utill::HashString( "skySnow" ) );
+
+	{
+		static KG::Core::ObjectContainer oc;
+		oc.PostTransformSystem( &this->system->transformSystem );
+		KG::Resource::MaterialMatch match;
+		match.SetDefaultMaterial( { "soldierHead"_id, "soldierBody"_id } );
+		auto* ptr = this->renderer->LoadFromModel( "soldier"_id, oc, match );
+		ptr->GetComponent<KG::Component::TransformComponent>()->Translate( 0, 2, 0 );
+		//ptr->GetComponent<KG::Component::TransformComponent>()->RotateEuler( 0, 180, 0 );
+		auto* lam = this->system->lambdaSystem.GetNewComponent();
+		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+			[]( KG::Core::GameObject* gameObject, float elapsedTime )
+			{
+				auto* trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+				trans->RotateEuler( 0, 90.0f * elapsedTime, 0 );
+			}
+		);
+		ptr->AddComponent( lam );
+	}
 
 
 

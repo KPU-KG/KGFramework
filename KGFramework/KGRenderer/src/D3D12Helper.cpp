@@ -54,7 +54,7 @@ ID3D12Resource* KG::Renderer::CreateBufferResource(ID3D12Device* pd3dDevice, ID3
 			if (ppd3dUploadBuffer)
 			{
 				d3dHeapPropertiesDesc.Type = D3D12_HEAP_TYPE_UPLOAD;
-				pd3dDevice->CreateCommittedResource(&d3dHeapPropertiesDesc,
+				auto result = pd3dDevice->CreateCommittedResource(&d3dHeapPropertiesDesc,
 					D3D12_HEAP_FLAG_NONE, &d3dResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
 					IID_PPV_ARGS(ppd3dUploadBuffer));
 
