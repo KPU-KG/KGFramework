@@ -9,6 +9,7 @@
 #include "Texture.h"
 #include "GameObject.h"
 #include "ObjectContainer.h"
+#include "BoneDataBufferManager.h"
 namespace KG::Resource
 {
 	class ResourceContainer
@@ -17,6 +18,7 @@ namespace KG::Resource
 		std::map<KG::Utill::HashString, KG::Renderer::Shader> shaders;
 		std::map<KG::Utill::HashString, KG::Resource::FrameModel> models;
 		std::map<std::pair<KG::Utill::HashString, UINT>, KG::Renderer::Geometry> geometrys;
+		std::map<KG::Utill::HashString, KG::Resource::BoneBufferManager> bones;
 		std::map<KG::Utill::HashString, KG::Resource::Texture> textures;
 		std::map<KG::Utill::HashString, std::pair<size_t, KG::Utill::HashString>> materials;
 

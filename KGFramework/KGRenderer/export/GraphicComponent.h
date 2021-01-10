@@ -251,12 +251,29 @@ namespace KG::Component
 		void InitializeShader( const KG::Utill::HashString& shaderID, UINT slotIndex = 0 );
 		unsigned GetMaterialIndex(UINT slotIndex = 0) const;
 	};
+
+	//class DLL AvatarComponent : public IRenderComponent
+	//{
+	//	friend Render3DComponent;
+	//protected:
+	//	KG::System::ISystem* materialSystem = nullptr;
+	//	std::vector<KG::Renderer::Shader*> shaders;
+	//	std::vector<KG::Renderer::MaterialConstant*> shaderDatas;
+	//	virtual void OnDestroy() override;
+	//	std::vector<UINT> materialIndexs;
+	//public:
+	//	void InitializeMaterial( const KG::Utill::HashString& materialID, UINT slotIndex = 0 );
+	//	void InitializeShader( const KG::Utill::HashString& shaderID, UINT slotIndex = 0 );
+	//	unsigned GetMaterialIndex( UINT slotIndex = 0 ) const;
+	//};
+
 	REGISTER_COMPONENT_ID( LightComponent );
 	REGISTER_COMPONENT_ID( CameraComponent );
 	REGISTER_COMPONENT_ID( CubeCameraComponent );
 	REGISTER_COMPONENT_ID( Render3DComponent );
 	REGISTER_COMPONENT_ID( GeometryComponent );
 	REGISTER_COMPONENT_ID( MaterialComponent );
+	//REGISTER_COMPONENT_ID( AvatarComponent );
 
 }
 //대충 텍스처 류는 전부 디스크립터 힙에 배치

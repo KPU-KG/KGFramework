@@ -46,7 +46,8 @@ KG::Resource::FrameModel* KG::Resource::ResourceContainer::LoadModel( const KG::
 	else
 	{
 		auto metaData = ResourceLoader::LoadGeometrySetFromFile( "Resource/GeometrySet.xml", id );
-		return &this->models.emplace( id, metaData ).first->second;
+		auto* model = &this->models.emplace( id, metaData ).first->second;
+		return model;
 	}
 }
 

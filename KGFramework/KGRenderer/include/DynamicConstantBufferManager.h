@@ -101,4 +101,5 @@ namespace KG::Resource
 		}
 	};
 
+
 }

@@ -274,6 +274,8 @@
     <ClInclude Include="export\KGRenderer.h" />
     <ClInclude Include="export\ResourceMetaData.h" />
     <ClInclude Include="export\Texture.h" />
+    <ClInclude Include="include\BoneData.h" />
+    <ClInclude Include="include\BoneDataBufferManager.h" />
     <ClInclude Include="include\BuddyAllocator.h" />
     <ClInclude Include="include\CameraData.h" />
     <ClInclude Include="include\DDSTextureLoader.h" />

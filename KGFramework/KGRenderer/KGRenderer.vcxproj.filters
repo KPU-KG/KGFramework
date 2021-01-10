@@ -182,6 +182,12 @@
     <ClInclude Include="include\KGModel.h">
       <Filter>헤더 파일\Resource</Filter>
     </ClInclude>
+    <ClInclude Include="include\BoneDataBufferManager.h">
+      <Filter>헤더 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BoneData.h">
+      <Filter>헤더 파일\Core</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

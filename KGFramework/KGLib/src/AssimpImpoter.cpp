@@ -48,6 +48,7 @@ static MeshData ConvertMesh(const aiMesh* mesh)
 			for ( int k = 0; k < 4; k++ )
 			{
 				// push_back 효과를 구현
+				// 이거 아마 이렇게 하면 큰일날 것임!
 				if ( data.vertexBone[vertexId][k].boneWeight == 0.0f )
 				{
 					data.vertexBone[vertexId][k].bondId = i;
