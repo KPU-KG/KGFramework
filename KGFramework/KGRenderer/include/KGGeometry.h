@@ -6,6 +6,7 @@
 #include <string_view>
 #include "D3D12Helper.h"
 #include "ResourceMetaData.h"
+#include "BoneData.h"
 namespace KG::Utill
 {
 	class MeshData;
@@ -38,13 +39,17 @@ namespace KG::Renderer
 	protected:
 		std::vector<NormalVertex> vertices;
 		std::vector<UINT> indices;
+		KG::Resource::BoneData bones;
 		
 		ID3D12Resource* vertexBuffer = nullptr;
 		ID3D12Resource* indexBuffer = nullptr;
+		ID3D12Resource* boneBuffer = nullptr;
+
 
 		UINT64 uploadFence = 0;
 		ID3D12Resource* vertexUploadBuffer = nullptr;
 		ID3D12Resource* indexUploadBuffer = nullptr;
+		ID3D12Resource* boneUploadBuffer = nullptr;
 
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 		D3D12_INDEX_BUFFER_VIEW indexBufferView;

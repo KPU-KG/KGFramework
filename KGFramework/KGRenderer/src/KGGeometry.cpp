@@ -81,6 +81,9 @@ void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandLi
 	this->indexBufferView.BufferLocation = this->indexBuffer->GetGPUVirtualAddress();
 	this->indexBufferView.SizeInBytes = sizeof( UINT ) * this->indices.size();
 	this->indexBufferView.Format = DXGI_FORMAT_R32_UINT;
+
+	this->boneBuffer = CreateBufferResource( device, commandList, (void*)this->bones.offsetMatrixs.data(), this->bones.offsetMatrixs.size() * sizeof( XMFLOAT4X4 ),
+		D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, &this->boneUploadBuffer );
 }
 
 void KG::Renderer::Geometry::CreateFromMeshData( const KG::Utill::MeshData& data )
@@ -106,5 +109,12 @@ void KG::Renderer::Geometry::CreateFromMeshData( const KG::Utill::MeshData& data
 			this->vertices[i].boneId = XMUINT4( bone[0].bondId, bone[1].bondId, bone[2].bondId, bone[3].bondId );
 			this->vertices[i].boneWeight = XMFLOAT4( bone[0].boneWeight, bone[1].boneWeight, bone[2].boneWeight, bone[3].boneWeight );
 		}
+	}
+
+	for ( size_t i = 0; i < data.bones.size(); i++ )
+	{
+		XMFLOAT4X4 transposed;
+		XMStoreFloat4x4( &transposed, XMMatrixTranspose( XMLoadFloat4x4( &data.bones[i].offsetMatrix ) ) );
+		this->bones.offsetMatrixs[i] = transposed;
 	}
 }

@@ -320,8 +320,8 @@ void KG::GameFramework::OnTestInit()
 		oc.PostTransformSystem( &this->system->transformSystem );
 		KG::Resource::MaterialMatch match;
 		match.SetDefaultMaterial( { "soldierHead"_id, "soldierBody"_id } );
-		auto* ptr = this->renderer->LoadFromModel( "soldier"_id, oc, match );
-		ptr->GetComponent<KG::Component::TransformComponent>()->Translate( 0, 2, 0 );
+		auto* ptr = this->renderer->LoadFromModel( "heli"_id, oc, match );
+		ptr->GetComponent<KG::Component::TransformComponent>()->Translate( 3, -0.2, 3 );
 		//ptr->GetComponent<KG::Component::TransformComponent>()->RotateEuler( 0, 180, 0 );
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
 		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
