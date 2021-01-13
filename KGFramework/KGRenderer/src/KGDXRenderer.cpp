@@ -490,7 +490,7 @@ void KG::Renderer::KGDXRenderer::CreateRenderTargetView()
 
 void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 {
-	D3D12_ROOT_PARAMETER pd3dRootParameters[7]{};
+	D3D12_ROOT_PARAMETER pd3dRootParameters[9]{};
 
 	// 0 : Space 0 : SRV 0 : Instance Data : 2
 	pd3dRootParameters[RootParameterIndex::InstanceData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
@@ -498,26 +498,38 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 	pd3dRootParameters[RootParameterIndex::InstanceData].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[RootParameterIndex::InstanceData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
-	// 1 : Space 1 : CBV 0 : Material Data : 2
+	// 1 : Space 3 : SRV 1 : Animation Transform Data : 2
+	pd3dRootParameters[RootParameterIndex::AnimationTransformData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+	pd3dRootParameters[RootParameterIndex::AnimationTransformData].Descriptor.ShaderRegister = 1;
+	pd3dRootParameters[RootParameterIndex::AnimationTransformData].Descriptor.RegisterSpace = 3;
+	pd3dRootParameters[RootParameterIndex::AnimationTransformData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+	// 2 : Space 3 : SRV 0 : Bone Offset Data : 2
+	pd3dRootParameters[RootParameterIndex::BoneOffsetData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+	pd3dRootParameters[RootParameterIndex::BoneOffsetData].Descriptor.ShaderRegister = 0;
+	pd3dRootParameters[RootParameterIndex::BoneOffsetData].Descriptor.RegisterSpace = 3;
+	pd3dRootParameters[RootParameterIndex::BoneOffsetData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+	// 3 : Space 1 : CBV 0 : Material Data : 2
 	pd3dRootParameters[RootParameterIndex::MaterialData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
 	pd3dRootParameters[RootParameterIndex::MaterialData].Descriptor.ShaderRegister = 1;
 	pd3dRootParameters[RootParameterIndex::MaterialData].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[RootParameterIndex::MaterialData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
 
-	// 2 : Space 0 : CBV 0 : Camera Data : 2
+	// 4 : Space 0 : CBV 0 : Camera Data : 2
 	pd3dRootParameters[RootParameterIndex::CameraData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[RootParameterIndex::CameraData].Descriptor.ShaderRegister = 0;
 	pd3dRootParameters[RootParameterIndex::CameraData].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[RootParameterIndex::CameraData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
-	// 3 : Space 0 : CBV 1 : Pass Data : 2
+	// 5 : Space 0 : CBV 1 : Pass Data : 2
 	pd3dRootParameters[RootParameterIndex::PassData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
 	pd3dRootParameters[RootParameterIndex::PassData].Descriptor.ShaderRegister = 1;
 	pd3dRootParameters[RootParameterIndex::PassData].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[RootParameterIndex::PassData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
 
-	// 4 : Space 1 : SRV 0 : Texture Data1 // unbounded : 1
+	// 6 : Space 1 : SRV 0 : Texture Data1 // unbounded : 1
 
 	D3D12_DESCRIPTOR_RANGE txtureData1Range;
 	ZeroDesc( txtureData1Range );
@@ -532,7 +544,7 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 	pd3dRootParameters[RootParameterIndex::Texture1Heap].DescriptorTable.pDescriptorRanges = &txtureData1Range;
 	pd3dRootParameters[RootParameterIndex::Texture1Heap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
 
-	// 5 : Space 2 : SRV 0 : Texture Data2 // unbounded : 1
+	// 7 : Space 2 : SRV 0 : Texture Data2 // unbounded : 1
 
 	D3D12_DESCRIPTOR_RANGE txtureData2Range;
 	ZeroDesc( txtureData2Range );
@@ -547,7 +559,7 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 	pd3dRootParameters[RootParameterIndex::Texture2Heap].DescriptorTable.pDescriptorRanges = &txtureData2Range;
 	pd3dRootParameters[RootParameterIndex::Texture2Heap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
 
-	//G-BUFFER 
+	// 8 : Space 0 : SRV 2,3,4,5,6 : G Buffer // unbounded : 1
 
 	D3D12_DESCRIPTOR_RANGE GbufferRange;
 	ZeroDesc( GbufferRange );

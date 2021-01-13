@@ -1,5 +1,6 @@
 #ifndef __GLOBAL_DEFINE__
 #define __GLOBAL_DEFINE__
+
 struct VertexData
 {
 	float3 position : POSITION;
