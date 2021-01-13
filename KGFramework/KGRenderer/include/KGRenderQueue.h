@@ -8,6 +8,7 @@
 #include <functional>
 #include "KGGraphicBuffer.h"
 #include "RenderTexture.h"
+#include "BoneData.h"
 namespace KG::Renderer
 {
 	class Shader;
@@ -20,8 +21,11 @@ namespace KG::Renderer
 		int objectSize = 0;
 		int visibleSize = 0;
 		int updateCount = 0;
-		BufferPool<ObjectData>* bufferPool = nullptr;
+		BufferPool<ObjectData>* objectBufferPool = nullptr;
 		PooledBuffer<ObjectData>* objectBuffer = nullptr;
+
+		BufferPool<KG::Resource::AnimationData>* animationBufferPool = nullptr;
+		PooledBuffer<KG::Resource::AnimationData>* animationBuffer = nullptr;
 
 		bool CheckBufferFull() const;
 		void GetNewBuffer();
@@ -69,6 +73,7 @@ namespace KG::Renderer
 		PassEndFunction OnPassEndEvent;
 
 		BufferPool<ObjectData> bufferPool; // 이거 추후에 버디 얼로케이터 같은 걸로 바꿔야 함
+		BufferPool<KG::Resource::AnimationData> animationBufferPool; // 이거 추후에 버디 얼로케이터 같은 걸로 바꿔야 함
 
 		KGRenderJob& CreateRenderJob( const KGRenderJob& job );
 	public:

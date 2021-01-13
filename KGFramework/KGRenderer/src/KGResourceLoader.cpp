@@ -81,6 +81,7 @@ KG::Resource::Metadata::ShaderSetData KG::Resource::ResourceLoader::LoadShaderSe
 			data.renderPriority = std::atoi( shaderSets->Attribute( "renderPriority" ) );
 			data.enableCullBackface = shaderSets->BoolAttribute( "enableBackfaceCulling" );
 			data.enableDepthCliping = shaderSets->BoolAttribute( "enableDepthCliping" );
+			data.isSkinnedAnimation = shaderSets->BoolAttribute( "isSkinnedAnimation" );
 			data.materialParameterSize = shaderSets->IntAttribute( "materialParameterSize" );
 			data.blendOpType = shaderSets->Attribute( "blendOp" );
 

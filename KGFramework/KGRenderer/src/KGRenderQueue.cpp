@@ -13,12 +13,13 @@ KGRenderJob& KG::Renderer::KGRenderEngine::CreateRenderJob( const KGRenderJob& j
 {
 	auto& inst = this->pool.emplace_back( job );
 	this->pass[job.shader->GetShaderType()].emplace( &inst );
-	inst.bufferPool = &this->bufferPool;
+	inst.objectBufferPool = &this->bufferPool;
 	return inst;
 }
 
 KG::Renderer::KGRenderEngine::KGRenderEngine( ID3D12Device* device )
-	:bufferPool( device, BufferPool<ObjectData>::defaultFixedSize, BufferPool<ObjectData>::defaultReservedSize )
+	:bufferPool( device, BufferPool<ObjectData>::defaultFixedSize, BufferPool<ObjectData>::defaultReservedSize ),
+	animationBufferPool( device, BufferPool<KG::Resource::AnimationData>::defaultFixedSize, BufferPool<KG::Resource::AnimationData>::defaultReservedSize )
 {
 	this->pass.resize( 4 );
 }
@@ -98,14 +99,21 @@ void KG::Renderer::KGRenderEngine::ClearUpdateCount()
 
 bool KG::Renderer::KGRenderJob::CheckBufferFull() const
 {
-	return this->objectBuffer == nullptr || this->objectBuffer->GetSize() <= this->objectSize;
+	return (this->objectBuffer == nullptr || this->objectBuffer->GetSize() <= this->objectSize);
 }
 
 void KG::Renderer::KGRenderJob::GetNewBuffer()
 {
 	if ( this->objectBuffer )
 		this->objectBuffer->isUsing = false;
-	this->objectBuffer = this->bufferPool->GetNewBuffer( this->objectSize );
+	this->objectBuffer = this->objectBufferPool->GetNewBuffer( this->objectSize );
+
+	if ( this->shader->IsSkinnedAnimation() )
+	{
+		if ( this->animationBuffer )
+			this->animationBuffer->isUsing = false;
+		this->animationBuffer = this->animationBufferPool->GetNewBuffer( this->objectSize );
+	}
 }
 
 void KG::Renderer::KGRenderJob::OnObjectAdd( bool isVisible )

@@ -238,6 +238,7 @@ void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::Sha
 
 	this->renderPriority = data.renderPriority;
 	this->shaderType = (ShaderType)data.shaderType;
+	this->isSkinnedAnimation = data.isSkinnedAnimation;
 
 	this->CreateMaterialBuffer( data );
 

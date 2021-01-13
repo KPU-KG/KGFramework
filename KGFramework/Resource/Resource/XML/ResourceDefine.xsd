@@ -92,6 +92,7 @@
             <xs:attribute name="enableBackfaceCulling" type="xs:boolean" use="required"/>
             <xs:attribute name="enableDepthCliping" type="xs:boolean" use="required"/>
             <xs:attribute name="materialParameterSize" type="xs:int" use="required"/>
+            <xs:attribute name="isSkinnedAnimation" type="xs:boolean" use="required"/>
             <xs:attribute name="blendOp" use="required">
               <xs:simpleType>
                 <xs:restriction base="xs:string">

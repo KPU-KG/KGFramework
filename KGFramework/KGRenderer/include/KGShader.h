@@ -51,6 +51,7 @@ namespace KG::Renderer
 	{
 	private:
 		bool isWireFrame = false;
+		bool isSkinnedAnimation = false;
 		ID3D12PipelineState* normalPso = nullptr;
 		ID3D12PipelineState* wireframePso = nullptr;
 		unsigned renderPriority = 0;
@@ -68,6 +69,7 @@ namespace KG::Renderer
 
 		auto GetShaderType() const { return this->shaderType; }
 		auto GetRenderPriority() const { return this->renderPriority; }
+		auto IsSkinnedAnimation() const { return this->isSkinnedAnimation; }
 
 		size_t GetMaterialIndex( const KG::Utill::HashString& ID );
 		bool CheckMaterialLoaded( const KG::Utill::HashString& ID );

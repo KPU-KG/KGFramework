@@ -19,6 +19,7 @@ namespace KG::Resource::Metadata
 
 		bool enableCullBackface;
 		bool enableDepthCliping;
+		bool isSkinnedAnimation;
 		std::string blendOpType;
 		int renderPriority;
 		int shaderType;

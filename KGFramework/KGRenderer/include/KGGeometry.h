@@ -43,7 +43,7 @@ namespace KG::Renderer
 		
 		ID3D12Resource* vertexBuffer = nullptr;
 		ID3D12Resource* indexBuffer = nullptr;
-		ID3D12Resource* boneBuffer = nullptr;
+		ID3D12Resource* boneOffsetBuffer = nullptr;
 
 
 		UINT64 uploadFence = 0;

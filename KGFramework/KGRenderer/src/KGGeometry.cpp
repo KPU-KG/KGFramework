@@ -82,7 +82,7 @@ void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandLi
 	this->indexBufferView.SizeInBytes = sizeof( UINT ) * this->indices.size();
 	this->indexBufferView.Format = DXGI_FORMAT_R32_UINT;
 
-	this->boneBuffer = CreateBufferResource( device, commandList, (void*)this->bones.offsetMatrixs.data(), this->bones.offsetMatrixs.size() * sizeof( XMFLOAT4X4 ),
+	this->boneOffsetBuffer = CreateBufferResource( device, commandList, (void*)this->bones.offsetMatrixs.data(), this->bones.offsetMatrixs.size() * sizeof( XMFLOAT4X4 ),
 		D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, &this->boneUploadBuffer );
 }
 
