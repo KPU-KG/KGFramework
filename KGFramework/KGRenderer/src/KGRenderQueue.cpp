@@ -162,6 +162,13 @@ void KG::Renderer::KGRenderJob::Render( ID3D12GraphicsCommandList* cmdList, Shad
 	this->shader->Set( cmdList );
 	auto addr = this->objectBuffer->buffer.resource->GetGPUVirtualAddress();
 	cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::InstanceData, addr );
+
+	if ( this->shader->IsSkinnedAnimation() )
+	{
+		auto animAddr = this->objectBuffer->buffer.resource->GetGPUVirtualAddress();
+		cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::AnimationTransformData, animAddr );
+	}
+
 	this->geometry->Render( cmdList, this->visibleSize );
 }
 

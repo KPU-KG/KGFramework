@@ -4,6 +4,7 @@
 #include "D3D12Helper.h"
 #include "AssimpImpoter.h"
 #include "KGDXRenderer.h"
+#include "RootParameterIndex.h"
 
 const std::array<D3D12_INPUT_ELEMENT_DESC, 8> KG::Renderer::NormalVertex::inputElementDesc
 {
@@ -51,6 +52,13 @@ void KG::Renderer::Geometry::Render( ID3D12GraphicsCommandList* commandList, UIN
 		TryRelease( this->indexUploadBuffer );
 		TryRelease( this->vertexUploadBuffer );
 	}
+
+	if ( this->hasBone && this->boneOffsetBuffer != nullptr )
+	{
+		auto addr = this->boneOffsetBuffer->GetGPUVirtualAddress();
+		commandList->SetGraphicsRootShaderResourceView( KG::Renderer::RootParameterIndex::BoneOffsetData, addr );
+	}
+
 	commandList->IASetVertexBuffers( 0, 1, &this->vertexBufferView );
 	commandList->IASetPrimitiveTopology( this->primitiveTopology );
 	if ( this->indexBuffer )
@@ -82,8 +90,11 @@ void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandLi
 	this->indexBufferView.SizeInBytes = sizeof( UINT ) * this->indices.size();
 	this->indexBufferView.Format = DXGI_FORMAT_R32_UINT;
 
-	this->boneOffsetBuffer = CreateBufferResource( device, commandList, (void*)this->bones.offsetMatrixs.data(), this->bones.offsetMatrixs.size() * sizeof( XMFLOAT4X4 ),
-		D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, &this->boneUploadBuffer );
+	if ( this->hasBone )
+	{
+		this->boneOffsetBuffer = CreateBufferResource( device, commandList, (void*)this->bones.offsetMatrixs.data(), this->bones.offsetMatrixs.size() * sizeof( XMFLOAT4X4 ),
+			D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, &this->boneUploadBuffer );
+	}
 }
 
 void KG::Renderer::Geometry::CreateFromMeshData( const KG::Utill::MeshData& data )
@@ -113,6 +124,7 @@ void KG::Renderer::Geometry::CreateFromMeshData( const KG::Utill::MeshData& data
 
 	for ( size_t i = 0; i < data.bones.size(); i++ )
 	{
+		this->hasBone = true;
 		XMFLOAT4X4 transposed;
 		XMStoreFloat4x4( &transposed, XMMatrixTranspose( XMLoadFloat4x4( &data.bones[i].offsetMatrix ) ) );
 		this->bones.offsetMatrixs[i] = transposed;

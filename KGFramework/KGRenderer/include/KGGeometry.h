@@ -40,6 +40,7 @@ namespace KG::Renderer
 		std::vector<NormalVertex> vertices;
 		std::vector<UINT> indices;
 		KG::Resource::BoneData bones;
+		bool hasBone = false;
 		
 		ID3D12Resource* vertexBuffer = nullptr;
 		ID3D12Resource* indexBuffer = nullptr;
