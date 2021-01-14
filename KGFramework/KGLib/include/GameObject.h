@@ -27,5 +27,7 @@ namespace KG::Core
 		}
 
 		KG::Component::TransformComponent* GetTransform() const;
+		KG::Core::GameObject* FindChildObject( const KG::Utill::HashString& id ) const;
+
 	};
 }
