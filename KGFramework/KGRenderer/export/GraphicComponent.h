@@ -39,6 +39,8 @@ namespace KG::Component
 	class Render3DComponent;
 	class CubeCameraComponent;
 	class CameraComponent;
+	class AvatarComponent;
+	
 
 	class DLL IRenderComponent : public IComponent
 	{
@@ -168,6 +170,7 @@ namespace KG::Component
 	class DLL GeometryComponent : public IRenderComponent
 	{
 		friend Render3DComponent;
+		friend AvatarComponent;
 		std::vector<KG::Renderer::Geometry*> geometrys;
 	public:
 		void InitializeGeometry( const KG::Utill::HashString& geometryID, UINT subMeshIndex = 0, UINT slotIndex = 0 );
@@ -252,17 +255,17 @@ namespace KG::Component
 		unsigned GetMaterialIndex(UINT slotIndex = 0) const;
 	};
 
-	//class DLL AvatarComponent : public IRenderComponent
-	//{
-	//	friend Render3DComponent;
-	//	using FrameCacheVector = std::vector<KG::Core::GameObject*>;
-	//protected:
-	//	KG::Renderer::Geometry* geometry = nullptr;
-	//	std::vector<FrameCacheVector> frameCache;
-	//	virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
-	//public:
-	//	KG::Core::GameObject* BoneIndexToGameObject( UINT index, UINT submeshIndex = 0 ) const;
-	//};
+	class DLL AvatarComponent : public IRenderComponent
+	{
+		friend Render3DComponent;
+		using FrameCacheVector = std::vector<KG::Core::GameObject*>;
+	protected:
+		KG::Component::GeometryComponent* geometry = nullptr;
+		std::vector<FrameCacheVector> frameCache;
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+	public:
+		KG::Core::GameObject* BoneIndexToGameObject( UINT index, UINT submeshIndex = 0 ) const;
+	};
 
 	REGISTER_COMPONENT_ID( LightComponent );
 	REGISTER_COMPONENT_ID( CameraComponent );
@@ -270,7 +273,7 @@ namespace KG::Component
 	REGISTER_COMPONENT_ID( Render3DComponent );
 	REGISTER_COMPONENT_ID( GeometryComponent );
 	REGISTER_COMPONENT_ID( MaterialComponent );
-	//REGISTER_COMPONENT_ID( AvatarComponent );
+	REGISTER_COMPONENT_ID( AvatarComponent );
 
 }
 //대충 텍스처 류는 전부 디스크립터 힙에 배치

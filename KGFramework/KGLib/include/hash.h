@@ -57,6 +57,13 @@ namespace KG::Utill
 		std::string srcString = "NotDefined";
 #endif
 		/// @brief 이미 해싱된 값으로 생성합니다.
+/// @param hash 해시된 값입니다.
+		HashString()
+			:HashString( 0 )
+		{
+		}
+
+		/// @brief 이미 해싱된 값으로 생성합니다.
 		/// @param hash 해시된 값입니다.
 		HashString(hashType hash)
 			:value(hash)

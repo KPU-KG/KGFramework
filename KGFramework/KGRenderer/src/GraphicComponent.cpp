@@ -500,3 +500,23 @@ void KG::Component::LightComponent::SetVisible( bool visible )
 }
 
 #pragma endregion
+
+void KG::Component::AvatarComponent::OnCreate( KG::Core::GameObject* gameObject )
+{
+	IRenderComponent::OnCreate( gameObject );
+	this->geometry = gameObject->GetComponent<KG::Component::GeometryComponent>();
+
+	this->frameCache.resize( this->geometry->geometrys.size() );
+	for ( size_t i = 0; i < this->geometry->geometrys.size(); i++ )
+	{
+		auto& boneIds = this->geometry->geometrys[i]->boneIds;
+		auto& cache = this->frameCache[i];
+		cache.resize( boneIds.size() );
+		gameObject->MatchBoneToObject( boneIds, cache );
+	}
+}
+
+KG::Core::GameObject* KG::Component::AvatarComponent::BoneIndexToGameObject( UINT index, UINT submeshIndex ) const
+{
+	return this->frameCache[submeshIndex][index];
+}

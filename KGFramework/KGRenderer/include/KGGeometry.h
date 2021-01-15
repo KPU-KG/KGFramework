@@ -7,9 +7,14 @@
 #include "D3D12Helper.h"
 #include "ResourceMetaData.h"
 #include "BoneData.h"
+#include "hash.h"
 namespace KG::Utill
 {
 	class MeshData;
+}
+namespace KG::Component
+{
+	class AvatarComponent;
 }
 namespace KG::Renderer
 {
@@ -32,6 +37,7 @@ namespace KG::Renderer
 
 	class Geometry
 	{
+		friend KG::Component::AvatarComponent;
 	public:
 		Geometry() = default;
 		Geometry( const KG::Utill::MeshData& data );
@@ -39,6 +45,7 @@ namespace KG::Renderer
 	protected:
 		std::vector<NormalVertex> vertices;
 		std::vector<UINT> indices;
+		std::vector<KG::Utill::HashString> boneIds;
 		KG::Resource::BoneData bones;
 		bool hasBone = false;
 		

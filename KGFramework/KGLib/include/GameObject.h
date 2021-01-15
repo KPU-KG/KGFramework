@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <vector>
 #include "IComponent.h"
 #include "ComponentContainer.h"
 namespace KG::Component
@@ -12,6 +13,9 @@ namespace KG::Core
 	class GameObject
 	{
 		ComponentContainer components;
+
+		KG::Core::GameObject* InternalFindChildObject( const KG::Utill::HashString& id ) const;
+		void InternalMatchBoneToObject( const std::vector<KG::Utill::HashString>& ids, std::vector<KG::Core::GameObject*>& bones ) const;
 	public:
 		KG::Utill::HashString id = KG::Utill::HashString(0);
 		std::string name;
@@ -27,7 +31,10 @@ namespace KG::Core
 		}
 
 		KG::Component::TransformComponent* GetTransform() const;
+		KG::Core::GameObject* GetChild() const;
+		KG::Core::GameObject* GetSibling() const;
 		KG::Core::GameObject* FindChildObject( const KG::Utill::HashString& id ) const;
+		void MatchBoneToObject( const std::vector<KG::Utill::HashString>& ids, std::vector<KG::Core::GameObject*>& bones ) const;
 
 	};
 }
