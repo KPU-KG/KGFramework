@@ -500,3 +500,8 @@ void KG::Component::LightComponent::SetVisible( bool visible )
 }
 
 #pragma endregion
+
+#pragma AnimationComponent
+
+
+#pragma endregion

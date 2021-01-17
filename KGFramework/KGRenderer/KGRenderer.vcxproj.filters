@@ -90,6 +90,9 @@
     <ClCompile Include="src\KGModel.cpp">
       <Filter>소스 파일\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\AnimationComponent.cpp">
+      <Filter>소스 파일\Core</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">
@@ -187,6 +190,9 @@
     </ClInclude>
     <ClInclude Include="include\BoneData.h">
       <Filter>헤더 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="export\AnimationComponent.h">
+      <Filter>헤더 파일\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

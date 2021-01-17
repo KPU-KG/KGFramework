@@ -14,6 +14,7 @@
 class aiMesh;
 class aiScene;
 class aiNode;
+class aiAnimation;
 
 
 namespace KG::Utill
@@ -60,6 +61,8 @@ namespace KG::Utill
 
 		void AddChild( ModelNode* node );
 		void AddSibling( ModelNode* node );
+
+		std::vector<aiAnimation*> animations;
 	};
 
 	struct ImportData
@@ -69,6 +72,7 @@ namespace KG::Utill
 		ModelNode* root = nullptr;
 		void LoadFromPathAssimp( const std::string& path );
 		ModelNode* ProcessNode( const aiNode* node, const aiScene* scene );
+
 	};
 }
 

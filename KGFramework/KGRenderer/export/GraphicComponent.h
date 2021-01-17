@@ -39,6 +39,7 @@ namespace KG::Component
 	class Render3DComponent;
 	class CubeCameraComponent;
 	class CameraComponent;
+	class AnimationComponent;
 
 	class DLL IRenderComponent : public IComponent
 	{
@@ -251,6 +252,13 @@ namespace KG::Component
 		void InitializeShader( const KG::Utill::HashString& shaderID, UINT slotIndex = 0 );
 		unsigned GetMaterialIndex(UINT slotIndex = 0) const;
 	};
+
+	// class DLL AnimationComponent : public IRenderComponent {
+	// protected:
+	// public:
+	// 	std::vector<XMFLOAT4> GetAnimationMatrix() {
+	// 	}
+	// };
 
 	//class DLL AvatarComponent : public IRenderComponent
 	//{

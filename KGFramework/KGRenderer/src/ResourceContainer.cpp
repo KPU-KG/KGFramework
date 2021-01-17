@@ -12,6 +12,10 @@
 #include "KGModel.h"
 #include "Transform.h"
 
+#include <assimp/scene.h>
+#include <assimp/postprocess.h>
+#include <assimp/Importer.hpp>
+
 std::unique_ptr<KG::Resource::ResourceContainer> KG::Resource::ResourceContainer::instance = nullptr;
 
 KG::Resource::ResourceContainer::ResourceContainer()
@@ -160,7 +164,6 @@ void KG::Resource::ResourceContainer::ConvertNodeToObject( const KG::Utill::Hash
 		}
 		object->AddComponent( renderer->GetNewRenderComponent() );
 	}
-
 }
 
 KG::Core::GameObject* KG::Resource::ResourceContainer::CreateObjectFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const MaterialMatch& materials )
@@ -169,6 +172,11 @@ KG::Core::GameObject* KG::Resource::ResourceContainer::CreateObjectFromModel( co
 	std::stack<std::pair<KG::Core::GameObject*, KG::Utill::ModelNode*>> modelStack;
 	auto* rootObject = container.CreateNewObject();
 	auto* rootModelNode = frame.root;
+
+	for (int i = 0; i < rootModelNode->animations.size(); ++i) {
+		rootObject->animations.push_back(nullptr);
+		rootObject->animations[i] = rootModelNode->animations[i];
+	}
 
 	for ( size_t i = 0; i < frame.meshs.size(); i++ )
 	{

@@ -7,6 +7,7 @@
 #include "GameObject.h"
 #include "LambdaComponent.h"
 #include "InputManager.h"
+#include <map>
 
 KG::GameFramework::GameFramework()
 {
@@ -320,7 +321,8 @@ void KG::GameFramework::OnTestInit()
 		oc.PostTransformSystem( &this->system->transformSystem );
 		KG::Resource::MaterialMatch match;
 		match.SetDefaultMaterial( { "soldierHead"_id, "soldierBody"_id } );
-		auto* ptr = this->renderer->LoadFromModel( "heli"_id, oc, match );
+		// auto* ptr = this->renderer->LoadFromModel( "heli"_id, oc, match );
+		auto* ptr = this->renderer->LoadFromModel( "soldier"_id, oc, match );
 		ptr->GetComponent<KG::Component::TransformComponent>()->Translate( 3, -0.2, 3 );
 		//ptr->GetComponent<KG::Component::TransformComponent>()->RotateEuler( 0, 180, 0 );
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
@@ -331,10 +333,16 @@ void KG::GameFramework::OnTestInit()
 				trans->RotateEuler( 0, 90.0f * elapsedTime, 0 );
 			}
 		);
+
 		ptr->AddComponent( lam );
+		
+		// 애니메이션 테스트 코드
+		// 나중에 컴포넌트에서 관리해줄것
+		// 1. 시간(해당 애니메이션 프레임)을 주면 해당 프레임에서 애니메이션 행렬들을 리턴
+		auto mat = ptr->GetAnimationMatrix(0.4, 0);
 	}
 
-
+	
 
 }
 
