@@ -5,6 +5,7 @@
 #include <assimp/Importer.hpp>
 
 #include "AssimpImpoter.h"
+#include "debug.h"
 using namespace KG::Utill;
 
 static MeshData ConvertMesh(const aiMesh* mesh)
@@ -36,44 +37,58 @@ static MeshData ConvertMesh(const aiMesh* mesh)
 			data.uvs[j].push_back(XMFLOAT2(mesh->mTextureCoords[j][i].x, mesh->mTextureCoords[j][i].y));
 		}
 	}
-	data.vertexBone.resize( mesh->mNumVertices );
 
-	for ( int i = 0; i < mesh->mNumBones; i++ )
+	if ( mesh->mNumBones != 0 )
 	{
-		for ( int j = 0; j < mesh->mBones[i]->mNumWeights; j++ )
+		data.vertexBone.resize( mesh->mNumVertices );
+
+		for ( int i = 0; i < mesh->mNumBones; i++ )
 		{
-			unsigned int vertexId = mesh->mBones[i]->mWeights[j].mVertexId;
-			float weight = mesh->mBones[i]->mWeights[j].mWeight;
-
-			for ( int k = 0; k < 4; k++ )
+			for ( int j = 0; j < mesh->mBones[i]->mNumWeights; j++ )
 			{
-				// push_back 효과를 구현
-				// 이거 아마 이렇게 하면 큰일날 것임!
-				if ( data.vertexBone[vertexId][k].boneWeight == 0.0f )
-				{
-					data.vertexBone[vertexId][k].bondId = i;
-					data.vertexBone[vertexId][k].boneWeight = weight;
-					break;
-				}
+				unsigned int vertexId = mesh->mBones[i]->mWeights[j].mVertexId;
+				float weight = mesh->mBones[i]->mWeights[j].mWeight;
+
+				VertexBoneData bone;
+				bone.bondId = i;
+				bone.boneWeight = weight;
+				data.vertexBone[vertexId].push_back( bone );
 			}
+			BoneData boneData;
+			boneData.nodeId = KG::Utill::HashString(mesh->mBones[i]->mName.C_Str());
+			auto& mat = mesh->mBones[i]->mOffsetMatrix;
+			boneData.offsetMatrix = XMFLOAT4X4(
+				mat.a1, mat.b1, mat.c1, mat.d1,
+				mat.a2, mat.b2, mat.c2, mat.d2,
+				mat.a3, mat.b3, mat.c3, mat.d3,
+				mat.a4, mat.b4, mat.c4, mat.d4
+			);
+			//boneData.offsetMatrix = XMFLOAT4X4(
+			//	mat.a1, mat.a2, mat.a3, mat.a4,
+			//	mat.b1, mat.b2, mat.b3, mat.b4,
+			//	mat.c1, mat.c2, mat.c3, mat.c4,
+			//	mat.d1, mat.d2, mat.d3, mat.d4
+			//	);
+			data.bones.push_back( boneData );
 		}
-		BoneData boneData;
-		boneData.nodeId = KG::Utill::HashString(mesh->mBones[i]->mName.C_Str());
-		auto& mat = mesh->mBones[i]->mOffsetMatrix;
-		boneData.offsetMatrix = XMFLOAT4X4(
-			mat.a1, mat.b1, mat.c1, mat.d1,
-			mat.a2, mat.b2, mat.c2, mat.d2,
-			mat.a3, mat.b3, mat.c3, mat.d3,
-			mat.a4, mat.b4, mat.c4, mat.d4
-		);
-		data.bones.push_back( boneData );
-	}
 
-	// sort bone Weight
+		// sort bone Weight
 
-	for ( auto& bone : data.vertexBone )
-	{
-		std::sort( bone.begin(), bone.end(), []( auto& a, auto& b ) {return a.boneWeight > b.boneWeight; } );
+		for ( auto& bone : data.vertexBone )
+		{
+			if ( bone.size() == 0 )
+			{
+				DebugErrorMessage( "Bone Size is Zero" );
+			}
+			while ( bone.size() < 4)
+			{
+				VertexBoneData vbd;
+				vbd.bondId = 0;
+				vbd.boneWeight = 0;
+				bone.push_back( vbd );
+			}
+			std::sort( bone.begin(), bone.end(), []( auto& a, auto& b ) {return a.boneWeight > b.boneWeight; } );
+		}
 	}
 
 	return data;
@@ -108,7 +123,7 @@ void KG::Utill::ImportData::LoadFromPathAssimp( const std::string& path )
 {
 	Assimp::Importer importer;
 	importer.SetPropertyBool( AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false );
-	const aiScene* scene = importer.ReadFile( path, aiProcess_Triangulate | aiProcess_CalcTangentSpace | aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality );
+	const aiScene* scene = importer.ReadFile( path, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality );
 
 	if ( !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode )
 	{
@@ -132,14 +147,29 @@ ModelNode* KG::Utill::ImportData::ProcessNode( const aiNode* node, const aiScene
 	auto& importNode = this->nodes.emplace_back();
 	importNode.name = node->mName.C_Str();
 	importNode.nodeId = KG::Utill::HashString(node->mName.C_Str());
-	aiVector3D position;
-	aiQuaternion rotation;
-	aiVector3D scale;
-	node->mTransformation.Decompose( scale, rotation, position );
+	//aiVector3D position;
+	//aiQuaternion rotation;
+	//aiVector3D scale;
+	//node->mTransformation.DecomposeNoScaling( rotation, position );
 
-	importNode.position = XMFLOAT3( position.x, position.y, position.z );
-	importNode.rotation = XMFLOAT4( rotation.x, rotation.y, rotation.z, rotation.w );
-	importNode.scale = XMFLOAT3( scale.x, scale.y, scale.z );
+	//importNode.position = XMFLOAT3( position.x, position.y, position.z );
+	//importNode.rotation = XMFLOAT4( rotation.x, rotation.y, rotation.z, rotation.w );
+	//importNode.scale = XMFLOAT3( 1, 1, 1 );
+
+	auto& mat = node->mTransformation;
+	auto mato = XMFLOAT4X4(
+		mat.a1, mat.b1, mat.c1, mat.d1,
+		mat.a2, mat.b2, mat.c2, mat.d2,
+		mat.a3, mat.b3, mat.c3, mat.d3,
+		mat.a4, mat.b4, mat.c4, mat.d4
+	);
+	XMVECTOR pos;
+	XMVECTOR rot;
+	XMVECTOR scl;
+	XMMatrixDecompose( &scl, &rot, &pos, XMLoadFloat4x4( &mato ) );
+	XMStoreFloat3( &importNode.position, pos );
+	XMStoreFloat4( &importNode.rotation, rot );
+	XMStoreFloat3( &importNode.scale, scl );
 
 	for ( size_t i = 0; i < node->mNumMeshes; i++ )
 	{

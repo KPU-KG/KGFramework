@@ -88,6 +88,7 @@ namespace KG::Renderer
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() override;
 		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() override;
 		virtual KG::Component::LightComponent* GetNewLightComponent() override;
+		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() override;
 		virtual KG::Core::GameObject* LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials ) override;
 
 		auto GetD3DDevice() const

@@ -25,6 +25,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 	KG::System::CameraSystem cameraSystem;
 	KG::System::CubeCameraSystem cubeCameraSystem;
 	KG::System::LightSystem lightSystem;
+	KG::System::AvatarSystem avatarSystem;
 
 	void OnPreRender()
 	{
@@ -34,6 +35,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->cameraSystem.OnPreRender();
 		this->cubeCameraSystem.OnPreRender();
 		this->lightSystem.OnPreRender();
+		this->avatarSystem.OnPreRender();
 	}
 
 	void OnUpdate( float elaspedTime )
@@ -44,6 +46,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->cameraSystem.OnUpdate( elaspedTime );
 		this->cubeCameraSystem.OnUpdate( elaspedTime );
 		this->lightSystem.OnUpdate( elaspedTime );
+		this->avatarSystem.OnUpdate( elaspedTime );
 	}
 	void OnPostUpdate( float elaspedTime )
 	{
@@ -53,6 +56,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->cameraSystem.OnPostUpdate( elaspedTime );
 		this->cubeCameraSystem.OnPostUpdate( elaspedTime );
 		this->lightSystem.OnPostUpdate( elaspedTime );
+		this->avatarSystem.OnPostUpdate( elaspedTime );
 	}
 
 	void Clear()
@@ -63,6 +67,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->cameraSystem.Clear();
 		this->cubeCameraSystem.Clear();
 		this->lightSystem.Clear();
+		this->avatarSystem.Clear();
 	}
 };
 
@@ -279,6 +284,11 @@ KG::Component::CubeCameraComponent* KG::Renderer::KGDXRenderer::GetNewCubeCamera
 KG::Component::LightComponent* KG::Renderer::KGDXRenderer::GetNewLightComponent()
 {
 	return static_cast<KG::Component::LightComponent*>(this->graphicSystems->lightSystem.GetNewComponent());
+}
+
+KG::Component::BoneTransformComponent* KG::Renderer::KGDXRenderer::GetNewBoneTransformComponent()
+{
+	return static_cast<KG::Component::BoneTransformComponent*>(this->graphicSystems->avatarSystem.GetNewComponent());;
 }
 
 KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials )

@@ -11,5 +11,7 @@
     <Geometry id="lightSphere" fileDir="Resource/Geometry/LightCull/sphere.fbx" rawMesh="true" hash_id="1556496656"/>
     <Geometry id="lightCone" fileDir="Resource/Geometry/LightCull/cone.fbx" rawMesh="true" hash_id="2357238414"/>
     <Geometry id="lightPlane" fileDir="Resource/Geometry/LightCull/plane.fbx" rawMesh="true" hash_id="3958547087"/>
-    <Geometry id="soldier" fileDir="Resource/Geometry/animation/Soldier.fbx" rawMesh="false" hash_id="139117345"/>
+  <Geometry id="soldier" fileDir="Resource/Geometry/animation/Soldier.fbx" rawMesh="false" hash_id="139117345"/>
+  <Geometry id="sphere_model" fileDir="Resource/Geometry/sphere.fbx" rawMesh="false"/>
+  <Geometry id="won" fileDir="Resource/Geometry/won.fbx" rawMesh="false" hash_id="117498587"/>
 </GeometrySet>

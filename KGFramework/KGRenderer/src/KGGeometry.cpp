@@ -120,13 +120,17 @@ void KG::Renderer::Geometry::CreateFromMeshData( const KG::Utill::MeshData& data
 			this->vertices[i].boneId = XMUINT4( bone[0].bondId, bone[1].bondId, bone[2].bondId, bone[3].bondId );
 			this->vertices[i].boneWeight = XMFLOAT4( bone[0].boneWeight, bone[1].boneWeight, bone[2].boneWeight, bone[3].boneWeight );
 		}
+		else
+		{
+			this->vertices[i].boneId = XMUINT4( 0, 0, 0, 0 );
+			this->vertices[i].boneWeight = XMFLOAT4( 1.0f, 0.0f, 0.0f, 0.0f );
+		}
 	}
 
 	for ( size_t i = 0; i < data.bones.size(); i++ )
 	{
 		this->hasBone = true;
-		XMFLOAT4X4 transposed;
-		XMStoreFloat4x4( &transposed, XMMatrixTranspose( XMLoadFloat4x4( &data.bones[i].offsetMatrix ) ) );
-		this->bones.offsetMatrixs[i] = transposed;
+		this->bones.offsetMatrixs[i] = Math::Matrix4x4::Transpose( data.bones[i].offsetMatrix );
+		this->boneIds.push_back(data.bones[i].nodeId);
 	}
 }

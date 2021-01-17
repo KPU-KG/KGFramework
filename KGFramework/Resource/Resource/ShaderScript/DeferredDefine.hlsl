@@ -17,12 +17,15 @@ StructuredBuffer<InstanceData> objectInfo : register(t0);
 
 StructuredBuffer<float4x4> boneOffsetInfo : register(t0, space3);
 
-struct AnimationTransform
-{
-    float4x4 transform[MAX_COUNT_BONE];
-};
+//struct AnimationTransform
+//{
+//    float4x4 transform[MAX_COUNT_BONE];
+//};
 
-StructuredBuffer<AnimationTransform> animationTransformInfo : register(t1, space3);
+//StructuredBuffer<AnimationTransform> animationTransformInfo : register(t1, space3);
+
+StructuredBuffer<float4x4> animationTransformInfo : register(t1, space3);
+
 
 Texture2D<float4> shaderTexture[] : register(t0, space1);
 

@@ -21,6 +21,8 @@ namespace KG::Renderer
 		int objectSize = 0;
 		int visibleSize = 0;
 		int updateCount = 0;
+		bool isSkinnedAnimationShader = false;
+		bool isSkinnedAnimationMesh = false;
 		BufferPool<ObjectData>* objectBufferPool = nullptr;
 		PooledBuffer<ObjectData>* objectBuffer = nullptr;
 

@@ -40,7 +40,7 @@ namespace KG::Utill
 		std::vector<XMFLOAT3> tangent;
 		std::vector<XMFLOAT3> biTangent;
 		std::vector<std::vector<XMFLOAT2>> uvs;
-		std::vector<std::array<VertexBoneData, 4>> vertexBone;
+		std::vector<std::vector<VertexBoneData>> vertexBone;
 
 		std::vector<BoneData> bones;
 	};

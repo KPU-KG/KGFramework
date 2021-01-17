@@ -14,7 +14,7 @@ namespace KG::Utill
 }
 namespace KG::Component
 {
-	class AvatarComponent;
+	class BoneTransformComponent;
 }
 namespace KG::Renderer
 {
@@ -37,7 +37,7 @@ namespace KG::Renderer
 
 	class Geometry
 	{
-		friend KG::Component::AvatarComponent;
+		friend KG::Component::BoneTransformComponent;
 	public:
 		Geometry() = default;
 		Geometry( const KG::Utill::MeshData& data );
@@ -72,6 +72,10 @@ namespace KG::Renderer
 		auto IsLoaded() const
 		{
 			return this->vertexBuffer != nullptr;
+		};
+		auto HasBone() const
+		{
+			return this->hasBone;
 		};
 	};
 };

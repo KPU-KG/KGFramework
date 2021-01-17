@@ -50,12 +50,12 @@ KG::Component::TransformComponent* KG::Core::GameObject::GetTransform() const
     return this->GetComponent<KG::Component::TransformComponent>();
 }
 
-KG::Core::GameObject* KG::Core::GameObject::GetChild() const
+inline KG::Core::GameObject* KG::Core::GameObject::GetChild() const
 {
     return this->GetTransform()->hasChild() ? this->GetTransform()->GetChild()->GetGameObject() : nullptr;
 }
 
-KG::Core::GameObject* KG::Core::GameObject::GetSibling() const
+inline KG::Core::GameObject* KG::Core::GameObject::GetSibling() const
 {
     return this->GetTransform()->hasSibiling() ? this->GetTransform()->GetNextsibiling()->GetGameObject() : nullptr;
 }

@@ -96,3 +96,15 @@ void KG::System::CubeCameraSystem::OnPostUpdate( float elapsedTime )
 void KG::System::CubeCameraSystem::OnPreRender()
 {
 }
+
+void KG::System::AvatarSystem::OnUpdate( float elapsedTime )
+{
+}
+
+void KG::System::AvatarSystem::OnPostUpdate( float elapsedTime )
+{
+}
+
+void KG::System::AvatarSystem::OnPreRender()
+{
+}

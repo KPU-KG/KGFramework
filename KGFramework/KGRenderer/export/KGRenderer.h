@@ -101,6 +101,7 @@ namespace KG::Renderer
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() = 0;
 		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() = 0;
 		virtual KG::Component::LightComponent* GetNewLightComponent() = 0;
+		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() = 0;
 		virtual KG::Core::GameObject* LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials ) = 0;
 
 	};

@@ -37,14 +37,24 @@ void KG::Component::Render3DComponent::OnPreRender()
 		renderJob->objectBuffer->mappedData[updateCount].object.world = mat;
 		if ( this->material )
 		{
-			renderJob->objectBuffer->mappedData[updateCount].object.materialIndex = this->material->GetMaterialIndex(this->jobMaterialIndexs[i]);
+			renderJob->objectBuffer->mappedData[updateCount].object.materialIndex = this->material->GetMaterialIndex( this->jobMaterialIndexs[i] );
+		}
+		if ( this->boneAnimation && renderJob->animationBuffer != nullptr )
+		{
+			for ( size_t k = 0; k < this->boneAnimation->frameCache[i].size(); k++ )
+			{
+				//auto wo = ( this->transform->GetGlobalWorldMatrix() );
+				//auto finalAnim = Math::Matrix4x4::Inverse(this->boneAnimation->frameCache[i][k]->GetTransform()->GetGlobalWorldMatrix());
+				auto finalTransform = this->boneAnimation->frameCache[i][k]->GetTransform()->GetGlobalWorldMatrix();
+				renderJob->animationBuffer->mappedData[updateCount].currentTransforms[k] = Math::Matrix4x4::Transpose( finalTransform );
+			}
 		}
 		if ( this->reflectionProbe )
 		{
 			renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
 				this->reflectionProbe->GetRenderTexture().renderTargetSRVIndex;
 		}
-		else 
+		else
 		{
 			renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
 				KG::Resource::ResourceContainer::GetInstance()->LoadTexture( KG::Renderer::KGDXRenderer::GetInstance()->GetSkymapTexutreId() )->index;
@@ -58,6 +68,7 @@ void KG::Component::Render3DComponent::OnCreate( KG::Core::GameObject* gameObjec
 	this->RegisterTransform( gameObject->GetComponent<TransformComponent>() );
 	this->RegisterMaterial( gameObject->GetComponent<MaterialComponent>() );
 	this->RegisterGeometry( gameObject->GetComponent<GeometryComponent>() );
+	this->RegisterBoneAnimation( gameObject->GetComponent<BoneTransformComponent>() );
 	auto geometryCount = this->geometry->geometrys.size();
 	auto materialCount = this->material->materialIndexs.size();
 
@@ -68,7 +79,7 @@ void KG::Component::Render3DComponent::OnCreate( KG::Core::GameObject* gameObjec
 	for ( size_t i = 0; i < geometryCount; i++ )
 	{
 		auto materialIndex = materialCount == 1 ? 0 : i;
-		auto job = KG::Renderer::KGDXRenderer::GetInstance()->GetRenderEngine()->GetRenderJob( this->material->shaders[i], this->geometry->geometrys[i] );
+		auto job = KG::Renderer::KGDXRenderer::GetInstance()->GetRenderEngine()->GetRenderJob( this->material->shaders[materialIndex], this->geometry->geometrys[i] );
 		this->AddRenderJob( job, materialIndex );
 	}
 	//조건문 넣고 렌더잡 만들자
@@ -119,6 +130,12 @@ void KG::Component::Render3DComponent::RegisterGeometry( GeometryComponent* geom
 	this->geometry = geometry;
 }
 
+void KG::Component::Render3DComponent::RegisterBoneAnimation( BoneTransformComponent* anim )
+{
+	this->boneAnimation = anim;
+}
+
+
 #pragma endregion
 
 #pragma region MaterialComponent
@@ -166,7 +183,18 @@ void KG::Component::GeometryComponent::InitializeGeometry( const KG::Utill::Hash
 	{
 		this->geometrys.resize( slotIndex + 1 );
 	}
-	this->geometrys[slotIndex] =  inst->LoadGeometry( geometryID, subMeshIndex );
+	this->geometrys[slotIndex] = inst->LoadGeometry( geometryID, subMeshIndex );
+}
+
+bool KG::Component::GeometryComponent::HasBone() const
+{
+	bool result = false;
+	for ( auto* i : geometrys )
+	{
+		if ( i->HasBone() )
+			return true;
+	}
+	return false;
 }
 
 #pragma endregion
@@ -327,7 +355,7 @@ void KG::Component::CameraComponent::SetCameraRender( ID3D12GraphicsCommandList*
 		)
 	);
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	commandList->ClearRenderTargetView( this->renderTexture->GetRenderTargetRTVHandle(this->cubeIndex), clearColor, 0, nullptr );
+	commandList->ClearRenderTargetView( this->renderTexture->GetRenderTargetRTVHandle( this->cubeIndex ), clearColor, 0, nullptr );
 }
 
 void KG::Component::CameraComponent::EndCameraRender( ID3D12GraphicsCommandList* commandList )
@@ -501,9 +529,19 @@ void KG::Component::LightComponent::SetVisible( bool visible )
 
 #pragma endregion
 
-void KG::Component::AvatarComponent::OnCreate( KG::Core::GameObject* gameObject )
+void KG::Component::BoneTransformComponent::OnCreate( KG::Core::GameObject* gameObject )
 {
 	IRenderComponent::OnCreate( gameObject );
+
+}
+
+KG::Core::GameObject* KG::Component::BoneTransformComponent::BoneIndexToGameObject( UINT index, UINT submeshIndex ) const
+{
+	return this->frameCache[submeshIndex][index];
+}
+
+void KG::Component::BoneTransformComponent::InitializeBone( KG::Core::GameObject* rootNode )
+{
 	this->geometry = gameObject->GetComponent<KG::Component::GeometryComponent>();
 
 	this->frameCache.resize( this->geometry->geometrys.size() );
@@ -512,11 +550,15 @@ void KG::Component::AvatarComponent::OnCreate( KG::Core::GameObject* gameObject 
 		auto& boneIds = this->geometry->geometrys[i]->boneIds;
 		auto& cache = this->frameCache[i];
 		cache.resize( boneIds.size() );
-		gameObject->MatchBoneToObject( boneIds, cache );
+		rootNode->MatchBoneToObject( boneIds, cache );
+#ifdef _DEBUG
+		for ( auto& i : cache )
+		{
+			if ( i == nullptr )
+			{
+				DebugErrorMessage( "Bone Not Linked Object!" );
+			}
+		}
+#endif
 	}
-}
-
-KG::Core::GameObject* KG::Component::AvatarComponent::BoneIndexToGameObject( UINT index, UINT submeshIndex ) const
-{
-	return this->frameCache[submeshIndex][index];
 }

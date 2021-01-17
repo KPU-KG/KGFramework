@@ -26,9 +26,8 @@ namespace KG::Component
 		template <class Ty>
 		Ty* GetComponent() const
 		{
-			return static_cast<Ty*>(this->container.at( KG::Utill::HashString( ComponentID<Ty>::id() ) ));
-			//auto it = this->container.find( KG::Utill::HashString( ComponentID<Ty>::id() ) );
-			//return (it != this->container.end()) ? static_cast<Ty*>(it->second) : nullptr;
+			auto it = this->container.find( KG::Utill::HashString( ComponentID<Ty>::id() ) );
+			return (it != this->container.end()) ? static_cast<Ty*>(it->second) : nullptr;
 		}
 
 	};

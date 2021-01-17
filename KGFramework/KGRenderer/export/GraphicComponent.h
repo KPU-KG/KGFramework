@@ -39,7 +39,7 @@ namespace KG::Component
 	class Render3DComponent;
 	class CubeCameraComponent;
 	class CameraComponent;
-	class AvatarComponent;
+	class BoneTransformComponent;
 	
 
 	class DLL IRenderComponent : public IComponent
@@ -151,6 +151,7 @@ namespace KG::Component
 		TransformComponent* transform = nullptr;
 		GeometryComponent* geometry = nullptr;
 		MaterialComponent* material = nullptr;
+		BoneTransformComponent* boneAnimation = nullptr;
 		CubeCameraComponent* reflectionProbe = nullptr;
 		std::vector<KG::Renderer::KGRenderJob*> renderJobs;
 		std::vector<UINT> jobMaterialIndexs;
@@ -158,6 +159,7 @@ namespace KG::Component
 		void RegisterTransform( TransformComponent* transform );
 		void RegisterMaterial( MaterialComponent* material );
 		void RegisterGeometry( GeometryComponent* geometry );
+		void RegisterBoneAnimation( BoneTransformComponent* anim );
 		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
 	public:
 		bool isVisible = true;
@@ -170,10 +172,11 @@ namespace KG::Component
 	class DLL GeometryComponent : public IRenderComponent
 	{
 		friend Render3DComponent;
-		friend AvatarComponent;
+		friend BoneTransformComponent;
 		std::vector<KG::Renderer::Geometry*> geometrys;
 	public:
 		void InitializeGeometry( const KG::Utill::HashString& geometryID, UINT subMeshIndex = 0, UINT slotIndex = 0 );
+		bool HasBone() const;
 	};
 
 	struct LightData
@@ -255,7 +258,8 @@ namespace KG::Component
 		unsigned GetMaterialIndex(UINT slotIndex = 0) const;
 	};
 
-	class DLL AvatarComponent : public IRenderComponent
+	/// @brief 메쉬의 본과 실제 게임오브젝트를 링크하고 애니메이션 트랜스폼 행렬을 갱신합니다.
+	class DLL BoneTransformComponent : public IRenderComponent
 	{
 		friend Render3DComponent;
 		using FrameCacheVector = std::vector<KG::Core::GameObject*>;
@@ -265,6 +269,7 @@ namespace KG::Component
 		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
 	public:
 		KG::Core::GameObject* BoneIndexToGameObject( UINT index, UINT submeshIndex = 0 ) const;
+		void InitializeBone( KG::Core::GameObject* rootNode );
 	};
 
 	REGISTER_COMPONENT_ID( LightComponent );
@@ -273,7 +278,7 @@ namespace KG::Component
 	REGISTER_COMPONENT_ID( Render3DComponent );
 	REGISTER_COMPONENT_ID( GeometryComponent );
 	REGISTER_COMPONENT_ID( MaterialComponent );
-	REGISTER_COMPONENT_ID( AvatarComponent );
+	REGISTER_COMPONENT_ID( BoneTransformComponent );
 
 }
 //대충 텍스처 류는 전부 디스크립터 힙에 배치

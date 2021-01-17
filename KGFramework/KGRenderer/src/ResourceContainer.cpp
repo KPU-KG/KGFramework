@@ -132,20 +132,20 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceContainer::LoadMa
 	}
 }
 
-void KG::Resource::ResourceContainer::ConvertNodeToObject( const KG::Utill::HashString& id, KG::Core::GameObject* object, KG::Utill::ModelNode* node, const MaterialMatch& materials )
+void KG::Resource::ResourceContainer::ConvertNodeToObject( const KG::Utill::HashString& id, KG::Core::GameObject* object, KG::Utill::ModelNode* node, const MaterialMatch& materials, KG::Core::GameObject* rootObject )
 {
 
 	object->id = KG::Utill::HashString( node->name );
 	auto* renderer = KG::Renderer::KGDXRenderer::GetInstance();
-	object->AddComponent( renderer->GetNewGeomteryComponent() );
-	object->AddComponent( renderer->GetNewMaterialComponent() );
 
 	auto* tran = object->GetComponent<KG::Component::TransformComponent>();
-	tran->SetPosition( node->position );
-	tran->SetRotation( node->rotation );
 	tran->SetScale( node->scale );
+	tran->SetRotation( node->rotation );
+	tran->SetPosition( node->position );
 	if ( node->meshs.size() != 0 )
 	{
+		object->AddComponent( renderer->GetNewGeomteryComponent() );
+		object->AddComponent( renderer->GetNewMaterialComponent() );
 		auto* geo = object->GetComponent<KG::Component::GeometryComponent>();
 		auto* mat = object->GetComponent<KG::Component::MaterialComponent>();
 		auto& materialSet = materials.GetMaterial( object->id );
@@ -158,6 +158,22 @@ void KG::Resource::ResourceContainer::ConvertNodeToObject( const KG::Utill::Hash
 		{
 			mat->InitializeMaterial( materialSet[i], i );
 		}
+		if ( geo->HasBone() )
+		{
+			auto* avatar = renderer->GetNewBoneTransformComponent();
+			object->AddComponent( avatar );
+			avatar->InitializeBone( rootObject );
+		}
+		object->AddComponent( renderer->GetNewRenderComponent() );
+	}
+	else 
+	{
+		object->AddComponent( renderer->GetNewGeomteryComponent() );
+		object->AddComponent( renderer->GetNewMaterialComponent() );
+		auto* geo = object->GetComponent<KG::Component::GeometryComponent>();
+		auto* mat = object->GetComponent<KG::Component::MaterialComponent>();
+		geo->InitializeGeometry( KG::Utill::HashString("sphere"_id) );
+		mat->InitializeMaterial( KG::Utill::HashString("PBRStone"_id) );
 		object->AddComponent( renderer->GetNewRenderComponent() );
 	}
 
@@ -175,7 +191,7 @@ KG::Core::GameObject* KG::Resource::ResourceContainer::CreateObjectFromModel( co
 		this->CreateGeometry( id, i , frame.meshs[i] );
 	}
 
-	this->ConvertNodeToObject( id, rootObject, rootModelNode, materials );
+	this->ConvertNodeToObject( id, rootObject, rootModelNode, materials, rootObject );
 
 
 	modelStack.push( std::make_pair( rootObject, rootModelNode ) );
@@ -188,7 +204,7 @@ KG::Core::GameObject* KG::Resource::ResourceContainer::CreateObjectFromModel( co
 		{
 			auto* childObject = container.CreateNewObject();
 			auto* childNode = node->child;
-			this->ConvertNodeToObject( id, childObject, childNode, materials );
+			this->ConvertNodeToObject( id, childObject, childNode, materials, rootObject );
 			transform->AddChild( childObject->GetComponent<KG::Component::TransformComponent>() );
 			modelStack.push( std::make_pair( childObject, childNode ) );
 		}
@@ -196,20 +212,22 @@ KG::Core::GameObject* KG::Resource::ResourceContainer::CreateObjectFromModel( co
 		{
 			auto* siblingObject = container.CreateNewObject();
 			auto* siblingNode = node->sibling;
-			this->ConvertNodeToObject( id, siblingObject, siblingNode, materials );
+			this->ConvertNodeToObject( id, siblingObject, siblingNode, materials, rootObject );
 			transform->AddSibiling( siblingObject->GetComponent<KG::Component::TransformComponent>() );
 			modelStack.push( std::make_pair( siblingObject, siblingNode ) );
+			auto* siblingObj = object->GetSibling();
+			auto* child = siblingObj->GetChild();
 		}
 		else 
 		{
 			modelStack.pop();
 		}
 	}
-	auto rootPosition = rootObject->GetTransform()->GetPosition();
+	//auto rootPosition = rootObject->GetTransform()->GetPosition();
 	auto rootScale = rootObject->GetTransform()->GetScale();
 	float scaleFactor = 0.01f;
-	rootObject->GetTransform()->SetPosition( 0, 0, 0 );
-	rootObject->GetTransform()->SetScale( rootScale.x * scaleFactor, rootScale.y * scaleFactor, rootScale.z * scaleFactor );
+	//rootObject->GetTransform()->SetPosition( 0, 0, 0 );
+	//rootObject->GetTransform()->SetScale( rootScale.x * scaleFactor, rootScale.y * scaleFactor, rootScale.z * scaleFactor );
 	return rootObject;
 }
 

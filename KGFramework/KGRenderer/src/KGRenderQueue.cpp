@@ -14,6 +14,7 @@ KGRenderJob& KG::Renderer::KGRenderEngine::CreateRenderJob( const KGRenderJob& j
 	auto& inst = this->pool.emplace_back( job );
 	this->pass[job.shader->GetShaderType()].emplace( &inst );
 	inst.objectBufferPool = &this->bufferPool;
+	inst.animationBufferPool = &this->animationBufferPool;
 	return inst;
 }
 
@@ -108,11 +109,29 @@ void KG::Renderer::KGRenderJob::GetNewBuffer()
 		this->objectBuffer->isUsing = false;
 	this->objectBuffer = this->objectBufferPool->GetNewBuffer( this->objectSize );
 
-	if ( this->shader->IsSkinnedAnimation() )
+	this->isSkinnedAnimationShader = this->shader->IsSkinnedAnimation();
+	this->isSkinnedAnimationMesh = this->geometry->HasBone();
+	if ( this->isSkinnedAnimationShader )
 	{
-		if ( this->animationBuffer )
-			this->animationBuffer->isUsing = false;
-		this->animationBuffer = this->animationBufferPool->GetNewBuffer( this->objectSize );
+		if ( this->isSkinnedAnimationMesh )
+		{
+			if ( this->animationBuffer )
+				this->animationBuffer->isUsing = false;
+			this->animationBuffer = this->animationBufferPool->GetNewBuffer( this->objectSize );
+		}
+		else 
+		{
+			if ( !this->animationBuffer )
+			{
+				this->animationBuffer = this->animationBufferPool->GetNewBuffer( 1 );
+				XMFLOAT4X4 identity = {};
+				XMStoreFloat4x4( &identity, XMMatrixIdentity() );
+				for ( size_t i = 0; i < KG::Resource::MAX_COUNT_BONE; i++ )
+				{
+					this->animationBuffer->mappedData[0].currentTransforms[i] = identity;
+				}
+			}
+		}
 	}
 }
 
@@ -163,9 +182,9 @@ void KG::Renderer::KGRenderJob::Render( ID3D12GraphicsCommandList* cmdList, Shad
 	auto addr = this->objectBuffer->buffer.resource->GetGPUVirtualAddress();
 	cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::InstanceData, addr );
 
-	if ( this->shader->IsSkinnedAnimation() )
+	if ( this->isSkinnedAnimationShader )
 	{
-		auto animAddr = this->objectBuffer->buffer.resource->GetGPUVirtualAddress();
+		auto animAddr = this->animationBuffer->buffer.resource->GetGPUVirtualAddress();
 		cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::AnimationTransformData, animAddr );
 	}
 

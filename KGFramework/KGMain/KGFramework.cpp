@@ -86,21 +86,21 @@ void KG::GameFramework::OnTestInit()
 	constexpr auto texOne = "PBRMetal"_id;
 	constexpr auto texTwo = "PBRMetal2"_id;
 	constexpr auto texThree = "PBRGold"_id;
-	{
-		auto* tran = this->system->transformSystem.GetNewComponent();
-		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( texOne ) );
-		auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "plane"_id ) );
-		auto* ren = this->renderer->GetNewRenderComponent();
-		testPlaneObject.name = "plane";
-		testPlaneObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
-		testPlaneObject.AddComponent( mat );
-		testPlaneObject.AddComponent( geo );
-		testPlaneObject.AddComponent( ren );
-		testPlaneObject.GetComponent<KG::Component::TransformComponent>()->Translate( 15.0f, -0.5f, 15.0f );
-		testPlaneObject.GetComponent<KG::Component::TransformComponent>()->RotateEuler( 90.0f, 0.0f, 0.0f );
-		testPlaneObject.GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) * 20 );
+	//{
+	//	auto* tran = this->system->transformSystem.GetNewComponent();
+	//	auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( texOne ) );
+	//	auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "plane"_id ) );
+	//	auto* ren = this->renderer->GetNewRenderComponent();
+	//	testPlaneObject.name = "plane";
+	//	testPlaneObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
+	//	testPlaneObject.AddComponent( mat );
+	//	testPlaneObject.AddComponent( geo );
+	//	testPlaneObject.AddComponent( ren );
+	//	testPlaneObject.GetComponent<KG::Component::TransformComponent>()->Translate( 15.0f, -0.5f, 15.0f );
+	//	testPlaneObject.GetComponent<KG::Component::TransformComponent>()->RotateEuler( 90.0f, 0.0f, 0.0f );
+	//	testPlaneObject.GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) * 20 );
 
-	}
+	//}
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* cam = this->renderer->GetNewCameraComponent();
@@ -170,91 +170,91 @@ void KG::GameFramework::OnTestInit()
 
 
 
-	constexpr size_t cdas = 3;
-	for ( size_t y = 0; y < cdas; y++ )
-	{
-		for ( size_t x = 0; x < cdas; x++ )
-		{
-			size_t index = cdas * y + x;
-			{
-				auto* tran = this->system->transformSystem.GetNewComponent();
-				auto* lam = this->system->lambdaSystem.GetNewComponent();
-				static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
-					[]( KG::Core::GameObject* gameObject, float elapsedTime )
-					{
-						using namespace KG::Input;
-						auto input = InputManager::GetInputManager();
-						auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
-						if ( input->IsTouching( VK_SPACE ) )
-						{
-							trans->RotateEuler( 0.0f, 90.0f * elapsedTime, 0.0f );
-						}
-					}
-				);
-				auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? texThree : texTwo ) );
-				auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? "sphere"_id : "cube"_id ) );
-				auto* evn = this->renderer->GetNewCubeCameraComponent();
-				KG::Renderer::RenderTextureDesc renderTextureDesc;
-				renderTextureDesc.useDeferredRender = true;
-				renderTextureDesc.useCubeRender = true;
-				renderTextureDesc.useDepthStencilBuffer = true;
-				renderTextureDesc.useRenderTarget = true;
-				renderTextureDesc.uploadSRVRenderTarget = true;
-				renderTextureDesc.width = 128;
-				renderTextureDesc.height = 128;
-				evn->InitializeRenderTexture( renderTextureDesc );
-				auto* ren = this->renderer->GetNewRenderComponent();
-				testCubeObjects[index].name = "meshObject0";
-				testCubeObjects[index].AddComponent( tran );
-				testCubeObjects[index].AddComponent( mat );
-				testCubeObjects[index].AddComponent( lam );
-				testCubeObjects[index].AddComponent( geo );
-				testCubeObjects[index].AddComponent( evn );
-				testCubeObjects[index].AddComponent( ren );
-				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
-				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) * 0.25f );
-				testCubeObjects[index].GetComponent<KG::Component::Render3DComponent>()->SetReflectionProbe( evn );
-			}
+	//constexpr size_t cdas = 3;
+	//for ( size_t y = 0; y < cdas; y++ )
+	//{
+	//	for ( size_t x = 0; x < cdas; x++ )
+	//	{
+	//		size_t index = cdas * y + x;
+	//		{
+	//			auto* tran = this->system->transformSystem.GetNewComponent();
+	//			auto* lam = this->system->lambdaSystem.GetNewComponent();
+	//			static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+	//				[]( KG::Core::GameObject* gameObject, float elapsedTime )
+	//				{
+	//					using namespace KG::Input;
+	//					auto input = InputManager::GetInputManager();
+	//					auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+	//					if ( input->IsTouching( VK_SPACE ) )
+	//					{
+	//						trans->RotateEuler( 0.0f, 90.0f * elapsedTime, 0.0f );
+	//					}
+	//				}
+	//			);
+	//			auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? texThree : texTwo ) );
+	//			auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? "sphere"_id : "cube"_id ) );
+	//			//auto* evn = this->renderer->GetNewCubeCameraComponent();
+	//			KG::Renderer::RenderTextureDesc renderTextureDesc;
+	//			renderTextureDesc.useDeferredRender = true;
+	//			renderTextureDesc.useCubeRender = true;
+	//			renderTextureDesc.useDepthStencilBuffer = true;
+	//			renderTextureDesc.useRenderTarget = true;
+	//			renderTextureDesc.uploadSRVRenderTarget = true;
+	//			renderTextureDesc.width = 128;
+	//			renderTextureDesc.height = 128;
+	//			//evn->InitializeRenderTexture( renderTextureDesc );
+	//			auto* ren = this->renderer->GetNewRenderComponent();
+	//			testCubeObjects[index].name = "meshObject0";
+	//			testCubeObjects[index].AddComponent( tran );
+	//			testCubeObjects[index].AddComponent( mat );
+	//			testCubeObjects[index].AddComponent( lam );
+	//			testCubeObjects[index].AddComponent( geo );
+	//			//testCubeObjects[index].AddComponent( evn );
+	//			testCubeObjects[index].AddComponent( ren );
+	//			testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
+	//			testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) * 0.25f );
+	//			//testCubeObjects[index].GetComponent<KG::Component::Render3DComponent>()->SetReflectionProbe( evn );
+	//		}
 
-			{
-				auto* tran = this->system->transformSystem.GetNewComponent();
-				auto* light = this->renderer->GetNewLightComponent();
-				auto* lam = this->system->lambdaSystem.GetNewComponent();
-				static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
-					[light]( KG::Core::GameObject* gameObject, float elapsedTime )
-					{
-						static float str = 9.0f;
-						using namespace KG::Input;
-						auto input = InputManager::GetInputManager();
-						auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
-						if ( input->IsTouching( VK_OEM_6 ) )
-						{
-							DebugNormalMessage( "Light Intense Up" );
-							light->GetPointLightRef().Strength = light->GetDirectionalLightRef().Strength * 1.1f;
-						}
-						if ( input->IsTouching( VK_OEM_4 ) )
-						{
-							DebugNormalMessage( "Light Intense Down" );
-							light->GetPointLightRef().Strength = light->GetDirectionalLightRef().Strength * 0.9f;
-						}
-					}
-				);
-				testPointLightObjects[index].name = "Light2";
+	//		{
+	//			auto* tran = this->system->transformSystem.GetNewComponent();
+	//			auto* light = this->renderer->GetNewLightComponent();
+	//			auto* lam = this->system->lambdaSystem.GetNewComponent();
+	//			static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+	//				[light]( KG::Core::GameObject* gameObject, float elapsedTime )
+	//				{
+	//					static float str = 9.0f;
+	//					using namespace KG::Input;
+	//					auto input = InputManager::GetInputManager();
+	//					auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+	//					if ( input->IsTouching( VK_OEM_6 ) )
+	//					{
+	//						DebugNormalMessage( "Light Intense Up" );
+	//						light->GetPointLightRef().Strength = light->GetDirectionalLightRef().Strength * 1.1f;
+	//					}
+	//					if ( input->IsTouching( VK_OEM_4 ) )
+	//					{
+	//						DebugNormalMessage( "Light Intense Down" );
+	//						light->GetPointLightRef().Strength = light->GetDirectionalLightRef().Strength * 0.9f;
+	//					}
+	//				}
+	//			);
+	//			testPointLightObjects[index].name = "Light2";
 
-				auto color = Math::RandomColor();
+	//			auto color = Math::RandomColor();
 
-				light->SetPointLight( DirectX::XMFLOAT3( color.x, color.y, color.z ), 0.1f, 1.0f );
+	//			light->SetPointLight( DirectX::XMFLOAT3( color.x, color.y, color.z ), 0.1f, 1.0f );
 
-				testPointLightObjects[index].AddComponent( tran );
-				testPointLightObjects[index].AddComponent( light );
-				testPointLightObjects[index].AddComponent( lam );
-				testPointLightObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
+	//			testPointLightObjects[index].AddComponent( tran );
+	//			testPointLightObjects[index].AddComponent( light );
+	//			testPointLightObjects[index].AddComponent( lam );
+	//			testPointLightObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
 
-				tran->Translate( 0.5f, 0, 0.5f );
-			}
+	//			tran->Translate( 0.5f, 0, 0.5f );
+	//		}
 
-		}
-	}
+	//	}
+	//}
 
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
@@ -319,18 +319,25 @@ void KG::GameFramework::OnTestInit()
 		static KG::Core::ObjectContainer oc;
 		oc.PostTransformSystem( &this->system->transformSystem );
 		KG::Resource::MaterialMatch match;
-		match.SetDefaultMaterial( { "soldierHead"_id, "soldierBody"_id } );
-		auto* ptr = this->renderer->LoadFromModel( "heli"_id, oc, match );
-		ptr->GetComponent<KG::Component::TransformComponent>()->Translate( 3, -0.2, 3 );
+		match.SetDefaultMaterial( { KG::Utill::HashString("soldierHead"_id), KG::Utill::HashString("soldierBody"_id) } );
+		auto* ptr = this->renderer->LoadFromModel( KG::Utill::HashString("soldier"_id), oc, match );
+		//ptr->GetComponent<KG::Component::TransformComponent>()->Translate( 3, -0.2, 3 );
+		ptr->GetComponent<KG::Component::TransformComponent>()->SetScale( 0.1f, 0.1f, 0.1f );
 		//ptr->GetComponent<KG::Component::TransformComponent>()->RotateEuler( 0, 180, 0 );
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
 		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
 			[]( KG::Core::GameObject* gameObject, float elapsedTime )
 			{
-				auto* trans = gameObject->GetComponent<KG::Component::TransformComponent>();
-				trans->RotateEuler( 0, 90.0f * elapsedTime, 0 );
+				using namespace KG::Input;
+				auto input = InputManager::GetInputManager();
+				auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+				if ( input->IsTouching( VK_SPACE ) )
+				{
+					trans->RotateEuler( 0.0f, 90.0f * elapsedTime, 0.0f );
+				}
 			}
 		);
+		ptr->name = "soldier";
 		ptr->AddComponent( lam );
 	}
 

@@ -59,4 +59,11 @@ namespace KG::System
 		virtual void OnPostUpdate( float elapsedTime ) override;
 		virtual void OnPreRender() override;
 	};
+	struct AvatarSystem : public IComponentSystem<BoneTransformComponent>
+	{
+	public:
+		virtual void OnUpdate( float elapsedTime ) override;
+		virtual void OnPostUpdate( float elapsedTime ) override;
+		virtual void OnPreRender() override;
+	};
 }

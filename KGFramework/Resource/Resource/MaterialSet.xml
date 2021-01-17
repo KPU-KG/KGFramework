@@ -57,7 +57,7 @@
         <FLOAT2 byte="8" comment="UVsize" x="4" y="4"/>
         <Padding byte="4"/>
     </Material>
-    <Material id="soldierHead" shaderID="PBRDefault" hash_id="3947457455" shaderHashID="3533550914">
+    <Material id="soldierHead" shaderID="PBRSkinned" hash_id="3947457455" shaderHashID="1383120321">
         <Texture byte="4" comment="colorTexture" id="soldier_head_albedo" hash_id="1073280886"/>
         <Texture byte="4" comment="normalTexture" id="soldier_haed_normal" hash_id="4052277792"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
@@ -66,7 +66,25 @@
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
     </Material>
-    <Material id="soldierBody" shaderID="PBRDefault" hash_id="4246576393" shaderHashID="3533550914">
+    <Material id="soldierBody" shaderID="PBRSkinned" hash_id="4246576393" shaderHashID="1383120321">
+        <Texture byte="4" comment="colorTexture" id="soldier_body_albedo" hash_id="2332798320"/>
+        <Texture byte="4" comment="normalTexture" id="soldier_body_normal" hash_id="4117762142"/>
+        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughnessTexture" id="zero" hash_id="3256532051"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="soldierHead_D" shaderID="PBRDefault" hash_id="1048561238" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="soldier_head_albedo" hash_id="1073280886"/>
+        <Texture byte="4" comment="normalTexture" id="soldier_haed_normal" hash_id="4052277792"/>
+        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughnessTexture" id="zero" hash_id="3256532051"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="soldierBody_D" shaderID="PBRDefault" hash_id="738571324" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="soldier_body_albedo" hash_id="2332798320"/>
         <Texture byte="4" comment="normalTexture" id="soldier_body_normal" hash_id="4117762142"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
