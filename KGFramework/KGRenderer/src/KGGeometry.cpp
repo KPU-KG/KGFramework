@@ -53,7 +53,7 @@ void KG::Renderer::Geometry::Render( ID3D12GraphicsCommandList* commandList, UIN
 		TryRelease( this->vertexUploadBuffer );
 	}
 
-	if ( this->hasBone && this->boneOffsetBuffer != nullptr )
+	if ( this->boneOffsetBuffer != nullptr )
 	{
 		auto addr = this->boneOffsetBuffer->GetGPUVirtualAddress();
 		commandList->SetGraphicsRootShaderResourceView( KG::Renderer::RootParameterIndex::BoneOffsetData, addr );
@@ -92,7 +92,7 @@ void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandLi
 
 	if ( this->hasBone )
 	{
-		this->boneOffsetBuffer = CreateBufferResource( device, commandList, (void*)this->bones.offsetMatrixs.data(), this->bones.offsetMatrixs.size() * sizeof( XMFLOAT4X4 ),
+		this->boneOffsetBuffer = CreateBufferResource( device, commandList, (void*)this->bones.offsetMatrixs.data(), 64 * sizeof( XMFLOAT4X4 ),
 			D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, &this->boneUploadBuffer );
 	}
 }

@@ -170,7 +170,7 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata( const KG::Resource:
 {
 	UINT nCompileFlags = 0;
 #if defined(_DEBUG)
-	nCompileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION ;
+	nCompileFlags = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION | D3DCOMPILE_DEBUG_NAME_FOR_SOURCE;
 #endif
 
 	ID3DBlob* errorblob;

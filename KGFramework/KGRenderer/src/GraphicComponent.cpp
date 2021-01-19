@@ -43,10 +43,17 @@ void KG::Component::Render3DComponent::OnPreRender()
 		{
 			for ( size_t k = 0; k < this->boneAnimation->frameCache[i].size(); k++ )
 			{
-				//auto wo = ( this->transform->GetGlobalWorldMatrix() );
 				//auto finalAnim = Math::Matrix4x4::Inverse(this->boneAnimation->frameCache[i][k]->GetTransform()->GetGlobalWorldMatrix());
-				auto finalTransform = this->boneAnimation->frameCache[i][k]->GetTransform()->GetGlobalWorldMatrix();
-				renderJob->animationBuffer->mappedData[updateCount].currentTransforms[k] = Math::Matrix4x4::Transpose( finalTransform );
+				if ( this->boneAnimation->frameCache[i][k] )
+				{
+					//auto wo = Math::Matrix4x4::Inverse( this->transform->GetLocalWorldMatrix() );
+					auto finalTransform = this->boneAnimation->frameCache[i][k]->GetTransform()->GetGlobalWorldMatrix();
+					renderJob->animationBuffer->mappedData[updateCount].currentTransforms[k] = Math::Matrix4x4::Transpose( finalTransform );
+				}
+			}
+			if ( this->boneAnimation->frameCache[i].size() != 0)
+			{
+				renderJob->animationBuffer->mappedData[updateCount].currentTransforms[63] = Math::Matrix4x4::Transpose(this->gameObject->GetTransform()->GetLocalWorldMatrix());
 			}
 		}
 		if ( this->reflectionProbe )

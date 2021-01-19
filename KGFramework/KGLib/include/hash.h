@@ -2,6 +2,7 @@
 #include <string>
 #include <string_view>
 #include <assert.h>
+#include "Debug.h"
 namespace KG::Utill
 {
 	using hashType = unsigned;
@@ -78,6 +79,7 @@ namespace KG::Utill
 			this->value = Hash(str.c_str(), str.length());
 #ifdef _DEBUG_ID
 			this->srcString = str;
+			//DebugNormalMessage( L"Hashed : " << this->value << L" / " << this->srcString.c_str() );
 #endif
 		}
 

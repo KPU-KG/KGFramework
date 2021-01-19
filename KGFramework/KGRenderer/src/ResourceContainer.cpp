@@ -228,7 +228,9 @@ KG::Core::GameObject* KG::Resource::ResourceContainer::CreateObjectFromModel( co
 	float scaleFactor = 0.01f;
 	//rootObject->GetTransform()->SetPosition( 0, 0, 0 );
 	//rootObject->GetTransform()->SetScale( rootScale.x * scaleFactor, rootScale.y * scaleFactor, rootScale.z * scaleFactor );
-	return rootObject;
+	auto* parentRoot = container.CreateNewObject();
+	parentRoot->GetTransform()->AddChild( rootObject->GetTransform() );
+	return parentRoot;
 }
 
 void KG::Resource::ResourceContainer::Clear()

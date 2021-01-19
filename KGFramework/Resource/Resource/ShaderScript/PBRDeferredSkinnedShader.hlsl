@@ -67,20 +67,41 @@ struct VSOutput
     uint InstanceID : SV_InstanceID;
 };
 
+float4x4 MulAll(float4x4 a)
+{
+    return a;
+}
+
+
+float4x4 MulAll(float4x4 a, float4x4 b)
+{
+    return mul(a, b);
+}
+
+
+float4x4 MulAll(float4x4 a, float4x4 b, float4x4 c)
+{
+    return mul(mul(a, b), c);
+}
+
 VSOutput DefaultVertexFuction(VertexData input, uint InstanceID : SV_InstanceID)
 {
     VSOutput result;
     
     float4x4 animationMatrix = (float4x4) 0.0f;
-    for (int i = 0; i < 1; i++)
+    float4x4 p = (animationTransformInfo[63]);
+    float4x4 w = (objectInfo[InstanceID].world);
+    float4x4 invp = inverse(animationTransformInfo[63]);
+    float4x4 invw = inverse(objectInfo[InstanceID].world);
+    for (int i = 0; i < 4; i++)
     {
-        uint animationIndex = (MAX_COUNT_BONE * InstanceID) + input.bone[i];
-        //animationMatrix += input.weight[i] * mul(boneOffsetInfo[input.bone[i]], animationTransformInfo[animationIndex]);
-        animationMatrix += mul((boneOffsetInfo[input.bone[i]]), animationTransformInfo[animationIndex]);
+        int animationIndex = (MAX_COUNT_BONE * InstanceID) + input.bone[i];
+        float4x4 bone = MulAll(boneOffsetInfo[input.bone[i]], invp);
+        float4x4 anim = MulAll(animationTransformInfo[animationIndex]);
+        float4x4 vTobone = mul(bone, anim);
+        animationMatrix += input.weight[i] * vTobone;
     }
-    //float4x4 world = mul(animationMatrix, objectInfo[InstanceID].world);
     float4x4 world = animationMatrix;
-    
     result.worldPosition = mul(float4(input.position, 1), world);
     result.position = mul(result.worldPosition, viewProjection);
     result.worldNormal = mul(float4(input.normal, 0), animationMatrix);

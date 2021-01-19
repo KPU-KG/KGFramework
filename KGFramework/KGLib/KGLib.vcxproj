@@ -238,6 +238,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Debug.cpp" />
     <ClCompile Include="src\AssimpImpoter.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\IComponent.cpp" />

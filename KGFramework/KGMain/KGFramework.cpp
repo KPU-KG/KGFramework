@@ -319,10 +319,9 @@ void KG::GameFramework::OnTestInit()
 		static KG::Core::ObjectContainer oc;
 		oc.PostTransformSystem( &this->system->transformSystem );
 		KG::Resource::MaterialMatch match;
-		match.SetDefaultMaterial( { KG::Utill::HashString("soldierHead"_id), KG::Utill::HashString("soldierBody"_id) } );
-		auto* ptr = this->renderer->LoadFromModel( KG::Utill::HashString("soldier"_id), oc, match );
-		//ptr->GetComponent<KG::Component::TransformComponent>()->Translate( 3, -0.2, 3 );
-		ptr->GetComponent<KG::Component::TransformComponent>()->SetScale( 0.1f, 0.1f, 0.1f );
+		match.SetDefaultMaterial( { KG::Utill::HashString( "soldierHead"_id ), KG::Utill::HashString( "soldierBody"_id ) } );
+		auto* ptr = this->renderer->LoadFromModel( KG::Utill::HashString( "soldier"_id ), oc, match );
+		ptr->GetComponent<KG::Component::TransformComponent>()->SetScale( 0.01f, 0.01f, 0.01f );
 		//ptr->GetComponent<KG::Component::TransformComponent>()->RotateEuler( 0, 180, 0 );
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
 		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(

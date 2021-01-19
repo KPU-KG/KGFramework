@@ -46,7 +46,11 @@ static MeshData ConvertMesh(const aiMesh* mesh)
 		{
 			for ( int j = 0; j < mesh->mBones[i]->mNumWeights; j++ )
 			{
-				unsigned int vertexId = mesh->mBones[i]->mWeights[j].mVertexId;
+				auto vertexId = mesh->mBones[i]->mWeights[j].mVertexId;
+				if ( vertexId < 0 )
+				{
+					DebugErrorMessage( "VertexID is Minus" );
+				}
 				float weight = mesh->mBones[i]->mWeights[j].mWeight;
 
 				VertexBoneData bone;
@@ -84,7 +88,7 @@ static MeshData ConvertMesh(const aiMesh* mesh)
 			{
 				VertexBoneData vbd;
 				vbd.bondId = 0;
-				vbd.boneWeight = 0;
+				vbd.boneWeight = 0.0f;
 				bone.push_back( vbd );
 			}
 			std::sort( bone.begin(), bone.end(), []( auto& a, auto& b ) {return a.boneWeight > b.boneWeight; } );
@@ -123,7 +127,10 @@ void KG::Utill::ImportData::LoadFromPathAssimp( const std::string& path )
 {
 	Assimp::Importer importer;
 	importer.SetPropertyBool( AI_CONFIG_IMPORT_FBX_PRESERVE_PIVOTS, false );
-	const aiScene* scene = importer.ReadFile( path, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality );
+	//importer.SetPropertyBool( AI_CONFIG_IMPORT_FBX_STRICT_MODE, true );
+	//const aiScene* scene = importer.ReadFile( path, aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_Debone );
+	const aiScene* scene = importer.ReadFile( path, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality | aiProcess_Debone );
+	//const aiScene* scene = importer.ReadFile( path, aiProcess_ConvertToLeftHanded | aiProcessPreset_TargetRealtime_MaxQuality );
 
 	if ( !scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode )
 	{

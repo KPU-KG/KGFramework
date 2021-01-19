@@ -1,0 +1,402 @@
+KGRenderer : NORMAL_LOG : Bone Node : NeckHead
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -2.32326e-05, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 2.32326e-05, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -1.0212e-12, -0
+KGRenderer : NORMAL_LOG : -168.073, 11.5101, 21.9651, 1
+KGRenderer : NORMAL_LOG : Bone Node : Neck1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -2.32326e-05, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 2.32326e-05, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -1.0212e-12, -0
+KGRenderer : NORMAL_LOG : -160.868, 11.5101, 21.9651, 1
+KGRenderer : NORMAL_LOG : Bone Node : Spine3
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -8.10293e-06, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 8.10293e-06, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -3.59866e-13, -0
+KGRenderer : NORMAL_LOG : -135.074, 11.5101, 21.9651, 1
+KGRenderer : NORMAL_LOG : Bone Node : Lmouth
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -8.10293e-06, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 8.10293e-06, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -3.59866e-13, -0
+KGRenderer : NORMAL_LOG : -166.079, 1.01799, 24.9573, 1
+KGRenderer : NORMAL_LOG : Bone Node : Rmouth
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -8.10293e-06, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 8.10293e-06, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -3.59866e-13, -0
+KGRenderer : NORMAL_LOG : -166.079, 1.01799, 18.9729, 1
+KGRenderer : NORMAL_LOG : Bone Node : Leyelid
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -8.10293e-06, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 8.10293e-06, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -3.59866e-13, -0
+KGRenderer : NORMAL_LOG : -174.826, 2.44023, 25.4044, 1
+KGRenderer : NORMAL_LOG : Bone Node : Lbrow
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -8.10293e-06, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 8.10293e-06, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -3.59866e-13, -0
+KGRenderer : NORMAL_LOG : -176.384, 1.01799, 25.5217, 1
+KGRenderer : NORMAL_LOG : Bone Node : Rbrow
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -8.10293e-06, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 8.10293e-06, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -3.59866e-13, -0
+KGRenderer : NORMAL_LOG : -176.384, 1.01799, 18.4085, 1
+KGRenderer : NORMAL_LOG : Bone Node : Reyelid
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -8.10293e-06, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 8.10293e-06, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -3.59866e-13, -0
+KGRenderer : NORMAL_LOG : -174.826, 2.44023, 18.5258, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmCollarbone
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 86.6786, 9.01584, 31.5654, 0
+KGRenderer : NORMAL_LOG : 8.7432, -92.2438, 2.33827, 0
+KGRenderer : NORMAL_LOG : 31.642, 0.790881, -87.1148, -0
+KGRenderer : NORMAL_LOG : 31.0419, 10.5672, -155.448, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmCollarbone
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -86.6785, -9.01585, 31.5654, 0
+KGRenderer : NORMAL_LOG : 8.7432, -92.2438, -2.33828, 0
+KGRenderer : NORMAL_LOG : 31.642, 0.790879, 87.1148, -0
+KGRenderer : NORMAL_LOG : 72.1244, 14.8404, 140.487, 1
+KGRenderer : NORMAL_LOG : Bone Node : NeckHead
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -2.32326e-05, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 2.32326e-05, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -1.0212e-12, -0
+KGRenderer : NORMAL_LOG : -168.073, 11.5101, 21.9651, 1
+KGRenderer : NORMAL_LOG : Bone Node : Neck1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -2.32326e-05, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 2.32326e-05, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -1.0212e-12, -0
+KGRenderer : NORMAL_LOG : -160.868, 11.5101, 21.9651, 1
+KGRenderer : NORMAL_LOG : Bone Node : Spine3
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -8.10293e-06, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 8.10293e-06, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -3.59866e-13, -0
+KGRenderer : NORMAL_LOG : -135.074, 11.5101, 21.9651, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmCollarbone
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 86.6786, 9.01584, 31.5654, 0
+KGRenderer : NORMAL_LOG : 8.7432, -92.2438, 2.33827, 0
+KGRenderer : NORMAL_LOG : 31.642, 0.790881, -87.1148, -0
+KGRenderer : NORMAL_LOG : 31.0419, 10.5672, -155.448, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmCollarbone
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -86.6785, -9.01585, 31.5654, 0
+KGRenderer : NORMAL_LOG : 8.7432, -92.2438, -2.33828, 0
+KGRenderer : NORMAL_LOG : 31.642, 0.790879, 87.1148, -0
+KGRenderer : NORMAL_LOG : 72.1244, 14.8404, 140.487, 1
+KGRenderer : NORMAL_LOG : Bone Node : Spine2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -8.10293e-06, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 8.10293e-06, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -3.59866e-13, -0
+KGRenderer : NORMAL_LOG : -114.836, 11.5101, 21.9651, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmPinky1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -81.2218, -40.2014, 19.4343, 0
+KGRenderer : NORMAL_LOG : -38.5056, 42.6334, -72.7361, 0
+KGRenderer : NORMAL_LOG : 22.6089, -71.8128, -54.061, -0
+KGRenderer : NORMAL_LOG : 75.5875, -51.6276, -96.6072, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmHand
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -5.29593, -89.0408, 25.1892, 0
+KGRenderer : NORMAL_LOG : -84.7752, -5.44528, -37.072, 0
+KGRenderer : NORMAL_LOG : 37.0937, -25.1574, -81.1294, -0
+KGRenderer : NORMAL_LOG : 39.752, 28.942, -130.703, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmIndex1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -32.6096, -81.4782, 29.8116, 0
+KGRenderer : NORMAL_LOG : -86.0211, 26.2133, -22.451, 0
+KGRenderer : NORMAL_LOG : 11.3049, -35.5665, -84.8413, -0
+KGRenderer : NORMAL_LOG : 15.8702, 18.269, -138.762, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmThumb1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -48.4688, 30.4941, 72.8814, 0
+KGRenderer : NORMAL_LOG : -77.1065, 0.367197, -51.4322, 0
+KGRenderer : NORMAL_LOG : -17.2101, -87.5259, 25.1762, -0
+KGRenderer : NORMAL_LOG : -2.98104, -139.654, -26.2919, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmThumb2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -52.7249, 16.2527, 74.4766, 0
+KGRenderer : NORMAL_LOG : -76.1758, -14.6256, -50.7362, 0
+KGRenderer : NORMAL_LOG : 2.85547, -90.0708, 21.6773, -0
+KGRenderer : NORMAL_LOG : 23.5567, -136.612, -31.9856, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmRing1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -67.158, -58.7165, 25.1593, 0
+KGRenderer : NORMAL_LOG : -61.1751, 48.6064, -49.8583, 0
+KGRenderer : NORMAL_LOG : 18.391, -52.7314, -73.9729, -0
+KGRenderer : NORMAL_LOG : 55.513, -13.1405, -122.608, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmMid1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -55.175, -70.0859, 25.1893, 0
+KGRenderer : NORMAL_LOG : -72.7148, 43.9208, -37.072, 0
+KGRenderer : NORMAL_LOG : 16.0961, -41.83, -81.1294, -0
+KGRenderer : NORMAL_LOG : 41.6744, 7.30034, -131.286, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmForearm2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 27.2275, -72.822, -50.4624, 0
+KGRenderer : NORMAL_LOG : -81.7015, -0.218093, -43.7682, 0
+KGRenderer : NORMAL_LOG : 34.2689, 57.3389, -64.2552, -0
+KGRenderer : NORMAL_LOG : 26.8239, 127.26, -55.8957, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmThumb3
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -53.4431, 2.03052, 75.7003, 0
+KGRenderer : NORMAL_LOG : -71.6225, -31.4466, -49.7208, 0
+KGRenderer : NORMAL_LOG : 24.5942, -87.1654, 19.7012, -0
+KGRenderer : NORMAL_LOG : 50.3668, -127.589, -35.2145, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmIndex3
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -72.0614, -50.0924, 29.8116, 0
+KGRenderer : NORMAL_LOG : -57.4053, 69.2199, -22.4512, 0
+KGRenderer : NORMAL_LOG : -10.1301, -35.9189, -84.8411, -0
+KGRenderer : NORMAL_LOG : 16.525, 9.79373, -138.762, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmIndex2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -62.628, -61.4804, 29.8114, 0
+KGRenderer : NORMAL_LOG : -68.2123, 58.5989, -22.4515, 0
+KGRenderer : NORMAL_LOG : -3.9552, -37.1099, -84.8411, -0
+KGRenderer : NORMAL_LOG : 17.1286, 12.4293, -138.762, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmMid3
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -72.144, -52.4554, 25.1893, 0
+KGRenderer : NORMAL_LOG : -58.0437, 62.0276, -37.072, 0
+KGRenderer : NORMAL_LOG : 4.12352, -44.6299, -81.1294, -0
+KGRenderer : NORMAL_LOG : 33.4884, -2.73859, -131.286, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmMid2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -73.8783, -49.9833, 25.1893, 0
+KGRenderer : NORMAL_LOG : -55.9108, 63.9569, -37.0719, 0
+KGRenderer : NORMAL_LOG : 2.61037, -44.7439, -81.1294, -0
+KGRenderer : NORMAL_LOG : 36.1244, -3.8706, -131.286, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmRing2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -73.1931, -50.9961, 25.1591, 0
+KGRenderer : NORMAL_LOG : -55.4745, 55.0231, -49.8584, 0
+KGRenderer : NORMAL_LOG : 12.4964, -54.4306, -73.9728, -0
+KGRenderer : NORMAL_LOG : 48.9003, -18.6164, -122.608, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmRing3
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -80.9216, -37.5437, 25.1592, 0
+KGRenderer : NORMAL_LOG : -45.1025, 63.8024, -49.8583, 0
+KGRenderer : NORMAL_LOG : 2.87683, -55.7725, -73.9728, -0
+KGRenderer : NORMAL_LOG : 42.2584, -26.3362, -122.608, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmPinky3
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -90.5938, 2.42965, 19.4343, 0
+KGRenderer : NORMAL_LOG : -14.1099, 55.6884, -72.7361, 0
+KGRenderer : NORMAL_LOG : -13.5832, -74.0522, -54.061, -0
+KGRenderer : NORMAL_LOG : 37.8976, -78.8489, -96.6073, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmPinky2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -87.5775, -23.309, 19.4345, 0
+KGRenderer : NORMAL_LOG : -29.2939, 49.4183, -72.736, 0
+KGRenderer : NORMAL_LOG : 7.92976, -74.8688, -54.0611, -0
+KGRenderer : NORMAL_LOG : 60.4803, -64.8996, -96.6075, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmForearm1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 27.2275, -77.7282, -42.5185, 0
+KGRenderer : NORMAL_LOG : -81.7015, -4.82297, -43.5021, 0
+KGRenderer : NORMAL_LOG : 34.2689, 50.2583, -69.9327, -0
+KGRenderer : NORMAL_LOG : 40.1737, 120.671, -68.978, 1
+KGRenderer : NORMAL_LOG : Bone Node : Pelvis
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -8.10293e-06, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 8.10293e-06, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -3.59866e-13, -0
+KGRenderer : NORMAL_LOG : -94.5983, 11.5101, 21.9651, 1
+KGRenderer : NORMAL_LOG : Bone Node : Spine1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.67543e-15, -8.10293e-06, -92.6867, 0
+KGRenderer : NORMAL_LOG : -4.05147e-06, -92.6867, 8.10293e-06, 0
+KGRenderer : NORMAL_LOG : -92.6867, 4.05147e-06, -3.59866e-13, -0
+KGRenderer : NORMAL_LOG : -94.5983, 11.5101, 21.9651, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmUpper1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -65.2075, 34.5068, 56.1079, 0
+KGRenderer : NORMAL_LOG : -13.2452, -84.207, 36.3947, 0
+KGRenderer : NORMAL_LOG : 64.5243, 17.5866, 64.173, -0
+KGRenderer : NORMAL_LOG : 110.43, 38.7192, 96.3296, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmUpper2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -65.2075, 45.2009, 47.9133, 0
+KGRenderer : NORMAL_LOG : -13.2452, -75.0405, 52.7664, 0
+KGRenderer : NORMAL_LOG : 64.5242, 30.2756, 59.2523, -0
+KGRenderer : NORMAL_LOG : 97.0799, 57.509, 86.4367, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmUpper1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 65.2075, -34.5068, 56.1078, 0
+KGRenderer : NORMAL_LOG : -13.2453, -84.207, -36.3946, 0
+KGRenderer : NORMAL_LOG : 64.5242, 17.5866, -64.1729, -0
+KGRenderer : NORMAL_LOG : 79.5242, 55.0742, -122.923, 1
+KGRenderer : NORMAL_LOG : Bone Node : LArmUpper2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 65.2075, -45.2009, 47.9133, 0
+KGRenderer : NORMAL_LOG : -13.2453, -75.0406, -52.7665, 0
+KGRenderer : NORMAL_LOG : 64.5242, 30.2756, -59.2524, -0
+KGRenderer : NORMAL_LOG : 66.1738, 78.9326, -109.146, 1
+KGRenderer : NORMAL_LOG : Bone Node : RLegUpper
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -11.4435, -26.5189, 88.0717, 0
+KGRenderer : NORMAL_LOG : 0.908847, -88.779, -26.6138, 0
+KGRenderer : NORMAL_LOG : 91.973, -2.42224, 11.221, -0
+KGRenderer : NORMAL_LOG : 91.994, 12.7663, 1.75195, 1
+KGRenderer : NORMAL_LOG : Bone Node : RLegCalf
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -3.07398, -28.2761, 88.2147, 0
+KGRenderer : NORMAL_LOG : 17.3206, -86.8822, -27.2454, 0
+KGRenderer : NORMAL_LOG : 91.0021, 15.5813, 8.16548, -0
+KGRenderer : NORMAL_LOG : 47.0077, 22.37, 0.176647, 1
+KGRenderer : NORMAL_LOG : Bone Node : LLegCalf
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 3.07493, 28.2792, 88.2137, 0
+KGRenderer : NORMAL_LOG : 17.3274, -86.8802, 27.2476, 0
+KGRenderer : NORMAL_LOG : 91.0008, 15.5872, -8.16896, -0
+KGRenderer : NORMAL_LOG : 45.5488, 8.96994, -41.989, 1
+KGRenderer : NORMAL_LOG : Bone Node : LLegUpper
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 11.4434, 26.5189, 88.0717, 0
+KGRenderer : NORMAL_LOG : 0.908953, -88.779, 26.6137, 0
+KGRenderer : NORMAL_LOG : 91.973, -2.42213, -11.221, -0
+KGRenderer : NORMAL_LOG : 86.5702, 0.197441, -43.4947, 1
+KGRenderer : NORMAL_LOG : Bone Node : LLegAnkle
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 23.3537, 22.4363, 86.8446, 0
+KGRenderer : NORMAL_LOG : -62.579, -60.2153, 32.3848, 0
+KGRenderer : NORMAL_LOG : 64.2594, -66.7947, -0.0238535, -0
+KGRenderer : NORMAL_LOG : 12.8416, -5.99137, -41.3459, 1
+KGRenderer : NORMAL_LOG : Bone Node : RLegAnkle
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -23.3232, -22.4396, 86.852, 0
+KGRenderer : NORMAL_LOG : -62.5807, -60.2241, -32.3651, 0
+KGRenderer : NORMAL_LOG : 64.2688, -66.7856, 0.00358131, -0
+KGRenderer : NORMAL_LOG : 23.9076, 4.64464, 0.17584, 1
+KGRenderer : NORMAL_LOG : Bone Node : LLegToe1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 21.6743, -1.23571e-05, 90.1169, 0
+KGRenderer : NORMAL_LOG : -90.1169, 1.26747e-05, 21.6743, 0
+KGRenderer : NORMAL_LOG : -1.5213e-05, -92.6867, -9.05056e-06, -0
+KGRenderer : NORMAL_LOG : -1.3878, -2.14692, -41.8182, 1
+KGRenderer : NORMAL_LOG : Bone Node : RLegToe1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -21.6743, -3.39977e-06, 90.1169, 0
+KGRenderer : NORMAL_LOG : -90.1169, 1.64644e-05, -21.6743, 0
+KGRenderer : NORMAL_LOG : -1.52129e-05, -92.6867, -7.15562e-06, -0
+KGRenderer : NORMAL_LOG : 8.88334, -2.14476, -0.90019, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmForearm1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -27.2275, 77.7282, -42.5185, 0
+KGRenderer : NORMAL_LOG : -81.7015, -4.82297, 43.5022, 0
+KGRenderer : NORMAL_LOG : 34.2689, 50.2583, 69.9327, -0
+KGRenderer : NORMAL_LOG : 53.0786, 83.831, 89.1303, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmForearm2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : -27.2275, 72.8219, -50.4625, 0
+KGRenderer : NORMAL_LOG : -81.7015, -0.218095, 43.7682, 0
+KGRenderer : NORMAL_LOG : 34.2689, 57.3389, 64.2552, -0
+KGRenderer : NORMAL_LOG : 39.7287, 92.7455, 79.8131, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmHand
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 5.29593, 89.0409, 25.1893, 0
+KGRenderer : NORMAL_LOG : -84.7752, -5.44531, 37.072, 0
+KGRenderer : NORMAL_LOG : 37.0937, -25.1575, 81.1294, -0
+KGRenderer : NORMAL_LOG : 37.2419, -13.2602, 118.764, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmThumb1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 48.4688, -30.4941, 72.8814, 0
+KGRenderer : NORMAL_LOG : -77.1065, 0.367195, 51.4322, 0
+KGRenderer : NORMAL_LOG : -17.2101, -87.5259, -25.1762, -0
+KGRenderer : NORMAL_LOG : -25.9535, -125.201, -8.25127, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmThumb2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 52.7249, -16.2527, 74.4766, 0
+KGRenderer : NORMAL_LOG : -76.1759, -14.6256, 50.7362, 0
+KGRenderer : NORMAL_LOG : 2.85547, -90.0709, -21.6773, -0
+KGRenderer : NORMAL_LOG : -1.43297, -128.909, -3.3136, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmPinky1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 81.2218, 40.2014, 19.4343, 0
+KGRenderer : NORMAL_LOG : -38.5056, 42.6334, 72.7361, 0
+KGRenderer : NORMAL_LOG : 22.6089, -71.8127, 54.061, -0
+KGRenderer : NORMAL_LOG : 37.0913, -70.6817, 87.3961, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmIndex1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 32.6095, 81.4782, 29.8117, 0
+KGRenderer : NORMAL_LOG : -86.0212, 26.2132, 22.451, 0
+KGRenderer : NORMAL_LOG : 11.3049, -35.5666, 84.8413, -0
+KGRenderer : NORMAL_LOG : 0.414274, -20.3489, 124.632, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmRing1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 67.158, 58.7166, 25.1594, 0
+KGRenderer : NORMAL_LOG : -61.1751, 48.6064, 49.8582, 0
+KGRenderer : NORMAL_LOG : 18.391, -52.7315, 73.9729, -0
+KGRenderer : NORMAL_LOG : 23.6824, -40.97, 110.684, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmMid1
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 55.175, 70.0859, 25.1892, 0
+KGRenderer : NORMAL_LOG : -72.7149, 43.9207, 37.072, 0
+KGRenderer : NORMAL_LOG : 16.0961, -41.8299, 81.1294, -0
+KGRenderer : NORMAL_LOG : 15.5235, -25.9178, 119.347, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmThumb3
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 53.4431, -2.03052, 75.7003, 0
+KGRenderer : NORMAL_LOG : -71.6226, -31.4466, 49.7207, 0
+KGRenderer : NORMAL_LOG : 24.5942, -87.1654, -19.7011, -0
+KGRenderer : NORMAL_LOG : 25.0366, -126.627, -0.6647, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmIndex3
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 72.0613, 50.0925, 29.8116, 0
+KGRenderer : NORMAL_LOG : -57.4053, 69.2199, 22.4512, 0
+KGRenderer : NORMAL_LOG : -10.13, -35.9189, 84.8412, -0
+KGRenderer : NORMAL_LOG : -17.6295, -13.9483, 124.632, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmIndex2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 62.6278, 61.4805, 29.8114, 0
+KGRenderer : NORMAL_LOG : -68.2123, 58.5989, 22.4514, 0
+KGRenderer : NORMAL_LOG : -3.95514, -37.1099, 84.8412, -0
+KGRenderer : NORMAL_LOG : -12.5548, -16.7102, 124.632, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmMid3
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 72.144, 52.4554, 25.1893, 0
+KGRenderer : NORMAL_LOG : -58.0437, 62.0276, 37.072, 0
+KGRenderer : NORMAL_LOG : 4.12352, -44.6299, 81.1294, -0
+KGRenderer : NORMAL_LOG : -0.705274, -27.6006, 119.347, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmMid2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 73.8783, 49.9833, 25.1893, 0
+KGRenderer : NORMAL_LOG : -55.9108, 63.9569, 37.0719, 0
+KGRenderer : NORMAL_LOG : 2.61037, -44.7439, 81.1294, -0
+KGRenderer : NORMAL_LOG : 1.10876, -27.5609, 119.347, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmRing2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 73.1931, 50.9962, 25.1591, 0
+KGRenderer : NORMAL_LOG : -55.4746, 55.023, 49.8584, 0
+KGRenderer : NORMAL_LOG : 12.4964, -54.4305, 73.9728, -0
+KGRenderer : NORMAL_LOG : 14.2094, -42.7867, 110.684, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmRing3
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 80.9216, 37.5437, 25.1592, 0
+KGRenderer : NORMAL_LOG : -45.1026, 63.8023, 49.8583, 0
+KGRenderer : NORMAL_LOG : 2.87686, -55.7724, 73.9729, -0
+KGRenderer : NORMAL_LOG : 3.90453, -44.1305, 110.684, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmPinky3
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 90.5938, -2.42965, 19.4343, 0
+KGRenderer : NORMAL_LOG : -14.1099, 55.6884, 72.7361, 0
+KGRenderer : NORMAL_LOG : -13.5833, -74.0522, 54.061, -0
+KGRenderer : NORMAL_LOG : -5.0406, -77.6974, 87.3961, 1
+KGRenderer : NORMAL_LOG : Bone Node : RArmPinky2
+KGRenderer : NORMAL_LOG : Offset Matrix
+KGRenderer : NORMAL_LOG : 87.5775, 23.309, 19.4345, 0
+KGRenderer : NORMAL_LOG : -29.2939, 49.4183, 72.736, 0
+KGRenderer : NORMAL_LOG : 7.92976, -74.8688, 54.0611, -0
+KGRenderer : NORMAL_LOG : 18.9717, -75.9473, 87.3962, 1
