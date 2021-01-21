@@ -85,7 +85,7 @@ void KG::GameFramework::OnTestInit()
 
 	constexpr auto texOne = "PBRStone"_id;
 	constexpr auto texTwo = "PBRTile"_id;
-	constexpr auto texThree = "PBRGold"_id;
+	constexpr auto texThree = "PBRTile"_id;
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( texOne ) );
