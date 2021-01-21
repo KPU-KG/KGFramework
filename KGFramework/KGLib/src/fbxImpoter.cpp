@@ -356,7 +356,7 @@ static DirectX::XMFLOAT2 ReadUV( FbxMesh* mesh, int controlPointIndex, int uvInd
 	}
 	FbxGeometryElementUV* vertexNormal = mesh->GetElementUV( 0 );
 
-	DirectX::XMFLOAT2 result;
+	DirectX::XMFLOAT2 result = {0,0};
 
 	switch ( vertexNormal->GetMappingMode() )
 	{
@@ -400,7 +400,10 @@ static DirectX::XMFLOAT2 ReadUV( FbxMesh* mesh, int controlPointIndex, int uvInd
 		}
 		break;
 	}
-	result.y = 1 - result.y;
+	float y = 1 - result.y;
+	float x = result.x;
+	result.x = x;
+	result.y = y;
 	return result;
 }
 
