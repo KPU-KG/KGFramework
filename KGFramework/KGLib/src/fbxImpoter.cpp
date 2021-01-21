@@ -563,7 +563,6 @@ static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, Fbx
 	DirectX::XMVECTOR s = {};
 
 	DirectX::XMMatrixDecompose(&s,&r,&t, DirectX::XMLoadFloat4x4(&trs));
-
 	DirectX::XMStoreFloat3( &importNode.position, t );
 	DirectX::XMStoreFloat4( &importNode.rotation, r );
 	DirectX::XMStoreFloat3( &importNode.scale, s );
@@ -600,23 +599,8 @@ void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 	pFbxImporter->Import( pFbxScene );
 	pFbxImporter->Destroy();
 
-
-	FbxAxisSystem fbxSceneAxisSystem = pFbxScene->GetGlobalSettings().GetAxisSystem();
-	//FbxAxisSystem fbxDirectXAxisSystem( FbxAxisSystem::eDirectX );
-	//FbxAxisSystem fbxDirectXAxisSystem( FbxAxisSystem::eDirectX );
-	//FbxAxisSystem fbxDirectXAxisSystem( FbxAxisSystem::EUpVector::eYAxis,
-	//	FbxAxisSystem::EFrontVector::eParityOdd,
-	//	FbxAxisSystem::eLeftHanded );
-	//if ( fbxSceneAxisSystem != fbxDirectXAxisSystem )
-	//{
-	//	fbxDirectXAxisSystem.ConvertScene( pFbxScene );
-	//}
-
-
-
-	//UV 이상함
-	//노드 이상함
-	//노말도 이상한듯
+	FbxAxisSystem directXAxis( FbxAxisSystem::eDirectX );
+	directXAxis.DeepConvertScene( pFbxScene );
 	FbxGeometryConverter conv( pFbxManager );
 	conv.Triangulate( pFbxScene, true );
 	//conv.RemoveBadPolygonsFromMeshes( pFbxScene, NULL );
