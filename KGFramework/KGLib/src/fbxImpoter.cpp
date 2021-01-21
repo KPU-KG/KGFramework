@@ -66,7 +66,7 @@ static void fbxamatrix_to_xmfloat4x4( const FbxAMatrix& fbxamatrix, DirectX::XMF
 static void CalculateTangentBinormal( KG::Utill::MeshData& data, UINT i0, UINT i1, UINT i2 )
 {
 	using namespace DirectX;
-	
+
 	static constexpr float EPSILON = 0.0001f;
 	static const XMVECTORF32 s_flips = { { { 1.f, -1.f, -1.f, 1.f } } };
 
@@ -291,15 +291,15 @@ static DirectX::XMFLOAT3 ReadBinormal( FbxMesh* mesh, int controlPointIndex, int
 
 static DirectX::XMFLOAT3 ReadNormal( FbxMesh* mesh, int controlPointIndex, int vertexCounter ) //vec3 ReadNormal //vec3 RadeBinormal
 {
-	if (mesh->GetElementNormalCount() < 1)
+	if ( mesh->GetElementNormalCount() < 1 )
 	{
 		DebugErrorMessage( mesh->GetName() << " : Invalid Normal Number" );
 	}
-	FbxGeometryElementNormal* vertexNormal = mesh->GetElementNormal(0);
+	FbxGeometryElementNormal* vertexNormal = mesh->GetElementNormal( 0 );
 
 	DirectX::XMFLOAT3 result;
 
-	switch (vertexNormal->GetMappingMode())
+	switch ( vertexNormal->GetMappingMode() )
 	{
 	case FbxGeometryElement::eByControlPoint:
 		switch ( vertexNormal->GetReferenceMode() )
@@ -348,56 +348,69 @@ static DirectX::XMFLOAT3 ReadNormal( FbxMesh* mesh, int controlPointIndex, int v
 	return result;
 }
 
-static DirectX::XMFLOAT2 ReadUV( FbxMesh* mesh, int controlPointIndex, int uvIndex ) //vec3 ReadNormal //vec3 RadeBinormal
+static DirectX::XMFLOAT2 ReadUV( FbxMesh* mesh, int controlPointIndex, int i, int j )
 {
-	if ( mesh->GetElementUVCount() < 1 )
-	{
-		DebugErrorMessage( "Invalid UV Number" );
-	}
-	FbxGeometryElementUV* vertexNormal = mesh->GetElementUV( 0 );
+	controlPointIndex = 0;
+	bool doneRead = false;
+	DirectX::XMFLOAT2 result = {0, 0};
 
-	DirectX::XMFLOAT2 result = {0,0};
-
-	switch ( vertexNormal->GetMappingMode() )
+	FbxGeometryElementUV* pfbxElementUV = mesh->GetElementUV( 0, FbxLayerElement::eUnknown );
+	switch ( pfbxElementUV->GetMappingMode() )
 	{
 	case FbxGeometryElement::eByControlPoint:
-		switch ( vertexNormal->GetReferenceMode() )
+		switch ( pfbxElementUV->GetReferenceMode() )
 		{
 		case FbxGeometryElement::eDirect:
 		{
-			result.x = static_cast<float>(vertexNormal->GetDirectArray().GetAt( controlPointIndex ).mData[0]);
-			result.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt( controlPointIndex ).mData[1]);
+			auto ref = ( pfbxElementUV->GetDirectArray().GetAt( controlPointIndex ) );
+			result.x = static_cast<float>(ref.mData[0]);
+			result.y = static_cast<float>(ref.mData[1]);
+			doneRead = true;
 		}
-		break;
+			break;
 		case FbxGeometryElement::eIndexToDirect:
 		{
-			int index = vertexNormal->GetIndexArray().GetAt( controlPointIndex );
-			result.x = static_cast<float>(vertexNormal->GetDirectArray().GetAt( index ).mData[0]);
-			result.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt( index ).mData[1]);
+			auto ref = ( pfbxElementUV->GetDirectArray().GetAt( pfbxElementUV->GetIndexArray().GetAt( controlPointIndex ) ) );
+			result.x = static_cast<float>(ref.mData[0]);
+			result.y = static_cast<float>(ref.mData[1]);
+			doneRead = true;
 		}
-		break;
+			break;
 		default:
-			DebugErrorMessage( "Error: Invalid vertex reference mode!" );
+			break;
 		}
 		break;
 	case FbxGeometryElement::eByPolygonVertex:
-		switch ( vertexNormal->GetReferenceMode() )
+	{
+		int nTextureUVIndex = mesh->GetTextureUVIndex( i, j );
+		switch ( pfbxElementUV->GetReferenceMode() )
 		{
 		case FbxGeometryElement::eDirect:
 		case FbxGeometryElement::eIndexToDirect:
 		{
-			result.x = static_cast<float>(vertexNormal->GetDirectArray().GetAt( uvIndex ).mData[0]);
-			result.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt( uvIndex ).mData[1]);
+			auto ref = ( pfbxElementUV->GetDirectArray().GetAt( nTextureUVIndex ) );
+			result.x = static_cast<float>(ref.mData[0]);
+			result.y = static_cast<float>(ref.mData[1]);
+			doneRead = true;
 		}
+			break;
+		default:
+			break;
+		}
+	}
+	break;
+	case FbxGeometryElement::eByPolygon:
+	case FbxGeometryElement::eAllSame:
+	case FbxGeometryElement::eNone:
 		break;
-		default: DebugErrorMessage( "Error: Invalid vertex reference mode!" );
-		}
+	default:
 		break;
 	}
-	float y = 1 - result.y;
-	float x = result.x;
-	result.x = x;
-	result.y = y;
+	if ( !doneRead )
+	{
+		DebugErrorMessage( "UV CAN'T READ" );
+	}
+	result.y = 1 - result.y;
 	return result;
 }
 
@@ -431,7 +444,7 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 	int controlpointCount = mesh->GetControlPointsCount();
 
 	auto textureCount = mesh->GetUVLayerCount();
-	data.uvs.resize( textureCount );
+	data.uvs.resize( 1 );
 	for ( size_t i = 0; i < data.uvs.size(); i++ )
 	{
 		data.uvs[i].resize( controlpointCount );
@@ -451,14 +464,15 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 			UINT index = mesh->GetPolygonVertex( i, j );
 			data.indices.push_back( index );
 			data.positions[index] = DirectX::XMFLOAT3( mesh->GetControlPointAt( index )[0], mesh->GetControlPointAt( index )[1], mesh->GetControlPointAt( index )[2] );
-			data.normals[index] = ReadNormal(mesh, index, vertexCount);
-			data.uvs[0][index] = ReadUV( mesh, index, mesh->GetTextureUVIndex( i, j ) );
+			data.normals[index] = ReadNormal( mesh, index, vertexCount );
+			data.uvs[0][index] = ReadUV( mesh, index, i, j );
+			//data.uvs[0][index] = ReadUV( mesh, index, mesh->GetTextureUVIndex( i, j ) );
 			//data.uvs[1][index] = ReadUV( mesh, index, mesh->GetTextureUVIndex( i, j ) );
 			if ( mesh->GetElementBinormalCount() < 1 || mesh->GetElementTangentCount() < 1 )
 			{
 				vtx.push_back( index );
 			}
-			else 
+			else
 			{
 				data.tangent[index] = ReadTangent( mesh, index, vertexCount );
 				data.biTangent[index] = ReadBinormal( mesh, index, vertexCount );
@@ -515,7 +529,7 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 			}
 		}
 
-		for ( auto& vertexBone : data.vertexBone)
+		for ( auto& vertexBone : data.vertexBone )
 		{
 			//Weight 순으로 정렬
 			std::sort( vertexBone.begin(), vertexBone.end(),
@@ -560,7 +574,7 @@ static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, Fbx
 	DirectX::XMVECTOR r = {};
 	DirectX::XMVECTOR s = {};
 
-	DirectX::XMMatrixDecompose(&s,&r,&t, DirectX::XMLoadFloat4x4(&trs));
+	DirectX::XMMatrixDecompose( &s, &r, &t, DirectX::XMLoadFloat4x4( &trs ) );
 	DirectX::XMStoreFloat3( &importNode.position, t );
 	DirectX::XMStoreFloat4( &importNode.rotation, r );
 	DirectX::XMStoreFloat3( &importNode.scale, s );
@@ -585,9 +599,10 @@ static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, Fbx
 
 void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 {
-	DebugNormalMessage("Load FBX From " << path.c_str());
+	DebugNormalMessage( "Load FBX From " << path.c_str() );
 	FbxManager* pFbxManager = FbxManager::Create();
-	FbxIOSettings* pFbxIOSettings = FbxIOSettings::Create( pFbxManager, IOSROOT );
+	FbxIOSettings* pFbxIOSettings = FbxIOSettings::Create( pFbxManager, " " );
+	//FbxIOSettings* pFbxIOSettings = FbxIOSettings::Create( pFbxManager, IOSROOT );
 	pFbxManager->SetIOSettings( pFbxIOSettings );
 
 	FbxImporter* pFbxImporter = FbxImporter::Create( pFbxManager, "" );
@@ -609,8 +624,11 @@ void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 		directXAxis.DeepConvertScene( pFbxScene );
 	}
 
-	//FbxSystemUnit fbxSceneSystemUnit = pFbxScene->GetGlobalSettings().GetSystemUnit();
-	//if ( fbxSceneSystemUnit.GetScaleFactor() != 1.0f ) FbxSystemUnit::cm.ConvertScene( pFbxScene );
+	//fbxsdk::FbxSystemUnit fbxSceneSystemUnit = pFbxScene->GetGlobalSettings().GetSystemUnit();
+	//if ( fbxSceneSystemUnit.GetScaleFactor() != 1.0f )
+	//{
+	//	fbxsdk::FbxSystemUnit::cm.ConvertScene( pFbxScene );
+	//}
 
 	FbxNode* pFbxRootNode = pFbxScene->GetRootNode();
 
@@ -626,7 +644,7 @@ void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 	for ( size_t i = 0; i < meshes.size(); i++ )
 	{
 		DebugNormalMessage( meshes[i]->GetName() << " : Load Mesh" );
-		this->meshs.push_back(ConvertMesh( meshes[i] ));
+		this->meshs.push_back( ConvertMesh( meshes[i] ) );
 	}
 	pFbxManager->Destroy();
 }
