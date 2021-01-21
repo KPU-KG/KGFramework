@@ -2,7 +2,7 @@
 #include <vector>
 #include "KGGeometry.h"
 #include "D3D12Helper.h"
-#include "AssimpImpoter.h"
+#include "fbxImpoter.h"
 #include "KGDXRenderer.h"
 #include "RootParameterIndex.h"
 

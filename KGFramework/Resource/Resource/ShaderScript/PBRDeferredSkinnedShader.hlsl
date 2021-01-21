@@ -78,7 +78,7 @@ GBufferOut DefaultPixelFuction(VSOutput input)
     float3 normalMap = shaderTexture[mat.NormalTextureIndex].Sample(gsamAnisotoropicWrap, uv).xyz;
     normalMap = normalMap * 2 - 1.0f;
     result.wNormal = normalize(mul(normalMap, TBN));
-    //result.wNormal = input.worldNormal;
+    result.wNormal = input.worldNormal;
     
     result.environmentMap = objectInfo[input.InstanceID].environmentMapIndex;
     result.reserve0 = 1.0f.xxx;

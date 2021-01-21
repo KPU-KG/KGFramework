@@ -48,9 +48,6 @@
     <ClCompile Include="src\TransformSystem.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\AssimpImpoter.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\tinyxml2.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -63,7 +60,10 @@
     <ClCompile Include="src\GameObject.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="Debug.cpp">
+    <ClCompile Include="src\Debug.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\fbxImpoter.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -81,9 +81,6 @@
       <Filter>헤더 파일\etc</Filter>
     </ClInclude>
     <ClInclude Include="include\Debug.h">
-      <Filter>헤더 파일\Utill</Filter>
-    </ClInclude>
-    <ClInclude Include="include\AssimpImpoter.h">
       <Filter>헤더 파일\Utill</Filter>
     </ClInclude>
     <ClInclude Include="include\GameObject.h">
@@ -115,6 +112,9 @@
     </ClInclude>
     <ClInclude Include="include\ObjectContainer.h">
       <Filter>헤더 파일\Core\Entity</Filter>
+    </ClInclude>
+    <ClInclude Include="include\fbxImpoter.h">
+      <Filter>헤더 파일\Utill</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
