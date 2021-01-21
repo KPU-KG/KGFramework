@@ -350,9 +350,9 @@ static DirectX::XMFLOAT3 ReadNormal( FbxMesh* mesh, int controlPointIndex, int v
 
 static DirectX::XMFLOAT2 ReadUV( FbxMesh* mesh, int controlPointIndex, int uvIndex ) //vec3 ReadNormal //vec3 RadeBinormal
 {
-	if ( mesh->GetElementNormalCount() < 1 )
+	if ( mesh->GetElementUVCount() < 1 )
 	{
-		DebugErrorMessage( "Invalid ****** Number" );
+		DebugErrorMessage( "Invalid UV Number" );
 	}
 	FbxGeometryElementUV* vertexNormal = mesh->GetElementUV( 0 );
 
@@ -384,16 +384,10 @@ static DirectX::XMFLOAT2 ReadUV( FbxMesh* mesh, int controlPointIndex, int uvInd
 		switch ( vertexNormal->GetReferenceMode() )
 		{
 		case FbxGeometryElement::eDirect:
+		case FbxGeometryElement::eIndexToDirect:
 		{
 			result.x = static_cast<float>(vertexNormal->GetDirectArray().GetAt( uvIndex ).mData[0]);
 			result.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt( uvIndex ).mData[1]);
-		}
-		break;
-		case FbxGeometryElement::eIndexToDirect:
-		{
-			int index = vertexNormal->GetIndexArray().GetAt( uvIndex );
-			result.x = static_cast<float>(vertexNormal->GetDirectArray().GetAt( index ).mData[0]);
-			result.y = static_cast<float>(vertexNormal->GetDirectArray().GetAt( index ).mData[1]);
 		}
 		break;
 		default: DebugErrorMessage( "Error: Invalid vertex reference mode!" );
@@ -459,6 +453,7 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 			data.positions[index] = DirectX::XMFLOAT3( mesh->GetControlPointAt( index )[0], mesh->GetControlPointAt( index )[1], mesh->GetControlPointAt( index )[2] );
 			data.normals[index] = ReadNormal(mesh, index, vertexCount);
 			data.uvs[0][index] = ReadUV( mesh, index, mesh->GetTextureUVIndex( i, j ) );
+			//data.uvs[1][index] = ReadUV( mesh, index, mesh->GetTextureUVIndex( i, j ) );
 			if ( mesh->GetElementBinormalCount() < 1 || mesh->GetElementTangentCount() < 1 )
 			{
 				vtx.push_back( index );
@@ -602,12 +597,17 @@ void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 	pFbxImporter->Import( pFbxScene );
 	pFbxImporter->Destroy();
 
-	FbxAxisSystem directXAxis( FbxAxisSystem::eDirectX );
-	directXAxis.DeepConvertScene( pFbxScene );
 	FbxGeometryConverter conv( pFbxManager );
-	conv.Triangulate( pFbxScene, true );
-	//conv.RemoveBadPolygonsFromMeshes( pFbxScene, NULL );
+	conv.RemoveBadPolygonsFromMeshes( pFbxScene, NULL );
 	conv.SplitMeshesPerMaterial( pFbxScene, true );
+	conv.Triangulate( pFbxScene, true );
+
+	FbxAxisSystem currentAxis = pFbxScene->GetGlobalSettings().GetAxisSystem();
+	FbxAxisSystem directXAxis( FbxAxisSystem::eDirectX );
+	if ( currentAxis != directXAxis )
+	{
+		directXAxis.DeepConvertScene( pFbxScene );
+	}
 
 	//FbxSystemUnit fbxSceneSystemUnit = pFbxScene->GetGlobalSettings().GetSystemUnit();
 	//if ( fbxSceneSystemUnit.GetScaleFactor() != 1.0f ) FbxSystemUnit::cm.ConvertScene( pFbxScene );
