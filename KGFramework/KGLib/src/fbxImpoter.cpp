@@ -440,19 +440,21 @@ static int AddMesh( FbxNodeAttribute* attr, std::vector<FbxMesh*>& meshs )
 static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 {
 	KG::Utill::MeshData data;
+	std::vector<UINT> controlPoints;
+	std::vector<std::vector<KG::Utill::VertexBoneData>> boneControl;
 	int vertexCount = 0;
 	int controlpointCount = mesh->GetControlPointsCount();
 
 	auto textureCount = mesh->GetUVLayerCount();
 	data.uvs.resize( 1 );
-	for ( size_t i = 0; i < data.uvs.size(); i++ )
-	{
-		data.uvs[i].resize( controlpointCount );
-	}
-	data.positions.resize( controlpointCount );
-	data.normals.resize( controlpointCount );
-	data.biTangent.resize( controlpointCount );
-	data.tangent.resize( controlpointCount );
+	//for ( size_t i = 0; i < data.uvs.size(); i++ )
+	//{
+	//	data.uvs[i].resize( controlpointCount );
+	//}
+	//data.positions.resize( controlpointCount );
+	//data.normals.resize( controlpointCount );
+	//data.biTangent.resize( controlpointCount );
+	//data.tangent.resize( controlpointCount );
 
 	std::vector<UINT> vtx;
 	vtx.reserve( 3 );
@@ -462,25 +464,30 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 		for ( unsigned int j = 0; j < 3; j++ )
 		{
 			UINT index = mesh->GetPolygonVertex( i, j );
-			data.indices.push_back( index );
-			data.positions[index] = DirectX::XMFLOAT3( mesh->GetControlPointAt( index )[0], mesh->GetControlPointAt( index )[1], mesh->GetControlPointAt( index )[2] );
-			data.normals[index] = ReadNormal( mesh, index, vertexCount );
-			data.uvs[0][index] = ReadUV( mesh, index, i, j );
-			//data.uvs[0][index] = ReadUV( mesh, index, mesh->GetTextureUVIndex( i, j ) );
-			//data.uvs[1][index] = ReadUV( mesh, index, mesh->GetTextureUVIndex( i, j ) );
+			controlPoints.push_back( index );
+			data.positions.push_back(DirectX::XMFLOAT3( mesh->GetControlPointAt( index )[0], mesh->GetControlPointAt( index )[1], mesh->GetControlPointAt( index )[2] ));
+			data.normals.push_back(ReadNormal( mesh, index, vertexCount ));
+			data.uvs[0].push_back(ReadUV( mesh, index, i, j ));
 			if ( mesh->GetElementBinormalCount() < 1 || mesh->GetElementTangentCount() < 1 )
 			{
-				vtx.push_back( index );
+				vtx.push_back( vertexCount );
 			}
 			else
 			{
-				data.tangent[index] = ReadTangent( mesh, index, vertexCount );
-				data.biTangent[index] = ReadBinormal( mesh, index, vertexCount );
+				data.tangent.push_back( ReadTangent( mesh, index, vertexCount ) );
+				data.biTangent.push_back(ReadBinormal( mesh, index, vertexCount ));
 			}
+			data.indices.push_back( vertexCount );
 			vertexCount++;
 		}
 		if ( !vtx.empty() )
 		{
+			data.tangent.push_back( DirectX::XMFLOAT3( 0, 0, 0 ) );
+			data.tangent.push_back( DirectX::XMFLOAT3( 0, 0, 0 ) );
+			data.tangent.push_back( DirectX::XMFLOAT3( 0, 0, 0 ) );
+			data.biTangent.push_back( DirectX::XMFLOAT3( 0, 0, 0 ) );
+			data.biTangent.push_back( DirectX::XMFLOAT3( 0, 0, 0 ) );
+			data.biTangent.push_back( DirectX::XMFLOAT3( 0, 0, 0 ) );
 			CalculateTangentBinormal( data, vtx[0], vtx[1], vtx[2] );
 		}
 	}
@@ -511,7 +518,7 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 			data.bones.push_back( bone );
 		}
 
-		data.vertexBone.resize( controlpointCount );
+		boneControl.resize( controlpointCount );
 		for ( int j = 0; j < nClusters; j++ )
 		{
 			FbxCluster* pfbxCluster = pfbxSkinDeformer->GetCluster( j );
@@ -525,11 +532,11 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 				KG::Utill::VertexBoneData vbd;
 				vbd.bondId = j;
 				vbd.boneWeight = (float)pfControlPointWeights[k];
-				data.vertexBone[nVertex].push_back( vbd );
+				boneControl[nVertex].push_back( vbd );
 			}
 		}
 
-		for ( auto& vertexBone : data.vertexBone )
+		for ( auto& vertexBone : boneControl )
 		{
 			//Weight 순으로 정렬
 			std::sort( vertexBone.begin(), vertexBone.end(),
@@ -554,6 +561,14 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 			{
 				vertexBone[i].boneWeight /= fullWeight;
 			}
+		}
+	}
+	data.vertexBone.resize( data.positions.size() );
+	if ( !boneControl.empty() )
+	{
+		for ( size_t i = 0; i < data.vertexBone.size(); i++ )
+		{
+			data.vertexBone[i] = boneControl[controlPoints[i]];
 		}
 	}
 	return data;
