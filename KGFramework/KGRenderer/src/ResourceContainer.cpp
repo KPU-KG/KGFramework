@@ -166,16 +166,17 @@ void KG::Resource::ResourceContainer::ConvertNodeToObject( const KG::Utill::Hash
 		}
 		object->AddComponent( renderer->GetNewRenderComponent() );
 	}
-	else 
-	{
-		object->AddComponent( renderer->GetNewGeomteryComponent() );
-		object->AddComponent( renderer->GetNewMaterialComponent() );
-		auto* geo = object->GetComponent<KG::Component::GeometryComponent>();
-		auto* mat = object->GetComponent<KG::Component::MaterialComponent>();
-		geo->InitializeGeometry( KG::Utill::HashString("sphere"_id) );
-		mat->InitializeMaterial( KG::Utill::HashString("PBRStone"_id) );
-		object->AddComponent( renderer->GetNewRenderComponent() );
-	}
+	//Bone Debug
+	//else 
+	//{
+	//	object->AddComponent( renderer->GetNewGeomteryComponent() );
+	//	object->AddComponent( renderer->GetNewMaterialComponent() );
+	//	auto* geo = object->GetComponent<KG::Component::GeometryComponent>();
+	//	auto* mat = object->GetComponent<KG::Component::MaterialComponent>();
+	//	geo->InitializeGeometry( KG::Utill::HashString("sphere"_id) );
+	//	mat->InitializeMaterial( KG::Utill::HashString("PBRStone"_id) );
+	//	object->AddComponent( renderer->GetNewRenderComponent() );
+	//}
 
 }
 
