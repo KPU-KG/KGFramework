@@ -58,11 +58,44 @@ namespace KG::Utill
 		void AddSibling( ModelNode* node );
 	};
 
+	struct KeyData
+	{
+		float keyTime;
+		float value;
+	};
+
+	struct Vector3Data
+	{
+		std::vector<KeyData> x;
+		std::vector<KeyData> y;
+		std::vector<KeyData> z;
+	};
+
+	struct NodeAnimation
+	{
+		KG::Utill::HashString nodeId;
+		Vector3Data translation;
+		Vector3Data rotation;
+		Vector3Data scale;
+	};
+
+	struct AnimationLayer
+	{
+		std::vector<NodeAnimation> nodeAnimations;
+	};
+
+	struct AnimationSet
+	{
+		KG::Utill::HashString animationId;
+		std::vector<AnimationLayer> layers;
+	};
+
 	struct ImportData
 	{
 	public:
 		std::vector<MeshData> meshs;
 		std::deque<ModelNode> nodes;
+		std::vector<AnimationSet> animations;
 		ModelNode* root = nullptr;
 		void LoadFromPathFBX( const std::string& path );
 	};

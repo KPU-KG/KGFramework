@@ -352,7 +352,7 @@ static DirectX::XMFLOAT2 ReadUV( FbxMesh* mesh, int controlPointIndex, int i, in
 {
 	controlPointIndex = 0;
 	bool doneRead = false;
-	DirectX::XMFLOAT2 result = {0, 0};
+	DirectX::XMFLOAT2 result = { 0, 0 };
 
 	FbxGeometryElementUV* pfbxElementUV = mesh->GetElementUV( 0, FbxLayerElement::eUnknown );
 	switch ( pfbxElementUV->GetMappingMode() )
@@ -362,20 +362,20 @@ static DirectX::XMFLOAT2 ReadUV( FbxMesh* mesh, int controlPointIndex, int i, in
 		{
 		case FbxGeometryElement::eDirect:
 		{
-			auto ref = ( pfbxElementUV->GetDirectArray().GetAt( controlPointIndex ) );
+			auto ref = (pfbxElementUV->GetDirectArray().GetAt( controlPointIndex ));
 			result.x = static_cast<float>(ref.mData[0]);
 			result.y = static_cast<float>(ref.mData[1]);
 			doneRead = true;
 		}
-			break;
+		break;
 		case FbxGeometryElement::eIndexToDirect:
 		{
-			auto ref = ( pfbxElementUV->GetDirectArray().GetAt( pfbxElementUV->GetIndexArray().GetAt( controlPointIndex ) ) );
+			auto ref = (pfbxElementUV->GetDirectArray().GetAt( pfbxElementUV->GetIndexArray().GetAt( controlPointIndex ) ));
 			result.x = static_cast<float>(ref.mData[0]);
 			result.y = static_cast<float>(ref.mData[1]);
 			doneRead = true;
 		}
-			break;
+		break;
 		default:
 			break;
 		}
@@ -388,12 +388,12 @@ static DirectX::XMFLOAT2 ReadUV( FbxMesh* mesh, int controlPointIndex, int i, in
 		case FbxGeometryElement::eDirect:
 		case FbxGeometryElement::eIndexToDirect:
 		{
-			auto ref = ( pfbxElementUV->GetDirectArray().GetAt( nTextureUVIndex ) );
+			auto ref = (pfbxElementUV->GetDirectArray().GetAt( nTextureUVIndex ));
 			result.x = static_cast<float>(ref.mData[0]);
 			result.y = static_cast<float>(ref.mData[1]);
 			doneRead = true;
 		}
-			break;
+		break;
 		default:
 			break;
 		}
@@ -465,9 +465,9 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 		{
 			UINT index = mesh->GetPolygonVertex( i, j );
 			controlPoints.push_back( index );
-			data.positions.push_back(DirectX::XMFLOAT3( mesh->GetControlPointAt( index )[0], mesh->GetControlPointAt( index )[1], mesh->GetControlPointAt( index )[2] ));
-			data.normals.push_back(ReadNormal( mesh, index, vertexCount ));
-			data.uvs[0].push_back(ReadUV( mesh, index, i, j ));
+			data.positions.push_back( DirectX::XMFLOAT3( mesh->GetControlPointAt( index )[0], mesh->GetControlPointAt( index )[1], mesh->GetControlPointAt( index )[2] ) );
+			data.normals.push_back( ReadNormal( mesh, index, vertexCount ) );
+			data.uvs[0].push_back( ReadUV( mesh, index, i, j ) );
 			if ( mesh->GetElementBinormalCount() < 1 || mesh->GetElementTangentCount() < 1 )
 			{
 				vtx.push_back( vertexCount );
@@ -475,7 +475,7 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 			else
 			{
 				data.tangent.push_back( ReadTangent( mesh, index, vertexCount ) );
-				data.biTangent.push_back(ReadBinormal( mesh, index, vertexCount ));
+				data.biTangent.push_back( ReadBinormal( mesh, index, vertexCount ) );
 			}
 			data.indices.push_back( vertexCount );
 			vertexCount++;
@@ -574,7 +574,7 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 	return data;
 }
 
-static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, FbxNode* pFbxNode, std::vector<FbxMesh*>& meshs )
+static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, FbxNode* pFbxNode, std::vector<FbxMesh*>& meshs)
 {
 	auto& importNode = importData->nodes.emplace_back();
 	const char* nodeName = pFbxNode->GetName();
@@ -603,7 +603,6 @@ static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, Fbx
 		}
 	}
 
-
 	int count = pFbxNode->GetChildCount();
 	for ( int i = 0; i < count; ++i )
 	{
@@ -612,11 +611,40 @@ static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, Fbx
 	return &importNode;
 }
 
+//static void AddCurve( KG::Utill::AnimationLayer& result, FbxNode* node, FbxAnimCurve* curve, KG::Utill::KeyData::Type type )
+//{
+//	KG::Utill::KeyData keyData;
+//	keyData.type = type;
+//	keyData.keyTime = curve->GetTy
+//}
+
+//static void ReadAnimationCurve( KG::Utill::AnimationLayer& result, FbxNode* node, FbxAnimLayer* fbxLayer )
+//{
+//	FbxAnimCurve* curve = nullptr;
+//	curve = node->LclTranslation.GetCurve( fbxLayer, FBXSDK_CURVENODE_TRANSLATION );
+//	if(curve )
+//}
+//
+//static KG::Utill::ModelNode* ProcessAnimationNode(KG::Utill::AnimationLayer& result, FbxNode* pFbxNode, FbxAnimLayer* fbxLayer)
+//{
+//	ReadAnimationCurve( result, pFbxNode, fbxLayer );
+//	for ( size_t i = 0; i < pFbxNode->GetChildCount(); i++ )
+//	{
+//		ProcessAnimationNode( result, pFbxNode, fbxLayer );
+//	}
+//}
+
+
+
 void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 {
 	DebugNormalMessage( "Load FBX From " << path.c_str() );
 	FbxManager* pFbxManager = FbxManager::Create();
-	FbxIOSettings* pFbxIOSettings = FbxIOSettings::Create( pFbxManager, " " );
+	FbxIOSettings* pFbxIOSettings = FbxIOSettings::Create( pFbxManager, IOSROOT );
+	pFbxIOSettings->SetBoolProp( IMP_FBX_TEXTURE, false );
+	pFbxIOSettings->SetBoolProp( IMP_CAMERA, false );
+	pFbxIOSettings->SetBoolProp( IMP_LIGHT, false );
+
 	//FbxIOSettings* pFbxIOSettings = FbxIOSettings::Create( pFbxManager, IOSROOT );
 	pFbxManager->SetIOSettings( pFbxIOSettings );
 
@@ -653,7 +681,23 @@ void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 
 	if ( pFbxRootNode )
 	{
-		this->root = ProcessNode( this, pFbxRootNode, meshes );
+		this->root = ProcessNode( this, pFbxRootNode, meshes);
+		
+		//int animStackCount = pFbxScene->GetSrcObjectCount<FbxAnimStack>();
+		//for ( size_t i = 0; i < animStackCount; i++ )
+		//{
+		//	FbxAnimStack* animStack = pFbxScene->GetSrcObject<FbxAnimStack>( i );
+		//	auto& animSet = this->animations.emplace_back();
+		//	animSet.animationId = KG::Utill::HashString( animStack->GetName() );
+
+		//	int layerCount = animStack->GetMemberCount<FbxAnimLayer>();
+		//	for ( size_t i = 0; i < layerCount; i++ )
+		//	{
+		//		FbxAnimLayer* layer = animStack->GetMember<FbxAnimLayer>( i );
+		//		auto& result = animSet.layers.emplace_back();
+		//		ProcessAnimationNode( result, pFbxRootNode, layer );
+		//	}
+		//}
 	}
 
 	for ( size_t i = 0; i < meshes.size(); i++ )
@@ -661,5 +705,6 @@ void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 		DebugNormalMessage( meshes[i]->GetName() << " : Load Mesh" );
 		this->meshs.push_back( ConvertMesh( meshes[i] ) );
 	}
+
 	pFbxManager->Destroy();
 }

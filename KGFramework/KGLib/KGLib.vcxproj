@@ -99,32 +99,32 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Debug\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Debug_LIB\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_ID|Win32'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Debug\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Debug_LIB\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Release\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Release_LIB\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Debug\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Debug_LIB\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_ID|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Debug\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Debug_LIB\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Release\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Release_LIB\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
