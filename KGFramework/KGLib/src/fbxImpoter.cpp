@@ -74,8 +74,8 @@ static void CalculateTangentBinormal( KG::Utill::MeshData& data, UINT i0, UINT i
 	XMVECTOR t1 = XMLoadFloat2( &data.uvs[0][i1] );
 	XMVECTOR t2 = XMLoadFloat2( &data.uvs[0][i2] );
 
-	XMVECTOR tangent1[3];
-	XMVECTOR tangent2[3];
+	XMVECTOR tangent1[3] = { {},{},{} };
+	XMVECTOR tangent2[3] = { {},{},{} };
 
 	XMVECTOR s = XMVectorMergeXY( XMVectorSubtract( t1, t0 ), XMVectorSubtract( t2, t0 ) );
 
