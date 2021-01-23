@@ -337,7 +337,6 @@ void KG::GameFramework::OnTestInit()
 		ptr->name = "soldier";
 		ptr->AddComponent( lam );
 	}
-
 }
 
 void KG::GameFramework::OnProcess()

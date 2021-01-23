@@ -62,6 +62,22 @@ namespace KG::Utill
 	{
 		float keyTime;
 		float value;
+		bool operator<( const KeyData& other) const noexcept
+		{
+			return this->keyTime < other.keyTime;
+		}
+		bool operator<=( const KeyData& other ) const noexcept
+		{
+			return this->keyTime <= other.keyTime;
+		}
+		bool operator>( const KeyData& other ) const noexcept
+		{
+			return this->keyTime > other.keyTime;
+		}
+		bool operator>=( const KeyData& other ) const noexcept
+		{
+			return this->keyTime >= other.keyTime;
+		}
 	};
 
 	struct Vector3Data

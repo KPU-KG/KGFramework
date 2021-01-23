@@ -119,6 +119,20 @@ KG::Resource::Texture* KG::Resource::ResourceContainer::CreateTexture( const KG:
 	}
 }
 
+KG::Utill::AnimationSet* KG::Resource::ResourceContainer::LoadAnimation( const KG::Utill::HashString& id, UINT animationIndex )
+{
+	auto handle = std::make_pair( id, animationIndex );
+	if ( this->animations.count( handle ) )
+	{
+		return &this->animations.at( handle );
+	}
+	else
+	{
+		auto* model = this->LoadModel( id );
+		return &this->animations.emplace( std::make_pair( id, animationIndex ), std::move(model->data.animations[animationIndex]) ).first->second;
+	}
+}
+
 std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceContainer::LoadMaterial( const KG::Utill::HashString& id )
 {
 	if ( this->materials.count( id ) )
@@ -131,6 +145,16 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceContainer::LoadMa
 		return this->materials.emplace( id, result ).first->second;
 	}
 }
+
+//void KG::Resource::ResourceContainer::AddAnimation( const KG::Utill::HashString& id, UINT animationIndex, const KG::Utill::AnimationSet& animation )
+//{
+//	this->animations.emplace( std::make_pair( id, animationIndex ), animation );
+//}
+//
+//void KG::Resource::ResourceContainer::AddAnimation( const KG::Utill::HashString& id, UINT animationIndex, KG::Utill::AnimationSet&& animation )
+//{
+//	this->animations.emplace( std::make_pair( id, animationIndex ), std::move(animation) );
+//}
 
 void KG::Resource::ResourceContainer::ConvertNodeToObject( const KG::Utill::HashString& id, KG::Core::GameObject* object, KG::Utill::ModelNode* node, const MaterialMatch& materials, KG::Core::GameObject* rootObject )
 {

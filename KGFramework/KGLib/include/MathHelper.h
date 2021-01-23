@@ -276,6 +276,13 @@ namespace KG::Math
 			return result;
 		};
 
+		inline XMFLOAT4 FromEuler( const XMFLOAT3& quaternion )
+		{
+			XMFLOAT4 result;
+			XMStoreFloat4( &result, XMQuaternionRotationRollPitchYaw( quaternion.x, quaternion.y, quaternion.z ) );
+			return result;
+		}
+
 		inline XMFLOAT3 ToEuler(const XMFLOAT4& quaternion)
 		{
 			auto quatVec = XMLoadFloat4(&quaternion);
@@ -340,6 +347,11 @@ namespace KG::Math
 	{
 		using namespace DirectX;
 		return out << position.x << ", " << position.y << ", " << position.z << ", " << position.w;
+	}
+	
+	inline float Lerp( float a, float b, float t )
+	{
+		return (1 - t) * a + t * b;
 	}
 }
 

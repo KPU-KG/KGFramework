@@ -17,6 +17,7 @@
 #include "D3D12Helper.h"
 #include "RootParameterIndex.h"
 #include "RenderTexture.h"
+#include "fbximpoter.h"
 
 
 using namespace KG::Renderer;
@@ -568,4 +569,84 @@ void KG::Component::BoneTransformComponent::InitializeBone( KG::Core::GameObject
 		}
 #endif
 	}
+}
+
+static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float currentTime)
+{
+	float value = 0.0f;
+	KG::Utill::KeyData tempData;
+	tempData.keyTime = currentTime;
+	tempData.value = 0.0f;
+	auto p = std::equal_range( data.begin(), data.end(), tempData );
+	auto prev = p.first;
+	auto last = p.second;
+
+	float keyTime0 = (prev != data.begin()) ? prev->keyTime : 0.0f;
+	float keyTime1 = (last != data.begin()) ? last->keyTime : currentTime;
+
+	float keyValue0 = (prev != data.begin()) ? prev->value : 0.0f;
+	float keyValue1 = (last != data.begin()) ? last->value : prev->value;
+
+	value = KG::Math::Lerp( keyValue0, keyValue1, abs( currentTime - keyTime0 ) / abs( keyTime1 - keyTime0 ) );
+	return value;
+}
+
+static std::tuple<XMFLOAT3, XMFLOAT4, XMFLOAT3> GetAnimationTransform( const KG::Utill::NodeAnimation& anim, float currentTime)
+{
+	XMFLOAT3 t = {};
+	t.x = GetTimeData( anim.translation.x, currentTime );
+	t.y = GetTimeData( anim.translation.y, currentTime );
+	t.z = GetTimeData( anim.translation.z, currentTime );
+	XMFLOAT3 r = {};
+	r.x = GetTimeData( anim.rotation.x, currentTime );
+	r.y = GetTimeData( anim.rotation.y, currentTime );
+	r.z = GetTimeData( anim.rotation.z, currentTime );
+	XMFLOAT4 rQuat = KG::Math::Quaternion::FromEuler( r );
+	XMFLOAT3 s = {};
+	s.x = GetTimeData( anim.scale.x, currentTime );
+	s.y = GetTimeData( anim.scale.y, currentTime );
+	s.z = GetTimeData( anim.scale.z, currentTime );
+	return std::make_tuple( t, rQuat, s );
+}
+
+void KG::Component::AnimationStreamerComponent::OnCreate( KG::Core::GameObject* gameObject )
+{
+	IRenderComponent::OnCreate( gameObject );
+}
+
+void KG::Component::AnimationStreamerComponent::MatchNode()
+{
+	for ( auto& layer : this->anim->layers )
+	{
+		auto& cache = this->frameCache.emplace_back();
+		std::vector<KG::Utill::HashString> ids;
+		cache.resize( layer.nodeAnimations.size() );
+		for ( auto& n : layer.nodeAnimations )
+		{
+			ids.push_back( n.nodeId );
+		}
+		this->gameObject->MatchBoneToObject( ids, cache );
+	}
+}
+
+void KG::Component::AnimationStreamerComponent::Update( float elapsedTime )
+{
+	this->timer = elapsedTime;
+	for ( size_t i = 0; i < this->anim->layers[0].nodeAnimations.size(); i++ )
+	{
+		auto tuple = GetAnimationTransform( this->anim->layers[0].nodeAnimations[i], elapsedTime );
+		auto t = std::get<0>( tuple );
+		auto r = std::get<1>( tuple );
+		auto s = std::get<2>( tuple );
+		this->frameCache[0][i]->GetTransform()->SetPosition( t );
+		this->frameCache[0][i]->GetTransform()->SetRotation( r );
+		this->frameCache[0][i]->GetTransform()->SetScale( s );
+	}
+}
+
+void KG::Component::AnimationStreamerComponent::InitializeAnimation( const KG::Utill::HashString& animationId, UINT animationIndex )
+{
+	auto* inst = KG::Resource::ResourceContainer::GetInstance();
+	this->anim = inst->LoadAnimation( animationId, animationIndex );
+	this->MatchNode();
 }

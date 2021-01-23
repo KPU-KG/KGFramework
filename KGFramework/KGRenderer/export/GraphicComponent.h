@@ -30,6 +30,10 @@ namespace KG::System
 {
 	class ISystem;
 }
+namespace KG::Utill
+{
+	class AnimationSet;
+}
 
 namespace KG::Component
 {
@@ -272,6 +276,21 @@ namespace KG::Component
 		void InitializeBone( KG::Core::GameObject* rootNode );
 	};
 
+	class DLL AnimationStreamerComponent : public IRenderComponent
+	{
+		using FrameCacheVector = std::vector<KG::Core::GameObject*>;
+	protected:
+		KG::Utill::AnimationSet* anim = nullptr;
+		KG::Component::GeometryComponent* geometry = nullptr;
+		std::vector<FrameCacheVector> frameCache;
+		float timer = 0.0f;
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+		void MatchNode();
+	public:
+		virtual void Update( float timeElapsed ) override;
+		void InitializeAnimation( const KG::Utill::HashString& animationId, UINT animationIndex = 0);
+	};
+
 	REGISTER_COMPONENT_ID( LightComponent );
 	REGISTER_COMPONENT_ID( CameraComponent );
 	REGISTER_COMPONENT_ID( CubeCameraComponent );
@@ -279,6 +298,7 @@ namespace KG::Component
 	REGISTER_COMPONENT_ID( GeometryComponent );
 	REGISTER_COMPONENT_ID( MaterialComponent );
 	REGISTER_COMPONENT_ID( BoneTransformComponent );
+	REGISTER_COMPONENT_ID( AnimationStreamerComponent );
 
 }
 //대충 텍스처 류는 전부 디스크립터 힙에 배치

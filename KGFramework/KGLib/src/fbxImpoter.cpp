@@ -1,4 +1,5 @@
 #include "fbxImpoter.h"
+#define KFBX_DLLINFO
 #include <fbxsdk.h>
 #include <DirectXMathConvert.inl>
 #include <DirectXMath.h>
@@ -574,7 +575,7 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 	return data;
 }
 
-static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, FbxNode* pFbxNode, std::vector<FbxMesh*>& meshs)
+static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, FbxNode* pFbxNode, std::vector<FbxMesh*>& meshs )
 {
 	auto& importNode = importData->nodes.emplace_back();
 	const char* nodeName = pFbxNode->GetName();
@@ -611,30 +612,91 @@ static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, Fbx
 	return &importNode;
 }
 
-//static void AddCurve( KG::Utill::AnimationLayer& result, FbxNode* node, FbxAnimCurve* curve, KG::Utill::KeyData::Type type )
-//{
-//	KG::Utill::KeyData keyData;
-//	keyData.type = type;
-//	keyData.keyTime = curve->GetTy
-//}
 
-//static void ReadAnimationCurve( KG::Utill::AnimationLayer& result, FbxNode* node, FbxAnimLayer* fbxLayer )
-//{
-//	FbxAnimCurve* curve = nullptr;
-//	curve = node->LclTranslation.GetCurve( fbxLayer, FBXSDK_CURVENODE_TRANSLATION );
-//	if(curve )
-//}
-//
-//static KG::Utill::ModelNode* ProcessAnimationNode(KG::Utill::AnimationLayer& result, FbxNode* pFbxNode, FbxAnimLayer* fbxLayer)
-//{
-//	ReadAnimationCurve( result, pFbxNode, fbxLayer );
-//	for ( size_t i = 0; i < pFbxNode->GetChildCount(); i++ )
-//	{
-//		ProcessAnimationNode( result, pFbxNode, fbxLayer );
-//	}
-//}
+static void AddKeyData( std::vector<KG::Utill::KeyData>& keyDataVector, FbxAnimCurve* curve )
+{
+	if ( curve )
+	{
+		int keyCount = curve->KeyGetCount();
+		for ( size_t i = 0; i < keyCount; i++ )
+		{
+			FbxTime fbxKeyTime = curve->KeyGetTime( i );
+			float fkeyTime = static_cast<float>(fbxKeyTime.GetSecondDouble());
+			float fKeyValue = static_cast<float>(curve->KeyGetValue( i ));
+			KG::Utill::KeyData keyData;
+			keyData.keyTime = fkeyTime;
+			keyData.value = fKeyValue;
+			keyDataVector.push_back( keyData );
+		}
+	}
+}
 
+static void ReadTranslationCurve( KG::Utill::NodeAnimation& anim, FbxNode* node, FbxAnimLayer* fbxLayer )
+{
+	FbxAnimCurve* curve = nullptr;
+	//Read X
+	curve = node->LclTranslation.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_X );
+	AddKeyData( anim.translation.x, curve );
 
+	//Read Y
+	curve = node->LclTranslation.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_Y );
+	AddKeyData( anim.translation.y, curve );
+
+	//Read Z
+	curve = node->LclTranslation.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_Z );
+	AddKeyData( anim.translation.z, curve );
+}
+
+static void ReadRotaionCurve( KG::Utill::NodeAnimation& anim, FbxNode* node, FbxAnimLayer* fbxLayer )
+{
+	FbxAnimCurve* curve = nullptr;
+	//Read X
+	curve = node->LclRotation.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_X );
+	AddKeyData( anim.rotation.x, curve );
+
+	//Read Y
+	curve = node->LclRotation.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_Y );
+	AddKeyData( anim.rotation.y, curve );
+
+	//Read Z
+	curve = node->LclRotation.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_Z );
+	AddKeyData( anim.rotation.z, curve );
+}
+
+static void ReadScaleCurve( KG::Utill::NodeAnimation& anim, FbxNode* node, FbxAnimLayer* fbxLayer )
+{
+	FbxAnimCurve* curve = nullptr;
+	//Read X
+	curve = node->LclScaling.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_X );
+	AddKeyData( anim.scale.x, curve );
+
+	//Read Y
+	curve = node->LclScaling.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_Y );
+	AddKeyData( anim.scale.y, curve );
+
+	//Read Z
+	curve = node->LclScaling.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_Z );
+	AddKeyData( anim.scale.z, curve );
+}
+
+static void ReadAnimationCurve( KG::Utill::AnimationLayer& result, FbxNode* node, FbxAnimLayer* fbxLayer )
+{
+	FbxAnimCurve* curve = nullptr;
+	auto& nodeAnim = result.nodeAnimations.emplace_back();
+	nodeAnim.nodeId = KG::Utill::HashString( node->GetName() );
+	ReadTranslationCurve( nodeAnim, node, fbxLayer );
+	ReadRotaionCurve( nodeAnim, node, fbxLayer );
+	ReadScaleCurve( nodeAnim, node, fbxLayer );
+}
+
+static void ProcessAnimationNode( KG::Utill::AnimationLayer& result, FbxNode* pFbxNode, FbxAnimLayer* fbxLayer )
+{
+	ReadAnimationCurve( result, pFbxNode, fbxLayer );
+	for ( size_t i = 0; i < pFbxNode->GetChildCount(); i++ )
+	{
+		ProcessAnimationNode( result, pFbxNode->GetChild(i), fbxLayer );
+	}
+}
 
 void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 {
@@ -667,11 +729,11 @@ void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 		directXAxis.DeepConvertScene( pFbxScene );
 	}
 
-	//fbxsdk::FbxSystemUnit fbxSceneSystemUnit = pFbxScene->GetGlobalSettings().GetSystemUnit();
-	//if ( fbxSceneSystemUnit.GetScaleFactor() != 1.0f )
-	//{
-	//	fbxsdk::FbxSystemUnit::cm.ConvertScene( pFbxScene );
-	//}
+	fbxsdk::FbxSystemUnit fbxSceneSystemUnit = pFbxScene->GetGlobalSettings().GetSystemUnit();
+	if ( fbxSceneSystemUnit.GetScaleFactor() != 1.0f )
+	{
+		fbxsdk::FbxSystemUnit::cm.ConvertScene( pFbxScene );
+	}
 
 	FbxNode* pFbxRootNode = pFbxScene->GetRootNode();
 
@@ -681,23 +743,23 @@ void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 
 	if ( pFbxRootNode )
 	{
-		this->root = ProcessNode( this, pFbxRootNode, meshes);
-		
-		//int animStackCount = pFbxScene->GetSrcObjectCount<FbxAnimStack>();
-		//for ( size_t i = 0; i < animStackCount; i++ )
-		//{
-		//	FbxAnimStack* animStack = pFbxScene->GetSrcObject<FbxAnimStack>( i );
-		//	auto& animSet = this->animations.emplace_back();
-		//	animSet.animationId = KG::Utill::HashString( animStack->GetName() );
+		this->root = ProcessNode( this, pFbxRootNode, meshes );
 
-		//	int layerCount = animStack->GetMemberCount<FbxAnimLayer>();
-		//	for ( size_t i = 0; i < layerCount; i++ )
-		//	{
-		//		FbxAnimLayer* layer = animStack->GetMember<FbxAnimLayer>( i );
-		//		auto& result = animSet.layers.emplace_back();
-		//		ProcessAnimationNode( result, pFbxRootNode, layer );
-		//	}
-		//}
+		int animStackCount = pFbxScene->GetSrcObjectCount<FbxAnimStack>();
+		for ( size_t i = 0; i < animStackCount; i++ )
+		{
+			FbxAnimStack* animStack = pFbxScene->GetSrcObject<FbxAnimStack>( i );
+			auto& animSet = this->animations.emplace_back();
+			animSet.animationId = KG::Utill::HashString( animStack->GetName() );
+
+			int layerCount = animStack->GetMemberCount<FbxAnimLayer>();
+			for ( size_t i = 0; i < layerCount; i++ )
+			{
+				FbxAnimLayer* layer = animStack->GetMember<FbxAnimLayer>( i );
+				auto& result = animSet.layers.emplace_back();
+				ProcessAnimationNode( result, pFbxRootNode, layer );
+			}
+		}
 	}
 
 	for ( size_t i = 0; i < meshes.size(); i++ )
