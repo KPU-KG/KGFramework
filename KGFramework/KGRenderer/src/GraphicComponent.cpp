@@ -616,6 +616,7 @@ static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float curr
 			keyValue1 = last->value;
 		}
 		value = KG::Math::Lerp( keyValue0, keyValue1, abs( currentTime - keyTime0 ) / abs( keyTime1 - keyTime0 ) );
+		//value = keyValue0;
 	}
 	return value;
 }
@@ -664,14 +665,16 @@ void KG::Component::AnimationStreamerComponent::Update( float elapsedTime )
 {
 	this->timer += elapsedTime;
 	if ( this->timer > this->duration ) this->timer -= this->duration;
-	for ( size_t i = 0; i < this->anim->layers[0].nodeAnimations.size(); i++ )
+	for ( size_t i = 2; i < this->anim->layers[0].nodeAnimations.size(); i++ )
 	{
 		auto tuple = GetAnimationTransform( this->anim->layers[0].nodeAnimations[i], elapsedTime, this->duration );
 		auto t = std::get<0>( tuple );
 		auto r = std::get<1>( tuple );
 		auto s = std::get<2>( tuple );
 		//this->frameCache[0][i]->GetTransform()->SetPosition( t );
-		this->frameCache[0][i]->GetTransform()->SetEulerAngle( r.x, r.y, r.z );
+		auto quat = KG::Math::Quaternion::FromEuler( r );
+		XMFLOAT4 newQaut = XMFLOAT4( quat.w, quat.z, quat.y, quat.x );
+		this->frameCache[0][i]->GetTransform()->SetRotation( newQaut );
 		//this->frameCache[0][i]->GetTransform()->SetScale( s );
 	}
 }

@@ -322,23 +322,23 @@ void KG::GameFramework::OnTestInit()
 		//ptr->GetComponent<KG::Component::TransformComponent>()->RotateEuler( 0, 180, 0 );
 
 		KG::Core::GameObject* neck = ptr->FindChildObject( KG::Utill::HashString( "Neck1"_id ) );
-		//auto* lam = this->system->lambdaSystem.GetNewComponent();
-		//static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
-		//	[neck]( KG::Core::GameObject* gameObject, float elapsedTime )
-		//	{
-		//		using namespace KG::Input;
-		//		auto input = InputManager::GetInputManager();
-		//		auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
-		//		static float time = 0.0f;
-		//		time += elapsedTime;
-		//		neck->GetTransform()->SetEulerAngle( 0, sinf( time ) * DirectX::XMConvertToRadians(30.0f), 0 );
-		//	}
-		//);
+		auto* lam = this->system->lambdaSystem.GetNewComponent();
+		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+			[neck]( KG::Core::GameObject* gameObject, float elapsedTime )
+			{
+				using namespace KG::Input;
+				auto input = InputManager::GetInputManager();
+				auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+				static float time = 0.0f;
+				time += elapsedTime;
+				neck->GetTransform()->SetEulerAngle( 0, sinf( time ) * DirectX::XMConvertToRadians(30.0f), 0 );
+			}
+		);
 		ptr->name = "soldier";
 		//ptr->AddComponent( lam );
 
 		auto* anim = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_sprint_foward"_id ) );
-		ptr->AddComponent( anim );
+		//ptr->AddComponent( anim );
 	}
 }
 
