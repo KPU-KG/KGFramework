@@ -60,23 +60,11 @@ namespace KG::Utill
 
 	struct KeyData
 	{
-		float keyTime;
-		float value;
+		float keyTime = 0.0f;
+		float value = 0.0f;
 		bool operator<( const KeyData& other) const noexcept
 		{
 			return this->keyTime < other.keyTime;
-		}
-		bool operator<=( const KeyData& other ) const noexcept
-		{
-			return this->keyTime <= other.keyTime;
-		}
-		bool operator>( const KeyData& other ) const noexcept
-		{
-			return this->keyTime > other.keyTime;
-		}
-		bool operator>=( const KeyData& other ) const noexcept
-		{
-			return this->keyTime >= other.keyTime;
 		}
 	};
 

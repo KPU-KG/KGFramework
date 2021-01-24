@@ -26,6 +26,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 	KG::System::CubeCameraSystem cubeCameraSystem;
 	KG::System::LightSystem lightSystem;
 	KG::System::AvatarSystem avatarSystem;
+	KG::System::AnimationStreamSystem animationStreamSystem;
 
 	void OnPreRender()
 	{
@@ -36,6 +37,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->cubeCameraSystem.OnPreRender();
 		this->lightSystem.OnPreRender();
 		this->avatarSystem.OnPreRender();
+		this->animationStreamSystem.OnPreRender();
 	}
 
 	void OnUpdate( float elaspedTime )
@@ -47,6 +49,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->cubeCameraSystem.OnUpdate( elaspedTime );
 		this->lightSystem.OnUpdate( elaspedTime );
 		this->avatarSystem.OnUpdate( elaspedTime );
+		this->animationStreamSystem.OnUpdate( elaspedTime );
 	}
 	void OnPostUpdate( float elaspedTime )
 	{
@@ -57,6 +60,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->cubeCameraSystem.OnPostUpdate( elaspedTime );
 		this->lightSystem.OnPostUpdate( elaspedTime );
 		this->avatarSystem.OnPostUpdate( elaspedTime );
+		this->animationStreamSystem.OnPostUpdate( elaspedTime );
 	}
 
 	void Clear()
@@ -68,6 +72,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->cubeCameraSystem.Clear();
 		this->lightSystem.Clear();
 		this->avatarSystem.Clear();
+		this->animationStreamSystem.Clear();
 	}
 };
 
@@ -288,7 +293,14 @@ KG::Component::LightComponent* KG::Renderer::KGDXRenderer::GetNewLightComponent(
 
 KG::Component::BoneTransformComponent* KG::Renderer::KGDXRenderer::GetNewBoneTransformComponent()
 {
-	return static_cast<KG::Component::BoneTransformComponent*>(this->graphicSystems->avatarSystem.GetNewComponent());;
+	return static_cast<KG::Component::BoneTransformComponent*>(this->graphicSystems->avatarSystem.GetNewComponent());
+}
+
+KG::Component::AnimationStreamerComponent* KG::Renderer::KGDXRenderer::GetNewBoneAnimationStreamComponent( const KG::Utill::HashString& id, UINT index )
+{
+	auto* anim = static_cast<KG::Component::AnimationStreamerComponent*>(this->graphicSystems->animationStreamSystem.GetNewComponent());
+	anim->InitializeAnimation( id, index );
+	return anim;
 }
 
 KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials )

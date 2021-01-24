@@ -511,7 +511,7 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 			pfbxCluster->GetTransformLinkMatrix( fbxmtxBindPoseBoneToRoot );
 
 			//FbxAMatrix fbxmtxVertextToLinkNode = fbxmtxBindPoseBoneToRoot.Inverse() * fbxmtxBindPoseMeshToRoot * fbxmtxGeometryOffset;
-			FbxAMatrix fbxmtxVertextToLinkNode = fbxmtxBindPoseBoneToRoot.Inverse() * fbxmtxBindPoseMeshToRoot * fbxmtxGeometryOffset;
+			FbxAMatrix fbxmtxVertextToLinkNode = fbxmtxBindPoseBoneToRoot.Inverse() * fbxmtxBindPoseMeshToRoot;
 
 			KG::Utill::BoneData bone;
 			bone.nodeId = KG::Utill::HashString( pfbxClusterLinkNode->GetName() );

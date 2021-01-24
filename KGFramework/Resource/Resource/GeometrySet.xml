@@ -3,7 +3,6 @@
 기본 양식 : hash_id는 자동으로 채워집니다.
 <Geometry id="" fileDir="" rawMesh="false"/>
 -->
-
 <GeometrySet xmlns="KGResource.xsd">
     <Geometry id="cube" fileDir="Resource/Geometry/cube.fbx" rawMesh="true" hash_id="3056789162"/>
     <Geometry id="monkey" fileDir="Resource/Geometry/monkey.fbx" rawMesh="true" hash_id="356469458"/>
@@ -19,9 +18,8 @@
     <Geometry id="soldier" fileDir="Resource/Geometry/animation/Soldier.fbx" rawMesh="false" hash_id="139117345"/>
     <Geometry id="fbi" fileDir="Resource/Geometry/polygonHeist/Characters/SK_Character_Male_FBI.fbx" rawMesh="false" hash_id="101518118"/>
     <Geometry id="sphere_model" fileDir="Resource/Geometry/sphere.fbx" rawMesh="false" hash_id="2515950620"/>
-  <Geometry id="won" fileDir="Resource/Geometry/won.fbx" rawMesh="false" hash_id="117498587"/>
-  <!--Animation Sets-->
-  <Geometry id="soldier_sprint_foward" fileDir="Resource/Geometry/animation/Soldier@SprintForward.fbx" rawMesh="false"/>
-  <Geometry id="soldier_walk_forward" fileDir="Resource/Geometry/animation/Soldier@WalkForward.fbx" rawMesh="false"/>
-
+    <Geometry id="won" fileDir="Resource/Geometry/won.fbx" rawMesh="false" hash_id="117498587"/>
+    <!--Animation Sets-->
+    <Geometry id="soldier_sprint_foward" fileDir="Resource/Geometry/animation/Soldier@SprintForward.fbx" rawMesh="false" hash_id="2626963960"/>
+    <Geometry id="soldier_walk_forward" fileDir="Resource/Geometry/animation/Soldier@WalkForward.fbx" rawMesh="false"/>
 </GeometrySet>

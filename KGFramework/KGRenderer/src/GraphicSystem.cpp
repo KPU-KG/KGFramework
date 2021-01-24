@@ -108,3 +108,21 @@ void KG::System::AvatarSystem::OnPostUpdate( float elapsedTime )
 void KG::System::AvatarSystem::OnPreRender()
 {
 }
+
+
+void KG::System::AnimationStreamSystem::OnUpdate( float elapsedTime )
+{
+	for ( auto& com : this->pool )
+	{
+		com.Update( elapsedTime );
+	}
+}
+
+void KG::System::AnimationStreamSystem::OnPostUpdate( float elapsedTime )
+{
+}
+
+void KG::System::AnimationStreamSystem::OnPreRender()
+{
+}
+

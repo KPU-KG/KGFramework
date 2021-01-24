@@ -284,11 +284,13 @@ namespace KG::Component
 		KG::Component::GeometryComponent* geometry = nullptr;
 		std::vector<FrameCacheVector> frameCache;
 		float timer = 0.0f;
+		float duration = 0.0f;
 		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
 		void MatchNode();
 	public:
 		virtual void Update( float timeElapsed ) override;
 		void InitializeAnimation( const KG::Utill::HashString& animationId, UINT animationIndex = 0);
+		void GetDuration();
 	};
 
 	REGISTER_COMPONENT_ID( LightComponent );
