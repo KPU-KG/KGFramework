@@ -21,5 +21,6 @@
     <Geometry id="won" fileDir="Resource/Geometry/won.fbx" rawMesh="false" hash_id="117498587"/>
     <!--Animation Sets-->
     <Geometry id="soldier_sprint_foward" fileDir="Resource/Geometry/animation/Soldier@SprintForward.fbx" rawMesh="false" hash_id="2626963960"/>
-    <Geometry id="soldier_walk_forward" fileDir="Resource/Geometry/animation/Soldier@WalkForward.fbx" rawMesh="false"/>
+    <Geometry id="soldier_walk_forward" fileDir="Resource/Geometry/animation/Soldier@WalkForward.fbx" rawMesh="false" hash_id="4172517605"/>
+    <Geometry id="soldier_standing" fileDir="Resource/Geometry/animation/Soldier@Standing.fbx" rawMesh="false" hash_id="1391591128"/>
 </GeometrySet>

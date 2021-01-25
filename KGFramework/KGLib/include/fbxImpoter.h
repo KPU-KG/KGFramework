@@ -79,6 +79,7 @@ namespace KG::Utill
 	{
 		KG::Utill::HashString nodeId;
 		XMFLOAT4 preRotation;
+		Vector3Data protation;
 		Vector3Data translation;
 		Vector3Data rotation;
 		Vector3Data scale;

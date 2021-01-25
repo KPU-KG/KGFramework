@@ -266,54 +266,87 @@ namespace KG::Math
 		}
 	}
 
+	inline DirectX::XMVECTOR XMQuaternionRotationXYZ( float x, float y, float z )
+	{
+		using namespace DirectX;
+
+		auto _0 = XMQuaternionRotationAxis( XMVectorSet( 1, 0, 0, 0 ), x );
+		auto _1 = XMQuaternionRotationAxis( XMVectorSet( 0, 1, 0, 0 ), y );
+		auto _2 = XMQuaternionRotationAxis( XMVectorSet( 0, 0, 1, 0 ), z );
+
+		return XMQuaternionMultiply( XMQuaternionMultiply( _0, _1 ), _2 );
+	}
+
 	namespace Quaternion
 	{
 		using namespace DirectX;
+
 		inline XMFLOAT4 Identity()
 		{
 			XMFLOAT4 result;
-			XMStoreFloat4(&result, XMQuaternionIdentity());
+			XMStoreFloat4( &result, XMQuaternionIdentity() );
 			return result;
 		};
 
-		inline XMFLOAT4 FromEuler( const XMFLOAT3& quaternion )
+		inline XMFLOAT4 FromEuler( const XMFLOAT3& euler )
 		{
 			XMFLOAT4 result;
-			XMStoreFloat4( &result, XMQuaternionRotationRollPitchYaw( quaternion.x, quaternion.y, quaternion.z ) );
+			XMStoreFloat4( &result, XMQuaternionRotationRollPitchYaw( euler.x, euler.y, euler.z ) );
 			return result;
 		}
 
-		inline XMFLOAT3 ToEuler(const XMFLOAT4& quaternion)
+		inline XMFLOAT4 FromXYZEuler( const XMFLOAT3& euler )
 		{
-			auto quatVec = XMLoadFloat4(&quaternion);
-			auto sqrtQuat = XMVectorMultiply(quatVec, quatVec);
-			float unit = XMVectorGetX(XMVectorSum(sqrtQuat));
+			XMFLOAT4 result;
+			XMStoreFloat4( &result, KG::Math::XMQuaternionRotationXYZ( euler.x, euler.y, euler.z ) );
+			return result;
+		}
+
+		inline XMFLOAT4 FromXYZEuler( float x, float y, float z )
+		{
+			XMFLOAT4 result;
+			XMStoreFloat4( &result, KG::Math::XMQuaternionRotationXYZ( x, y, z ) );
+			return result;
+		}
+
+		inline XMFLOAT4 Multiply( const XMFLOAT4& a, const XMFLOAT4& b )
+		{
+			XMFLOAT4 result;
+			XMStoreFloat4( &result, XMQuaternionMultiply( XMLoadFloat4(&a), XMLoadFloat4( &b ) ) );
+			return result;
+		}
+
+		inline XMFLOAT3 ToEuler( const XMFLOAT4& quaternion )
+		{
+			auto quatVec = XMLoadFloat4( &quaternion );
+			auto sqrtQuat = XMVectorMultiply( quatVec, quatVec );
+			float unit = XMVectorGetX( XMVectorSum( sqrtQuat ) );
 			float test = quaternion.x * quaternion.w - quaternion.y * quaternion.z;
 			XMFLOAT3 v;
 
-			if (test > 0.4995f * unit)
+			if ( test > 0.4995f * unit )
 			{ // singularity at north pole
-				v.y = 2.0f * atan2(quaternion.y, quaternion.x);
+				v.y = 2.0f * atan2( quaternion.y, quaternion.x );
 				v.x = PI / 2;
 				v.z = 0;
 				return v;
 			}
-			if (test < -0.4995f * unit)
+			if ( test < -0.4995f * unit )
 			{ // singularity at south pole
-				v.y = -2.0f * atan2(quaternion.y, quaternion.x);
+				v.y = -2.0f * atan2( quaternion.y, quaternion.x );
 				v.x = -PI / 2;
 				v.z = 0;
 				return v;
 			}
-			XMFLOAT4 q = XMFLOAT4(quaternion.w, quaternion.z, quaternion.x, quaternion.y);
-			v.y = atan2(2.0f * q.x * q.w + 2.0f * q.y * q.z, 1 - 2.0f * (q.z * q.z + q.w * q.w));     // Yaw
-			v.x = asin(2.0f * (q.x * q.z - q.w * q.y));                             // Pitch
-			v.z = atan2(2.0f * q.x * q.y + 2.0f * q.z * q.w, 1 - 2.0f * (q.y * q.y + q.z * q.z));      // Roll
+			XMFLOAT4 q = XMFLOAT4( quaternion.w, quaternion.z, quaternion.x, quaternion.y );
+			v.y = atan2( 2.0f * q.x * q.w + 2.0f * q.y * q.z, 1 - 2.0f * (q.z * q.z + q.w * q.w) );     // Yaw
+			v.x = asin( 2.0f * (q.x * q.z - q.w * q.y) );                             // Pitch
+			v.z = atan2( 2.0f * q.x * q.y + 2.0f * q.z * q.w, 1 - 2.0f * (q.y * q.y + q.z * q.z) );      // Roll
 			return v;
 		}
-	}
-	
 
+	};
+	
 	inline DirectX::XMFLOAT4 RandomColor()
 	{
 		return DirectX::XMFLOAT4(rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX), 1.0f);

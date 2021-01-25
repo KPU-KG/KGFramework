@@ -337,8 +337,8 @@ void KG::GameFramework::OnTestInit()
 		ptr->name = "soldier";
 		//ptr->AddComponent( lam );
 
-		//auto* anim = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_sprint_foward"_id ) );
-		//ptr->AddComponent( anim );
+		auto* anim = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_walk_forward"_id ) );
+		ptr->AddComponent( anim );
 	}
 }
 

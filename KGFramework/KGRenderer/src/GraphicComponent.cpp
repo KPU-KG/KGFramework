@@ -577,6 +577,7 @@ static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float curr
 	float value = defaultValue;
 	if ( !data.empty() )
 	{
+		value = data[0].value;
 		KG::Utill::KeyData tempData;
 		tempData.keyTime = currentTime;
 		tempData.value = 0.0f;
@@ -608,7 +609,7 @@ static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float curr
 		if ( last == data.end() )
 		{
 			keyTime1 = duration;
-			keyValue1 = defaultValue;
+			keyValue1 = value;
 		}
 		else 
 		{
@@ -621,7 +622,7 @@ static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float curr
 	return value;
 }
 
-static std::tuple<XMFLOAT3, XMFLOAT3, XMFLOAT3> GetAnimationTransform( const KG::Utill::NodeAnimation& anim, float currentTime, float duration)
+static std::tuple<XMFLOAT3, XMFLOAT4, XMFLOAT3> GetAnimationTransform( const KG::Utill::NodeAnimation& anim, float currentTime, float duration)
 {
 	XMFLOAT3 t = {};
 	t.x = GetTimeData( anim.translation.x, currentTime, duration );
@@ -632,12 +633,12 @@ static std::tuple<XMFLOAT3, XMFLOAT3, XMFLOAT3> GetAnimationTransform( const KG:
 	r.y = XMConvertToRadians(GetTimeData( anim.rotation.y, currentTime, duration ));
 	r.z = XMConvertToRadians(GetTimeData( anim.rotation.z, currentTime, duration ));
 	DebugNormalMessage( "Rotation Anim : " << r );
-	//XMFLOAT4 rQuat = KG::Math::Quaternion::FromEuler( r );
+	XMFLOAT4 rQuat = KG::Math::Quaternion::Multiply( KG::Math::Quaternion::FromXYZEuler( r ), anim.preRotation );
 	XMFLOAT3 s = {};
 	s.x = GetTimeData( anim.scale.x, currentTime, duration, 1.0f );
 	s.y = GetTimeData( anim.scale.y, currentTime, duration, 1.0f );
 	s.z = GetTimeData( anim.scale.z, currentTime, duration, 1.0f );
-	return std::make_tuple( t, r, s );
+	return std::make_tuple( t, rQuat, s );
 }
 
 void KG::Component::AnimationStreamerComponent::OnCreate( KG::Core::GameObject* gameObject )
@@ -663,7 +664,7 @@ void KG::Component::AnimationStreamerComponent::MatchNode()
 
 void KG::Component::AnimationStreamerComponent::Update( float elapsedTime )
 {
-	this->timer += elapsedTime;
+	this->timer += elapsedTime * 0.5f;
 	if ( this->timer > this->duration ) this->timer -= this->duration;
 	for ( size_t i = 0; i < this->anim->layers[0].nodeAnimations.size(); i++ )
 	{
@@ -672,8 +673,9 @@ void KG::Component::AnimationStreamerComponent::Update( float elapsedTime )
 		auto r = std::get<1>( tuple );
 		auto s = std::get<2>( tuple );
 
-		this->frameCache[0][i]->GetTransform()->SetRotation( KG::Utill::ChangeEulerToDxQuat( r.x, r.y, r.z ) );
-		//this->frameCache[0][i]->GetTransform()->SetScale( s );
+		//this->frameCache[0][i]->GetTransform()->SetPosition( t );
+		this->frameCache[0][i]->GetTransform()->SetRotation( r );
+		this->frameCache[0][i]->GetTransform()->SetScale( s );
 	}
 }
 
