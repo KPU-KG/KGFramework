@@ -1,5 +1,6 @@
 #include "fbxImpoter.h"
 #define KFBX_DLLINFO
+#include <iomanip>
 #include <fbxsdk.h>
 #include <DirectXMathConvert.inl>
 #include <DirectXMath.h>
@@ -510,8 +511,8 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 			FbxAMatrix fbxmtxBindPoseBoneToRoot; //Cluster Link Transform
 			pfbxCluster->GetTransformLinkMatrix( fbxmtxBindPoseBoneToRoot );
 
-			//FbxAMatrix fbxmtxVertextToLinkNode = fbxmtxBindPoseBoneToRoot.Inverse() * fbxmtxBindPoseMeshToRoot * fbxmtxGeometryOffset;
-			FbxAMatrix fbxmtxVertextToLinkNode = fbxmtxBindPoseBoneToRoot.Inverse() * fbxmtxBindPoseMeshToRoot;
+			FbxAMatrix fbxmtxVertextToLinkNode = fbxmtxBindPoseBoneToRoot.Inverse() * fbxmtxBindPoseMeshToRoot * fbxmtxGeometryOffset;
+			//FbxAMatrix fbxmtxVertextToLinkNode = fbxmtxBindPoseBoneToRoot.Inverse() * fbxmtxBindPoseMeshToRoot;
 
 			KG::Utill::BoneData bone;
 			bone.nodeId = KG::Utill::HashString( pfbxClusterLinkNode->GetName() );
@@ -575,6 +576,32 @@ static KG::Utill::MeshData ConvertMesh( FbxMesh* mesh )
 	return data;
 }
 
+static auto& operator<<( std::ostream& os, const fbxsdk::FbxDouble3 vec )
+{
+	return os << std::fixed <<std::setprecision(8) << vec.mData[0] << ", " << vec.mData[1] << ", " << vec.mData[2];
+}
+
+static auto& operator<<( std::ostream& os, const fbxsdk::FbxDouble4 vec )
+{
+	return os << std::fixed << std::setprecision( 8 ) << vec.mData[0] << ", " << vec.mData[1] << ", " << vec.mData[2] << ","  << vec.mData[3];
+}
+
+static auto& operator<<( std::ostream& os, const fbxsdk::FbxVector4 vec )
+{
+	return os << std::fixed << std::setprecision( 8 ) << vec.mData[0] << ", " << vec.mData[1] << ", " << vec.mData[2] << ", " << vec.mData[3];
+}
+
+static DirectX::XMVECTOR FORCEINLINE XMQuaternionRotationXYZ( float x, float y, float z )
+{
+	using namespace DirectX;
+	
+	auto _2 = XMQuaternionRotationAxis( XMVectorSet( 1, 0, 0, 0 ), x );
+	auto _1 = XMQuaternionRotationAxis( XMVectorSet( 0, 1, 0, 0 ), y );
+	auto _0 = XMQuaternionRotationAxis( XMVectorSet( 0, 0, 1, 0 ), z );
+
+	return XMQuaternionMultiply( XMQuaternionMultiply( _0, _1 ), _2 );
+}
+
 static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, FbxNode* pFbxNode, std::vector<FbxMesh*>& meshs )
 {
 	auto& importNode = importData->nodes.emplace_back();
@@ -583,25 +610,62 @@ static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, Fbx
 	importNode.nodeId = KG::Utill::HashString( nodeName );
 
 	{
-		//auto s_t = pFbxNode->EvaluateLocalTranslation();
-		//auto s_r = pFbxNode->EvaluateLocalRotation();
-		//auto s_s = pFbxNode->EvaluateLocalScaling();
+		FileLogStreamNone( "======================================================" );
+		FileLogStreamNone( nodeName );
 
-		//importNode.position = DirectX::XMFLOAT3( s_t[0], s_t[1], s_t[2] );
-		//DirectX::XMVECTOR ss_r = DirectX::XMQuaternionRotationRollPitchYaw(
-		//	DirectX::XMConvertToRadians( s_r[0] ),
-		//	DirectX::XMConvertToRadians( s_r[1] ),
-		//	DirectX::XMConvertToRadians( s_r[2] )
-		//);
-		//importNode.scale = DirectX::XMFLOAT3( s_s[0], s_s[1], s_s[2] );
-		//fbxsdk::FbxQuaternion fbxQuat;
-		//fbxQuat.ComposeSphericalXYZ( s_r );
+		auto s_t = pFbxNode->EvaluateLocalTranslation();
+		auto s_r = pFbxNode->EvaluateLocalRotation();
+		auto s_s = pFbxNode->EvaluateLocalScaling();
+		auto offRot = pFbxNode->RotationOffset.Get();
+		auto preRot = pFbxNode->PreRotation.Get();
+		auto pivot = pFbxNode->RotationPivot.Get();
+		auto postRot = pFbxNode->PostRotation.Get();
 
-		//importNode.rotation = DirectX::XMFLOAT4( fbxQuat.GetAt(0), fbxQuat.GetAt( 1 ), fbxQuat.GetAt( 2 ), fbxQuat.GetAt( 3 ) );
+		FbxAMatrix a(s_t, s_r, s_s);
+		FbxQuaternion fbxQuat0;
+		FbxQuaternion fbxQuat1;
+		fbxQuat0.ComposeSphericalXYZ( preRot );
+		fbxQuat1.ComposeSphericalXYZ( s_r );
+		auto fbxQuatRes = fbxQuat1 * fbxQuat0;
+
+		DirectX::XMVECTOR dxQuat0 = DirectX::XMQuaternionRotationRollPitchYaw(
+			DirectX::XMConvertToRadians( preRot.mData[0] ),
+			DirectX::XMConvertToRadians( preRot.mData[1] ),
+			DirectX::XMConvertToRadians( preRot.mData[2] )
+		);
+		DirectX::XMVECTOR dxQuat1 = DirectX::XMQuaternionRotationRollPitchYaw( 
+			DirectX::XMConvertToRadians( s_r.mData[0]),
+			DirectX::XMConvertToRadians( s_r.mData[1]),
+			DirectX::XMConvertToRadians( s_r.mData[2])
+		);
+		auto dxQuatRes = DirectX::XMQuaternionNormalize( DirectX::XMQuaternionMultiply( dxQuat1, dxQuat0 ) );
+
+		DirectX::XMVECTOR dxQuat2 = XMQuaternionRotationXYZ(
+			-DirectX::XMConvertToRadians( preRot.mData[0] ),
+			-DirectX::XMConvertToRadians( preRot.mData[1] ),
+			DirectX::XMConvertToRadians( preRot.mData[2] )
+		);
+		DirectX::XMVECTOR dxQuat3 = XMQuaternionRotationXYZ(
+			-DirectX::XMConvertToRadians( s_r.mData[0] ),
+			-DirectX::XMConvertToRadians( s_r.mData[1] ),
+			DirectX::XMConvertToRadians( s_r.mData[2] )
+		);
+		auto dxQuatRes2 = DirectX::XMQuaternionNormalize( DirectX::XMQuaternionMultiply( dxQuat3, dxQuat2 ) );
+
+		FbxDouble4 fbxQuat = fbxQuatRes;
+
+		DirectX::XMFLOAT4 dxQuat;
+		DirectX::XMFLOAT4 dxQuatr2;
+		DirectX::XMStoreFloat4( &dxQuat, dxQuatRes );
+		DirectX::XMStoreFloat4( &dxQuatr2, dxQuatRes2 );
+
+		using namespace DirectX;
 
 		auto trs_fbx = pFbxNode->EvaluateLocalTransform();
+		auto q = trs_fbx.GetQ();
 		DirectX::XMFLOAT4X4 trs;
 		fbxamatrix_to_xmfloat4x4( trs_fbx, trs );
+		auto rotq = trs_fbx.GetQ();
 
 		DirectX::XMVECTOR t = {};
 		DirectX::XMVECTOR r = {};
@@ -611,7 +675,27 @@ static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, Fbx
 
 		DirectX::XMStoreFloat3( &importNode.position, t );
 		DirectX::XMStoreFloat4( &importNode.rotation, r );
+		//DirectX::XMStoreFloat4( &importNode.rotation, dxQuatRes );
 		DirectX::XMStoreFloat3( &importNode.scale, s );
+
+		FileLogStreamNone( "OffRot : " << offRot );
+		FileLogStreamNone( "PivotRot : " << pivot );
+		FileLogStreamNone( "PreRot : " << preRot );
+		FileLogStreamNone( "Rot : " << s_r );
+		FileLogStreamNone( "PostRot : " << postRot );
+		FileLogStreamNone( "---------------------------------" );
+		FileLogStreamNone( "FbxQuat     : " << fbxQuat );
+		FileLogStreamNone( "DxQuat      : " << dxQuat );
+		FileLogStreamNone( "DxXYZQuat   : " << dxQuatr2 );
+		FileLogStreamNone( "RealDXQuat  : " << importNode.rotation );
+		FileLogStreamNone( "RealFBXQuat : " << q );
+
+
+
+		if ( nodeName[0] == 'P' && nodeName[1] == 'e' )
+		{
+			DebugNormalMessage( "asd" );
+		}
 	}
 
 	for ( int i = 0; i < pFbxNode->GetNodeAttributeCount(); ++i )
@@ -641,7 +725,8 @@ static void AddKeyData( std::vector<KG::Utill::KeyData>& keyDataVector, FbxAnimC
 		{
 			FbxTime fbxKeyTime = curve->KeyGetTime( i );
 			float fkeyTime = static_cast<float>(fbxKeyTime.GetSecondDouble());
-			float fKeyValue = static_cast<float>(curve->KeyGetValue( i ));
+			float fKeyValue = curve->Evaluate( fbxKeyTime );
+			//float fKeyValue = curve->Evaluate( fbxKeyTime );
 			KG::Utill::KeyData keyData;
 			keyData.keyTime = fkeyTime;
 			keyData.value = fKeyValue;
@@ -670,15 +755,15 @@ static void ReadRotaionCurve( KG::Utill::NodeAnimation& anim, FbxNode* node, Fbx
 {
 	FbxAnimCurve* curve = nullptr;
 	//Read X
-	curve = node->GeometricRotation.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_X );
+	curve = node->LclRotation.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_X );
 	AddKeyData( anim.rotation.x, curve );
 
 	//Read Y
-	curve = node->GeometricRotation.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_Y );
+	curve = node->LclRotation.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_Y );
 	AddKeyData( anim.rotation.y, curve );
 
 	//Read Z
-	curve = node->GeometricRotation.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_Z );
+	curve = node->LclRotation.GetCurve( fbxLayer, FBXSDK_CURVENODE_COMPONENT_Z );
 	AddKeyData( anim.rotation.z, curve );
 }
 
@@ -703,6 +788,8 @@ static void ReadAnimationCurve( KG::Utill::AnimationLayer& result, FbxNode* node
 	FbxAnimCurve* curve = nullptr;
 	auto& nodeAnim = result.nodeAnimations.emplace_back();
 	nodeAnim.nodeId = KG::Utill::HashString( node->GetName() );
+	auto preRot = node->PreRotation.Get();
+	nodeAnim.preRotation = KG::Utill::ChangeEulerToDxQuat( preRot.mData[0], preRot.mData[1], preRot.mData[2] );
 	ReadTranslationCurve( nodeAnim, node, fbxLayer );
 	ReadRotaionCurve( nodeAnim, node, fbxLayer );
 	ReadScaleCurve( nodeAnim, node, fbxLayer );
@@ -740,7 +827,7 @@ void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 	conv.RemoveBadPolygonsFromMeshes( pFbxScene, NULL );
 	conv.SplitMeshesPerMaterial( pFbxScene, true );
 	conv.Triangulate( pFbxScene, true );
-
+	
 	//FbxAxisSystem currentAxis = pFbxScene->GetGlobalSettings().GetAxisSystem();
 	//FbxAxisSystem directXAxis( FbxAxisSystem::eDirectX );
 	//if ( currentAxis != directXAxis )
@@ -788,4 +875,14 @@ void KG::Utill::ImportData::LoadFromPathFBX( const std::string& path )
 	}
 
 	pFbxManager->Destroy();
+}
+
+DirectX::XMFLOAT4 KG::Utill::ChangeEulerToDxQuat( float x, float y, float z )
+{
+	FbxQuaternion fbxQuat;
+	FbxVector4 a;
+	a.Set( x, y, z );
+	fbxQuat.ComposeSphericalXYZ( a );
+	XMFLOAT4 result = XMFLOAT4( fbxQuat.mData[0], fbxQuat.mData[1] , fbxQuat.mData[2] , fbxQuat.mData[3] );
+	return result;
 }

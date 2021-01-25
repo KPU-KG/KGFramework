@@ -78,6 +78,7 @@ namespace KG::Utill
 	struct NodeAnimation
 	{
 		KG::Utill::HashString nodeId;
+		XMFLOAT4 preRotation;
 		Vector3Data translation;
 		Vector3Data rotation;
 		Vector3Data scale;
@@ -103,4 +104,5 @@ namespace KG::Utill
 		ModelNode* root = nullptr;
 		void LoadFromPathFBX( const std::string& path );
 	};
+	extern DirectX::XMFLOAT4 ChangeEulerToDxQuat( float x, float y, float z );
 }

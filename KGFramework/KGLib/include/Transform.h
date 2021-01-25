@@ -173,8 +173,13 @@ namespace KG::Component
 				auto scaleMat = XMMatrixScalingFromVector( XMLoadFloat3( &this->scale ) );
 				auto tralationMat = XMMatrixTranslationFromVector( XMLoadFloat3( &this->position ) );
 
+				;
+
 				//최적화 필요
-				XMStoreFloat4x4( &this->localWorldMatrix, scaleMat * rotMat * tralationMat );
+				XMStoreFloat4x4( &this->localWorldMatrix,
+					XMMatrixAffineTransformation( XMLoadFloat3( &this->scale ), XMVectorZero(), XMLoadFloat4( &this->rotation ), XMLoadFloat3( &this->position ) )
+					);
+				//XMStoreFloat4x4( &this->localWorldMatrix, scaleMat * rotMat * tralationMat );
 
 				this->isDirtyLocal = false;
 			}

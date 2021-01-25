@@ -43,7 +43,7 @@ FORCEINLINE std::ostream& operator<<( std::ostream& os, const DirectX::XMFLOAT3&
 }
 FORCEINLINE std::ostream& operator<<( std::ostream& os, const DirectX::XMFLOAT4& value )
 {
-	return os << value.x << ", " << value.y << ", " << value.z << ", " << value.z;
+	return os << value.x << ", " << value.y << ", " << value.z << ", " << value.w;
 }
 
 FORCEINLINE std::wostream& operator<<( std::wostream& os, const DirectX::XMFLOAT3& value )
@@ -52,7 +52,7 @@ FORCEINLINE std::wostream& operator<<( std::wostream& os, const DirectX::XMFLOAT
 }
 FORCEINLINE std::wostream& operator<<( std::wostream& os, const DirectX::XMFLOAT4& value )
 {
-	return os << value.x << ", " << value.y << ", " << value.z << ", " << value.z;
+	return os << value.x << ", " << value.y << ", " << value.z << ", " << value.w;
 }
 
 #else

@@ -40,7 +40,7 @@ public:
 		* \param pM Affine matrix */
 		FbxMatrix(const FbxAMatrix& pM);
 
-		/** TRS Constructor.
+		/** TRS Constructor.7
 		* \param pT Translation vector.
 		* \param pR Euler rotation vector.
 		* \param pS Scale vector. */

@@ -665,16 +665,14 @@ void KG::Component::AnimationStreamerComponent::Update( float elapsedTime )
 {
 	this->timer += elapsedTime;
 	if ( this->timer > this->duration ) this->timer -= this->duration;
-	for ( size_t i = 2; i < this->anim->layers[0].nodeAnimations.size(); i++ )
+	for ( size_t i = 0; i < this->anim->layers[0].nodeAnimations.size(); i++ )
 	{
-		auto tuple = GetAnimationTransform( this->anim->layers[0].nodeAnimations[i], elapsedTime, this->duration );
+		auto tuple = GetAnimationTransform( this->anim->layers[0].nodeAnimations[i], this->timer, this->duration );
 		auto t = std::get<0>( tuple );
 		auto r = std::get<1>( tuple );
 		auto s = std::get<2>( tuple );
-		//this->frameCache[0][i]->GetTransform()->SetPosition( t );
-		auto quat = KG::Math::Quaternion::FromEuler( r );
-		XMFLOAT4 newQaut = XMFLOAT4( quat.w, quat.z, quat.y, quat.x );
-		this->frameCache[0][i]->GetTransform()->SetRotation( newQaut );
+
+		this->frameCache[0][i]->GetTransform()->SetRotation( KG::Utill::ChangeEulerToDxQuat( r.x, r.y, r.z ) );
 		//this->frameCache[0][i]->GetTransform()->SetScale( s );
 	}
 }
