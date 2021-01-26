@@ -611,9 +611,6 @@ static KG::Utill::ModelNode* ProcessNode( KG::Utill::ImportData* importData, Fbx
 	importNode.nodeId = KG::Utill::HashString( nodeName );
 
 	{
-		FileLogStreamNone( "======================================================" );
-		FileLogStreamNone( nodeName );
-
 		auto s_t = pFbxNode->LclTranslation.Get();
 		auto s_r = pFbxNode->LclRotation.Get();
 		auto s_s = pFbxNode->LclScaling.Get();
@@ -744,7 +741,11 @@ static void ReadAnimationCurve( KG::Utill::AnimationLayer& result, FbxNode* node
 	auto& nodeAnim = result.nodeAnimations.emplace_back();
 	nodeAnim.nodeId = KG::Utill::HashString( node->GetName() );
 	auto preRot = node->PreRotation.Get();
-	nodeAnim.preRotation = KG::Math::Quaternion::FromXYZEuler( preRot.mData[0], preRot.mData[1], preRot.mData[2] );
+	nodeAnim.preRotation = KG::Math::Quaternion::FromXYZEuler(
+		DirectX::XMConvertToRadians( preRot.mData[0] ),
+		DirectX::XMConvertToRadians( preRot.mData[1] ),
+		DirectX::XMConvertToRadians( preRot.mData[2] )
+	);
 	ReadTranslationCurve( nodeAnim, node, fbxLayer );
 	ReadRotaionCurve( nodeAnim, node, fbxLayer );
 	ReadScaleCurve( nodeAnim, node, fbxLayer );

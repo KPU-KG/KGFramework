@@ -632,7 +632,6 @@ static std::tuple<XMFLOAT3, XMFLOAT4, XMFLOAT3> GetAnimationTransform( const KG:
 	r.x = XMConvertToRadians(GetTimeData( anim.rotation.x, currentTime, duration ));
 	r.y = XMConvertToRadians(GetTimeData( anim.rotation.y, currentTime, duration ));
 	r.z = XMConvertToRadians(GetTimeData( anim.rotation.z, currentTime, duration ));
-	DebugNormalMessage( "Rotation Anim : " << r );
 	XMFLOAT4 rQuat = KG::Math::Quaternion::Multiply( KG::Math::Quaternion::FromXYZEuler( r ), anim.preRotation );
 	XMFLOAT3 s = {};
 	s.x = GetTimeData( anim.scale.x, currentTime, duration, 1.0f );
@@ -666,17 +665,28 @@ void KG::Component::AnimationStreamerComponent::Update( float elapsedTime )
 {
 	this->timer += elapsedTime * 0.5f;
 	if ( this->timer > this->duration ) this->timer -= this->duration;
+
+	//FileLogStreamNone( "--------------------------------------------" );
+	//FileLogStreamNone( "Animation One Loop" );
 	for ( size_t i = 0; i < this->anim->layers[0].nodeAnimations.size(); i++ )
 	{
+		if ( this->anim->layers[0].nodeAnimations[i].nodeId == KG::Utill::HashString( "RootNode"_id ) )
+		{
+			continue;
+		}
+		//FileLogStreamNone( this->anim->layers[0].nodeAnimations[i].nodeId.srcString );
 		auto tuple = GetAnimationTransform( this->anim->layers[0].nodeAnimations[i], this->timer, this->duration );
 		auto t = std::get<0>( tuple );
 		auto r = std::get<1>( tuple );
+		//FileLogStreamNone( "Quat : " << r );
+		//FileLogStreamNone( "Eualer : " << KG::Math::Quaternion::ToEuler( r, false ) );
 		auto s = std::get<2>( tuple );
 
 		//this->frameCache[0][i]->GetTransform()->SetPosition( t );
 		this->frameCache[0][i]->GetTransform()->SetRotation( r );
 		this->frameCache[0][i]->GetTransform()->SetScale( s );
 	}
+	//FileLogStreamNone( "--------------------------------------------" );
 }
 
 void KG::Component::AnimationStreamerComponent::InitializeAnimation( const KG::Utill::HashString& animationId, UINT animationIndex )

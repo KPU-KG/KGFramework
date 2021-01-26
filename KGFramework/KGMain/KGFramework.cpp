@@ -316,28 +316,14 @@ void KG::GameFramework::OnTestInit()
 		static KG::Core::ObjectContainer oc;
 		oc.PostTransformSystem( &this->system->transformSystem );
 		KG::Resource::MaterialMatch match;
+
 		match.SetDefaultMaterial( { KG::Utill::HashString( "soldierHead"_id ), KG::Utill::HashString( "soldierBody"_id ) } );
 		auto* ptr = this->renderer->LoadFromModel( KG::Utill::HashString( "soldier"_id ), oc, match );
 		ptr->GetComponent<KG::Component::TransformComponent>()->SetScale( 0.01f, 0.01f, 0.01f );
-		//ptr->GetComponent<KG::Component::TransformComponent>()->RotateEuler( 0, 180, 0 );
-
-		KG::Core::GameObject* neck = ptr->FindChildObject( KG::Utill::HashString( "Neck1"_id ) );
-		auto* lam = this->system->lambdaSystem.GetNewComponent();
-		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
-			[neck]( KG::Core::GameObject* gameObject, float elapsedTime )
-			{
-				using namespace KG::Input;
-				auto input = InputManager::GetInputManager();
-				auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
-				static float time = 0.0f;
-				time += elapsedTime;
-				neck->GetTransform()->SetEulerAngle( 0, sinf( time ) * DirectX::XMConvertToRadians(30.0f), 0 );
-			}
-		);
+		//ptr->GetComponent<KG::Component::TransformComponent>()->SetPosition	( 0, 2, 0 );
 		ptr->name = "soldier";
-		//ptr->AddComponent( lam );
 
-		auto* anim = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_walk_forward"_id ) );
+		auto* anim = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_sprint_forward"_id ) );
 		ptr->AddComponent( anim );
 	}
 }

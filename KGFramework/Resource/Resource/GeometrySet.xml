@@ -19,8 +19,9 @@
     <Geometry id="fbi" fileDir="Resource/Geometry/polygonHeist/Characters/SK_Character_Male_FBI.fbx" rawMesh="false" hash_id="101518118"/>
     <Geometry id="sphere_model" fileDir="Resource/Geometry/sphere.fbx" rawMesh="false" hash_id="2515950620"/>
     <Geometry id="won" fileDir="Resource/Geometry/won.fbx" rawMesh="false" hash_id="117498587"/>
+    <Geometry id="ang" fileDir="Resource/Geometry/Angrybot.fbx" rawMesh="false" hash_id="96975471"/>
     <!--Animation Sets-->
-    <Geometry id="soldier_sprint_forward" fileDir="Resource/Geometry/animation/Soldier@SprintForward.fbx" rawMesh="false" hash_id="2626963960"/>
+    <Geometry id="soldier_sprint_forward" fileDir="Resource/Geometry/animation/Soldier@SprintForward.fbx" rawMesh="false" hash_id="1308506146"/>
     <Geometry id="soldier_walk_forward" fileDir="Resource/Geometry/animation/Soldier@WalkForward.fbx" rawMesh="false" hash_id="4172517605"/>
     <Geometry id="soldier_standing" fileDir="Resource/Geometry/animation/Soldier@Standing.fbx" rawMesh="false" hash_id="1391591128"/>
 </GeometrySet>

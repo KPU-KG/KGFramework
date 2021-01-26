@@ -60,4 +60,7 @@ FORCEINLINE std::wostream& operator<<( std::wostream& os, const DirectX::XMFLOAT
 #define DebugErrorMessage(X)
 #define DebugAssertion(P, X)
 #define NotImplement(X)
+#define FileLogStream(P, X)
+#define FileLogStreamNone(X)
+
 #endif

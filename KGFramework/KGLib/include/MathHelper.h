@@ -316,7 +316,7 @@ namespace KG::Math
 			return result;
 		}
 
-		inline XMFLOAT3 ToEuler( const XMFLOAT4& quaternion )
+		inline XMFLOAT3 ToEuler( const XMFLOAT4& quaternion, bool isRadian = true )
 		{
 			auto quatVec = XMLoadFloat4( &quaternion );
 			auto sqrtQuat = XMVectorMultiply( quatVec, quatVec );
@@ -342,6 +342,12 @@ namespace KG::Math
 			v.y = atan2( 2.0f * q.x * q.w + 2.0f * q.y * q.z, 1 - 2.0f * (q.z * q.z + q.w * q.w) );     // Yaw
 			v.x = asin( 2.0f * (q.x * q.z - q.w * q.y) );                             // Pitch
 			v.z = atan2( 2.0f * q.x * q.y + 2.0f * q.z * q.w, 1 - 2.0f * (q.y * q.y + q.z * q.z) );      // Roll
+			if ( !isRadian )
+			{
+				v.x = XMConvertToDegrees( v.x );
+				v.y = XMConvertToDegrees( v.y );
+				v.z = XMConvertToDegrees( v.z );
+			}
 			return v;
 		}
 
