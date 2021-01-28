@@ -169,11 +169,12 @@ void KG::Renderer::KGDXRenderer::CubeCaemraRender()
 		{
 			PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 0 ), "Cube Camera Render : Camera %d", camera.GetCubeIndex() );
 
+			camera.SetCameraRender( this->mainCommandList );
 			this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, camera );
 			this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, camera );
 			this->LightPassRender( this->mainCommandList, camera );
 			this->SkyBoxRender( this->mainCommandList, camera );
-			//this->PassRenderEnd( this->mainCommandList, camera );
+			this->PassRenderEnd( this->mainCommandList, camera );
 			camera.EndCameraRender( this->mainCommandList );
 			PIXEndEvent( mainCommandList );
 		}
