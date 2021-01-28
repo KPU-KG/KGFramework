@@ -1,13 +1,18 @@
 #ifndef __CUSTOM_LIGHT_DEFINE__
 #define __CUSTOM_LIGHT_DEFINE__
 
-#include "GlobalDefine.hlsl"
-#include "GBufferDefine.hlsl"
-#include "DeferredDefine.hlsl"
-#include "LightDefine.hlsl"
+#include "Define_Global.hlsl"
+#include "Define_GBuffer.hlsl"
+#include "Define_Light.hlsl"
 
 #define PI  3.14159265359
 
+float CalcAttenuation(float distance, float falloffStart, float falloffEnd)
+{
+    float d = pow(distance, 2);
+    float r = pow(falloffEnd, 2);
+    return pow(saturate(1 - pow(d / r, 2)), 2);
+}
 
 // GGX/Towbridge-Reitz normal distribution function.
 // Uses Disney's reparametrization of alpha = roughness^2.
@@ -40,7 +45,7 @@ float3 fresnelSchlick(float3 F0, float cosTheta)
     return F0 + (1.0 - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-float4 CustomLightCalculator(LightData light, PixelResult info, float3 lightDir, float3 cameraDir, float atten)
+float4 CustomLightCalculator(LightData light, Surface info, float3 lightDir, float3 cameraDir, float atten)
 {
     float3 L = -lightDir;
     float3 V = cameraDir;
@@ -66,7 +71,7 @@ float4 CustomLightCalculator(LightData light, PixelResult info, float3 lightDir,
     float3 diffuseBRDF = kd * info.albedo;
     
     // Cook-Torrance specular microfacet BRDF.
-    float3 specularBRDF = (F * D * G) / max(0.00001f, 4.0f * NDotL * NDotV);    
+    float3 specularBRDF = (F * D * G) / max(0.00001f, 4.0f * NDotL * NDotV);
     
     return float4((diffuseBRDF + specularBRDF) * NDotL * light.Strength * atten, 1.0f);
     
@@ -94,7 +99,7 @@ float4 CustomLightCalculator(LightData light, PixelResult info, float3 lightDir,
     //return finalColor;
 }
 
-float4 CustomAmbientLightCalculator(LightData light, PixelResult info, float3 lightDir, float3 cameraDir, float atten)
+float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightDir, float3 cameraDir, float atten)
 {
     
     float3 L = -lightDir;

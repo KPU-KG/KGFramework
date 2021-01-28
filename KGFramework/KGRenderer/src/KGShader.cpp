@@ -26,24 +26,31 @@ KG::Resource::DynamicElementInterface KG::Renderer::Shader::GetMaterialElement( 
 	auto index = this->GetMaterialIndex( ID );
 	return this->materialBuffer->GetElement( index );
 }
-D3D12_RASTERIZER_DESC KG::Renderer::Shader::CreateRasterizerState( const KG::Resource::Metadata::ShaderSetData& data )
+D3D12_RASTERIZER_DESC KG::Renderer::Shader::CreateRasterizerState( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType )
 {
 	D3D12_RASTERIZER_DESC d3dRasterizerDesc;
 	ZeroDesc( d3dRasterizerDesc );
 	d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_SOLID;
-	if ( data.shaderType == ShaderType::LightPass )
+	if ( pixType == ShaderPixelType::Light )
 	{
 		d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_FRONT;
+		d3dRasterizerDesc.DepthClipEnable = false;
 	}
-	else 
+	else if ( pixType == ShaderPixelType::GreenWireFrame )
 	{
-		d3dRasterizerDesc.CullMode = data.enableCullBackface ? D3D12_CULL_MODE_BACK : D3D12_CULL_MODE_NONE;
+		d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
+		d3dRasterizerDesc.FillMode = D3D12_FILL_MODE_WIREFRAME;
+		d3dRasterizerDesc.DepthClipEnable = true;
+	}
+	else
+	{
+		d3dRasterizerDesc.CullMode = this->shaderSetData.enableCullBackface ? D3D12_CULL_MODE_BACK : D3D12_CULL_MODE_NONE;
+		d3dRasterizerDesc.DepthClipEnable = this->shaderSetData.enableDepthCliping;
 	}
 	d3dRasterizerDesc.FrontCounterClockwise = false;
 	d3dRasterizerDesc.DepthBias = 0;
 	d3dRasterizerDesc.DepthBiasClamp = 0.0f;
 	d3dRasterizerDesc.SlopeScaledDepthBias = 0.0f;
-	d3dRasterizerDesc.DepthClipEnable = data.enableDepthCliping;
 	d3dRasterizerDesc.MultisampleEnable = false;
 	d3dRasterizerDesc.AntialiasedLineEnable = false;
 	d3dRasterizerDesc.ForcedSampleCount = 0;
@@ -51,12 +58,12 @@ D3D12_RASTERIZER_DESC KG::Renderer::Shader::CreateRasterizerState( const KG::Res
 	return d3dRasterizerDesc;
 }
 
-D3D12_BLEND_DESC KG::Renderer::Shader::CreateBlendState( const KG::Resource::Metadata::ShaderSetData& data )
+D3D12_BLEND_DESC KG::Renderer::Shader::CreateBlendState( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType )
 {
 	D3D12_BLEND_DESC d3dBlendDesc;
 	ZeroDesc( d3dBlendDesc );
 
-	if ( data.blendOpType == "opaque" )
+	if ( pixType == ShaderPixelType::Deferred )
 	{
 		d3dBlendDesc.AlphaToCoverageEnable = false;
 		d3dBlendDesc.IndependentBlendEnable = false;
@@ -74,7 +81,7 @@ D3D12_BLEND_DESC KG::Renderer::Shader::CreateBlendState( const KG::Resource::Met
 			d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		}
 	}
-	else if ( data.blendOpType == "lightPass" )
+	else if ( pixType == ShaderPixelType::Light )
 	{
 		d3dBlendDesc.AlphaToCoverageEnable = false;
 		d3dBlendDesc.IndependentBlendEnable = false;
@@ -91,19 +98,32 @@ D3D12_BLEND_DESC KG::Renderer::Shader::CreateBlendState( const KG::Resource::Met
 	}
 	else
 	{
-		DebugAssertion( false, L"Blend OP " << data.blendOpType.c_str() << L"는 정의되지 않은 Blend OP 입니다." );
+		DebugAssertion( false, L"정의되지 않은 타입의 Blend OP를 사용 중 입니다." );
 	}
 	return d3dBlendDesc;
 }
 
-D3D12_DEPTH_STENCIL_DESC KG::Renderer::Shader::CreateDepthStencilState( const KG::Resource::Metadata::ShaderSetData& data )
+ID3D12PipelineState* KG::Renderer::Shader::GetPSO( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType, ShaderTesselation tessel )
+{
+	auto result = this->pso.find( std::make_tuple( meshType, geoType, pixType, tessel ) );
+	if ( result == this->pso.end() )
+	{
+		return this->CreatePSO( meshType, pixType, geoType );
+	}
+	else
+	{
+		return result->second;
+	}
+}
+
+D3D12_DEPTH_STENCIL_DESC KG::Renderer::Shader::CreateDepthStencilState( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType )
 {
 	D3D12_DEPTH_STENCIL_DESC d3dDepthStencilDesc;
 	ZeroDesc( d3dDepthStencilDesc );
 
-	switch ( static_cast<ShaderType>(data.shaderType) )
+	switch ( pixType )
 	{
-	case ShaderType::Opaque:
+	case ShaderPixelType::Deferred:
 	{
 		d3dDepthStencilDesc.DepthEnable = true;
 		d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
@@ -120,8 +140,8 @@ D3D12_DEPTH_STENCIL_DESC KG::Renderer::Shader::CreateDepthStencilState( const KG
 		d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
 		d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
 	}
-		break;
-	case ShaderType::LightPass:
+	break;
+	case ShaderPixelType::Light:
 	{
 		d3dDepthStencilDesc.DepthEnable = false;
 		d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ALL;
@@ -138,27 +158,11 @@ D3D12_DEPTH_STENCIL_DESC KG::Renderer::Shader::CreateDepthStencilState( const KG
 		d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
 		d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
 	}
-		break;
-	case ShaderType::Transparent:
-		break;
-	case ShaderType::PostProcess:
-		d3dDepthStencilDesc.DepthEnable = true;
-		d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
-		d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
-		d3dDepthStencilDesc.StencilEnable = false;
-		d3dDepthStencilDesc.StencilReadMask = 0x00;
-		d3dDepthStencilDesc.StencilWriteMask = 0x00;
-		d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-		d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-		d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE;
-		d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
-		d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
-		d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
-		d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
-		d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
-		break;
+	break;
+	case ShaderPixelType::Forward:
+	case ShaderPixelType::Transparent:
 	default:
-		DebugAssertion( false, L"Type " << data.blendOpType.c_str() << L"는 깊이 스텐실 처리방법이  정의되지 않은 Type 입니다." );
+		DebugAssertion( false, L"깊이 스텐실 처리방법이  정의되지 않은 타입을 사용 중 입니다." );
 		break;
 	}
 
@@ -166,7 +170,9 @@ D3D12_DEPTH_STENCIL_DESC KG::Renderer::Shader::CreateDepthStencilState( const KG
 	return d3dDepthStencilDesc;
 }
 
-ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata( const KG::Resource::Metadata::ShaderCodeData& data )
+ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata( ShaderTarget shaderTarget, 
+	ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType, ShaderTesselation tessel 
+)
 {
 	UINT nCompileFlags = 0;
 #if defined(_DEBUG)
@@ -176,13 +182,23 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata( const KG::Resource:
 	ID3DBlob* errorblob;
 	ID3DBlob* shaderBlob;
 	static std::wstring buffer;
-	buffer.assign( data.fileDir.begin(), data.fileDir.end() );
-	HRESULT hr = ::D3DCompileFromFile( buffer.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE, data.entry.c_str(),
-		data.type.c_str(), nCompileFlags | D3DCOMPILE_ENABLE_UNBOUNDED_DESCRIPTOR_TABLES, 0, &shaderBlob, &errorblob );
+	D3D_SHADER_MACRO macro[] = {
+		ConvertToMacroString( meshType ), "",
+		ConvertToMacroString( geoType ), "",
+		ConvertToMacroString( pixType ), "",
+		NULL, NULL };
+	buffer.assign( this->shaderSetData.fileDir.begin(), this->shaderSetData.fileDir.end() );
+	HRESULT hr = ::D3DCompileFromFile( buffer.c_str(), macro, D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		ConvertToEntryString( shaderTarget ),
+		ConvertToShaderString( shaderTarget ),
+		nCompileFlags | D3DCOMPILE_ENABLE_UNBOUNDED_DESCRIPTOR_TABLES,
+		0,
+		&shaderBlob,
+		&errorblob );
 
 	if ( errorblob != nullptr )
 	{
-		DebugErrorMessage( L"셰이더 컴파일 오류" << (char*)errorblob->GetBufferPointer() );
+		DebugErrorMessage( L"셰이더 컴파일 오류 : " << (char*)errorblob->GetBufferPointer() );
 	}
 	return shaderBlob;
 }
@@ -201,30 +217,29 @@ void KG::Renderer::Shader::CreateMaterialBuffer( const KG::Resource::Metadata::S
 
 KG::Renderer::Shader::Shader( const KG::Resource::Metadata::ShaderSetData& data )
 {
-	this->CreateFromMetadata( data );
+	this->shaderSetData = data;
+	this->CreateMaterialBuffer( this->shaderSetData );
 }
 
 KG::Renderer::Shader::~Shader()
 {
-	TryRelease( normalPso );
-	TryRelease( wireframePso );
+	for ( auto& i : this->pso)
+	{
+		TryRelease( i.second );
+	}
 }
 
-void KG::Renderer::Shader::Set( ID3D12GraphicsCommandList* pd3dCommandList )
+void KG::Renderer::Shader::Set( ID3D12GraphicsCommandList* pd3dCommandList, ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType )
 {
-	pd3dCommandList->SetPipelineState( this->isWireFrame ? this->wireframePso : this->normalPso );
+	auto* pso = this->GetPSO( meshType, pixType, geoType );
+	pd3dCommandList->SetPipelineState( pso );
 	if ( this->materialBuffer )
 	{
 		pd3dCommandList->SetGraphicsRootShaderResourceView( RootParameterIndex::MaterialData, this->materialBuffer->GetBuffer()->GetGPUVirtualAddress() );
 	}
 }
 
-void KG::Renderer::Shader::SetWireframe( bool wireframe )
-{
-	this->isWireFrame = wireframe;
-}
-
-void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::ShaderSetData& data )
+ID3D12PipelineState* KG::Renderer::Shader::CreatePSO( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType, ShaderTesselation tessel )
 {
 	ID3D10Blob* vertexShader = nullptr;
 	ID3D10Blob* pixelShader = nullptr;
@@ -236,16 +251,10 @@ void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::Sha
 	ZeroDesc( d3dPipelineStateDesc );
 	d3dPipelineStateDesc.pRootSignature = KGDXRenderer::GetInstance()->GetGeneralRootSignature();
 
-	this->renderPriority = data.renderPriority;
-	this->shaderType = (ShaderType)data.shaderType;
-	this->isSkinnedAnimation = data.isSkinnedAnimation;
-
-	this->CreateMaterialBuffer( data );
 
 	//VS
-	if ( data.vertexShader.isEnable )
 	{
-		vertexShader = CompileShaderFromMetadata( data.vertexShader );
+		vertexShader = CompileShaderFromMetadata( ShaderTarget::VS_5_1, meshType, pixType, geoType );
 		D3D12_SHADER_BYTECODE byteCode;
 		byteCode.pShaderBytecode = vertexShader->GetBufferPointer();
 		byteCode.BytecodeLength = vertexShader->GetBufferSize();
@@ -253,9 +262,8 @@ void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::Sha
 	}
 
 	//PS
-	if ( data.pixelShader.isEnable )
 	{
-		pixelShader = CompileShaderFromMetadata( data.pixelShader );
+		pixelShader = CompileShaderFromMetadata( ShaderTarget::PS_5_1, meshType, pixType, geoType );
 		D3D12_SHADER_BYTECODE byteCode;
 		byteCode.pShaderBytecode = pixelShader->GetBufferPointer();
 		byteCode.BytecodeLength = pixelShader->GetBufferSize();
@@ -263,9 +271,9 @@ void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::Sha
 	}
 
 	//GS
-	if ( data.geometryShader.isEnable )
+	if ( geoType == ShaderGeometryType::GeometryCubeMap || tessel == ShaderTesselation::TesselationMesh )
 	{
-		geometryShader = CompileShaderFromMetadata( data.geometryShader );
+		geometryShader = CompileShaderFromMetadata( ShaderTarget::GS_5_1, meshType, pixType, geoType );
 		D3D12_SHADER_BYTECODE byteCode;
 		byteCode.pShaderBytecode = geometryShader->GetBufferPointer();
 		byteCode.BytecodeLength = geometryShader->GetBufferSize();
@@ -273,9 +281,9 @@ void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::Sha
 	}
 
 	//DS
-	if ( data.domainShader.isEnable )
+	if ( tessel == ShaderTesselation::TesselationMesh )
 	{
-		domainShader = CompileShaderFromMetadata( data.domainShader );
+		domainShader = CompileShaderFromMetadata( ShaderTarget::DS_5_1, meshType, pixType, geoType );
 		D3D12_SHADER_BYTECODE byteCode;
 		byteCode.pShaderBytecode = domainShader->GetBufferPointer();
 		byteCode.BytecodeLength = domainShader->GetBufferSize();
@@ -283,23 +291,23 @@ void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::Sha
 	}
 
 	//HS
-	if ( data.hullShader.isEnable )
+	if ( tessel == ShaderTesselation::TesselationMesh )
 	{
-		hullShader = CompileShaderFromMetadata( data.hullShader );
+		hullShader = CompileShaderFromMetadata( ShaderTarget::HS_5_1, meshType, pixType, geoType );
 		D3D12_SHADER_BYTECODE byteCode;
 		byteCode.pShaderBytecode = hullShader->GetBufferPointer();
 		byteCode.BytecodeLength = hullShader->GetBufferSize();
 		d3dPipelineStateDesc.HS = byteCode;
 	}
 
-	d3dPipelineStateDesc.RasterizerState = CreateRasterizerState( data );
-	d3dPipelineStateDesc.BlendState = CreateBlendState( data );
-	d3dPipelineStateDesc.DepthStencilState = CreateDepthStencilState( data );
+	d3dPipelineStateDesc.RasterizerState = CreateRasterizerState( meshType, pixType, geoType );
+	d3dPipelineStateDesc.BlendState = CreateBlendState( meshType, pixType, geoType );
+	d3dPipelineStateDesc.DepthStencilState = CreateDepthStencilState( meshType, pixType, geoType );
 
 	d3dPipelineStateDesc.InputLayout = NormalVertex::GetInputLayoutDesc();
 	d3dPipelineStateDesc.SampleMask = UINT_MAX;
 	d3dPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
-	if ( data.shaderType == ShaderType::Opaque )
+	if ( pixType == ShaderPixelType::Deferred || pixType == ShaderPixelType::GreenWireFrame )
 	{
 		d3dPipelineStateDesc.NumRenderTargets = 4;
 		d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -308,7 +316,7 @@ void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::Sha
 		d3dPipelineStateDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UINT;
 		//d3dPipelineStateDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	}
-	else 
+	else
 	{
 		d3dPipelineStateDesc.NumRenderTargets = 1;
 		d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
@@ -316,14 +324,17 @@ void KG::Renderer::Shader::CreateFromMetadata( const KG::Resource::Metadata::Sha
 	d3dPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	d3dPipelineStateDesc.SampleDesc.Count = 1;
 	auto d3dDevice = KGDXRenderer::GetInstance()->GetD3DDevice();
-	d3dDevice->CreateGraphicsPipelineState( &d3dPipelineStateDesc, IID_PPV_ARGS( &this->normalPso ) );
 
-	d3dPipelineStateDesc.RasterizerState.FillMode = D3D12_FILL_MODE::D3D12_FILL_MODE_WIREFRAME;
-	d3dPipelineStateDesc.RasterizerState.CullMode = D3D12_CULL_MODE::D3D12_CULL_MODE_NONE;
-	d3dDevice->CreateGraphicsPipelineState( &d3dPipelineStateDesc, IID_PPV_ARGS( &this->wireframePso ) );
+	ID3D12PipelineState* pso = nullptr;
+	d3dDevice->CreateGraphicsPipelineState( &d3dPipelineStateDesc, IID_PPV_ARGS( &pso ) );
+
+	this->pso.emplace( std::make_tuple( meshType, geoType, pixType, tessel ), pso );
+
 	TryRelease( vertexShader );
 	TryRelease( pixelShader );
 	TryRelease( domainShader );
 	TryRelease( hullShader );
 	TryRelease( geometryShader );
+
+	return pso;
 }

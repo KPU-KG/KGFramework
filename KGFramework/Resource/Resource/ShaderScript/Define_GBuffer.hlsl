@@ -1,21 +1,6 @@
 #ifndef __GBUFFER_DEFINE__
 #define __GBUFFER_DEFINE__
-struct PixelResult
-{
-    float3 albedo;
-    float reflection;
-    
-    float1 specular;
-    float1 metalic;
-    float1 roughness;
-    float1 emssion;
-    
-    float3 wNormal;
-    
-    uint environmentMap;
-    uint3 reserve0;
-};
-
+#include "Define_Global.hlsl"
 struct GBufferOut
 {
     float4 gbuffer0 : SV_Target0;
@@ -65,28 +50,28 @@ float3 DecodeNormal(float2 f)
 }
 
 
-GBufferOut PixelEncode(PixelResult pix)
+GBufferOut PixelEncode(Surface surface)
 {
     GBufferOut result;
-    result.gbuffer0.xyz = pix.albedo;
-    result.gbuffer0.w = pix.reflection;
+    result.gbuffer0.xyz = surface.albedo;
+    result.gbuffer0.w = surface.reflection;
     
-    result.gbuffer1.x = pix.specular;
-    result.gbuffer1.y = pix.metalic;
-    result.gbuffer1.z = pix.roughness;
-    result.gbuffer1.w = pix.emssion;
+    result.gbuffer1.x = surface.specular;
+    result.gbuffer1.y = surface.metalic;
+    result.gbuffer1.z = surface.roughness;
+    result.gbuffer1.w = surface.emssion;
     
-    result.gbuffer2.xy = EncodeNormal(pix.wNormal);
+    result.gbuffer2.xy = EncodeNormal(surface.wNormal);
     
-    result.gbuffer3.x = pix.environmentMap;
-    result.gbuffer3.yzw = pix.reserve0;
+    result.gbuffer3.x = surface.environmentMap;
+    result.gbuffer3.yzw = surface.reserve0;
     
     return result;
 }
 
-PixelResult PixelDecode(float4 gbuffer0, float4 gbuffer1, float4 gbuffer2, uint4 gbuffer3)
+Surface PixelDecode(float4 gbuffer0, float4 gbuffer1, float4 gbuffer2, uint4 gbuffer3)
 {
-    PixelResult result;
+    Surface result;
     result.albedo = gbuffer0.xyz;
     result.reflection = gbuffer0.w;
     

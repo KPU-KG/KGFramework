@@ -2,27 +2,12 @@
 #include <string>
 namespace KG::Resource::Metadata
 {
-	struct ShaderCodeData
-	{
-		bool isEnable = false;
-		std::string fileDir;
-		std::string entry;
-		std::string type;
-	};
 	struct ShaderSetData
 	{
-		ShaderCodeData vertexShader;
-		ShaderCodeData geometryShader;
-		ShaderCodeData domainShader;
-		ShaderCodeData hullShader;
-		ShaderCodeData pixelShader;
-
+		std::string fileDir;
+		int shaderGroup;
 		bool enableCullBackface;
 		bool enableDepthCliping;
-		bool isSkinnedAnimation;
-		std::string blendOpType;
-		int renderPriority;
-		int shaderType;
 		int materialParameterSize;
 	};
 

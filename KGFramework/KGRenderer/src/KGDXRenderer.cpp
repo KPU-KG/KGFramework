@@ -123,8 +123,6 @@ void KGDXRenderer::Initialize()
 
 	this->CreateSRVDescriptorHeaps();
 	this->AllocateGBufferHeap();
-
-	this->RegisterPassEnterFunction();
 }
 
 void KGDXRenderer::Render()
@@ -140,14 +138,41 @@ void KGDXRenderer::Render()
 	ID3D12DescriptorHeap* heaps[] = { this->descriptorHeapManager->Get() };
 	this->mainCommandList->SetDescriptorHeaps( 1, heaps );
 
+	//this->CubeCaemraRender();
+	this->NormalCameraRender();
+
+	hResult = this->mainCommandList->Close();
+
+	ID3D12CommandList* d3dCommandLists[] = { this->mainCommandList };
+	this->commandQueue->ExecuteCommandLists( 1, d3dCommandLists );
+
+	this->renderEngine->ClearUpdateCount();
+
+	DXGI_PRESENT_PARAMETERS dxgiPresentParameters;
+	dxgiPresentParameters.DirtyRectsCount = 0;
+	dxgiPresentParameters.pDirtyRects = nullptr;
+	dxgiPresentParameters.pScrollRect = nullptr;
+	dxgiPresentParameters.pScrollOffset = nullptr;
+	this->swapChain->Present1( this->setting.isVsync, 0, &dxgiPresentParameters );
+
+	this->swapChainBufferIndex = this->swapChain->GetCurrentBackBufferIndex();
+
+	this->MoveToNextFrame();
+}
+
+void KG::Renderer::KGDXRenderer::CubeCaemraRender()
+{
 	PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 0 ), "CubeCameraRender" );
 	for ( KG::Component::CubeCameraComponent& cubeCamera : this->graphicSystems->cubeCameraSystem )
 	{
 		for ( KG::Component::CameraComponent& camera : cubeCamera.GetCameras() )
 		{
 			PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 0 ), "Cube Camera Render : Camera %d", camera.GetCubeIndex() );
-			camera.SetCameraRender( this->mainCommandList );
-			this->renderEngine->Render( this->mainCommandList, camera );
+
+			this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, camera );
+			this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, camera );
+			this->LightPassRender( this->mainCommandList, camera );
+			this->PassRenderEnd( this->mainCommandList, camera );
 			camera.EndCameraRender( this->mainCommandList );
 			PIXEndEvent( mainCommandList );
 		}
@@ -160,14 +185,22 @@ void KGDXRenderer::Render()
 		);
 	}
 	PIXEndEvent( mainCommandList );
+}
 
+void KG::Renderer::KGDXRenderer::NormalCameraRender()
+{
 	PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "NormalCameraRender" );
 	size_t _cameraCount = 1;
 	for ( KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem )
 	{
 		PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "Normal Camera Render : Camera %d", _cameraCount++ );
 		camera.SetCameraRender( this->mainCommandList );
-		this->renderEngine->Render( this->mainCommandList, camera);
+
+		this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, camera );
+		this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, camera );
+		this->LightPassRender( this->mainCommandList, camera );
+		this->PassRenderEnd( this->mainCommandList, camera );
+
 		camera.EndCameraRender( this->mainCommandList );
 
 		if ( camera.isMainCamera )
@@ -177,13 +210,13 @@ void KGDXRenderer::Render()
 					D3D12_RESOURCE_STATE_COPY_SOURCE,
 					D3D12_RESOURCE_STATE_COMMON,
 					D3D12_RESOURCE_STATE_COMMON
-					)
-				);
+				)
+			);
 			auto barrierOne = CD3DX12_RESOURCE_BARRIER::Transition(
 				this->renderTargetBuffers[this->swapChainBufferIndex],
 				D3D12_RESOURCE_STATE_PRESENT,
 				D3D12_RESOURCE_STATE_COPY_DEST );
-			this->mainCommandList->ResourceBarrier( 1, 
+			this->mainCommandList->ResourceBarrier( 1,
 				&barrierOne
 			);
 			this->mainCommandList->CopyResource( this->renderTargetBuffers[this->swapChainBufferIndex], camera.GetRenderTexture().renderTarget );
@@ -208,23 +241,55 @@ void KGDXRenderer::Render()
 	}
 	PIXEndEvent( mainCommandList );
 
-	hResult = this->mainCommandList->Close();
+}
 
-	ID3D12CommandList* d3dCommandLists[] = { this->mainCommandList };
-	this->commandQueue->ExecuteCommandLists( 1, d3dCommandLists );
+void KG::Renderer::KGDXRenderer::OpaqueRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
+{
+	PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "Opaque Render" );
+	cmdList->OMSetRenderTargets( 4, camera.GetRenderTexture().gbufferHandle.data(), false, &camera.GetRenderTexture().dsvHandle );
+	camera.GetRenderTexture().ClearGBuffer( this->mainCommandList, 0, 0, 0, 0 );
+	cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::Texture1Heap, this->descriptorHeapManager->GetGPUHandle( 0 ) );
 
-	this->renderEngine->ClearUpdateCount();
+	this->mainCommandList->ClearDepthStencilView( camera.GetRenderTexture().dsvHandle,
+		D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL,
+		1.0f, 0, 0, nullptr );
 
-	DXGI_PRESENT_PARAMETERS dxgiPresentParameters;
-	dxgiPresentParameters.DirtyRectsCount = 0;
-	dxgiPresentParameters.pDirtyRects = nullptr;
-	dxgiPresentParameters.pScrollRect = nullptr;
-	dxgiPresentParameters.pScrollOffset = nullptr;
-	this->swapChain->Present1( this->setting.isVsync, 0, &dxgiPresentParameters );
+	this->renderEngine->Render( ShaderGroup::Opaque, geoType, pixType, cmdList, camera );
+}
 
-	this->swapChainBufferIndex = this->swapChain->GetCurrentBackBufferIndex();
+void KG::Renderer::KGDXRenderer::TransparentRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
+{
+	this->renderEngine->Render( ShaderGroup::Transparent, geoType, pixType, cmdList, camera );
+}
 
-	this->MoveToNextFrame();
+void KG::Renderer::KGDXRenderer::LightPassRender( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
+{
+	PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "Light Pass Render" );
+	TryResourceBarrier( cmdList,
+		camera.GetRenderTexture().BarrierTransition(
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+			D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+		)
+	);
+	cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle( camera.GetRenderTexture().gbufferSRVIndex ) );
+	auto rtvHandle = camera.GetRenderTexture().GetRenderTargetRTVHandle( camera.GetCubeIndex() );
+	cmdList->OMSetRenderTargets( 1, &rtvHandle, true, nullptr );
+	this->renderEngine->Render( ShaderGroup::DirectionalLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList, camera );
+	this->renderEngine->Render( ShaderGroup::MeshVolumeLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList, camera );
+	this->renderEngine->Render( ShaderGroup::AmbientLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList, camera );
+	this->renderEngine->Render( ShaderGroup::SkyBox, ShaderGeometryType::SkyBox, ShaderPixelType::Deferred, cmdList, camera );
+}
+
+void KG::Renderer::KGDXRenderer::PassRenderEnd( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
+{
+	TryResourceBarrier( cmdList,
+		camera.GetRenderTexture().BarrierTransition(
+			D3D12_RESOURCE_STATE_RENDER_TARGET,
+			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+			D3D12_RESOURCE_STATE_DEPTH_WRITE
+		)
+	);
 }
 
 void KG::Renderer::KGDXRenderer::Update( float elapsedTime )
@@ -360,7 +425,7 @@ void KG::Renderer::KGDXRenderer::QueryHardwareFeature()
 	{
 		DebugNormalMessage( "D3D12 Stencil Ref Supported" );
 	}
-	else 
+	else
 	{
 		DebugNormalMessage( "D3D12 Stencil Ref Not Supported" );
 	}
@@ -628,82 +693,6 @@ void KG::Renderer::KGDXRenderer::AllocateGBufferHeap()
 		auto index = this->descriptorHeapManager->RequestEmptyIndex();
 		DebugNormalMessage( L"디스크립터 힙 G-Buffer용 초기화 : " << index );
 	}
-}
-
-void KG::Renderer::KGDXRenderer::RegisterPassEnterFunction()
-{
-
-	this->renderEngine->SetPassEnterEventFunction( ShaderType::Opaque,
-		[this]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
-		{
-			PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "Opaque Render" );
-
-			cmdList->OMSetRenderTargets( 4, camera.GetRenderTexture().gbufferHandle.data(), false, &camera.GetRenderTexture().dsvHandle );
-
-			camera.GetRenderTexture().ClearGBuffer( this->mainCommandList, 0, 0, 0, 0 );
-
-			cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::Texture1Heap, this->descriptorHeapManager->GetGPUHandle( 0 ) );
-
-			this->mainCommandList->ClearDepthStencilView( camera.GetRenderTexture().dsvHandle,
-				D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL, 1.0f, 0, 0, nullptr );
-		} );
-
-	this->renderEngine->SetPassEnterEventFunction( ShaderType::LightPass,
-		[this]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
-		{
-			PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "Light Pass Render" );
-			TryResourceBarrier( cmdList,
-				camera.GetRenderTexture().BarrierTransition(
-				D3D12_RESOURCE_STATE_RENDER_TARGET,
-				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-				D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-				)
-			);
-			cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle( camera.GetRenderTexture().gbufferSRVIndex ) );
-			auto rtvHandle = camera.GetRenderTexture().GetRenderTargetRTVHandle( camera.GetCubeIndex() );
-			cmdList->OMSetRenderTargets( 1, &rtvHandle, true, nullptr );
-		} );
-
-	this->renderEngine->SetPassPreRenderEventFunction( ShaderType::LightPass,
-		[this]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
-		{
-
-		} );
-
-
-	this->renderEngine->SetPassEnterEventFunction( ShaderType::Transparent,
-		[]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
-		{
-			PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "Transparent Pass Render" );
-		} );
-
-	this->renderEngine->SetPassEnterEventFunction( ShaderType::PostProcess,
-		[this]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
-		{
-			PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "PostProcess Pass Render" );
-			auto rtvHandle = camera.GetRenderTexture().GetRenderTargetRTVHandle( camera.GetCubeIndex() );
-			cmdList->OMSetRenderTargets( 1, &rtvHandle, true, &camera.GetRenderTexture().dsvHandle );
-			//cmdList->ResourceBarrier( 4, this->GetGBufferTrasitionBarriers( D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_COPY_SOURCE ) );
-			//cmdList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( rt, D3D12_RESOURCE_STATE_RENDER_TARGET, D3D12_RESOURCE_STATE_COPY_DEST ) );
-
-			//cmdList->CopyResource( rt , this->gbufferTargetBuffers[1] );
-
-			//cmdList->ResourceBarrier( 1, &CD3DX12_RESOURCE_BARRIER::Transition( rt, D3D12_RESOURCE_STATE_COPY_DEST, D3D12_RESOURCE_STATE_RENDER_TARGET ) );
-			//cmdList->ResourceBarrier( 4, this->GetGBufferTrasitionBarriers( D3D12_RESOURCE_STATE_COPY_SOURCE, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE ) );
-		} );
-
-	this->renderEngine->SetPassEndEventFunction(
-		[this]( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
-		{
-			TryResourceBarrier( cmdList,
-				camera.GetRenderTexture().BarrierTransition(
-					D3D12_RESOURCE_STATE_RENDER_TARGET,
-					D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-					D3D12_RESOURCE_STATE_DEPTH_WRITE
-				)
-			);
-		} );
-
 }
 
 void KG::Renderer::KGDXRenderer::MoveToNextFrame()

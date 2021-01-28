@@ -15,42 +15,23 @@
 #include <algorithm>
 #include <functional>
 
-enum ShaderTarget
-{
-	VS = 0,
-	DS = 1,
-	HS = 3,
-	PS = 4,
-	GS = 2,
-};
 using namespace std::string_literals;
-constexpr std::string_view shaderTargetElementName[] = {
-	"VertexShader",
-	"DomainShader",
-	"GeometryShader",
-	"HullShader",
-	"PixelShader",
-};
 
-static int GetShaderType( const std::string_view& type )
+static int ReadShaderGroup( const std::string& attribute )
 {
-	if ( type == "opaque" ) return KG::Renderer::ShaderType::Opaque;
-	if ( type == "lightPass" ) return KG::Renderer::ShaderType::LightPass;
-	if ( type == "transparent" ) return KG::Renderer::ShaderType::Transparent;
-	if ( type == "postProcess" ) return KG::Renderer::ShaderType::PostProcess;
-
-	DebugAssertion( false, L"Shader Type is UnknownType" );
-}
-
-static KG::Resource::Metadata::ShaderCodeData LoadShaderCodes( const tinyxml2::XMLElement* element )
-{
-	using KG::Resource::Metadata::ShaderCodeData;
-	ShaderCodeData data;
-	data.entry = element->Attribute( "entry" );
-	data.fileDir = element->Attribute( "fileDir" );
-	data.type = element->Attribute( "type" );
-	data.isEnable = true;
-	return data;
+	if ( attribute == "Opaque"s )
+		return 0;
+	if ( attribute == "SkyBox"s )
+		return 1;
+	if ( attribute == "Transparent"s )
+		return 2;
+	if ( attribute == "AmbientLight"s )
+		return 3;
+	if ( attribute == "MeshVolumeLight"s )
+		return 4;
+	if ( attribute == "DirectionalLight"s )
+		return 5;
+	return -1;
 }
 
 KG::Resource::Metadata::ShaderSetData KG::Resource::ResourceLoader::LoadShaderSetFromFile( const std::string& xmlDir, const KG::Utill::HashString& targetID )
@@ -59,7 +40,7 @@ KG::Resource::Metadata::ShaderSetData KG::Resource::ResourceLoader::LoadShaderSe
 	KG::Resource::Metadata::ShaderSetData data;
 	tinyxml2::XMLDocument doc;
 	doc.LoadFile( xmlDir.c_str() );
-	auto shaderSets = doc.FirstChildElement( "ShaderSet" )->FirstChildElement( "GraphicShaderSet" );
+	auto shaderSets = doc.FirstChildElement( "ShaderSet" )->FirstChildElement( "SurfaceShaderSet" );
 	while ( shaderSets )
 	{
 		auto id = shaderSets->Attribute( "id" );
@@ -77,32 +58,11 @@ KG::Resource::Metadata::ShaderSetData KG::Resource::ResourceLoader::LoadShaderSe
 		}
 		if ( hash_id == targetID.value )
 		{
-			data.shaderType = GetShaderType( shaderSets->Attribute( "shaderType" ) );
-			data.renderPriority = std::atoi( shaderSets->Attribute( "renderPriority" ) );
+			data.shaderGroup = ReadShaderGroup( shaderSets->Attribute( "group" ) );
 			data.enableCullBackface = shaderSets->BoolAttribute( "enableBackfaceCulling" );
 			data.enableDepthCliping = shaderSets->BoolAttribute( "enableDepthCliping" );
-			data.isSkinnedAnimation = shaderSets->BoolAttribute( "isSkinnedAnimation" );
 			data.materialParameterSize = shaderSets->IntAttribute( "materialParameterSize" );
-			data.blendOpType = shaderSets->Attribute( "blendOp" );
-
-			auto vsElement = shaderSets->FirstChildElement( shaderTargetElementName[VS].data() );
-			data.vertexShader = LoadShaderCodes( vsElement );
-
-			auto psElement = shaderSets->FirstChildElement( shaderTargetElementName[PS].data() );
-			data.pixelShader = LoadShaderCodes( psElement );
-
-			auto hsElement = shaderSets->FirstChildElement( shaderTargetElementName[HS].data() );
-			if ( hsElement )
-				data.hullShader = LoadShaderCodes( hsElement );
-
-			auto dsElement = shaderSets->FirstChildElement( shaderTargetElementName[DS].data() );
-			if ( dsElement )
-				data.domainShader = LoadShaderCodes( dsElement );
-
-			auto gsElement = shaderSets->FirstChildElement( shaderTargetElementName[GS].data() );
-			if ( gsElement )
-				data.geometryShader = LoadShaderCodes( gsElement );
-
+			data.fileDir = shaderSets->Attribute( "fileDir" );
 			break;
 		}
 		else
@@ -408,8 +368,8 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceLoader::LoadMater
 				int offset = 0;
 				while ( childs )
 				{
-					DebugNormalMessage(L"메테리얼 읽는 중 ")
-					MaterialParser::parsers.at( childs->Name() )(childs, elementInterface, offset, isDirty);
+					DebugNormalMessage( L"메테리얼 읽는 중 " )
+						MaterialParser::parsers.at( childs->Name() )(childs, elementInterface, offset, isDirty);
 					childs = childs->NextSiblingElement();
 				}
 			}

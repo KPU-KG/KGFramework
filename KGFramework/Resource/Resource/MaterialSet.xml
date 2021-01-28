@@ -1,17 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <MaterialSet xmlns="KGResource.xsd">
-    <Material id="GrassMaterial" shaderID="deferredDefault" hash_id="3363944734" shaderHashID="1156521651">
-        <Texture byte="4" comment="albedoTexture" id="grass" hash_id="3681460185"/>
-        <FLOAT2 byte="8" comment="UVsize" x="0.5" y="0.5"/>
-        <Padding byte="4"/>
-        <ColorCode byte="16" comment="albedoColor" code="96AAEB"/>
-    </Material>
-    <Material id="TileMaterial" shaderID="deferredDefault" hash_id="2114707342" shaderHashID="1156521651">
-        <Texture byte="4" comment="albedoTexture" id="tile" hash_id="3550634569"/>
-        <FLOAT2 byte="8" comment="UVsize" x="0.5" y="0.5"/>
-        <Padding byte="4"/>
-        <ColorCode byte="16" comment="albedoColor" code="FF748C"/>
-    </Material>
     <Material id="PBRMetal" shaderID="PBRDefault" hash_id="1858199364" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="metal_color" hash_id="1743296994"/>
         <Texture byte="4" comment="normalTexture" id="metal_normal" hash_id="2012282528"/>
@@ -57,7 +45,7 @@
         <FLOAT2 byte="8" comment="UVsize" x="4" y="4"/>
         <Padding byte="4"/>
     </Material>
-    <Material id="soldierHead" shaderID="PBRSkinned" hash_id="3947457455" shaderHashID="1383120321">
+    <Material id="soldierHead" shaderID="PBRDefault" hash_id="3947457455" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="soldier_head_albedo" hash_id="1073280886"/>
         <Texture byte="4" comment="normalTexture" id="soldier_haed_normal" hash_id="4052277792"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
@@ -66,7 +54,7 @@
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
     </Material>
-    <Material id="soldierBody" shaderID="PBRSkinned" hash_id="4246576393" shaderHashID="1383120321">
+    <Material id="soldierBody" shaderID="PBRDefault" hash_id="4246576393" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="soldier_body_albedo" hash_id="2332798320"/>
         <Texture byte="4" comment="normalTexture" id="soldier_body_normal" hash_id="4117762142"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
@@ -75,28 +63,10 @@
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
     </Material>
-    <Material id="soldierHead_D" shaderID="PBRDefault" hash_id="1048561238" shaderHashID="3533550914">
-        <Texture byte="4" comment="colorTexture" id="soldier_head_albedo" hash_id="1073280886"/>
-        <Texture byte="4" comment="normalTexture" id="soldier_haed_normal" hash_id="4052277792"/>
-        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughnessTexture" id="zero" hash_id="3256532051"/>
-        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
-        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
-        <Padding byte="4"/>
-    </Material>
-    <Material id="soldierBody_D" shaderID="PBRDefault" hash_id="738571324" shaderHashID="3533550914">
-        <Texture byte="4" comment="colorTexture" id="soldier_body_albedo" hash_id="2332798320"/>
-        <Texture byte="4" comment="normalTexture" id="soldier_body_normal" hash_id="4117762142"/>
-        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughnessTexture" id="zero" hash_id="3256532051"/>
-        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
-        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
-        <Padding byte="4"/>
-    </Material>
-    <Material id="SkySunSet" shaderID="skyBox" hash_id="2048061870" shaderHashID="2914058763">
+    <Material id="SkySunSet" shaderID="SkyBox" hash_id="2048061870" shaderHashID="3327424171">
         <Texture byte="4" comment="skymacTexture" id="skySunset" hash_id="1553201454"/>
     </Material>
-    <Material id="SkySnow" shaderID="skyBox" hash_id="4111474821" shaderHashID="2914058763">
+    <Material id="SkySnow" shaderID="SkyBox" hash_id="4111474821" shaderHashID="3327424171">
         <Texture byte="4" comment="skymacTexture" id="skySnow" hash_id="3953192677"/>
     </Material>
 </MaterialSet>

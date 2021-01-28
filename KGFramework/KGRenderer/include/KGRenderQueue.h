@@ -9,9 +9,10 @@
 #include "KGGraphicBuffer.h"
 #include "RenderTexture.h"
 #include "BoneData.h"
+#include "KGShader.h"
+
 namespace KG::Renderer
 {
-	class Shader;
 	class Geometry;
 
 	struct KGRenderJob
@@ -21,8 +22,7 @@ namespace KG::Renderer
 		int objectSize = 0;
 		int visibleSize = 0;
 		int updateCount = 0;
-		bool isSkinnedAnimationShader = false;
-		bool isSkinnedAnimationMesh = false;
+		KG::Renderer::ShaderMeshType meshType;
 		BufferPool<ObjectData>* objectBufferPool = nullptr;
 		PooledBuffer<ObjectData>* objectBuffer = nullptr;
 
@@ -40,7 +40,7 @@ namespace KG::Renderer
 		int GetUpdateCount();
 		void ClearCount();
 
-		void Render( ID3D12GraphicsCommandList* cmdList, Shader*& prevShader );
+		void Render( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader );
 		static bool ShaderCompare( const KGRenderJob& a, const KGRenderJob& b );
 		static bool GeometryCompare( const KGRenderJob& a, const KGRenderJob& b );
 		static bool OrderCompare( const KGRenderJob& a, const KGRenderJob& b );
@@ -59,21 +59,9 @@ namespace KG::Renderer
 		Shader* currentShader = nullptr;
 		Geometry* currentGeometry = nullptr;
 
-		using PassJobs = std::set<KGRenderJob*, KGRenderJobOrderComparer>;
+		using GroupJobs = std::set<KGRenderJob*, KGRenderJobOrderComparer>;
 		std::deque<KGRenderJob> pool;
-		std::vector<PassJobs> pass;
-
-		using PassEnterFunction = std::function<void( ID3D12GraphicsCommandList*, KG::Component::CameraComponent& )>;
-		using PassPreRenderFunction = std::function<void( ID3D12GraphicsCommandList*, KG::Component::CameraComponent& )>;
-		using PassEndRenderFunction = std::function<void( ID3D12GraphicsCommandList*, KG::Component::CameraComponent& )>;
-		using PassEndFunction = std::function<void( ID3D12GraphicsCommandList*, KG::Component::CameraComponent& )>;
-
-		PassEnterFunction OnPassEnterEvent[4];
-		PassPreRenderFunction OnPassPreRenderEvent[4];
-		PassEndRenderFunction OnPassEndRenderEvent[4];
-
-		PassEndFunction OnPassEndEvent;
-
+		std::vector<GroupJobs> group;
 		BufferPool<ObjectData> bufferPool; // 이거 추후에 버디 얼로케이터 같은 걸로 바꿔야 함
 		BufferPool<KG::Resource::AnimationData> animationBufferPool; // 이거 추후에 버디 얼로케이터 같은 걸로 바꿔야 함
 
@@ -81,33 +69,8 @@ namespace KG::Renderer
 	public:
 		KGRenderEngine( ID3D12Device* device );
 		KGRenderJob* GetRenderJob( Shader* shader, Geometry* geometry );
-		void Render( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
+		void Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
 		void ClearJobs();
 		void ClearUpdateCount();
-		const PassEnterFunction& GetPassEnterEventFunction( size_t pass )
-		{
-			return this->OnPassEnterEvent[pass];
-		}
-
-		void SetPassEnterEventFunction( size_t pass, const PassEnterFunction& function )
-		{
-			this->OnPassEnterEvent[pass] = function;
-		}
-
-		void SetPassPreRenderEventFunction( size_t pass, const PassEnterFunction& function )
-		{
-			this->OnPassPreRenderEvent[pass] = function;
-		}
-
-		void SetPassEndRenderEventFunction( size_t pass, const PassEnterFunction& function )
-		{
-			this->OnPassEndRenderEvent[pass] = function;
-		}
-
-
-		void SetPassEndEventFunction( const PassEnterFunction& function )
-		{
-			OnPassEndEvent = function;
-		}
 	};
 }

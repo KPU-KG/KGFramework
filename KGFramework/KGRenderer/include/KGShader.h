@@ -20,66 +20,159 @@ namespace KG::Renderer
 		PS_5_0, PS_5_1,
 	};
 
-	enum ShaderType
+	enum ShaderGroup
 	{
 		Opaque = 0,
+		SkyBox = 1,
 		Transparent = 2,
-		LightPass = 1,
-		PostProcess = 3
+		AmbientLight = 3,
+		MeshVolumeLight = 4,
+		DirectionalLight = 5,
 	};
 
-	constexpr const char* ConvertToShaderString(ShaderTarget target)
+	// 지오메트리 타입에 따라 결정
+	enum class ShaderMeshType
 	{
-		switch (target)
+		StaticMesh = 0,
+		SkinnedMesh = 1,
+	};
+
+	enum class ShaderTesselation
+	{
+		NormalMesh = 0,
+		TesselationMesh = 1,
+	};
+
+	// 최종 렌더 명령시에 결정
+	enum class ShaderGeometryType
+	{
+		Default = 0,
+		GeometryCubeMap = 1,
+		Light = 2,
+		SkyBox = 3,
+	};
+	// 최종 렌더 명령시에 결정
+	enum class ShaderPixelType
+	{
+		Deferred = 0,
+		GreenWireFrame = 1,
+		GeometricCubeMapDeferred = 2,
+		Light = 3,
+		Shadow = 4,
+		GeometricShadow = 5,
+		Forward = 6,
+		Transparent = 7,
+	};
+
+	constexpr const char* ConvertToMacroString( ShaderMeshType target )
+	{
+		switch ( target )
 		{
-			case ShaderTarget::CS_5_0: return "cs_5_0";
-			case ShaderTarget::CS_5_1: return "cs_5_1";
-			case ShaderTarget::VS_5_0: return "vs_5_0";
-			case ShaderTarget::VS_5_1: return "vs_5_1";
-			case ShaderTarget::DS_5_0: return "ds_5_0";
-			case ShaderTarget::DS_5_1: return "ds_5_1";
-			case ShaderTarget::GS_5_0: return "gs_5_0";
-			case ShaderTarget::GS_5_1: return "gs_5_1";
-			case ShaderTarget::HS_5_0: return "hs_5_0";
-			case ShaderTarget::HS_5_1: return "hs_5_1";
-			case ShaderTarget::PS_5_0: return "ps_5_0";
-			case ShaderTarget::PS_5_1: return "ps_5_1";
+		case KG::Renderer::ShaderMeshType::StaticMesh: return "STATIC_MESH";
+		case KG::Renderer::ShaderMeshType::SkinnedMesh: return "SKINNED_MESH";
 		}
 	}
+
+	constexpr const char* ConvertToMacroString( ShaderGeometryType target )
+	{
+		switch ( target )
+		{
+		case KG::Renderer::ShaderGeometryType::Default: return "GEOMETRY_NORMAL";
+		case KG::Renderer::ShaderGeometryType::GeometryCubeMap: return "GEOMETRY_CUBE";
+		case KG::Renderer::ShaderGeometryType::Light: return "GEOMETRY_LIGHT";
+		case KG::Renderer::ShaderGeometryType::SkyBox: return "GEOMETRY_SKYBOX";
+		}
+
+	}
+
+	constexpr const char* ConvertToMacroString( ShaderPixelType target )
+	{
+		switch ( target )
+		{
+		case KG::Renderer::ShaderPixelType::Deferred: return "PIXEL_NORMAR_DEFERRED";
+		case KG::Renderer::ShaderPixelType::GreenWireFrame: return "PIXEL_GREEN_WIREFRAME";
+		case KG::Renderer::ShaderPixelType::GeometricCubeMapDeferred: return "PIXEL_GEOMETRIC_DEFERRED";
+		case KG::Renderer::ShaderPixelType::Light: return "PIXEL_LIGHT";
+		case KG::Renderer::ShaderPixelType::Shadow: return "PIXEL_SHADOW";
+		case KG::Renderer::ShaderPixelType::GeometricShadow: return "PIXEL_GEOMETRIC_SHADOW";
+		case KG::Renderer::ShaderPixelType::Forward: return "PIXEL_FORWARD";
+		case KG::Renderer::ShaderPixelType::Transparent: return "PIXEL_TRANSPARENT";
+		}
+	}
+
+
+	constexpr const char* ConvertToEntryString( ShaderTarget target )
+	{
+		switch ( target )
+		{
+		case ShaderTarget::CS_5_0:
+		case ShaderTarget::CS_5_1:
+			return "ComputeShaderFuction";
+		case ShaderTarget::VS_5_0:
+		case ShaderTarget::VS_5_1:
+			return "VertexShaderFuction";
+		case ShaderTarget::DS_5_0:
+		case ShaderTarget::DS_5_1:
+			return "DomainFuction";
+		case ShaderTarget::GS_5_0:
+		case ShaderTarget::GS_5_1:
+			return "GeometryShaderFuction";
+		case ShaderTarget::HS_5_0:
+		case ShaderTarget::HS_5_1:
+			return "HullShaderFuction";
+		case ShaderTarget::PS_5_0:
+		case ShaderTarget::PS_5_1:
+			return "PixelShaderFuction";
+		}
+	}
+
+	constexpr const char* ConvertToShaderString( ShaderTarget target )
+	{
+		switch ( target )
+		{
+		case ShaderTarget::CS_5_0: return "cs_5_0";
+		case ShaderTarget::CS_5_1: return "cs_5_1";
+		case ShaderTarget::VS_5_0: return "vs_5_0";
+		case ShaderTarget::VS_5_1: return "vs_5_1";
+		case ShaderTarget::DS_5_0: return "ds_5_0";
+		case ShaderTarget::DS_5_1: return "ds_5_1";
+		case ShaderTarget::GS_5_0: return "gs_5_0";
+		case ShaderTarget::GS_5_1: return "gs_5_1";
+		case ShaderTarget::HS_5_0: return "hs_5_0";
+		case ShaderTarget::HS_5_1: return "hs_5_1";
+		case ShaderTarget::PS_5_0: return "ps_5_0";
+		case ShaderTarget::PS_5_1: return "ps_5_1";
+		}
+	}
+
 
 	class Shader
 	{
 	private:
-		bool isWireFrame = false;
-		bool isSkinnedAnimation = false;
-		ID3D12PipelineState* normalPso = nullptr;
-		ID3D12PipelineState* wireframePso = nullptr;
+		std::map<std::tuple<ShaderMeshType, ShaderGeometryType, ShaderPixelType, ShaderTesselation>, ID3D12PipelineState*> pso;
 		unsigned renderPriority = 0;
-		ShaderType shaderType = ShaderType::Opaque;
+		KG::Resource::Metadata::ShaderSetData shaderSetData;
 		std::unique_ptr<Resource::DynamicConstantBufferManager> materialBuffer;
 		std::map<KG::Utill::HashString, size_t> materialIndex;
-		void CreateMaterialBuffer(const KG::Resource::Metadata::ShaderSetData& data );
-
+		void CreateMaterialBuffer( const KG::Resource::Metadata::ShaderSetData& data );
+		ID3D12PipelineState* GetPSO( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType, ShaderTesselation tessel = ShaderTesselation::NormalMesh );
+		D3D12_RASTERIZER_DESC CreateRasterizerState( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType );
+		D3D12_BLEND_DESC CreateBlendState( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType );
+		D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType );
+		ID3D10Blob* CompileShaderFromMetadata( ShaderTarget shaderTarget, ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType, 
+			ShaderTesselation tessel = ShaderTesselation::NormalMesh );
 	public:
 		Shader( const KG::Resource::Metadata::ShaderSetData& data );
 		~Shader();
-		void Set(ID3D12GraphicsCommandList* pd3dCommandList);
-		void SetWireframe(bool wireframe);
-		void CreateFromMetadata(const KG::Resource::Metadata::ShaderSetData& data);
+		void Set( ID3D12GraphicsCommandList* pd3dCommandList, ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType );
+		ID3D12PipelineState* CreatePSO( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType, ShaderTesselation tessel = ShaderTesselation::NormalMesh );
 
-		auto GetShaderType() const { return this->shaderType; }
 		auto GetRenderPriority() const { return this->renderPriority; }
-		auto IsSkinnedAnimation() const { return this->isSkinnedAnimation; }
+		auto GetGroup() const { return static_cast<ShaderGroup>( this->shaderSetData.shaderGroup ); }
 
 		size_t GetMaterialIndex( const KG::Utill::HashString& ID );
 		bool CheckMaterialLoaded( const KG::Utill::HashString& ID );
 		size_t RequestMaterialIndex( const KG::Utill::HashString& ID );
 		Resource::DynamicElementInterface GetMaterialElement( const KG::Utill::HashString& ID );
-	private:
-		static D3D12_RASTERIZER_DESC CreateRasterizerState(const KG::Resource::Metadata::ShaderSetData& data);
-		static D3D12_BLEND_DESC CreateBlendState(const KG::Resource::Metadata::ShaderSetData& data);
-		static D3D12_DEPTH_STENCIL_DESC CreateDepthStencilState(const KG::Resource::Metadata::ShaderSetData& data);
-	public:
-		static ID3D10Blob* CompileShaderFromMetadata(const KG::Resource::Metadata::ShaderCodeData& data);
 	};
 }

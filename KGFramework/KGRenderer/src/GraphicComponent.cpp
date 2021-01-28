@@ -451,7 +451,7 @@ void KG::Component::LightComponent::SetDirectionalLight( const DirectX::XMFLOAT3
 	this->light.Strength = strength;
 	if ( this->directionalLightShader == nullptr )
 	{
-		this->directionalLightShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader( Utill::HashString( "directionalLight"_id ) );
+		this->directionalLightShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader( Utill::HashString( "DirectionalLight"_id ) );
 	}
 	if ( this->directionalLightGeometry == nullptr )
 	{
@@ -469,7 +469,7 @@ void KG::Component::LightComponent::SetPointLight( const DirectX::XMFLOAT3& stre
 	this->light.FalloffEnd = fallOffEnd;
 	if ( this->pointLightShader == nullptr )
 	{
-		this->pointLightShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader( Utill::HashString( "pointLight"_id ) );
+		this->pointLightShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader( Utill::HashString( "MeshVolumeLight"_id ) );
 	}
 	if ( this->pointLightGeometry == nullptr )
 	{

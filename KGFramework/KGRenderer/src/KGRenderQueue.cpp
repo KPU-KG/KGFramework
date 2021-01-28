@@ -12,7 +12,8 @@ using namespace KG::Renderer;
 KGRenderJob& KG::Renderer::KGRenderEngine::CreateRenderJob( const KGRenderJob& job )
 {
 	auto& inst = this->pool.emplace_back( job );
-	this->pass[job.shader->GetShaderType()].emplace( &inst );
+	this->group[job.shader->GetGroup()].emplace( &inst );
+	inst.meshType = job.geometry->HasBone() ? ShaderMeshType::SkinnedMesh : ShaderMeshType::StaticMesh;
 	inst.objectBufferPool = &this->bufferPool;
 	inst.animationBufferPool = &this->animationBufferPool;
 	return inst;
@@ -22,7 +23,7 @@ KG::Renderer::KGRenderEngine::KGRenderEngine( ID3D12Device* device )
 	:bufferPool( device, BufferPool<ObjectData>::defaultFixedSize, BufferPool<ObjectData>::defaultReservedSize ),
 	animationBufferPool( device, BufferPool<KG::Resource::AnimationData>::defaultFixedSize, BufferPool<KG::Resource::AnimationData>::defaultReservedSize )
 {
-	this->pass.resize( 4 );
+	this->group.resize( 6 );
 }
 
 KGRenderJob* KG::Renderer::KGRenderEngine::GetRenderJob( Shader* shader, Geometry* geometry )
@@ -33,7 +34,7 @@ KGRenderJob* KG::Renderer::KGRenderEngine::GetRenderJob( Shader* shader, Geometr
 
 	//정렬을 Dirty플래그 써서 한번만 하기로 되있는데
 	//여기서 
-	auto& renderJobs = this->pass[target.shader->GetShaderType()];
+	auto& renderJobs = this->group[target.shader->GetGroup()];
 	auto result = renderJobs.find( &target );
 	//auto result = std::find_if( start, end, [=]( const KGRenderJob& job ) { return job.geometry == geometry; } );
 
@@ -51,30 +52,18 @@ KGRenderJob* KG::Renderer::KGRenderEngine::GetRenderJob( Shader* shader, Geometr
 	return resultJob;
 }
 
-void KG::Renderer::KGRenderEngine::Render( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
+void KG::Renderer::KGRenderEngine::Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType,
+	ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
 {
-	for ( size_t i = 0; i < this->pass.size(); ++i )
+	for ( KGRenderJob* job : this->group[group] )
 	{
-		if ( this->OnPassEnterEvent[i] )
-			this->OnPassEnterEvent[i]( cmdList, camera );
-
-		for ( KGRenderJob* job : pass[i] )
-		{
-			if ( this->OnPassPreRenderEvent[i] )
-				this->OnPassPreRenderEvent[i]( cmdList, camera );
-
-			job->Render( cmdList, this->currentShader );
-
-			if ( this->OnPassEndRenderEvent[i] )
-				this->OnPassEndRenderEvent[i]( cmdList, camera );
-		}
+		job->Render( geoType, pixType, cmdList, this->currentShader );
 	}
-	this->OnPassEndEvent( cmdList, camera );
 }
 
 void KG::Renderer::KGRenderEngine::ClearJobs()
 {
-	for ( auto& renderJobs : this->pass )
+	for ( auto& renderJobs : this->group )
 	{
 		renderJobs.clear();
 	}
@@ -86,13 +75,6 @@ void KG::Renderer::KGRenderEngine::ClearUpdateCount()
 	{
 		job.ClearCount();
 	}
-	//for ( auto& renderJobs : pass )
-	//{
-	//	for ( KGRenderJob* job : renderJobs )
-	//	{
-	//		job.ClearCount();
-	//	}
-	//}
 }
 
 
@@ -109,29 +91,11 @@ void KG::Renderer::KGRenderJob::GetNewBuffer()
 		this->objectBuffer->isUsing = false;
 	this->objectBuffer = this->objectBufferPool->GetNewBuffer( this->objectSize );
 
-	this->isSkinnedAnimationShader = this->shader->IsSkinnedAnimation();
-	this->isSkinnedAnimationMesh = this->geometry->HasBone();
-	if ( this->isSkinnedAnimationShader )
+	if ( meshType == ShaderMeshType::SkinnedMesh )
 	{
-		if ( this->isSkinnedAnimationMesh )
-		{
-			if ( this->animationBuffer )
-				this->animationBuffer->isUsing = false;
-			this->animationBuffer = this->animationBufferPool->GetNewBuffer( this->objectSize );
-		}
-		else 
-		{
-			if ( !this->animationBuffer )
-			{
-				this->animationBuffer = this->animationBufferPool->GetNewBuffer( 1 );
-				XMFLOAT4X4 identity = {};
-				XMStoreFloat4x4( &identity, XMMatrixIdentity() );
-				for ( size_t i = 0; i < KG::Resource::MAX_COUNT_BONE; i++ )
-				{
-					this->animationBuffer->mappedData[0].currentTransforms[i] = identity;
-				}
-			}
-		}
+		if ( this->animationBuffer )
+			this->animationBuffer->isUsing = false;
+		this->animationBuffer = this->animationBufferPool->GetNewBuffer( this->objectSize );
 	}
 }
 
@@ -171,18 +135,18 @@ void KG::Renderer::KGRenderJob::ClearCount()
 	this->updateCount = 0;
 }
 
-void KG::Renderer::KGRenderJob::Render( ID3D12GraphicsCommandList* cmdList, Shader*& prevShader )
+void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader )
 {
 	if ( this->visibleSize == 0 ) return;
 	if ( prevShader != this->shader )
 	{
 		prevShader = this->shader;
 	}
-	this->shader->Set( cmdList );
+	this->shader->Set( cmdList, this->meshType, pixType, geoType );
 	auto addr = this->objectBuffer->buffer.resource->GetGPUVirtualAddress();
 	cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::InstanceData, addr );
 
-	if ( this->isSkinnedAnimationShader )
+	if ( this->meshType == ShaderMeshType::SkinnedMesh )
 	{
 		auto animAddr = this->animationBuffer->buffer.resource->GetGPUVirtualAddress();
 		cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::AnimationTransformData, animAddr );

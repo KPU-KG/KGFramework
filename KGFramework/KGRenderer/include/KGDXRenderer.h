@@ -4,6 +4,7 @@
 #include <vector>
 #include <functional>
 #include "KGRenderer.h"
+#include "KGShader.h"
 namespace KG::Renderer
 {
 	class KGRenderEngine;
@@ -58,8 +59,6 @@ namespace KG::Renderer
 
 		void AllocateGBufferHeap();
 		
-		void RegisterPassEnterFunction();
-
 		void MoveToNextFrame();
 
 		D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentRenderTargetHandle() const;
@@ -76,6 +75,13 @@ namespace KG::Renderer
 
 		virtual void Initialize() override;
 		virtual void Render() override;
+		virtual void CubeCaemraRender();
+		virtual void NormalCameraRender();
+		virtual void OpaqueRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
+		virtual void TransparentRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
+		virtual void LightPassRender( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
+		virtual void PassRenderEnd( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
+
 		virtual void Update(float elapsedTime) override;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) override;
 

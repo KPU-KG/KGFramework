@@ -80,7 +80,7 @@ void KG::GameFramework::OnTestInit()
 	static KG::Core::GameObject testAmbientObject;
 	static KG::Core::GameObject testAnimationObject;
 
-	constexpr auto texOne = "PBRMetal"_id;
+	constexpr auto texOne = "PBRStone"_id;
 	constexpr auto texTwo = "PBRMetal2"_id;
 	constexpr auto texThree = "PBRTile"_id;
 	{
@@ -190,7 +190,7 @@ void KG::GameFramework::OnTestInit()
 				);
 				auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? texThree : texTwo ) );
 				auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? "sphere"_id : "cube"_id ) );
-				auto* evn = this->renderer->GetNewCubeCameraComponent();
+				//auto* evn = this->renderer->GetNewCubeCameraComponent();
 				KG::Renderer::RenderTextureDesc renderTextureDesc;
 				renderTextureDesc.useDeferredRender = true;
 				renderTextureDesc.useCubeRender = true;
@@ -199,18 +199,18 @@ void KG::GameFramework::OnTestInit()
 				renderTextureDesc.uploadSRVRenderTarget = true;
 				renderTextureDesc.width = 128;
 				renderTextureDesc.height = 128;
-				evn->InitializeRenderTexture( renderTextureDesc );
+				//evn->InitializeRenderTexture( renderTextureDesc );
 				auto* ren = this->renderer->GetNewRenderComponent();
 				testCubeObjects[index].name = "meshObject0";
 				testCubeObjects[index].AddComponent( tran );
 				testCubeObjects[index].AddComponent( mat );
 				testCubeObjects[index].AddComponent( lam );
 				testCubeObjects[index].AddComponent( geo );
-				testCubeObjects[index].AddComponent( evn );
+				//testCubeObjects[index].AddComponent( evn );
 				testCubeObjects[index].AddComponent( ren );
 				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
 				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) * 0.25f );
-				testCubeObjects[index].GetComponent<KG::Component::Render3DComponent>()->SetReflectionProbe( evn );
+				//testCubeObjects[index].GetComponent<KG::Component::Render3DComponent>()->SetReflectionProbe( evn );
 			}
 
 			{
@@ -286,17 +286,17 @@ void KG::GameFramework::OnTestInit()
 
 	}
 
-	{
-		auto* tran = this->system->transformSystem.GetNewComponent();
-		auto* mat = this->renderer->GetNewMaterialComponentFromShader( KG::Utill::HashString( "ambientLight" ) );
-		auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "lightPlane"_id ) );
-		auto* ren = this->renderer->GetNewRenderComponent();
-		testSkyObject.name = "plane";
-		testSkyObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
-		testSkyObject.AddComponent( mat );
-		testSkyObject.AddComponent( geo );
-		testSkyObject.AddComponent( ren );
-	}
+	//{
+	//	auto* tran = this->system->transformSystem.GetNewComponent();
+	//	auto* mat = this->renderer->GetNewMaterialComponentFromShader( KG::Utill::HashString( "ambientLight" ) );
+	//	auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( "lightPlane"_id ) );
+	//	auto* ren = this->renderer->GetNewRenderComponent();
+	//	testSkyObject.name = "plane";
+	//	testSkyObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
+	//	testSkyObject.AddComponent( mat );
+	//	testSkyObject.AddComponent( geo );
+	//	testSkyObject.AddComponent( ren );
+	//}
 
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
@@ -312,20 +312,20 @@ void KG::GameFramework::OnTestInit()
 	}
 	this->renderer->SetSkymapTextureId( KG::Utill::HashString( "skySnow" ) );
 
-	{
-		static KG::Core::ObjectContainer oc;
-		oc.PostTransformSystem( &this->system->transformSystem );
-		KG::Resource::MaterialMatch match;
+	//{
+	//	static KG::Core::ObjectContainer oc;
+	//	oc.PostTransformSystem( &this->system->transformSystem );
+	//	KG::Resource::MaterialMatch match;
 
-		match.SetDefaultMaterial( { KG::Utill::HashString( "soldierHead"_id ), KG::Utill::HashString( "soldierBody"_id ) } );
-		auto* ptr = this->renderer->LoadFromModel( KG::Utill::HashString( "soldier"_id ), oc, match );
-		ptr->GetComponent<KG::Component::TransformComponent>()->SetScale( 0.01f, 0.01f, 0.01f );
-		//ptr->GetComponent<KG::Component::TransformComponent>()->SetPosition	( 0, 2, 0 );
-		ptr->name = "soldier";
+	//	match.SetDefaultMaterial( { KG::Utill::HashString( "soldierHead"_id ), KG::Utill::HashString( "soldierBody"_id ) } );
+	//	auto* ptr = this->renderer->LoadFromModel( KG::Utill::HashString( "soldier"_id ), oc, match );
+	//	ptr->GetComponent<KG::Component::TransformComponent>()->SetScale( 0.01f, 0.01f, 0.01f );
+	//	//ptr->GetComponent<KG::Component::TransformComponent>()->SetPosition	( 0, 2, 0 );
+	//	ptr->name = "soldier";
 
-		auto* anim = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_sprint_forward"_id ) );
-		ptr->AddComponent( anim );
-	}
+	//	auto* anim = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_sprint_forward"_id ) );
+	//	ptr->AddComponent( anim );
+	//}
 }
 
 void KG::GameFramework::OnProcess()
