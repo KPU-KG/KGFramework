@@ -80,6 +80,7 @@ namespace KG::Renderer
 		virtual void OpaqueRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
 		virtual void TransparentRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
 		virtual void LightPassRender( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
+		virtual void SkyBoxRender( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
 		virtual void PassRenderEnd( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
 
 		virtual void Update(float elapsedTime) override;

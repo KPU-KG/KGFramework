@@ -62,6 +62,7 @@ namespace KG::Renderer
 		GeometricShadow = 5,
 		Forward = 6,
 		Transparent = 7,
+		SkyBox = 8,
 	};
 
 	constexpr const char* ConvertToMacroString( ShaderMeshType target )
@@ -97,6 +98,7 @@ namespace KG::Renderer
 		case KG::Renderer::ShaderPixelType::GeometricShadow: return "PIXEL_GEOMETRIC_SHADOW";
 		case KG::Renderer::ShaderPixelType::Forward: return "PIXEL_FORWARD";
 		case KG::Renderer::ShaderPixelType::Transparent: return "PIXEL_TRANSPARENT";
+		case KG::Renderer::ShaderPixelType::SkyBox: return "PIXEL_SKKYBOX";
 		}
 	}
 

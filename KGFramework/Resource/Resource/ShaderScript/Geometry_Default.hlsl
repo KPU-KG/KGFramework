@@ -1,8 +1,6 @@
 #include "Define_Global.hlsl"
 #include "Define_NormalCamera.hlsl"
 
-#define STATIC_MESH
-
 #ifdef STATIC_MESH
     #include "Mesh_Static.hlsl"
 #endif

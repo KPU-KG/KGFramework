@@ -138,7 +138,7 @@ void KGDXRenderer::Render()
 	ID3D12DescriptorHeap* heaps[] = { this->descriptorHeapManager->Get() };
 	this->mainCommandList->SetDescriptorHeaps( 1, heaps );
 
-	//this->CubeCaemraRender();
+	this->CubeCaemraRender();
 	this->NormalCameraRender();
 
 	hResult = this->mainCommandList->Close();
@@ -172,7 +172,8 @@ void KG::Renderer::KGDXRenderer::CubeCaemraRender()
 			this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, camera );
 			this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, camera );
 			this->LightPassRender( this->mainCommandList, camera );
-			this->PassRenderEnd( this->mainCommandList, camera );
+			this->SkyBoxRender( this->mainCommandList, camera );
+			//this->PassRenderEnd( this->mainCommandList, camera );
 			camera.EndCameraRender( this->mainCommandList );
 			PIXEndEvent( mainCommandList );
 		}
@@ -199,6 +200,7 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
 		this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, camera );
 		this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, camera );
 		this->LightPassRender( this->mainCommandList, camera );
+		this->SkyBoxRender( this->mainCommandList, camera );
 		this->PassRenderEnd( this->mainCommandList, camera );
 
 		camera.EndCameraRender( this->mainCommandList );
@@ -278,7 +280,14 @@ void KG::Renderer::KGDXRenderer::LightPassRender( ID3D12GraphicsCommandList* cmd
 	this->renderEngine->Render( ShaderGroup::DirectionalLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList, camera );
 	this->renderEngine->Render( ShaderGroup::MeshVolumeLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList, camera );
 	this->renderEngine->Render( ShaderGroup::AmbientLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList, camera );
-	this->renderEngine->Render( ShaderGroup::SkyBox, ShaderGeometryType::SkyBox, ShaderPixelType::Deferred, cmdList, camera );
+}
+
+void KG::Renderer::KGDXRenderer::SkyBoxRender( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
+{
+	PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "SkyBox Pass Render" );
+	auto rtvHandle = camera.GetRenderTexture().GetRenderTargetRTVHandle( camera.GetCubeIndex() );
+	cmdList->OMSetRenderTargets( 1, &rtvHandle, true, &camera.GetRenderTexture().dsvHandle );
+	this->renderEngine->Render( ShaderGroup::SkyBox, ShaderGeometryType::SkyBox, ShaderPixelType::SkyBox, cmdList, camera );
 }
 
 void KG::Renderer::KGDXRenderer::PassRenderEnd( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )

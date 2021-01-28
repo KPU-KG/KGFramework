@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <iterator>
 #include "KGDXRenderer.h"
 #include "KGShader.h"
 #include "D3D12Helper.h"
@@ -63,7 +64,7 @@ D3D12_BLEND_DESC KG::Renderer::Shader::CreateBlendState( ShaderMeshType meshType
 	D3D12_BLEND_DESC d3dBlendDesc;
 	ZeroDesc( d3dBlendDesc );
 
-	if ( pixType == ShaderPixelType::Deferred )
+	if ( pixType == ShaderPixelType::Deferred || pixType == ShaderPixelType::SkyBox )
 	{
 		d3dBlendDesc.AlphaToCoverageEnable = false;
 		d3dBlendDesc.IndependentBlendEnable = false;
@@ -141,6 +142,24 @@ D3D12_DEPTH_STENCIL_DESC KG::Renderer::Shader::CreateDepthStencilState( ShaderMe
 		d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
 	}
 	break;
+	case ShaderPixelType::SkyBox:
+	{
+		d3dDepthStencilDesc.DepthEnable = true;
+		d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+		d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS_EQUAL;
+		d3dDepthStencilDesc.StencilEnable = false;
+		d3dDepthStencilDesc.StencilReadMask = 0x00;
+		d3dDepthStencilDesc.StencilWriteMask = 0x00;
+		d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+		d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+		d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_REPLACE;
+		d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
+		d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+		d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+		d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+		d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NOT_EQUAL;
+	}
+	break;
 	case ShaderPixelType::Light:
 	{
 		d3dDepthStencilDesc.DepthEnable = false;
@@ -187,7 +206,58 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata( ShaderTarget shader
 		ConvertToMacroString( geoType ), "",
 		ConvertToMacroString( pixType ), "",
 		NULL, NULL };
+
 	buffer.assign( this->shaderSetData.fileDir.begin(), this->shaderSetData.fileDir.end() );
+#if defined(_DEBUG)
+
+	ID3DBlob* errorPreProcBlob;
+	ID3DBlob* shaderPreProcBlob;
+
+	std::ifstream codeIfs(buffer.c_str());
+	std::string source { std::istreambuf_iterator<char>( codeIfs ), std::istreambuf_iterator<char>() };
+	HRESULT prehr = ::D3DPreprocess( source.data(), source.size(), this->shaderSetData.fileDir.c_str(), macro, D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		&shaderPreProcBlob,
+		&errorPreProcBlob );
+	if ( errorPreProcBlob != nullptr )
+	{
+		DebugErrorMessage( L"셰이더 컴파일 오류 : " << (char*)errorPreProcBlob->GetBufferPointer() );
+	}
+	else
+	{
+		std::string FileName =
+			std::string( ConvertToMacroString( meshType ) ) + "_" +
+			std::string( ConvertToMacroString( geoType ) ) + "_" +
+			std::string( ConvertToMacroString( pixType ) ) + "_" +
+			this->shaderSetData.fileDir.substr( this->shaderSetData.fileDir.find_last_of( '/' ) + 1 );
+		std::string newPath = "Resource/ShaderScript/ShaderDebugCache/" + FileName;
+		std::string newSource{ (char*)shaderPreProcBlob->GetBufferPointer() , shaderPreProcBlob->GetBufferSize() };
+
+		//while ( true )
+		//{
+		//	size_t start= newSource.find( '#' );
+		//	if ( start == std::string::npos )
+		//		break;
+		//	size_t end = newSource.find( '\n', start );
+		//	newSource.erase( start, end - start );
+		//}
+
+		std::ofstream newFile( newPath, std::ios::trunc );
+		newFile.write( newSource.c_str(), newSource.size() );
+		newFile.close();
+		if ( errorPreProcBlob != nullptr )
+		{
+			DebugErrorMessage( L"셰이더 컴파일 오류 : " << (char*)errorPreProcBlob->GetBufferPointer() );
+		}
+		buffer.assign( newPath.begin(), newPath.end() );
+	}
+	HRESULT hr = ::D3DCompileFromFile( buffer.c_str(), NULL, D3D_COMPILE_STANDARD_FILE_INCLUDE,
+		ConvertToEntryString( shaderTarget ),
+		ConvertToShaderString( shaderTarget ),
+		nCompileFlags | D3DCOMPILE_ENABLE_UNBOUNDED_DESCRIPTOR_TABLES,
+		0,
+		&shaderBlob,
+		&errorblob );
+#else
 	HRESULT hr = ::D3DCompileFromFile( buffer.c_str(), macro, D3D_COMPILE_STANDARD_FILE_INCLUDE,
 		ConvertToEntryString( shaderTarget ),
 		ConvertToShaderString( shaderTarget ),
@@ -195,6 +265,8 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata( ShaderTarget shader
 		0,
 		&shaderBlob,
 		&errorblob );
+#endif
+
 
 	if ( errorblob != nullptr )
 	{
