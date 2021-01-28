@@ -323,8 +323,44 @@ void KG::GameFramework::OnTestInit()
 		//ptr->GetComponent<KG::Component::TransformComponent>()->SetPosition	( 0, 2, 0 );
 		ptr->name = "soldier";
 
-		auto* anim = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_sprint_forward"_id ) );
-		ptr->AddComponent( anim );
+		auto* ctrl = this->renderer->GetNewAnimationContollerComponent();
+
+		auto* anim1 = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_sprint_forward"_id ) );
+		ctrl->RegisterAnimation(anim1);
+		auto* anim2 = this->renderer->GetNewBoneAnimationStreamComponent(KG::Utill::HashString("soldier_walk_forward"_id));
+		ctrl->RegisterAnimation(anim2);
+		auto* anim3 = this->renderer->GetNewBoneAnimationStreamComponent(KG::Utill::HashString("soldier_standing"_id));
+		ctrl->RegisterAnimation(anim3);
+
+		ctrl->SetAnimation(anim3->GetAnimationId());
+		ptr->AddComponent(ctrl);
+		
+		auto* lam = this->system->lambdaSystem.GetNewComponent();
+		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+			[ctrl](KG::Core::GameObject* gameObject, float elapsedTime)
+			{
+				auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+				using namespace KG::Input;
+				auto input = InputManager::GetInputManager();
+				if (input->IsTouching('1')) 
+				{
+					ctrl->SetAnimation(KG::Utill::HashString("soldier_sprint_forward"_id));
+				}
+				if (input->IsTouching('2'))
+				{
+					ctrl->SetAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+				}
+				if (input->IsTouching('3'))
+				{
+					ctrl->SetAnimation(KG::Utill::HashString("soldier_standing"_id));
+				}
+			}
+		);
+
+		ptr->AddComponent(lam);
+		
+		// auto* anim = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_sprint_forward"_id ) );
+		// ptr->AddComponent( anim );
 	}
 }
 

@@ -694,6 +694,7 @@ void KG::Component::AnimationStreamerComponent::InitializeAnimation( const KG::U
 	auto* inst = KG::Resource::ResourceContainer::GetInstance();
 	this->anim = inst->LoadAnimation( animationId, animationIndex );
 	this->GetDuration();
+	ctrlId = animationId;
 }
 
 void KG::Component::AnimationStreamerComponent::GetDuration()
@@ -710,4 +711,55 @@ void KG::Component::AnimationStreamerComponent::GetDuration()
 		if ( !a.scale.y.empty() ) this->duration = std::max( this->duration, a.scale.y.back().keyTime );
 		if ( !a.scale.z.empty() ) this->duration = std::max( this->duration, a.scale.z.back().keyTime );
 	}
+}
+
+KG::Utill::HashString KG::Component::AnimationStreamerComponent::GetAnimationId() const {
+	if (anim) {
+		return ctrlId;
+	}
+	else
+		return NULL;
+}
+
+int KG::Component::AnimationContollerComponent::GetAnimationIndex(const KG::Utill::HashString& animationId)
+{
+	for (int i = 0; i < animationSets.size(); ++i) {
+		if (animationSets[i]->GetAnimationId() == animationId)
+			return i;
+	}
+	return -1;
+}
+
+void KG::Component::AnimationContollerComponent::OnCreate(KG::Core::GameObject* gameObject)
+{
+	for (auto& animation : animationSets) {
+		animation->Create(gameObject);
+	}
+}
+
+void KG::Component::AnimationContollerComponent::OnDestroy()
+{
+	for (auto& anim : animationSets)
+		delete anim;
+	animationSets.clear();
+}
+
+void KG::Component::AnimationContollerComponent::Update(float timeElapsed)
+{
+	if (curAnimation >= 0) {
+		animationSets[curAnimation]->Update(timeElapsed);
+	}
+}
+
+void KG::Component::AnimationContollerComponent::RegisterAnimation(AnimationStreamerComponent* animation)
+{
+	if (GetAnimationIndex(animation->GetAnimationId()) == -1) {
+		AnimationStreamerComponent* newAnimation = new AnimationStreamerComponent;
+		memcpy(newAnimation, animation, sizeof(AnimationStreamerComponent));
+		animationSets.emplace_back(newAnimation);
+	}
+}
+
+void KG::Component::AnimationContollerComponent::SetAnimation(const KG::Utill::HashString& animationId) {
+	curAnimation = GetAnimationIndex(animationId);
 }

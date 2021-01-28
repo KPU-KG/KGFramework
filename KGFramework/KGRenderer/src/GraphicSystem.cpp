@@ -126,3 +126,17 @@ void KG::System::AnimationStreamSystem::OnPreRender()
 {
 }
 
+void KG::System::AnimationControllerSystem::OnUpdate(float elapsedTime)
+{
+	for (auto& com : this->pool) {
+		com.Update(elapsedTime);
+	}
+}
+
+void KG::System::AnimationControllerSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::AnimationControllerSystem::OnPreRender()
+{
+}

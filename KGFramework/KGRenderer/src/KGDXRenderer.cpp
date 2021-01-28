@@ -27,6 +27,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 	KG::System::LightSystem lightSystem;
 	KG::System::AvatarSystem avatarSystem;
 	KG::System::AnimationStreamSystem animationStreamSystem;
+	KG::System::AnimationControllerSystem animationControllerSystem;
 
 	void OnPreRender()
 	{
@@ -38,29 +39,32 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->lightSystem.OnPreRender();
 		this->avatarSystem.OnPreRender();
 		this->animationStreamSystem.OnPreRender();
+		this->animationControllerSystem.OnPreRender();
 	}
 
-	void OnUpdate( float elaspedTime )
+	void OnUpdate( float elapsedTime )
 	{
-		this->geometrySystem.OnUpdate( elaspedTime );
-		this->materialSystem.OnUpdate( elaspedTime );
-		this->render3DSystem.OnUpdate( elaspedTime );
-		this->cameraSystem.OnUpdate( elaspedTime );
-		this->cubeCameraSystem.OnUpdate( elaspedTime );
-		this->lightSystem.OnUpdate( elaspedTime );
-		this->avatarSystem.OnUpdate( elaspedTime );
-		this->animationStreamSystem.OnUpdate( elaspedTime );
+		this->geometrySystem.OnUpdate( elapsedTime );
+		this->materialSystem.OnUpdate( elapsedTime );
+		this->render3DSystem.OnUpdate( elapsedTime );
+		this->cameraSystem.OnUpdate( elapsedTime );
+		this->cubeCameraSystem.OnUpdate( elapsedTime );
+		this->lightSystem.OnUpdate( elapsedTime );
+		this->avatarSystem.OnUpdate( elapsedTime );
+		this->animationStreamSystem.OnUpdate( elapsedTime );
+		this->animationControllerSystem.OnUpdate(elapsedTime);
 	}
-	void OnPostUpdate( float elaspedTime )
+	void OnPostUpdate( float elapsedTime )
 	{
-		this->geometrySystem.OnPostUpdate( elaspedTime );
-		this->materialSystem.OnPostUpdate( elaspedTime );
-		this->render3DSystem.OnPostUpdate( elaspedTime );
-		this->cameraSystem.OnPostUpdate( elaspedTime );
-		this->cubeCameraSystem.OnPostUpdate( elaspedTime );
-		this->lightSystem.OnPostUpdate( elaspedTime );
-		this->avatarSystem.OnPostUpdate( elaspedTime );
-		this->animationStreamSystem.OnPostUpdate( elaspedTime );
+		this->geometrySystem.OnPostUpdate( elapsedTime );
+		this->materialSystem.OnPostUpdate( elapsedTime );
+		this->render3DSystem.OnPostUpdate( elapsedTime );
+		this->cameraSystem.OnPostUpdate( elapsedTime );
+		this->cubeCameraSystem.OnPostUpdate( elapsedTime );
+		this->lightSystem.OnPostUpdate( elapsedTime );
+		this->avatarSystem.OnPostUpdate( elapsedTime );
+		this->animationStreamSystem.OnPostUpdate( elapsedTime );
+		this->animationControllerSystem.OnPostUpdate(elapsedTime);
 	}
 
 	void Clear()
@@ -73,6 +77,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->lightSystem.Clear();
 		this->avatarSystem.Clear();
 		this->animationStreamSystem.Clear();
+		this->animationControllerSystem.Clear();
 	}
 };
 
@@ -301,6 +306,12 @@ KG::Component::AnimationStreamerComponent* KG::Renderer::KGDXRenderer::GetNewBon
 	auto* anim = static_cast<KG::Component::AnimationStreamerComponent*>(this->graphicSystems->animationStreamSystem.GetNewComponent());
 	anim->InitializeAnimation( id, index );
 	return anim;
+}
+
+KG::Component::AnimationContollerComponent* KG::Renderer::KGDXRenderer::GetNewAnimationContollerComponent()
+{
+	auto* controller = static_cast<KG::Component::AnimationContollerComponent*>(this->graphicSystems->animationControllerSystem.GetNewComponent());
+	return controller;
 }
 
 KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials )

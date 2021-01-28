@@ -280,6 +280,7 @@ namespace KG::Component
 	{
 		using FrameCacheVector = std::vector<KG::Core::GameObject*>;
 	protected:
+		KG::Utill::HashString ctrlId;
 		KG::Utill::AnimationSet* anim = nullptr;
 		KG::Component::GeometryComponent* geometry = nullptr;
 		std::vector<FrameCacheVector> frameCache;
@@ -291,6 +292,25 @@ namespace KG::Component
 		virtual void Update( float timeElapsed ) override;
 		void InitializeAnimation( const KG::Utill::HashString& animationId, UINT animationIndex = 0);
 		void GetDuration();
+		KG::Utill::HashString GetAnimationId() const;
+
+	};
+
+	class DLL AnimationContollerComponent : public IRenderComponent
+	{
+		friend AnimationStreamerComponent;
+	protected:
+		std::vector<AnimationStreamerComponent*> animationSets;
+		// AnimationStreamerComponent* curAnimation = nullptr;
+		int curAnimation = -1;
+		int GetAnimationIndex(const KG::Utill::HashString& animationId);
+		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
+		virtual void OnDestroy() override;
+	public:
+		virtual void Update(float timeElapsed) override;
+		void RegisterAnimation(AnimationStreamerComponent* animation);
+		void SetAnimation(const KG::Utill::HashString& animationId);
+
 	};
 
 	REGISTER_COMPONENT_ID( LightComponent );
@@ -301,6 +321,7 @@ namespace KG::Component
 	REGISTER_COMPONENT_ID( MaterialComponent );
 	REGISTER_COMPONENT_ID( BoneTransformComponent );
 	REGISTER_COMPONENT_ID( AnimationStreamerComponent );
+	REGISTER_COMPONENT_ID(AnimationContollerComponent);
 
 }
 //대충 텍스처 류는 전부 디스크립터 힙에 배치

@@ -74,4 +74,12 @@ namespace KG::System
 		virtual void OnPostUpdate( float elapsedTime ) override;
 		virtual void OnPreRender() override;
 	};
+
+	struct AnimationControllerSystem : public IComponentSystem<AnimationContollerComponent>
+	{
+	public:
+		virtual void OnUpdate(float elapsedTime) override;
+		virtual void OnPostUpdate(float elapsedTime) override;
+		virtual void OnPreRender() override;
+	};
 }
