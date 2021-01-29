@@ -136,6 +136,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)Include;$(SolutionDir)KGLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -154,6 +155,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)Include;$(SolutionDir)KGLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -174,6 +176,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)Include;$(SolutionDir)KGLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -194,6 +197,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)Include;$(SolutionDir)KGLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -212,6 +216,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)Include;$(SolutionDir)KGLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -232,6 +237,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)Include;$(SolutionDir)KGLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -243,7 +249,6 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="export\Texture.cpp" />
     <ClCompile Include="src\AnimationComponent.cpp" />
     <ClCompile Include="src\CameraComponent.cpp" />
     <ClCompile Include="src\D3D12Helper.cpp" />
@@ -251,7 +256,6 @@
     <ClCompile Include="src\DescriptorHeapManager.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\GeometryComponent.cpp" />
-    <ClCompile Include="src\GraphicComponent.cpp" />
     <ClCompile Include="src\GraphicSystem.cpp" />
     <ClCompile Include="src\KGDXRenderer.cpp" />
     <ClCompile Include="src\KGGeometry.cpp" />
@@ -270,18 +274,25 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_ID|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Render3DComponent.cpp" />
     <ClCompile Include="src\RenderTexture.cpp" />
     <ClCompile Include="src\ResourceContainer.cpp" />
+    <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="export\AnimationComponent.h" />
+    <ClInclude Include="export\CameraComponent.h" />
+    <ClInclude Include="export\GeometryComponent.h" />
     <ClInclude Include="export\GraphicComponent.h" />
+    <ClInclude Include="export\IRenderComponent.h" />
     <ClInclude Include="export\KGRenderer.h" />
+    <ClInclude Include="export\LightComponent.h" />
+    <ClInclude Include="export\MaterialComponent.h" />
+    <ClInclude Include="export\Render3DComponent.h" />
     <ClInclude Include="export\ResourceMetaData.h" />
     <ClInclude Include="export\Texture.h" />
-    <ClInclude Include="include\AnimationComponent.h" />
     <ClInclude Include="include\BoneData.h" />
     <ClInclude Include="include\BoneDataBufferManager.h" />
-    <ClInclude Include="include\CameraComponent.h" />
     <ClInclude Include="include\DDSTextureLoader.h" />
     <ClInclude Include="include\DynamicData.h" />
     <ClInclude Include="include\DynamicConstantBufferManager.h" />
@@ -289,10 +300,8 @@
     <ClInclude Include="include\d3dx12.h" />
     <ClInclude Include="include\DescriptorHeapManager.h" />
     <ClInclude Include="include\framework.h" />
-    <ClInclude Include="include\GeometryComponent.h" />
     <ClInclude Include="include\GraphicSystem.h" />
     <ClInclude Include="include\IndexAllocator.h" />
-    <ClInclude Include="include\IRenderComponent.h" />
     <ClInclude Include="include\KGDXRenderer.h" />
     <ClInclude Include="include\KGGeometry.h" />
     <ClInclude Include="include\KGGraphicBuffer.h" />
@@ -300,8 +309,6 @@
     <ClInclude Include="include\KGRenderQueue.h" />
     <ClInclude Include="include\KGResourceLoader.h" />
     <ClInclude Include="include\KGShader.h" />
-    <ClInclude Include="include\LightComponent.h" />
-    <ClInclude Include="include\MaterialComponent.h" />
     <ClInclude Include="include\RenderTexture.h" />
     <ClInclude Include="include\RootParameterIndex.h" />
     <ClInclude Include="include\ShaderData.h" />

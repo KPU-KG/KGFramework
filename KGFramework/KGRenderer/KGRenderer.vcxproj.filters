@@ -111,14 +111,8 @@
     <ClCompile Include="src\KGGeometry.cpp">
       <Filter>소스 파일\Core\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="src\GraphicComponent.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
     <ClCompile Include="src\DescriptorHeapManager.cpp">
       <Filter>소스 파일\Core\Utill</Filter>
-    </ClCompile>
-    <ClCompile Include="export\Texture.cpp">
-      <Filter>소스 파일\Core\Resource</Filter>
     </ClCompile>
     <ClCompile Include="src\GraphicSystem.cpp">
       <Filter>소스 파일\System</Filter>
@@ -138,6 +132,12 @@
     <ClCompile Include="src\MaterialComponent.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
+    <ClCompile Include="src\Render3DComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Texture.cpp">
+      <Filter>소스 파일\Core\Resource</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">
@@ -145,9 +145,6 @@
     </ClInclude>
     <ClInclude Include="include\pch.h">
       <Filter>헤더 파일\etc</Filter>
-    </ClInclude>
-    <ClInclude Include="export\GraphicComponent.h">
-      <Filter>헤더 파일\Component</Filter>
     </ClInclude>
     <ClInclude Include="include\D3D12Helper.h">
       <Filter>헤더 파일\etc</Filter>
@@ -221,22 +218,28 @@
     <ClInclude Include="include\GraphicSystem.h">
       <Filter>헤더 파일\System</Filter>
     </ClInclude>
-    <ClInclude Include="include\AnimationComponent.h">
+    <ClInclude Include="export\AnimationComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
-    <ClInclude Include="include\CameraComponent.h">
+    <ClInclude Include="export\CameraComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
-    <ClInclude Include="include\GeometryComponent.h">
+    <ClInclude Include="export\GeometryComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
-    <ClInclude Include="include\IRenderComponent.h">
+    <ClInclude Include="export\GraphicComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
-    <ClInclude Include="include\LightComponent.h">
+    <ClInclude Include="export\IRenderComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
-    <ClInclude Include="include\MaterialComponent.h">
+    <ClInclude Include="export\LightComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="export\MaterialComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="export\Render3DComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
   </ItemGroup>

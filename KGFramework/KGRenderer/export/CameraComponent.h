@@ -1,10 +1,34 @@
+#pragma once
+#include <DirectXMath.h>
 #include "IRenderComponent.h"
-#include "RenderTexture.h"
+
+namespace KG::Renderer
+{
+	struct RenderTexture;
+	struct RenderTextureDesc;
+};
 
 namespace KG::Component
 {
 	class TransformComponent;
 	class Render3DComponent;
+	class CubeCameraComponent;
+
+	struct CameraData
+	{
+		DirectX::XMFLOAT4X4 view;
+		DirectX::XMFLOAT4X4 projection;
+		DirectX::XMFLOAT4X4 viewProjection;
+
+		DirectX::XMFLOAT4X4 inverseView;
+		DirectX::XMFLOAT4X4 inverseProjection;
+		DirectX::XMFLOAT4X4 inverseViewProjection;
+
+		DirectX::XMFLOAT3 cameraWorldPosition;
+		float pad0;
+		DirectX::XMFLOAT3 look;
+		float pad1;
+	};
 
 	class DLL CameraComponent : public IRenderComponent
 	{
@@ -29,7 +53,6 @@ namespace KG::Component
 		bool isCubeRenderer = false;
 		int cubeIndex = 0;
 
-		struct CameraData;
 		CameraData* cameraData = nullptr;
 		CameraData* mappedCameraData = nullptr;
 
@@ -103,5 +126,8 @@ namespace KG::Component
 			return this->cameras;
 		}
 	};
+
+	REGISTER_COMPONENT_ID( CameraComponent );
+	REGISTER_COMPONENT_ID( CubeCameraComponent );
 
 };

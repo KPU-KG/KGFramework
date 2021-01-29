@@ -1,5 +1,4 @@
 #pragma once
-#include <d3d12.h>
 #include "IComponent.h"
 
 #define EXTERNC extern "C"

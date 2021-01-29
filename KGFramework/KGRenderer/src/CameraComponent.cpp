@@ -4,27 +4,12 @@
 #include "D3D12Helper.h"
 #include "KGDXRenderer.h"
 #include "RootParameterIndex.h"
+#include "RenderTexture.h"
 #include "CameraComponent.h"
 
 using namespace DirectX;
 
 #pragma region CameraComponent
-
-struct KG::Component::CameraComponent::CameraData
-{
-	DirectX::XMFLOAT4X4 view;
-	DirectX::XMFLOAT4X4 projection;
-	DirectX::XMFLOAT4X4 viewProjection;
-
-	DirectX::XMFLOAT4X4 inverseView;
-	DirectX::XMFLOAT4X4 inverseProjection;
-	DirectX::XMFLOAT4X4 inverseViewProjection;
-
-	DirectX::XMFLOAT3 cameraWorldPosition;
-	float pad0;
-	DirectX::XMFLOAT3 look;
-	float pad1;
-};
 
 void KG::Component::CameraComponent::RefreshCameraData()
 {
@@ -136,7 +121,7 @@ void KG::Component::CameraComponent::OnDestroy()
 void KG::Component::CameraComponent::OnCreate( KG::Core::GameObject* gameObject )
 {
 	auto inst = KG::Renderer::KGDXRenderer::GetInstance();
-	this->cameraData = new CameraData();
+	this->cameraData = new KG::Component::CameraData();
 	this->cameraDataBuffer = KG::Renderer::CreateUploadHeapBuffer(
 		inst->GetD3DDevice(), 
 		KG::Renderer::ConstantBufferSize( sizeof( CameraData ) ) 
