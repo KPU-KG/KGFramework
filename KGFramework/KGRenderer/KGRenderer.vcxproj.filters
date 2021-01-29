@@ -28,14 +28,47 @@
     <Filter Include="헤더 파일\Component">
       <UniqueIdentifier>{f325a709-07de-40fa-868f-4460614b1105}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Resource">
+    <Filter Include="헤더 파일\Core\Interface">
+      <UniqueIdentifier>{1a60e9d2-d27a-44d4-b53c-82f41a8fa0cc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Core\Animation">
+      <UniqueIdentifier>{1900c01e-145f-470c-b994-16fef1b97251}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Core\RenderQueue">
+      <UniqueIdentifier>{8f7e3be8-4e5a-47ff-9fdd-d21131dba610}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Core\Resource">
+      <UniqueIdentifier>{5c8be137-fb47-4f0d-be4d-3e9ce8c98388}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\ResourceLoader">
       <UniqueIdentifier>{2bc8bb58-6fe0-42e5-9311-6d386decb79b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Core\DirectX">
-      <UniqueIdentifier>{9ac19abb-5b10-410a-a1fc-6d1ee624a470}</UniqueIdentifier>
+    <Filter Include="헤더 파일\Core\Utill">
+      <UniqueIdentifier>{634be384-0c70-452c-b88e-d627965f192e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="헤더 파일\Core\Buffer">
-      <UniqueIdentifier>{921794e5-97b5-40a3-87f9-e34fddc121c2}</UniqueIdentifier>
+    <Filter Include="헤더 파일\Core\Data">
+      <UniqueIdentifier>{2a0a5fb0-cefd-4c33-8de0-219ed682c7d1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\System">
+      <UniqueIdentifier>{add24173-5235-46e5-974b-f5098fdd66f5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Component">
+      <UniqueIdentifier>{06d17786-452e-4661-b1a1-28ea5012502f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Core\Resource">
+      <UniqueIdentifier>{82ccdba8-3f48-4e9e-8555-835c4a548ab4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Core\Utill">
+      <UniqueIdentifier>{2b484364-0d9d-495b-8ebd-0ea24718fc84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\ResourceLoader">
+      <UniqueIdentifier>{79e937b1-7b2d-4c56-820d-7111903e9793}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Core\RenderQueue">
+      <UniqueIdentifier>{0d6ab0b4-0e1d-4e7d-9f09-eade4d9e6979}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\System">
+      <UniqueIdentifier>{b47cc8f1-cfb1-4e80-837a-84956a6923ca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -48,47 +81,62 @@
     <ClCompile Include="src\D3D12Helper.cpp">
       <Filter>소스 파일\etc</Filter>
     </ClCompile>
-    <ClCompile Include="src\GraphicComponent.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
     <ClCompile Include="src\KGDXRenderer.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\KGGeometry.cpp">
       <Filter>소스 파일\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\KGRenderer.cpp">
       <Filter>소스 파일\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\KGShader.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ResourceContainer.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\GraphicSystem.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\KGResourceLoader.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\KGRenderQueue.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\DescriptorHeapManager.cpp">
-      <Filter>소스 파일\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="export\Texture.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\DDSTextureLoader.cpp">
       <Filter>소스 파일\etc</Filter>
     </ClCompile>
+    <ClCompile Include="src\ResourceContainer.cpp">
+      <Filter>소스 파일\ResourceLoader</Filter>
+    </ClCompile>
     <ClCompile Include="src\RenderTexture.cpp">
-      <Filter>소스 파일\Core</Filter>
+      <Filter>소스 파일\Core\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KGShader.cpp">
+      <Filter>소스 파일\Core\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KGResourceLoader.cpp">
+      <Filter>소스 파일\ResourceLoader</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KGRenderQueue.cpp">
+      <Filter>소스 파일\Core\RenderQueue</Filter>
     </ClCompile>
     <ClCompile Include="src\KGModel.cpp">
-      <Filter>소스 파일\Core</Filter>
+      <Filter>소스 파일\Core\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KGGeometry.cpp">
+      <Filter>소스 파일\Core\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DescriptorHeapManager.cpp">
+      <Filter>소스 파일\Core\Utill</Filter>
+    </ClCompile>
+    <ClCompile Include="export\Texture.cpp">
+      <Filter>소스 파일\Core\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GraphicSystem.cpp">
+      <Filter>소스 파일\System</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AnimationComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\CameraComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\GeometryComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LightComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\MaterialComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -101,92 +149,95 @@
     <ClInclude Include="export\GraphicComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
-    <ClInclude Include="export\KGRenderer.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
     <ClInclude Include="include\D3D12Helper.h">
       <Filter>헤더 파일\etc</Filter>
     </ClInclude>
-    <ClInclude Include="include\KGRenderQueue.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\KGDXRenderer.h">
-      <Filter>헤더 파일\Core\DirectX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\KGGraphicBuffer.h">
-      <Filter>헤더 파일\Core\DirectX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\KGShader.h">
-      <Filter>헤더 파일\Core\DirectX</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ShaderData.h">
-      <Filter>헤더 파일\Core\DirectX</Filter>
-    </ClInclude>
     <ClInclude Include="include\ResourceContainer.h">
-      <Filter>헤더 파일\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="include\KGGeometry.h">
-      <Filter>헤더 파일\Resource</Filter>
+      <Filter>헤더 파일\ResourceLoader</Filter>
     </ClInclude>
     <ClInclude Include="export\ResourceMetaData.h">
-      <Filter>헤더 파일\Resource</Filter>
-    </ClInclude>
-    <ClInclude Include="BuddyAllocator.h">
-      <Filter>헤더 파일\Core\Buffer</Filter>
-    </ClInclude>
-    <ClInclude Include="include\BuddyAllocator.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\GraphicSystem.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\KGResourceLoader.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ResourceStruct.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\CameraData.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\RootParameterIndex.h">
-      <Filter>헤더 파일\Core</Filter>
+      <Filter>헤더 파일\ResourceLoader</Filter>
     </ClInclude>
     <ClInclude Include="include\d3dx12.h">
       <Filter>헤더 파일\etc</Filter>
     </ClInclude>
-    <ClInclude Include="include\RenderTexture.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DescriptorHeapManager.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\IndexAllocator.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DynamicData.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\DynamicConstantBufferManager.h">
-      <Filter>헤더 파일\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="export\Texture.h">
-      <Filter>헤더 파일\Resource</Filter>
-    </ClInclude>
     <ClInclude Include="include\DDSTextureLoader.h">
       <Filter>헤더 파일\etc</Filter>
     </ClInclude>
-    <ClInclude Include="src\TextureDescriptorManager.h">
+    <ClInclude Include="include\KGResourceLoader.h">
+      <Filter>헤더 파일\ResourceLoader</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KGDXRenderer.h">
       <Filter>헤더 파일\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="export\KGRenderer.h">
+      <Filter>헤더 파일\Core\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KGRenderQueue.h">
+      <Filter>헤더 파일\Core\RenderQueue</Filter>
+    </ClInclude>
+    <ClInclude Include="export\Texture.h">
+      <Filter>헤더 파일\Core\Resource</Filter>
     </ClInclude>
     <ClInclude Include="include\KGModel.h">
-      <Filter>헤더 파일\Resource</Filter>
+      <Filter>헤더 파일\Core\Resource</Filter>
     </ClInclude>
-    <ClInclude Include="include\BoneDataBufferManager.h">
-      <Filter>헤더 파일\Core</Filter>
+    <ClInclude Include="include\KGShader.h">
+      <Filter>헤더 파일\Core\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KGGeometry.h">
+      <Filter>헤더 파일\Core\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KGGraphicBuffer.h">
+      <Filter>헤더 파일\Core\Utill</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ShaderData.h">
+      <Filter>헤더 파일\Core\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RenderTexture.h">
+      <Filter>헤더 파일\Core\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IndexAllocator.h">
+      <Filter>헤더 파일\Core\Utill</Filter>
     </ClInclude>
     <ClInclude Include="include\BoneData.h">
-      <Filter>헤더 파일\Core</Filter>
+      <Filter>헤더 파일\Core\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\BoneDataBufferManager.h">
+      <Filter>헤더 파일\Core\Animation</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DescriptorHeapManager.h">
+      <Filter>헤더 파일\Core\Utill</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DynamicConstantBufferManager.h">
+      <Filter>헤더 파일\Core\Utill</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DynamicData.h">
+      <Filter>헤더 파일\Core\Data</Filter>
+    </ClInclude>
+    <ClInclude Include="include\RootParameterIndex.h">
+      <Filter>헤더 파일\Core\Utill</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GraphicSystem.h">
+      <Filter>헤더 파일\System</Filter>
+    </ClInclude>
+    <ClInclude Include="include\AnimationComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\CameraComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\GeometryComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\IRenderComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LightComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MaterialComponent.h">
+      <Filter>헤더 파일\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -244,10 +244,13 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="export\Texture.cpp" />
+    <ClCompile Include="src\AnimationComponent.cpp" />
+    <ClCompile Include="src\CameraComponent.cpp" />
     <ClCompile Include="src\D3D12Helper.cpp" />
     <ClCompile Include="src\DDSTextureLoader.cpp" />
     <ClCompile Include="src\DescriptorHeapManager.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\GeometryComponent.cpp" />
     <ClCompile Include="src\GraphicComponent.cpp" />
     <ClCompile Include="src\GraphicSystem.cpp" />
     <ClCompile Include="src\KGDXRenderer.cpp" />
@@ -257,6 +260,8 @@
     <ClCompile Include="src\KGRenderQueue.cpp" />
     <ClCompile Include="src\KGResourceLoader.cpp" />
     <ClCompile Include="src\KGShader.cpp" />
+    <ClCompile Include="src\LightComponent.cpp" />
+    <ClCompile Include="src\MaterialComponent.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_ID|Win32'">Create</PrecompiledHeader>
@@ -269,15 +274,14 @@
     <ClCompile Include="src\ResourceContainer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="BuddyAllocator.h" />
     <ClInclude Include="export\GraphicComponent.h" />
     <ClInclude Include="export\KGRenderer.h" />
     <ClInclude Include="export\ResourceMetaData.h" />
     <ClInclude Include="export\Texture.h" />
+    <ClInclude Include="include\AnimationComponent.h" />
     <ClInclude Include="include\BoneData.h" />
     <ClInclude Include="include\BoneDataBufferManager.h" />
-    <ClInclude Include="include\BuddyAllocator.h" />
-    <ClInclude Include="include\CameraData.h" />
+    <ClInclude Include="include\CameraComponent.h" />
     <ClInclude Include="include\DDSTextureLoader.h" />
     <ClInclude Include="include\DynamicData.h" />
     <ClInclude Include="include\DynamicConstantBufferManager.h" />
@@ -285,8 +289,10 @@
     <ClInclude Include="include\d3dx12.h" />
     <ClInclude Include="include\DescriptorHeapManager.h" />
     <ClInclude Include="include\framework.h" />
+    <ClInclude Include="include\GeometryComponent.h" />
     <ClInclude Include="include\GraphicSystem.h" />
     <ClInclude Include="include\IndexAllocator.h" />
+    <ClInclude Include="include\IRenderComponent.h" />
     <ClInclude Include="include\KGDXRenderer.h" />
     <ClInclude Include="include\KGGeometry.h" />
     <ClInclude Include="include\KGGraphicBuffer.h" />
@@ -294,13 +300,13 @@
     <ClInclude Include="include\KGRenderQueue.h" />
     <ClInclude Include="include\KGResourceLoader.h" />
     <ClInclude Include="include\KGShader.h" />
+    <ClInclude Include="include\LightComponent.h" />
+    <ClInclude Include="include\MaterialComponent.h" />
     <ClInclude Include="include\RenderTexture.h" />
-    <ClInclude Include="include\ResourceStruct.h" />
     <ClInclude Include="include\RootParameterIndex.h" />
     <ClInclude Include="include\ShaderData.h" />
     <ClInclude Include="include\pch.h" />
     <ClInclude Include="include\ResourceContainer.h" />
-    <ClInclude Include="src\TextureDescriptorManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KGLib\KGLib.vcxproj">
