@@ -323,16 +323,17 @@ void KG::GameFramework::OnTestInit()
 		//ptr->GetComponent<KG::Component::TransformComponent>()->SetPosition	( 0, 2, 0 );
 		ptr->name = "soldier";
 
+		
 		auto* ctrl = this->renderer->GetNewAnimationContollerComponent();
 
-		auto* anim1 = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_sprint_forward"_id ) );
-		ctrl->RegisterAnimation(anim1);
-		auto* anim2 = this->renderer->GetNewBoneAnimationStreamComponent(KG::Utill::HashString("soldier_walk_forward"_id));
-		ctrl->RegisterAnimation(anim2);
-		auto* anim3 = this->renderer->GetNewBoneAnimationStreamComponent(KG::Utill::HashString("soldier_standing"_id));
-		ctrl->RegisterAnimation(anim3);
+		// auto* anim1 = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_sprint_forward"_id ) );
+		ctrl->RegisterAnimation(KG::Utill::HashString( "soldier_sprint_forward"_id ));
+		// auto* anim2 = this->renderer->GetNewBoneAnimationStreamComponent(KG::Utill::HashString("soldier_walk_forward"_id));
+		ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+		// auto* anim3 = this->renderer->GetNewBoneAnimationStreamComponent(KG::Utill::HashString("soldier_standing"_id));
+		ctrl->RegisterAnimation(KG::Utill::HashString("soldier_standing"_id));
 
-		ctrl->SetAnimation(anim3->GetAnimationId());
+		ctrl->SetAnimation(KG::Utill::HashString("soldier_sprint_forward"_id));
 		ptr->AddComponent(ctrl);
 		
 		auto* lam = this->system->lambdaSystem.GetNewComponent();

@@ -26,7 +26,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 	KG::System::CubeCameraSystem cubeCameraSystem;
 	KG::System::LightSystem lightSystem;
 	KG::System::AvatarSystem avatarSystem;
-	KG::System::AnimationStreamSystem animationStreamSystem;
+	// KG::System::AnimationStreamSystem animationStreamSystem;
 	KG::System::AnimationControllerSystem animationControllerSystem;
 
 	void OnPreRender()
@@ -38,7 +38,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->cubeCameraSystem.OnPreRender();
 		this->lightSystem.OnPreRender();
 		this->avatarSystem.OnPreRender();
-		this->animationStreamSystem.OnPreRender();
+		// this->animationStreamSystem.OnPreRender();
 		this->animationControllerSystem.OnPreRender();
 	}
 
@@ -51,7 +51,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->cubeCameraSystem.OnUpdate( elapsedTime );
 		this->lightSystem.OnUpdate( elapsedTime );
 		this->avatarSystem.OnUpdate( elapsedTime );
-		this->animationStreamSystem.OnUpdate( elapsedTime );
+		// this->animationStreamSystem.OnUpdate( elapsedTime );
 		this->animationControllerSystem.OnUpdate(elapsedTime);
 	}
 	void OnPostUpdate( float elapsedTime )
@@ -63,7 +63,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->cubeCameraSystem.OnPostUpdate( elapsedTime );
 		this->lightSystem.OnPostUpdate( elapsedTime );
 		this->avatarSystem.OnPostUpdate( elapsedTime );
-		this->animationStreamSystem.OnPostUpdate( elapsedTime );
+		// this->animationStreamSystem.OnPostUpdate( elapsedTime );
 		this->animationControllerSystem.OnPostUpdate(elapsedTime);
 	}
 
@@ -76,7 +76,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->cubeCameraSystem.Clear();
 		this->lightSystem.Clear();
 		this->avatarSystem.Clear();
-		this->animationStreamSystem.Clear();
+		// this->animationStreamSystem.Clear();
 		this->animationControllerSystem.Clear();
 	}
 };
@@ -301,12 +301,12 @@ KG::Component::BoneTransformComponent* KG::Renderer::KGDXRenderer::GetNewBoneTra
 	return static_cast<KG::Component::BoneTransformComponent*>(this->graphicSystems->avatarSystem.GetNewComponent());
 }
 
-KG::Component::AnimationStreamerComponent* KG::Renderer::KGDXRenderer::GetNewBoneAnimationStreamComponent( const KG::Utill::HashString& id, UINT index )
-{
-	auto* anim = static_cast<KG::Component::AnimationStreamerComponent*>(this->graphicSystems->animationStreamSystem.GetNewComponent());
-	anim->InitializeAnimation( id, index );
-	return anim;
-}
+// KG::Component::AnimationStreamerComponent* KG::Renderer::KGDXRenderer::GetNewBoneAnimationStreamComponent( const KG::Utill::HashString& id, UINT index )
+// {
+// 	auto* anim = static_cast<KG::Component::AnimationStreamerComponent*>(this->graphicSystems->animationStreamSystem.GetNewComponent());
+// 	anim->InitializeAnimation( id, index );
+// 	return anim;
+// }
 
 KG::Component::AnimationContollerComponent* KG::Renderer::KGDXRenderer::GetNewAnimationContollerComponent()
 {

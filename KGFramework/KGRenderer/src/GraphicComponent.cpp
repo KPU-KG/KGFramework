@@ -571,75 +571,7 @@ void KG::Component::BoneTransformComponent::InitializeBone( KG::Core::GameObject
 	}
 }
 
-//이퀄레인지 이상함
-static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float currentTime, float duration, float defaultValue = 0.0f)
-{
-	float value = defaultValue;
-	if ( !data.empty() )
-	{
-		value = data[0].value;
-		KG::Utill::KeyData tempData;
-		tempData.keyTime = currentTime;
-		tempData.value = 0.0f;
-		auto p = std::equal_range( data.begin(), data.end(), tempData );
-		auto prev = p.first != data.begin() ? std::prev(p.first) : p.first;
-		auto last = p.second;
-
-		float keyTime0 = 0.0f;
-		float keyTime1 = 0.0f;
-		float keyValue0 = 0.0f;
-		float keyValue1 = 0.0f;
-
-		if ( prev == data.end() )
-		{
-			keyTime0 = data.back().keyTime;
-			keyValue0 = data.back().value;
-		}
-		//else if ( prev == data.begin() )
-		//{
-		//	keyTime0 = data.back().keyTime;
-		//	keyValue0 = data.back().value;
-		//}
-		else 
-		{
-			keyTime0 = prev->keyTime;
-			keyValue0 = prev->value;
-		}
-
-		if ( last == data.end() )
-		{
-			keyTime1 = duration;
-			keyValue1 = value;
-		}
-		else 
-		{
-			keyTime1 = last->keyTime;
-			keyValue1 = last->value;
-		}
-		value = KG::Math::Lerp( keyValue0, keyValue1, abs( currentTime - keyTime0 ) / abs( keyTime1 - keyTime0 ) );
-		//value = keyValue0;
-	}
-	return value;
-}
-
-static std::tuple<XMFLOAT3, XMFLOAT4, XMFLOAT3> GetAnimationTransform( const KG::Utill::NodeAnimation& anim, float currentTime, float duration)
-{
-	XMFLOAT3 t = {};
-	t.x = GetTimeData( anim.translation.x, currentTime, duration );
-	t.y = GetTimeData( anim.translation.y, currentTime, duration );
-	t.z = GetTimeData( anim.translation.z, currentTime, duration );
-	XMFLOAT3 r = {};
-	r.x = XMConvertToRadians(GetTimeData( anim.rotation.x, currentTime, duration ));
-	r.y = XMConvertToRadians(GetTimeData( anim.rotation.y, currentTime, duration ));
-	r.z = XMConvertToRadians(GetTimeData( anim.rotation.z, currentTime, duration ));
-	XMFLOAT4 rQuat = KG::Math::Quaternion::Multiply( KG::Math::Quaternion::FromXYZEuler( r ), anim.preRotation );
-	XMFLOAT3 s = {};
-	s.x = GetTimeData( anim.scale.x, currentTime, duration, 1.0f );
-	s.y = GetTimeData( anim.scale.y, currentTime, duration, 1.0f );
-	s.z = GetTimeData( anim.scale.z, currentTime, duration, 1.0f );
-	return std::make_tuple( t, rQuat, s );
-}
-
+/*
 void KG::Component::AnimationStreamerComponent::OnCreate( KG::Core::GameObject* gameObject )
 {
 	IRenderComponent::OnCreate( gameObject );
@@ -720,11 +652,124 @@ KG::Utill::HashString KG::Component::AnimationStreamerComponent::GetAnimationId(
 	else
 		return NULL;
 }
+*/
+
+//이퀄레인지 이상함
+static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float currentTime, float duration, float defaultValue = 0.0f)
+{
+	float value = defaultValue;
+	if (!data.empty())
+	{
+		value = data[0].value;
+		KG::Utill::KeyData tempData;
+		tempData.keyTime = currentTime;
+		tempData.value = 0.0f;
+		auto p = std::equal_range(data.begin(), data.end(), tempData);
+		auto prev = p.first != data.begin() ? std::prev(p.first) : p.first;
+		auto last = p.second;
+
+		float keyTime0 = 0.0f;
+		float keyTime1 = 0.0f;
+		float keyValue0 = 0.0f;
+		float keyValue1 = 0.0f;
+
+		if (prev == data.end())
+		{
+			keyTime0 = data.back().keyTime;
+			keyValue0 = data.back().value;
+		}
+		//else if ( prev == data.begin() )
+		//{
+		//	keyTime0 = data.back().keyTime;
+		//	keyValue0 = data.back().value;
+		//}
+		else
+		{
+			keyTime0 = prev->keyTime;
+			keyValue0 = prev->value;
+		}
+
+		if (last == data.end())
+		{
+			keyTime1 = duration;
+			keyValue1 = value;
+		}
+		else
+		{
+			keyTime1 = last->keyTime;
+			keyValue1 = last->value;
+		}
+		value = KG::Math::Lerp(keyValue0, keyValue1, abs(currentTime - keyTime0) / abs(keyTime1 - keyTime0));
+		//value = keyValue0;
+	}
+	return value;
+}
+
+static std::tuple<XMFLOAT3, XMFLOAT4, XMFLOAT3> GetAnimationTransform(const KG::Utill::NodeAnimation& anim, float currentTime, float duration)
+{
+	XMFLOAT3 t = {};
+	t.x = GetTimeData(anim.translation.x, currentTime, duration);
+	t.y = GetTimeData(anim.translation.y, currentTime, duration);
+	t.z = GetTimeData(anim.translation.z, currentTime, duration);
+	XMFLOAT3 r = {};
+	r.x = XMConvertToRadians(GetTimeData(anim.rotation.x, currentTime, duration));
+	r.y = XMConvertToRadians(GetTimeData(anim.rotation.y, currentTime, duration));
+	r.z = XMConvertToRadians(GetTimeData(anim.rotation.z, currentTime, duration));
+	XMFLOAT4 rQuat = KG::Math::Quaternion::Multiply(KG::Math::Quaternion::FromXYZEuler(r), anim.preRotation);
+	XMFLOAT3 s = {};
+	s.x = GetTimeData(anim.scale.x, currentTime, duration, 1.0f);
+	s.y = GetTimeData(anim.scale.y, currentTime, duration, 1.0f);
+	s.z = GetTimeData(anim.scale.z, currentTime, duration, 1.0f);
+	return std::make_tuple(t, rQuat, s);
+}
+
+void KG::Component::Animation::MatchNode(KG::Core::GameObject* gameObject)
+{
+	auto* inst = KG::Resource::ResourceContainer::GetInstance();
+	KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, 0);
+	for (auto& layer : anim->layers)
+	{
+		auto& cache = this->frameCache.emplace_back();
+		std::vector<KG::Utill::HashString> ids;
+		cache.resize(layer.nodeAnimations.size());
+		for (auto& n : layer.nodeAnimations)
+		{
+			ids.push_back(n.nodeId);
+		}
+		gameObject->MatchBoneToObject(ids, cache);
+	}
+	
+}
+
+// duration 구하는 함수도 새로 만들어야 함
+void KG::Component::Animation::SetDuration(KG::Utill::AnimationSet* anim)
+{
+	for (auto& a : anim->layers[0].nodeAnimations)
+	{
+		if (!a.translation.x.empty()) this->duration = std::max(this->duration, a.translation.x.back().keyTime);
+		if (!a.translation.y.empty()) this->duration = std::max(this->duration, a.translation.y.back().keyTime);
+		if (!a.translation.z.empty()) this->duration = std::max(this->duration, a.translation.z.back().keyTime);
+		if (!a.rotation.x.empty()) this->duration = std::max(this->duration, a.rotation.x.back().keyTime);
+		if (!a.rotation.y.empty()) this->duration = std::max(this->duration, a.rotation.y.back().keyTime);
+		if (!a.rotation.z.empty()) this->duration = std::max(this->duration, a.rotation.z.back().keyTime);
+		if (!a.scale.x.empty()) this->duration = std::max(this->duration, a.scale.x.back().keyTime);
+		if (!a.scale.y.empty()) this->duration = std::max(this->duration, a.scale.y.back().keyTime);
+		if (!a.scale.z.empty()) this->duration = std::max(this->duration, a.scale.z.back().keyTime);
+	}
+}
+
+void KG::Component::Animation::Initialize(KG::Core::GameObject* gameObject)
+{
+	MatchNode(gameObject);
+	auto* inst = KG::Resource::ResourceContainer::GetInstance();
+	KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, 0);
+	SetDuration(anim);
+}
 
 int KG::Component::AnimationContollerComponent::GetAnimationIndex(const KG::Utill::HashString& animationId)
 {
-	for (int i = 0; i < animationSets.size(); ++i) {
-		if (animationSets[i]->GetAnimationId() == animationId)
+	for (int i = 0; i < animations.size(); ++i) {
+		if (animations[i].animationId == animationId)
 			return i;
 	}
 	return -1;
@@ -732,34 +777,78 @@ int KG::Component::AnimationContollerComponent::GetAnimationIndex(const KG::Util
 
 void KG::Component::AnimationContollerComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
-	for (auto& animation : animationSets) {
-		animation->Create(gameObject);
+	for (auto& animation : animations) {
+		animation.Initialize(this->gameObject);
 	}
 }
 
 void KG::Component::AnimationContollerComponent::OnDestroy()
 {
-	for (auto& anim : animationSets)
-		delete anim;
-	animationSets.clear();
+
 }
 
-void KG::Component::AnimationContollerComponent::Update(float timeElapsed)
+void KG::Component::AnimationContollerComponent::Update(float elapsedTime)
 {
 	if (curAnimation >= 0) {
-		animationSets[curAnimation]->Update(timeElapsed);
+		Animation* anim = &animations[curAnimation];
+		auto* inst = KG::Resource::ResourceContainer::GetInstance();
+		KG::Utill::AnimationSet* animSet = inst->LoadAnimation(anim->animationId, 0);
+
+		// 일단은 블랜딩 안하고 단일 애니메이션 구현
+		// 블랜딩 넣을때는 cur animation이 여러개일 수 있다는 거 생각해야됨
+		// 타이머 듀레이션은 Animation 이 가지고 있고
+		// 스피드는 컨트롤러가 가지고 있어야 될듯
+		// Animation에서 state 변수를 가지고 있어야 한다 (playing / stop)
+		// stop상태에서 playing 상태로 넘어갈 때 timer를 0으로 초기화 (블랜딩 x일 때)
+
+		if (!anim->isPlaying) {
+			anim->isPlaying = true;
+			anim->timer = 0;
+		}
+
+		anim->timer += elapsedTime * 0.5f;
+		if (anim->timer > anim->duration) anim->timer -= anim->duration;
+		for (size_t i = 0; i < animSet->layers[0].nodeAnimations.size(); i++)
+		{
+			if (animSet->layers[0].nodeAnimations[i].nodeId == KG::Utill::HashString("RootNode"_id))
+			{
+				continue;
+			}
+			auto tuple = GetAnimationTransform(animSet->layers[0].nodeAnimations[i], anim->timer, anim->duration);
+			auto t = std::get<0>(tuple);
+			auto r = std::get<1>(tuple);
+			auto s = std::get<2>(tuple);
+			// frameCache를 애니메이션 셋별로 가지고 있는게 맞냐??
+			// 보니까 frameCache가 모델 정보를 게임 오브젝으로 표현해놓은거 같은데
+			// 어차피 같은 모델이면 frameCache는 애니메이션별로 다 같은거 아님???
+			
+			// 포지션이 계층구조로 적용이 안돼서 다 가운데로 몰려버림..
+			// auto prevT = anim->frameCache[0][i]->GetTransform()->GetPosition();
+			// DebugNormalMessage("pre trans : " << prevT << " / time : " <<anim->timer);
+			anim->frameCache[0][i]->GetTransform()->SetAnimPosition(t);
+			auto pos = anim->frameCache[0][i]->GetTransform()->GetPosition();
+			DebugNormalMessage("pos : " << pos << " / time : " << anim->timer);
+			anim->frameCache[0][i]->GetTransform()->SetRotation(r);
+			anim->frameCache[0][i]->GetTransform()->SetScale(s);
+		}
 	}
 }
 
-void KG::Component::AnimationContollerComponent::RegisterAnimation(AnimationStreamerComponent* animation)
+void KG::Component::AnimationContollerComponent::RegisterAnimation(const KG::Utill::HashString& animationId, UINT animationIndex)
 {
-	if (GetAnimationIndex(animation->GetAnimationId()) == -1) {
-		AnimationStreamerComponent* newAnimation = new AnimationStreamerComponent;
-		memcpy(newAnimation, animation, sizeof(AnimationStreamerComponent));
-		animationSets.emplace_back(newAnimation);
+	if (GetAnimationIndex(animationId) == -1) {
+		auto* inst = KG::Resource::ResourceContainer::GetInstance();
+		KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, animationIndex);		// 여기서 id랑 페어로 animation set이 resource container에 저장
+		Animation a;
+		a.animationId = animationId;
+		animations.emplace_back(a);
 	}
 }
 
 void KG::Component::AnimationContollerComponent::SetAnimation(const KG::Utill::HashString& animationId) {
 	curAnimation = GetAnimationIndex(animationId);
+}
+
+void KG::Component::AnimationContollerComponent::SetPlaySpeed(float spd) {
+	speed = spd;
 }

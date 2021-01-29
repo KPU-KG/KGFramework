@@ -276,41 +276,55 @@ namespace KG::Component
 		void InitializeBone( KG::Core::GameObject* rootNode );
 	};
 
-	class DLL AnimationStreamerComponent : public IRenderComponent
-	{
-		using FrameCacheVector = std::vector<KG::Core::GameObject*>;
-	protected:
-		KG::Utill::HashString ctrlId;
-		KG::Utill::AnimationSet* anim = nullptr;
-		KG::Component::GeometryComponent* geometry = nullptr;
-		std::vector<FrameCacheVector> frameCache;
+	// class DLL AnimationStreamerComponent : public IRenderComponent
+	// {
+	// 	using FrameCacheVector = std::vector<KG::Core::GameObject*>;
+	// protected:
+	// 	KG::Utill::HashString ctrlId;
+	// 	KG::Utill::AnimationSet* anim = nullptr;
+	// 	KG::Component::GeometryComponent* geometry = nullptr;
+	// 	std::vector<FrameCacheVector> frameCache;
+	// 	float timer = 0.0f;
+	// 	float duration = 0.0f;
+	// 	virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+	// 	void MatchNode();
+	// public:
+	// 	virtual void Update( float timeElapsed ) override;
+	// 	void InitializeAnimation( const KG::Utill::HashString& animationId, UINT animationIndex = 0);
+	// 	void GetDuration();
+	// 	KG::Utill::HashString GetAnimationId() const;
+	// 
+	// };
+
+	struct Animation {
+	private:
+		void MatchNode(KG::Core::GameObject* gameObject);
+		void SetDuration(KG::Utill::AnimationSet* anim);
+	public:
+		// KG::Utill::AnimationSet* animationSet = nullptr;
+		KG::Utill::HashString animationId;
+		std::vector<std::vector<KG::Core::GameObject*>> frameCache;
 		float timer = 0.0f;
 		float duration = 0.0f;
-		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
-		void MatchNode();
-	public:
-		virtual void Update( float timeElapsed ) override;
-		void InitializeAnimation( const KG::Utill::HashString& animationId, UINT animationIndex = 0);
-		void GetDuration();
-		KG::Utill::HashString GetAnimationId() const;
-
+		bool isPlaying = false;
+		void Initialize(KG::Core::GameObject* gameObject);
 	};
 
 	class DLL AnimationContollerComponent : public IRenderComponent
 	{
-		friend AnimationStreamerComponent;
 	protected:
-		std::vector<AnimationStreamerComponent*> animationSets;
-		// AnimationStreamerComponent* curAnimation = nullptr;
+		std::vector<Animation> animations;
 		int curAnimation = -1;
+		float speed = 0.5f;
+		
 		int GetAnimationIndex(const KG::Utill::HashString& animationId);
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 		virtual void OnDestroy() override;
 	public:
 		virtual void Update(float timeElapsed) override;
-		void RegisterAnimation(AnimationStreamerComponent* animation);
+		void RegisterAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U);
 		void SetAnimation(const KG::Utill::HashString& animationId);
-
+		void SetPlaySpeed(float spd);
 	};
 
 	REGISTER_COMPONENT_ID( LightComponent );
@@ -320,7 +334,7 @@ namespace KG::Component
 	REGISTER_COMPONENT_ID( GeometryComponent );
 	REGISTER_COMPONENT_ID( MaterialComponent );
 	REGISTER_COMPONENT_ID( BoneTransformComponent );
-	REGISTER_COMPONENT_ID( AnimationStreamerComponent );
+	// REGISTER_COMPONENT_ID( AnimationStreamerComponent );
 	REGISTER_COMPONENT_ID(AnimationContollerComponent);
 
 }

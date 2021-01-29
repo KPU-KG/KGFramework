@@ -20,6 +20,8 @@ namespace KG::Component
 		XMFLOAT3 position = XMFLOAT3( 0, 0, 0 );
 		XMFLOAT4 rotation = XMFLOAT4( 0, 0, 0, 1 ); //사원수
 		XMFLOAT3 scale = XMFLOAT3( 1, 1, 1 );
+		// animation position
+		XMFLOAT3 animPosition = XMFLOAT3(0, 0, 0);
 
 		virtual void OnCreate( KG::Core::GameObject* gameObject )
 		{
@@ -52,6 +54,26 @@ namespace KG::Component
 		void SetPosition( float x, float y, float z )
 		{
 			this->SetPosition( XMFLOAT3( x, y, z ) );
+		}
+
+		//animPosition
+		XMFLOAT3 GetAnimPosition() const
+		{
+			return this->animPosition;
+		}
+		void SetAnimPosition(const XMFLOAT3& position)
+		{
+			this->animPosition = position;
+			TurnOnLocalDirtyFlag();
+		}
+		void XM_CALLCONV SetAnimPosition(const FXMVECTOR& position)
+		{
+			XMStoreFloat3(&this->animPosition, position);
+			TurnOnLocalDirtyFlag();
+		}
+		void SetAnimPosition(float x, float y, float z)
+		{
+			this->SetAnimPosition(XMFLOAT3(x, y, z));
 		}
 
 		//Quaternion
@@ -171,15 +193,19 @@ namespace KG::Component
 			{
 				auto rotMat = XMMatrixRotationQuaternion( XMLoadFloat4( &this->rotation ) );
 				auto scaleMat = XMMatrixScalingFromVector( XMLoadFloat3( &this->scale ) );
-				auto tralationMat = XMMatrixTranslationFromVector( XMLoadFloat3( &this->position ) );
+				// auto tralationMat = XMMatrixTranslationFromVector( XMLoadFloat3( &this->position ) );
+				auto tralationMat = XMMatrixTranslationFromVector(DirectX::XMVectorAdd(XMLoadFloat3(&this->position), XMLoadFloat3(&this->animPosition)));
 
 				;
 
 				//최적화 필요
-				XMStoreFloat4x4( &this->localWorldMatrix,
-					XMMatrixAffineTransformation( XMLoadFloat3( &this->scale ), XMVectorZero(), XMLoadFloat4( &this->rotation ), XMLoadFloat3( &this->position ) )
-					);
+				// XMStoreFloat4x4( &this->localWorldMatrix,
+				// 	XMMatrixAffineTransformation( XMLoadFloat3( &this->scale ), XMVectorZero(), XMLoadFloat4( &this->rotation ), XMLoadFloat3( &this->position ) )
+				// 	);
 				//XMStoreFloat4x4( &this->localWorldMatrix, scaleMat * rotMat * tralationMat );
+				XMStoreFloat4x4(&this->localWorldMatrix,
+					XMMatrixAffineTransformation(XMLoadFloat3(&this->scale), XMVectorZero(), XMLoadFloat4(&this->rotation), DirectX::XMVectorAdd(XMLoadFloat3(&this->position), XMLoadFloat3(&this->animPosition)))
+				);
 
 				this->isDirtyLocal = false;
 			}
