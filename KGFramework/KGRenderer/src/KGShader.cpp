@@ -232,15 +232,6 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata( ShaderTarget shader
 		std::string newPath = "Resource/ShaderScript/ShaderDebugCache/" + FileName;
 		std::string newSource{ (char*)shaderPreProcBlob->GetBufferPointer() , shaderPreProcBlob->GetBufferSize() };
 
-		//while ( true )
-		//{
-		//	size_t start= newSource.find( '#' );
-		//	if ( start == std::string::npos )
-		//		break;
-		//	size_t end = newSource.find( '\n', start );
-		//	newSource.erase( start, end - start );
-		//}
-
 		std::ofstream newFile( newPath, std::ios::trunc );
 		newFile.write( newSource.c_str(), newSource.size() );
 		newFile.close();
@@ -387,6 +378,10 @@ ID3D12PipelineState* KG::Renderer::Shader::CreatePSO( ShaderMeshType meshType, S
 		d3dPipelineStateDesc.RTVFormats[2] = DXGI_FORMAT_R16G16_SNORM;
 		d3dPipelineStateDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UINT;
 		//d3dPipelineStateDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
+	}
+	else if ( geoType == ShaderGeometryType::GSCubeShadow )
+	{
+		d3dPipelineStateDesc.NumRenderTargets = 0;
 	}
 	else
 	{

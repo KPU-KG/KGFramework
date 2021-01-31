@@ -249,6 +249,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="export\ShadowCasterComponent.cpp" />
     <ClCompile Include="src\AnimationComponent.cpp" />
     <ClCompile Include="src\CameraComponent.cpp" />
     <ClCompile Include="src\D3D12Helper.cpp" />
@@ -290,6 +291,7 @@
     <ClInclude Include="export\MaterialComponent.h" />
     <ClInclude Include="export\Render3DComponent.h" />
     <ClInclude Include="export\ResourceMetaData.h" />
+    <ClInclude Include="export\ShadowCasterComponent.h" />
     <ClInclude Include="export\Texture.h" />
     <ClInclude Include="include\BoneData.h" />
     <ClInclude Include="include\BoneDataBufferManager.h" />

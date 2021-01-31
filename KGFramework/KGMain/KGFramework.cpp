@@ -80,7 +80,7 @@ void KG::GameFramework::OnTestInit()
 	static KG::Core::GameObject testAmbientObject;
 	static KG::Core::GameObject testAnimationObject;
 
-	constexpr auto texOne = "PBRStone"_id;
+	constexpr auto texOne = "PBRMetal"_id;
 	constexpr auto texTwo = "PBRMetal2"_id;
 	constexpr auto texThree = "PBRTile"_id;
 	{

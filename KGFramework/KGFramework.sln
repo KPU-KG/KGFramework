@@ -38,9 +38,50 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{85
 		Doc\RootParameter.txt = Doc\RootParameter.txt
 	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Shader", "Shader", "{101E8511-0519-49FC-97D5-93D6ECB9E702}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mesh", "Mesh", "{74DDEDF6-9870-4F3C-8842-F9569A42DA7B}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Mesh_Skinned.hlsl = Resource\Resource\ShaderScript\Mesh_Skinned.hlsl
+		Resource\Resource\ShaderScript\Mesh_Static.hlsl = Resource\Resource\ShaderScript\Mesh_Static.hlsl
+	EndProjectSection
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Define", "Define", "{7E5B965C-F158-4CF8-BF1C-949020349362}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Geomtery", "Geomtery", "{59AF83AA-ED1C-4E93-81E6-1781244E461A}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Geometry_Default.hlsl = Resource\Resource\ShaderScript\Geometry_Default.hlsl
+		Resource\Resource\ShaderScript\Geometry_GSShadow.hlsl = Resource\Resource\ShaderScript\Geometry_GSShadow.hlsl
+		Resource\Resource\ShaderScript\Geometry_SkyBox.hlsl = Resource\Resource\ShaderScript\Geometry_SkyBox.hlsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ETC", "ETC", "{CC3BB28C-12D7-4184-B7FE-C6D07261749C}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Light_Ambient.hlsl = Resource\Resource\ShaderScript\Light_Ambient.hlsl
+		Resource\Resource\ShaderScript\Light_Directional.hlsl = Resource\Resource\ShaderScript\Light_Directional.hlsl
+		Resource\Resource\ShaderScript\Light_MeshVolume.hlsl = Resource\Resource\ShaderScript\Light_MeshVolume.hlsl
+		Resource\Resource\ShaderScript\SkyBox_Default.hlsl = Resource\Resource\ShaderScript\SkyBox_Default.hlsl
+		Resource\Resource\ShaderScript\Utill_LIghtCustom.hlsl = Resource\Resource\ShaderScript\Utill_LIghtCustom.hlsl
+		Resource\Resource\ShaderScript\Utill_ShaderSelector.hlsl = Resource\Resource\ShaderScript\Utill_ShaderSelector.hlsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pixel", "Pixel", "{3A295F94-2BA0-43B3-816B-784DD6E7D6DF}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Pixel_Default.hlsl = Resource\Resource\ShaderScript\Pixel_Default.hlsl
+		Resource\Resource\ShaderScript\Pixel_GSShadow.hlsl = Resource\Resource\ShaderScript\Pixel_GSShadow.hlsl
+		Resource\Resource\ShaderScript\Pixel_WireFrame.hlsl = Resource\Resource\ShaderScript\Pixel_WireFrame.hlsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Define", "Define", "{43F92087-EC1C-4518-9AE2-D3F2971C21F3}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Define_GBuffer.hlsl = Resource\Resource\ShaderScript\Define_GBuffer.hlsl
+		Resource\Resource\ShaderScript\Define_Global.hlsl = Resource\Resource\ShaderScript\Define_Global.hlsl
+		Resource\Resource\ShaderScript\Define_Light.hlsl = Resource\Resource\ShaderScript\Define_Light.hlsl
+		Resource\Resource\ShaderScript\Define_NormalCamera.hlsl = Resource\Resource\ShaderScript\Define_NormalCamera.hlsl
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Surface", "Surface", "{96B900F6-5155-42BF-9A04-808233534E8B}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Surface_DefaultPBR.hlsl = Resource\Resource\ShaderScript\Surface_DefaultPBR.hlsl
+		Resource\Resource\ShaderScript\Surface_Empty.hlsl = Resource\Resource\ShaderScript\Surface_Empty.hlsl
+		Resource\Resource\ShaderScript\Surface_SkyBox.hlsl = Resource\Resource\ShaderScript\Surface_SkyBox.hlsl
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -75,8 +116,12 @@ Global
 		{E0388BA3-9056-4D90-BAC5-B45247984D32} = {1C3E5F5B-2584-476E-8547-6C9D578E07B9}
 		{85D78402-5B3A-48F7-8603-F728338BBA95} = {1C3E5F5B-2584-476E-8547-6C9D578E07B9}
 		{612EE3CC-1D6B-4E8F-8C11-7510E32215FA} = {1C3E5F5B-2584-476E-8547-6C9D578E07B9}
-		{101E8511-0519-49FC-97D5-93D6ECB9E702} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
-		{7E5B965C-F158-4CF8-BF1C-949020349362} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
+		{74DDEDF6-9870-4F3C-8842-F9569A42DA7B} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
+		{59AF83AA-ED1C-4E93-81E6-1781244E461A} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
+		{CC3BB28C-12D7-4184-B7FE-C6D07261749C} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
+		{3A295F94-2BA0-43B3-816B-784DD6E7D6DF} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
+		{43F92087-EC1C-4518-9AE2-D3F2971C21F3} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
+		{96B900F6-5155-42BF-9A04-808233534E8B} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EA476DDC-7B81-4DFD-9585-518EB4B6393F}

@@ -50,6 +50,7 @@ namespace KG::Renderer
 		GeometryCubeMap = 1,
 		Light = 2,
 		SkyBox = 3,
+		GSCubeShadow = 4,
 	};
 	// 최종 렌더 명령시에 결정
 	enum class ShaderPixelType
@@ -80,6 +81,7 @@ namespace KG::Renderer
 		{
 		case KG::Renderer::ShaderGeometryType::Default: return "GEOMETRY_NORMAL";
 		case KG::Renderer::ShaderGeometryType::GeometryCubeMap: return "GEOMETRY_CUBE";
+		case KG::Renderer::ShaderGeometryType::GSCubeShadow: return "GEOMETRY_CUBE_SHADOW";
 		case KG::Renderer::ShaderGeometryType::Light: return "GEOMETRY_LIGHT";
 		case KG::Renderer::ShaderGeometryType::SkyBox: return "GEOMETRY_SKYBOX";
 		}
@@ -98,7 +100,7 @@ namespace KG::Renderer
 		case KG::Renderer::ShaderPixelType::GeometricShadow: return "PIXEL_GEOMETRIC_SHADOW";
 		case KG::Renderer::ShaderPixelType::Forward: return "PIXEL_FORWARD";
 		case KG::Renderer::ShaderPixelType::Transparent: return "PIXEL_TRANSPARENT";
-		case KG::Renderer::ShaderPixelType::SkyBox: return "PIXEL_SKKYBOX";
+		case KG::Renderer::ShaderPixelType::SkyBox: return "PIXEL_SKYBOX";
 		}
 	}
 
@@ -115,7 +117,7 @@ namespace KG::Renderer
 			return "VertexShaderFuction";
 		case ShaderTarget::DS_5_0:
 		case ShaderTarget::DS_5_1:
-			return "DomainFuction";
+			return "DomainShaderFuction";
 		case ShaderTarget::GS_5_0:
 		case ShaderTarget::GS_5_1:
 			return "GeometryShaderFuction";

@@ -4,6 +4,11 @@
 #endif 
 
 #ifdef GEOMETRY_CUBE
+
+#endif
+
+#ifdef GEOMETRY_CUBE_SHADOW
+#include "Geometry_GSShadow.hlsl"
 #endif
 
 #ifdef GEOMETRY_SKYBOX

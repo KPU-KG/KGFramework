@@ -138,6 +138,9 @@
     <ClCompile Include="src\Texture.cpp">
       <Filter>소스 파일\Core\Resource</Filter>
     </ClCompile>
+    <ClCompile Include="export\ShadowCasterComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">
@@ -240,6 +243,9 @@
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
     <ClInclude Include="export\Render3DComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="export\ShadowCasterComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
   </ItemGroup>

@@ -12,6 +12,7 @@ namespace KG::Component
 {
 	class TransformComponent;
 	class Render3DComponent;
+	class ShadowCasterComponent;
 	class CubeCameraComponent;
 
 	struct CameraData
@@ -33,6 +34,7 @@ namespace KG::Component
 	class DLL CameraComponent : public IRenderComponent
 	{
 		friend Render3DComponent;
+		friend ShadowCasterComponent;
 		friend CubeCameraComponent;
 
 		// User Data

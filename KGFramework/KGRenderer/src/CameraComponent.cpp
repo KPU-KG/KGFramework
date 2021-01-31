@@ -45,7 +45,6 @@ static constexpr XMFLOAT3 cubeUp[6] =
 
 void KG::Component::CameraComponent::CalculateViewMatrix()
 {
-
 	auto position = this->transform->GetPosition();
 	auto look = this->isCubeRenderer ? cubeLook[this->cubeIndex] : this->transform->GetLook();
 	auto up = this->isCubeRenderer ? cubeUp[this->cubeIndex] : this->transform->GetUp();
