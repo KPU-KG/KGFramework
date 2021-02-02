@@ -12,6 +12,6 @@
 #include "GeometryComponent.h"
 #include "MaterialComponent.h"
 #include "AnimationComponent.h"
-
+#include "ShadowCasterComponent.h"
 
 // 컴포넌트 모으는 헤더파일입니다.

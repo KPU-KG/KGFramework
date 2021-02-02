@@ -15,7 +15,7 @@
 
 using namespace KG::Renderer;
 
-std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers();
+std::array<const CD3DX12_STATIC_SAMPLER_DESC, 8> GetStaticSamplers();
 
 struct KG::Renderer::KGDXRenderer::GraphicSystems
 {
@@ -27,6 +27,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 	KG::System::LightSystem lightSystem;
 	KG::System::AvatarSystem avatarSystem;
 	KG::System::AnimationStreamSystem animationStreamSystem;
+	KG::System::ShadowCasterSystem shadowSystem;
 
 	void OnPreRender()
 	{
@@ -38,6 +39,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->lightSystem.OnPreRender();
 		this->avatarSystem.OnPreRender();
 		this->animationStreamSystem.OnPreRender();
+		this->shadowSystem.OnPreRender();
 	}
 
 	void OnUpdate( float elaspedTime )
@@ -50,6 +52,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->lightSystem.OnUpdate( elaspedTime );
 		this->avatarSystem.OnUpdate( elaspedTime );
 		this->animationStreamSystem.OnUpdate( elaspedTime );
+		this->shadowSystem.OnUpdate( elaspedTime );
 	}
 	void OnPostUpdate( float elaspedTime )
 	{
@@ -61,6 +64,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->lightSystem.OnPostUpdate( elaspedTime );
 		this->avatarSystem.OnPostUpdate( elaspedTime );
 		this->animationStreamSystem.OnPostUpdate( elaspedTime );
+		this->shadowSystem.OnPostUpdate( elaspedTime );
 	}
 
 	void Clear()
@@ -73,6 +77,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->lightSystem.Clear();
 		this->avatarSystem.Clear();
 		this->animationStreamSystem.Clear();
+		this->shadowSystem.Clear();
 	}
 };
 
@@ -138,6 +143,7 @@ void KGDXRenderer::Render()
 	ID3D12DescriptorHeap* heaps[] = { this->descriptorHeapManager->Get() };
 	this->mainCommandList->SetDescriptorHeaps( 1, heaps );
 
+	this->ShadowMapRender();
 	this->CubeCaemraRender();
 	this->NormalCameraRender();
 
@@ -170,11 +176,11 @@ void KG::Renderer::KGDXRenderer::CubeCaemraRender()
 			PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 0 ), "Cube Camera Render : Camera %d", camera.GetCubeIndex() );
 
 			camera.SetCameraRender( this->mainCommandList );
-			this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, camera );
-			this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, camera );
-			this->LightPassRender( this->mainCommandList, camera );
-			this->SkyBoxRender( this->mainCommandList, camera );
-			this->PassRenderEnd( this->mainCommandList, camera );
+			this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
+			this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
+			this->LightPassRender( this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
+			this->SkyBoxRender( this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
+			this->PassRenderEnd( this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
 			camera.EndCameraRender( this->mainCommandList );
 			PIXEndEvent( mainCommandList );
 		}
@@ -198,11 +204,11 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
 		PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "Normal Camera Render : Camera %d", _cameraCount++ );
 		camera.SetCameraRender( this->mainCommandList );
 
-		this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, camera );
-		this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, camera );
-		this->LightPassRender( this->mainCommandList, camera );
-		this->SkyBoxRender( this->mainCommandList, camera );
-		this->PassRenderEnd( this->mainCommandList, camera );
+		this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
+		this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
+		this->LightPassRender( this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
+		this->SkyBoxRender( this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
+		this->PassRenderEnd( this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
 
 		camera.EndCameraRender( this->mainCommandList );
 
@@ -246,55 +252,80 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
 
 }
 
-void KG::Renderer::KGDXRenderer::OpaqueRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
+void KG::Renderer::KGDXRenderer::ShadowMapRender()
+{
+	PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "ShadowCameraRender" );
+	size_t cameraCount = 0;
+	for ( KG::Component::ShadowCasterComponent& comp : this->graphicSystems->shadowSystem )
+	{
+		PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "Shadow Camera Render : Camera %d", cameraCount++ );
+		if ( comp.isPointLightShadow() )
+		{
+			auto* cubeCamera = comp.GetCubeCamera();
+			cubeCamera->SetCameraRender( mainCommandList );
+			this->mainCommandList->ClearDepthStencilView( cubeCamera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr );
+			this->mainCommandList->OMSetRenderTargets( 0, nullptr, false, &cubeCamera->GetRenderTexture().dsvHandle );
+			this->renderEngine->Render( ShaderGroup::Opaque, ShaderGeometryType::GSCubeShadow, ShaderPixelType::GSCubeShadow, mainCommandList );
+			cubeCamera->EndCameraRender( mainCommandList );
+			PassRenderEnd( mainCommandList, cubeCamera->GetRenderTexture(), 0 );
+		}
+		else
+		{
+		}
+		PIXEndEvent( mainCommandList );
+	}
+	PIXEndEvent( mainCommandList );
+}
+
+void KG::Renderer::KGDXRenderer::OpaqueRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex )
 {
 	PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "Opaque Render" );
-	cmdList->OMSetRenderTargets( 4, camera.GetRenderTexture().gbufferHandle.data(), false, &camera.GetRenderTexture().dsvHandle );
-	camera.GetRenderTexture().ClearGBuffer( this->mainCommandList, 0, 0, 0, 0 );
+	cmdList->OMSetRenderTargets( 4, rt.gbufferHandle.data(), false, &rt.dsvHandle );
+	rt.ClearGBuffer( this->mainCommandList, 0, 0, 0, 0 );
 	cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::Texture1Heap, this->descriptorHeapManager->GetGPUHandle( 0 ) );
 
-	this->mainCommandList->ClearDepthStencilView( camera.GetRenderTexture().dsvHandle,
+	this->mainCommandList->ClearDepthStencilView( rt.dsvHandle,
 		D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL,
 		1.0f, 0, 0, nullptr );
 
-	this->renderEngine->Render( ShaderGroup::Opaque, geoType, pixType, cmdList, camera );
+	this->renderEngine->Render( ShaderGroup::Opaque, geoType, pixType, cmdList );
 }
 
-void KG::Renderer::KGDXRenderer::TransparentRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
+void KG::Renderer::KGDXRenderer::TransparentRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex )
 {
-	this->renderEngine->Render( ShaderGroup::Transparent, geoType, pixType, cmdList, camera );
+	this->renderEngine->Render( ShaderGroup::Transparent, geoType, pixType, cmdList );
 }
 
-void KG::Renderer::KGDXRenderer::LightPassRender( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
+void KG::Renderer::KGDXRenderer::LightPassRender( ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex )
 {
 	PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "Light Pass Render" );
 	TryResourceBarrier( cmdList,
-		camera.GetRenderTexture().BarrierTransition(
+		rt.BarrierTransition(
 			D3D12_RESOURCE_STATE_RENDER_TARGET,
 			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 			D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
 		)
 	);
-	cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle( camera.GetRenderTexture().gbufferSRVIndex ) );
-	auto rtvHandle = camera.GetRenderTexture().GetRenderTargetRTVHandle( camera.GetCubeIndex() );
+	cmdList->SetGraphicsRootDescriptorTable( RootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle( rt.gbufferSRVIndex ) );
+	auto rtvHandle = rt.GetRenderTargetRTVHandle( cubeIndex );
 	cmdList->OMSetRenderTargets( 1, &rtvHandle, true, nullptr );
-	this->renderEngine->Render( ShaderGroup::DirectionalLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList, camera );
-	this->renderEngine->Render( ShaderGroup::MeshVolumeLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList, camera );
-	this->renderEngine->Render( ShaderGroup::AmbientLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList, camera );
+	this->renderEngine->Render( ShaderGroup::DirectionalLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList );
+	this->renderEngine->Render( ShaderGroup::MeshVolumeLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList );
+	this->renderEngine->Render( ShaderGroup::AmbientLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList );
 }
 
-void KG::Renderer::KGDXRenderer::SkyBoxRender( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
+void KG::Renderer::KGDXRenderer::SkyBoxRender( ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex )
 {
 	PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "SkyBox Pass Render" );
-	auto rtvHandle = camera.GetRenderTexture().GetRenderTargetRTVHandle( camera.GetCubeIndex() );
-	cmdList->OMSetRenderTargets( 1, &rtvHandle, true, &camera.GetRenderTexture().dsvHandle );
-	this->renderEngine->Render( ShaderGroup::SkyBox, ShaderGeometryType::SkyBox, ShaderPixelType::SkyBox, cmdList, camera );
+	auto rtvHandle = rt.GetRenderTargetRTVHandle( 0 );
+	cmdList->OMSetRenderTargets( 1, &rtvHandle, true, &rt.dsvHandle );
+	this->renderEngine->Render( ShaderGroup::SkyBox, ShaderGeometryType::SkyBox, ShaderPixelType::SkyBox, cmdList );
 }
 
-void KG::Renderer::KGDXRenderer::PassRenderEnd( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
+void KG::Renderer::KGDXRenderer::PassRenderEnd( ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex )
 {
 	TryResourceBarrier( cmdList,
-		camera.GetRenderTexture().BarrierTransition(
+		rt.BarrierTransition(
 			D3D12_RESOURCE_STATE_RENDER_TARGET,
 			D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 			D3D12_RESOURCE_STATE_DEPTH_WRITE
@@ -364,6 +395,11 @@ KG::Component::CubeCameraComponent* KG::Renderer::KGDXRenderer::GetNewCubeCamera
 KG::Component::LightComponent* KG::Renderer::KGDXRenderer::GetNewLightComponent()
 {
 	return static_cast<KG::Component::LightComponent*>(this->graphicSystems->lightSystem.GetNewComponent());
+}
+
+KG::Component::ShadowCasterComponent* KG::Renderer::KGDXRenderer::GetNewShadowCasterComponent()
+{
+	return static_cast<KG::Component::ShadowCasterComponent*>(this->graphicSystems->shadowSystem.GetNewComponent());
 }
 
 KG::Component::BoneTransformComponent* KG::Renderer::KGDXRenderer::GetNewBoneTransformComponent()
@@ -674,8 +710,7 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 	D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags =
 		D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
 		D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS |
-		D3D12_ROOT_SIGNATURE_FLAG_DENY_GEOMETRY_SHADER_ROOT_ACCESS;
+		D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
 
 	D3D12_ROOT_SIGNATURE_DESC d3dRootSignatureDesc;
 	auto staticSampler = GetStaticSamplers();
@@ -733,7 +768,7 @@ ID3D12Resource* KG::Renderer::KGDXRenderer::GetCurrentRenderTarget() const
 	return this->renderTargetBuffers[this->swapChainBufferIndex];
 }
 
-std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers()
+std::array<const CD3DX12_STATIC_SAMPLER_DESC, 8> GetStaticSamplers()
 {
 	// Applications usually only need a handful of samplers.  So just define them all up front
 	// and keep them available as part of the root signature.  
@@ -784,8 +819,32 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 6> GetStaticSamplers()
 		0.0f,                              // mipLODBias
 		16 );                                // maxAnisotropy
 
+	const CD3DX12_STATIC_SAMPLER_DESC anisoCompareClamp(
+		6, // shaderRegister
+		D3D12_FILTER::D3D12_FILTER_COMPARISON_ANISOTROPIC, // filter
+		D3D12_TEXTURE_ADDRESS_MODE_BORDER,  // addressU
+		D3D12_TEXTURE_ADDRESS_MODE_BORDER,  // addressV
+		D3D12_TEXTURE_ADDRESS_MODE_BORDER,  // addressW
+		0.0f,                              // mipLODBias
+		16,
+		D3D12_COMPARISON_FUNC_LESS,
+		D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE);                                // maxAnisotropy
+
+	const CD3DX12_STATIC_SAMPLER_DESC linearCompareClamp(
+		7, // shaderRegister
+		D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR, // filter
+		D3D12_TEXTURE_ADDRESS_MODE_BORDER,  // addressU
+		D3D12_TEXTURE_ADDRESS_MODE_BORDER,  // addressV
+		D3D12_TEXTURE_ADDRESS_MODE_BORDER,
+		0.0f,
+		16,
+		D3D12_COMPARISON_FUNC_LESS,
+		D3D12_STATIC_BORDER_COLOR_OPAQUE_WHITE );                       // maxAnisotropy
+
 	return {
 		pointWrap, pointClamp,
 		linearWrap, linearClamp,
-		anisotropicWrap, anisotropicClamp };
+		anisotropicWrap, anisotropicClamp,
+		anisoCompareClamp, linearCompareClamp
+	};
 }

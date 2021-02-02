@@ -138,8 +138,8 @@
     <ClCompile Include="src\Texture.cpp">
       <Filter>소스 파일\Core\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="export\ShadowCasterComponent.cpp">
-      <Filter>소스 파일</Filter>
+    <ClCompile Include="src\ShadowCasterComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

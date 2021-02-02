@@ -49,6 +49,7 @@ struct InstanceData
     uint materialIndex;
     uint environmentMapIndex;
     uint2 padding;
+    float4x3 padding2;
 };
 
 StructuredBuffer<InstanceData> objectInfo : register(t0);
@@ -65,6 +66,7 @@ SamplerState gsamLinearWrap : register(s2);
 SamplerState gsamLinearClamp : register(s3);
 SamplerState gsamAnisotoropicWrap : register(s4);
 SamplerState gsamAnisotoropicClamp : register(s5);
-
+SamplerComparisonState gsamAnisotoropicCompClamp : register(s6);
+SamplerComparisonState gsamLinerCompClamp : register(s7);
 
 #endif

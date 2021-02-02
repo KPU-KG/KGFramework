@@ -53,7 +53,7 @@ KGRenderJob* KG::Renderer::KGRenderEngine::GetRenderJob( Shader* shader, Geometr
 }
 
 void KG::Renderer::KGRenderEngine::Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType,
-	ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera )
+	ID3D12GraphicsCommandList* cmdList)
 {
 	for ( KGRenderJob* job : this->group[group] )
 	{
@@ -154,6 +154,7 @@ void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelT
 
 	this->geometry->Render( cmdList, this->visibleSize );
 }
+
 
 bool KG::Renderer::KGRenderJob::ShaderCompare( const KGRenderJob& a, const KGRenderJob& b )
 {

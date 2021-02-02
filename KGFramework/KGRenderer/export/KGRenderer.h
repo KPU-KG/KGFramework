@@ -34,6 +34,7 @@ namespace KG::Renderer
 		size_t width;
 		size_t height;
 		bool useCubeRender = false;
+		bool useGSCubeRender = false;
 		bool useRenderTarget = true;
 		bool useDeferredRender = true;
 		bool useDepthStencilBuffer = true;
@@ -102,6 +103,7 @@ namespace KG::Renderer
 		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() = 0;
 		virtual KG::Component::LightComponent* GetNewLightComponent() = 0;
 		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() = 0;
+		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() = 0;
 		virtual KG::Component::AnimationStreamerComponent* GetNewBoneAnimationStreamComponent( const KG::Utill::HashString& id, UINT index = 0 ) = 0;
 		virtual KG::Core::GameObject* LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials ) = 0;
 

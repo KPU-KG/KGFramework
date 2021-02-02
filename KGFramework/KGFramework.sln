@@ -55,7 +55,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ETC", "ETC", "{CC3BB28C-12D
 	ProjectSection(SolutionItems) = preProject
 		Resource\Resource\ShaderScript\Light_Ambient.hlsl = Resource\Resource\ShaderScript\Light_Ambient.hlsl
 		Resource\Resource\ShaderScript\Light_Directional.hlsl = Resource\Resource\ShaderScript\Light_Directional.hlsl
-		Resource\Resource\ShaderScript\Light_MeshVolume.hlsl = Resource\Resource\ShaderScript\Light_MeshVolume.hlsl
+		Resource\Resource\ShaderScript\Light_Point.hlsl = Resource\Resource\ShaderScript\Light_Point.hlsl
+		Resource\Resource\ShaderScript\Light_Spot.hlsl = Resource\Resource\ShaderScript\Light_Spot.hlsl
 		Resource\Resource\ShaderScript\SkyBox_Default.hlsl = Resource\Resource\ShaderScript\SkyBox_Default.hlsl
 		Resource\Resource\ShaderScript\Utill_LIghtCustom.hlsl = Resource\Resource\ShaderScript\Utill_LIghtCustom.hlsl
 		Resource\Resource\ShaderScript\Utill_ShaderSelector.hlsl = Resource\Resource\ShaderScript\Utill_ShaderSelector.hlsl
@@ -72,6 +73,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Define", "Define", "{43F920
 	ProjectSection(SolutionItems) = preProject
 		Resource\Resource\ShaderScript\Define_GBuffer.hlsl = Resource\Resource\ShaderScript\Define_GBuffer.hlsl
 		Resource\Resource\ShaderScript\Define_Global.hlsl = Resource\Resource\ShaderScript\Define_Global.hlsl
+		Resource\Resource\ShaderScript\Define_GSCamera.hlsl = Resource\Resource\ShaderScript\Define_GSCamera.hlsl
 		Resource\Resource\ShaderScript\Define_Light.hlsl = Resource\Resource\ShaderScript\Define_Light.hlsl
 		Resource\Resource\ShaderScript\Define_NormalCamera.hlsl = Resource\Resource\ShaderScript\Define_NormalCamera.hlsl
 	EndProjectSection

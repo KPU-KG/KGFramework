@@ -1,7 +1,7 @@
-#line 1 "C:\\Users\\aksgh\\OneDrive - 한국산업기술대학교\\Graduation\\KGFramework\\Resource\\Resource\\ShaderScript\\Surface_DefaultPBR.hlsl"
 
 
-#line 1 "Define_Global.hlsl"
+
+
 
 
 
@@ -53,6 +53,7 @@ struct InstanceData
     uint materialIndex ; 
     uint environmentMapIndex ; 
     uint2 padding ; 
+    float4x3 padding2 ; 
 } ; 
 
 StructuredBuffer < InstanceData > objectInfo : register ( t0 ) ; 
@@ -69,30 +70,31 @@ SamplerState gsamLinearWrap : register ( s2 ) ;
 SamplerState gsamLinearClamp : register ( s3 ) ; 
 SamplerState gsamAnisotoropicWrap : register ( s4 ) ; 
 SamplerState gsamAnisotoropicClamp : register ( s5 ) ; 
-
-#line 70
-
-
-
-#line 2 "C:\\Users\\aksgh\\OneDrive - 한국산업기술대학교\\Graduation\\KGFramework\\Resource\\Resource\\ShaderScript\\Surface_DefaultPBR.hlsl"
-
-
-#line 1 "Utill_ShaderSelector.hlsl"
+SamplerComparisonState gsamAnisotoropicCompClamp : register ( s6 ) ; 
+SamplerComparisonState gsamLinerCompClamp : register ( s7 ) ; 
 
 
 
 
-#line 1 "Geometry_Default.hlsl"
-
-
-#line 70 "Define_Global.hlsl"
 
 
 
-#line 2 "Geometry_Default.hlsl"
 
 
-#line 1 "Define_NormalCamera.hlsl"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -114,22 +116,22 @@ cbuffer CameraData : register ( b0 )
 
 
 
-#line 20
-
-
-#line 6 "Geometry_Default.hlsl"
 
 
 
 
-#line 1 "Mesh_Skinned.hlsl"
-
-
-#line 70 "Define_Global.hlsl"
 
 
 
-#line 3 "Mesh_Skinned.hlsl"
+
+
+
+
+
+
+
+
+
 StructuredBuffer < float4x4 > boneOffsetInfo : register ( t0 , space3 ) ; 
 StructuredBuffer < float4x4 > animationTransformInfo : register ( t1 , space3 ) ; 
 
@@ -149,7 +151,7 @@ float4x4 GetWorldMatrix ( uint instanceID , VertexData vertex )
     return animationMatrix ; 
 } 
 
-#line 9 "Geometry_Default.hlsl"
+
 
 
 SurfaceInput VertexShaderFuction ( VertexData input , uint InstanceID : SV_InstanceID ) 
@@ -167,41 +169,41 @@ SurfaceInput VertexShaderFuction ( VertexData input , uint InstanceID : SV_Insta
     return result ; 
 } 
 
-#line 4 "Utill_ShaderSelector.hlsl"
-
-
-#line 8
-
-
-#line 12
-
-
-#line 16
 
 
 
 
 
-#line 1 "Pixel_Default.hlsl"
-
-
-#line 70 "Define_Global.hlsl"
-
-
-
-#line 2 "Pixel_Default.hlsl"
-
-
-#line 1 "Define_GBuffer.hlsl"
 
 
 
 
-#line 70 "Define_Global.hlsl"
 
 
 
-#line 4 "Define_GBuffer.hlsl"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 struct GBufferOut 
 { 
     float4 gbuffer0 : SV_Target0 ; 
@@ -224,7 +226,7 @@ float3 UNORMTOSNORM ( float3 normal )
     return normal ; 
 } 
 
-#line 28
+
 float2 OctWrap ( float2 v ) 
 { 
     return ( 1.0 - abs ( v . yx ) ) * ( v . xy >= 0.0 ? 1.0 : - 1.0 ) ; 
@@ -242,14 +244,14 @@ float3 DecodeNormal ( float2 f )
 { 
     f = f * 2.0 - 1.0 ; 
     
-#line 46
+
     float3 n = float3 ( f . x , f . y , 1.0 - abs ( f . x ) - abs ( f . y ) ) ; 
     float t = saturate ( - n . z ) ; 
     n . xy += n . xy >= 0.0 ? - t : t ; 
     return normalize ( n ) ; 
 } 
 
-#line 53
+
 GBufferOut PixelEncode ( Surface surface ) 
 { 
     GBufferOut result ; 
@@ -280,7 +282,7 @@ Surface PixelDecode ( float4 gbuffer0 , float4 gbuffer1 , float4 gbuffer2 , uint
     result . roughness = gbuffer1 . z ; 
     result . emssion = gbuffer1 . w ; 
     
-#line 84
+
     result . wNormal = normalize ( DecodeNormal ( gbuffer2 . xy ) ) ; 
     
     result . environmentMap = gbuffer3 . x ; 
@@ -291,7 +293,7 @@ Surface PixelDecode ( float4 gbuffer0 , float4 gbuffer1 , float4 gbuffer2 , uint
 
 
 
-#line 4 "Pixel_Default.hlsl"
+
 GBufferOut PixelShaderFuction ( SurfaceInput input ) 
 { 
     Surface surface = UserSurfaceFunction ( input ) ; 
@@ -299,14 +301,17 @@ GBufferOut PixelShaderFuction ( SurfaceInput input )
     return bufferResult ; 
 } 
 
-#line 20 "Utill_ShaderSelector.hlsl"
-
-
-#line 23
 
 
 
-#line 6 "C:\\Users\\aksgh\\OneDrive - 한국산업기술대학교\\Graduation\\KGFramework\\Resource\\Resource\\ShaderScript\\Surface_DefaultPBR.hlsl"
+
+
+
+
+
+
+
+
 struct MaterialData 
 { 
     uint ColorTextureIndex ; 
@@ -318,10 +323,10 @@ struct MaterialData
     float pad ; 
 } ; 
 
-#line 18
+
 StructuredBuffer < MaterialData > materialData : register ( t1 ) ; 
 
-#line 21
+
 Surface UserSurfaceFunction ( SurfaceInput input ) 
 { 
     Surface result ; 

@@ -126,3 +126,14 @@ void KG::System::AnimationStreamSystem::OnPreRender()
 {
 }
 
+void KG::System::ShadowCasterSystem::OnUpdate( float elapsedTime )
+{
+}
+
+void KG::System::ShadowCasterSystem::OnPostUpdate( float elapsedTime )
+{
+}
+
+void KG::System::ShadowCasterSystem::OnPreRender()
+{
+}

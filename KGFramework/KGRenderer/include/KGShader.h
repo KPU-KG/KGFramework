@@ -60,7 +60,7 @@ namespace KG::Renderer
 		GeometricCubeMapDeferred = 2,
 		Light = 3,
 		Shadow = 4,
-		GeometricShadow = 5,
+		GSCubeShadow = 5,
 		Forward = 6,
 		Transparent = 7,
 		SkyBox = 8,
@@ -97,7 +97,7 @@ namespace KG::Renderer
 		case KG::Renderer::ShaderPixelType::GeometricCubeMapDeferred: return "PIXEL_GEOMETRIC_DEFERRED";
 		case KG::Renderer::ShaderPixelType::Light: return "PIXEL_LIGHT";
 		case KG::Renderer::ShaderPixelType::Shadow: return "PIXEL_SHADOW";
-		case KG::Renderer::ShaderPixelType::GeometricShadow: return "PIXEL_GEOMETRIC_SHADOW";
+		case KG::Renderer::ShaderPixelType::GSCubeShadow: return "PIXEL_GSCUBE_SHADOW";
 		case KG::Renderer::ShaderPixelType::Forward: return "PIXEL_FORWARD";
 		case KG::Renderer::ShaderPixelType::Transparent: return "PIXEL_TRANSPARENT";
 		case KG::Renderer::ShaderPixelType::SkyBox: return "PIXEL_SKYBOX";

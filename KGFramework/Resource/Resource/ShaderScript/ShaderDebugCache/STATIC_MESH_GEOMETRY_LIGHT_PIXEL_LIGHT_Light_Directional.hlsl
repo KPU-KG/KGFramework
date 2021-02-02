@@ -1,7 +1,7 @@
-#line 1 "C:\\Users\\aksgh\\OneDrive - 한국산업기술대학교\\Graduation\\KGFramework\\Resource\\Resource\\ShaderScript\\Light_Directional.hlsl"
 
 
-#line 1 "Define_Global.hlsl"
+
+
 
 
 
@@ -53,6 +53,7 @@ struct InstanceData
     uint materialIndex ; 
     uint environmentMapIndex ; 
     uint2 padding ; 
+    float4x3 padding2 ; 
 } ; 
 
 StructuredBuffer < InstanceData > objectInfo : register ( t0 ) ; 
@@ -69,15 +70,16 @@ SamplerState gsamLinearWrap : register ( s2 ) ;
 SamplerState gsamLinearClamp : register ( s3 ) ; 
 SamplerState gsamAnisotoropicWrap : register ( s4 ) ; 
 SamplerState gsamAnisotoropicClamp : register ( s5 ) ; 
-
-#line 70
-
-
-
-#line 2 "C:\\Users\\aksgh\\OneDrive - 한국산업기술대학교\\Graduation\\KGFramework\\Resource\\Resource\\ShaderScript\\Light_Directional.hlsl"
+SamplerComparisonState gsamAnisotoropicCompClamp : register ( s6 ) ; 
+SamplerComparisonState gsamLinerCompClamp : register ( s7 ) ; 
 
 
-#line 1 "Define_NormalCamera.hlsl"
+
+
+
+
+
+
 
 
 
@@ -99,13 +101,13 @@ cbuffer CameraData : register ( b0 )
 
 
 
-#line 20
 
 
-#line 3 "C:\\Users\\aksgh\\OneDrive - 한국산업기술대학교\\Graduation\\KGFramework\\Resource\\Resource\\ShaderScript\\Light_Directional.hlsl"
 
 
-#line 1 "Define_Light.hlsl"
+
+
+
 
 
 
@@ -119,7 +121,7 @@ struct LightData
     float SpotPower ; 
     uint shadowMapIndex ; 
     float3 padding0 ; 
-    float4 padding1 ; 
+    float4x4 shadowMatrix ; 
 } ; 
 
 StructuredBuffer < LightData > lightInfo : register ( t0 ) ; 
@@ -149,35 +151,35 @@ float2 ProjPositionToUV ( float2 projPosition )
 
 
 
-#line 42
-
-
-#line 4 "C:\\Users\\aksgh\\OneDrive - 한국산업기술대학교\\Graduation\\KGFramework\\Resource\\Resource\\ShaderScript\\Light_Directional.hlsl"
-
-
-#line 1 "Utill_LightCustom.hlsl"
 
 
 
 
 
-#line 70 "Define_Global.hlsl"
-
-
-
-#line 5 "Utill_LightCustom.hlsl"
-
-
-#line 1 "Define_GBuffer.hlsl"
 
 
 
 
-#line 70 "Define_Global.hlsl"
 
 
 
-#line 4 "Define_GBuffer.hlsl"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 struct GBufferOut 
 { 
     float4 gbuffer0 : SV_Target0 ; 
@@ -200,7 +202,7 @@ float3 UNORMTOSNORM ( float3 normal )
     return normal ; 
 } 
 
-#line 28
+
 float2 OctWrap ( float2 v ) 
 { 
     return ( 1.0 - abs ( v . yx ) ) * ( v . xy >= 0.0 ? 1.0 : - 1.0 ) ; 
@@ -218,14 +220,14 @@ float3 DecodeNormal ( float2 f )
 { 
     f = f * 2.0 - 1.0 ; 
     
-#line 46
+
     float3 n = float3 ( f . x , f . y , 1.0 - abs ( f . x ) - abs ( f . y ) ) ; 
     float t = saturate ( - n . z ) ; 
     n . xy += n . xy >= 0.0 ? - t : t ; 
     return normalize ( n ) ; 
 } 
 
-#line 53
+
 GBufferOut PixelEncode ( Surface surface ) 
 { 
     GBufferOut result ; 
@@ -256,7 +258,7 @@ Surface PixelDecode ( float4 gbuffer0 , float4 gbuffer1 , float4 gbuffer2 , uint
     result . roughness = gbuffer1 . z ; 
     result . emssion = gbuffer1 . w ; 
     
-#line 84
+
     result . wNormal = normalize ( DecodeNormal ( gbuffer2 . xy ) ) ; 
     
     result . environmentMap = gbuffer3 . x ; 
@@ -267,16 +269,16 @@ Surface PixelDecode ( float4 gbuffer0 , float4 gbuffer1 , float4 gbuffer2 , uint
 
 
 
-#line 6 "Utill_LightCustom.hlsl"
 
 
-#line 42 "Define_Light.hlsl"
 
 
-#line 42
 
 
-#line 8 "Utill_LightCustom.hlsl"
+
+
+
+
 
 
 float CalcAttenuation ( float distance , float falloffStart , float falloffEnd ) 
@@ -286,7 +288,7 @@ float CalcAttenuation ( float distance , float falloffStart , float falloffEnd )
     return pow ( saturate ( 1 - pow ( d / r , 2 ) ) , 2 ) ; 
 } 
 
-#line 19
+
 float ndfGGX ( float cosLh , float roughness ) 
 { 
     float alpha = roughness * roughness ; 
@@ -296,13 +298,13 @@ float ndfGGX ( float cosLh , float roughness )
     return alphaSq / ( 3.14159265359 * denom * denom ) ; 
 } 
 
-#line 29
+
 float gaSchlickG1 ( float cosTheta , float k ) 
 { 
     return cosTheta / ( cosTheta * ( 1.0 - k ) + k ) ; 
 } 
 
-#line 35
+
 float gaSchlickGGX ( float cosLi , float cosLo , float roughness ) 
 { 
     float r = roughness + 1.0 ; 
@@ -310,7 +312,7 @@ float gaSchlickGGX ( float cosLi , float cosLo , float roughness )
     return gaSchlickG1 ( cosLi , k ) * gaSchlickG1 ( cosLo , k ) ; 
 } 
 
-#line 43
+
 float3 fresnelSchlick ( float3 F0 , float cosTheta ) 
 { 
     return F0 + ( 1.0 - F0 ) * pow ( 1.0 - cosTheta , 5.0 ) ; 
@@ -331,22 +333,22 @@ float4 CustomLightCalculator ( LightData light , Surface info , float3 lightDir 
     float Fdielectric = 0.04f ; 
     float3 F0 = lerp ( Fdielectric . xxx , info . albedo . xyz , info . metalic . xxx ) ; 
     
-#line 64
+
     float3 F = fresnelSchlick ( F0 , VDotH ) ; 
     float D = ndfGGX ( NDotH , info . roughness ) ; 
     float G = gaSchlickGGX ( NDotL , NDotV , info . roughness ) ; 
     
     float3 kd = lerp ( float3 ( 1 , 1 , 1 ) - F , float3 ( 0.0f , 0.0f , 0.0f ) , info . metalic . xxx ) ; 
     
-#line 71
+
     float3 diffuseBRDF = kd * info . albedo ; 
     
-#line 74
+
     float3 specularBRDF = ( F * D * G ) / max ( 0.00001f , 4.0f * NDotL * NDotV ) ; 
     
     return float4 ( ( diffuseBRDF + specularBRDF ) * NDotL * light . Strength * atten , 1.0f ) ; 
     
-#line 100
+
 } 
 
 float4 CustomAmbientLightCalculator ( LightData light , Surface info , float3 lightDir , float3 cameraDir , float atten ) 
@@ -377,10 +379,10 @@ float4 CustomAmbientLightCalculator ( LightData light , Surface info , float3 li
 
 
 
-#line 128
 
 
-#line 6 "C:\\Users\\aksgh\\OneDrive - 한국산업기술대학교\\Graduation\\KGFramework\\Resource\\Resource\\ShaderScript\\Light_Directional.hlsl"
+
+
 struct LightVertexOut 
 { 
     float4 position : SV_Position ; 
@@ -408,7 +410,7 @@ float4 PixelShaderFuction ( LightVertexOut input ) : SV_Target0
     InputGBuffer3 . Sample ( gsamPointWrap , uv ) 
     ) ; 
     
-#line 34
+
     float depth = InputGBuffer4 . Sample ( gsamPointWrap , uv ) . x ; 
     
     LightData lightData = lightInfo [ input . InstanceID ] ; 

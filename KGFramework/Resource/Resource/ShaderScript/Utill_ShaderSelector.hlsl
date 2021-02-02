@@ -18,6 +18,9 @@
 #ifdef PIXEL_NORMAR_DEFERRED
 #include "Pixel_Default.hlsl"
 #endif
+#ifdef GEOMETRY_CUBE_SHADOW
+#include "Pixel_GSShadow.hlsl"
+#endif
 #ifdef PIXEL_GREEN_WIREFRAME
 #include "Pixel_WireFrame.hlsl"
 #endif

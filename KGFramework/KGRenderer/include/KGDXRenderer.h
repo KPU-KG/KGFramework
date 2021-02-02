@@ -77,11 +77,12 @@ namespace KG::Renderer
 		virtual void Render() override;
 		virtual void CubeCaemraRender();
 		virtual void NormalCameraRender();
-		virtual void OpaqueRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
-		virtual void TransparentRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
-		virtual void LightPassRender( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
-		virtual void SkyBoxRender( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
-		virtual void PassRenderEnd( ID3D12GraphicsCommandList* cmdList, KG::Component::CameraComponent& camera );
+		virtual void ShadowMapRender();
+		virtual void OpaqueRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex );
+		virtual void TransparentRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex );
+		virtual void LightPassRender( ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex );
+		virtual void SkyBoxRender( ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex );
+		virtual void PassRenderEnd( ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex );
 
 		virtual void Update(float elapsedTime) override;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) override;
@@ -95,6 +96,7 @@ namespace KG::Renderer
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() override;
 		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() override;
 		virtual KG::Component::LightComponent* GetNewLightComponent() override;
+		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() override;
 		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() override;
 		virtual KG::Component::AnimationStreamerComponent* GetNewBoneAnimationStreamComponent( const KG::Utill::HashString& id, UINT index = 0 ) override;
 		virtual KG::Core::GameObject* LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials ) override;

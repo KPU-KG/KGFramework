@@ -20,6 +20,9 @@ namespace KG::Component
 		float FalloffEnd;
 		DirectX::XMFLOAT3 Position;
 		float SpotPower;
+		UINT shadowMapIndex;
+		DirectX::XMFLOAT3 pad1;
+		DirectX::XMFLOAT4X4 shadowMatrix;
 	};
 
 	struct PointLightRef
@@ -43,12 +46,20 @@ namespace KG::Component
 		};
 	};
 
+	enum class LightType
+	{
+		DirectionalLight,
+		PointLight,
+		SpotLight
+	};
+
 	class DLL LightComponent : public IRenderComponent
 	{
 		KG::Renderer::KGRenderJob* renderJob = nullptr;
 		TransformComponent* transform = nullptr;
 		void SetRenderJob( KG::Renderer::KGRenderJob* renderJob );
 		bool isDirty = true;
+		LightType lightType = LightType::DirectionalLight;
 		LightData light;
 		KG::Renderer::Shader* currentShader = nullptr;
 		KG::Renderer::Geometry* currentGeometry = nullptr;
@@ -71,9 +82,13 @@ namespace KG::Component
 
 		void UpdateChanged();
 
+		void SetShadowCasterTextureIndex( UINT index );
+		void SetShadowMatrix( const DirectX::XMFLOAT4X4 matrix );
+
 		bool isVisible = true;
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;
 		virtual void OnPreRender() override;
+		auto GetLightType() const { return this->lightType; }
 		void SetVisible( bool visible );
 	};
 

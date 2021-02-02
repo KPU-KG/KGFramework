@@ -17,6 +17,7 @@ void KG::Component::LightComponent::RegisterTransform( TransformComponent* trans
 void KG::Component::LightComponent::SetDirectionalLight( const DirectX::XMFLOAT3& strength, const DirectX::XMFLOAT3& direction )
 {
 	isDirty = true;
+	this->lightType = LightType::DirectionalLight;
 	this->light.Direction = Math::Vector3::Normalize( direction );
 	this->light.Strength = strength;
 	if ( this->directionalLightShader == nullptr )
@@ -34,12 +35,13 @@ void KG::Component::LightComponent::SetDirectionalLight( const DirectX::XMFLOAT3
 void KG::Component::LightComponent::SetPointLight( const DirectX::XMFLOAT3& strength, float fallOffStart, float fallOffEnd )
 {
 	isDirty = true;
+	this->lightType = LightType::PointLight;
 	this->light.Strength = strength;
 	this->light.FalloffStart = fallOffStart;
 	this->light.FalloffEnd = fallOffEnd;
 	if ( this->pointLightShader == nullptr )
 	{
-		this->pointLightShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader( Utill::HashString( "MeshVolumeLight"_id ) );
+		this->pointLightShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader( Utill::HashString( "PointLight"_id ) );
 	}
 	if ( this->pointLightGeometry == nullptr )
 	{
@@ -77,6 +79,18 @@ void KG::Component::LightComponent::OnCreate( KG::Core::GameObject* gameObject )
 void KG::Component::LightComponent::OnRender( ID3D12GraphicsCommandList* commadList )
 {
 
+}
+
+void KG::Component::LightComponent::SetShadowCasterTextureIndex( UINT index )
+{
+	this->light.shadowMapIndex = index;
+}
+
+void KG::Component::LightComponent::SetShadowMatrix( const DirectX::XMFLOAT4X4 matrix )
+{
+	//포인트 : 투영행렬
+	//나머지 : viewProj
+	this->light.shadowMatrix = matrix;
 }
 
 void KG::Component::LightComponent::OnPreRender()

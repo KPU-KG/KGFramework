@@ -1,7 +1,13 @@
 #include "Define_Global.hlsl"
-#include "Geometry_GSShadow.hlsl"
 
-float4 PixelShaderFuction( ShadowGSOutput outStream ) : SV_TARGET
+struct ShadowPSInput
 {
-    return float4(0, 0, 0, 1);
+    float4 position : SV_Position;
+    uint renderIndex : SV_RenderTargetArrayIndex;
+};
+
+
+float4 PixelShaderFuction( ShadowPSInput outStream ) : SV_TARGET
+{
+    return float4(1, 1, 1, 1);
 }

@@ -23,7 +23,8 @@ struct ShadowGSOutput
 ShadowVSOutput VertexShaderFuction(VertexData input, uint InstanceID : SV_InstanceID)
 {
     ShadowVSOutput result;
-    result.position = mul(float4(input.position, 1.0f), objectInfo[InstanceID].world);
+    float4x4 world = GetWorldMatrix(InstanceID, input);
+    result.position = mul(float4(input.position, 1.0f), world);
     return result;
 }
 
@@ -33,10 +34,10 @@ void GeometryShaderFuction(triangle ShadowVSOutput inData[3], inout TriangleStre
     for (int index = 0; index < 6; ++index)
     {
         ShadowGSOutput output;
-        output.renderIndex = inData;
+        output.renderIndex = index;
         for (int v = 0; v < 3; v++)
         {
-            output.position = mul(inData[v].position, viewProjection[index]);
+            output.position = mul(inData[v].position, mul(view[index], projection));
             outStream.Append( output );
         }
         outStream.RestartStrip();

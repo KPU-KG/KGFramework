@@ -80,8 +80,8 @@ void KG::GameFramework::OnTestInit()
 	static KG::Core::GameObject testAmbientObject;
 	static KG::Core::GameObject testAnimationObject;
 
-	constexpr auto texOne = "PBRMetal"_id;
-	constexpr auto texTwo = "PBRMetal2"_id;
+	constexpr auto texOne = "PBRTile"_id;
+	constexpr auto texTwo = "PBRMetal"_id;
 	constexpr auto texThree = "PBRTile"_id;
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
@@ -217,6 +217,7 @@ void KG::GameFramework::OnTestInit()
 				auto* tran = this->system->transformSystem.GetNewComponent();
 				auto* light = this->renderer->GetNewLightComponent();
 				auto* lam = this->system->lambdaSystem.GetNewComponent();
+				auto* sdw = this->renderer->GetNewShadowCasterComponent();
 				static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
 					[light]( KG::Core::GameObject* gameObject, float elapsedTime )
 					{
@@ -240,10 +241,11 @@ void KG::GameFramework::OnTestInit()
 
 				auto color = Math::RandomColor();
 
-				light->SetPointLight( DirectX::XMFLOAT3( color.x, color.y, color.z ), 0.1f, 1.0f );
+				light->SetPointLight( DirectX::XMFLOAT3( color.x, color.y, color.z ), 0.1f, 5.0f );
 
 				testPointLightObjects[index].AddComponent( tran );
 				testPointLightObjects[index].AddComponent( light );
+				testPointLightObjects[index].AddComponent( sdw );
 				testPointLightObjects[index].AddComponent( lam );
 				testPointLightObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
 

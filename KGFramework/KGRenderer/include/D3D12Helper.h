@@ -96,6 +96,13 @@ namespace KG::Renderer
 		DXGI_FORMAT format = DXGI_FORMAT_R24G8_TYPELESS
 	);
 
+	ID3D12Resource* CreateCubeDepthStencilResource(
+		ID3D12Device* pd3dDevice,
+		size_t width,
+		size_t height,
+		DXGI_FORMAT format = DXGI_FORMAT_R24G8_TYPELESS
+	);
+
 
 	ID3D12Resource* CreateUploadHeapBuffer(ID3D12Device* device, size_t bufferSize);
 };

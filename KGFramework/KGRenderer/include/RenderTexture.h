@@ -77,6 +77,8 @@ namespace KG::Renderer
 
 		void ClearGBuffer( ID3D12GraphicsCommandList* cmdList, float r, float g, float b, float a );
 
+		bool isCubeDepth();
+
 		void Release();
 	};
 

@@ -11,7 +11,7 @@ struct LightData
     float SpotPower;
     uint shadowMapIndex;
     float3 padding0;
-    float4 padding1;
+    float4x4 shadowMatrix;
 };
 
 StructuredBuffer<LightData> lightInfo : register(t0);

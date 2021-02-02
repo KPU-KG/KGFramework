@@ -14,6 +14,7 @@ namespace KG::Renderer
 				UINT environmentMapIndex;
 				UINT pad1;
 				UINT pad2;
+				XMFLOAT4X3 pad3;
 			} object;
 			struct light
 			{
@@ -25,7 +26,7 @@ namespace KG::Renderer
 				float SpotPower;
 				UINT shadowMapIndex;
 				XMFLOAT3 pad1;
-				XMFLOAT4 pad2;
+				XMFLOAT4X4 shadowMatrix;
 			} light;
 		};
 	};

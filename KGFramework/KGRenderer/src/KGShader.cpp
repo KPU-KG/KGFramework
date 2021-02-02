@@ -48,6 +48,10 @@ D3D12_RASTERIZER_DESC KG::Renderer::Shader::CreateRasterizerState( ShaderMeshTyp
 		d3dRasterizerDesc.CullMode = this->shaderSetData.enableCullBackface ? D3D12_CULL_MODE_BACK : D3D12_CULL_MODE_NONE;
 		d3dRasterizerDesc.DepthClipEnable = this->shaderSetData.enableDepthCliping;
 	}
+	if ( pixType == ShaderPixelType::GSCubeShadow )
+	{
+		d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
+	}
 	d3dRasterizerDesc.FrontCounterClockwise = false;
 	d3dRasterizerDesc.DepthBias = 0;
 	d3dRasterizerDesc.DepthBiasClamp = 0.0f;
@@ -64,7 +68,7 @@ D3D12_BLEND_DESC KG::Renderer::Shader::CreateBlendState( ShaderMeshType meshType
 	D3D12_BLEND_DESC d3dBlendDesc;
 	ZeroDesc( d3dBlendDesc );
 
-	if ( pixType == ShaderPixelType::Deferred || pixType == ShaderPixelType::SkyBox )
+	if ( pixType == ShaderPixelType::Deferred || pixType == ShaderPixelType::SkyBox || pixType == ShaderPixelType::GSCubeShadow )
 	{
 		d3dBlendDesc.AlphaToCoverageEnable = false;
 		d3dBlendDesc.IndependentBlendEnable = false;
@@ -124,6 +128,7 @@ D3D12_DEPTH_STENCIL_DESC KG::Renderer::Shader::CreateDepthStencilState( ShaderMe
 
 	switch ( pixType )
 	{
+	case ShaderPixelType::GSCubeShadow:
 	case ShaderPixelType::Deferred:
 	{
 		d3dDepthStencilDesc.DepthEnable = true;
@@ -232,6 +237,15 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata( ShaderTarget shader
 		std::string newPath = "Resource/ShaderScript/ShaderDebugCache/" + FileName;
 		std::string newSource{ (char*)shaderPreProcBlob->GetBufferPointer() , shaderPreProcBlob->GetBufferSize() };
 
+		while ( true )
+		{
+			size_t start= newSource.find( '#' );
+			if ( start == std::string::npos )
+				break;
+			size_t end = newSource.find( '\n', start );
+			newSource.erase( start, end - start );
+		}
+
 		std::ofstream newFile( newPath, std::ios::trunc );
 		newFile.write( newSource.c_str(), newSource.size() );
 		newFile.close();
@@ -334,7 +348,7 @@ ID3D12PipelineState* KG::Renderer::Shader::CreatePSO( ShaderMeshType meshType, S
 	}
 
 	//GS
-	if ( geoType == ShaderGeometryType::GeometryCubeMap || tessel == ShaderTesselation::TesselationMesh )
+	if ( geoType == ShaderGeometryType::GeometryCubeMap || geoType == ShaderGeometryType::GSCubeShadow || tessel == ShaderTesselation::TesselationMesh )
 	{
 		geometryShader = CompileShaderFromMetadata( ShaderTarget::GS_5_1, meshType, pixType, geoType );
 		D3D12_SHADER_BYTECODE byteCode;
@@ -381,7 +395,14 @@ ID3D12PipelineState* KG::Renderer::Shader::CreatePSO( ShaderMeshType meshType, S
 	}
 	else if ( geoType == ShaderGeometryType::GSCubeShadow )
 	{
-		d3dPipelineStateDesc.NumRenderTargets = 0;
+		d3dPipelineStateDesc.NumRenderTargets = 6;
+		d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+		d3dPipelineStateDesc.RTVFormats[1] = d3dPipelineStateDesc.RTVFormats[0];
+		d3dPipelineStateDesc.RTVFormats[2] = d3dPipelineStateDesc.RTVFormats[0];
+		d3dPipelineStateDesc.RTVFormats[3] = d3dPipelineStateDesc.RTVFormats[0];
+		d3dPipelineStateDesc.RTVFormats[4] = d3dPipelineStateDesc.RTVFormats[0];
+		d3dPipelineStateDesc.RTVFormats[5] = d3dPipelineStateDesc.RTVFormats[0];
+
 	}
 	else
 	{
