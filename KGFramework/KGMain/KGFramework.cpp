@@ -334,6 +334,7 @@ void KG::GameFramework::OnTestInit()
 		ctrl->RegisterAnimation(KG::Utill::HashString("soldier_standing"_id));
 
 		ctrl->SetAnimation(KG::Utill::HashString("soldier_sprint_forward"_id));
+		ctrl->SetDefaultAnimation(KG::Utill::HashString("soldier_standing"_id));
 		ptr->AddComponent(ctrl);
 		
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
@@ -345,15 +346,25 @@ void KG::GameFramework::OnTestInit()
 				auto input = InputManager::GetInputManager();
 				if (input->IsTouching('1')) 
 				{
-					ctrl->SetAnimation(KG::Utill::HashString("soldier_sprint_forward"_id));
+					// -1 : 무한 루프
+					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_sprint_forward"_id), 0.1f, -1);
 				}
 				if (input->IsTouching('2'))
 				{
-					ctrl->SetAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 0.1f, -1);
 				}
 				if (input->IsTouching('3'))
 				{
-					ctrl->SetAnimation(KG::Utill::HashString("soldier_standing"_id));
+					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_standing"_id), 0.1f, -1);
+				}
+				if (input->IsTouching('4')) 
+				{
+					ctrl->SetAnimation(KG::Utill::HashString("soldier_standing"_id), 2);
+					int idx = ctrl->AddNextAnimation(KG::Utill::HashString("soldier_standing"_id), 2, 1);
+					ctrl->BlendingAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 2, idx);
+					idx = ctrl->AddNextAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 2, 1);
+					ctrl->BlendingAnimation(KG::Utill::HashString("soldier_sprint_forward"_id), 2, idx);
+					idx = ctrl->AddNextAnimation(KG::Utill::HashString("soldier_sprint_forward"_id), 2);
 				}
 			}
 		);

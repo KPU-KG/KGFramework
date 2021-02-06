@@ -44,7 +44,7 @@ namespace KG::Renderer
 		virtual ~Geometry();
 	protected:
 		std::vector<NormalVertex> vertices;
-		std::vector<UINT> indices;
+		std::vector<UINT> index;
 		std::vector<KG::Utill::HashString> boneIds;
 		KG::Resource::BoneData bones;
 		bool hasBone = false;

@@ -64,7 +64,7 @@ void KG::Renderer::Geometry::Render( ID3D12GraphicsCommandList* commandList, UIN
 	if ( this->indexBuffer )
 	{
 		commandList->IASetIndexBuffer( &this->indexBufferView );
-		commandList->DrawIndexedInstanced( this->indices.size(), nInstance, 0, 0, 0 );
+		commandList->DrawIndexedInstanced( this->index.size(), nInstance, 0, 0, 0 );
 	}
 	else
 	{
@@ -83,11 +83,11 @@ void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandLi
 	this->vertexBufferView.StrideInBytes = sizeof( NormalVertex );
 	this->vertexBufferView.SizeInBytes = sizeof( NormalVertex ) * this->vertices.size();
 
-	this->indexBuffer = CreateBufferResource( device, commandList, (void*)this->indices.data(), this->indices.size() * sizeof( UINT ),
+	this->indexBuffer = CreateBufferResource( device, commandList, (void*)this->index.data(), this->index.size() * sizeof( UINT ),
 		D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_INDEX_BUFFER, &this->indexUploadBuffer );
 
 	this->indexBufferView.BufferLocation = this->indexBuffer->GetGPUVirtualAddress();
-	this->indexBufferView.SizeInBytes = sizeof( UINT ) * this->indices.size();
+	this->indexBufferView.SizeInBytes = sizeof( UINT ) * this->index.size();
 	this->indexBufferView.Format = DXGI_FORMAT_R32_UINT;
 
 	if ( this->hasBone )
@@ -99,7 +99,7 @@ void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandLi
 
 void KG::Renderer::Geometry::CreateFromMeshData( const KG::Utill::MeshData& data )
 {
-	this->indices = std::move( data.indices );
+	this->index = std::move( data.indices );
 	this->vertices.resize( data.positions.size() );
 	for ( size_t i = 0; i < data.positions.size(); i++ )
 	{

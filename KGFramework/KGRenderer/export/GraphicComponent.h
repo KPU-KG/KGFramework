@@ -2,6 +2,7 @@
 #include <d3d12.h>
 #include <vector>
 #include <array>
+#include <queue>
 #include <DirectXMath.h>
 #include "IComponent.h"
 
@@ -276,55 +277,49 @@ namespace KG::Component
 		void InitializeBone( KG::Core::GameObject* rootNode );
 	};
 
-	// class DLL AnimationStreamerComponent : public IRenderComponent
-	// {
-	// 	using FrameCacheVector = std::vector<KG::Core::GameObject*>;
-	// protected:
-	// 	KG::Utill::HashString ctrlId;
-	// 	KG::Utill::AnimationSet* anim = nullptr;
-	// 	KG::Component::GeometryComponent* geometry = nullptr;
-	// 	std::vector<FrameCacheVector> frameCache;
-	// 	float timer = 0.0f;
-	// 	float duration = 0.0f;
-	// 	virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
-	// 	void MatchNode();
-	// public:
-	// 	virtual void Update( float timeElapsed ) override;
-	// 	void InitializeAnimation( const KG::Utill::HashString& animationId, UINT animationIndex = 0);
-	// 	void GetDuration();
-	// 	KG::Utill::HashString GetAnimationId() const;
-	// 
-	// };
-
 	struct Animation {
 	private:
 		void MatchNode(KG::Core::GameObject* gameObject);
 		void SetDuration(KG::Utill::AnimationSet* anim);
 	public:
-		// KG::Utill::AnimationSet* animationSet = nullptr;
 		KG::Utill::HashString animationId;
 		std::vector<std::vector<KG::Core::GameObject*>> frameCache;
 		float timer = 0.0f;
 		float duration = 0.0f;
-		bool isPlaying = false;
 		void Initialize(KG::Core::GameObject* gameObject);
+	};
+
+	struct AnimationCommand {
+		std::vector<int> index;
+		float duration = 0.1f;
+		float time = 0.0f;
+		float speed = 0.5f;
 	};
 
 	class DLL AnimationContollerComponent : public IRenderComponent
 	{
 	protected:
 		std::vector<Animation> animations;
-		int curAnimation = -1;
-		float speed = 0.5f;
-		
+		// float speed = 0.5f;
+
+		AnimationCommand curAnimation;
+		std::vector<AnimationCommand> nextAnimations;
+
+		KG::Utill::HashString defaultAnimation;
+
 		int GetAnimationIndex(const KG::Utill::HashString& animationId);
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 		virtual void OnDestroy() override;
 	public:
 		virtual void Update(float timeElapsed) override;
 		void RegisterAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U);
-		void SetAnimation(const KG::Utill::HashString& animationId);
-		void SetPlaySpeed(float spd);
+		// void SetPlaySpeed(float spd);
+		void SetDefaultAnimation(KG::Utill::HashString defaultAnim);
+		void SetAnimation(const KG::Utill::HashString& animationId, float duration = -1, float speed = 0.5f, bool clearNext = true);
+		void ChangeAnimation(const KG::Utill::HashString& animationId, float blendingDuration = 0.1f, float animationDuration = 0.5f, float speed = 0.5f);
+		int AddNextAnimation(const KG::Utill::HashString nextAnim, float duration = 0.1f, float speed = 0.5f);
+		void BlendingAnimation(const KG::Utill::HashString nextAnim, float duration = -1.f, int index = -1);
+
 	};
 
 	REGISTER_COMPONENT_ID( LightComponent );
@@ -334,7 +329,6 @@ namespace KG::Component
 	REGISTER_COMPONENT_ID( GeometryComponent );
 	REGISTER_COMPONENT_ID( MaterialComponent );
 	REGISTER_COMPONENT_ID( BoneTransformComponent );
-	// REGISTER_COMPONENT_ID( AnimationStreamerComponent );
 	REGISTER_COMPONENT_ID(AnimationContollerComponent);
 
 }

@@ -571,89 +571,6 @@ void KG::Component::BoneTransformComponent::InitializeBone( KG::Core::GameObject
 	}
 }
 
-/*
-void KG::Component::AnimationStreamerComponent::OnCreate( KG::Core::GameObject* gameObject )
-{
-	IRenderComponent::OnCreate( gameObject );
-	this->MatchNode();
-}
-
-void KG::Component::AnimationStreamerComponent::MatchNode()
-{
-	for ( auto& layer : this->anim->layers )
-	{
-		auto& cache = this->frameCache.emplace_back();
-		std::vector<KG::Utill::HashString> ids;
-		cache.resize( layer.nodeAnimations.size() );
-		for ( auto& n : layer.nodeAnimations )
-		{
-			ids.push_back( n.nodeId );
-		}
-		this->gameObject->MatchBoneToObject( ids, cache );
-	}
-}
-
-void KG::Component::AnimationStreamerComponent::Update( float elapsedTime )
-{
-	this->timer += elapsedTime * 0.5f;
-	if ( this->timer > this->duration ) this->timer -= this->duration;
-
-	//FileLogStreamNone( "--------------------------------------------" );
-	//FileLogStreamNone( "Animation One Loop" );
-	for ( size_t i = 0; i < this->anim->layers[0].nodeAnimations.size(); i++ )
-	{
-		if ( this->anim->layers[0].nodeAnimations[i].nodeId == KG::Utill::HashString( "RootNode"_id ) )
-		{
-			continue;
-		}
-		//FileLogStreamNone( this->anim->layers[0].nodeAnimations[i].nodeId.srcString );
-		auto tuple = GetAnimationTransform( this->anim->layers[0].nodeAnimations[i], this->timer, this->duration );
-		auto t = std::get<0>( tuple );
-		auto r = std::get<1>( tuple );
-		//FileLogStreamNone( "Quat : " << r );
-		//FileLogStreamNone( "Eualer : " << KG::Math::Quaternion::ToEuler( r, false ) );
-		auto s = std::get<2>( tuple );
-
-		//this->frameCache[0][i]->GetTransform()->SetPosition( t );
-		this->frameCache[0][i]->GetTransform()->SetRotation( r );
-		this->frameCache[0][i]->GetTransform()->SetScale( s );
-	}
-	//FileLogStreamNone( "--------------------------------------------" );
-}
-
-void KG::Component::AnimationStreamerComponent::InitializeAnimation( const KG::Utill::HashString& animationId, UINT animationIndex )
-{
-	auto* inst = KG::Resource::ResourceContainer::GetInstance();
-	this->anim = inst->LoadAnimation( animationId, animationIndex );
-	this->GetDuration();
-	ctrlId = animationId;
-}
-
-void KG::Component::AnimationStreamerComponent::GetDuration()
-{
-	for ( auto& a : this->anim->layers[0].nodeAnimations)
-	{
-		if ( !a.translation.x.empty() ) this->duration = std::max( this->duration, a.translation.x.back().keyTime );
-		if ( !a.translation.y.empty() ) this->duration = std::max( this->duration, a.translation.y.back().keyTime );
-		if ( !a.translation.z.empty() ) this->duration = std::max( this->duration, a.translation.z.back().keyTime );
-		if ( !a.rotation.x.empty() ) this->duration = std::max( this->duration, a.rotation.x.back().keyTime );
-		if ( !a.rotation.y.empty() ) this->duration = std::max( this->duration, a.rotation.y.back().keyTime );
-		if ( !a.rotation.z.empty() ) this->duration = std::max( this->duration, a.rotation.z.back().keyTime );
-		if ( !a.scale.x.empty() ) this->duration = std::max( this->duration, a.scale.x.back().keyTime );
-		if ( !a.scale.y.empty() ) this->duration = std::max( this->duration, a.scale.y.back().keyTime );
-		if ( !a.scale.z.empty() ) this->duration = std::max( this->duration, a.scale.z.back().keyTime );
-	}
-}
-
-KG::Utill::HashString KG::Component::AnimationStreamerComponent::GetAnimationId() const {
-	if (anim) {
-		return ctrlId;
-	}
-	else
-		return NULL;
-}
-*/
-
 //이퀄레인지 이상함
 static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float currentTime, float duration, float defaultValue = 0.0f)
 {
@@ -705,12 +622,23 @@ static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float curr
 	return value;
 }
 
+bool isVoidT = false;
+#define ANIMATION_STATE_PLAYING 0
+#define ANIMATION_STATE_CHANGING 1
+#define ANIMATION_STATE_BLENDING 2
+
 static std::tuple<XMFLOAT3, XMFLOAT4, XMFLOAT3> GetAnimationTransform(const KG::Utill::NodeAnimation& anim, float currentTime, float duration)
 {
 	XMFLOAT3 t = {};
-	t.x = GetTimeData(anim.translation.x, currentTime, duration);
-	t.y = GetTimeData(anim.translation.y, currentTime, duration);
-	t.z = GetTimeData(anim.translation.z, currentTime, duration);
+	if (anim.translation.x.size() <= 0 && anim.translation.y.size() <= 0 && anim.translation.z.size() <= 0) {
+		t = { 0,0,0 };
+		isVoidT = true;
+	}
+	else {
+		t.x = GetTimeData(anim.translation.x, currentTime, duration);
+		t.y = GetTimeData(anim.translation.y, currentTime, duration);
+		t.z = GetTimeData(anim.translation.z, currentTime, duration);
+	}
 	XMFLOAT3 r = {};
 	r.x = XMConvertToRadians(GetTimeData(anim.rotation.x, currentTime, duration));
 	r.y = XMConvertToRadians(GetTimeData(anim.rotation.y, currentTime, duration));
@@ -789,48 +717,89 @@ void KG::Component::AnimationContollerComponent::OnDestroy()
 
 void KG::Component::AnimationContollerComponent::Update(float elapsedTime)
 {
-	if (curAnimation >= 0) {
-		Animation* anim = &animations[curAnimation];
-		auto* inst = KG::Resource::ResourceContainer::GetInstance();
-		KG::Utill::AnimationSet* animSet = inst->LoadAnimation(anim->animationId, 0);
+	if (curAnimation.index.size() <= 0 || curAnimation.index[0] == -1)
+		return;
+	Animation* anim = &animations[curAnimation.index[0]];
+	anim->timer += elapsedTime * curAnimation.speed;
 
-		// 일단은 블랜딩 안하고 단일 애니메이션 구현
-		// 블랜딩 넣을때는 cur animation이 여러개일 수 있다는 거 생각해야됨
-		// 타이머 듀레이션은 Animation 이 가지고 있고
-		// 스피드는 컨트롤러가 가지고 있어야 될듯
-		// Animation에서 state 변수를 가지고 있어야 한다 (playing / stop)
-		// stop상태에서 playing 상태로 넘어갈 때 timer를 0으로 초기화 (블랜딩 x일 때)
+	if (anim->timer >= anim->duration) {
+		anim->timer -= anim->duration;
+	}
+	float T = anim->timer / anim->duration;
 
-		if (!anim->isPlaying) {
-			anim->isPlaying = true;
-			anim->timer = 0;
+	curAnimation.time += elapsedTime;
+
+	if (curAnimation.duration < 0)
+		; // loop inf
+	else if (curAnimation.time >= curAnimation.duration) {
+		float animT = animations[curAnimation.index[0]].timer / animations[curAnimation.index[0]].duration;
+		if (nextAnimations.size() <= 0) {
+			animations[GetAnimationIndex(defaultAnimation)].timer = animT * animations[GetAnimationIndex(defaultAnimation)].duration;
+			ChangeAnimation(defaultAnimation, 0.1f, -1);
 		}
+		else {
+			animations[nextAnimations[0].index[0]].timer = animT * animations[nextAnimations[0].index[0]].duration;
+			curAnimation = nextAnimations[0];
+			nextAnimations.erase(nextAnimations.begin());
+		}
+	}
 
-		anim->timer += elapsedTime * 0.5f;
-		if (anim->timer > anim->duration) anim->timer -= anim->duration;
+	KG::Utill::AnimationSet* animSet = nullptr;
+
+	std::vector<std::vector<DirectX::XMFLOAT3>> t;
+	std::vector<std::vector<DirectX::XMFLOAT4>> r;
+	std::vector<std::vector<DirectX::XMFLOAT3>> s;
+	t.resize(curAnimation.index.size());
+	r.resize(curAnimation.index.size());
+	s.resize(curAnimation.index.size());
+
+	int animCount = 0;
+	for (auto& idx : curAnimation.index) {
+		anim = &animations[idx];
+		auto* inst = KG::Resource::ResourceContainer::GetInstance();
+
+		anim->timer = T * anim->duration;
+
+		animSet = inst->LoadAnimation(anim->animationId, 0);
+		t[animCount].resize(animSet->layers[0].nodeAnimations.size());
+		r[animCount].resize(animSet->layers[0].nodeAnimations.size());
+		s[animCount].resize(animSet->layers[0].nodeAnimations.size());
 		for (size_t i = 0; i < animSet->layers[0].nodeAnimations.size(); i++)
 		{
 			if (animSet->layers[0].nodeAnimations[i].nodeId == KG::Utill::HashString("RootNode"_id))
 			{
 				continue;
 			}
-			auto tuple = GetAnimationTransform(animSet->layers[0].nodeAnimations[i], anim->timer, anim->duration);
-			auto t = std::get<0>(tuple);
-			auto r = std::get<1>(tuple);
-			auto s = std::get<2>(tuple);
-			// frameCache를 애니메이션 셋별로 가지고 있는게 맞냐??
-			// 보니까 frameCache가 모델 정보를 게임 오브젝으로 표현해놓은거 같은데
-			// 어차피 같은 모델이면 frameCache는 애니메이션별로 다 같은거 아님???
-			
-			// 포지션이 계층구조로 적용이 안돼서 다 가운데로 몰려버림..
-			// auto prevT = anim->frameCache[0][i]->GetTransform()->GetPosition();
-			// DebugNormalMessage("pre trans : " << prevT << " / time : " <<anim->timer);
-			anim->frameCache[0][i]->GetTransform()->SetAnimPosition(t);
-			auto pos = anim->frameCache[0][i]->GetTransform()->GetPosition();
-			DebugNormalMessage("pos : " << pos << " / time : " << anim->timer);
-			anim->frameCache[0][i]->GetTransform()->SetRotation(r);
-			anim->frameCache[0][i]->GetTransform()->SetScale(s);
+
+			auto tuple = GetAnimationTransform(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
+
+			t[animCount][i] = std::get<0>(tuple);
+			r[animCount][i] = std::get<1>(tuple);
+			s[animCount][i] = std::get<2>(tuple);
 		}
+		animCount++;
+	}
+
+	for (size_t i = 0; i < animSet->layers[0].nodeAnimations.size(); i++)
+	{
+		if (animSet->layers[0].nodeAnimations[i].nodeId == KG::Utill::HashString("RootNode"_id))
+		{
+			continue;
+		}
+
+		// XMFLOAT3 pos = t[0][i];
+		XMFLOAT4 rot = r[0][i];
+		XMFLOAT3 scale = s[0][i];
+
+		float lerp = (curAnimation.time / curAnimation.duration);
+		for (int count = 1; count < curAnimation.index.size(); ++count) {
+			// XMStoreFloat3(&pos, XMVectorLerp(XMLoadFloat3(&pos), XMLoadFloat3(&t[count][i]), lerp));
+			XMStoreFloat4(&rot, XMQuaternionSlerp(XMLoadFloat4(&rot), XMLoadFloat4(&r[count][i]), lerp));
+			XMStoreFloat3(&scale, XMVectorLerp(XMLoadFloat3(&scale), XMLoadFloat3(&s[count][i]), lerp));
+		}
+
+		anim->frameCache[0][i]->GetTransform()->SetRotation(rot);
+		anim->frameCache[0][i]->GetTransform()->SetScale(scale);
 	}
 }
 
@@ -838,17 +807,86 @@ void KG::Component::AnimationContollerComponent::RegisterAnimation(const KG::Uti
 {
 	if (GetAnimationIndex(animationId) == -1) {
 		auto* inst = KG::Resource::ResourceContainer::GetInstance();
-		KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, animationIndex);		// 여기서 id랑 페어로 animation set이 resource container에 저장
+		KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, animationIndex);
 		Animation a;
 		a.animationId = animationId;
+		if (animations.size() <= 0)
+			defaultAnimation = animationId;
 		animations.emplace_back(a);
 	}
 }
 
-void KG::Component::AnimationContollerComponent::SetAnimation(const KG::Utill::HashString& animationId) {
-	curAnimation = GetAnimationIndex(animationId);
+void KG::Component::AnimationContollerComponent::SetAnimation(const KG::Utill::HashString& animationId, float duration, float speed, bool clearNext) {
+	if (clearNext)
+		nextAnimations.clear();
+	curAnimation.index.clear();
+	curAnimation.index.push_back(GetAnimationIndex(animationId));
+	curAnimation.duration = duration;
+	curAnimation.time = 0;
+	if (speed <= 0.f)
+		speed = 0.01f;
+	curAnimation.speed = speed;
 }
 
-void KG::Component::AnimationContollerComponent::SetPlaySpeed(float spd) {
-	speed = spd;
+void KG::Component::AnimationContollerComponent::ChangeAnimation(const KG::Utill::HashString& animationId, float blendingDuration, float speed, float animationDuration)
+{
+	if (blendingDuration <= 0)
+		SetAnimation(animationId, animationDuration, speed);
+	else {
+		nextAnimations.clear();
+		BlendingAnimation(animationId, blendingDuration);
+		AddNextAnimation(animationId, animationDuration);
+	}
+}
+
+void KG::Component::AnimationContollerComponent::SetDefaultAnimation(KG::Utill::HashString defaultAnim)
+{
+	if (GetAnimationIndex(defaultAnim) >= 0) {
+		defaultAnimation = defaultAnim;
+	}
+}
+
+// return : next animation index
+int KG::Component::AnimationContollerComponent::AddNextAnimation(const KG::Utill::HashString nextAnim, float duration, float speed)
+{
+	if (curAnimation.duration < 0)
+		return -1;
+	AnimationCommand next;
+	next.index.push_back(GetAnimationIndex(nextAnim));
+	next.duration = duration;
+	next.time = 0;
+	if (speed <= 0.0f)
+		speed = 0.01f;
+	next.speed = speed;
+	nextAnimations.push_back(next);
+	
+	return nextAnimations.size() - 1;
+}
+
+
+void KG::Component::AnimationContollerComponent::BlendingAnimation(const KG::Utill::HashString nextAnim, float duration, int index)
+{
+	int idx = GetAnimationIndex(nextAnim);
+	if (idx == -1)
+		return;
+	if (index == -1) {
+		if (std::find(curAnimation.index.begin(), curAnimation.index.end(), idx) != curAnimation.index.end())
+			return;
+		curAnimation.index.push_back(GetAnimationIndex(nextAnim));
+		if (duration > 0) {
+			curAnimation.duration = duration;
+			curAnimation.time = 0;
+		}
+	}
+	else {
+		if (index < 0 || index >= nextAnimations.size())
+			return;
+		if (std::find(nextAnimations[index].index.begin(), nextAnimations[index].index.end(), idx) != nextAnimations[index].index.end())
+			return;
+		nextAnimations[index].index.push_back(GetAnimationIndex(nextAnim));
+		if (duration > 0) {
+			nextAnimations[index].duration = duration;
+			nextAnimations[index].time = 0;
+		}
+	}
 }
