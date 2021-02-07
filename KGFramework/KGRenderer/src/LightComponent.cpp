@@ -83,14 +83,16 @@ void KG::Component::LightComponent::OnRender( ID3D12GraphicsCommandList* commadL
 
 void KG::Component::LightComponent::SetShadowCasterTextureIndex( UINT index )
 {
-	this->light.shadowMapIndex = index;
+	this->UpdateChanged();
+	this->shadow.shadowMapIndex[0] = index;
 }
 
 void KG::Component::LightComponent::SetShadowMatrix( const DirectX::XMFLOAT4X4 matrix )
 {
 	//포인트 : 투영행렬
 	//나머지 : viewProj
-	this->light.shadowMatrix = matrix;
+	this->UpdateChanged();
+	this->shadow.shadowMatrix[0] = matrix;
 }
 
 void KG::Component::LightComponent::OnPreRender()
@@ -101,6 +103,8 @@ void KG::Component::LightComponent::OnPreRender()
 		int updateCount = this->renderJob->GetUpdateCount();
 		this->light.Position = this->transform->GetWorldPosition();
 		std::memcpy( &this->renderJob->objectBuffer->mappedData[updateCount].light, &this->light, sizeof( this->light ) );
+		if(this->renderJob->shadowLightBuffer != nullptr )
+			std::memcpy( &this->renderJob->shadowLightBuffer->mappedData[updateCount].shadow, &this->shadow, sizeof( this->shadow ) );
 	}
 }
 

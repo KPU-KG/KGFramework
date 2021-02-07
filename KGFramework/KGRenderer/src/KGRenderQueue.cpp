@@ -16,12 +16,14 @@ KGRenderJob& KG::Renderer::KGRenderEngine::CreateRenderJob( const KGRenderJob& j
 	inst.meshType = job.geometry->HasBone() ? ShaderMeshType::SkinnedMesh : ShaderMeshType::StaticMesh;
 	inst.objectBufferPool = &this->bufferPool;
 	inst.animationBufferPool = &this->animationBufferPool;
+	inst.shadowLightBufferPool = &this->shadowLightBufferPool;
 	return inst;
 }
 
 KG::Renderer::KGRenderEngine::KGRenderEngine( ID3D12Device* device )
 	:bufferPool( device, BufferPool<ObjectData>::defaultFixedSize, BufferPool<ObjectData>::defaultReservedSize ),
-	animationBufferPool( device, BufferPool<KG::Resource::AnimationData>::defaultFixedSize, BufferPool<KG::Resource::AnimationData>::defaultReservedSize )
+	animationBufferPool( device, BufferPool<KG::Resource::AnimationData>::defaultFixedSize, BufferPool<KG::Resource::AnimationData>::defaultReservedSize ),
+	shadowLightBufferPool( device, BufferPool<ShadowLightData>::defaultFixedSize, BufferPool<ShadowLightData>::defaultReservedSize )
 {
 	this->group.resize( 6 );
 }
@@ -97,6 +99,16 @@ void KG::Renderer::KGRenderJob::GetNewBuffer()
 			this->animationBuffer->isUsing = false;
 		this->animationBuffer = this->animationBufferPool->GetNewBuffer( this->objectSize );
 	}
+
+	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::AmbientLight ||
+		shader->GetGroup() == KG::Renderer::ShaderGroup::MeshVolumeLight ||
+		shader->GetGroup() == KG::Renderer::ShaderGroup::DirectionalLight || 
+		shader->GetGroup() == KG::Renderer::ShaderGroup::Transparent )
+	{
+		if ( this->shadowLightBuffer )
+			this->shadowLightBuffer->isUsing = false;
+		this->shadowLightBuffer = this->shadowLightBufferPool->GetNewBuffer( this->objectSize );
+	}
 }
 
 void KG::Renderer::KGRenderJob::OnObjectAdd( bool isVisible )
@@ -150,6 +162,15 @@ void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelT
 	{
 		auto animAddr = this->animationBuffer->buffer.resource->GetGPUVirtualAddress();
 		cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::AnimationTransformData, animAddr );
+	}
+
+	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::AmbientLight ||
+		shader->GetGroup() == KG::Renderer::ShaderGroup::MeshVolumeLight ||
+		shader->GetGroup() == KG::Renderer::ShaderGroup::DirectionalLight ||
+		shader->GetGroup() == KG::Renderer::ShaderGroup::Transparent )
+	{
+		auto shadowAddr = this->shadowLightBuffer->buffer.resource->GetGPUVirtualAddress();
+		cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::LightData, shadowAddr );
 	}
 
 	this->geometry->Render( cmdList, this->visibleSize );

@@ -7,8 +7,8 @@ namespace KG::Renderer
 		inline static constexpr size_t AnimationTransformData = 1;
 		inline static constexpr size_t BoneOffsetData = 2;
 		inline static constexpr size_t MaterialData = 3;
-		inline static constexpr size_t CameraData = 4;
-		inline static constexpr size_t PassData = 5;
+		inline static constexpr size_t LightData = 4;
+		inline static constexpr size_t CameraData = 5;
 		inline static constexpr size_t Texture1Heap = 6;
 		inline static constexpr size_t Texture2Heap = 7;
 		inline static constexpr size_t GBuffer0 = 8;

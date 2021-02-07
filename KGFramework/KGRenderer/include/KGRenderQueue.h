@@ -11,6 +11,8 @@
 #include "BoneData.h"
 #include "KGShader.h"
 
+#include "LightComponent.h"
+
 namespace KG::Renderer
 {
 	class Geometry;
@@ -28,6 +30,10 @@ namespace KG::Renderer
 
 		BufferPool<KG::Resource::AnimationData>* animationBufferPool = nullptr;
 		PooledBuffer<KG::Resource::AnimationData>* animationBuffer = nullptr;
+		
+		BufferPool<ShadowLightData>* shadowLightBufferPool = nullptr;
+		PooledBuffer<ShadowLightData>* shadowLightBuffer = nullptr;
+
 
 		bool CheckBufferFull() const;
 		void GetNewBuffer();
@@ -64,6 +70,7 @@ namespace KG::Renderer
 		std::vector<GroupJobs> group;
 		BufferPool<ObjectData> bufferPool; // 이거 추후에 버디 얼로케이터 같은 걸로 바꿔야 함
 		BufferPool<KG::Resource::AnimationData> animationBufferPool; // 이거 추후에 버디 얼로케이터 같은 걸로 바꿔야 함
+		BufferPool<ShadowLightData> shadowLightBufferPool; // 이거 추후에 버디 얼로케이터 같은 걸로 바꿔야 함
 
 		KGRenderJob& CreateRenderJob( const KGRenderJob& job );
 	public:

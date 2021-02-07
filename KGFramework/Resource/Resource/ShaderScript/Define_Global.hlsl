@@ -49,7 +49,6 @@ struct InstanceData
     uint materialIndex;
     uint environmentMapIndex;
     uint2 padding;
-    float4x3 padding2;
 };
 
 StructuredBuffer<InstanceData> objectInfo : register(t0);

@@ -643,7 +643,7 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 	pd3dRootParameters[RootParameterIndex::BoneOffsetData].Descriptor.RegisterSpace = 3;
 	pd3dRootParameters[RootParameterIndex::BoneOffsetData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
-	// 3 : Space 1 : CBV 0 : Material Data : 2
+	// 3 : Space 0 : SRV 1 : Material Data : 2
 	pd3dRootParameters[RootParameterIndex::MaterialData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
 	pd3dRootParameters[RootParameterIndex::MaterialData].Descriptor.ShaderRegister = 1;
 	pd3dRootParameters[RootParameterIndex::MaterialData].Descriptor.RegisterSpace = 0;
@@ -655,11 +655,11 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 	pd3dRootParameters[RootParameterIndex::CameraData].Descriptor.RegisterSpace = 0;
 	pd3dRootParameters[RootParameterIndex::CameraData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
-	// 5 : Space 0 : CBV 1 : Pass Data : 2
-	pd3dRootParameters[RootParameterIndex::PassData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-	pd3dRootParameters[RootParameterIndex::PassData].Descriptor.ShaderRegister = 1;
-	pd3dRootParameters[RootParameterIndex::PassData].Descriptor.RegisterSpace = 0;
-	pd3dRootParameters[RootParameterIndex::PassData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+	// 5 : Space 4 : CBV 1 : Pass Data : 2
+	pd3dRootParameters[RootParameterIndex::LightData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+	pd3dRootParameters[RootParameterIndex::LightData].Descriptor.ShaderRegister = 0;
+	pd3dRootParameters[RootParameterIndex::LightData].Descriptor.RegisterSpace = 4;
+	pd3dRootParameters[RootParameterIndex::LightData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
 
 	// 6 : Space 1 : SRV 0 : Texture Data1 // unbounded : 1

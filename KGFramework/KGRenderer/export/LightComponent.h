@@ -12,6 +12,12 @@ namespace KG::Renderer
 namespace KG::Component
 {
 	class TransformComponent;
+
+	struct ShadowData
+	{
+		UINT shadowMapIndex[4];
+		DirectX::XMFLOAT4X4 shadowMatrix[4];
+	};
 	struct LightData
 	{
 		DirectX::XMFLOAT3 Strength;
@@ -20,9 +26,6 @@ namespace KG::Component
 		float FalloffEnd;
 		DirectX::XMFLOAT3 Position;
 		float SpotPower;
-		UINT shadowMapIndex;
-		DirectX::XMFLOAT3 pad1;
-		DirectX::XMFLOAT4X4 shadowMatrix;
 	};
 
 	struct PointLightRef
@@ -61,6 +64,7 @@ namespace KG::Component
 		bool isDirty = true;
 		LightType lightType = LightType::DirectionalLight;
 		LightData light;
+		ShadowData shadow;
 		KG::Renderer::Shader* currentShader = nullptr;
 		KG::Renderer::Geometry* currentGeometry = nullptr;
 		void RegisterTransform( TransformComponent* transform );

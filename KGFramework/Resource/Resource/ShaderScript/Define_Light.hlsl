@@ -9,12 +9,18 @@ struct LightData
     float FalloffEnd;
     float3 Position;
     float SpotPower;
-    uint shadowMapIndex;
-    float3 padding0;
-    float4x4 shadowMatrix;
+    float4 padding0;
+    float4 padding1;
 };
 
 StructuredBuffer<LightData> lightInfo : register(t0);
+
+struct ShadowData
+{
+    uint shadowMapIndex[4];
+    float4x4 shadowMatrix[4];
+};
+StructuredBuffer<ShadowData> shadowInfo : register(t0, space4);
 
 Texture2D InputGBuffer0 : register(t2);
 Texture2D InputGBuffer1 : register(t3);

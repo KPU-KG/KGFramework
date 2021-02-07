@@ -12,9 +12,8 @@ namespace KG::Renderer
 				XMFLOAT4X4 world;
 				UINT materialIndex;
 				UINT environmentMapIndex;
+				UINT pad0;
 				UINT pad1;
-				UINT pad2;
-				XMFLOAT4X3 pad3;
 			} object;
 			struct light
 			{
@@ -24,10 +23,25 @@ namespace KG::Renderer
 				float FalloffEnd;
 				XMFLOAT3 Position;
 				float SpotPower;
-				UINT shadowMapIndex;
-				XMFLOAT3 pad1;
-				XMFLOAT4X4 shadowMatrix;
+				XMFLOAT4 pad0;
+				XMFLOAT4 pad1;
 			} light;
+		};
+	};
+
+	struct ShadowLightData
+	{
+		union
+		{
+			//struct ForwardLight
+			//{
+
+			//};
+			struct DeferredShadow
+			{
+				UINT shadowMapIndex[4];
+				DirectX::XMFLOAT4X4 shadowMatrix[4];
+			} shadow;
 		};
 	};
 };

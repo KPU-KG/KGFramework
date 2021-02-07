@@ -13,13 +13,13 @@ struct LightVertexOut
 TextureCube<float> shadowCube[] : register(t0, space1);
 
 
-float PointShadowPCF(float3 toPixel, LightData lightData)
+float PointShadowPCF(float3 toPixel, LightData lightData, ShadowData shadowData)
 {
     float3 toPixelAbs = abs(toPixel);
     float z = max(toPixelAbs.x, max(toPixelAbs.y, toPixelAbs.z));
-    float2 lightPerspectiveValue = float2(lightData.shadowMatrix._m22, lightData.shadowMatrix._m32);
+    float2 lightPerspectiveValue = float2(shadowData.shadowMatrix[0]._m22, shadowData.shadowMatrix[0]._m32);
     float depth = (lightPerspectiveValue.x * z + lightPerspectiveValue.y) / z;
-    return shadowCube[lightData.shadowMapIndex].SampleCmpLevelZero(gsamLinerCompClamp, toPixel, depth - 0.001f);
+    return shadowCube[shadowData.shadowMapIndex[0]].SampleCmpLevelZero(gsamLinerCompClamp, toPixel, depth - 0.001f);
 }
 
 LightVertexOut VertexShaderFuction(VertexData input, uint InstanceID : SV_InstanceID)
@@ -48,6 +48,7 @@ float4 PixelShaderFuction(LightVertexOut input) : SV_Target0
     float depth = InputGBuffer4.Sample(gsamPointWrap, uv).x;
     
     LightData lightData = lightInfo[input.InstanceID];
+    ShadowData shadowData = shadowInfo[input.InstanceID];
     float3 calcWorldPosition = DepthToWorldPosition(depth, input.projPosition.xy, mul(inverseProjection, inverseView));
     
     //float3 cameraDirection = look;
@@ -58,7 +59,7 @@ float4 PixelShaderFuction(LightVertexOut input) : SV_Target0
     
     float atten = CalcAttenuation(distance, lightData.FalloffStart, lightData.FalloffEnd);
 
-    float shadowFactor = PointShadowPCF(lightDirection, lightData);
+    float shadowFactor = PointShadowPCF(lightDirection, lightData, shadowData);
     
     return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(-cameraDirection), atten) * shadowFactor;
 }
