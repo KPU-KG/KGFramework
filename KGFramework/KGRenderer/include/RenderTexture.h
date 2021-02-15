@@ -12,6 +12,7 @@ namespace KG::Resource
 
 namespace KG::Renderer
 {
+	//리팩토링 필요!
 	struct RenderTexture
 	{
 		RenderTextureDesc desc;

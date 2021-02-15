@@ -1,5 +1,6 @@
 #pragma once
 #include <DirectXMath.h>
+#include <array>
 #include "IRenderComponent.h"
 
 namespace KG::Renderer
@@ -88,6 +89,7 @@ namespace KG::Component
 
 		void SetShadowCasterTextureIndex( UINT index );
 		void SetShadowMatrix( const DirectX::XMFLOAT4X4 matrix );
+		void SetShadowCascadeMatrix( const std::array<DirectX::XMFLOAT4X4,4>& cascades );
 
 		bool isVisible = true;
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;

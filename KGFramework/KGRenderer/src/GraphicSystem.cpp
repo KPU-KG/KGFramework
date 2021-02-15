@@ -59,6 +59,10 @@ void KG::System::CameraSystem::OnPostUpdate( float elapsedTime )
 
 void KG::System::CameraSystem::OnPreRender()
 {
+	for ( auto& com : this->pool )
+	{
+		com.OnPreRender();
+	}
 }
 
 void KG::System::LightSystem::OnGetNewComponent( LightComponent* target )
@@ -95,6 +99,10 @@ void KG::System::CubeCameraSystem::OnPostUpdate( float elapsedTime )
 
 void KG::System::CubeCameraSystem::OnPreRender()
 {
+	for ( auto& com : this->pool )
+	{
+		com.OnPreRender();
+	}
 }
 
 void KG::System::AvatarSystem::OnUpdate( float elapsedTime )
@@ -107,6 +115,10 @@ void KG::System::AvatarSystem::OnPostUpdate( float elapsedTime )
 
 void KG::System::AvatarSystem::OnPreRender()
 {
+	for ( auto& com : this->pool )
+	{
+		com.OnPreRender();
+	}
 }
 
 
@@ -136,4 +148,8 @@ void KG::System::ShadowCasterSystem::OnPostUpdate( float elapsedTime )
 
 void KG::System::ShadowCasterSystem::OnPreRender()
 {
+	for ( auto& com : this->pool )
+	{
+		com.OnPreRender();
+	}
 }

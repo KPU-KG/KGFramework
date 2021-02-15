@@ -87,12 +87,22 @@ void KG::Component::LightComponent::SetShadowCasterTextureIndex( UINT index )
 	this->shadow.shadowMapIndex[0] = index;
 }
 
+
 void KG::Component::LightComponent::SetShadowMatrix( const DirectX::XMFLOAT4X4 matrix )
 {
 	//포인트 : 투영행렬
 	//나머지 : viewProj
 	this->UpdateChanged();
 	this->shadow.shadowMatrix[0] = matrix;
+}
+
+void KG::Component::LightComponent::SetShadowCascadeMatrix( const std::array<DirectX::XMFLOAT4X4, 4>& cascades )
+{
+	this->UpdateChanged();
+	for ( size_t i = 0; i < 4; i++ )
+	{
+		this->shadow.shadowMatrix[i] = cascades[i];
+	}
 }
 
 void KG::Component::LightComponent::OnPreRender()

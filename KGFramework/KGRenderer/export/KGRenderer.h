@@ -33,8 +33,10 @@ namespace KG::Renderer
 	{
 		size_t width;
 		size_t height;
+		size_t length = 1;
 		bool useCubeRender = false;
 		bool useGSCubeRender = false;
+		bool useGSArrayRender = false;
 		bool useRenderTarget = true;
 		bool useDeferredRender = true;
 		bool useDepthStencilBuffer = true;

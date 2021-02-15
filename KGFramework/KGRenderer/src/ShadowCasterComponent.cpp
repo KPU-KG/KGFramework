@@ -1,4 +1,5 @@
 #include "pch.h"
+#include <array>
 #include "ShadowCasterComponent.h"
 #include "CameraComponent.h"
 #include "LightComponent.h"
@@ -6,13 +7,14 @@
 
 using namespace DirectX;
 
-void KG::Component::ShadowCasterComponent::InitializeAsPointLightShadow( KG::Component::LightComponent* light )
+void KG::Component::ShadowCasterComponent::InitializeAsPointLightShadow( )
 {
 	this->cubeCamera = new GSCubeCameraComponent();
 	this->cubeCamera->OnCreate( this->gameObject );
 	KG::Renderer::RenderTextureDesc desc;
 	desc.useCubeRender = true;
 	desc.useGSCubeRender = true;
+	desc.useRenderTarget = false;
 	desc.useDeferredRender = false;
 	desc.useDeferredRender = false;
 	desc.useDepthStencilBuffer = true;
@@ -23,36 +25,70 @@ void KG::Component::ShadowCasterComponent::InitializeAsPointLightShadow( KG::Com
 	this->cubeCamera->InitializeRenderTexture( desc );
 	this->cubeCamera->SetDefaultRender();
 	this->cubeCamera->SetNearZ( 0.01f );
-	this->cubeCamera->SetFarZ( light->GetPointLightRef().FalloffEnd );
-	light->SetShadowCasterTextureIndex( this->cubeCamera->GetRenderTexture().depthStencilSRVIndex );
-	//Projection
-	light->SetShadowMatrix( this->cubeCamera->GetProj() );
+	this->cubeCamera->SetFarZ( this->targetLight->GetPointLightRef().FalloffEnd );
+	this->targetLight->SetShadowCasterTextureIndex( this->cubeCamera->GetRenderTexture().depthStencilSRVIndex );
+	this->targetLight->SetShadowMatrix( this->cubeCamera->GetProj() );
 }
 
-void KG::Component::ShadowCasterComponent::InitializeAsDirectionalLightShadow( KG::Component::LightComponent* light )
+void KG::Component::ShadowCasterComponent::InitializeAsDirectionalLightShadow()
 {
-	this->camera = new CameraComponent();
-	this->camera->SetDefaultRender();
+	this->camera = new GSCascadeCameraComponent();
 	this->camera->OnCreate( this->gameObject );
-	//TODO
+
+	KG::Renderer::RenderTextureDesc desc;
+	desc.useCubeRender = false;
+	desc.useGSCubeRender = false;
+	desc.useRenderTarget = false;
+	desc.useGSArrayRender = true;
+	desc.useDeferredRender = false;
+	desc.useDeferredRender = false;
+	desc.useDepthStencilBuffer = true;
+	desc.uploadSRVDepthBuffer = true;
+	desc.uploadSRVRenderTarget = false;
+	desc.width = 4096;
+	desc.height = 4096;
+	desc.length = 4;
+	
+	this->camera->InitializeRenderTexture( desc );
+	this->camera->SetDefaultRender();
+	this->camera->InitalizeCascade( this->mainCamera, this->targetLight );
+	this->camera->SetNearZ( 0.01f );
+	this->camera->SetFarZ( 500.0f );
+	this->targetLight->SetShadowCasterTextureIndex( this->camera->GetRenderTexture().depthStencilSRVIndex );
 }
 
 void KG::Component::ShadowCasterComponent::OnCreate( KG::Core::GameObject* gameObject )
 {
 	IRenderComponent::OnCreate( gameObject );
 	auto lightComponent = gameObject->GetComponent<LightComponent>();
+	this->targetLight = lightComponent;
 	//lightComponent->SetCastShadow( true );
 	switch ( lightComponent->GetLightType() )
 	{
 	case LightType::DirectionalLight:
+		this->InitializeAsDirectionalLightShadow( );
 		break;
 	case LightType::PointLight:
-		this->InitializeAsPointLightShadow( lightComponent );
+		this->InitializeAsPointLightShadow( );
 		break;
 	case LightType::SpotLight:
 		break;
 	default:
 		break;
+	}
+}
+
+void KG::Component::ShadowCasterComponent::OnPreRender()
+{
+	if ( this->isDirectionalLightShadow() )
+	{
+		this->camera->OnPreRender();
+		this->targetLight->SetShadowCascadeMatrix( this->camera->GetViewProj() );
+	}
+	else if ( this->isPointLightShadow() )
+	{
+		this->cubeCamera->OnPreRender();
+		
 	}
 }
 
@@ -70,6 +106,11 @@ void KG::Component::ShadowCasterComponent::OnDestroy()
 	}
 }
 
+void KG::Component::ShadowCasterComponent::SetTargetCameraCamera( KG::Component::CameraComponent* mainCamera )
+{
+	this->mainCamera = mainCamera;
+}
+
 KG::Renderer::RenderTexture& KG::Component::ShadowCasterComponent::GetRenderTexture()
 {
 	return this->cubeCamera ? this->cubeCamera->GetRenderTexture() : this->camera->GetRenderTexture();
@@ -80,7 +121,7 @@ KG::Component::GSCubeCameraComponent* KG::Component::ShadowCasterComponent::GetC
 	return this->cubeCamera;
 }
 
-KG::Component::CameraComponent* KG::Component::ShadowCasterComponent::GetCamera() const
+KG::Component::GSCascadeCameraComponent* KG::Component::ShadowCasterComponent::GetCamera() const
 {
 	return this->camera;
 }

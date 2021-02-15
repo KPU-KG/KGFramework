@@ -10,10 +10,14 @@ using KG::Renderer::KGDXRenderer;
 void KG::Renderer::RenderTexture::CreateRenderTarget()
 {
 	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
-	this->renderTarget =
-		this->desc.useCubeRender ?
-		CreateCubeRenderTargetResource( device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM )
-		: CreateRenderTargetResource( device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM );
+	if ( this->desc.useCubeRender || this->desc.useGSArrayRender )
+	{
+		this->renderTarget = CreateArrayRenderTargetResource( device, this->desc.width, this->desc.height, this->desc.length, DXGI_FORMAT_R8G8B8A8_UNORM );
+	}
+	else 
+	{
+		this->renderTarget = CreateRenderTargetResource( device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM );
+	}
 }
 
 void KG::Renderer::RenderTexture::CreateRenderTargetView()
@@ -23,7 +27,7 @@ void KG::Renderer::RenderTexture::CreateRenderTargetView()
 	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
 	ZeroDesc( d3dDescriptorHeapDesc );
 
-	d3dDescriptorHeapDesc.NumDescriptors = this->desc.useCubeRender ? 6 : 1;
+	d3dDescriptorHeapDesc.NumDescriptors = this->desc.length;
 	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_RTV;
 	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	d3dDescriptorHeapDesc.NodeMask = 0;
@@ -129,9 +133,15 @@ void KG::Renderer::RenderTexture::CreateGBufferSRView()
 void KG::Renderer::RenderTexture::CreateDepthStencilBuffer()
 {
 	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
-	this->depthStencilBuffer = this->isCubeDepth() ?
-		CreateCubeDepthStencilResource( device, this->desc.width, this->desc.height )
-		: CreateDepthStencilResource( device, this->desc.width, this->desc.height );
+
+	if ( this->desc.useCubeRender || this->desc.useGSArrayRender )
+	{
+		this->depthStencilBuffer = CreateArrayDepthStencilResource( device, this->desc.width, this->desc.height, this->desc.length );
+	}
+	else
+	{
+		this->depthStencilBuffer = CreateDepthStencilResource( device, this->desc.width, this->desc.height );
+	}
 }
 
 void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
@@ -142,7 +152,7 @@ void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
 	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
 	ZeroDesc( d3dDescriptorHeapDesc );
 
-	d3dDescriptorHeapDesc.NumDescriptors = this->isCubeDepth() && !this->desc.useGSCubeRender ? 6 : 1;
+	d3dDescriptorHeapDesc.NumDescriptors = this->isCubeDepth() && !(this->desc.useGSCubeRender || this->desc.useGSArrayRender) ? this->desc.length : 1;
 	d3dDescriptorHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	d3dDescriptorHeapDesc.NodeMask = 0;
@@ -150,7 +160,7 @@ void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
 	HRESULT hResult = device->CreateDescriptorHeap( &d3dDescriptorHeapDesc, IID_PPV_ARGS( &this->dsvDescriptorHeap ) );
 
 
-	if ( this->isCubeDepth() )
+	if ( this->isCubeDepth() || this->desc.useGSArrayRender )
 	{
 		D3D12_DEPTH_STENCIL_VIEW_DESC d3dDepthStencillViewDesc;
 		d3dDepthStencillViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
@@ -160,15 +170,15 @@ void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
 
 		D3D12_CPU_DESCRIPTOR_HANDLE dsvCpuDescHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 		this->dsvHandle = dsvCpuDescHandle;
-		if ( this->desc.useGSCubeRender )
+		if ( this->desc.useGSCubeRender || this->desc.useGSArrayRender )
 		{
-			d3dDepthStencillViewDesc.Texture2DArray.ArraySize = 6;
+			d3dDepthStencillViewDesc.Texture2DArray.ArraySize = this->desc.length;
 			d3dDepthStencillViewDesc.Texture2DArray.FirstArraySlice = 0;
 			device->CreateDepthStencilView( this->depthStencilBuffer, &d3dDepthStencillViewDesc, dsvCpuDescHandle );
 		}
 		else 
 		{
-			for ( size_t i = 0; i < 6; i++ )
+			for ( size_t i = 0; i < this->desc.length; i++ )
 			{
 				d3dDepthStencillViewDesc.Texture2DArray.FirstArraySlice = i;
 				d3dDepthStencillViewDesc.Texture2DArray.ArraySize = 1;
@@ -248,12 +258,29 @@ UINT KG::Renderer::RenderTexture::PostDepthStencilSRV()
 
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	srvDesc.ViewDimension = this->isCubeDepth() ? D3D12_SRV_DIMENSION_TEXTURECUBE : D3D12_SRV_DIMENSION_TEXTURE2D;
+	if ( this->isCubeDepth() )
+	{
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+	}
+	else if ( this->desc.useGSArrayRender )
+	{
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
+	}
+	else 
+	{
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	}
 	if ( this->desc.useCubeRender )
 	{
 		srvDesc.TextureCube.MostDetailedMip = 0;
 		srvDesc.TextureCube.MipLevels = 1;
 		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+	}
+	else if ( this->desc.useGSArrayRender )
+	{
+		srvDesc.Texture2DArray.ArraySize = this->desc.length;
+		srvDesc.Texture2DArray.FirstArraySlice = 0;
+		srvDesc.Texture2DArray.MipLevels = 1;
 	}
 	else
 	{
@@ -274,12 +301,29 @@ KG::Resource::Texture* KG::Renderer::RenderTexture::PostDepthStencilTexture()
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Format = DXGI_FORMAT_R24_UNORM_X8_TYPELESS;
-	srvDesc.ViewDimension = this->isCubeDepth() ? D3D12_SRV_DIMENSION_TEXTURECUBE : D3D12_SRV_DIMENSION_TEXTURE2D;
+	if ( this->isCubeDepth() )
+	{
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURECUBE;
+	}
+	else if ( this->desc.useGSArrayRender )
+	{
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2DARRAY;
+	}
+	else
+	{
+		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
+	}
 	if ( this->desc.useCubeRender )
 	{
 		srvDesc.TextureCube.MostDetailedMip = 0;
 		srvDesc.TextureCube.MipLevels = 1;
 		srvDesc.TextureCube.ResourceMinLODClamp = 0.0f;
+	}
+	else if ( this->desc.useGSArrayRender )
+	{
+		srvDesc.Texture2DArray.ArraySize = this->desc.length;
+		srvDesc.Texture2DArray.FirstArraySlice = 0;
+		srvDesc.Texture2DArray.MipLevels = 1;
 	}
 	else
 	{
@@ -289,6 +333,7 @@ KG::Resource::Texture* KG::Renderer::RenderTexture::PostDepthStencilTexture()
 		srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 	}
 
+
 	this->depthStencilTexture = resourceContainer->CreateTexture( this->desc.depthBufferTextureId, this->depthStencilBuffer, srvDesc );
 	return this->depthStencilTexture;
 }
@@ -296,6 +341,10 @@ KG::Resource::Texture* KG::Renderer::RenderTexture::PostDepthStencilTexture()
 void KG::Renderer::RenderTexture::Initialize( const RenderTextureDesc& desc )
 {
 	this->desc = desc;
+	if ( this->desc.useCubeRender )
+	{
+		this->desc.length = 6;
+	}
 	if ( this->desc.useRenderTarget )
 	{
 		this->CreateRenderTarget();

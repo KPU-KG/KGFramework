@@ -139,7 +139,7 @@ ID3D12Resource* KG::Renderer::CreateRenderTargetResource( ID3D12Device* pd3dDevi
 	return pd3dBuffer;
 }
 
-ID3D12Resource* KG::Renderer::CreateCubeRenderTargetResource( ID3D12Device* pd3dDevice, size_t width, size_t height, DXGI_FORMAT format )
+ID3D12Resource* KG::Renderer::CreateArrayRenderTargetResource( ID3D12Device* pd3dDevice, size_t width, size_t height, size_t length, DXGI_FORMAT format )
 {
 	ID3D12Resource* pd3dBuffer = nullptr;
 
@@ -157,7 +157,7 @@ ID3D12Resource* KG::Renderer::CreateCubeRenderTargetResource( ID3D12Device* pd3d
 	d3dResourceDesc.Alignment = 0;
 	d3dResourceDesc.Width = width;
 	d3dResourceDesc.Height = height;
-	d3dResourceDesc.DepthOrArraySize = 6;
+	d3dResourceDesc.DepthOrArraySize = length;
 	d3dResourceDesc.MipLevels = 1;
 	d3dResourceDesc.Format = format;
 	d3dResourceDesc.SampleDesc.Count = 1;
@@ -224,7 +224,7 @@ ID3D12Resource* KG::Renderer::CreateDepthStencilResource( ID3D12Device* pd3dDevi
 
 }
 
-ID3D12Resource* KG::Renderer::CreateCubeDepthStencilResource( ID3D12Device* pd3dDevice, size_t width, size_t height, DXGI_FORMAT format )
+ID3D12Resource* KG::Renderer::CreateArrayDepthStencilResource( ID3D12Device* pd3dDevice, size_t width, size_t height, size_t length, DXGI_FORMAT format )
 {
 	ID3D12Resource* pd3dBuffer = nullptr;
 
@@ -242,7 +242,7 @@ ID3D12Resource* KG::Renderer::CreateCubeDepthStencilResource( ID3D12Device* pd3d
 	d3dResourceDesc.Alignment = 0;
 	d3dResourceDesc.Width = width;
 	d3dResourceDesc.Height = height;
-	d3dResourceDesc.DepthOrArraySize = 6;
+	d3dResourceDesc.DepthOrArraySize = length;
 	d3dResourceDesc.MipLevels = 1;
 	d3dResourceDesc.Format = format;
 	d3dResourceDesc.SampleDesc.Count = 1;

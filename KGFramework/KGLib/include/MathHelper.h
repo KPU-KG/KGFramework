@@ -78,6 +78,19 @@ namespace KG::Math
 			XMStoreFloat3(&xmf3Result, XMLoadFloat3(&xmf3Vector1) + (XMLoadFloat3(&xmf3Vector2) * fScalar));
 			return(xmf3Result);
 		}
+		inline XMFLOAT3 Multiply( const XMFLOAT3& xmf4Vector1, const XMFLOAT3& xmf4Vector2 )
+		{
+			XMFLOAT3 xmf4Result;
+			XMStoreFloat3( &xmf4Result, XMLoadFloat3( &xmf4Vector1 ) *
+				XMLoadFloat3( &xmf4Vector2 ) );
+			return(xmf4Result);
+		}
+		inline XMFLOAT3 Multiply( float fScalar, const XMFLOAT3& xmf4Vector )
+		{
+			XMFLOAT3 xmf4Result;
+			XMStoreFloat3( &xmf4Result, fScalar * XMLoadFloat3( &xmf4Vector ) );
+			return(xmf4Result);
+		}
 		inline XMFLOAT3 Subtract(const XMFLOAT3& xmf3Vector1, const XMFLOAT3& xmf3Vector2)
 		{
 			XMFLOAT3 xmf3Result;
@@ -194,6 +207,13 @@ namespace KG::Math
 		{
 			XMFLOAT4 xmf4Result;
 			XMStoreFloat4(&xmf4Result, fScalar * XMLoadFloat4(&xmf4Vector));
+			return(xmf4Result);
+		}
+		inline XMFLOAT4 Subtract( const XMFLOAT4& xmf4Vector1, const XMFLOAT4& xmf4Vector2 )
+		{
+			XMFLOAT4 xmf4Result;
+			XMStoreFloat4( &xmf4Result, XMLoadFloat4( &xmf4Vector1 ) -
+				XMLoadFloat4( &xmf4Vector2 ) );
 			return(xmf4Result);
 		}
 		inline XMFLOAT4 Normalize(const XMFLOAT4& xmf3Vector1)
@@ -353,6 +373,56 @@ namespace KG::Math
 
 	};
 	
+	namespace Literal
+	{
+		inline DirectX::XMFLOAT3 operator+( const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b )
+		{
+			return Vector3::Add( a, b );
+		}
+
+		inline DirectX::XMFLOAT3 operator-( const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b )
+		{
+			return Vector3::Subtract( a, b );
+		}
+
+		inline DirectX::XMFLOAT3 operator*( const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b )
+		{
+			return Vector3::Multiply( a, b );
+		}
+		inline DirectX::XMFLOAT3 operator*( float scalar, const DirectX::XMFLOAT3& a )
+		{
+			return Vector3::Multiply( scalar, a );
+		}
+		inline DirectX::XMFLOAT3 operator*( const DirectX::XMFLOAT3& a, float scalar )
+		{
+			return Vector3::Multiply( scalar, a );
+		}
+
+		inline DirectX::XMFLOAT4 operator+( const DirectX::XMFLOAT4& a, const DirectX::XMFLOAT4& b )
+		{
+			return Vector4::Add( a, b );
+		}
+
+		inline DirectX::XMFLOAT4 operator-( const DirectX::XMFLOAT4& a, const DirectX::XMFLOAT4& b )
+		{
+			return Vector4::Subtract( a, b );
+		}
+
+		inline DirectX::XMFLOAT4 operator*( const DirectX::XMFLOAT4& a, const DirectX::XMFLOAT4& b )
+		{
+			return Vector4::Multiply( a, b );
+		}
+		inline DirectX::XMFLOAT4 operator*( float scalar, const DirectX::XMFLOAT4& a )
+		{
+			return Vector4::Multiply( scalar, a );
+		}
+		inline DirectX::XMFLOAT4 operator*( const DirectX::XMFLOAT4& a, float scalar )
+		{
+			return Vector4::Multiply( scalar, a );
+		}
+
+	};
+
 	inline DirectX::XMFLOAT4 RandomColor()
 	{
 		return DirectX::XMFLOAT4(rand() / float(RAND_MAX), rand() / float(RAND_MAX), rand() / float(RAND_MAX), 1.0f);
@@ -388,9 +458,13 @@ namespace KG::Math
 		return out << position.x << ", " << position.y << ", " << position.z << ", " << position.w;
 	}
 	
-	inline float Lerp( float a, float b, float t )
+	template<typename Ty>
+	inline Ty Lerp( const Ty& a, const Ty& b, float t )
 	{
-		return (1 - t) * a + t * b;
+		using namespace Math::Literal;
+		return ((1 - t) * a ) + (t * b);
 	}
+
+
 }
 

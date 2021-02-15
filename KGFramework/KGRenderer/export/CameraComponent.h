@@ -16,6 +16,7 @@ namespace KG::Component
 	class Render3DComponent;
 	class ShadowCasterComponent;
 	class CubeCameraComponent;
+	class LightComponent;
 	class ShadowCasterComponent;
 
 	struct CameraData
@@ -39,13 +40,12 @@ namespace KG::Component
 		friend Render3DComponent;
 		friend ShadowCasterComponent;
 		friend CubeCameraComponent;
-		friend ShadowCasterComponent;
 
 		// User Data
 		float fovY = 90.0f;
 		float aspectRatio = 16.0f / 9.0f;
 		float nearZ = 0.01f;
-		float farZ = 1000.0f;
+		float farZ = 500.0f;
 
 		D3D12_VIEWPORT viewport;
 		D3D12_RECT scissorRect;
@@ -98,6 +98,7 @@ namespace KG::Component
 
 		DirectX::BoundingFrustum GetFrustum();
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
+		virtual void OnPreRender() override;
 
 		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
 		void EndCameraRender( ID3D12GraphicsCommandList* commandList );
@@ -125,6 +126,7 @@ namespace KG::Component
 	public:
 		bool isVisible = true;
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
+		virtual void OnPreRender() override;
 		void InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc );
 
 		auto& GetRenderTexture()
@@ -209,7 +211,7 @@ namespace KG::Component
 		DirectX::XMFLOAT4X4 GetViewProj( size_t index );
 
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
-
+		virtual void OnPreRender() override;
 		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
 		void EndCameraRender( ID3D12GraphicsCommandList* commandList );
 
@@ -229,84 +231,91 @@ namespace KG::Component
 		DirectX::XMFLOAT4X4 view[cascadeLevel];
 		DirectX::XMFLOAT4X4 projection[cascadeLevel];
 
-		DirectX::XMFLOAT4 cameraWorldPosition[[cascadeLevel]];
+		DirectX::XMFLOAT4 cameraWorldPosition[cascadeLevel];
 		DirectX::XMFLOAT4 look;
 	};
 
-	//class DLL GSCascadeCameraComponent : public IRenderComponent
-	//{
-	//	friend Render3DComponent;
-	//	friend ShadowCasterComponent;
+	//0번 -> 전역 라이팅 / 1번 -> CSM 0번 / 2번 -> CSM 1번 / 3번 -> CSM 2번
+	class DLL GSCascadeCameraComponent : public IRenderComponent
+	{
+		friend Render3DComponent;
+		friend ShadowCasterComponent;
 
-	//	float nearZ = 0.01f;
-	//	float farZ = 1000.0f;
+		float nearZ = 0.01f;
+		float farZ = 1000.0f;
 
-	//	D3D12_VIEWPORT viewport;
-	//	D3D12_RECT scissorRect;
+		D3D12_VIEWPORT viewport;
+		D3D12_RECT scissorRect;
 
-	//	KG::Renderer::RenderTexture* renderTexture = nullptr;
 
-	//	TransformComponent* transform;
+		KG::Renderer::RenderTexture* renderTexture = nullptr;
 
-	//	ID3D12Resource* cameraDataBuffer = nullptr;
+		TransformComponent* transform;
+		CameraComponent* mainCamera;
+		LightComponent* directionalLight;
 
-	//	GSCascadeCameraData* cameraData = nullptr;
-	//	GSCascadeCameraData* mappedCameraData = nullptr;
+		ID3D12Resource* cameraDataBuffer = nullptr;
 
-	//	bool ProjDirty = true;
+		GSCascadeCameraData* cameraData = nullptr;
+		GSCascadeCameraData* mappedCameraData = nullptr;
 
-	//	void OnProjDirty() { ProjDirty = true; }
-	//	virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
-	//	virtual void OnDestroy() override;
+		bool ProjDirty = true;
 
-	//public:
-	//	static constexpr float fovY = 90.0f;
-	//	static constexpr float aspectRatio = 1.0f / 1.0f;
+		void OnProjDirty() { ProjDirty = true; }
+		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+		virtual void OnDestroy() override;
 
-	//	bool isVisible = true;
-	//	bool isMainCamera = true;
-	//	//Viewport 설정 필요
+	public:
+		static constexpr float fovY = 90.0f;
+		static constexpr float aspectRatio = 1.0f / 1.0f;
 
-	//	void RefreshCameraData();
+		bool isVisible = true;
+		bool isMainCamera = true;
+		//Viewport 설정 필요
 
-	//	void CalculateViewMatrix();
-	//	void CalculateProjectionMatrix();
+		void RefreshCameraData();
 
-	//	void SetNearZ( float value ) { OnProjDirty(); this->nearZ = value; };
-	//	void SetFarZ( float value ) { OnProjDirty(); this->farZ = value; };
-	//	void SetDefaultRender();
+		void SetNearZ( float value ) { OnProjDirty(); this->nearZ = value; };
+		void SetFarZ( float value ) { OnProjDirty(); this->farZ = value; };
+		void SetDefaultRender();
 
-	//	auto GetNearZ() const { return this->nearZ; };
-	//	auto GetFarZ() const { return this->farZ; };
+		auto GetNearZ() const { return this->nearZ; };
+		auto GetFarZ() const { return this->farZ; };
 
-	//	void SetViewport( const D3D12_VIEWPORT& viewport ) { this->viewport = viewport; };
-	//	void SetScissorRect( const D3D12_RECT& rect ) { this->scissorRect = rect; };
+		void SetViewport( const D3D12_VIEWPORT& viewport ) { this->viewport = viewport; };
+		void SetScissorRect( const D3D12_RECT& rect ) { this->scissorRect = rect; };
 
-	//	auto GetViewport() const { return this->viewport; };
-	//	auto GetScissorRect() const { return this->scissorRect; };
+		auto GetViewport() const { return this->viewport; };
+		auto GetScissorRect() const { return this->scissorRect; };
 
-	//	DirectX::XMFLOAT4X4 GetView( size_t index );
-	//	DirectX::XMFLOAT4X4 GetProj( size_t index );
-	//	DirectX::XMFLOAT4X4 GetViewProj( size_t viewIndex, size_t projIndex );
+		DirectX::XMFLOAT4X4 GetView( size_t index );
+		DirectX::XMFLOAT4X4 GetProj( size_t index );
+		std::array<DirectX::XMFLOAT4X4, 4> GetViewProj();
+		DirectX::XMFLOAT4X4 GetViewProj( size_t viewIndex, size_t projIndex );
 
-	//	virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
+		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
+		virtual void OnPreRender() override;
 
-	//	void SetCameraRender( ID3D12GraphicsCommandList* commandList );
-	//	void EndCameraRender( ID3D12GraphicsCommandList* commandList );
+		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
+		void EndCameraRender( ID3D12GraphicsCommandList* commandList );
 
-	//	void InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc );
+		void InitalizeCascade( KG::Component::CameraComponent* camera, KG::Component::LightComponent* light );
+		void RefreshNormalViewProj();
+		void RefreshCascadeViewProj();
 
-	//	auto& GetRenderTexture()
-	//	{
-	//		return *this->renderTexture;
-	//	}
+		void InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc );
 
-	//};
+		auto& GetRenderTexture()
+		{
+			return *this->renderTexture;
+		}
+
+	};
 
 
 	REGISTER_COMPONENT_ID( CameraComponent );
 	REGISTER_COMPONENT_ID( CubeCameraComponent );
 	REGISTER_COMPONENT_ID( GSCubeCameraComponent );
-	//REGISTER_COMPONENT_ID( GSCascadeCameraComponent );
+	REGISTER_COMPONENT_ID( GSCascadeCameraComponent );
 
 };

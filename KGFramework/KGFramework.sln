@@ -46,6 +46,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mesh", "Mesh", "{74DDEDF6-9
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Geomtery", "Geomtery", "{59AF83AA-ED1C-4E93-81E6-1781244E461A}"
 	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Geometry_CascadeShadow.hlsl = Resource\Resource\ShaderScript\Geometry_CascadeShadow.hlsl
 		Resource\Resource\ShaderScript\Geometry_Default.hlsl = Resource\Resource\ShaderScript\Geometry_Default.hlsl
 		Resource\Resource\ShaderScript\Geometry_GSShadow.hlsl = Resource\Resource\ShaderScript\Geometry_GSShadow.hlsl
 		Resource\Resource\ShaderScript\Geometry_SkyBox.hlsl = Resource\Resource\ShaderScript\Geometry_SkyBox.hlsl
@@ -74,6 +75,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Define", "Define", "{43F920
 		Resource\Resource\ShaderScript\Define_GBuffer.hlsl = Resource\Resource\ShaderScript\Define_GBuffer.hlsl
 		Resource\Resource\ShaderScript\Define_Global.hlsl = Resource\Resource\ShaderScript\Define_Global.hlsl
 		Resource\Resource\ShaderScript\Define_GSCamera.hlsl = Resource\Resource\ShaderScript\Define_GSCamera.hlsl
+		Resource\Resource\ShaderScript\Define_GSCascadeCamera.hlsl = Resource\Resource\ShaderScript\Define_GSCascadeCamera.hlsl
 		Resource\Resource\ShaderScript\Define_Light.hlsl = Resource\Resource\ShaderScript\Define_Light.hlsl
 		Resource\Resource\ShaderScript\Define_NormalCamera.hlsl = Resource\Resource\ShaderScript\Define_NormalCamera.hlsl
 	EndProjectSection

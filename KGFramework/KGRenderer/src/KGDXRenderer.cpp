@@ -36,10 +36,10 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->render3DSystem.OnPreRender();
 		this->cameraSystem.OnPreRender();
 		this->cubeCameraSystem.OnPreRender();
+		this->shadowSystem.OnPreRender();
 		this->lightSystem.OnPreRender();
 		this->avatarSystem.OnPreRender();
 		this->animationStreamSystem.OnPreRender();
-		this->shadowSystem.OnPreRender();
 	}
 
 	void OnUpdate( float elaspedTime )
@@ -258,9 +258,9 @@ void KG::Renderer::KGDXRenderer::ShadowMapRender()
 	size_t cameraCount = 0;
 	for ( KG::Component::ShadowCasterComponent& comp : this->graphicSystems->shadowSystem )
 	{
-		PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "Shadow Camera Render : Camera %d", cameraCount++ );
 		if ( comp.isPointLightShadow() )
 		{
+			PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "Point Light ShadowMap Render : Camera %d", cameraCount++ );
 			auto* cubeCamera = comp.GetCubeCamera();
 			cubeCamera->SetCameraRender( mainCommandList );
 			this->mainCommandList->ClearDepthStencilView( cubeCamera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr );
@@ -269,8 +269,16 @@ void KG::Renderer::KGDXRenderer::ShadowMapRender()
 			cubeCamera->EndCameraRender( mainCommandList );
 			PassRenderEnd( mainCommandList, cubeCamera->GetRenderTexture(), 0 );
 		}
-		else
+		else if ( comp.isDirectionalLightShadow() )
 		{
+			PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "Directional Light ShadowMap Render : Camera %d", cameraCount++ );
+			auto* cascadeCamera = comp.GetCamera();
+			cascadeCamera->SetCameraRender( mainCommandList );
+			this->mainCommandList->ClearDepthStencilView( cascadeCamera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr );
+			this->mainCommandList->OMSetRenderTargets( 0, nullptr, false, &cascadeCamera->GetRenderTexture().dsvHandle );
+			this->renderEngine->Render( ShaderGroup::Opaque, ShaderGeometryType::GSCascadeShadow, ShaderPixelType::GSCubeShadow, mainCommandList );
+			cascadeCamera->EndCameraRender( mainCommandList );
+			PassRenderEnd( mainCommandList, cascadeCamera->GetRenderTexture(), 0 );
 		}
 		PIXEndEvent( mainCommandList );
 	}
@@ -832,7 +840,7 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 8> GetStaticSamplers()
 
 	const CD3DX12_STATIC_SAMPLER_DESC linearCompareClamp(
 		7, // shaderRegister
-		D3D12_FILTER_COMPARISON_MIN_MAG_MIP_LINEAR, // filter
+		D3D12_FILTER_COMPARISON_MIN_MAG_LINEAR_MIP_POINT, // filter
 		D3D12_TEXTURE_ADDRESS_MODE_BORDER,  // addressU
 		D3D12_TEXTURE_ADDRESS_MODE_BORDER,  // addressV
 		D3D12_TEXTURE_ADDRESS_MODE_BORDER,

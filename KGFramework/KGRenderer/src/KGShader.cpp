@@ -348,7 +348,7 @@ ID3D12PipelineState* KG::Renderer::Shader::CreatePSO( ShaderMeshType meshType, S
 	}
 
 	//GS
-	if ( geoType == ShaderGeometryType::GeometryCubeMap || geoType == ShaderGeometryType::GSCubeShadow || tessel == ShaderTesselation::TesselationMesh )
+	if ( geoType == ShaderGeometryType::GeometryCubeMap || geoType == ShaderGeometryType::GSCubeShadow || geoType == ShaderGeometryType::GSCascadeShadow || tessel == ShaderTesselation::TesselationMesh )
 	{
 		geometryShader = CompileShaderFromMetadata( ShaderTarget::GS_5_1, meshType, pixType, geoType );
 		D3D12_SHADER_BYTECODE byteCode;
@@ -393,7 +393,7 @@ ID3D12PipelineState* KG::Renderer::Shader::CreatePSO( ShaderMeshType meshType, S
 		d3dPipelineStateDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UINT;
 		//d3dPipelineStateDesc.RTVFormats[3] = DXGI_FORMAT_R8G8B8A8_UNORM;
 	}
-	else if ( geoType == ShaderGeometryType::GSCubeShadow )
+	else if ( geoType == ShaderGeometryType::GSCubeShadow || geoType == ShaderGeometryType::GSCascadeShadow )
 	{
 		d3dPipelineStateDesc.NumRenderTargets = 6;
 		d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;

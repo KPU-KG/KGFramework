@@ -1,9 +1,8 @@
 #include "KGFramework.h"
+#include "GraphicComponent.h"
 #include "KGRenderer.h"
 #include "Systems.h"
 #include "Debug.h"
-
-
 #include "GameObject.h"
 #include "LambdaComponent.h"
 #include "InputManager.h"
@@ -83,6 +82,8 @@ void KG::GameFramework::OnTestInit()
 	constexpr auto texOne = "PBRTile"_id;
 	constexpr auto texTwo = "PBRMetal"_id;
 	constexpr auto texThree = "PBRTile"_id;
+	KG::Component::CameraComponent* mainCamera = nullptr;
+
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( texOne ) );
@@ -101,6 +102,7 @@ void KG::GameFramework::OnTestInit()
 	{
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* cam = this->renderer->GetNewCameraComponent();
+		mainCamera = cam;
 		//프레임워크에서 카메라 세팅 // 
 		KG::Renderer::RenderTextureDesc renderTextureDesc;
 		renderTextureDesc.useDeferredRender = true;
@@ -156,6 +158,8 @@ void KG::GameFramework::OnTestInit()
 						trans->RotateAxis( trans->GetRight(), delta.y * 0.3f );
 					}
 				}
+				auto worldPos = trans->GetWorldPosition();
+				DebugNormalMessage( "LambdaTransform : " << worldPos);
 			}
 		);
 		testCameraObject.name = "camera";
@@ -259,6 +263,7 @@ void KG::GameFramework::OnTestInit()
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* light = this->renderer->GetNewLightComponent();
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
+		KG::Component::ShadowCasterComponent* sdw = this->renderer->GetNewShadowCasterComponent();
 		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
 			[light]( KG::Core::GameObject* gameObject, float elapsedTime )
 			{
@@ -283,7 +288,9 @@ void KG::GameFramework::OnTestInit()
 		testLightObject.name = "Light";
 		testLightObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
 		light->SetDirectionalLight( DirectX::XMFLOAT3( 0.1f, 0.1f, 0.1f ) * 5, DirectX::XMFLOAT3( 0.0f, -1.0f, -1.0f ) );
+		sdw->SetTargetCameraCamera( mainCamera );
 		testLightObject.AddComponent( light );
+		testLightObject.AddComponent( sdw );
 		testLightObject.AddComponent( lam );
 
 	}
@@ -322,7 +329,7 @@ void KG::GameFramework::OnTestInit()
 		match.SetDefaultMaterial( { KG::Utill::HashString( "soldierHead"_id ), KG::Utill::HashString( "soldierBody"_id ) } );
 		auto* ptr = this->renderer->LoadFromModel( KG::Utill::HashString( "soldier"_id ), oc, match );
 		ptr->GetComponent<KG::Component::TransformComponent>()->SetScale( 0.01f, 0.01f, 0.01f );
-		//ptr->GetComponent<KG::Component::TransformComponent>()->SetPosition	( 0, 2, 0 );
+		ptr->GetComponent<KG::Component::TransformComponent>()->SetPosition( 0.5f, -0.5f, 0.0f );
 		ptr->name = "soldier";
 
 		auto* anim = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_sprint_forward"_id ) );
@@ -334,7 +341,7 @@ void KG::GameFramework::OnProcess()
 {
 	this->timer.Tick();
 	this->UpdateWindowText();
-	//DebugNormalMessage( "OnUpdated");
+	DebugNormalMessage( "OnUpdatedProcess");
 	this->input->ProcessInput( this->engineDesc.hWnd );
 	this->system->OnUpdate( this->timer.GetTimeElapsed() );
 	this->renderer->Update( this->timer.GetTimeElapsed() );

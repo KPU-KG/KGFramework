@@ -51,6 +51,7 @@ namespace KG::Renderer
 		Light = 2,
 		SkyBox = 3,
 		GSCubeShadow = 4,
+		GSCascadeShadow = 5,
 	};
 	// 최종 렌더 명령시에 결정
 	enum class ShaderPixelType
@@ -82,6 +83,7 @@ namespace KG::Renderer
 		case KG::Renderer::ShaderGeometryType::Default: return "GEOMETRY_NORMAL";
 		case KG::Renderer::ShaderGeometryType::GeometryCubeMap: return "GEOMETRY_CUBE";
 		case KG::Renderer::ShaderGeometryType::GSCubeShadow: return "GEOMETRY_CUBE_SHADOW";
+		case KG::Renderer::ShaderGeometryType::GSCascadeShadow: return "GEOMETRY_CASCADE_SHADOW";
 		case KG::Renderer::ShaderGeometryType::Light: return "GEOMETRY_LIGHT";
 		case KG::Renderer::ShaderGeometryType::SkyBox: return "GEOMETRY_SKYBOX";
 		}
