@@ -399,13 +399,39 @@ struct LightVertexOut
 
 Texture2DArray < float > shadowArray [ ] : register ( t0 , space1 ) ; 
 
+bool isInPosition ( float3 position ) 
+{ 
+    return ( abs ( position . x ) <= 1.0f ) && ( abs ( position . y ) <= 1.0f ) ; 
+} 
 
 float DirectionalShadowCascadePCF ( float3 worldPosition , LightData lightData , ShadowData shadowData ) 
 { 
-    float4 projPos = mul ( float4 ( worldPosition , 1.0f ) , shadowData . shadowMatrix [ 0 ] ) ; 
-    float3 projPos3 = projPos . xyz / projPos . w ; 
-    float2 uv = ProjPositionToUV ( projPos3 . xy ) ; 
-    return shadowArray [ shadowData . shadowMapIndex [ 0 ] ] . SampleCmpLevelZero ( gsamLinerCompClamp , float3 ( uv , 0 ) , ( projPos3 . z ) - 0.001f ) ; 
+    float2 uv = float2 ( 1.0f , 1.0f ) ; 
+    float depth = 1.0f ; 
+    uint index = 0 ; 
+    
+    { 
+        float4 projPos = mul ( float4 ( worldPosition , 1.0f ) , shadowData . shadowMatrix [ 0 ] ) ; 
+        float3 projPos3 = projPos . xyz / projPos . w ; 
+        uv = ProjPositionToUV ( projPos3 . xy ) ; 
+        depth = projPos3 . z ; 
+        index = 0 ; 
+        
+    } 
+    
+    for ( uint cascade = 0 ; cascade < 3 ; cascade ++ ) 
+    { 
+        float4 projPos = mul ( float4 ( worldPosition , 1.0f ) , shadowData . shadowMatrix [ cascade + 1 ] ) ; 
+        float3 projPos3 = projPos . xyz / projPos . w ; 
+        if ( isInPosition ( projPos3 ) ) 
+        { 
+            uv = ProjPositionToUV ( projPos3 . xy ) ; 
+            depth = projPos3 . z ; 
+            index = cascade + 1 ; 
+            break ; 
+        } 
+    } 
+    return shadowArray [ shadowData . shadowMapIndex [ 0 ] ] . SampleCmpLevelZero ( gsamLinerCompClamp , float3 ( uv , index ) , ( depth ) - 0.001f ) ; 
 } 
 
 

@@ -154,8 +154,8 @@ DirectX::BoundingFrustum KG::Component::CameraComponent::GetFrustum()
 	auto proj = this->GetProj();
 	auto view = this->GetView();
 	DirectX::BoundingFrustum::CreateFromMatrix( bf, XMMatrixTranspose( XMLoadFloat4x4( &proj ) ) );
-	XMMATRIX inverseViewProj = XMMatrixInverse( nullptr, XMMatrixTranspose( XMLoadFloat4x4( &view ) ) );
-	bf.Transform( bf, inverseViewProj );
+	XMMATRIX inverseView= XMMatrixInverse( nullptr, XMMatrixTranspose( XMLoadFloat4x4( &view ) ) );
+	bf.Transform( bf, inverseView );
 	return bf;
 }
 
@@ -567,7 +567,7 @@ void KG::Component::GSCascadeCameraComponent::RefreshNormalViewProj()
 	auto worldPos = this->mainCamera->GetGameObject()->GetTransform()->GetWorldPosition();
 	DebugNormalMessage( "RefreshNormalViewProj : " << worldPos );
 	auto lightDirection = this->directionalLight->GetDirectionalLightRef().Direction;
-	auto radius = 100.0f;
+	auto radius = 400.0f;
 	auto eyePos = XMVectorSubtract( XMLoadFloat3( &worldPos ), XMVectorScale( XMLoadFloat3( &lightDirection ), radius ) );
 	auto view = DirectX::XMMatrixLookToLH(
 		eyePos,
@@ -588,6 +588,7 @@ void KG::Component::GSCascadeCameraComponent::RefreshCascadeViewProj()
 
 	auto frustum = mainCamera->GetFrustum();
 	XMFLOAT3 corner[8] = {};
+	XMFLOAT3 viewCorner[8] = {};
 	frustum.GetCorners( corner );
 	XMFLOAT3 lightDirection = directionalLight->GetDirectionalLightRef().Direction;
 	for ( size_t cascade = 0; cascade < 3; cascade++ )

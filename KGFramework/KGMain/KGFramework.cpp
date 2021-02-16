@@ -171,7 +171,7 @@ void KG::GameFramework::OnTestInit()
 
 
 
-	constexpr size_t cdas = 3;
+	constexpr size_t cdas = 30;
 	for ( size_t y = 0; y < cdas; y++ )
 	{
 		for ( size_t x = 0; x < cdas; x++ )
@@ -194,7 +194,7 @@ void KG::GameFramework::OnTestInit()
 				);
 				auto* mat = this->renderer->GetNewMaterialComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? texThree : texTwo ) );
 				auto* geo = this->renderer->GetNewGeomteryComponent( KG::Utill::HashString( (x & 1) != (y & 1) ? "sphere"_id : "cube"_id ) );
-				auto* evn = this->renderer->GetNewCubeCameraComponent();
+				//auto* evn = this->renderer->GetNewCubeCameraComponent();
 				KG::Renderer::RenderTextureDesc renderTextureDesc;
 				renderTextureDesc.useDeferredRender = true;
 				renderTextureDesc.useCubeRender = true;
@@ -203,18 +203,18 @@ void KG::GameFramework::OnTestInit()
 				renderTextureDesc.uploadSRVRenderTarget = true;
 				renderTextureDesc.width = 128;
 				renderTextureDesc.height = 128;
-				evn->InitializeRenderTexture( renderTextureDesc );
+				//evn->InitializeRenderTexture( renderTextureDesc );
 				auto* ren = this->renderer->GetNewRenderComponent();
 				testCubeObjects[index].name = "meshObject0";
 				testCubeObjects[index].AddComponent( tran );
 				testCubeObjects[index].AddComponent( mat );
 				testCubeObjects[index].AddComponent( lam );
 				testCubeObjects[index].AddComponent( geo );
-				testCubeObjects[index].AddComponent( evn );
+				//testCubeObjects[index].AddComponent( evn );
 				testCubeObjects[index].AddComponent( ren );
 				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
 				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) * 0.25f );
-				testCubeObjects[index].GetComponent<KG::Component::Render3DComponent>()->SetReflectionProbe( evn );
+				//testCubeObjects[index].GetComponent<KG::Component::Render3DComponent>()->SetReflectionProbe( evn );
 			}
 
 			{
@@ -248,8 +248,8 @@ void KG::GameFramework::OnTestInit()
 				light->SetPointLight( DirectX::XMFLOAT3( color.x, color.y, color.z ), 0.1f, 5.0f );
 
 				testPointLightObjects[index].AddComponent( tran );
-				testPointLightObjects[index].AddComponent( light );
-				testPointLightObjects[index].AddComponent( sdw );
+				//testPointLightObjects[index].AddComponent( light );
+				//testPointLightObjects[index].AddComponent( sdw );
 				testPointLightObjects[index].AddComponent( lam );
 				testPointLightObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
 

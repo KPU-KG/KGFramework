@@ -45,7 +45,7 @@ namespace KG::Component
 		float fovY = 90.0f;
 		float aspectRatio = 16.0f / 9.0f;
 		float nearZ = 0.01f;
-		float farZ = 500.0f;
+		float farZ = 100.0f;
 
 		D3D12_VIEWPORT viewport;
 		D3D12_RECT scissorRect;
