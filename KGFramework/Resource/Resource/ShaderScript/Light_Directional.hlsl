@@ -14,10 +14,10 @@ Texture2DArray<float> shadowArray[] : register(t0, space1);
 
 bool isInPosition(float3 position)
 {
-    return (abs(position.x) <= 1.0f) && (abs(position.y) <= 1.0f);
+    return (abs(position.x) <= 1.0f) && (abs(position.y) <= 1.0f) && (abs(position.z) <= 1.0f);
 }
 
-float DirectionalShadowCascadePCF(float3 worldPosition, LightData lightData, ShadowData shadowData)
+float DirectionalShadowCascadePCF(float3 worldPosition, LightData lightData, ShadowData shadowData, out uint id)
 {
     float2 uv = float2(1.0f, 1.0f);
     float depth = 1.0f;
@@ -44,6 +44,7 @@ float DirectionalShadowCascadePCF(float3 worldPosition, LightData lightData, Sha
             break;
         }
     }
+    id = index;
     return shadowArray[shadowData.shadowMapIndex[0]].SampleCmpLevelZero(gsamLinerCompClamp, float3(uv, index), (depth) - 0.001f);
 }
 
@@ -75,8 +76,19 @@ float4 PixelShaderFuction(LightVertexOut input) : SV_Target0
     float3 calcWorldPosition = DepthToWorldPosition(depth, input.projPosition.xy, mul(inverseProjection, inverseView));
     float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
     
-    float shadowFactor = DirectionalShadowCascadePCF(calcWorldPosition, lightData, shadowData);
+    uint id;
+    
+    float4 cascadeDebugColor[4] = 
+        {
+        float4(1.0f,1.0f,1.0f, 1.0f),
+        float4(1.0f,0.0f,0.0f, 1.0f),
+        float4(0.0f,1.0f,0.0f, 1.0f),
+        float4(0.0f,0.0f,1.0f, 1.0f),
+    };
+    
+    float shadowFactor = DirectionalShadowCascadePCF(calcWorldPosition, lightData, shadowData, id);
     
     return CustomLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(-cameraDirection), 1.0f) * shadowFactor;
+    //return CustomLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(-cameraDirection), 1.0f) * shadowFactor * cascadeDebugColor[id];
 }
 

@@ -103,6 +103,7 @@ void KG::GameFramework::OnTestInit()
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* cam = this->renderer->GetNewCameraComponent();
 		mainCamera = cam;
+		cam->SetFarZ( 50.0f );
 		//프레임워크에서 카메라 세팅 // 
 		KG::Renderer::RenderTextureDesc renderTextureDesc;
 		renderTextureDesc.useDeferredRender = true;

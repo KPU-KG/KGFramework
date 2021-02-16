@@ -582,7 +582,7 @@ void KG::Component::GSCascadeCameraComponent::RefreshNormalViewProj()
 
 void KG::Component::GSCascadeCameraComponent::RefreshCascadeViewProj()
 {
-	static constexpr float cascadePoint[] = { 0.0f, 0.2f, 0.4f, 1.0f };
+	static constexpr float cascadePoint[] = { 0.0f, 0.07f, 0.4f, 1.0f };
 
 	using namespace Math::Literal;
 
@@ -620,7 +620,28 @@ void KG::Component::GSCascadeCameraComponent::RefreshCascadeViewProj()
 			XMLoadFloat3( &lightDirection ),
 			XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f )
 		);
-		auto proj = DirectX::XMMatrixOrthographicLH( radius, radius, 0.01f, radius * 2 );
+		float maxX = 0.0f;
+		float maxY = 0.0f;
+		float maxZ = 0.0f;
+		float minX = 100000.0f;
+		float minY = 100000.0f;
+		float minZ = 100000.0f;
+
+		for ( size_t i = 0; i < 8; i++ )
+		{
+			auto pos = XMLoadFloat3( &currentCorner[i] );
+			auto viewPos = XMVector3TransformCoord( pos, view );
+			maxX = std::max( maxX, XMVectorGetX( viewPos ) );
+			maxY = std::max( maxY, XMVectorGetY( viewPos ) );
+			maxZ = std::max( maxZ, XMVectorGetZ( viewPos ) );
+			minX = std::min( minX, XMVectorGetX( viewPos ) );
+			minY = std::min( minY, XMVectorGetY( viewPos ) );
+			minZ = std::min( minZ, XMVectorGetZ( viewPos ) );
+		}
+
+
+		//auto proj = DirectX::XMMatrixOrthographicLH( radius, radius, 0.01f, radius * 2 );
+		auto proj = DirectX::XMMatrixOrthographicOffCenterLH(minX, maxX, minY, maxY, 0.01f, radius * 2 );
 		XMStoreFloat4( &this->cameraData->cameraWorldPosition[cascade + 1], eyePos );
 		XMStoreFloat4x4( &this->cameraData->view[cascade + 1], XMMatrixTranspose( view ) );
 		XMStoreFloat4x4( &this->cameraData->projection[cascade + 1], XMMatrixTranspose( proj ) );
