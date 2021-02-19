@@ -45,7 +45,9 @@ void KG::Component::LightComponent::SetPointLight( const DirectX::XMFLOAT3& stre
 	}
 	if ( this->pointLightGeometry == nullptr )
 	{
-		this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "sphere"_id ) );
+		this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "cube"_id ) );
+		//this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "lightSphere"_id ) );
+		//this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "sphere"_id ) );
 	}
 	this->currentShader = this->pointLightShader;
 	this->currentGeometry = this->pointLightGeometry;

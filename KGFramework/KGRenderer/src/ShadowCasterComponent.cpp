@@ -90,7 +90,7 @@ void KG::Component::ShadowCasterComponent::OnPreRender()
 	else if ( this->isPointLightShadow() )
 	{
 		this->cubeCamera->OnPreRender();
-		
+		this->targetLight->SetShadowMatrix( this->cubeCamera->GetProj() );
 	}
 }
 

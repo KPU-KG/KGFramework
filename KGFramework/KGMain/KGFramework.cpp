@@ -172,7 +172,7 @@ void KG::GameFramework::OnTestInit()
 
 
 
-	constexpr size_t cdas = 30;
+	constexpr size_t cdas = 3;
 	for ( size_t y = 0; y < cdas; y++ )
 	{
 		for ( size_t x = 0; x < cdas; x++ )
@@ -213,51 +213,51 @@ void KG::GameFramework::OnTestInit()
 				testCubeObjects[index].AddComponent( geo );
 				//testCubeObjects[index].AddComponent( evn );
 				testCubeObjects[index].AddComponent( ren );
-				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
-				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) * 0.25f );
+				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x * 2, 0.0f, y * 2 );
+				testCubeObjects[index].GetComponent<KG::Component::TransformComponent>()->SetScale( DirectX::XMFLOAT3( 1, 1, 1 ) * 0.5f );
 				//testCubeObjects[index].GetComponent<KG::Component::Render3DComponent>()->SetReflectionProbe( evn );
 			}
 
-			{
-				auto* tran = this->system->transformSystem.GetNewComponent();
-				auto* light = this->renderer->GetNewLightComponent();
-				auto* lam = this->system->lambdaSystem.GetNewComponent();
-				auto* sdw = this->renderer->GetNewShadowCasterComponent();
-				static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
-					[light]( KG::Core::GameObject* gameObject, float elapsedTime )
-					{
-						static float str = 9.0f;
-						using namespace KG::Input;
-						auto input = InputManager::GetInputManager();
-						auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
-						if ( input->IsTouching( VK_OEM_6 ) )
-						{
-							DebugNormalMessage( "Light Intense Up" );
-							light->GetPointLightRef().Strength = light->GetDirectionalLightRef().Strength * 1.1f;
-						}
-						if ( input->IsTouching( VK_OEM_4 ) )
-						{
-							DebugNormalMessage( "Light Intense Down" );
-							light->GetPointLightRef().Strength = light->GetDirectionalLightRef().Strength * 0.9f;
-						}
-					}
-				);
-				testPointLightObjects[index].name = "Light2";
-
-				auto color = Math::RandomColor();
-
-				light->SetPointLight( DirectX::XMFLOAT3( color.x, color.y, color.z ), 0.1f, 5.0f );
-
-				testPointLightObjects[index].AddComponent( tran );
-				//testPointLightObjects[index].AddComponent( light );
-				//testPointLightObjects[index].AddComponent( sdw );
-				testPointLightObjects[index].AddComponent( lam );
-				testPointLightObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( x, 0.0f, y );
-
-				tran->Translate( 0.5f, 0, 0.5f );
-			}
-
 		}
+	}
+
+	{
+		int index = 0;
+		auto* tran = this->system->transformSystem.GetNewComponent();
+		auto* light = this->renderer->GetNewLightComponent();
+		auto* lam = this->system->lambdaSystem.GetNewComponent();
+		auto* sdw = this->renderer->GetNewShadowCasterComponent();
+		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+			[light]( KG::Core::GameObject* gameObject, float elapsedTime )
+			{
+				static float str = 9.0f;
+				using namespace KG::Input;
+				auto input = InputManager::GetInputManager();
+				auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+				if ( input->IsTouching( VK_OEM_6 ) )
+				{
+					DebugNormalMessage( "Light Intense Up" );
+					light->GetPointLightRef().Strength = light->GetDirectionalLightRef().Strength * 1.1f;
+				}
+				if ( input->IsTouching( VK_OEM_4 ) )
+				{
+					DebugNormalMessage( "Light Intense Down" );
+					light->GetPointLightRef().Strength = light->GetDirectionalLightRef().Strength * 0.9f;
+				}
+			}
+		);
+		testPointLightObjects[index].name = "Light2";
+
+
+		light->SetPointLight( DirectX::XMFLOAT3( 20.0f, 0.0f, 0.0f ), 0.1f, 20.0f );
+
+		testPointLightObjects[index].AddComponent( tran );
+		testPointLightObjects[index].AddComponent( light );
+		testPointLightObjects[index].AddComponent( sdw );
+		testPointLightObjects[index].AddComponent( lam );
+		testPointLightObjects[index].GetComponent<KG::Component::TransformComponent>()->Translate( 0.0f, 0.0f, 0.0f );
+
+		tran->Translate( 0.5f, 0, 0.5f );
 	}
 
 	{
