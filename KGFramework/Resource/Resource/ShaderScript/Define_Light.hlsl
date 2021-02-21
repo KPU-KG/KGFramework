@@ -4,13 +4,16 @@
 struct LightData
 {
     float3 Strength;
-    float FalloffStart;
+    float lightPower;
     float3 Direction;
-    float FalloffEnd;
+    float pad0;
     float3 Position;
-    float SpotPower;
-    float4 padding0;
-    float4 padding1;
+    float pad1;
+    float FalloffStart;
+    float FalloffEnd;
+    float Phi;
+    float Theta;
+    float4 pad2;
 };
 
 StructuredBuffer<LightData> lightInfo : register(t0);

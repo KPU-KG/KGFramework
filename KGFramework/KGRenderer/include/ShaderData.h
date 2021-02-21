@@ -17,14 +17,17 @@ namespace KG::Renderer
 			} object;
 			struct light
 			{
-				XMFLOAT3 Strength;
+				DirectX::XMFLOAT3 Strength;
+				float lightPower;
+				DirectX::XMFLOAT3 Direction;
+				float pad0;
+				DirectX::XMFLOAT3 Position;
+				float pad1;
 				float FalloffStart;
-				XMFLOAT3 Direction;
 				float FalloffEnd;
-				XMFLOAT3 Position;
-				float SpotPower;
-				XMFLOAT4 pad0;
-				XMFLOAT4 pad1;
+				float Phi;
+				float Theta;
+				XMFLOAT4 pad2;
 			} light;
 		};
 	};
