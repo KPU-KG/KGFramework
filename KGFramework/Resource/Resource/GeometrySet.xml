@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--
 기본 양식 : hash_id는 자동으로 채워집니다.
 <Geometry id="" fileDir="" rawMesh="false"/>
@@ -24,4 +24,6 @@
     <Geometry id="soldier_sprint_forward" fileDir="Resource/Geometry/animation/Soldier@SprintForward.fbx" rawMesh="false" hash_id="1308506146"/>
     <Geometry id="soldier_walk_forward" fileDir="Resource/Geometry/animation/Soldier@WalkForward.fbx" rawMesh="false" hash_id="4172517605"/>
     <Geometry id="soldier_standing" fileDir="Resource/Geometry/animation/Soldier@Standing.fbx" rawMesh="false" hash_id="1391591128"/>
+    <Geometry id="soldier_walk_left" fileDir="Resource/Geometry/animation/Soldier@WalkLeft.fbx" rawMesh="false" hash_id="1716107965"/>
+    <Geometry id="soldier_walk_right" fileDir="Resource/Geometry/animation/Soldier@WalkRight.fbx" rawMesh="false" hash_id="1130876612"/>
 </GeometrySet>

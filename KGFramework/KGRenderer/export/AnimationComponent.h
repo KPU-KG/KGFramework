@@ -30,23 +30,58 @@ namespace KG::Component
 		void InitializeBone( KG::Core::GameObject* rootNode );
 	};
 
-	class DLL AnimationStreamerComponent : public IRenderComponent
-	{
-		using FrameCacheVector = std::vector<KG::Core::GameObject*>;
-	protected:
-		KG::Utill::AnimationSet* anim = nullptr;
-		KG::Component::GeometryComponent* geometry = nullptr;
-		std::vector<FrameCacheVector> frameCache;
+	struct Animation {
+	private:
+		void MatchNode(KG::Core::GameObject* gameObject);
+		void SetDuration(KG::Utill::AnimationSet* anim);
+	public:
+		KG::Utill::HashString animationId;
+		std::vector<std::vector<KG::Core::GameObject*>> frameCache;
 		float timer = 0.0f;
 		float duration = 0.0f;
-		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
-		void MatchNode();
+		void Initialize(KG::Core::GameObject* gameObject);
+	};
+
+	struct AnimationCommand {
+		std::vector<int> index;
+		std::vector<int> weight;
+		float duration = 0.1f;
+		float time = 0.0f;
+		float speed = 0.5f;
+		bool applyTransform = false;
+		bool applyRotation = true;
+		bool applyScale = true;
+	};
+
+	class DLL AnimationControllerComponent : public IRenderComponent
+	{
+		// changing
+		// playing
+	protected:
+		int state;
+		std::vector<Animation> animations;
+
+		AnimationCommand curAnimation;
+		std::vector<AnimationCommand> nextAnimations;
+
+		KG::Utill::HashString defaultAnimation;
+
+		int GetAnimationIndex(const KG::Utill::HashString& animationId);
+		int GetAnimationCommandIndex(const KG::Utill::HashString animationId, int index);
+		int GetTotalWeight(int index);
+		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
+		virtual void OnDestroy() override;
 	public:
-		virtual void Update( float timeElapsed ) override;
-		void InitializeAnimation( const KG::Utill::HashString& animationId, UINT animationIndex = 0 );
-		void GetDuration();
+		virtual void Update(float timeElapsed) override;
+		void RegisterAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U);
+		void SetDefaultAnimation(KG::Utill::HashString defaultAnim);
+		void SetAnimation(const KG::Utill::HashString& animationId, float duration = -1, float speed = 0.5f, bool clearNext = true, int weight = 1);
+		void ChangeAnimation(const KG::Utill::HashString& animationId, float blendingDuration = 0.1f, float animationDuration = 0.5f, float speed = 0.5f);
+		int AddNextAnimation(const KG::Utill::HashString nextAnim, float duration = 0.1f, float speed = 0.5f, int weight = 1);
+		void BlendingAnimation(const KG::Utill::HashString nextAnim, float duration = -1.f, int index = -1, int weight = 1);
+		void SetAnimationWeight(int index, const KG::Utill::HashString anim, int weight);
 	};
 
 	REGISTER_COMPONENT_ID( BoneTransformComponent );
-	REGISTER_COMPONENT_ID( AnimationStreamerComponent );
+	REGISTER_COMPONENT_ID(AnimationControllerComponent);
 };

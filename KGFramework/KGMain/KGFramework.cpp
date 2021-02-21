@@ -333,8 +333,47 @@ void KG::GameFramework::OnTestInit()
 		ptr->GetComponent<KG::Component::TransformComponent>()->SetPosition( 0.5f, -0.5f, 0.0f );
 		ptr->name = "soldier";
 
-		auto* anim = this->renderer->GetNewBoneAnimationStreamComponent( KG::Utill::HashString( "soldier_sprint_forward"_id ) );
-		ptr->AddComponent( anim );
+		auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+
+		ctrl->RegisterAnimation(KG::Utill::HashString("soldier_sprint_forward"_id));
+		ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+		ctrl->RegisterAnimation(KG::Utill::HashString("soldier_standing"_id));
+		ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_right"_id));
+		ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_left"_id));
+
+		ctrl->SetAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+		ctrl->SetDefaultAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+		ptr->AddComponent(ctrl);
+
+		auto* lam = this->system->lambdaSystem.GetNewComponent();
+		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+			[ctrl](KG::Core::GameObject* gameObject, float elapsedTime)
+			{
+				auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+				using namespace KG::Input;
+				auto input = InputManager::GetInputManager();
+				if (input->IsTouching('1'))
+				{
+					// -1 : 무한 루프
+					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_left"_id), 0.5f, -1);
+				}
+				if (input->IsTouching('2'))
+				{
+					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 0.5f, -1);
+				}
+				if (input->IsTouching('3'))
+				{
+					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_right"_id), 0.5f, -1);
+				}
+				if (input->IsTouching('4'))
+				{
+					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 0.5f, -1);
+					ctrl->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), -1, -1);
+					ctrl->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), -1, 0);
+				}
+			}
+		);
+		ptr->AddComponent(lam);
 	}
 }
 

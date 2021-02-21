@@ -67,11 +67,11 @@ namespace KG::System
 		virtual void OnPreRender() override;
 	};
 
-	struct AnimationStreamSystem : public IComponentSystem<AnimationStreamerComponent>
+	struct AnimationControllerSystem : public IComponentSystem<AnimationControllerComponent>
 	{
 	public:
-		virtual void OnUpdate( float elapsedTime ) override;
-		virtual void OnPostUpdate( float elapsedTime ) override;
+		virtual void OnUpdate(float elapsedTime) override;
+		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;
 	};
 
