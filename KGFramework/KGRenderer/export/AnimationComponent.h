@@ -2,6 +2,14 @@
 #include <vector>
 #include "IRenderComponent.h"
 
+#define ANIMSTATE_PLAYING 0
+#define ANIMSTATE_CHANGING 1
+
+#define ANIMLOOP_INF -1
+
+#define ANIMINDEX_CURRENT -1
+#define ANIMINDEX_CHANGE 0
+
 namespace KG::Core
 {
 	class GameObject;
@@ -48,6 +56,7 @@ namespace KG::Component
 		float duration = 0.1f;
 		float time = 0.0f;
 		float speed = 0.5f;
+		int next = ANIMSTATE_PLAYING;
 		bool applyTransform = false;
 		bool applyRotation = true;
 		bool applyScale = true;
@@ -58,7 +67,7 @@ namespace KG::Component
 		// changing
 		// playing
 	protected:
-		int state;
+		int state = ANIMSTATE_PLAYING;
 		std::vector<Animation> animations;
 
 		AnimationCommand curAnimation;
@@ -71,13 +80,15 @@ namespace KG::Component
 		int GetTotalWeight(int index);
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 		virtual void OnDestroy() override;
+		void PlayingUpdate(float elapsedTime);
+		void ChangingUpdate(float elapsedTime);
 	public:
 		virtual void Update(float timeElapsed) override;
 		void RegisterAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U);
 		void SetDefaultAnimation(KG::Utill::HashString defaultAnim);
 		void SetAnimation(const KG::Utill::HashString& animationId, float duration = -1, float speed = 0.5f, bool clearNext = true, int weight = 1);
-		void ChangeAnimation(const KG::Utill::HashString& animationId, float blendingDuration = 0.1f, float animationDuration = 0.5f, float speed = 0.5f);
-		int AddNextAnimation(const KG::Utill::HashString nextAnim, float duration = 0.1f, float speed = 0.5f, int weight = 1);
+		int ChangeAnimation(const KG::Utill::HashString& animationId, int nextState = ANIMSTATE_PLAYING, float blendingDuration = 0.1f, float animationDuration = 0.5f, float speed = 0.5f);
+		int AddNextAnimation(const KG::Utill::HashString nextAnim, int nextState = ANIMSTATE_PLAYING, float duration = 0.1f, float speed = 0.5f, int weight = 1);
 		void BlendingAnimation(const KG::Utill::HashString nextAnim, float duration = -1.f, int index = -1, int weight = 1);
 		void SetAnimationWeight(int index, const KG::Utill::HashString anim, int weight);
 	};
