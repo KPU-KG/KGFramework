@@ -205,7 +205,7 @@ float4 PixelShaderFuction(LightVertexOut input) : SV_Target0
     
     float atten = CalcAttenuation(distance, lightData.FalloffStart, lightData.FalloffEnd);
 
-    float shadowFactor = PointShadowPCSS(lightDirection, lightData, shadowData, dot(normalize(lightDirection), normalize(pixelData.wNormal)));
+    float shadowFactor = PointShadowPoissonPCF(lightDirection, lightData, shadowData, dot(normalize(lightDirection), normalize(pixelData.wNormal)));
     
     return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(-cameraDirection), atten) * shadowFactor;
 }
