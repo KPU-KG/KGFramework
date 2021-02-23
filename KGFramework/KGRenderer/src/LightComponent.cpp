@@ -45,7 +45,8 @@ void KG::Component::LightComponent::SetPointLight( const DirectX::XMFLOAT3& stre
 	}
 	if ( this->pointLightGeometry == nullptr )
 	{
-		this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "cube"_id ) );
+		this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST, 2 );
+		//this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "cube"_id ) );
 		//this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "lightSphere"_id ) );
 		//this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "sphere"_id ) );
 	}

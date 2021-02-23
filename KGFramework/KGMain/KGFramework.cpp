@@ -249,7 +249,7 @@ void KG::GameFramework::OnTestInit()
 		testPointLightObjects[index].name = "Light2";
 
 
-		light->SetPointLight( DirectX::XMFLOAT3( 20.0f, 0.0f, 0.0f ), 0.1f, 20.0f );
+		light->SetPointLight( DirectX::XMFLOAT3( 20.0f, 0.0f, 0.0f ), 0.1f, 10.0f );
 
 		testPointLightObjects[index].AddComponent( tran );
 		testPointLightObjects[index].AddComponent( light );

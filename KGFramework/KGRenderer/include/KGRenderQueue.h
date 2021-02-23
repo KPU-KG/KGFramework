@@ -47,6 +47,7 @@ namespace KG::Renderer
 		void ClearCount();
 
 		void Render( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader );
+		void Render( ShaderGeometryType geoType, ShaderPixelType pixType, ShaderTesselation tessel, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader );
 		static bool ShaderCompare( const KGRenderJob& a, const KGRenderJob& b );
 		static bool GeometryCompare( const KGRenderJob& a, const KGRenderJob& b );
 		static bool OrderCompare( const KGRenderJob& a, const KGRenderJob& b );
@@ -77,6 +78,7 @@ namespace KG::Renderer
 		KGRenderEngine( ID3D12Device* device );
 		KGRenderJob* GetRenderJob( Shader* shader, Geometry* geometry );
 		void Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList );
+		void Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType, ShaderTesselation tessel, ID3D12GraphicsCommandList* cmdList );
 		void ClearJobs();
 		void ClearUpdateCount();
 	};

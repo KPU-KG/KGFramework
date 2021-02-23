@@ -155,7 +155,7 @@ float4x4 GetWorldMatrix ( uint instanceID , VertexData vertex )
 
 
 
-SurfaceInput VertexShaderFuction ( VertexData input , uint InstanceID : SV_InstanceID ) 
+SurfaceInput VertexShaderFunction ( VertexData input , uint InstanceID : SV_InstanceID ) 
 { 
     SurfaceInput result ; 
     float4x4 worldMatrix = GetWorldMatrix ( InstanceID , input ) ; 
@@ -298,7 +298,7 @@ Surface PixelDecode ( float4 gbuffer0 , float4 gbuffer1 , float4 gbuffer2 , uint
 
 
 
-GBufferOut PixelShaderFuction ( SurfaceInput input ) 
+GBufferOut PixelShaderFunction ( SurfaceInput input ) 
 { 
     Surface surface = UserSurfaceFunction ( input ) ; 
     GBufferOut bufferResult = PixelEncode ( surface ) ; 

@@ -397,7 +397,7 @@ struct LightVertexOut
     uint InstanceID : SV_InstanceID ; 
 } ; 
 
-LightVertexOut VertexShaderFuction ( VertexData input , uint InstanceID : SV_InstanceID ) 
+LightVertexOut VertexShaderFunction ( VertexData input , uint InstanceID : SV_InstanceID ) 
 { 
     LightVertexOut result ; 
     result . position = float4 ( input . position , 1.0f ) ; 
@@ -406,7 +406,7 @@ LightVertexOut VertexShaderFuction ( VertexData input , uint InstanceID : SV_Ins
     return result ; 
 } 
 
-float4 PixelShaderFuction ( LightVertexOut input ) : SV_Target0 
+float4 PixelShaderFunction ( LightVertexOut input ) : SV_Target0 
 { 
     input . projPosition /= input . projPosition . w ; 
     float2 uv = ProjPositionToUV ( input . projPosition . xy ) ; 

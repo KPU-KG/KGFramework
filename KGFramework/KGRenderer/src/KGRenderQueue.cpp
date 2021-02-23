@@ -57,9 +57,14 @@ KGRenderJob* KG::Renderer::KGRenderEngine::GetRenderJob( Shader* shader, Geometr
 void KG::Renderer::KGRenderEngine::Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType,
 	ID3D12GraphicsCommandList* cmdList)
 {
+	this->Render( group, geoType, pixType, ShaderTesselation::NormalMesh, cmdList );
+}
+
+void KG::Renderer::KGRenderEngine::Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType, ShaderTesselation tessel, ID3D12GraphicsCommandList* cmdList )
+{
 	for ( KGRenderJob* job : this->group[group] )
 	{
-		job->Render( geoType, pixType, cmdList, this->currentShader );
+		job->Render( geoType, pixType, tessel, cmdList, this->currentShader );
 	}
 }
 
@@ -149,12 +154,17 @@ void KG::Renderer::KGRenderJob::ClearCount()
 
 void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader )
 {
+	this->Render( geoType, pixType, ShaderTesselation::NormalMesh, cmdList, prevShader );
+}
+
+void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelType pixType, ShaderTesselation tessel, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader )
+{
 	if ( this->visibleSize == 0 ) return;
 	if ( prevShader != this->shader )
 	{
 		prevShader = this->shader;
 	}
-	this->shader->Set( cmdList, this->meshType, pixType, geoType );
+	this->shader->Set( cmdList, this->meshType, pixType, geoType, tessel );
 	auto addr = this->objectBuffer->buffer.resource->GetGPUVirtualAddress();
 	cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::InstanceData, addr );
 

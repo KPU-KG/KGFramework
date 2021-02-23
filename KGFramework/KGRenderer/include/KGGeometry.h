@@ -41,6 +41,9 @@ namespace KG::Renderer
 	public:
 		Geometry() = default;
 		Geometry( const KG::Utill::MeshData& data );
+		Geometry( D3D12_PRIMITIVE_TOPOLOGY topology, int vertexCount );
+		Geometry( const std::pair<D3D12_PRIMITIVE_TOPOLOGY, int>& data );
+
 		virtual ~Geometry();
 	protected:
 		std::vector<NormalVertex> vertices;
@@ -48,6 +51,7 @@ namespace KG::Renderer
 		std::vector<KG::Utill::HashString> boneIds;
 		KG::Resource::BoneData bones;
 		bool hasBone = false;
+		int fakeVertexCount = 0;
 		
 		ID3D12Resource* vertexBuffer = nullptr;
 		ID3D12Resource* indexBuffer = nullptr;
@@ -69,6 +73,7 @@ namespace KG::Renderer
 		virtual void Render(ID3D12GraphicsCommandList* commandList, UINT nInstance);
 		void Load( ID3D12Device* device, ID3D12GraphicsCommandList* commandList );
 		void CreateFromMeshData( const KG::Utill::MeshData& data );
+		void CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY topology, int vertexCount );
 		auto IsLoaded() const
 		{
 			return this->vertexBuffer != nullptr;

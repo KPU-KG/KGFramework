@@ -20,7 +20,7 @@ struct ShadowGSOutput
 };
 
 
-ShadowVSOutput VertexShaderFuction(VertexData input, uint InstanceID : SV_InstanceID)
+ShadowVSOutput VertexShaderFunction(VertexData input, uint InstanceID : SV_InstanceID)
 {
     ShadowVSOutput result;
     float4x4 world = GetWorldMatrix(InstanceID, input);
@@ -29,7 +29,7 @@ ShadowVSOutput VertexShaderFuction(VertexData input, uint InstanceID : SV_Instan
 }
 
 [maxvertexcount(18)]
-void GeometryShaderFuction(triangle ShadowVSOutput inData[3], inout TriangleStream<ShadowGSOutput> outStream )
+void GeometryShaderFunction(triangle ShadowVSOutput inData[3], inout TriangleStream<ShadowGSOutput> outStream )
 {
     for (int index = 0; index < 4; ++index)
     {

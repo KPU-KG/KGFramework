@@ -89,7 +89,21 @@ KG::Renderer::Geometry* KG::Resource::ResourceContainer::CreateGeometry( const K
 	}
 	else
 	{
-		this->geometrys.emplace( std::make_pair( handle, mesh ) );
+		return &this->geometrys.emplace( std::make_pair( handle, mesh ) ).first->second;
+	}
+}
+
+KG::Renderer::Geometry* KG::Resource::ResourceContainer::CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY topology, int vertexCount )
+{
+	auto handle = std::make_pair( topology, vertexCount );
+	if ( this->fakeGeometrys.count( handle ) )
+	{
+		return &this->fakeGeometrys.at( handle );
+		DebugErrorMessage( "Try Load Already Loaded model's Geometry" )
+	}
+	else
+	{
+		return &this->fakeGeometrys.emplace( std::make_pair( handle, handle ) ).first->second;
 	}
 }
 

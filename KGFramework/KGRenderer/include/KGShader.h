@@ -41,6 +41,7 @@ namespace KG::Renderer
 	{
 		NormalMesh = 0,
 		TesselationMesh = 1,
+		LightVolumeMesh = 2,
 	};
 
 	// 최종 렌더 명령시에 결정
@@ -113,22 +114,22 @@ namespace KG::Renderer
 		{
 		case ShaderTarget::CS_5_0:
 		case ShaderTarget::CS_5_1:
-			return "ComputeShaderFuction";
+			return "ComputeShaderFunction";
 		case ShaderTarget::VS_5_0:
 		case ShaderTarget::VS_5_1:
-			return "VertexShaderFuction";
+			return "VertexShaderFunction";
 		case ShaderTarget::DS_5_0:
 		case ShaderTarget::DS_5_1:
-			return "DomainShaderFuction";
+			return "DomainShaderFunction";
 		case ShaderTarget::GS_5_0:
 		case ShaderTarget::GS_5_1:
-			return "GeometryShaderFuction";
+			return "GeometryShaderFunction";
 		case ShaderTarget::HS_5_0:
 		case ShaderTarget::HS_5_1:
-			return "HullShaderFuction";
+			return "HullShaderFunction";
 		case ShaderTarget::PS_5_0:
 		case ShaderTarget::PS_5_1:
-			return "PixelShaderFuction";
+			return "PixelShaderFunction";
 		}
 	}
 
@@ -170,7 +171,7 @@ namespace KG::Renderer
 	public:
 		Shader( const KG::Resource::Metadata::ShaderSetData& data );
 		~Shader();
-		void Set( ID3D12GraphicsCommandList* pd3dCommandList, ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType );
+		void Set( ID3D12GraphicsCommandList* pd3dCommandList, ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType, ShaderTesselation tessel = ShaderTesselation::NormalMesh );
 		ID3D12PipelineState* CreatePSO( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType, ShaderTesselation tessel = ShaderTesselation::NormalMesh );
 
 		auto GetRenderPriority() const { return this->renderPriority; }

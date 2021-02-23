@@ -10,7 +10,7 @@
     #include "Mesh_Skinned.hlsl"
 #endif
 
-SurfaceInput VertexShaderFuction(VertexData input, uint InstanceID : SV_InstanceID)
+SurfaceInput VertexShaderFunction(VertexData input, uint InstanceID : SV_InstanceID)
 {
     SurfaceInput result;
     float4x4 worldMatrix = GetWorldMatrix(InstanceID, input);

@@ -1,7 +1,7 @@
 #include "Define_Global.hlsl"
 #include "Define_GBuffer.hlsl"
 
-GBufferOut PixelShaderFuction(SurfaceInput input)
+GBufferOut PixelShaderFunction(SurfaceInput input)
 {
     Surface face;
     face.albedo = float3(0, 1, 0);

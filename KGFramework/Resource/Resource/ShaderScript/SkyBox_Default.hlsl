@@ -16,7 +16,7 @@ struct SkyBoxOut
     float3 PosL : POSITION;
 };
 
-SkyBoxOut VertexShaderFuction(VertexData input, uint InstanceID : SV_InstanceID)
+SkyBoxOut VertexShaderFunction(VertexData input, uint InstanceID : SV_InstanceID)
 {
     SkyBoxOut vOut;
     vOut.PosL = input.position;
@@ -25,7 +25,7 @@ SkyBoxOut VertexShaderFuction(VertexData input, uint InstanceID : SV_InstanceID)
     return vOut;
 }
 
-float4 PixelShaderFuction(SkyBoxOut input) : SV_Target0
+float4 PixelShaderFunction(SkyBoxOut input) : SV_Target0
 {
     MaterialData mat = materialData[0];
     return shaderTextureCube[mat.SkyBoxTextureIndex].Sample(gsamAnisotoropicWrap, normalize(input.PosL));

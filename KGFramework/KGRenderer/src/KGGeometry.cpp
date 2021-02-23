@@ -32,6 +32,16 @@ KG::Renderer::Geometry::Geometry( const KG::Utill::MeshData& data )
 	this->CreateFromMeshData( data );
 }
 
+KG::Renderer::Geometry::Geometry( D3D12_PRIMITIVE_TOPOLOGY topology, int vertexCount )
+{
+	this->CreateFakeGeometry( topology, vertexCount );
+}
+
+KG::Renderer::Geometry::Geometry( const std::pair<D3D12_PRIMITIVE_TOPOLOGY, int>& data )
+{
+	this->CreateFakeGeometry( data.first, data.second );
+}
+
 KG::Renderer::Geometry::~Geometry()
 {
 	TryRelease( this->vertexBuffer );
@@ -59,9 +69,16 @@ void KG::Renderer::Geometry::Render( ID3D12GraphicsCommandList* commandList, UIN
 		commandList->SetGraphicsRootShaderResourceView( KG::Renderer::RootParameterIndex::BoneOffsetData, addr );
 	}
 
-	commandList->IASetVertexBuffers( 0, 1, &this->vertexBufferView );
+	if ( this->vertexBuffer )
+	{
+		commandList->IASetVertexBuffers( 0, 1, &this->vertexBufferView );
+	}
 	commandList->IASetPrimitiveTopology( this->primitiveTopology );
-	if ( this->indexBuffer )
+	if ( this->fakeVertexCount != 0 )
+	{
+		commandList->DrawInstanced( this->fakeVertexCount, nInstance, 0, 0 );
+	}
+	else if ( this->indexBuffer )
 	{
 		commandList->IASetIndexBuffer( &this->indexBufferView );
 		commandList->DrawIndexedInstanced( this->indices.size(), nInstance, 0, 0, 0 );
@@ -76,19 +93,25 @@ void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandLi
 {
 	this->uploadFence = KGDXRenderer::GetInstance()->GetFenceValue();
 
-	this->vertexBuffer = CreateBufferResource( device, commandList, (void*)this->vertices.data(), this->vertices.size() * sizeof( NormalVertex ),
-		D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &this->vertexUploadBuffer );
+	if ( !this->vertices.empty() )
+	{
+		this->vertexBuffer = CreateBufferResource( device, commandList, (void*)this->vertices.data(), this->vertices.size() * sizeof( NormalVertex ),
+			D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &this->vertexUploadBuffer );
 
-	this->vertexBufferView.BufferLocation = this->vertexBuffer->GetGPUVirtualAddress();
-	this->vertexBufferView.StrideInBytes = sizeof( NormalVertex );
-	this->vertexBufferView.SizeInBytes = sizeof( NormalVertex ) * this->vertices.size();
+		this->vertexBufferView.BufferLocation = this->vertexBuffer->GetGPUVirtualAddress();
+		this->vertexBufferView.StrideInBytes = sizeof( NormalVertex );
+		this->vertexBufferView.SizeInBytes = sizeof( NormalVertex ) * this->vertices.size();
+	}
 
-	this->indexBuffer = CreateBufferResource( device, commandList, (void*)this->indices.data(), this->indices.size() * sizeof( UINT ),
-		D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_INDEX_BUFFER, &this->indexUploadBuffer );
+	if ( !this->indices.empty() )
+	{
+		this->indexBuffer = CreateBufferResource( device, commandList, (void*)this->indices.data(), this->indices.size() * sizeof( UINT ),
+			D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_INDEX_BUFFER, &this->indexUploadBuffer );
 
-	this->indexBufferView.BufferLocation = this->indexBuffer->GetGPUVirtualAddress();
-	this->indexBufferView.SizeInBytes = sizeof( UINT ) * this->indices.size();
-	this->indexBufferView.Format = DXGI_FORMAT_R32_UINT;
+		this->indexBufferView.BufferLocation = this->indexBuffer->GetGPUVirtualAddress();
+		this->indexBufferView.SizeInBytes = sizeof( UINT ) * this->indices.size();
+		this->indexBufferView.Format = DXGI_FORMAT_R32_UINT;
+	}
 
 	if ( this->hasBone )
 	{
@@ -133,4 +156,10 @@ void KG::Renderer::Geometry::CreateFromMeshData( const KG::Utill::MeshData& data
 		this->bones.offsetMatrixs[i] = Math::Matrix4x4::Transpose( data.bones[i].offsetMatrix );
 		this->boneIds.push_back(data.bones[i].nodeId);
 	}
+}
+
+void KG::Renderer::Geometry::CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY topology, int vertexCount )
+{
+	this->primitiveTopology = topology;
+	this->fakeVertexCount = vertexCount;
 }

@@ -7,7 +7,7 @@ struct ShadowPSInput
 };
 
 
-float4 PixelShaderFuction( ShadowPSInput outStream ) : SV_TARGET
+float4 PixelShaderFunction( ShadowPSInput outStream ) : SV_TARGET
 {
     return float4(1, 1, 1, 1);
 }

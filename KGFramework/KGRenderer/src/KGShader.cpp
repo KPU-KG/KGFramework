@@ -116,7 +116,7 @@ ID3D12PipelineState* KG::Renderer::Shader::GetPSO( ShaderMeshType meshType, Shad
 	auto result = this->pso.find( std::make_tuple( meshType, geoType, pixType, tessel ) );
 	if ( result == this->pso.end() )
 	{
-		return this->CreatePSO( meshType, pixType, geoType );
+		return this->CreatePSO( meshType, pixType, geoType, tessel );
 	}
 	else
 	{
@@ -309,9 +309,9 @@ KG::Renderer::Shader::~Shader()
 	}
 }
 
-void KG::Renderer::Shader::Set( ID3D12GraphicsCommandList* pd3dCommandList, ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType )
+void KG::Renderer::Shader::Set( ID3D12GraphicsCommandList* pd3dCommandList, ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType, ShaderTesselation tessel )
 {
-	auto* pso = this->GetPSO( meshType, pixType, geoType );
+	auto* pso = this->GetPSO( meshType, pixType, geoType, tessel );
 	pd3dCommandList->SetPipelineState( pso );
 	if ( this->materialBuffer )
 	{
@@ -361,7 +361,7 @@ ID3D12PipelineState* KG::Renderer::Shader::CreatePSO( ShaderMeshType meshType, S
 	}
 
 	//DS
-	if ( tessel == ShaderTesselation::TesselationMesh )
+	if ( tessel != ShaderTesselation::NormalMesh )
 	{
 		domainShader = CompileShaderFromMetadata( ShaderTarget::DS_5_1, meshType, pixType, geoType );
 		D3D12_SHADER_BYTECODE byteCode;
@@ -371,7 +371,7 @@ ID3D12PipelineState* KG::Renderer::Shader::CreatePSO( ShaderMeshType meshType, S
 	}
 
 	//HS
-	if ( tessel == ShaderTesselation::TesselationMesh )
+	if ( tessel != ShaderTesselation::NormalMesh )
 	{
 		hullShader = CompileShaderFromMetadata( ShaderTarget::HS_5_1, meshType, pixType, geoType );
 		D3D12_SHADER_BYTECODE byteCode;
@@ -386,7 +386,14 @@ ID3D12PipelineState* KG::Renderer::Shader::CreatePSO( ShaderMeshType meshType, S
 
 	d3dPipelineStateDesc.InputLayout = NormalVertex::GetInputLayoutDesc();
 	d3dPipelineStateDesc.SampleMask = UINT_MAX;
-	d3dPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	if ( tessel != ShaderTesselation::NormalMesh )
+	{
+		d3dPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+	}
+	else 
+	{
+		d3dPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_TRIANGLE;
+	}
 	if ( pixType == ShaderPixelType::Deferred || pixType == ShaderPixelType::GreenWireFrame )
 	{
 		d3dPipelineStateDesc.NumRenderTargets = 4;
