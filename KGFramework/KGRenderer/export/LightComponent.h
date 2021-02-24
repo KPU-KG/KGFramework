@@ -82,6 +82,7 @@ namespace KG::Component
 	public:
 		void SetDirectionalLight( const DirectX::XMFLOAT3& strength, const DirectX::XMFLOAT3& direction );
 		void SetPointLight( const DirectX::XMFLOAT3& strength, float fallOffStart, float fallOffEnd );
+		void SetSpotLight( const DirectX::XMFLOAT3& strength, float phi, float theta, float fallOffStart, float fallOffEnd );
 		DirectionalLightRef GetDirectionalLightRef();
 		PointLightRef GetPointLightRef();
 
@@ -89,7 +90,7 @@ namespace KG::Component
 
 		void SetShadowCasterTextureIndex( UINT index );
 		void SetShadowMatrix( const DirectX::XMFLOAT4X4 matrix );
-		void SetShadowCascadeMatrix( const std::array<DirectX::XMFLOAT4X4,4>& cascades );
+		void SetShadowCascadeMatrix( const std::array<DirectX::XMFLOAT4X4, 4>& cascades );
 
 		bool isVisible = true;
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;

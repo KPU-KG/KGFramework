@@ -32,10 +32,33 @@ void KG::Component::LightComponent::SetDirectionalLight( const DirectX::XMFLOAT3
 	this->currentGeometry = this->directionalLightGeometry;
 }
 
+
 void KG::Component::LightComponent::SetPointLight( const DirectX::XMFLOAT3& strength, float fallOffStart, float fallOffEnd )
 {
 	isDirty = true;
 	this->lightType = LightType::PointLight;
+	this->light.Strength = strength;
+	this->light.FalloffStart = fallOffStart;
+	this->light.FalloffEnd = fallOffEnd;
+	if ( this->pointLightShader == nullptr )
+	{
+		this->pointLightShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader( Utill::HashString( "PointLight"_id ) );
+	}
+	if ( this->pointLightGeometry == nullptr )
+	{
+		this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST, 2 );
+		//this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "cube"_id ) );
+		//this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "lightSphere"_id ) );
+		//this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "sphere"_id ) );
+	}
+	this->currentShader = this->pointLightShader;
+	this->currentGeometry = this->pointLightGeometry;
+}
+
+void KG::Component::LightComponent::SetSpotLight( const DirectX::XMFLOAT3& strength, float phi, float theta, float fallOffStart, float fallOffEnd )
+{
+	isDirty = true;
+	this->lightType = LightType::SpotLight;
 	this->light.Strength = strength;
 	this->light.FalloffStart = fallOffStart;
 	this->light.FalloffEnd = fallOffEnd;
