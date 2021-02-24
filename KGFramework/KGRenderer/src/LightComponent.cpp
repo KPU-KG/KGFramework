@@ -77,6 +77,15 @@ void KG::Component::LightComponent::SetSpotLight( const DirectX::XMFLOAT3& stren
 	this->currentGeometry = this->pointLightGeometry;
 }
 
+void KG::Component::LightComponent::SetSpotLight( const DirectX::XMFLOAT3& strength, float Phi, float Theta, float fallOffStart, float fallOffEnd )
+{
+}
+
+void KG::Component::LightComponent::SetLightPower( float lightPower )
+{
+	this->light.lightPower = lightPower;
+}
+
 KG::Component::DirectionalLightRef KG::Component::LightComponent::GetDirectionalLightRef()
 {
 	this->UpdateChanged();
