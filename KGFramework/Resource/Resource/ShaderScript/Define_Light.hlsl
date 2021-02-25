@@ -13,7 +13,8 @@ struct LightData
     float FalloffEnd;
     float Phi;
     float Theta;
-    float4 pad2;
+    float3 Up;
+    float pad2;
 };
 
 StructuredBuffer<LightData> lightInfo : register(t0);

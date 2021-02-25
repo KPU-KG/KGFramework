@@ -124,7 +124,8 @@ struct LightData
     float FalloffEnd ; 
     float Phi ; 
     float Theta ; 
-    float4 pad2 ; 
+    float3 Up ; 
+    float pad2 ; 
 } ; 
 
 StructuredBuffer < LightData > lightInfo : register ( t0 ) ; 
@@ -290,6 +291,13 @@ Surface PixelDecode ( float4 gbuffer0 , float4 gbuffer1 , float4 gbuffer2 , uint
 
 
 
+
+float CalcSpotFactor ( float3 vToLight , LightData light ) 
+{ 
+    float cosAng = max ( dot ( - vToLight , light . Direction ) , 0.0f ) ; 
+    float conAtt = saturate ( ( cosAng - cos ( light . Theta ) ) / cos ( light . Phi ) ) ; 
+    return conAtt * conAtt ; 
+} 
 
 float CalcAttenuation ( float distance , float falloffStart , float falloffEnd ) 
 { 
@@ -646,8 +654,6 @@ LightPixelInput DomainShaderFunction ( LightHSConstantOutput constant , float2 u
 
 float4 PixelShaderFunction ( LightPixelInput input ) : SV_Target0 
 { 
-    return float4 ( 0 , 1 , 0 , 1 ) ; 
-    
     input . projPosition . xy /= input . projPosition . w ; 
     float2 uv = ProjPositionToUV ( input . projPosition . xy ) ; 
     Surface pixelData = PixelDecode ( 

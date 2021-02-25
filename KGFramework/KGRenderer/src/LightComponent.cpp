@@ -55,30 +55,25 @@ void KG::Component::LightComponent::SetPointLight( const DirectX::XMFLOAT3& stre
 	this->currentGeometry = this->pointLightGeometry;
 }
 
-void KG::Component::LightComponent::SetSpotLight( const DirectX::XMFLOAT3& strength, float phi, float theta, float fallOffStart, float fallOffEnd )
+void KG::Component::LightComponent::SetSpotLight( const DirectX::XMFLOAT3& strength, float depth, float Phi, float Theta, float fallOff )
 {
 	isDirty = true;
 	this->lightType = LightType::SpotLight;
+	this->light.Theta = Theta;
+	this->light.Phi = Phi;
 	this->light.Strength = strength;
-	this->light.FalloffStart = fallOffStart;
-	this->light.FalloffEnd = fallOffEnd;
-	if ( this->pointLightShader == nullptr )
+	this->light.FalloffStart = depth;
+	this->light.FalloffEnd = fallOff;
+	if ( this->spotLightShader == nullptr )
 	{
-		this->pointLightShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader( Utill::HashString( "PointLight"_id ) );
+		this->spotLightShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader( Utill::HashString( "SpotLight"_id ) );
 	}
-	if ( this->pointLightGeometry == nullptr )
+	if ( this->spotLightGeometry == nullptr )
 	{
-		this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST, 2 );
-		//this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "cube"_id ) );
-		//this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "lightSphere"_id ) );
-		//this->pointLightGeometry = KG::Resource::ResourceContainer::GetInstance()->LoadGeometry( Utill::HashString( "sphere"_id ) );
+		this->spotLightGeometry = KG::Resource::ResourceContainer::GetInstance()->CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY::D3D11_PRIMITIVE_TOPOLOGY_1_CONTROL_POINT_PATCHLIST, 1 );
 	}
-	this->currentShader = this->pointLightShader;
-	this->currentGeometry = this->pointLightGeometry;
-}
-
-void KG::Component::LightComponent::SetSpotLight( const DirectX::XMFLOAT3& strength, float Phi, float Theta, float fallOffStart, float fallOffEnd )
-{
+	this->currentShader = this->spotLightShader;
+	this->currentGeometry = this->spotLightGeometry;
 }
 
 void KG::Component::LightComponent::SetLightPower( float lightPower )
@@ -142,7 +137,7 @@ void KG::Component::LightComponent::SetShadowCascadeMatrix( const std::array<Dir
 
 void KG::Component::LightComponent::OnPreRender()
 {
-	if ( this->isDirty )
+	if ( this->isDirty || this->lightType == LightType::SpotLight )
 	{
 		this->isDirty = false;
 		int updateCount = this->renderJob->GetUpdateCount();
@@ -150,6 +145,11 @@ void KG::Component::LightComponent::OnPreRender()
 		std::memcpy( &this->renderJob->objectBuffer->mappedData[updateCount].light, &this->light, sizeof( this->light ) );
 		if(this->renderJob->shadowLightBuffer != nullptr )
 			std::memcpy( &this->renderJob->shadowLightBuffer->mappedData[updateCount].shadow, &this->shadow, sizeof( this->shadow ) );
+		if ( this->lightType == LightType::SpotLight )
+		{
+			this->renderJob->objectBuffer->mappedData[updateCount].light.Direction = (this->transform->GetWorldLook());
+			this->renderJob->objectBuffer->mappedData[updateCount].light.Up = (this->transform->GetWorldUp());
+		}
 	}
 }
 

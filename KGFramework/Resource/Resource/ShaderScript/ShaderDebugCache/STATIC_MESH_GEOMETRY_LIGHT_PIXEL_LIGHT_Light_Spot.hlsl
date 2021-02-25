@@ -401,94 +401,142 @@ float4 CustomAmbientLightCalculator ( LightData light , Surface info , float3 li
 
 
 
-struct LightVertexOut 
+struct LightVertexOutput 
+{ 
+    float4 position : SV_Position ; 
+    uint InstanceID : SV_InstanceID ; 
+} ; 
+
+struct LightHSConstantOutput 
+{ 
+    float edges [ 4 ] : SV_TessFactor ; 
+    float Inside [ 2 ] : SV_InsideTessFactor ; 
+} ; 
+
+static const float3 HemilDir [ 2 ] = 
+{ 
+    float3 ( 1.0f , 1.0f , 1.0f ) , 
+    float3 ( - 1.0f , 1.0f , - 1.0f ) 
+} ; 
+
+struct LightHSOutput 
+{ 
+    uint InstanceID : SV_InstanceID ; 
+} ; 
+
+struct LightPixelInput 
 { 
     float4 position : SV_Position ; 
     float4 projPosition : POSITION ; 
     uint InstanceID : SV_InstanceID ; 
 } ; 
 
-Texture2DArray < float > shadowArray [ ] : register ( t0 , space1 ) ; 
 
-bool isInPosition ( float3 position ) 
+float4x4 GetLightMatrix ( LightData light ) 
 { 
-    return ( abs ( position . x ) <= 1.0f ) && ( abs ( position . y ) <= 1.0f ) && ( abs ( position . z ) <= 1.0f ) ; 
-} 
+    float s = light . FalloffStart * 1.0f ; 
+    
+    float sxy = s * sin ( light . Phi / 2.0f ) ; 
+    float x = light . Position . x ; 
+    float y = light . Position . y ; 
+    float z = light . Position . z ; 
+    float3 up = normalize ( light . Up ) ; 
+    float3 dir = normalize ( light . Direction ) ; 
+    float3 right = normalize ( cross ( up , dir ) ) ; 
+    float4x4 scale = float4x4 
+    ( 
+    sxy , 0 , 0 , 0 , 
+    0 , sxy , 0 , 0 , 
+    0 , 0 , s , 0 , 
+    0 , 0 , 0 , 1 
+    ) ; 
+    
 
-float DirectionalShadowCascadePCF ( float3 worldPosition , LightData lightData , ShadowData shadowData , out uint id ) 
-{ 
-    
-    float2 uv = float2 ( 1.0f , 1.0f ) ; 
-    float depth = 1.0f ; 
-    uint index = 0 ; 
-    
-    { 
-        float4 projPos = mul ( float4 ( worldPosition , 1.0f ) , shadowData . shadowMatrix [ 0 ] ) ; 
-        float3 projPos3 = projPos . xyz / projPos . w ; 
-        uv = ProjPositionToUV ( projPos3 . xy ) ; 
-        depth = projPos3 . z ; 
-        index = 0 ; 
-        
-    } 
-    
-    for ( uint cascade = 0 ; cascade < 3 ; cascade ++ ) 
-    { 
-        float4 projPos = mul ( float4 ( worldPosition , 1.0f ) , shadowData . shadowMatrix [ cascade + 1 ] ) ; 
-        float3 projPos3 = projPos . xyz / projPos . w ; 
-        if ( isInPosition ( projPos3 ) ) 
-        { 
-            uv = ProjPositionToUV ( projPos3 . xy ) ; 
-            depth = projPos3 . z ; 
-            index = cascade + 1 ; 
-            break ; 
-        } 
-    } 
-    id = index ; 
-    static float2 poissonDisk [ 16 ] = 
-    { 
-        float2 ( - 0.94201624 , - 0.39906216 ) , 
-        float2 ( 0.94558609 , - 0.76890725 ) , 
-        float2 ( - 0.094184101 , - 0.92938870 ) , 
-        float2 ( 0.34495938 , 0.29387760 ) , 
-        
-        float2 ( - 0.91588581 , 0.45771432 ) , 
-        float2 ( - 0.81544232 , - 0.87912464 ) , 
-        float2 ( - 0.38277543 , 0.27676845 ) , 
-        float2 ( 0.97484398 , 0.75648379 ) , 
-        
-        float2 ( 0.44323325 , - 0.97511554 ) , 
-        float2 ( 0.53742981 , - 0.47373420 ) , 
-        float2 ( - 0.26496911 , - 0.41893023 ) , 
-        float2 ( 0.79197514 , 0.19090188 ) , 
-        
-        float2 ( - 0.24188840 , 0.99706507 ) , 
-        float2 ( - 0.81409955 , 0.91437590 ) , 
-        float2 ( 0.19984126 , 0.78641367 ) , 
-        float2 ( 0.14383161 , - 0.14100790 ) 
-    } ; 
-    float result = 0.0f ; 
-    for ( uint n = 0 ; n < 8 ; n ++ ) 
-    { 
-        result += shadowArray [ shadowData . shadowMapIndex [ 0 ] ] . SampleCmpLevelZero ( gsamAnisotoropicCompClamp , float3 ( uv + ( poissonDisk [ n ] / 1400.0f ) , index ) , ( depth ) - 0.001f ) ; 
-    } 
-    result /= 8.0f ; 
-    return result ; 
-    return shadowArray [ shadowData . shadowMapIndex [ 0 ] ] . SampleCmpLevelZero ( gsamLinerCompClamp , float3 ( uv , index ) , ( depth ) - 0.001f ) ; 
+    float4x4 rotation = float4x4 
+    ( 
+    right . x , right . y , right . z , 0 , 
+    up . x , up . y , up . z , 0 , 
+    dir . x , dir . y , dir . z , 0 , 
+    0 , 0 , 0 , 1 
+    ) ; 
+    float4x4 translation = float4x4 
+    ( 
+    1 , 0 , 0 , 0 , 
+    0 , 1 , 0 , 0 , 
+    0 , 0 , 1 , 0 , 
+    x , y , z , 1 
+    ) ; 
+    return mul ( mul ( scale , rotation ) , translation ) ; 
 } 
 
 
-LightVertexOut VertexShaderFunction ( VertexData input , uint InstanceID : SV_InstanceID ) 
+LightVertexOutput VertexShaderFunction ( uint InstanceID : SV_InstanceID ) 
 { 
-    LightVertexOut result ; 
-    result . position = float4 ( input . position , 1.0f ) ; 
+    LightVertexOutput result ; 
+    result . position = float4 ( 0.0f , 0.0f , 0.0f , 1.0f ) ; 
     result . InstanceID = InstanceID ; 
-    result . projPosition = result . position ; 
     return result ; 
 } 
 
-float4 PixelShaderFunction ( LightVertexOut input ) : SV_Target0 
+LightHSConstantOutput ConstantHS ( ) 
 { 
-    input . projPosition /= input . projPosition . w ; 
+    LightHSConstantOutput output ; 
+    float tessFactor = 18.0f ; 
+    output . edges [ 0 ] = output . edges [ 1 ] = output . edges [ 2 ] = output . edges [ 3 ] = tessFactor ; 
+    output . Inside [ 0 ] = output . Inside [ 1 ] = tessFactor ; 
+    return output ; 
+} 
+
+[ domain ( "quad" ) ] 
+[ partitioning ( "integer" ) ] 
+[ outputtopology ( "triangle_ccw" ) ] 
+[ outputcontrolpoints ( 4 ) ] 
+[ patchconstantfunc ( "ConstantHS" ) ] 
+LightHSOutput HullShaderFunction ( InputPatch < LightVertexOutput , 1 > input , uint PatchID : SV_PrimitiveID ) 
+{ 
+    LightHSOutput output ; 
+    output . InstanceID = input [ 0 ] . InstanceID ; 
+    return output ; 
+} 
+
+[ domain ( "quad" ) ] 
+LightPixelInput DomainShaderFunction ( LightHSConstantOutput constant , float2 uv : SV_DomainLocation , OutputPatch < LightHSOutput , 4 > quad ) 
+{ 
+    static float CylinderPortion = 0.2f ; 
+    static float ExpendAmount = ( 1.0f + CylinderPortion ) ; 
+    
+    float2 posClipSpace = uv . xy * 2.0f - 1.0f ; 
+    
+    float2 posClipSpaceAbs = abs ( posClipSpace . xy ) ; 
+    float maxLen = max ( posClipSpaceAbs . x , posClipSpaceAbs . y ) ; 
+    
+    float2 posClipSpaceNoCylAbs = saturate ( posClipSpaceAbs * ExpendAmount ) ; 
+    float maxLenNoCapsule = max ( posClipSpaceNoCylAbs . x , posClipSpaceNoCylAbs . y ) ; 
+    float2 posClipSpaceNoCyl = sign ( posClipSpace . xy ) * posClipSpaceNoCylAbs ; 
+    
+    float3 halfSpherePos = normalize ( float3 ( posClipSpaceNoCyl . xy , 1.0f - maxLenNoCapsule ) ) ; 
+    float SinAngle = sin ( lightInfo [ quad [ 0 ] . InstanceID ] . Phi ) ; 
+    float CosAngle = cos ( lightInfo [ quad [ 0 ] . InstanceID ] . Phi ) ; 
+    halfSpherePos = normalize ( float3 ( halfSpherePos . xy * SinAngle , CosAngle ) ) ; 
+    float cylinderOffsetZ = saturate ( ( maxLen * ExpendAmount - 1.0f ) / CylinderPortion ) ; 
+    
+    float4 position = float4 ( halfSpherePos . xy * ( 1.0f - cylinderOffsetZ ) , halfSpherePos . z - cylinderOffsetZ * CosAngle , 1.0f ) ; 
+    
+    LightPixelInput output ; 
+    float4x4 LightProjection = GetLightMatrix ( lightInfo [ quad [ 0 ] . InstanceID ] ) ; 
+    LightProjection = mul ( LightProjection , mul ( view , projection ) ) ; 
+    
+    output . position = mul ( position , LightProjection ) ; 
+    output . projPosition = output . position ; 
+    output . InstanceID = quad [ 0 ] . InstanceID ; 
+    
+    return output ; 
+} 
+
+float4 PixelShaderFunction ( LightPixelInput input ) : SV_Target0 
+{ 
+    return float4 ( 0 , 1 , 0 , 1 ) ; 
+    input . projPosition . xy /= input . projPosition . w ; 
     float2 uv = ProjPositionToUV ( input . projPosition . xy ) ; 
     Surface pixelData = PixelDecode ( 
     InputGBuffer0 . Sample ( gsamPointWrap , uv ) , 
@@ -496,27 +544,24 @@ float4 PixelShaderFunction ( LightVertexOut input ) : SV_Target0
     InputGBuffer2 . Sample ( gsamPointWrap , uv ) , 
     InputGBuffer3 . Sample ( gsamPointWrap , uv ) 
     ) ; 
-    ShadowData shadowData = shadowInfo [ input . InstanceID ] ; 
-    
     float depth = InputGBuffer4 . Sample ( gsamPointWrap , uv ) . x ; 
     
     LightData lightData = lightInfo [ input . InstanceID ] ; 
+    ShadowData shadowData = shadowInfo [ input . InstanceID ] ; 
     float3 calcWorldPosition = DepthToWorldPosition ( depth , input . projPosition . xy , mul ( inverseProjection , inverseView ) ) ; 
+    
+
     float3 cameraDirection = calcWorldPosition - cameraWorldPosition ; 
+    float3 lightDirection = lightData . Direction ; 
+    float3 vToLight = lightData . Position - calcWorldPosition ; 
     
-    uint id ; 
+    float distance = length ( vToLight ) ; 
     
-    float4 cascadeDebugColor [ 4 ] = 
-    { 
-        float4 ( 1.0f , 1.0f , 1.0f , 1.0f ) , 
-        float4 ( 1.0f , 0.0f , 0.0f , 1.0f ) , 
-        float4 ( 0.0f , 1.0f , 0.0f , 1.0f ) , 
-        float4 ( 0.0f , 0.0f , 1.0f , 1.0f ) , 
-    } ; 
+    float atten = CalcAttenuation ( distance , lightData . FalloffStart , lightData . FalloffStart ) ; 
+    float spotFactor = CalcSpotFactor ( normalize ( vToLight ) , lightData ) ; 
+    float shadowFactor = 1.0f ; 
     
-    float shadowFactor = DirectionalShadowCascadePCF ( calcWorldPosition , lightData , shadowData , id ) ; 
-    
-    return CustomLightCalculator ( lightData , pixelData , normalize ( lightData . Direction ) , normalize ( - cameraDirection ) , 1.0f ) * shadowFactor ; 
-    
+
+    return CustomLightCalculator ( lightData , pixelData , normalize ( lightDirection ) , normalize ( - cameraDirection ) , atten ) * shadowFactor * spotFactor ; 
 } 
  

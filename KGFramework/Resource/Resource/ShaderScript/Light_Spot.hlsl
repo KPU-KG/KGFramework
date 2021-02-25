@@ -4,6 +4,8 @@
 #include "Utill_LightCustom.hlsl"
 
 
+
+
 struct LightVertexOutput
 {
     float4 position : SV_Position;
@@ -24,7 +26,6 @@ static const float3 HemilDir[2] =
 
 struct LightHSOutput
 {
-    float3 HemilDir : POSITION;
     uint InstanceID : SV_InstanceID;
 };
 
@@ -38,17 +39,45 @@ struct LightPixelInput
 
 float4x4 GetLightMatrix(LightData light)
 {
-    float s = light.FalloffEnd * 1.0f;
+    float s = light.FalloffStart * 1.0f;
+    //float sxy = (light.Phi * tan(light.Phi)) / 0.707106781f; // 0.707106781 == sqrt(0.5f)
+    float sxy = s * sin(light.Phi/2.0f);
     float x = light.Position.x;
     float y = light.Position.y;
     float z = light.Position.z;
-    return float4x4
+    float3 up = normalize(light.Up);
+    float3 dir = normalize(light.Direction);
+    float3 right = normalize(cross(up, dir));
+    float4x4 scale = float4x4
     (
-        s, 0, 0, 0,
-        0, s, 0, 0,
+        sxy, 0, 0, 0,
+        0, sxy, 0, 0,
         0, 0, s, 0,
+        0, 0, 0, 1
+    );
+    //float4x4 rotation = float4x4
+    //(
+    //    right.x, up.x, dir.x, 0,
+    //    right.y, up.y, dir.y, 0,
+    //    right.z, up.z, dir.z, 0,
+    //    0, 0, 0, 1
+    //);
+    
+    float4x4 rotation = float4x4
+    (
+        right.x, right.y, right.z, 0,
+        up.x, up.y, up.z, 0,
+        dir.x, dir.y, dir.z, 0,
+        0, 0, 0, 1
+    );
+    float4x4 translation = float4x4
+    (
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+        0, 0, 1, 0,
         x, y, z, 1
     );
+    return mul(mul(scale, rotation), translation);
 }
 
 
@@ -77,7 +106,6 @@ LightHSConstantOutput ConstantHS()
 LightHSOutput HullShaderFunction(InputPatch<LightVertexOutput, 1> input, uint PatchID : SV_PrimitiveID)
 {
     LightHSOutput output;
-    output.HemilDir = HemilDir[PatchID];
     output.InstanceID = input[0].InstanceID;
     return output;
 }
@@ -85,17 +113,29 @@ LightHSOutput HullShaderFunction(InputPatch<LightVertexOutput, 1> input, uint Pa
 [domain("quad")]
 LightPixelInput DomainShaderFunction(LightHSConstantOutput constant, float2 uv : SV_DomainLocation, OutputPatch<LightHSOutput, 4> quad)
 {
+    static float CylinderPortion = 0.2f;
+    static float ExpendAmount = (1.0f + CylinderPortion);
+
     float2 posClipSpace = uv.xy * 2.0f - 1.0f;
     
     float2 posClipSpaceAbs = abs(posClipSpace.xy);
     float maxLen = max(posClipSpaceAbs.x, posClipSpaceAbs.y);
-    float3 normDir = normalize(float3(posClipSpace.xy, maxLen - 1.0f) * quad[0].HemilDir);
     
-    float4 position = float4(normDir.xyz, 1.0f);
+    float2 posClipSpaceNoCylAbs = saturate(posClipSpaceAbs * ExpendAmount);
+    float maxLenNoCapsule = max(posClipSpaceNoCylAbs.x, posClipSpaceNoCylAbs.y);
+    float2 posClipSpaceNoCyl = sign(posClipSpace.xy) * posClipSpaceNoCylAbs;
+    
+    float3 halfSpherePos = normalize(float3(posClipSpaceNoCyl.xy, 1.0f - maxLenNoCapsule));
+    float SinAngle = sin(lightInfo[quad[0].InstanceID].Phi);
+    float CosAngle = cos(lightInfo[quad[0].InstanceID].Phi);
+    halfSpherePos = normalize(float3(halfSpherePos.xy * SinAngle, CosAngle));
+    float cylinderOffsetZ = saturate((maxLen * ExpendAmount - 1.0f) / CylinderPortion);
+    
+    float4 position = float4(halfSpherePos.xy * (1.0f - cylinderOffsetZ), halfSpherePos.z - cylinderOffsetZ * CosAngle, 1.0f);
+    
     LightPixelInput output;
     float4x4 LightProjection = GetLightMatrix(lightInfo[quad[0].InstanceID]);
-    LightProjection = mul(LightProjection, view);
-    LightProjection = mul(LightProjection, projection);
+    LightProjection = mul(LightProjection, mul(view, projection));
     
     output.position = mul(position, LightProjection);
     output.projPosition = output.position;
@@ -106,6 +146,7 @@ LightPixelInput DomainShaderFunction(LightHSConstantOutput constant, float2 uv :
 
 float4 PixelShaderFunction(LightPixelInput input) : SV_Target0
 {
+    return float4(0, 1, 0, 1);
     input.projPosition.xy /= input.projPosition.w;
     float2 uv = ProjPositionToUV(input.projPosition.xy);
     Surface pixelData = PixelDecode(
@@ -122,14 +163,17 @@ float4 PixelShaderFunction(LightPixelInput input) : SV_Target0
     
     //float3 cameraDirection = look;
     float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
-    float3 lightDirection = calcWorldPosition - lightData.Position;
+    float3 lightDirection = lightData.Direction;
+    float3 vToLight = lightData.Position - calcWorldPosition;
     
-    float distance = length(lightDirection);
+    float distance = length(vToLight);
     
-    float atten = CalcAttenuation(distance, lightData.FalloffStart, lightData.FalloffEnd);
-
-    float shadowFactor = PointShadowPoissonPCF(lightDirection, lightData, shadowData, dot(normalize(lightDirection), normalize(pixelData.wNormal)));
+    float atten = CalcAttenuation(distance, lightData.FalloffStart, lightData.FalloffStart);
+    float spotFactor = CalcSpotFactor(normalize(vToLight), lightData);
+    float shadowFactor = 1.0f;
+    // https://heinleinsgame.tistory.com/19
+    //float shadowFactor = PointShadowPoissonPCF(lightDirection, lightData, shadowData, dot(normalize(lightDirection), normalize(pixelData.wNormal)));
     
-    return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(-cameraDirection), atten) * shadowFactor;
+    return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(-cameraDirection), atten) * shadowFactor * spotFactor;
 }
 

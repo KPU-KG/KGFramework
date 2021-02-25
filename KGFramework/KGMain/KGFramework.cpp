@@ -75,6 +75,7 @@ void KG::GameFramework::OnTestInit()
 	static KG::Core::GameObject testCubeCameraObject;
 	static KG::Core::GameObject testLightObject;
 	static KG::Core::GameObject testPointLightObjects[10000];
+	static KG::Core::GameObject testSpotLightObjects;
 	static KG::Core::GameObject testSkyObject;
 	static KG::Core::GameObject testAmbientObject;
 	static KG::Core::GameObject testAnimationObject;
@@ -264,6 +265,48 @@ void KG::GameFramework::OnTestInit()
 		auto* tran = this->system->transformSystem.GetNewComponent();
 		auto* light = this->renderer->GetNewLightComponent();
 		auto* lam = this->system->lambdaSystem.GetNewComponent();
+		auto* sdw = this->renderer->GetNewShadowCasterComponent();
+		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+			[light]( KG::Core::GameObject* gameObject, float elapsedTime )
+			{
+				static float str = 9.0f;
+				using namespace KG::Input;
+				auto input = InputManager::GetInputManager();
+				auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+				if ( input->IsTouching( VK_SPACE ) )
+				{
+					trans->RotateEuler( 0.0f, 90.0f * elapsedTime, 0.0f );
+				}
+				if ( input->IsTouching( VK_UP ) )
+				{
+					trans->Translate( 0, 1.0f * elapsedTime, 0 );
+				}
+				if ( input->IsTouching( VK_DOWN ) )
+				{
+					trans->Translate( 0, -1.0f * elapsedTime, 0 );
+				}
+			}
+		);
+		testSpotLightObjects.name = "Light2";
+
+
+		light->SetSpotLight( DirectX::XMFLOAT3( 0.0f, 0.0f, 20.0f ), 20.0f,
+			DirectX::XMConvertToRadians(60.0f), DirectX::XMConvertToRadians( 30.0f ), 0.1f );
+
+		testSpotLightObjects.AddComponent( tran );
+		testSpotLightObjects.AddComponent( light );
+		testSpotLightObjects.AddComponent( sdw );
+		testSpotLightObjects.AddComponent( lam );
+		//testSpotLightObjects.GetComponent<KG::Component::TransformComponent>()->Translate( 0.0f, 1.0f, 0.0f );
+
+		//tran->Translate( 0.5f, 2.0f, 0.5f );
+		//mainCamera->GetGameObject()->GetTransform()->AddChild( testSpotLightObjects.GetTransform() );
+	}
+
+	{
+		auto* tran = this->system->transformSystem.GetNewComponent();
+		auto* light = this->renderer->GetNewLightComponent();
+		auto* lam = this->system->lambdaSystem.GetNewComponent();
 		KG::Component::ShadowCasterComponent* sdw = this->renderer->GetNewShadowCasterComponent();
 		static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
 			[light]( KG::Core::GameObject* gameObject, float elapsedTime )
@@ -288,7 +331,7 @@ void KG::GameFramework::OnTestInit()
 		);
 		testLightObject.name = "Light";
 		testLightObject.AddComponent( static_cast<KG::Component::TransformComponent*>(tran) );
-		light->SetDirectionalLight( DirectX::XMFLOAT3( 0.1f, 0.1f, 0.1f ) * 5, DirectX::XMFLOAT3( 0.0f, -1.0f, -1.0f ) );
+		light->SetDirectionalLight( DirectX::XMFLOAT3( 0.1f, 0.1f, 0.1f ) * 1, DirectX::XMFLOAT3( 0.0f, -1.0f, -1.0f ) );
 		sdw->SetTargetCameraCamera( mainCamera );
 		testLightObject.AddComponent( light );
 		testLightObject.AddComponent( sdw );

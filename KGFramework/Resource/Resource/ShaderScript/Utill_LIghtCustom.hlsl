@@ -7,6 +7,13 @@
 
 #define PI  3.14159265359
 
+float CalcSpotFactor(float3 vToLight, LightData light)
+{
+    float cosAng = max(dot(-vToLight, light.Direction), 0.0f);
+    float conAtt = saturate((cosAng - cos(light.Theta)) / cos(light.Phi));
+    return conAtt * conAtt;
+}
+
 float CalcAttenuation(float distance, float falloffStart, float falloffEnd)
 {
     float d = pow(distance, 2);

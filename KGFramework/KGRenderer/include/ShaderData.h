@@ -27,7 +27,8 @@ namespace KG::Renderer
 				float FalloffEnd;
 				float Phi;
 				float Theta;
-				XMFLOAT4 pad2;
+				XMFLOAT3 Up;
+				float pad2;
 			} light;
 		};
 	};
