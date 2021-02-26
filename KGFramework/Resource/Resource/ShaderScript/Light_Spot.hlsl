@@ -46,8 +46,10 @@ float4x4 GetLightMatrix(LightData light)
     float y = light.Position.y;
     float z = light.Position.z;
     float3 up = normalize(light.Up);
+    //float3 up = float3(0, 1, 0);
     float3 dir = normalize(light.Direction);
-    float3 right = normalize(cross(up, dir));
+    float3 right = cross(up, dir);
+    //up = cross(dir, right);
     float4x4 scale = float4x4
     (
         sxy, 0, 0, 0,
@@ -100,7 +102,7 @@ LightHSConstantOutput ConstantHS()
 
 [domain("quad")]
 [partitioning("integer")]
-[outputtopology("triangle_ccw")]
+[outputtopology("triangle_cw")]
 [outputcontrolpoints(4)]
 [patchconstantfunc("ConstantHS")]
 LightHSOutput HullShaderFunction(InputPatch<LightVertexOutput, 1> input, uint PatchID : SV_PrimitiveID)
@@ -116,28 +118,38 @@ LightPixelInput DomainShaderFunction(LightHSConstantOutput constant, float2 uv :
     static float CylinderPortion = 0.2f;
     static float ExpendAmount = (1.0f + CylinderPortion);
 
-    float2 posClipSpace = uv.xy * 2.0f - 1.0f;
+    float SinAngle = sin(lightInfo[quad[0].InstanceID].Phi);
+    float CosAngle = cos(lightInfo[quad[0].InstanceID].Phi);
     
+	// Transform the UV's into clip-space
+    float2 posClipSpace = uv.xy * 2.0f + -1.0f;
+    //float2 posClipSpace = uv.xy * float2(2.0, -2.0) + float2(-1.0, 1.0);
+
+	// Find the vertex offsets based on the UV
     float2 posClipSpaceAbs = abs(posClipSpace.xy);
     float maxLen = max(posClipSpaceAbs.x, posClipSpaceAbs.y);
-    
+
+	// Force the cone vertices to the mesh edge
     float2 posClipSpaceNoCylAbs = saturate(posClipSpaceAbs * ExpendAmount);
     float maxLenNoCapsule = max(posClipSpaceNoCylAbs.x, posClipSpaceNoCylAbs.y);
     float2 posClipSpaceNoCyl = sign(posClipSpace.xy) * posClipSpaceNoCylAbs;
-    
-    float3 halfSpherePos = normalize(float3(posClipSpaceNoCyl.xy, 1.0f - maxLenNoCapsule));
-    float SinAngle = sin(lightInfo[quad[0].InstanceID].Phi);
-    float CosAngle = cos(lightInfo[quad[0].InstanceID].Phi);
+
+	// Convert the positions to half sphere with the cone vertices on the edge
+    float3 halfSpherePos = normalize(float3(posClipSpaceNoCyl.xy, 1.0 - maxLenNoCapsule));
+
+	// Scale the sphere to the size of the cones rounded base
     halfSpherePos = normalize(float3(halfSpherePos.xy * SinAngle, CosAngle));
-    float cylinderOffsetZ = saturate((maxLen * ExpendAmount - 1.0f) / CylinderPortion);
-    
-    float4 position = float4(halfSpherePos.xy * (1.0f - cylinderOffsetZ), halfSpherePos.z - cylinderOffsetZ * CosAngle, 1.0f);
-    
+
+	// Find the offsets for the cone vertices (0 for cone base)
+    float cylinderOffsetZ = saturate((maxLen * ExpendAmount - 1.0) / CylinderPortion);
+
+	// Offset the cone vertices to thier final position
+    float4 posLS = float4(halfSpherePos.xy * (1.0 - cylinderOffsetZ), halfSpherePos.z - cylinderOffsetZ * CosAngle, 1.0);
     LightPixelInput output;
+    
     float4x4 LightProjection = GetLightMatrix(lightInfo[quad[0].InstanceID]);
     LightProjection = mul(LightProjection, mul(view, projection));
-    
-    output.position = mul(position, LightProjection);
+    output.position = mul(posLS, LightProjection);
     output.projPosition = output.position;
     output.InstanceID = quad[0].InstanceID;
     
@@ -146,7 +158,7 @@ LightPixelInput DomainShaderFunction(LightHSConstantOutput constant, float2 uv :
 
 float4 PixelShaderFunction(LightPixelInput input) : SV_Target0
 {
-    return float4(0, 1, 0, 1);
+    //return float4(0, 1, 0, 1);
     input.projPosition.xy /= input.projPosition.w;
     float2 uv = ProjPositionToUV(input.projPosition.xy);
     Surface pixelData = PixelDecode(
@@ -174,6 +186,6 @@ float4 PixelShaderFunction(LightPixelInput input) : SV_Target0
     // https://heinleinsgame.tistory.com/19
     //float shadowFactor = PointShadowPoissonPCF(lightDirection, lightData, shadowData, dot(normalize(lightDirection), normalize(pixelData.wNormal)));
     
-    return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(-cameraDirection), atten) * shadowFactor * spotFactor;
+    return CustomLightCalculator(lightData, pixelData, normalize(-vToLight), normalize(-cameraDirection), atten * spotFactor) * shadowFactor;
 }
 

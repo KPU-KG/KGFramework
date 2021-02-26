@@ -296,7 +296,7 @@ float CalcSpotFactor ( float3 vToLight , LightData light )
 { 
     float cosAng = max ( dot ( - vToLight , light . Direction ) , 0.0f ) ; 
     float conAtt = saturate ( ( cosAng - cos ( light . Theta ) ) / cos ( light . Phi ) ) ; 
-    return conAtt * conAtt ; 
+    return pow ( conAtt , light . FalloffEnd ) ; 
 } 
 
 float CalcAttenuation ( float distance , float falloffStart , float falloffEnd ) 
@@ -441,8 +441,10 @@ float4x4 GetLightMatrix ( LightData light )
     float y = light . Position . y ; 
     float z = light . Position . z ; 
     float3 up = normalize ( light . Up ) ; 
+    
     float3 dir = normalize ( light . Direction ) ; 
-    float3 right = normalize ( cross ( up , dir ) ) ; 
+    float3 right = cross ( up , dir ) ; 
+    
     float4x4 scale = float4x4 
     ( 
     sxy , 0 , 0 , 0 , 
@@ -489,7 +491,7 @@ LightHSConstantOutput ConstantHS ( )
 
 [ domain ( "quad" ) ] 
 [ partitioning ( "integer" ) ] 
-[ outputtopology ( "triangle_ccw" ) ] 
+[ outputtopology ( "triangle_cw" ) ] 
 [ outputcontrolpoints ( 4 ) ] 
 [ patchconstantfunc ( "ConstantHS" ) ] 
 LightHSOutput HullShaderFunction ( InputPatch < LightVertexOutput , 1 > input , uint PatchID : SV_PrimitiveID ) 
@@ -505,28 +507,37 @@ LightPixelInput DomainShaderFunction ( LightHSConstantOutput constant , float2 u
     static float CylinderPortion = 0.2f ; 
     static float ExpendAmount = ( 1.0f + CylinderPortion ) ; 
     
-    float2 posClipSpace = uv . xy * 2.0f - 1.0f ; 
+    float SinAngle = sin ( lightInfo [ quad [ 0 ] . InstanceID ] . Phi ) ; 
+    float CosAngle = cos ( lightInfo [ quad [ 0 ] . InstanceID ] . Phi ) ; 
     
+
+    float2 posClipSpace = uv . xy * 2.0f + - 1.0f ; 
+    
+
     float2 posClipSpaceAbs = abs ( posClipSpace . xy ) ; 
     float maxLen = max ( posClipSpaceAbs . x , posClipSpaceAbs . y ) ; 
     
+
     float2 posClipSpaceNoCylAbs = saturate ( posClipSpaceAbs * ExpendAmount ) ; 
     float maxLenNoCapsule = max ( posClipSpaceNoCylAbs . x , posClipSpaceNoCylAbs . y ) ; 
     float2 posClipSpaceNoCyl = sign ( posClipSpace . xy ) * posClipSpaceNoCylAbs ; 
     
-    float3 halfSpherePos = normalize ( float3 ( posClipSpaceNoCyl . xy , 1.0f - maxLenNoCapsule ) ) ; 
-    float SinAngle = sin ( lightInfo [ quad [ 0 ] . InstanceID ] . Phi ) ; 
-    float CosAngle = cos ( lightInfo [ quad [ 0 ] . InstanceID ] . Phi ) ; 
+
+    float3 halfSpherePos = normalize ( float3 ( posClipSpaceNoCyl . xy , 1.0 - maxLenNoCapsule ) ) ; 
+    
+
     halfSpherePos = normalize ( float3 ( halfSpherePos . xy * SinAngle , CosAngle ) ) ; 
-    float cylinderOffsetZ = saturate ( ( maxLen * ExpendAmount - 1.0f ) / CylinderPortion ) ; 
     
-    float4 position = float4 ( halfSpherePos . xy * ( 1.0f - cylinderOffsetZ ) , halfSpherePos . z - cylinderOffsetZ * CosAngle , 1.0f ) ; 
+
+    float cylinderOffsetZ = saturate ( ( maxLen * ExpendAmount - 1.0 ) / CylinderPortion ) ; 
     
+
+    float4 posLS = float4 ( halfSpherePos . xy * ( 1.0 - cylinderOffsetZ ) , halfSpherePos . z - cylinderOffsetZ * CosAngle , 1.0 ) ; 
     LightPixelInput output ; 
+    
     float4x4 LightProjection = GetLightMatrix ( lightInfo [ quad [ 0 ] . InstanceID ] ) ; 
     LightProjection = mul ( LightProjection , mul ( view , projection ) ) ; 
-    
-    output . position = mul ( position , LightProjection ) ; 
+    output . position = mul ( posLS , LightProjection ) ; 
     output . projPosition = output . position ; 
     output . InstanceID = quad [ 0 ] . InstanceID ; 
     
@@ -535,7 +546,7 @@ LightPixelInput DomainShaderFunction ( LightHSConstantOutput constant , float2 u
 
 float4 PixelShaderFunction ( LightPixelInput input ) : SV_Target0 
 { 
-    return float4 ( 0 , 1 , 0 , 1 ) ; 
+    
     input . projPosition . xy /= input . projPosition . w ; 
     float2 uv = ProjPositionToUV ( input . projPosition . xy ) ; 
     Surface pixelData = PixelDecode ( 
@@ -562,6 +573,6 @@ float4 PixelShaderFunction ( LightPixelInput input ) : SV_Target0
     float shadowFactor = 1.0f ; 
     
 
-    return CustomLightCalculator ( lightData , pixelData , normalize ( lightDirection ) , normalize ( - cameraDirection ) , atten ) * shadowFactor * spotFactor ; 
+    return CustomLightCalculator ( lightData , pixelData , normalize ( - vToLight ) , normalize ( - cameraDirection ) , atten * spotFactor ) * shadowFactor ; 
 } 
  

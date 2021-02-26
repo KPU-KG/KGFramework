@@ -273,34 +273,23 @@ void KG::GameFramework::OnTestInit()
 				using namespace KG::Input;
 				auto input = InputManager::GetInputManager();
 				auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
-				if ( input->IsTouching( VK_SPACE ) )
-				{
-					trans->RotateEuler( 0.0f, 90.0f * elapsedTime, 0.0f );
-				}
-				if ( input->IsTouching( VK_UP ) )
-				{
-					trans->Translate( 0, 1.0f * elapsedTime, 0 );
-				}
-				if ( input->IsTouching( VK_DOWN ) )
-				{
-					trans->Translate( 0, -1.0f * elapsedTime, 0 );
-				}
+
 			}
 		);
 		testSpotLightObjects.name = "Light2";
 
 
 		light->SetSpotLight( DirectX::XMFLOAT3( 0.0f, 0.0f, 20.0f ), 20.0f,
-			DirectX::XMConvertToRadians(60.0f), DirectX::XMConvertToRadians( 30.0f ), 0.1f );
+			DirectX::XMConvertToRadians(60.0f), DirectX::XMConvertToRadians( 30.0f ), 2.0f );
 
 		testSpotLightObjects.AddComponent( tran );
 		testSpotLightObjects.AddComponent( light );
 		testSpotLightObjects.AddComponent( sdw );
 		testSpotLightObjects.AddComponent( lam );
-		//testSpotLightObjects.GetComponent<KG::Component::TransformComponent>()->Translate( 0.0f, 1.0f, 0.0f );
+		testSpotLightObjects.GetComponent<KG::Component::TransformComponent>()->Translate( 0.0f, 0.0f, 0.2f );
 
 		//tran->Translate( 0.5f, 2.0f, 0.5f );
-		//mainCamera->GetGameObject()->GetTransform()->AddChild( testSpotLightObjects.GetTransform() );
+		mainCamera->GetGameObject()->GetTransform()->AddChild( testSpotLightObjects.GetTransform() );
 	}
 
 	{
