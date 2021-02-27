@@ -10,7 +10,7 @@
 float CalcSpotFactor(float3 vToLight, LightData light)
 {
     float cosAng = max(dot(-vToLight, light.Direction), 0.0f);
-    float conAtt = saturate((cosAng - cos(light.Theta)) / cos(light.Phi));
+    float conAtt = saturate((cosAng - cos(light.Theta/2)) / cos(light.Phi/2));
     return pow(conAtt, light.FalloffEnd);
 }
 

@@ -50,7 +50,7 @@ D3D12_RASTERIZER_DESC KG::Renderer::Shader::CreateRasterizerState( ShaderMeshTyp
 	}
 	if ( pixType == ShaderPixelType::GSCubeShadow || pixType == ShaderPixelType::Shadow )
 	{
-		d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_FRONT;
+		//d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_FRONT;
 		//d3dRasterizerDesc.DepthBias = 1000000;
 		//d3dRasterizerDesc.DepthBiasClamp = 0.0f;
 		//d3dRasterizerDesc.SlopeScaledDepthBias = 10.5f;
@@ -71,7 +71,7 @@ D3D12_BLEND_DESC KG::Renderer::Shader::CreateBlendState( ShaderMeshType meshType
 	D3D12_BLEND_DESC d3dBlendDesc;
 	ZeroDesc( d3dBlendDesc );
 
-	if ( pixType == ShaderPixelType::Deferred || pixType == ShaderPixelType::SkyBox || pixType == ShaderPixelType::GSCubeShadow )
+	if ( pixType == ShaderPixelType::Deferred || pixType == ShaderPixelType::SkyBox || pixType == ShaderPixelType::GSCubeShadow || pixType == ShaderPixelType::Shadow )
 	{
 		d3dBlendDesc.AlphaToCoverageEnable = false;
 		d3dBlendDesc.IndependentBlendEnable = false;
@@ -132,6 +132,7 @@ D3D12_DEPTH_STENCIL_DESC KG::Renderer::Shader::CreateDepthStencilState( ShaderMe
 	switch ( pixType )
 	{
 	case ShaderPixelType::GSCubeShadow:
+	case ShaderPixelType::Shadow:
 	case ShaderPixelType::Deferred:
 	{
 		d3dDepthStencilDesc.DepthEnable = true;

@@ -61,9 +61,10 @@ namespace KG::Component
 		DirectX::XMFLOAT3& Strength;
 		float& Theta;
 		float& Phi;
-		float& FalloffEnd;
+		float& depth;
+		float& falloff;
 		SpotLightRef( LightData& light )
-			: Strength( light.Strength ), FalloffEnd( light.FalloffEnd ), Phi(light.Phi), Theta(light.Theta)
+			: Strength( light.Strength ), falloff( light.FalloffEnd ), Phi( light.Phi ), Theta( light.Theta ), depth( light.FalloffStart )
 		{
 		};
 	};
@@ -100,10 +101,11 @@ namespace KG::Component
 	public:
 		void SetDirectionalLight( const DirectX::XMFLOAT3& strength, const DirectX::XMFLOAT3& direction );
 		void SetPointLight( const DirectX::XMFLOAT3& strength, float fallOffStart, float fallOffEnd );
-		void SetSpotLight( const DirectX::XMFLOAT3& strength, float depth, float Phi, float Theta, float fallOff);
+		void SetSpotLight( const DirectX::XMFLOAT3& strength, float depth, float Phi, float Theta, float fallOff );
 		void SetLightPower( float lightPower );
 		DirectionalLightRef GetDirectionalLightRef();
 		PointLightRef GetPointLightRef();
+		SpotLightRef GetSpotLightRef();
 
 		void UpdateChanged();
 

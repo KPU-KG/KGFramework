@@ -316,6 +316,9 @@ GBufferOut PixelShaderFunction ( SurfaceInput input )
 
 
 
+
+
+
 struct MaterialData 
 { 
     uint ColorTextureIndex ; 

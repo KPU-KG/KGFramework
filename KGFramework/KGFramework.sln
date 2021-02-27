@@ -67,6 +67,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pixel", "Pixel", "{3A295F94
 	ProjectSection(SolutionItems) = preProject
 		Resource\Resource\ShaderScript\Pixel_Default.hlsl = Resource\Resource\ShaderScript\Pixel_Default.hlsl
 		Resource\Resource\ShaderScript\Pixel_GSShadow.hlsl = Resource\Resource\ShaderScript\Pixel_GSShadow.hlsl
+		Resource\Resource\ShaderScript\Pixel_Shadow.hlsl = Resource\Resource\ShaderScript\Pixel_Shadow.hlsl
 		Resource\Resource\ShaderScript\Pixel_WireFrame.hlsl = Resource\Resource\ShaderScript\Pixel_WireFrame.hlsl
 	EndProjectSection
 EndProject

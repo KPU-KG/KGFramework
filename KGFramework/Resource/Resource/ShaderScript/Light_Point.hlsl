@@ -95,8 +95,8 @@ float PointShadowPoissonPCF(float3 toPixel, LightData lightData, ShadowData shad
     float depth = (lightPerspectiveValue.x * z + lightPerspectiveValue.y) / z;
     float result = 0.0f;
     
-    float bias = 0.005f * tan(acos(cosTheta));
-    bias = clamp(bias, 0.0f, 0.01f);
+    float bias = 0.0005f * tan(acos(cosTheta));
+    bias = clamp(bias, 0.0001f, 0.01f);
     
     for (uint n = 0; n < 16; n++)
     {

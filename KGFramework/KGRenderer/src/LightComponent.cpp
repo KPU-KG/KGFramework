@@ -93,6 +93,11 @@ KG::Component::PointLightRef KG::Component::LightComponent::GetPointLightRef()
 	return PointLightRef( this->light );
 }
 
+KG::Component::SpotLightRef KG::Component::LightComponent::GetSpotLightRef()
+{
+	return SpotLightRef( this->light );
+}
+
 void KG::Component::LightComponent::UpdateChanged()
 {
 	this->isDirty = true;

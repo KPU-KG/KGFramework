@@ -295,7 +295,7 @@ Surface PixelDecode ( float4 gbuffer0 , float4 gbuffer1 , float4 gbuffer2 , uint
 float CalcSpotFactor ( float3 vToLight , LightData light ) 
 { 
     float cosAng = max ( dot ( - vToLight , light . Direction ) , 0.0f ) ; 
-    float conAtt = saturate ( ( cosAng - cos ( light . Theta ) ) / cos ( light . Phi ) ) ; 
+    float conAtt = saturate ( ( cosAng - cos ( light . Theta / 2 ) ) / cos ( light . Phi / 2 ) ) ; 
     return pow ( conAtt , light . FalloffEnd ) ; 
 } 
 
@@ -492,8 +492,8 @@ float PointShadowPoissonPCF ( float3 toPixel , LightData lightData , ShadowData 
     float depth = ( lightPerspectiveValue . x * z + lightPerspectiveValue . y ) / z ; 
     float result = 0.0f ; 
     
-    float bias = 0.005f * tan ( acos ( cosTheta ) ) ; 
-    bias = clamp ( bias , 0.0f , 0.01f ) ; 
+    float bias = 0.0005f * tan ( acos ( cosTheta ) ) ; 
+    bias = clamp ( bias , 0.0001f , 0.01f ) ; 
     
     for ( uint n = 0 ; n < 16 ; n ++ ) 
     { 
