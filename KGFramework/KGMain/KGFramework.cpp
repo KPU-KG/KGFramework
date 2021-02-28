@@ -279,8 +279,8 @@ void KG::GameFramework::OnTestInit()
 		testSpotLightObjects.name = "Light2";
 
 
-		light->SetSpotLight( DirectX::XMFLOAT3( 0.0f, 0.0f, 50.0f ), 40.0f,
-			DirectX::XMConvertToRadians( 120.0f ), DirectX::XMConvertToRadians( 120.0f ), 1.0f );
+		light->SetSpotLight( DirectX::XMFLOAT3( 0.0f, 0.0f, 10.0f ), 10.0f,
+			DirectX::XMConvertToRadians( 120.0f ), DirectX::XMConvertToRadians( 30.0f ), 4.0f );
 
 		testSpotLightObjects.AddComponent( tran );
 		testSpotLightObjects.AddComponent( light );

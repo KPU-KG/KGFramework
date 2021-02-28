@@ -9,9 +9,11 @@
 
 float CalcSpotFactor(float3 vToLight, LightData light)
 {
-    float cosAng = max(dot(-vToLight, light.Direction), 0.0f);
-    float conAtt = saturate((cosAng - cos(light.Theta/2)) / cos(light.Phi/2));
-    return pow(conAtt, light.FalloffEnd);
+    float cosPhi = cos(light.Phi / 2.0f);
+    float cosTheta = cos(light.Theta / 2.0f);
+    float fAlpha = max(dot(vToLight, light.Direction), 0.0f);
+    float fSpotFactor = pow(max(((fAlpha - cosPhi) / (cosTheta - cosPhi)), 0.0f), light.FalloffEnd);
+    return fSpotFactor;
 }
 
 float CalcAttenuation(float distance, float falloffStart, float falloffEnd)

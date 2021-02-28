@@ -41,7 +41,7 @@ float4x4 GetLightMatrix(LightData light)
 {
     float s = light.FalloffStart * 1.1f;
     //float sxy = (light.Phi * tan(light.Phi)) / 0.707106781f; // 0.707106781 == sqrt(0.5f)
-    float sxy = s * sin(light.Phi / 2.0f);
+    float sxy = s * sin(light.Phi / 2.0f) * 1.1f;
     float x = light.Position.x;
     float y = light.Position.y;
     float z = light.Position.z;
@@ -84,9 +84,9 @@ float SpotLightShadowPoissonPCF(float3 worldPosition, LightData lightData, Shado
     float3 projPos3 = projPos.xyz / projPos.w;
     uv = ProjPositionToUV(projPos3.xy);
     depth = projPos3.z;
-
-    float bias = 0.0005f * tan(acos(cosTheta));
-    bias = clamp(bias, 0.00001f, 0.01f);
+    
+    float bias = 0.005 * tan(acos(cosTheta)); 
+    bias = clamp(bias, 0.000001f,0.01f);
 
     
     static float2 poissonDisk[16] =
@@ -216,7 +216,8 @@ float4 PixelShaderFunction(LightPixelInput input) : SV_Target0
     float distance = length(lightDirection);
     
     float atten = CalcAttenuation(distance, lightData.FalloffStart, lightData.FalloffStart);
-    float spotFactor = CalcSpotFactor(normalize(-lightDirection), lightData);
+    float spotFactor = CalcSpotFactor(normalize(lightDirection), lightData);
+    //float spotFactor = CalcSpotFactor(normalize(-lightDirection), lightData);
     float shadowFactor = SpotLightShadowPoissonPCF(calcWorldPosition, lightData, shadowData, dot(normalize(lightDirection), normalize(pixelData.wNormal)));
     
     return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(-cameraDirection), atten * spotFactor) * shadowFactor;

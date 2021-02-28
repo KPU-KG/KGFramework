@@ -20,8 +20,8 @@ void KG::Component::ShadowCasterComponent::InitializeAsPointLightShadow()
 	desc.useDepthStencilBuffer = true;
 	desc.uploadSRVDepthBuffer = true;
 	desc.uploadSRVRenderTarget = false;
-	desc.width = 512;
-	desc.height = 512;
+	desc.width = 1024;
+	desc.height = 1024;
 	this->pointLightCamera->InitializeRenderTexture( desc );
 	this->pointLightCamera->SetDefaultRender();
 	this->pointLightCamera->SetNearZ( 0.01f );
@@ -73,8 +73,8 @@ void KG::Component::ShadowCasterComponent::InitializeAsSpotLightShadow()
 	desc.useDepthStencilBuffer = true;
 	desc.uploadSRVDepthBuffer = true;
 	desc.uploadSRVRenderTarget = false;
-	desc.width = 2048;
-	desc.height = 2048;
+	desc.width = 4096;
+	desc.height = 4096;
 	desc.length = 1;
 
 	this->spotLightCamera->InitializeRenderTexture( desc );
