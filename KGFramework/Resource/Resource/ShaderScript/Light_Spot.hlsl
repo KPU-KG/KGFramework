@@ -77,7 +77,10 @@ float4x4 GetLightMatrix(LightData light)
 
 float SpotLightShadowPoissonPCF(float3 worldPosition, LightData lightData, ShadowData shadowData, float cosTheta)
 {
-
+    if (shadowData.shadowMapIndex[0] == 0)
+    {
+        return 1.0f;
+    }
     float2 uv = float2(1.0f, 1.0f);
     float depth = 1.0f;
     float4 projPos = mul(float4(worldPosition, 1.0f), shadowData.shadowMatrix[0]);
