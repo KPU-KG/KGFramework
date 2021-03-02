@@ -45,6 +45,16 @@ void KG::Core::GameObject::InternalMatchBoneToObject( const std::vector<KG::Util
     if ( sib != nullptr ) sib->InternalMatchBoneToObject( ids, bones );
 }
 
+bool KG::Core::GameObject::IsDestroy() const
+{
+    return this->isDestroy;
+}
+
+void KG::Core::GameObject::Destroy()
+{
+    this->isDestroy = true;
+}
+
 KG::Component::TransformComponent* KG::Core::GameObject::GetTransform() const
 {
     return this->GetComponent<KG::Component::TransformComponent>();

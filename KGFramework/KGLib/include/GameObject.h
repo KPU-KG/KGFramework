@@ -12,6 +12,7 @@ namespace KG::Core
 	using KG::Component::ComponentContainer;
 	class GameObject
 	{
+		bool isDestroy = false;
 		ComponentContainer components;
 
 		KG::Core::GameObject* InternalFindChildObject( const KG::Utill::HashString& id ) const;
@@ -29,6 +30,8 @@ namespace KG::Core
 			cmp->Create( this );
 			return this->components.AddComponent<Ty>(cmp);
 		}
+		bool IsDestroy() const;
+		void Destroy();
 
 		KG::Component::TransformComponent* GetTransform() const;
 		KG::Core::GameObject* GetChild() const;

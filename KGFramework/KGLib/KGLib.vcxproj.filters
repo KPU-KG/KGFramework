@@ -34,6 +34,9 @@
     <Filter Include="헤더 파일\Core\Component">
       <UniqueIdentifier>{ab1f513e-2f3f-47f3-b0d7-3092e30caf37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Core\Scene">
+      <UniqueIdentifier>{b3cb3e0e-493f-47e6-813e-f08999ba7e29}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -64,6 +67,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\fbxImpoter.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -115,6 +121,9 @@
     </ClInclude>
     <ClInclude Include="include\fbxImpoter.h">
       <Filter>헤더 파일\Utill</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Scene.h">
+      <Filter>헤더 파일\Core\Scene</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
