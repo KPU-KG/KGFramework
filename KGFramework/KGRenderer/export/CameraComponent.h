@@ -299,7 +299,7 @@ namespace KG::Component
 		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
 		void EndCameraRender( ID3D12GraphicsCommandList* commandList );
 
-		void InitalizeCascade( KG::Component::CameraComponent* camera, KG::Component::LightComponent* light );
+		void InitalizeCascade( KG::Component::CameraComponent* directionalLightCamera, KG::Component::LightComponent* light );
 		void RefreshNormalViewProj();
 		void RefreshCascadeViewProj();
 

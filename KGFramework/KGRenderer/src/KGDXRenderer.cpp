@@ -169,23 +169,23 @@ void KGDXRenderer::Render()
 void KG::Renderer::KGDXRenderer::CubeCaemraRender()
 {
 	PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 0 ), "CubeCameraRender" );
-	for ( KG::Component::CubeCameraComponent& cubeCamera : this->graphicSystems->cubeCameraSystem )
+	for ( KG::Component::CubeCameraComponent& pointLightCamera : this->graphicSystems->cubeCameraSystem )
 	{
-		for ( KG::Component::CameraComponent& camera : cubeCamera.GetCameras() )
+		for ( KG::Component::CameraComponent& directionalLightCamera : pointLightCamera.GetCameras() )
 		{
-			PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 0 ), "Cube Camera Render : Camera %d", camera.GetCubeIndex() );
+			PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 0 ), "Cube Camera Render : Camera %d", directionalLightCamera.GetCubeIndex() );
 
-			camera.SetCameraRender( this->mainCommandList );
-			this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
-			this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
-			this->LightPassRender( this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
-			this->SkyBoxRender( this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
-			this->PassRenderEnd( this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
-			camera.EndCameraRender( this->mainCommandList );
+			directionalLightCamera.SetCameraRender( this->mainCommandList );
+			this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, directionalLightCamera.GetRenderTexture(), directionalLightCamera.GetCubeIndex() );
+			this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, directionalLightCamera.GetRenderTexture(), directionalLightCamera.GetCubeIndex() );
+			this->LightPassRender( this->mainCommandList, directionalLightCamera.GetRenderTexture(), directionalLightCamera.GetCubeIndex() );
+			this->SkyBoxRender( this->mainCommandList, directionalLightCamera.GetRenderTexture(), directionalLightCamera.GetCubeIndex() );
+			this->PassRenderEnd( this->mainCommandList, directionalLightCamera.GetRenderTexture(), directionalLightCamera.GetCubeIndex() );
+			directionalLightCamera.EndCameraRender( this->mainCommandList );
 			PIXEndEvent( mainCommandList );
 		}
 		TryResourceBarrier( this->mainCommandList,
-			cubeCamera.GetRenderTexture().BarrierTransition(
+			pointLightCamera.GetRenderTexture().BarrierTransition(
 				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
 				D3D12_RESOURCE_STATE_COMMON,
 				D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
@@ -199,23 +199,23 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
 {
 	PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "NormalCameraRender" );
 	size_t _cameraCount = 1;
-	for ( KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem )
+	for ( KG::Component::CameraComponent& directionalLightCamera : this->graphicSystems->cameraSystem )
 	{
 		PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "Normal Camera Render : Camera %d", _cameraCount++ );
-		camera.SetCameraRender( this->mainCommandList );
+		directionalLightCamera.SetCameraRender( this->mainCommandList );
 
-		this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
-		this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
-		this->LightPassRender( this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
-		this->SkyBoxRender( this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
-		this->PassRenderEnd( this->mainCommandList, camera.GetRenderTexture(), camera.GetCubeIndex() );
+		this->OpaqueRender( ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, directionalLightCamera.GetRenderTexture(), directionalLightCamera.GetCubeIndex() );
+		this->TransparentRender( ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, directionalLightCamera.GetRenderTexture(), directionalLightCamera.GetCubeIndex() );
+		this->LightPassRender( this->mainCommandList, directionalLightCamera.GetRenderTexture(), directionalLightCamera.GetCubeIndex() );
+		this->SkyBoxRender( this->mainCommandList, directionalLightCamera.GetRenderTexture(), directionalLightCamera.GetCubeIndex() );
+		this->PassRenderEnd( this->mainCommandList, directionalLightCamera.GetRenderTexture(), directionalLightCamera.GetCubeIndex() );
 
-		camera.EndCameraRender( this->mainCommandList );
+		directionalLightCamera.EndCameraRender( this->mainCommandList );
 
-		if ( camera.isMainCamera )
+		if ( directionalLightCamera.isMainCamera )
 		{
 			TryResourceBarrier( this->mainCommandList,
-				camera.GetRenderTexture().BarrierTransition(
+				directionalLightCamera.GetRenderTexture().BarrierTransition(
 					D3D12_RESOURCE_STATE_COPY_SOURCE,
 					D3D12_RESOURCE_STATE_COMMON,
 					D3D12_RESOURCE_STATE_COMMON
@@ -228,7 +228,7 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
 			this->mainCommandList->ResourceBarrier( 1,
 				&barrierOne
 			);
-			this->mainCommandList->CopyResource( this->renderTargetBuffers[this->swapChainBufferIndex], camera.GetRenderTexture().renderTarget );
+			this->mainCommandList->CopyResource( this->renderTargetBuffers[this->swapChainBufferIndex], directionalLightCamera.GetRenderTexture().renderTarget );
 			auto barrierTwo = CD3DX12_RESOURCE_BARRIER::Transition(
 				this->renderTargetBuffers[this->swapChainBufferIndex],
 				D3D12_RESOURCE_STATE_COPY_DEST,
@@ -238,7 +238,7 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
 			);
 
 			TryResourceBarrier( this->mainCommandList,
-				camera.GetRenderTexture().BarrierTransition(
+				directionalLightCamera.GetRenderTexture().BarrierTransition(
 					D3D12_RESOURCE_STATE_COMMON,
 					D3D12_RESOURCE_STATE_COMMON,
 					D3D12_RESOURCE_STATE_COMMON
@@ -258,27 +258,44 @@ void KG::Renderer::KGDXRenderer::ShadowMapRender()
 	size_t cameraCount = 0;
 	for ( KG::Component::ShadowCasterComponent& comp : this->graphicSystems->shadowSystem )
 	{
-		if ( comp.isPointLightShadow() )
+		switch ( comp.GetTargetLightType() )
 		{
-			PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "Point Light ShadowMap Render : Camera %d", cameraCount++ );
-			auto* cubeCamera = comp.GetCubeCamera();
-			cubeCamera->SetCameraRender( mainCommandList );
-			this->mainCommandList->ClearDepthStencilView( cubeCamera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr );
-			this->mainCommandList->OMSetRenderTargets( 0, nullptr, false, &cubeCamera->GetRenderTexture().dsvHandle );
-			this->renderEngine->Render( ShaderGroup::Opaque, ShaderGeometryType::GSCubeShadow, ShaderPixelType::GSCubeShadow, mainCommandList );
-			cubeCamera->EndCameraRender( mainCommandList );
-			PassRenderEnd( mainCommandList, cubeCamera->GetRenderTexture(), 0 );
-		}
-		else if ( comp.isDirectionalLightShadow() )
+		case KG::Component::LightType::DirectionalLight: 
 		{
 			PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "Directional Light ShadowMap Render : Camera %d", cameraCount++ );
-			auto* cascadeCamera = comp.GetCamera();
+			auto* cascadeCamera = comp.GetDirectionalLightCamera();
 			cascadeCamera->SetCameraRender( mainCommandList );
 			this->mainCommandList->ClearDepthStencilView( cascadeCamera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr );
 			this->mainCommandList->OMSetRenderTargets( 0, nullptr, false, &cascadeCamera->GetRenderTexture().dsvHandle );
 			this->renderEngine->Render( ShaderGroup::Opaque, ShaderGeometryType::GSCascadeShadow, ShaderPixelType::GSCubeShadow, mainCommandList );
 			cascadeCamera->EndCameraRender( mainCommandList );
 			PassRenderEnd( mainCommandList, cascadeCamera->GetRenderTexture(), 0 );
+		}
+			break;
+		case KG::Component::LightType::PointLight:
+		{
+			PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "Point Light ShadowMap Render : Camera %d", cameraCount++ );
+			auto* pointLightCamera = comp.GetPointLightCamera();
+			pointLightCamera->SetCameraRender( mainCommandList );
+			this->mainCommandList->ClearDepthStencilView( pointLightCamera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr );
+			this->mainCommandList->OMSetRenderTargets( 0, nullptr, false, &pointLightCamera->GetRenderTexture().dsvHandle );
+			this->renderEngine->Render( ShaderGroup::Opaque, ShaderGeometryType::GSCubeShadow, ShaderPixelType::GSCubeShadow, mainCommandList );
+			pointLightCamera->EndCameraRender( mainCommandList );
+			PassRenderEnd( mainCommandList, pointLightCamera->GetRenderTexture(), 0 );
+		}
+			break;
+		case KG::Component::LightType::SpotLight:
+		{
+			PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 1 ), "Directional Light ShadowMap Render : Camera %d", cameraCount++ );
+			auto* camera = comp.GetSpotLightCamera();
+			camera->SetCameraRender( mainCommandList );
+			this->mainCommandList->ClearDepthStencilView( camera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr );
+			this->mainCommandList->OMSetRenderTargets( 0, nullptr, false, &camera->GetRenderTexture().dsvHandle );
+			this->renderEngine->Render( ShaderGroup::Opaque, ShaderGeometryType::Default, ShaderPixelType::Shadow, mainCommandList );
+			camera->EndCameraRender( mainCommandList );
+			PassRenderEnd( mainCommandList, camera->GetRenderTexture(), 0 );
+		}
+			break;
 		}
 		PIXEndEvent( mainCommandList );
 	}

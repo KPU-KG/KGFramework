@@ -25,6 +25,9 @@
 #ifdef PIXEL_GSCUBE_SHADOW
 #include "Pixel_GSShadow.hlsl"
 #endif
+#ifdef PIXEL_SHADOW
+#include "Pixel_Shadow.hlsl"
+#endif
 #ifdef PIXEL_GREEN_WIREFRAME
 #include "Pixel_WireFrame.hlsl"
 #endif

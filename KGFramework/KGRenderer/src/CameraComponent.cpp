@@ -184,7 +184,10 @@ void KG::Component::CameraComponent::SetCameraRender( ID3D12GraphicsCommandList*
 		)
 	);
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
-	commandList->ClearRenderTargetView( this->renderTexture->GetRenderTargetRTVHandle( this->cubeIndex ), clearColor, 0, nullptr );
+	if ( this->renderTexture->desc.useRenderTarget )
+	{
+		commandList->ClearRenderTargetView( this->renderTexture->GetRenderTargetRTVHandle( this->cubeIndex ), clearColor, 0, nullptr );
+	}
 }
 
 void KG::Component::CameraComponent::EndCameraRender( ID3D12GraphicsCommandList* commandList )
@@ -219,8 +222,8 @@ void KG::Component::CameraComponent::InitializeRenderTexture( const KG::Renderer
 
 void KG::Component::CubeCameraComponent::OnCreate( KG::Core::GameObject* gameObject )
 {
-	for ( auto& camera : this->cameras )
-		camera.OnCreate( gameObject );
+	for ( auto& directionalLightCamera : this->cameras )
+		directionalLightCamera.OnCreate( gameObject );
 
 	for ( size_t i = 0; i < 6; i++ )
 	{
@@ -231,8 +234,8 @@ void KG::Component::CubeCameraComponent::OnCreate( KG::Core::GameObject* gameObj
 
 void KG::Component::CubeCameraComponent::OnDestroy()
 {
-	for ( auto& camera : this->cameras )
-		camera.OnDestroy();
+	for ( auto& directionalLightCamera : this->cameras )
+		directionalLightCamera.OnDestroy();
 }
 
 void KG::Component::CubeCameraComponent::OnRender( ID3D12GraphicsCommandList* commandList )
@@ -556,9 +559,9 @@ void KG::Component::GSCascadeCameraComponent::EndCameraRender( ID3D12GraphicsCom
 	);
 }
 
-void KG::Component::GSCascadeCameraComponent::InitalizeCascade( KG::Component::CameraComponent* camera, KG::Component::LightComponent* light )
+void KG::Component::GSCascadeCameraComponent::InitalizeCascade( KG::Component::CameraComponent* directionalLightCamera, KG::Component::LightComponent* light )
 {
-	this->mainCamera = camera;
+	this->mainCamera = directionalLightCamera;
 	this->directionalLight = light;
 }
 

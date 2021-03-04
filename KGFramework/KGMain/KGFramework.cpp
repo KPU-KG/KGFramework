@@ -81,7 +81,7 @@ void KG::GameFramework::OnTestInit()
 	static KG::Core::GameObject testAnimationObject;
 
 	constexpr auto texOne = "PBRTile"_id;
-	constexpr auto texTwo = "PBRMetal"_id;
+	constexpr auto texTwo = "PBRTile"_id;
 	constexpr auto texThree = "PBRTile"_id;
 	KG::Component::CameraComponent* mainCamera = nullptr;
 
@@ -279,17 +279,17 @@ void KG::GameFramework::OnTestInit()
 		testSpotLightObjects.name = "Light2";
 
 
-		light->SetSpotLight( DirectX::XMFLOAT3( 0.0f, 0.0f, 20.0f ), 20.0f,
-			DirectX::XMConvertToRadians(60.0f), DirectX::XMConvertToRadians( 30.0f ), 2.0f );
+		light->SetSpotLight( DirectX::XMFLOAT3( 0.0f, 0.0f, 10.0f ), 10.0f,
+			DirectX::XMConvertToRadians( 120.0f ), DirectX::XMConvertToRadians( 30.0f ), 4.0f );
 
 		testSpotLightObjects.AddComponent( tran );
 		testSpotLightObjects.AddComponent( light );
 		testSpotLightObjects.AddComponent( sdw );
 		testSpotLightObjects.AddComponent( lam );
-		testSpotLightObjects.GetComponent<KG::Component::TransformComponent>()->Translate( 0.0f, 0.0f, 0.2f );
+		testSpotLightObjects.GetComponent<KG::Component::TransformComponent>()->Translate( 0.0f, 0.0f, -1.5f );
 
 		//tran->Translate( 0.5f, 2.0f, 0.5f );
-		mainCamera->GetGameObject()->GetTransform()->AddChild( testSpotLightObjects.GetTransform() );
+		//mainCamera->GetGameObject()->GetTransform()->AddChild( testSpotLightObjects.GetTransform() );
 	}
 
 	{

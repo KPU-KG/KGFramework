@@ -4,7 +4,7 @@
 #include "Utill_LightCustom.hlsl"
 
 
-
+Texture2D<float> shadowArray[] : register(t0, space1);
 
 struct LightVertexOutput
 {
@@ -39,9 +39,9 @@ struct LightPixelInput
 
 float4x4 GetLightMatrix(LightData light)
 {
-    float s = light.FalloffStart * 1.0f;
+    float s = light.FalloffStart * 1.1f;
     //float sxy = (light.Phi * tan(light.Phi)) / 0.707106781f; // 0.707106781 == sqrt(0.5f)
-    float sxy = s * sin(light.Phi/2.0f);
+    float sxy = s * sin(light.Phi / 2.0f) * 1.1f;
     float x = light.Position.x;
     float y = light.Position.y;
     float z = light.Position.z;
@@ -57,13 +57,6 @@ float4x4 GetLightMatrix(LightData light)
         0, 0, s, 0,
         0, 0, 0, 1
     );
-    //float4x4 rotation = float4x4
-    //(
-    //    right.x, up.x, dir.x, 0,
-    //    right.y, up.y, dir.y, 0,
-    //    right.z, up.z, dir.z, 0,
-    //    0, 0, 0, 1
-    //);
     
     float4x4 rotation = float4x4
     (
@@ -80,6 +73,53 @@ float4x4 GetLightMatrix(LightData light)
         x, y, z, 1
     );
     return mul(mul(scale, rotation), translation);
+}
+
+float SpotLightShadowPoissonPCF(float3 worldPosition, LightData lightData, ShadowData shadowData, float cosTheta)
+{
+    if (shadowData.shadowMapIndex[0] == 0)
+    {
+        return 1.0f;
+    }
+    float2 uv = float2(1.0f, 1.0f);
+    float depth = 1.0f;
+    float4 projPos = mul(float4(worldPosition, 1.0f), shadowData.shadowMatrix[0]);
+    float3 projPos3 = projPos.xyz / projPos.w;
+    uv = ProjPositionToUV(projPos3.xy);
+    depth = projPos3.z;
+    
+    float bias = 0.005 * tan(acos(cosTheta)); 
+    bias = clamp(bias, 0.000001f,0.01f);
+
+    
+    static float2 poissonDisk[16] =
+    {
+        float2(-0.94201624, -0.39906216),
+        float2(0.94558609, -0.76890725),
+        float2(-0.094184101, -0.92938870),
+        float2(0.34495938, 0.29387760),
+        
+        float2(-0.91588581, 0.45771432),
+        float2(-0.81544232, -0.87912464),
+        float2(-0.38277543, 0.27676845),
+        float2(0.97484398, 0.75648379),
+        
+        float2(0.44323325, -0.97511554),
+        float2(0.53742981, -0.47373420),
+        float2(-0.26496911, -0.41893023),
+        float2(0.79197514, 0.19090188),
+        
+        float2(-0.24188840, 0.99706507),
+        float2(-0.81409955, 0.91437590),
+        float2(0.19984126, 0.78641367),
+        float2(0.14383161, -0.14100790)
+    };
+    float result = 0.0f;
+    for (uint n = 0; n < 16; n++)
+    {
+        result += shadowArray[shadowData.shadowMapIndex[0]].SampleCmpLevelZero(gsamAnisotoropicCompClamp, float2(uv + (poissonDisk[n] / 1200.0f)), depth - bias);
+    }
+    return result;
 }
 
 
@@ -118,8 +158,8 @@ LightPixelInput DomainShaderFunction(LightHSConstantOutput constant, float2 uv :
     static float CylinderPortion = 0.2f;
     static float ExpendAmount = (1.0f + CylinderPortion);
 
-    float SinAngle = sin(lightInfo[quad[0].InstanceID].Phi);
-    float CosAngle = cos(lightInfo[quad[0].InstanceID].Phi);
+    float SinAngle = sin(lightInfo[quad[0].InstanceID].Phi / 2.0f);
+    float CosAngle = cos(lightInfo[quad[0].InstanceID].Phi / 2.0f);
     
 	// Transform the UV's into clip-space
     float2 posClipSpace = uv.xy * 2.0f + -1.0f;
@@ -175,17 +215,14 @@ float4 PixelShaderFunction(LightPixelInput input) : SV_Target0
     
     //float3 cameraDirection = look;
     float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
-    float3 lightDirection = lightData.Direction;
-    float3 vToLight = lightData.Position - calcWorldPosition;
-    
-    float distance = length(vToLight);
+    float3 lightDirection = calcWorldPosition - lightData.Position;
+    float distance = length(lightDirection);
     
     float atten = CalcAttenuation(distance, lightData.FalloffStart, lightData.FalloffStart);
-    float spotFactor = CalcSpotFactor(normalize(vToLight), lightData);
-    float shadowFactor = 1.0f;
-    // https://heinleinsgame.tistory.com/19
-    //float shadowFactor = PointShadowPoissonPCF(lightDirection, lightData, shadowData, dot(normalize(lightDirection), normalize(pixelData.wNormal)));
+    float spotFactor = CalcSpotFactor(normalize(lightDirection), lightData);
+    //float spotFactor = CalcSpotFactor(normalize(-lightDirection), lightData);
+    float shadowFactor = SpotLightShadowPoissonPCF(calcWorldPosition, lightData, shadowData, dot(normalize(lightDirection), normalize(pixelData.wNormal)));
     
-    return CustomLightCalculator(lightData, pixelData, normalize(-vToLight), normalize(-cameraDirection), atten * spotFactor) * shadowFactor;
+    return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(-cameraDirection), atten * spotFactor) * shadowFactor;
 }
 
