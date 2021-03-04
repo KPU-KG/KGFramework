@@ -384,22 +384,27 @@ void KG::GameFramework::OnTestInit()
 				auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
 				using namespace KG::Input;
 				auto input = InputManager::GetInputManager();
-				if (input->IsTouching('1'))
+				
+				if (input->GetKeyState('1') == KG::Input::KeyState::Down)
+				// if (input->IsTouching('1'))
 				{
 					// -1 : 무한 루프
-					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_left"_id), ANIMSTATE_PLAYING, 0.5f, ANIMLOOP_INF);
+					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_left"_id), ANIMSTATE_PLAYING, 0.2f, ANIMLOOP_INF);
 				}
-				if (input->IsTouching('2'))
+				if (input->GetKeyState('2') == KG::Input::KeyState::Down)
+				// if (input->IsTouching('2'))
 				{
-					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), ANIMSTATE_PLAYING, 0.5f, ANIMLOOP_INF);
+					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), ANIMSTATE_PLAYING, 0.2f, ANIMLOOP_INF);
 				}
-				if (input->IsTouching('3'))
+				if (input->GetKeyState('3') == KG::Input::KeyState::Down)
+				// if (input->IsTouching('3'))
 				{
-					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_right"_id), ANIMSTATE_PLAYING, 0.5f, ANIMLOOP_INF);
+					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_right"_id), ANIMSTATE_PLAYING, 0.2f, ANIMLOOP_INF);
 				}
-				if (input->IsTouching('4'))
+				if (input->GetKeyState('4') == KG::Input::KeyState::Down)
+				// if (input->IsTouching('4'))
 				{
-					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), ANIMSTATE_PLAYING, 0.5f, ANIMLOOP_INF);
+					ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), ANIMSTATE_PLAYING, 0.2f, ANIMLOOP_INF);
 					ctrl->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), ANIMLOOP_INF, ANIMINDEX_CHANGE);
 				}
 			}

@@ -238,9 +238,33 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 
 	if (anim->timer >= anim->duration) {
 		anim->timer -= anim->duration;
-	}
-	float T = anim->timer / anim->duration;
 
+		// 한 애니메이션 넘어가면 이벤트 초기화
+		// for (int idx : curAnimation.index) {
+		// 	if (events[animations[idx].animationId].size() > 0) {
+		// 		for (auto& e : events[animations[idx].animationId]) {
+		// 			e.activated = false;
+		// 		}
+		// 	}
+		// }
+	}
+
+	// sound event
+	// 현재는 검증은 불가능
+	// for (int idx : curAnimation.index) {
+	// 	if (events[animations[idx].animationId].size() > 0) {
+	// 		for (auto& e : events[animations[idx].animationId]) {
+	// 			// 요 상수값은 바꿔야 합니다...
+	// 			if (e.time >= animations[idx].timer && e.time - animations[idx].timer < 0.07f) {
+	// 				// KG::Utilll::SoundPlay 나중에 추가될 사운드 이벤트 입니다
+	// 				e.activated = true;
+	// 			}
+	// 		}
+	// 	}
+	// }
+
+
+	float T = anim->timer / anim->duration;
 	curAnimation.time += elapsedTime;
 
 	KG::Utill::AnimationSet* animSet = nullptr;
@@ -361,10 +385,11 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 			{
 				continue;
 			}
-
 			t[animCount][i] = GetAnimationTranslation(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
 			r[animCount][i] = GetAnimationRotation(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
 			s[animCount][i] = GetAnimationScale(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
+
+
 		}
 		animCount++;
 	}
@@ -475,10 +500,15 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 		}
 
 		XMFLOAT3 position = pos[i];
-		XMFLOAT4 rotation = rot[i];
+		XMFLOAT4 rotation;
+		if (changeIntercepted)
+			rotation = prevFrameCache[i];
+		else
+			rotation = rot[i];
 		XMFLOAT3 scaling = scale[i];
 
 		float weight = curAnimation.time / curAnimation.duration;
+
 		XMStoreFloat4(&rotation, XMQuaternionSlerp(XMLoadFloat4(&rotation), XMLoadFloat4(&nextRot[i]), weight));
 		XMStoreFloat3(&scaling, XMVectorLerp(XMLoadFloat3(&scaling), XMLoadFloat3(&nextScale[i]), weight));
 
@@ -488,6 +518,7 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 			anim->frameCache[0][i]->GetTransform()->SetRotation(rotation);
 		if (curAnimation.applyScale)
 			anim->frameCache[0][i]->GetTransform()->SetScale(scaling);
+
 	}
 
 	if (curAnimation.duration < 0)
@@ -532,6 +563,58 @@ void KG::Component::AnimationControllerComponent::RegisterAnimation(const KG::Ut
 	}
 }
 
+// 애니메이션을 다 등록한 뒤에 사용할 것
+void KG::Component::AnimationControllerComponent::RegisterEvent(const KG::Utill::HashString& animationId, int keyFrame, const KG::Utill::HashString& eventId)
+{
+	if (GetAnimationIndex(animationId) < 0)
+		return;
+	if (events[animationId].size() > 0) {
+		auto* inst = KG::Resource::ResourceContainer::GetInstance();
+		Animation* anim = &animations[GetAnimationIndex(animationId)];
+		KG::Utill::AnimationSet* animSet = inst->LoadAnimation(anim->animationId, 0);
+
+		for (int i = 0; i < animSet->layers[0].nodeAnimations.size(); ++i) {
+			if (animSet->layers[0].nodeAnimations[i].nodeId == KG::Utill::HashString("RootNode"_id))
+			{
+				continue;
+			}
+			else {
+				// 나중에 태형님이랑 상의해서 애니메이션 로드하는 부분에서 바꿔줘야 할듯??
+				for (int key = 0; key < animSet->layers[0].nodeAnimations[i].rotation.x.size(); ++key) {
+					if (key == keyFrame) {
+						float time = animSet->layers[0].nodeAnimations[i].rotation.x[key].keyTime;
+						for (int j = 0; j < events[animationId].size(); ++j) {
+							if (events[animationId][j].eventId == eventId && events[animationId][j].time == time)
+								return;
+						}
+						events[animationId].emplace_back(AnimationEvent(eventId, time));
+					}
+				}
+			}
+		}
+	}
+	else {
+		auto* inst = KG::Resource::ResourceContainer::GetInstance();
+		Animation* anim = &animations[GetAnimationIndex(animationId)];
+		KG::Utill::AnimationSet* animSet = inst->LoadAnimation(anim->animationId, 0);
+
+		for (int i = 0; i < animSet->layers[0].nodeAnimations.size(); ++i) {
+			if (animSet->layers[0].nodeAnimations[i].nodeId == KG::Utill::HashString("RootNode"_id))
+			{
+				continue;
+			}
+			else {
+				for (int key = 0; key < animSet->layers[0].nodeAnimations[i].rotation.x.size(); ++key) {
+					if (key == keyFrame) {
+						float time = animSet->layers[0].nodeAnimations[i].rotation.x[key].keyTime;
+						events[animationId].emplace_back(AnimationEvent(eventId, time));
+					}
+				}
+			}
+		}
+	}
+}
+
 void KG::Component::AnimationControllerComponent::SetAnimation(const KG::Utill::HashString& animationId, float duration, float speed, bool clearNext, int weight) {
 	if (clearNext)
 		nextAnimations.clear();
@@ -546,16 +629,25 @@ void KG::Component::AnimationControllerComponent::SetAnimation(const KG::Utill::
 	curAnimation.speed = speed;
 }
 
-int KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Utill::HashString& animationId, int nextState, float blendingDuration, float animationDuration, float speed)
+int KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Utill::HashString& animationId, int nextState, float blendingDuration, float animationDuration, bool addWeight, float speed)
 {
 	if (blendingDuration <= 0) {
 		SetAnimation(animationId, animationDuration, speed);
 		return ANIMINDEX_CURRENT;
 	}
 	else {
+		if (state == ANIMSTATE_CHANGING) {
+			changeIntercepted = true;
+			prevFrameCache.clear();
+			Animation* anim = &animations[nextAnimations[0].index[nextAnimations[0].index.size() - 1]];
+			for (int i = 0; i < anim->frameCache[0].size(); ++i) {
+				prevFrameCache.emplace_back(anim->frameCache[0][i]->GetTransform()->GetRotation());
+			}
+		}
+		else
+			changeIntercepted = false;
 		nextAnimations.clear();
 		state = ANIMSTATE_CHANGING;
-		// BlendingAnimation(animationId, blendingDuration);
 		curAnimation.duration = blendingDuration;
 		curAnimation.time = 0;
 		AddNextAnimation(animationId, nextState, animationDuration);
