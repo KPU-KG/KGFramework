@@ -1,3 +1,4 @@
+#include <string>
 #include "KGFramework.h"
 #include "GraphicComponent.h"
 #include "KGRenderer.h"
@@ -277,7 +278,6 @@ void KG::GameFramework::OnTestInit()
 			}
 		);
 		testSpotLightObjects.name = "Light2";
-
 
 		light->SetSpotLight( DirectX::XMFLOAT3( 0.0f, 0.0f, 10.0f ), 10.0f,
 			DirectX::XMConvertToRadians( 120.0f ), DirectX::XMConvertToRadians( 30.0f ), 4.0f );
