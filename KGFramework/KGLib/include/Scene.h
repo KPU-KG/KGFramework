@@ -34,7 +34,5 @@ namespace KG::Core
 
 		KG::Core::GameObject* FindObjectWithTag( const KG::Utill::HashString& tag );
 		KG::Core::GameObject* FindObjectWithID( UINT32 instanceID );
-
-		void Clear();
 	};
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include "hash.h"
+#include "ISerializable.h"
 namespace KG::Core
 {
 	class GameObject;
@@ -19,7 +20,7 @@ namespace KG::Component
 		bool isUsing = false;
 	};
 
-	class IComponent
+	class IComponent : public KG::Core::ISerializable
 	{
 	protected:
 		KG::Core::GameObject* gameObject = nullptr;
@@ -48,6 +49,12 @@ namespace KG::Component
 		virtual void Destroy() { this->OnDestroy(); };
 		void PostUse() { this->systemInfo.isUsing = true; };
 		bool isUsing() const { return this->systemInfo.isUsing == true; };
+
+
+		// ISerializable을(를) 통해 상속됨
+		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;
+		virtual void OnDataSave(tinyxml2::XMLElement* objectElement) override;
+		virtual void OnDrawGUI() override;
 
 	};
 	REGISTER_COMPONENT_ID( IComponent );

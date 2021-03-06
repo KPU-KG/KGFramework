@@ -28,3 +28,15 @@ void KG::Component::IComponent::OnDestroy()
 {
 	this->systemInfo.isUsing = true;
 }
+
+void KG::Component::IComponent::OnDataLoad(tinyxml2::XMLElement* objectElement)
+{
+}
+
+void KG::Component::IComponent::OnDataSave(tinyxml2::XMLElement* objectElement)
+{
+}
+
+void KG::Component::IComponent::OnDrawGUI()
+{
+}
