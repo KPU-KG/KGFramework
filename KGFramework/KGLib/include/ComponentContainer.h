@@ -5,15 +5,14 @@
 #include <assert.h>
 #include "hash.h"
 #include "Debug.h"
+#include "ISerializable.h"
 #include "IComponent.h"
 
 namespace KG::Component
 {
-	/// @brief 
-	class ComponentContainer
+	struct ComponentContainer
 	{
 		std::map<KG::Utill::HashString, IComponent*> container;
-	public:
 		template <class Ty>
 		void AddComponent( Ty* ptr )
 		{
@@ -29,6 +28,5 @@ namespace KG::Component
 			auto it = this->container.find( KG::Utill::HashString( ComponentID<Ty>::id() ) );
 			return (it != this->container.end()) ? static_cast<Ty*>(it->second) : nullptr;
 		}
-
 	};
 };

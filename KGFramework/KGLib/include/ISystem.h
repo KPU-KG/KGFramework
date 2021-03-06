@@ -1,9 +1,11 @@
 #pragma once
 #include "IComponent.h"
+#include "ComponentProvider.h"
 #include <deque>
 #include <algorithm>
 #include <type_traits>
 #include <iterator>
+
 namespace KG::System
 {
 	using namespace KG::Component;
@@ -130,6 +132,7 @@ namespace KG::System
 		virtual void OnUpdate( float elapsedTime ) = 0;
 		virtual void OnPostUpdate( float elapsedTime ) = 0;
 		virtual void OnPreRender() = 0;
+		virtual void OnPostProvider(KG::Component::ComponentProvider& provider) = 0;
 	};
 
 	template <class Ty>
@@ -144,6 +147,15 @@ namespace KG::System
 			auto* target = this->pool.GetNewComponent();
 			this->OnGetNewComponent( target );
 			return target;
+		}
+		virtual void OnPostProvider(KG::Component::ComponentProvider& provider)
+		{
+			provider.PostInjectionFunction(KG::Component::ComponentID<Ty>::id(), 
+				[this]( KG::Core::GameObject* object ) 
+				{
+					object->AddComponent<Ty>(this->GetNewComponent());
+				}
+			);
 		}
 		UsingComponentIterator<Ty> begin()
 		{

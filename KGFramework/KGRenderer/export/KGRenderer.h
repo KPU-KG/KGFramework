@@ -19,11 +19,11 @@ namespace KG::Resource
 	{
 		MaterialSet defaultMaterial;
 		std::map<KG::Utill::HashString, MaterialSet> materialMap;
-		void SetDefaultMaterial( const MaterialSet& materials );
-		void SetDefaultMaterial( MaterialSet&& materials );
-		void AddMaterial( const KG::Utill::HashString& objectId, const MaterialSet& materials );
-		void AddMaterial( const KG::Utill::HashString& objectId, MaterialSet&& materials );
-		const MaterialSet& GetMaterial( const KG::Utill::HashString& objectId ) const;
+		void SetDefaultMaterial(const MaterialSet& materials);
+		void SetDefaultMaterial(MaterialSet&& materials);
+		void AddMaterial(const KG::Utill::HashString& objectId, const MaterialSet& materials);
+		void AddMaterial(const KG::Utill::HashString& objectId, MaterialSet&& materials);
+		const MaterialSet& GetMaterial(const KG::Utill::HashString& objectId) const;
 	};
 }
 
@@ -42,8 +42,8 @@ namespace KG::Renderer
 		bool useDepthStencilBuffer = true;
 		bool uploadSRVRenderTarget = false;
 		bool uploadSRVDepthBuffer = false;
-		KG::Utill::HashString renderTargetTextureId = KG::Utill::HashString( 0 );
-		KG::Utill::HashString depthBufferTextureId = KG::Utill::HashString( 0 );
+		KG::Utill::HashString renderTargetTextureId = KG::Utill::HashString(0);
+		KG::Utill::HashString depthBufferTextureId = KG::Utill::HashString(0);
 	};
 
 
@@ -72,21 +72,21 @@ namespace KG::Renderer
 		IKGRenderer() = default;
 	public:
 		virtual ~IKGRenderer() = default;
-		void SetDesc( const RendererDesc& desc );
-		void SetSetting( const RendererSetting& setting );
+		void SetDesc(const RendererDesc& desc);
+		void SetSetting(const RendererSetting& setting);
 
-		virtual void Initialize( const RendererDesc& desc, const RendererSetting& setting )
+		virtual void Initialize(const RendererDesc& desc, const RendererSetting& setting)
 		{
-			this->SetDesc( desc );
-			this->SetSetting( setting );
+			this->SetDesc(desc);
+			this->SetSetting(setting);
 			this->Initialize();
 		}
 		virtual void Initialize() = 0;
 		virtual void Render() = 0;
 		virtual void Update(float elaspedTime) = 0;
-		virtual void OnChangeSettings( const RendererSetting& prev, const RendererSetting& next ) = 0;
+		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) = 0;
 
-		virtual void SetSkymapTextureId( const KG::Utill::HashString& id )
+		virtual void SetSkymapTextureId(const KG::Utill::HashString& id)
 		{
 			this->skymapTextureId = id;
 		}
@@ -95,19 +95,21 @@ namespace KG::Renderer
 			return this->skymapTextureId;
 		}
 
+		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
+
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() = 0;
 		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent() = 0;
-		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent( const KG::Utill::HashString& id, UINT index = 0) = 0;
+		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent(const KG::Utill::HashString& id, UINT index = 0) = 0;
 		virtual KG::Component::MaterialComponent* GetNewMaterialComponent() = 0;
-		virtual KG::Component::MaterialComponent* GetNewMaterialComponent( const KG::Utill::HashString& id ) = 0;
-		virtual KG::Component::MaterialComponent* GetNewMaterialComponentFromShader( const KG::Utill::HashString& id ) = 0;
+		virtual KG::Component::MaterialComponent* GetNewMaterialComponent(const KG::Utill::HashString& id) = 0;
+		virtual KG::Component::MaterialComponent* GetNewMaterialComponentFromShader(const KG::Utill::HashString& id) = 0;
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() = 0;
 		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() = 0;
 		virtual KG::Component::LightComponent* GetNewLightComponent() = 0;
 		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() = 0;
 		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() = 0;
 		virtual KG::Component::AnimationControllerComponent* GetNewAnimationControllerComponent() = 0;
-		virtual KG::Core::GameObject* LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials ) = 0;
+		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials) = 0;
 
 	};
 	DLL KG::Renderer::IKGRenderer* GetD3D12Renderer();

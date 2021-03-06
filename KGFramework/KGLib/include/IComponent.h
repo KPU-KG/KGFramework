@@ -39,6 +39,7 @@ namespace KG::Component
 		virtual void OnDisactive() {};
 		virtual void OnDestroy();
 		virtual void OnCreate( KG::Core::GameObject* gameObject ){};
+		virtual void OnStart() {};
 	public:
 		void Create( KG::Core::GameObject* gameObject ) {
 			this->gameObject = gameObject;

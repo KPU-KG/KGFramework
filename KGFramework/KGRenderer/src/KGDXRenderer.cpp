@@ -67,6 +67,19 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->shadowSystem.OnPostUpdate( elapsedTime );
 	}
 
+	void PostComponentProvider(KG::Component::ComponentProvider& provider)
+	{
+		this->geometrySystem.OnPostProvider(provider);
+		this->materialSystem.OnPostProvider(provider);
+		this->render3DSystem.OnPostProvider(provider);
+		this->cameraSystem.OnPostProvider(provider);
+		this->cubeCameraSystem.OnPostProvider(provider);
+		this->lightSystem.OnPostProvider(provider);
+		this->avatarSystem.OnPostProvider(provider);
+		this->animationControllerSystem.OnPostProvider(provider);
+		this->shadowSystem.OnPostProvider(provider);
+	}
+
 	void Clear()
 	{
 		this->geometrySystem.Clear();
@@ -367,6 +380,11 @@ void KG::Renderer::KGDXRenderer::Update( float elapsedTime )
 void KGDXRenderer::OnChangeSettings( const RendererSetting& prev, const RendererSetting& next )
 {
 	NotImplement( KGDXRenderer::OnChangeSettings );
+}
+
+void KG::Renderer::KGDXRenderer::PostComponentProvider(KG::Component::ComponentProvider& provider)
+{
+	this->graphicSystems->PostComponentProvider( provider );
 }
 
 KG::Component::Render3DComponent* KG::Renderer::KGDXRenderer::GetNewRenderComponent()

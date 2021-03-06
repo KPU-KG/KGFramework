@@ -1,6 +1,7 @@
 #pragma once
 #include "ISerializable.h"
 #include "GameObject.h"
+#include "ComponentProvider.h"
 #include <vector>
 #include <deque>
 #include <set>
@@ -13,6 +14,8 @@ namespace KG::Core
 		using ObjectPool = std::deque<CachePair>;
 		using ActivePool = std::vector<UINT>;
 
+		tinyxml2::XMLDocument sourceDocument;
+		KG::Component::ComponentProvider* componentProvider = nullptr;
 		ObjectPool objectPool;
 		ActivePool frontActivePool; //0번부터 시작하는 런타임 생성 오브젝트
 		ActivePool backActivePool; //UINT_MAX 부터 시작하는 미리 생성된 오브젝트
@@ -22,19 +25,25 @@ namespace KG::Core
 		KG::Core::GameObject* GetBackObject( UINT32 index );
 		KG::Core::GameObject* FindFrontObjectWithTag( const KG::Utill::HashString& tag );
 		KG::Core::GameObject* FindBackObjectWithTag( const KG::Utill::HashString& tag );
-		static UINT32 ToBackID( UINT32 frontID);
+		//back -> front / front -> back
+		static UINT32 FlipID(UINT32 frontID);
 	public:
-		// 비어있는 오브젝트 할당 // 런타임
-		KG::Core::GameObject* CreateNewObject();
-		// 비어있는 오브젝트 할당 // 미리 생성된
-		KG::Core::GameObject* CreateNewObject( UINT32 instanceID );
+		void SetComponentProvider(KG::Component::ComponentProvider* componentProvider);
+		KG::Component::ComponentProvider* GetComponentProvider() const;
+		// 비어있는 오브젝트 할당
+		KG::Core::GameObject* CreateNewObject(); // 런타임
+		KG::Core::GameObject* CreateNewObject( UINT32 instanceID ); // 미리 생성
 		// 원본 객체에서 복사해옴
-		//KG::Core::GameObject* CreateNewObject( const KG::Core::GameObject* sourceObject );
+		KG::Core::GameObject* CreateCopyObject( const KG::Core::GameObject* sourceObject ); // 런타임
 		// XML에 정의되있는 원본 객체에서 복사해옴
-		//KG::Core::GameObject* CreateNewObjcet( const KG::Utill::HashString& sourceObjectId );
+		KG::Core::GameObject* CreatePrefabObjcet( const KG::Utill::HashString& prefabId ); // 런타임
+		KG::Core::GameObject* CreatePrefabObjcet( const KG::Utill::HashString& prefabId, UINT32 instanceID ); // 미리 생성
 
 		KG::Core::GameObject* FindObjectWithTag( const KG::Utill::HashString& tag );
 		KG::Core::GameObject* FindObjectWithID( UINT32 instanceID );
+
+		void LoadScene( const std::string& path );
+		void SaveCurrentScene( const std::string& path );
 
 		// ISerializable을(를) 통해 상속됨
 		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;

@@ -26,7 +26,7 @@ namespace KG::Renderer
 		UINT rtvDescriptorSize = 0;
 		UINT srvDescriptorSize = 0;
 		UINT dsvDescriptoSize = 0;
-		
+
 		ID3D12CommandQueue* commandQueue = nullptr;
 		ID3D12CommandAllocator* mainCommandAllocator = nullptr;
 		ID3D12GraphicsCommandList* mainCommandList = nullptr;
@@ -58,7 +58,7 @@ namespace KG::Renderer
 		void CreateGeneralRootSignature();
 
 		void AllocateGBufferHeap();
-		
+
 		void MoveToNextFrame();
 
 		D3D12_CPU_DESCRIPTOR_HANDLE GetCurrentRenderTargetHandle() const;
@@ -66,10 +66,10 @@ namespace KG::Renderer
 	public:
 		KGDXRenderer();
 		~KGDXRenderer();
-		KGDXRenderer( const KGDXRenderer& ) = delete;
-		KGDXRenderer( KGDXRenderer&& ) = delete;
-		KGDXRenderer& operator=( const KGDXRenderer& ) = delete;
-		KGDXRenderer& operator=( KGDXRenderer&& ) = delete;
+		KGDXRenderer(const KGDXRenderer&) = delete;
+		KGDXRenderer(KGDXRenderer&&) = delete;
+		KGDXRenderer& operator=(const KGDXRenderer&) = delete;
+		KGDXRenderer& operator=(KGDXRenderer&&) = delete;
 
 
 
@@ -78,28 +78,30 @@ namespace KG::Renderer
 		virtual void CubeCaemraRender();
 		virtual void NormalCameraRender();
 		virtual void ShadowMapRender();
-		virtual void OpaqueRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex );
-		virtual void TransparentRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex );
-		virtual void LightPassRender( ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex );
-		virtual void SkyBoxRender( ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex );
-		virtual void PassRenderEnd( ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex );
+		virtual void OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+		virtual void TransparentRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+		virtual void LightPassRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+		virtual void SkyBoxRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+		virtual void PassRenderEnd(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 
 		virtual void Update(float elapsedTime) override;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) override;
 
+		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
+
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() override;
 		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent() override;
-		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent( const KG::Utill::HashString& id, UINT subMeshIndex = 0 ) override;
+		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent(const KG::Utill::HashString& id, UINT subMeshIndex = 0) override;
 		virtual KG::Component::MaterialComponent* GetNewMaterialComponent() override;
-		virtual KG::Component::MaterialComponent* GetNewMaterialComponent( const KG::Utill::HashString& id ) override;
-		virtual KG::Component::MaterialComponent* GetNewMaterialComponentFromShader( const KG::Utill::HashString& id ) override;
+		virtual KG::Component::MaterialComponent* GetNewMaterialComponent(const KG::Utill::HashString& id) override;
+		virtual KG::Component::MaterialComponent* GetNewMaterialComponentFromShader(const KG::Utill::HashString& id) override;
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() override;
 		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() override;
 		virtual KG::Component::LightComponent* GetNewLightComponent() override;
 		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() override;
 		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() override;
 		virtual KG::Component::AnimationControllerComponent* GetNewAnimationControllerComponent() override;
-		virtual KG::Core::GameObject* LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials ) override;
+		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials) override;
 
 		auto GetD3DDevice() const
 		{
@@ -118,7 +120,7 @@ namespace KG::Renderer
 		{
 			return this->rtvDescriptorSize;
 		};
-		UINT GetSRVSize() const 
+		UINT GetSRVSize() const
 		{
 			return this->srvDescriptorSize;
 		};

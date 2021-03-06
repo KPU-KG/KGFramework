@@ -5,6 +5,7 @@
 #include "GameTimer.h"
 #include "KGRenderer.h"
 #include "InputManager.h"
+#include "ComponentProvider.h"
 #include <memory>
 namespace KG
 {
@@ -24,6 +25,7 @@ namespace KG
 		std::unique_ptr<Systems> system;
 		std::unique_ptr<KG::Renderer::IKGRenderer> renderer;
 		std::unique_ptr<KG::Input::InputManager> input;
+		KG::Component::ComponentProvider componentProvider;
 	public:
 		GameFramework();
 		~GameFramework();
@@ -34,7 +36,6 @@ namespace KG
 
 		bool Initialize(const EngineDesc& engineDesc, const Setting& setting);
 
-		void OnTestInit();
 		void OnProcess();
 		void OnClose();
 	private:

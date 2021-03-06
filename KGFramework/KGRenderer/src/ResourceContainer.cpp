@@ -173,7 +173,7 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceContainer::LoadMa
 void KG::Resource::ResourceContainer::ConvertNodeToObject( const KG::Utill::HashString& id, KG::Core::GameObject* object, KG::Utill::ModelNode* node, const MaterialMatch& materials, KG::Core::GameObject* rootObject )
 {
 
-	object->id = KG::Utill::HashString( node->name );
+	object->tag = KG::Utill::HashString( node->name );
 	auto* renderer = KG::Renderer::KGDXRenderer::GetInstance();
 
 	auto* tran = object->GetComponent<KG::Component::TransformComponent>();
@@ -186,7 +186,7 @@ void KG::Resource::ResourceContainer::ConvertNodeToObject( const KG::Utill::Hash
 		object->AddComponent( renderer->GetNewMaterialComponent() );
 		auto* geo = object->GetComponent<KG::Component::GeometryComponent>();
 		auto* mat = object->GetComponent<KG::Component::MaterialComponent>();
-		auto& materialSet = materials.GetMaterial( object->id );
+		auto& materialSet = materials.GetMaterial( object->tag );
 		for ( size_t i = 0; i < node->meshs.size(); i++ )
 		{
 			auto index = node->meshs[i];

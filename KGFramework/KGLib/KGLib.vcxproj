@@ -268,6 +268,8 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\ComponentContainer.cpp" />
+    <ClCompile Include="src\ComponentProvider.cpp" />
     <ClCompile Include="src\Debug.cpp" />
     <ClCompile Include="src\fbxImpoter.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
@@ -289,6 +291,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\ComponentContainer.h" />
+    <ClInclude Include="include\ComponentProvider.h" />
     <ClInclude Include="include\Debug.h" />
     <ClInclude Include="include\fbxImpoter.h" />
     <ClInclude Include="include\GameObject.h" />

@@ -6,13 +6,13 @@
 namespace KG::Utill::XMLConverter
 {
 	template<typename Ty>
-	Ty XMLElementLoad(tinyxml2::XMLElement* objectElement , const std::string& title)
+	inline Ty XMLElementLoad(tinyxml2::XMLElement* objectElement , const std::string& title)
 	{
 		static_assert(true , "NotImplement");
 	}
 
 	template<typename Ty>
-	void XMLElementSave(tinyxml2::XMLElement* objectElement , const std::string& title , const Ty& ref)
+	inline void XMLElementSave(tinyxml2::XMLElement* objectElement , const std::string& title , const Ty& ref)
 	{
 		static_assert(true , "NotImplement");
 	}
@@ -21,13 +21,13 @@ namespace KG::Utill::XMLConverter
 	// int
 
 	template<>
-	int XMLElementLoad(tinyxml2::XMLElement* objectElement , const std::string& title)
+	inline int XMLElementLoad(tinyxml2::XMLElement* objectElement , const std::string& title)
 	{
 		auto* currentElement = objectElement->FirstChildElement(title.c_str());
 		return currentElement->IntAttribute("value");
 	}
 	template<>
-	void XMLElementSave(tinyxml2::XMLElement* objectElement , const std::string& title , const int& ref)
+	inline void XMLElementSave(tinyxml2::XMLElement* objectElement , const std::string& title , const int& ref)
 	{
 		auto* currentElement = objectElement->InsertNewChildElement(title.c_str());
 		currentElement->SetAttribute("value" , ref);
@@ -36,13 +36,13 @@ namespace KG::Utill::XMLConverter
 	// float
 
 	template<>
-	float XMLElementLoad(tinyxml2::XMLElement* objectElement , const std::string& title)
+	inline float XMLElementLoad(tinyxml2::XMLElement* objectElement , const std::string& title)
 	{
 		auto* currentElement = objectElement->FirstChildElement(title.c_str());
 		return currentElement->FloatAttribute("value");
 	}
 	template<>
-	void XMLElementSave(tinyxml2::XMLElement* objectElement , const std::string& title , const float& ref)
+	inline void XMLElementSave(tinyxml2::XMLElement* objectElement , const std::string& title , const float& ref)
 	{
 		auto* currentElement = objectElement->InsertNewChildElement(title.c_str());
 		currentElement->SetAttribute("value" , ref);
@@ -50,13 +50,13 @@ namespace KG::Utill::XMLConverter
 
 	// bool
 	template<>
-	bool XMLElementLoad(tinyxml2::XMLElement* objectElement , const std::string& title)
+	inline bool XMLElementLoad(tinyxml2::XMLElement* objectElement , const std::string& title)
 	{
 		auto* currentElement = objectElement->FirstChildElement(title.c_str());
 		return currentElement->BoolAttribute("value");
 	}
 	template<>
-	void XMLElementSave(tinyxml2::XMLElement* objectElement , const std::string& title , const bool& ref)
+	inline void XMLElementSave(tinyxml2::XMLElement* objectElement , const std::string& title , const bool& ref)
 	{
 		auto* currentElement = objectElement->InsertNewChildElement(title.c_str());
 		currentElement->SetAttribute("value" , ref);
@@ -64,7 +64,7 @@ namespace KG::Utill::XMLConverter
 
 	// XMFLOAT3
 	template<>
-	DirectX::XMFLOAT3 XMLElementLoad(tinyxml2::XMLElement* objectElement , const std::string& title)
+	inline DirectX::XMFLOAT3 XMLElementLoad(tinyxml2::XMLElement* objectElement , const std::string& title)
 	{
 		auto* currentElement = objectElement->FirstChildElement(title.c_str());
 		DirectX::XMFLOAT3 result;
@@ -74,7 +74,7 @@ namespace KG::Utill::XMLConverter
 		return result;
 	}
 	template<>
-	void XMLElementSave(tinyxml2::XMLElement* objectElement , const std::string& title , const DirectX::XMFLOAT3& ref)
+	inline void XMLElementSave(tinyxml2::XMLElement* objectElement , const std::string& title , const DirectX::XMFLOAT3& ref)
 	{
 		auto* currentElement = objectElement->InsertNewChildElement(title.c_str());
 		currentElement->SetAttribute("x" , ref.x);
@@ -84,7 +84,7 @@ namespace KG::Utill::XMLConverter
 
 	// XMFLOAT4
 	template<>
-	DirectX::XMFLOAT4 XMLElementLoad(tinyxml2::XMLElement* objectElement , const std::string& title)
+	inline DirectX::XMFLOAT4 XMLElementLoad(tinyxml2::XMLElement* objectElement , const std::string& title)
 	{
 		auto* currentElement = objectElement->FirstChildElement(title.c_str());
 		DirectX::XMFLOAT4 result;
@@ -95,7 +95,7 @@ namespace KG::Utill::XMLConverter
 		return result;
 	}
 	template<>
-	void XMLElementSave(tinyxml2::XMLElement* objectElement , const std::string& title , const DirectX::XMFLOAT4& ref)
+	inline void XMLElementSave(tinyxml2::XMLElement* objectElement , const std::string& title , const DirectX::XMFLOAT4& ref)
 	{
 		auto* currentElement = objectElement->InsertNewChildElement(title.c_str());
 		currentElement->SetAttribute("x" , ref.x);
@@ -107,7 +107,7 @@ namespace KG::Utill::XMLConverter
 
 	//HashString
 	template<>
-	KG::Utill::HashString XMLElementLoad(tinyxml2::XMLElement* objectElement, const std::string& title)
+	inline KG::Utill::HashString XMLElementLoad(tinyxml2::XMLElement* objectElement, const std::string& title)
 	{
 		auto* currentElement = objectElement->FirstChildElement(title.c_str());
 		KG::Utill::HashString result;
@@ -116,7 +116,7 @@ namespace KG::Utill::XMLConverter
 	}
 
 	template<>
-	void XMLElementSave(tinyxml2::XMLElement* objectElement, const std::string& title, const KG::Utill::HashString& ref)
+	inline void XMLElementSave(tinyxml2::XMLElement* objectElement, const std::string& title, const KG::Utill::HashString& ref)
 	{
 		auto* currentElement = objectElement->InsertNewChildElement(title.c_str());
 		currentElement->SetAttribute("value", ref.value);

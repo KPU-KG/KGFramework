@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "ISerializable.h"
 #include "IComponent.h"
 #include "ComponentContainer.h"
 namespace KG::Component
@@ -11,7 +12,7 @@ namespace KG::Core
 {
 	class Scene;
 	using KG::Component::ComponentContainer;
-	class GameObject
+	class GameObject : public ISerializable
 	{
 		bool isDestroy = false;
 		ComponentContainer components;
@@ -45,6 +46,14 @@ namespace KG::Core
 		KG::Core::Scene* GetScene() const;
 		UINT32 GetInstanceID() const;
 		void MatchBoneToObject( const std::vector<KG::Utill::HashString>& tags, std::vector<KG::Core::GameObject*>& bones ) const;
+
+
+		virtual void SaveToPrefab( const std::string& name);
+
+		// ISerializable을(를) 통해 상속됨
+		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;
+		virtual void OnDataSave(tinyxml2::XMLElement* objectElement) override;
+		virtual void OnDrawGUI() override;
 
 	};
 }

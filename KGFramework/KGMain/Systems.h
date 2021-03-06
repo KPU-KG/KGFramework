@@ -9,6 +9,12 @@ namespace KG
 		KG::System::TransformSystem transformSystem;
 		KG::System::LambdaComponentSystem lambdaSystem;
 
+		void PostComponentProvider(KG::Component::ComponentProvider& provider)
+		{
+			this->lambdaSystem.OnPostProvider(provider);
+			this->transformSystem.OnPostProvider(provider);
+		}
+
 		void OnPreRender()
 		{
 			this->transformSystem.OnPreRender();
