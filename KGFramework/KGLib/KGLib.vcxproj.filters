@@ -37,6 +37,9 @@
     <Filter Include="헤더 파일\Core\Scene">
       <UniqueIdentifier>{b3cb3e0e-493f-47e6-813e-f08999ba7e29}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Core\Serialize">
+      <UniqueIdentifier>{7cacce8b-5a64-45da-bea6-b03aab9da8b1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -124,6 +127,15 @@
     </ClInclude>
     <ClInclude Include="include\Scene.h">
       <Filter>헤더 파일\Core\Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="include\XMLConverter.h">
+      <Filter>헤더 파일\Utill</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ISerializable.h">
+      <Filter>헤더 파일\Core\Serialize</Filter>
+    </ClInclude>
+    <ClInclude Include="include\SerializableProperty.h">
+      <Filter>헤더 파일\Core\Serialize</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
