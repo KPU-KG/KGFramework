@@ -1,11 +1,12 @@
 #pragma once
+#include "ISerializable.h"
 #include "GameObject.h"
 #include <vector>
 #include <deque>
 #include <set>
 namespace KG::Core
 {
-	class Scene
+	class Scene : public ISerializable
 	{
 		static constexpr UINT NULL_OBJECT = 4294967295;
 		using CachePair = std::pair<bool, GameObject>;
@@ -34,5 +35,10 @@ namespace KG::Core
 
 		KG::Core::GameObject* FindObjectWithTag( const KG::Utill::HashString& tag );
 		KG::Core::GameObject* FindObjectWithID( UINT32 instanceID );
+
+		// ISerializable을(를) 통해 상속됨
+		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;
+		virtual void OnDataSave(tinyxml2::XMLElement* objectElement) override;
+		virtual void OnDrawGUI() override;
 	};
 }

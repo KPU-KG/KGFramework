@@ -117,3 +117,15 @@ KG::Core::GameObject* KG::Core::Scene::FindObjectWithID(UINT32 instanceID)
 		result = this->GetBackObject(backID);
 	return result;
 }
+
+void KG::Core::Scene::OnDataLoad(tinyxml2::XMLElement* objectElement)
+{
+}
+
+void KG::Core::Scene::OnDataSave(tinyxml2::XMLElement* objectElement)
+{
+}
+
+void KG::Core::Scene::OnDrawGUI()
+{
+}
