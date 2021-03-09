@@ -182,19 +182,21 @@ void KG::Resource::ResourceContainer::ConvertNodeToObject( const KG::Utill::Hash
 	tran->SetPosition( node->position );
 	if ( node->meshs.size() != 0 )
 	{
-		object->AddComponent( renderer->GetNewGeomteryComponent() );
-		object->AddComponent( renderer->GetNewMaterialComponent() );
-		auto* geo = object->GetComponent<KG::Component::GeometryComponent>();
-		auto* mat = object->GetComponent<KG::Component::MaterialComponent>();
+		auto* geo = renderer->GetNewGeomteryComponent();
+		auto* mat = renderer->GetNewMaterialComponent();
+
 		auto& materialSet = materials.GetMaterial( object->tag );
 		for ( size_t i = 0; i < node->meshs.size(); i++ )
 		{
 			auto index = node->meshs[i];
-			geo->InitializeGeometry( id, index, i );
+			geo->geometryID = id;
+			geo->subMeshIndex = index;
+			geo->slotIndex = i;
 		}
 		for ( size_t i = 0; i < materialSet.size(); i++ )
 		{
-			mat->InitializeMaterial( materialSet[i], i );
+			mat->materialID = materialSet[i];
+			mat->slotIndex = i;
 		}
 		if ( geo->HasBone() )
 		{
@@ -202,6 +204,8 @@ void KG::Resource::ResourceContainer::ConvertNodeToObject( const KG::Utill::Hash
 			object->AddComponent( avatar );
 			avatar->InitializeBone( rootObject );
 		}
+		object->AddComponent( geo );
+		object->AddComponent( mat );
 		object->AddComponent( renderer->GetNewRenderComponent() );
 	}
 	//Bone Debug

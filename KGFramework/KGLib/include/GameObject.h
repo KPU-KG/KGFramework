@@ -51,8 +51,8 @@ namespace KG::Core
 		virtual void SaveToPrefab( const std::string& name);
 
 		// ISerializable을(를) 통해 상속됨
-		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;
-		virtual void OnDataSave(tinyxml2::XMLElement* objectElement) override;
+		virtual void OnDataLoad(tinyxml2::XMLElement* parentElement) override;
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement) override;
 		virtual void OnDrawGUI() override;
 
 	};

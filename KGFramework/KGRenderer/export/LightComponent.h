@@ -2,6 +2,8 @@
 #include <DirectXMath.h>
 #include <array>
 #include "IRenderComponent.h"
+#include "ISerializable.h"
+#include "SerializableProperty.h"
 
 namespace KG::Renderer
 {
@@ -98,11 +100,15 @@ namespace KG::Component
 		inline static KG::Renderer::Geometry* pointLightGeometry = nullptr;
 
 		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+		void InitializeDirectionalLight();
+		void InitializePointLight();
+		void InitializeSpotLight();
 	public:
+		LightComponent();
+		void SetLightPower( float lightPower );
 		void SetDirectionalLight( const DirectX::XMFLOAT3& strength, const DirectX::XMFLOAT3& direction );
 		void SetPointLight( const DirectX::XMFLOAT3& strength, float fallOffStart, float fallOffEnd );
 		void SetSpotLight( const DirectX::XMFLOAT3& strength, float depth, float Phi, float Theta, float fallOff );
-		void SetLightPower( float lightPower );
 		DirectionalLightRef GetDirectionalLightRef();
 		PointLightRef GetPointLightRef();
 		SpotLightRef GetSpotLightRef();
@@ -118,6 +124,19 @@ namespace KG::Component
 		virtual void OnPreRender() override;
 		auto GetLightType() const { return this->lightType; }
 		void SetVisible( bool visible );
+	private:
+		KG::Core::SerializableEnumProperty<KG::Component::LightType> lightTypeProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3> strengthProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3> directionProp;
+		KG::Core::SerializableProperty<float> fallOffStartProp;
+		KG::Core::SerializableProperty<float> fallOffEndProp;
+		KG::Core::SerializableProperty<float> depthProp;
+		KG::Core::SerializableProperty<float> phiProp;
+		KG::Core::SerializableProperty<float> thetaProp;
+		KG::Core::SerializableProperty<float> fallOffProp;
+	public:
+		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 	};
 
 	REGISTER_COMPONENT_ID( LightComponent );

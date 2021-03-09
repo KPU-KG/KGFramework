@@ -134,13 +134,14 @@ void KG::Core::GameObject::OnDataLoad(tinyxml2::XMLElement* objectElement)
 	while ( comp )
 	{
 		KG::Utill::HashString componentName = comp->UnsignedAttribute("hash_id");
-		this->ownerScene->GetComponentProvider()->AddComponentToObject(componentName, this);
+		this->ownerScene->GetComponentProvider()->AddComponentToObject(componentName, this)->OnDataLoad(comp);
 		comp = objectElement->NextSiblingElement();
 	}
 }
 
-void KG::Core::GameObject::OnDataSave(tinyxml2::XMLElement* objectElement)
+void KG::Core::GameObject::OnDataSave(tinyxml2::XMLElement* parentElement)
 {
+	auto* objectElement = parentElement->InsertNewChildElement("GameObject");
 	for ( auto& i : this->components.container )
 	{
 		auto* compElement = objectElement->InsertNewChildElement("Component");
@@ -151,4 +152,5 @@ void KG::Core::GameObject::OnDataSave(tinyxml2::XMLElement* objectElement)
 
 void KG::Core::GameObject::OnDrawGUI()
 {
+	
 }

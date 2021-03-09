@@ -290,6 +290,7 @@
     <ClInclude Include="export\LightComponent.h" />
     <ClInclude Include="export\MaterialComponent.h" />
     <ClInclude Include="export\Render3DComponent.h" />
+    <ClInclude Include="export\RendererDesc.h" />
     <ClInclude Include="export\ResourceMetaData.h" />
     <ClInclude Include="export\ShadowCasterComponent.h" />
     <ClInclude Include="export\Texture.h" />

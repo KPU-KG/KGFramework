@@ -158,6 +158,18 @@ void KG::Core::Scene::SaveCurrentScene(const std::string& path)
 	doc.SaveFile(path.c_str());
 }
 
+KG::Component::IComponent* KG::Core::Scene::SetMainCamera(KG::Component::IComponent* mainCamera)
+{
+	auto* temp = this->mainCamera;
+	this->mainCamera = mainCamera;
+	return temp;
+}
+
+KG::Component::IComponent* KG::Core::Scene::GetMainCamera() const
+{
+	return this->mainCamera;
+}
+
 void KG::Core::Scene::OnDataLoad(tinyxml2::XMLElement* sceneElement)
 {
 	auto* objectElement = sceneElement->FirstChildElement();
@@ -187,8 +199,7 @@ void KG::Core::Scene::OnDataSave(tinyxml2::XMLElement* sceneElement)
 	{
 		if ( i != NULL_OBJECT )
 		{
-			tinyxml2::XMLElement* obj = sceneElement->InsertNewChildElement("GameObject");
-			this->GetBackObject(i)->OnDataSave(obj);
+			this->GetBackObject(i)->OnDataSave(sceneElement);
 			count++;
 		}
 	}
@@ -196,8 +207,7 @@ void KG::Core::Scene::OnDataSave(tinyxml2::XMLElement* sceneElement)
 	{
 		if ( i != NULL_OBJECT )
 		{
-			tinyxml2::XMLElement* obj = sceneElement->InsertNewChildElement("GameObject");
-			this->GetFrontObject(i)->OnDataSave(obj);
+			this->GetFrontObject(i)->OnDataSave(sceneElement);
 			count++;
 		}
 	}

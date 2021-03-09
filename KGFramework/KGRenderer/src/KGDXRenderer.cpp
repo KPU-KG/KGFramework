@@ -398,30 +398,9 @@ KG::Component::GeometryComponent* KG::Renderer::KGDXRenderer::GetNewGeomteryComp
 	return geo;
 }
 
-KG::Component::GeometryComponent* KG::Renderer::KGDXRenderer::GetNewGeomteryComponent( const KG::Utill::HashString& id, UINT index )
-{
-	auto* geo = static_cast<KG::Component::GeometryComponent*>(this->graphicSystems->geometrySystem.GetNewComponent());
-	geo->InitializeGeometry( id, index );
-	return geo;
-}
-
 KG::Component::MaterialComponent* KG::Renderer::KGDXRenderer::GetNewMaterialComponent()
 {
 	auto* mat = static_cast<KG::Component::MaterialComponent*>(this->graphicSystems->materialSystem.GetNewComponent());
-	return mat;
-}
-
-KG::Component::MaterialComponent* KG::Renderer::KGDXRenderer::GetNewMaterialComponent( const KG::Utill::HashString& id )
-{
-	auto* mat = static_cast<KG::Component::MaterialComponent*>(this->graphicSystems->materialSystem.GetNewComponent());
-	mat->InitializeMaterial( id );
-	return mat;
-}
-
-KG::Component::MaterialComponent* KG::Renderer::KGDXRenderer::GetNewMaterialComponentFromShader( const KG::Utill::HashString& id )
-{
-	auto* mat = static_cast<KG::Component::MaterialComponent*>(this->graphicSystems->materialSystem.GetNewComponent());
-	mat->InitializeShader( id );
 	return mat;
 }
 

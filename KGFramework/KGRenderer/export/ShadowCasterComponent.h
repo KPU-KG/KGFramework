@@ -36,15 +36,16 @@ namespace KG::Component
 		bool isDirectionalLightShadow() const { return this->directionalLightCamera != nullptr; };
 		bool isSpotLightShadow() const { return this->spotLightCamera != nullptr; };
 
-		void SetTargetCameraCamera( KG::Component::CameraComponent* mainCamera );
-
 		KG::Renderer::RenderTexture& GetRenderTexture();
 		KG::Component::GSCubeCameraComponent* GetPointLightCamera() const;
 		KG::Component::GSCascadeCameraComponent* GetDirectionalLightCamera() const;
 		KG::Component::CameraComponent* GetSpotLightCamera() const;
 		KG::Component::LightType GetTargetLightType() const;
+
+		//Serialize Part
+	public:
+		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 	};
-
 	REGISTER_COMPONENT_ID( ShadowCasterComponent );
-
 };

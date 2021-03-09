@@ -16,6 +16,8 @@ namespace KG::Core
 
 		tinyxml2::XMLDocument sourceDocument;
 		KG::Component::ComponentProvider* componentProvider = nullptr;
+		KG::Component::IComponent* mainCamera = nullptr;
+
 		ObjectPool objectPool;
 		ActivePool frontActivePool; //0번부터 시작하는 런타임 생성 오브젝트
 		ActivePool backActivePool; //UINT_MAX 부터 시작하는 미리 생성된 오브젝트
@@ -44,6 +46,8 @@ namespace KG::Core
 
 		void LoadScene( const std::string& path );
 		void SaveCurrentScene( const std::string& path );
+		KG::Component::IComponent* SetMainCamera(KG::Component::IComponent* mainCamera);
+		KG::Component::IComponent* GetMainCamera() const;
 
 		// ISerializable을(를) 통해 상속됨
 		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;

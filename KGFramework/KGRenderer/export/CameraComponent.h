@@ -3,6 +3,8 @@
 #include <DirectXCollision.h>
 #include <array>
 #include "IRenderComponent.h"
+#include "RendererDesc.h"
+#include "SerializableProperty.h"
 
 namespace KG::Renderer
 {
@@ -73,6 +75,11 @@ namespace KG::Component
 		bool isMainCamera = true;
 		//Viewport 설정 필요
 
+		CameraComponent();
+
+		bool isCreateRenderTexture = true;
+		KG::Renderer::RenderTextureDesc renderTextureDesc;
+
 		void CalculateViewMatrix();
 		void CalculateProjectionMatrix();
 
@@ -92,6 +99,7 @@ namespace KG::Component
 		auto GetViewport() const { return this->viewport; };
 		auto GetScissorRect() const { return this->scissorRect; };
 		auto GetCubeIndex() const { return this->cubeIndex; };
+
 		DirectX::XMFLOAT4X4 GetView();
 		DirectX::XMFLOAT4X4 GetProj();
 		DirectX::XMFLOAT4X4 GetViewProj();
@@ -100,16 +108,30 @@ namespace KG::Component
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
 		virtual void OnPreRender() override;
 
+		void SetMainCamera();
+
 		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
 		void EndCameraRender( ID3D12GraphicsCommandList* commandList );
 
 		void SetRenderTexture( KG::Renderer::RenderTexture* renderTexture, int index = 0 );
-		void InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc );
+		void InitializeRenderTexture();
 
 		auto& GetRenderTexture()
 		{
 			return *this->renderTexture;
 		}
+
+		//Serialize Part
+	private:
+		KG::Renderer::RenderTextureProperty renderTextureProperty;
+		KG::Core::SerializableProperty<bool> mainCameraProp;
+		KG::Core::SerializableProperty<float> fovYProp;
+		KG::Core::SerializableProperty<float> aspectRatioProp;
+		KG::Core::SerializableProperty<float> nearZProp;
+		KG::Core::SerializableProperty<float> farZProp;
+	public:
+		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 
 	};
 
@@ -125,9 +147,11 @@ namespace KG::Component
 		virtual void OnDestroy() override;
 	public:
 		bool isVisible = true;
+		KG::Renderer::RenderTextureDesc renderTextureDesc;
+		CubeCameraComponent();
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
 		virtual void OnPreRender() override;
-		void InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc );
+		void InitializeRenderTexture();
 
 		auto& GetRenderTexture()
 		{
@@ -138,6 +162,12 @@ namespace KG::Component
 		{
 			return this->cameras;
 		}
+
+	private:
+		KG::Renderer::RenderTextureProperty renderTextureProperty;
+	public:
+		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 	};
 
 	struct GSCubeCameraData
@@ -184,6 +214,10 @@ namespace KG::Component
 		static constexpr float fovY = 90.0f;
 		static constexpr float aspectRatio = 1.0f / 1.0f;
 
+		KG::Renderer::RenderTextureDesc renderTextureDesc;
+
+		GSCubeCameraComponent();
+
 		bool isVisible = true;
 		bool isMainCamera = true;
 		//Viewport 설정 필요
@@ -215,12 +249,20 @@ namespace KG::Component
 		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
 		void EndCameraRender( ID3D12GraphicsCommandList* commandList );
 
-		void InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc );
+		void InitializeRenderTexture();
 
 		auto& GetRenderTexture()
 		{
 			return *this->renderTexture;
 		}
+		//Serialize Part
+	private:
+		KG::Renderer::RenderTextureProperty renderTextureProperty;
+		KG::Core::SerializableProperty<float> nearZProp;
+		KG::Core::SerializableProperty<float> farZProp;
+	public:
+		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 
 	};
 
@@ -271,7 +313,12 @@ namespace KG::Component
 
 		bool isVisible = true;
 		bool isMainCamera = true;
+
+		KG::Renderer::RenderTextureDesc renderTextureDesc;
+
 		//Viewport 설정 필요
+
+		GSCascadeCameraComponent();
 
 		void RefreshCameraData();
 
@@ -303,13 +350,20 @@ namespace KG::Component
 		void RefreshNormalViewProj();
 		void RefreshCascadeViewProj();
 
-		void InitializeRenderTexture( const KG::Renderer::RenderTextureDesc& desc );
+		void InitializeRenderTexture();
 
 		auto& GetRenderTexture()
 		{
 			return *this->renderTexture;
 		}
-
+		//Serialize Part
+	private:
+		KG::Renderer::RenderTextureProperty renderTextureProperty;
+		KG::Core::SerializableProperty<float> nearZProp;
+		KG::Core::SerializableProperty<float> farZProp;
+	public:
+		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 	};
 
 

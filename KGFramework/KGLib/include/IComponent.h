@@ -14,6 +14,10 @@ namespace KG::Component
 #define REGISTER_COMPONENT_ID(X) template <> struct KG::Component::ComponentID<X> \
 		{ inline static constexpr KG::Utill::_ID id() {return #X##_id;}\
 		  inline static constexpr const char* name() {return #X;} }
+#define ADD_COMPONENT_ID_TO_ELEMENT(element, Ty) {\
+	element->UnsignedAttribute("hash_id", KG::Component::ComponentID<Ty>::id());\
+	element->Attribute("name", KG::Component::ComponentID<Ty>::name());\
+	}\
 
 	struct SystemInformation
 	{

@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 #include "IRenderComponent.h"
+#include "ISerializable.h"
+#include "SerializableProperty.h"
 
 namespace KG::Renderer
 {
@@ -18,8 +20,20 @@ namespace KG::Component
 		friend BoneTransformComponent;
 		std::vector<KG::Renderer::Geometry*> geometrys;
 	public:
-		void InitializeGeometry( const KG::Utill::HashString& geometryID, UINT subMeshIndex = 0, UINT slotIndex = 0 );
+		KG::Utill::HashString geometryID = 0;
+		UINT subMeshIndex = 0;
+		UINT slotIndex = 0;
+		GeometryComponent();
+		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		bool HasBone() const;
+		//Serialize Part
+	private:
+		KG::Core::SerializableProperty<KG::Utill::HashString> geometryIDProp;
+		KG::Core::SerializableProperty<UINT> subMeshIndexProp;
+		KG::Core::SerializableProperty<UINT> slotIndexProp;
+	public:
+		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 	};
 	REGISTER_COMPONENT_ID( GeometryComponent );
 };

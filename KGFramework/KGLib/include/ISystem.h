@@ -153,7 +153,9 @@ namespace KG::System
 			provider.PostInjectionFunction(KG::Component::ComponentID<Ty>::id(), 
 				[this]( KG::Core::GameObject* object ) 
 				{
-					object->AddComponent<Ty>(this->GetNewComponent());
+					auto* comp = this->GetNewComponent();
+					object->AddComponent<Ty>(comp);
+					return comp;
 				}
 			);
 		}

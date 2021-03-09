@@ -2,6 +2,8 @@
 #include <d3d12.h>
 #include "d3dx12.h"
 #include "hash.h"
+#include "ISerializable.h"
+#include "SerializableProperty.h"
 #include "KGRenderer.h"
 
 
@@ -12,6 +14,7 @@ namespace KG::Resource
 
 namespace KG::Renderer
 {
+	struct RenderTextureDesc;
 	//리팩토링 필요!
 	struct RenderTexture
 	{

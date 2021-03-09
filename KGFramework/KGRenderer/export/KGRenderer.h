@@ -4,6 +4,7 @@
 #include "ISystem.h"
 #include "GraphicComponent.h"
 #include "ObjectContainer.h"
+#include "RendererDesc.h"
 
 #define EXTERNC extern "C"
 #ifdef EXPORTS
@@ -29,40 +30,6 @@ namespace KG::Resource
 
 namespace KG::Renderer
 {
-	struct DLL RenderTextureDesc
-	{
-		size_t width;
-		size_t height;
-		size_t length = 1;
-		bool useCubeRender = false;
-		bool useGSCubeRender = false;
-		bool useGSArrayRender = false;
-		bool useRenderTarget = true;
-		bool useDeferredRender = true;
-		bool useDepthStencilBuffer = true;
-		bool uploadSRVRenderTarget = false;
-		bool uploadSRVDepthBuffer = false;
-		KG::Utill::HashString renderTargetTextureId = KG::Utill::HashString(0);
-		KG::Utill::HashString depthBufferTextureId = KG::Utill::HashString(0);
-	};
-
-
-	struct DLL RendererDesc
-	{
-		HWND hWnd;
-		HINSTANCE hInst;
-	};
-	struct DLL RendererSetting
-	{
-		int clientWidth;
-		int clientHeight;
-		size_t maxSwapChainCount = 2;
-		size_t maxFrameResources = 3;
-		bool isVsync = false;
-		bool msaa4xEnable = false;
-		UINT msaa4xQualityLevel = 0;
-	};
-
 	class DLL IKGRenderer
 	{
 	protected:
@@ -99,10 +66,7 @@ namespace KG::Renderer
 
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() = 0;
 		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent() = 0;
-		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent(const KG::Utill::HashString& id, UINT index = 0) = 0;
 		virtual KG::Component::MaterialComponent* GetNewMaterialComponent() = 0;
-		virtual KG::Component::MaterialComponent* GetNewMaterialComponent(const KG::Utill::HashString& id) = 0;
-		virtual KG::Component::MaterialComponent* GetNewMaterialComponentFromShader(const KG::Utill::HashString& id) = 0;
 		virtual KG::Component::CameraComponent* GetNewCameraComponent() = 0;
 		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() = 0;
 		virtual KG::Component::LightComponent* GetNewLightComponent() = 0;
