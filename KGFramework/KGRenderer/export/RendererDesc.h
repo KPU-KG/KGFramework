@@ -15,8 +15,8 @@ namespace KG::Renderer
 {
 	struct DLL RenderTextureDesc
 	{
-		UINT width;
-		UINT height;
+		UINT width = 1920;
+		UINT height = 1080;
 		UINT length = 1;
 		bool useCubeRender = false;
 		bool useGSCubeRender = false;
@@ -70,7 +70,7 @@ namespace KG::Renderer
 		virtual void SetName(const std::string& newName);
 		virtual void OnDataLoad(tinyxml2::XMLElement* parentElement) override;
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement) override;
-		virtual void OnDrawGUI() override;
+		virtual bool OnDrawGUI() override;
 	};
 
 

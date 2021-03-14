@@ -132,7 +132,7 @@ namespace KG::Component
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
-
+		virtual bool OnDrawGUI();
 	};
 
 	class DLL CubeCameraComponent : public IRenderComponent
@@ -263,7 +263,7 @@ namespace KG::Component
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
-
+		virtual bool OnDrawGUI();
 	};
 
 

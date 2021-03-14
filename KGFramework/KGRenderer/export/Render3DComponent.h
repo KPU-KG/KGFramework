@@ -36,6 +36,12 @@ namespace KG::Component
 		virtual void OnPreRender() override;
 		void SetVisible( bool visible );
 		void SetReflectionProbe( CubeCameraComponent* probe );
+
+		//Serialize Part
+	public:
+		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
+		virtual bool OnDrawGUI();
 	};
 	REGISTER_COMPONENT_ID( Render3DComponent );
 };

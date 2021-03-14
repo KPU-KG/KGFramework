@@ -38,6 +38,9 @@ namespace KG::Renderer
 		HANDLE hFenceEvent = 0;
 
 		bool isWireFrame = false;
+		
+		size_t imguiFontDescIndex = 0;
+
 
 		struct GraphicSystems;
 		std::unique_ptr<GraphicSystems> graphicSystems = nullptr;
@@ -54,6 +57,7 @@ namespace KG::Renderer
 		void CreateCommandQueueAndList();
 		void CreateRenderTargetView();
 
+		void InitializeImGui();
 
 		void CreateGeneralRootSignature();
 
@@ -75,9 +79,12 @@ namespace KG::Renderer
 
 		virtual void Initialize() override;
 		virtual void Render() override;
+		virtual void PreRenderUI() override;
 		virtual void CubeCaemraRender();
 		virtual void NormalCameraRender();
 		virtual void ShadowMapRender();
+		virtual void CopyMainCamera();
+		virtual void UIRender();
 		virtual void OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void TransparentRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void LightPassRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
@@ -89,6 +96,7 @@ namespace KG::Renderer
 
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 
+		virtual void* GetImGUIContext();
 		virtual KG::Component::Render3DComponent* GetNewRenderComponent() override;
 		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent() override;
 		virtual KG::Component::MaterialComponent* GetNewMaterialComponent() override;

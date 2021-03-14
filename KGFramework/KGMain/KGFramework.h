@@ -6,6 +6,7 @@
 #include "KGRenderer.h"
 #include "InputManager.h"
 #include "ComponentProvider.h"
+#include "Scene.h"
 #include <memory>
 namespace KG
 {
@@ -26,6 +27,7 @@ namespace KG
 		std::unique_ptr<KG::Renderer::IKGRenderer> renderer;
 		std::unique_ptr<KG::Input::InputManager> input;
 		KG::Component::ComponentProvider componentProvider;
+		KG::Core::Scene scene;
 	public:
 		GameFramework();
 		~GameFramework();
@@ -35,7 +37,8 @@ namespace KG
 		GameFramework& operator=(GameFramework&& rhs);
 
 		bool Initialize(const EngineDesc& engineDesc, const Setting& setting);
-
+		int WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+		void UIRender();
 		void OnProcess();
 		void OnClose();
 	private:

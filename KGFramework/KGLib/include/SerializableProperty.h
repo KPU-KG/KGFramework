@@ -6,6 +6,7 @@
 #include "hash.h"
 #include "ISerializable.h"
 #include "XMLConverter.h"
+#include "ImguiProperty.h"
 
 #define CONST_KG_PROPERTY(name,ref) name(#name, ref, true)
 #define KG_PROPERTY(name,ref) name(#name, ref)
@@ -51,8 +52,9 @@ namespace KG::Core
 			KG::Utill::XMLConverter::XMLElementSave<Ty>(parentElement, title, ref);
 		}
 
-		virtual void OnDrawGUI() override
+		virtual bool OnDrawGUI() override
 		{
+			return KG::Utill::ImguiProperty::DrawGUIProperty<Ty>(this->title, this->ref);
 		}
 	};
 
@@ -96,8 +98,9 @@ namespace KG::Core
 			KG::Utill::XMLConverter::XMLElementSave<int>(parentElement, title, r);
 		}
 
-		virtual void OnDrawGUI() override
+		virtual bool OnDrawGUI() override
 		{
+			return false;
 		}
 	};
 };

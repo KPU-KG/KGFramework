@@ -336,39 +336,32 @@ namespace KG::Math
 			return result;
 		}
 
-		inline XMFLOAT3 ToEuler( const XMFLOAT4& quaternion, bool isRadian = true )
+		inline XMFLOAT3 ToEuler( const XMFLOAT4& q1, bool isRadian = true )
 		{
-			auto quatVec = XMLoadFloat4( &quaternion );
-			auto sqrtQuat = XMVectorMultiply( quatVec, quatVec );
-			float unit = XMVectorGetX( XMVectorSum( sqrtQuat ) );
-			float test = quaternion.x * quaternion.w - quaternion.y * quaternion.z;
-			XMFLOAT3 v;
-
-			if ( test > 0.4995f * unit )
-			{ // singularity at north pole
-				v.y = 2.0f * atan2( quaternion.y, quaternion.x );
-				v.x = PI / 2;
-				v.z = 0;
-				return v;
+			XMFLOAT3 euler = {0,0,0};
+			double test = q1.x * q1.y + q1.z * q1.w;
+			if ( test > 0.499f )
+			{ // singularity at north pole  
+				euler.y = 2 * atan2f(q1.x, q1.w);
+				euler.z = PI / 2;
+				euler.x = 0;
 			}
-			if ( test < -0.4995f * unit )
-			{ // singularity at south pole
-				v.y = -2.0f * atan2( quaternion.y, quaternion.x );
-				v.x = -PI / 2;
-				v.z = 0;
-				return v;
+			else if ( test < -0.499f )
+			{ // singularity at south pole  
+				euler.y = -2 * atan2(q1.x, q1.w);
+				euler.z = -PI / 2;
+				euler.x = 0;
 			}
-			XMFLOAT4 q = XMFLOAT4( quaternion.w, quaternion.z, quaternion.x, quaternion.y );
-			v.y = atan2( 2.0f * q.x * q.w + 2.0f * q.y * q.z, 1 - 2.0f * (q.z * q.z + q.w * q.w) );     // Yaw
-			v.x = asin( 2.0f * (q.x * q.z - q.w * q.y) );                             // Pitch
-			v.z = atan2( 2.0f * q.x * q.y + 2.0f * q.z * q.w, 1 - 2.0f * (q.y * q.y + q.z * q.z) );      // Roll
-			if ( !isRadian )
+			else
 			{
-				v.x = XMConvertToDegrees( v.x );
-				v.y = XMConvertToDegrees( v.y );
-				v.z = XMConvertToDegrees( v.z );
+				double sqx = q1.x * q1.x;
+				double sqy = q1.y * q1.y;
+				double sqz = q1.z * q1.z;
+				euler.y = atan2f(2 * q1.y * q1.w - 2 * q1.x * q1.z, 1 - 2 * sqy - 2 * sqz);
+				euler.z = asinf(2 * test);
+				euler.x = atan2f(2 * q1.x * q1.w - 2 * q1.y * q1.z, 1 - 2 * sqx - 2 * sqz);
 			}
-			return v;
+			return euler;
 		}
 
 	};
@@ -465,6 +458,29 @@ namespace KG::Math
 		return ((1 - t) * a ) + (t * b);
 	}
 
+	template <typename Ty>
+	inline bool InCycle(const Ty& value, const Ty& min, const Ty& max)
+	{
+		return (value <= max && value >= min);
+	}
+
+	template<typename Ty>
+	inline Ty CycleValue(Ty value, const Ty& min, const Ty& max)
+	{
+		using namespace Math::Literal;
+		while ( !InCycle(value, min, max) )
+		{
+			if ( value > max )
+			{
+				value -= max - min;
+			}
+			else if ( value < min )
+			{
+				value += max - min;
+			}
+		}
+		return value;
+	}
 
 }
 

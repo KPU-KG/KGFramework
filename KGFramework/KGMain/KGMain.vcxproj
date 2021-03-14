@@ -217,7 +217,6 @@
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="KGFramework.h" />
     <ClInclude Include="KGMain.h" />
-    <ClInclude Include="LambdaComponent.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="Setting.h" />
     <ClInclude Include="Systems.h" />
@@ -228,7 +227,6 @@
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="KGFramework.cpp" />
     <ClCompile Include="KGMain.cpp" />
-    <ClCompile Include="LambdaComponent.cpp" />
     <ClCompile Include="Setting.cpp" />
   </ItemGroup>
   <ItemGroup>

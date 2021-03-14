@@ -69,6 +69,17 @@ void KG::Component::MaterialComponent::OnDataSave(tinyxml2::XMLElement* parentEl
 	this->slotIndexProp.OnDataSave(componentElement);
 }
 
+bool KG::Component::MaterialComponent::OnDrawGUI()
+{
+	if ( ImGui::ComponentHeader<KG::Component::MaterialComponent>() )
+	{
+		this->isRawShaderProp.OnDrawGUI();
+		this->materialIDProp.OnDrawGUI();
+		this->slotIndexProp.OnDrawGUI();
+	}
+	return false;
+}
+
 void KG::Component::MaterialComponent::OnDestroy()
 {
 	IRenderComponent::OnDestroy();

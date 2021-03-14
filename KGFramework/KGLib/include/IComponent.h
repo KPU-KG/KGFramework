@@ -8,7 +8,7 @@ namespace KG::Core
 namespace KG::Component
 {
 
-	template <class Ty> 
+	template <class Ty>
 	struct ComponentID;
 
 #define REGISTER_COMPONENT_ID(X) template <> struct KG::Component::ComponentID<X> \
@@ -22,6 +22,7 @@ namespace KG::Component
 	struct SystemInformation
 	{
 		bool isUsing = false;
+		bool isReserved = false;
 	};
 
 	class IComponent : public KG::Core::ISerializable
@@ -39,28 +40,81 @@ namespace KG::Component
 			return this->gameObject;
 		}
 	protected:
-		virtual void OnActive() {};
-		virtual void OnDisactive() {};
+		virtual void OnActive()
+		{
+		};
+		virtual void OnDisactive()
+		{
+		};
 		virtual void OnDestroy();
-		virtual void OnCreate( KG::Core::GameObject* gameObject ){};
-		virtual void OnStart() {};
+		virtual void OnCreate(KG::Core::GameObject* gameObject)
+		{
+		};
+		virtual void OnStart()
+		{
+		};
 	public:
-		void Create( KG::Core::GameObject* gameObject ) {
+		void Create(KG::Core::GameObject* gameObject)
+		{
 			this->gameObject = gameObject;
-			PostUse(); 
-			this->OnCreate( gameObject );
+			PostUse();
+			this->OnCreate(gameObject);
 		}
-		virtual void Update(float timeElapsed) {};
-		virtual void Destroy() { this->OnDestroy(); };
-		void PostUse() { this->systemInfo.isUsing = true; };
-		bool isUsing() const { return this->systemInfo.isUsing == true; };
+		virtual void Update(float timeElapsed)
+		{
+		};
+		virtual void OnDebugUpdate(float timeElasped)
+		{
+		};
+		virtual void Destroy()
+		{
+			this->systemInfo.isUsing = false; 
+			this->UnReserve(); 
+			this->OnDestroy();
+		};
+		virtual void UnReserve()
+		{
+			this->systemInfo.isReserved = false;
+		}
+		void PostUse()
+		{
+			this->systemInfo.isUsing = true;
+			this->PostReserve();
+		};
+		void PostReserve()
+		{
+			this->systemInfo.isReserved = true;
+		}
+		bool isReserved() const
+		{
+			return this->systemInfo.isUsing || this->systemInfo.isReserved;
+		}
+		bool isUsing() const
+		{
+			return this->systemInfo.isUsing == true;
+		};
 
 
 		// ISerializable을(를) 통해 상속됨
 		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;
 		virtual void OnDataSave(tinyxml2::XMLElement* objectElement) override;
-		virtual void OnDrawGUI() override;
+		virtual bool OnDrawGUI() override;
 
 	};
-	REGISTER_COMPONENT_ID( IComponent );
+	REGISTER_COMPONENT_ID(IComponent);
+}
+
+namespace ImGui
+{
+	template<typename Ty>
+	bool ComponentHeader()
+	{
+		return ImGui::CollapsingHeader(KG::Component::template ComponentID<Ty>::name(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen);
+	}
+};
+
+template<typename Ty>
+constexpr inline auto GetComponentID()
+{
+	return KG::Component::ComponentID<Ty>::id();
 }

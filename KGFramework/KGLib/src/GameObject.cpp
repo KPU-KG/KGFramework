@@ -1,3 +1,6 @@
+#include <algorithm>
+#include <string>
+#include <cstring>
 #include "GameObject.h"
 #include "Transform.h"
 #include "Scene.h"
@@ -150,7 +153,97 @@ void KG::Core::GameObject::OnDataSave(tinyxml2::XMLElement* parentElement)
 	}
 }
 
-void KG::Core::GameObject::OnDrawGUI()
+
+bool KG::Core::GameObject::OnDrawGUI()
 {
-	
+	static char searchBuffer[256] = {};
+	if ( ImGui::CollapsingHeader("Object Info", ImGuiTreeNodeFlags_DefaultOpen) )
+	{
+		ImGui::InputHashString("Tag", &this->tag);
+		if ( ImGui::Button("Add New Component") )
+		{
+			ImGui::OpenPopup("new_comp");
+		}
+		if ( ImGui::BeginPopup("new_comp") )
+		{
+			ImGui::Text("List");
+			if ( !ImGui::IsAnyItemActive() )
+				ImGui::SetKeyboardFocusHere();
+			ImGui::InputText("Search", searchBuffer, 256);
+			ImGui::Separator();
+			auto* prov = this->GetScene()->GetComponentProvider();
+			for ( auto& i : prov->getterFunctions )
+			{
+				if ( strlen(searchBuffer) == 0 || (strstr(i.first.srcString.c_str(), searchBuffer) != nullptr) )
+				{
+					if ( ImGui::Selectable(i.first.srcString.c_str()) )
+					{
+						searchBuffer[0] = '\0';
+						KG::Component::IComponent* obj = i.second();
+						obj->PostReserve();
+						this->temporalComponents.emplace_back(std::make_pair(i.first, obj));
+					}
+				}
+			}
+			ImGui::EndPopup();
+		}
+	}
+	if ( ImGui::CollapsingHeader("Component List", ImGuiTreeNodeFlags_DefaultOpen) )
+	{
+		ImGui::BulletText("Temporal Components : %d", this->temporalComponents.size());
+		ImGui::SameLine();
+		if ( ImGui::SmallButton("Add All") )
+		{
+			for ( auto i = this->temporalComponents.begin(); i != this->temporalComponents.end(); ++i)
+			{
+				this->AddComponentWithID(i->first, i->second);
+			}
+			temporalComponents.clear();
+		}
+		ImGui::Indent();
+		int id = 0;
+		for ( auto i = this->temporalComponents.begin(); i != this->temporalComponents.end(); )
+		{
+			bool skip = false;
+			ImGui::PushID(id++);
+			i->second->DrawGUI(this->currentGUIContext);
+			{
+				if ( ImGui::SmallButton("Add") )
+				{
+					this->AddComponentWithID(i->first, i->second);
+					i = this->temporalComponents.erase(i);
+					skip = true;
+				}
+				ImGui::SameLine();
+				if ( ImGui::SmallButton("Delete") )
+				{
+					i->second->UnReserve();
+					i = this->temporalComponents.erase(i);
+					skip = true;
+				}
+			}
+			ImGui::PopID();
+			ImGui::Separator();
+			if ( !skip )
+			{
+				++i;
+			}
+		}
+		ImGui::Unindent();
+
+		ImGui::BulletText("Using Components : %d", this->components.container.size());
+		ImGui::Indent();
+		for ( auto& i : this->components.container )
+		{
+			ImGui::PushID(id++);
+			i.second->DrawGUI(this->currentGUIContext);
+			{
+				ImGui::SmallButton("Delete");
+			}
+			ImGui::PopID();
+			ImGui::Separator();
+		}
+		ImGui::Unindent();
+	}
+	return false;
 }

@@ -54,11 +54,11 @@ namespace KG::Utill
 	{
 		/// @brief 해싱된 ID값입니다.
 		hashType value;
-#ifdef _DEBUG_ID
-		std::string srcString = "NotDefined";
-#endif
+//#ifdef _DEBUG_ID
+		std::string srcString = "";
+//#endif
 		/// @brief 이미 해싱된 값으로 생성합니다.
-/// @param hash 해시된 값입니다.
+		/// @param hash 해시된 값입니다.
 		HashString()
 			:HashString( 0 )
 		{
@@ -77,20 +77,24 @@ namespace KG::Utill
 		HashString(const std::string& str)
 		{
 			this->value = Hash(str.c_str(), str.length());
-#ifdef _DEBUG_ID
+			//#ifdef _DEBUG_ID
 			this->srcString = str;
 			//DebugNormalMessage( L"Hashed : " << this->value << L" / " << this->srcString.c_str() );
-#endif
+//#endif
 		}
 
+		void ReCalc()
+		{
+			this->value = Hash(srcString.c_str(), strlen(srcString.c_str()));
+		}
 
 		/// @brief 복사생성자입니다.
 		HashString(const HashString& other)
 			:value(other.value)
 		{
-#ifdef _DEBUG_ID
+//#ifdef _DEBUG_ID
 			this->srcString = other.srcString;
-#endif
+//#endif
 		}
 
 		bool operator==(const HashString& other) const

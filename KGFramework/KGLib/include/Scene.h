@@ -13,6 +13,8 @@ namespace KG::Core
 		using CachePair = std::pair<bool, GameObject>;
 		using ObjectPool = std::deque<CachePair>;
 		using ActivePool = std::vector<UINT>;
+		using SceneCameraCreator = std::function<void (KG::Core::GameObject&)>;
+		using SkyBoxCreator = std::function<void (KG::Core::GameObject&, const KG::Utill::HashString&)>;
 
 		tinyxml2::XMLDocument sourceDocument;
 		KG::Component::ComponentProvider* componentProvider = nullptr;
@@ -21,15 +23,32 @@ namespace KG::Core
 		ObjectPool objectPool;
 		ActivePool frontActivePool; //0번부터 시작하는 런타임 생성 오브젝트
 		ActivePool backActivePool; //UINT_MAX 부터 시작하는 미리 생성된 오브젝트
+		std::vector<GameObject*> objectTree;
+
+		//GameObject skyBoxObject;
+		//GameObject sceneCameraObject;
+		
+		SceneCameraCreator sceneCameraCreator;
+		SkyBoxCreator skyBoxCreator;
+
+		KG::Utill::HashString skyBoxId = KG::Utill::HashString("SkySnow");
 
 		UINT InternalGetEmptyObject();
 		KG::Core::GameObject* GetFrontObject( UINT32 index );
 		KG::Core::GameObject* GetBackObject( UINT32 index );
 		KG::Core::GameObject* FindFrontObjectWithTag( const KG::Utill::HashString& tag );
 		KG::Core::GameObject* FindBackObjectWithTag( const KG::Utill::HashString& tag );
+		KG::Core::GameObject* CreateNewBackObject();
+		UINT32 GetEmptyBackID();
+		size_t GetBackObjectCount() const;
 		//back -> front / front -> back
 		static UINT32 FlipID(UINT32 frontID);
+
+		//ImGui Variable
+		bool isShowHierarchy = true;
+		bool isShowGameObjectEdit = true;
 	public:
+		bool isStartGame = false;
 		void SetComponentProvider(KG::Component::ComponentProvider* componentProvider);
 		KG::Component::ComponentProvider* GetComponentProvider() const;
 		// 비어있는 오브젝트 할당
@@ -49,9 +68,12 @@ namespace KG::Core
 		KG::Component::IComponent* SetMainCamera(KG::Component::IComponent* mainCamera);
 		KG::Component::IComponent* GetMainCamera() const;
 
+		void AddSceneCameraObjectCreator(SceneCameraCreator&& creator);
+		void AddSkyBoxObjectCreator(SkyBoxCreator&& creator);
+
 		// ISerializable을(를) 통해 상속됨
 		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;
 		virtual void OnDataSave(tinyxml2::XMLElement* objectElement) override;
-		virtual void OnDrawGUI() override;
+		virtual bool OnDrawGUI() override;
 	};
 }

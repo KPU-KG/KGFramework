@@ -98,7 +98,7 @@ namespace KG::System
 		{
 			auto result = std::find_if(
 				componentPool.begin(), componentPool.end(),
-				[]( Ty& a ) { return !a.isUsing(); }
+				[]( Ty& a ) { return !a.isReserved(); }
 			);
 			if ( result == componentPool.end() )
 			{
@@ -129,7 +129,10 @@ namespace KG::System
 	protected:
 	public:
 		virtual IComponent* GetNewComponent() = 0;
-		virtual void OnUpdate( float elapsedTime ) = 0;
+		virtual void OnUpdate(float elapsedTime) = 0;
+		virtual void OnDebugUpdate(float elapsedTime)
+		{
+		};
 		virtual void OnPostUpdate( float elapsedTime ) = 0;
 		virtual void OnPreRender() = 0;
 		virtual void OnPostProvider(KG::Component::ComponentProvider& provider) = 0;
@@ -150,7 +153,7 @@ namespace KG::System
 		}
 		virtual void OnPostProvider(KG::Component::ComponentProvider& provider)
 		{
-			provider.PostInjectionFunction(KG::Component::ComponentID<Ty>::id(), 
+			provider.PostInjectionFunction(KG::Utill::HashString(KG::Component::ComponentID<Ty>::name()), 
 				[this]( KG::Core::GameObject* object ) 
 				{
 					auto* comp = this->GetNewComponent();
@@ -158,6 +161,13 @@ namespace KG::System
 					return comp;
 				}
 			);
+			provider.PostGetterFunction(KG::Utill::HashString(KG::Component::ComponentID<Ty>::name()),
+				[this]()->KG::Component::IComponent*
+				{
+					return static_cast<KG::Component::IComponent*>(this->GetNewComponent());
+				}
+			);
+
 		}
 		UsingComponentIterator<Ty> begin()
 		{

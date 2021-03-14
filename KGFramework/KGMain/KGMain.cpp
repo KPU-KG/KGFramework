@@ -59,7 +59,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 ::DispatchMessage(&msg);
             }
         }
-        else
+        //else
         {
             gameFramework.OnProcess();
         }
@@ -147,6 +147,11 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+    if ( gameFramework.WinProcHandler(hWnd, message, wParam, lParam) )
+    {
+        return true;
+    }
+
     switch (message)
     {
     case WM_COMMAND:

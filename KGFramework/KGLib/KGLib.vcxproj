@@ -116,19 +116,20 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include\imgui;$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Debug_LIB\;$(LibraryPath)</LibraryPath>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
+    <PublicIncludeDirectories>$(ProjectDir)include\imgui;$(ProjectDir)include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug_ID|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include\imgui;$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Debug_LIB\;$(LibraryPath)</LibraryPath>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)include\imgui;$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Release_LIB\;$(LibraryPath)</LibraryPath>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
   </PropertyGroup>
@@ -268,13 +269,21 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\ComponentContainer.cpp" />
+    <ClCompile Include="include\imgui\imgui.cpp" />
+    <ClCompile Include="include\imgui\imgui_demo.cpp" />
+    <ClCompile Include="include\imgui\imgui_draw.cpp" />
+    <ClCompile Include="include\imgui\imgui_impl_dx12.cpp" />
+    <ClCompile Include="include\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="include\imgui\imgui_tables.cpp" />
+    <ClCompile Include="include\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="src\ComponentContainer.cpp" />
     <ClCompile Include="src\ComponentProvider.cpp" />
     <ClCompile Include="src\Debug.cpp" />
     <ClCompile Include="src\fbxImpoter.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\IComponent.cpp" />
     <ClCompile Include="src\KGLib.cpp" />
+    <ClCompile Include="src\LambdaComponent.cpp" />
     <ClCompile Include="src\ObjectContainer.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -298,9 +307,12 @@
     <ClInclude Include="include\hash.h" />
     <ClInclude Include="include\IComponent.h" />
     <ClInclude Include="include\IHierarchy.h" />
+    <ClInclude Include="include\ImguiHelper.h" />
+    <ClInclude Include="include\ImguiProperty.h" />
     <ClInclude Include="include\InputManager.h" />
     <ClInclude Include="include\ISerializable.h" />
     <ClInclude Include="include\ISystem.h" />
+    <ClInclude Include="include\LambdaComponent.h" />
     <ClInclude Include="include\MathHelper.h" />
     <ClInclude Include="include\ObjectContainer.h" />
     <ClInclude Include="include\Scene.h" />

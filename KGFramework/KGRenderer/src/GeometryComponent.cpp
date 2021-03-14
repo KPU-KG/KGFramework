@@ -34,7 +34,7 @@ bool KG::Component::GeometryComponent::HasBone() const
 
 void KG::Component::GeometryComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
 {
-	this->subMeshIndexProp.OnDataLoad(componentElement);
+	this->geometryIDProp.OnDataLoad(componentElement);
 	this->slotIndexProp.OnDataLoad(componentElement);
 	this->subMeshIndexProp.OnDataLoad(componentElement);
 }
@@ -43,7 +43,18 @@ void KG::Component::GeometryComponent::OnDataSave(tinyxml2::XMLElement* parentEl
 {
 	auto* componentElement = parentElement->InsertNewChildElement("Component");
 	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::GeometryComponent);
-	this->subMeshIndexProp.OnDataSave(componentElement);
+	this->geometryIDProp.OnDataSave(componentElement);
 	this->slotIndexProp.OnDataSave(componentElement);
 	this->subMeshIndexProp.OnDataSave(componentElement);
+}
+
+bool KG::Component::GeometryComponent::OnDrawGUI()
+{
+	if ( ImGui::ComponentHeader<KG::Component::GeometryComponent>() )
+	{
+		this->geometryIDProp.OnDrawGUI();
+		this->slotIndexProp.OnDrawGUI();
+		this->subMeshIndexProp.OnDrawGUI();
+	}
+	return false;
 }

@@ -40,6 +40,9 @@
     <Filter Include="헤더 파일\Core\Serialize">
       <UniqueIdentifier>{7cacce8b-5a64-45da-bea6-b03aab9da8b1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Imgui">
+      <UniqueIdentifier>{0bfa655e-c7d9-4629-bc88-82f736d37b76}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -78,7 +81,31 @@
     <ClCompile Include="src\ComponentProvider.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="include\ComponentContainer.cpp">
+    <ClCompile Include="include\imgui\imgui.cpp">
+      <Filter>소스 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_demo.cpp">
+      <Filter>소스 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_draw.cpp">
+      <Filter>소스 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_impl_dx12.cpp">
+      <Filter>소스 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_impl_win32.cpp">
+      <Filter>소스 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_tables.cpp">
+      <Filter>소스 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\imgui_widgets.cpp">
+      <Filter>소스 파일\Imgui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ComponentContainer.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LambdaComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -145,6 +172,15 @@
     </ClInclude>
     <ClInclude Include="include\ComponentProvider.h">
       <Filter>헤더 파일\Core\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImguiHelper.h">
+      <Filter>헤더 파일\Utill</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LambdaComponent.h">
+      <Filter>헤더 파일\Core\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ImguiProperty.h">
+      <Filter>헤더 파일\Utill</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

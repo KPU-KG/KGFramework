@@ -3,6 +3,7 @@
 #include "tinyxml2.h"
 #include "hash.h"
 #include "XMLConverter.h"
+#include "ImguiHelper.h"
 namespace KG::Core
 {
 	class ISerializable
@@ -14,6 +15,13 @@ namespace KG::Core
 		//무조건 내부에서 엘리먼트 생성
 		virtual void OnDataSave(tinyxml2::XMLElement* objectElement) = 0;
 
-		virtual void OnDrawGUI() = 0;
+		virtual bool OnDrawGUI() = 0;
+		ImGuiContext* currentGUIContext = nullptr;
+		bool DrawGUI(ImGuiContext* context)
+		{
+			currentGUIContext = context;
+			ImGui::SetCurrentContext(context);
+			return this->OnDrawGUI();
+		}
 	};
 };

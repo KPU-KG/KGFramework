@@ -97,6 +97,25 @@ void KG::Component::Render3DComponent::SetReflectionProbe( CubeCameraComponent* 
 	this->reflectionProbe = probe;
 }
 
+void KG::Component::Render3DComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
+{
+}
+
+void KG::Component::Render3DComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
+{
+	auto* componentElement = parentElement->InsertNewChildElement("Component");
+	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::Render3DComponent);
+}
+
+bool KG::Component::Render3DComponent::OnDrawGUI()
+{
+	if ( ImGui::CollapsingHeader(KG::Component::ComponentID<KG::Component::Render3DComponent>::name()) )
+	{
+		ImGui::Text("Render3DComponent Has not UI");
+	}
+	return false;
+}
+
 void KG::Component::Render3DComponent::AddRenderJob( KG::Renderer::KGRenderJob* renderJob, UINT materialIndex )
 {
 	this->renderJobs.push_back( renderJob );

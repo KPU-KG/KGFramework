@@ -151,6 +151,7 @@ void KG::Component::CameraComponent::OnCreate(KG::Core::GameObject* gameObject)
 	{
 		this->SetMainCamera();
 	}
+	this->SetDefaultRender();
 }
 
 DirectX::XMFLOAT4X4 KG::Component::CameraComponent::GetView()
@@ -192,7 +193,10 @@ void KG::Component::CameraComponent::SetMainCamera()
 {
 	this->isMainCamera = true;
 	auto* prev = this->gameObject->GetScene()->SetMainCamera(this);
-	static_cast<KG::Component::CameraComponent*>(prev)->isMainCamera = false;
+	if ( prev )
+	{
+		static_cast<KG::Component::CameraComponent*>(prev)->isMainCamera = false;
+	}
 }
 
 void KG::Component::CameraComponent::SetCameraRender(ID3D12GraphicsCommandList* commandList)
@@ -258,11 +262,25 @@ void KG::Component::CameraComponent::OnDataSave(tinyxml2::XMLElement* parentElem
 	auto* componentElement = parentElement->InsertNewChildElement("Component");
 	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::CameraComponent);
 	this->mainCameraProp.OnDataSave(componentElement);
-	this->fovYProp.OnDataLoad(componentElement);
-	this->aspectRatioProp.OnDataLoad(componentElement);
-	this->nearZProp.OnDataLoad(componentElement);
-	this->farZProp.OnDataLoad(componentElement);
-	this->renderTextureProperty.OnDataLoad(componentElement);
+	this->fovYProp.OnDataSave(componentElement);
+	this->aspectRatioProp.OnDataSave(componentElement);
+	this->nearZProp.OnDataSave(componentElement);
+	this->farZProp.OnDataSave(componentElement);
+	this->renderTextureProperty.OnDataSave(componentElement);
+}
+
+bool KG::Component::CameraComponent::OnDrawGUI()
+{
+	if ( ImGui::ComponentHeader<KG::Component::CameraComponent>() )
+	{
+		this->mainCameraProp.OnDrawGUI();
+		this->fovYProp.OnDrawGUI();
+		this->aspectRatioProp.OnDrawGUI();
+		this->nearZProp.OnDrawGUI();
+		this->farZProp.OnDrawGUI();
+		this->renderTextureProperty.OnDrawGUI();
+	}
+	return false;
 }
 
 #pragma endregion
@@ -501,6 +519,11 @@ void KG::Component::GSCubeCameraComponent::OnDataSave(tinyxml2::XMLElement* pare
 	this->renderTextureProperty.OnDataLoad(componentElement);
 	this->nearZProp.OnDataLoad(componentElement);
 	this->farZProp.OnDataLoad(componentElement);
+}
+
+bool KG::Component::GSCubeCameraComponent::OnDrawGUI()
+{
+	return false;
 }
 
 DirectX::XMFLOAT4X4 KG::Component::GSCubeCameraComponent::GetView(size_t index)

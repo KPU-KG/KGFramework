@@ -13,6 +13,7 @@ UINT KG::Core::Scene::InternalGetEmptyObject()
 	}
 	UINT index = this->objectPool.size();
 	this->objectPool.emplace_back();
+	this->objectPool[index].first = true;
 	return index;
 }
 
@@ -68,6 +69,29 @@ KG::Core::GameObject* KG::Core::Scene::FindBackObjectWithTag(const KG::Utill::Ha
 	return nullptr;
 }
 
+KG::Core::GameObject* KG::Core::Scene::CreateNewBackObject()
+{
+	UINT32 id = GetEmptyBackID();
+	return this->CreateNewObject(id);
+}
+
+UINT32 KG::Core::Scene::GetEmptyBackID()
+{
+	for ( size_t i = 0; i < this->backActivePool.size(); i++ )
+	{
+		if ( this->backActivePool[i] == NULL_OBJECT )
+		{
+			return FlipID(i);
+		}
+	}
+	return FlipID(this->backActivePool.size());
+}
+
+size_t KG::Core::Scene::GetBackObjectCount() const
+{
+	return this->backActivePool.size() - std::count(this->backActivePool.cbegin(), this->backActivePool.cend(), NULL_OBJECT);
+}
+
 UINT32 KG::Core::Scene::FlipID(UINT32 frontID)
 {
 	return NULL_OBJECT - frontID;
@@ -102,7 +126,7 @@ KG::Core::GameObject* KG::Core::Scene::CreateNewObject(UINT32 instanceID)
 	{
 		this->backActivePool.resize(backId + 1, NULL_OBJECT);
 	}
-	this->backActivePool[instanceID] = index;
+	this->backActivePool[backId] = index;
 
 	GameObject* obj = &this->objectPool[index].second;
 	obj->SetOwnerScene(this);
@@ -170,6 +194,16 @@ KG::Component::IComponent* KG::Core::Scene::GetMainCamera() const
 	return this->mainCamera;
 }
 
+void KG::Core::Scene::AddSceneCameraObjectCreator(SceneCameraCreator&& creator)
+{
+	this->sceneCameraCreator = creator;
+}
+
+void KG::Core::Scene::AddSkyBoxObjectCreator(SkyBoxCreator&& creator)
+{
+	this->skyBoxCreator = creator;
+}
+
 void KG::Core::Scene::OnDataLoad(tinyxml2::XMLElement* sceneElement)
 {
 	auto* objectElement = sceneElement->FirstChildElement();
@@ -213,6 +247,115 @@ void KG::Core::Scene::OnDataSave(tinyxml2::XMLElement* sceneElement)
 	}
 }
 
-void KG::Core::Scene::OnDrawGUI()
+static void DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& focused)
 {
+	bool selected = focused == node;
+	if ( !node )
+	{
+		return;
+	}
+	if ( ImGui::TreeNodeEx(node->tag.srcString.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | (!selected ? 0 : ImGuiTreeNodeFlags_Selected)) )
+	{
+		ImVec2 pos = ImGui::GetCursorScreenPos();
+		ImU32 col = ImColor(ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
+		if ( ImGui::IsItemClicked() )
+		{
+			focused = node;
+		}
+		DrawObjectTree(node->GetChild(), focused);
+		ImGui::TreePop();
+	}
+	else if ( ImGui::IsItemClicked() )
+	{
+		focused = node;
+	}
+
+	DrawObjectTree(node->GetSibling(), focused);
+}
+
+bool KG::Core::Scene::OnDrawGUI()
+{
+	static KG::Core::GameObject* currentFocusedObject = nullptr;
+	static constexpr int sceneInfoSize = 250;
+	static constexpr int inspectorSize = 400;
+	static bool isSelectedSave = false;
+	static ImGuiWindowFlags flag = ImGuiWindowFlags_MenuBar;
+	static ImGuiTreeNodeFlags treeNodeFlag = ImGuiTreeNodeFlags_DefaultOpen;
+	auto viewportSize = ImGui::GetMainViewport()->Size;
+	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowBgAlpha(0.8f);
+	if ( ImGui::Begin("Scene Info", &this->isShowHierarchy, flag) )
+	{
+		if ( ImGui::BeginMenuBar() )
+		{
+			if ( ImGui::BeginMenu("File") )
+			{
+				if ( ImGui::MenuItem("Clear and New") )
+				{
+				}
+				if ( ImGui::MenuItem("Save") )
+				{
+				}
+				ImGui::EndMenu();
+			}
+			if ( ImGui::BeginMenu("Object") )
+			{
+				if ( ImGui::MenuItem("Add New Empty Object To Root") )
+				{
+					auto* newObj = this->CreateNewBackObject();
+					this->objectTree.push_back(newObj);
+				}
+				if ( ImGui::MenuItem("Add Prefab Object To Root") )
+				{
+				}
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+		if ( ImGui::CollapsingHeader("Info", treeNodeFlag) )
+		{
+			ImGui::BulletText("Current Back Object Count : %d", this->GetBackObjectCount());
+		}
+		if ( ImGui::CollapsingHeader("Scene Object", treeNodeFlag) )
+		{
+			if ( ImGui::Button("Add Scene Camera Object") )
+			{
+				auto* obj = this->CreateNewBackObject();
+				sceneCameraCreator(*obj);
+				this->objectTree.push_back(obj);
+			}
+			if ( ImGui::Button("Add SkyBox Object") )
+			{
+				auto* obj = this->CreateNewBackObject();
+				skyBoxCreator(*obj, this->skyBoxId);
+				this->objectTree.push_back(obj);
+			}
+			ImGui::SameLine();
+			ImGui::InputHashString("", &this->skyBoxId);
+		}
+		if ( ImGui::CollapsingHeader("Hierarchy", treeNodeFlag) )
+		{
+			for ( auto& i : this->objectTree )
+			{
+				DrawObjectTree(i, currentFocusedObject);
+			}
+		}
+	}
+	ImGui::End();
+
+	ImGui::SetNextWindowSize(ImVec2(inspectorSize, viewportSize.y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(viewportSize.x - inspectorSize, 0), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowBgAlpha(0.8f);
+	if( ImGui::Begin("Inspector", &this->isShowGameObjectEdit) )
+	{
+		ImGui::PushItemWidth(160);
+		if ( currentFocusedObject )
+		{
+			currentFocusedObject->DrawGUI(currentGUIContext);
+		}
+		ImGui::PopItemWidth();
+	}
+	ImGui::End();
+	return false;
 }

@@ -50,6 +50,8 @@ namespace KG::Renderer
 		}
 		virtual void Initialize() = 0;
 		virtual void Render() = 0;
+		virtual void PreRenderUI() = 0;
+		virtual void* GetImGUIContext() = 0;
 		virtual void Update(float elaspedTime) = 0;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) = 0;
 

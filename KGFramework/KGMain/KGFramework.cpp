@@ -1,4 +1,5 @@
 #include <string>
+#include "ImguiHelper.h"
 #include "KGFramework.h"
 #include "GraphicComponent.h"
 #include "KGRenderer.h"
@@ -57,6 +58,99 @@ bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting&
 	this->renderer->Initialize( renderDesc, renderSetting );
 	this->renderer->PostComponentProvider(this->componentProvider);
 	this->system->PostComponentProvider(this->componentProvider);
+	this->scene.SetComponentProvider(&this->componentProvider);
+
+	this->scene.AddSceneCameraObjectCreator(
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* tran = this->system->transformSystem.GetNewComponent();
+			auto* cam = this->renderer->GetNewCameraComponent();
+			KG::Renderer::RenderTextureDesc renderTextureDesc;
+			renderTextureDesc.useDeferredRender = true;
+			renderTextureDesc.useCubeRender = false;
+			renderTextureDesc.useDepthStencilBuffer = true;
+			renderTextureDesc.useRenderTarget = true;
+			renderTextureDesc.width = this->setting.clientWidth;
+			renderTextureDesc.height = this->setting.clientHeight;
+			cam->renderTextureDesc = renderTextureDesc;
+			auto* lam = this->system->lambdaSystem.GetNewComponent();
+			static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+				[](KG::Core::GameObject* gameObject, float elapsedTime)
+				{
+					auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+					using namespace KG::Input;
+					auto input = InputManager::GetInputManager();
+					float speed = input->IsTouching(VK_LSHIFT) ? 6.0f : 2.0f;
+					if ( ImGui::IsAnyItemFocused() )
+					{
+						return;
+					}
+					if ( input->IsTouching('W') )
+					{
+						trans->Translate(trans->GetLook() * speed * elapsedTime);
+					}
+					if ( input->IsTouching('A') )
+					{
+						trans->Translate(trans->GetRight() * speed * elapsedTime * -1);
+					}
+					if ( input->IsTouching('S') )
+					{
+						trans->Translate(trans->GetLook() * speed * elapsedTime * -1);
+					}
+					if ( input->IsTouching('D') )
+					{
+						trans->Translate(trans->GetRight() * speed * elapsedTime);
+					}
+					if ( input->IsTouching('E') )
+					{
+						trans->Translate(trans->GetUp() * speed * elapsedTime);
+					}
+					if ( input->IsTouching('Q') )
+					{
+						trans->Translate(trans->GetUp() * speed * elapsedTime * -1);
+					}
+
+					if ( input->IsTouching(VK_RBUTTON) )
+					{
+						auto delta = input->GetDeltaMousePosition();
+						if ( delta.x )
+						{
+							trans->RotateAxis(Math::up, delta.x * 0.3f);
+						}
+						if ( delta.y )
+						{
+							trans->RotateAxis(trans->GetRight(), delta.y * 0.3f);
+						}
+					}
+					auto worldPos = trans->GetWorldPosition();
+					DebugNormalMessage("LambdaTransform : " << worldPos);
+				}
+			);
+			obj.tag = KG::Utill::HashString("SceneCameraObject");
+			obj.AddComponent(tran);
+			obj.AddComponent(cam);
+			obj.AddComponent(lam);
+		}
+	);
+	this->scene.AddSkyBoxObjectCreator(
+		[this](KG::Core::GameObject& obj, const KG::Utill::HashString& skyBox)
+		{
+			auto* tran = this->system->transformSystem.GetNewComponent();
+			auto* mat = this->renderer->GetNewMaterialComponent();
+			auto* geo = this->renderer->GetNewGeomteryComponent();
+			auto* ren = this->renderer->GetNewRenderComponent();
+			obj.tag = KG::Utill::HashString("SkyBoxObject");
+			geo->geometryID = KG::Utill::HashString("cube");
+			mat->materialID = skyBox;
+			obj.AddComponent(tran);
+			obj.AddComponent(mat);
+			obj.AddComponent(geo);
+			obj.AddComponent(ren);
+			this->renderer->SetSkymapTextureId(KG::Utill::HashString("skySnow"));
+		}
+	);
+
+
 	//ÀÎÇ²
 	this->input = std::unique_ptr<KG::Input::InputManager>( KG::Input::InputManager::GetInputManager() );
 
@@ -66,14 +160,33 @@ bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting&
 	return true;
 }
 
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+
+int KG::GameFramework::WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	return ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
+}
+
+void KG::GameFramework::UIRender()
+{
+	auto* currentContext = (ImGuiContext*)this->renderer->GetImGUIContext();
+	ImGui::SetCurrentContext(currentContext);
+	this->scene.DrawGUI(currentContext);
+}
+
 void KG::GameFramework::OnProcess()
 {
 	this->timer.Tick();
 	this->UpdateWindowText();
 	DebugNormalMessage( "OnUpdatedProcess");
 	this->input->ProcessInput( this->engineDesc.hWnd );
+	this->renderer->PreRenderUI();
+	this->UIRender();
 	this->system->OnUpdate( this->timer.GetTimeElapsed() );
-	this->renderer->Update( this->timer.GetTimeElapsed() );
+	if ( this->scene.isStartGame )
+	{
+		this->renderer->Update( this->timer.GetTimeElapsed() );
+	}
 	this->renderer->Render();
 }
 

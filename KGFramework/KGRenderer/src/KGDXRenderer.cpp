@@ -2,6 +2,7 @@
 #include "KGDXRenderer.h"
 #include "Debug.h"
 #include "D3D12Helper.h"
+#include "ImguiHelper.h"
 #include <string>
 #include <sstream>
 #include "KGRenderQueue.h"
@@ -141,6 +142,7 @@ void KGDXRenderer::Initialize()
 
 	this->CreateSRVDescriptorHeaps();
 	this->AllocateGBufferHeap();
+	this->InitializeImGui();
 }
 
 void KGDXRenderer::Render()
@@ -159,6 +161,8 @@ void KGDXRenderer::Render()
 	this->ShadowMapRender();
 	this->CubeCaemraRender();
 	this->NormalCameraRender();
+	this->CopyMainCamera();
+	this->UIRender();
 
 	hResult = this->mainCommandList->Close();
 
@@ -177,6 +181,23 @@ void KGDXRenderer::Render()
 	this->swapChainBufferIndex = this->swapChain->GetCurrentBackBufferIndex();
 
 	this->MoveToNextFrame();
+}
+
+void KG::Renderer::KGDXRenderer::PreRenderUI()
+{
+	// Start the Dear ImGui frame
+	ImGui_ImplDX12_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+	auto viewportSize = ImGui::GetMainViewport()->Size;
+	ImGui::SetNextWindowSize(ImVec2(viewportSize.x, viewportSize.y));
+	ImGui::SetNextWindowPos(ImVec2(0, 0));
+	ImGuiWindowClass a;
+	a.ViewportFlagsOverrideSet = ImGuiViewportFlags_NoRendererClear;
+	ImGui::PushStyleColor(ImGuiCol_DockingEmptyBg, ImVec4(0, 0, 0, 0));
+	ImGui::SetNextWindowBgAlpha(0);
+	ImGui::DockSpaceOverViewport();
+
 }
 
 void KG::Renderer::KGDXRenderer::CubeCaemraRender()
@@ -224,42 +245,7 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
 		this->PassRenderEnd( this->mainCommandList, directionalLightCamera.GetRenderTexture(), directionalLightCamera.GetCubeIndex() );
 
 		directionalLightCamera.EndCameraRender( this->mainCommandList );
-
-		if ( directionalLightCamera.isMainCamera )
-		{
-			TryResourceBarrier( this->mainCommandList,
-				directionalLightCamera.GetRenderTexture().BarrierTransition(
-					D3D12_RESOURCE_STATE_COPY_SOURCE,
-					D3D12_RESOURCE_STATE_COMMON,
-					D3D12_RESOURCE_STATE_COMMON
-				)
-			);
-			auto barrierOne = CD3DX12_RESOURCE_BARRIER::Transition(
-				this->renderTargetBuffers[this->swapChainBufferIndex],
-				D3D12_RESOURCE_STATE_PRESENT,
-				D3D12_RESOURCE_STATE_COPY_DEST );
-			this->mainCommandList->ResourceBarrier( 1,
-				&barrierOne
-			);
-			this->mainCommandList->CopyResource( this->renderTargetBuffers[this->swapChainBufferIndex], directionalLightCamera.GetRenderTexture().renderTarget );
-			auto barrierTwo = CD3DX12_RESOURCE_BARRIER::Transition(
-				this->renderTargetBuffers[this->swapChainBufferIndex],
-				D3D12_RESOURCE_STATE_COPY_DEST,
-				D3D12_RESOURCE_STATE_PRESENT );
-			this->mainCommandList->ResourceBarrier( 1,
-				&barrierTwo
-			);
-
-			TryResourceBarrier( this->mainCommandList,
-				directionalLightCamera.GetRenderTexture().BarrierTransition(
-					D3D12_RESOURCE_STATE_COMMON,
-					D3D12_RESOURCE_STATE_COMMON,
-					D3D12_RESOURCE_STATE_COMMON
-				)
-			);
-		}
 		PIXEndEvent( mainCommandList );
-
 	}
 	PIXEndEvent( mainCommandList );
 
@@ -313,6 +299,66 @@ void KG::Renderer::KGDXRenderer::ShadowMapRender()
 		PIXEndEvent( mainCommandList );
 	}
 	PIXEndEvent( mainCommandList );
+}
+
+void KG::Renderer::KGDXRenderer::UIRender()
+{
+	ImGui::PopStyleColor(1);
+	auto rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart()).Offset(this->swapChainBufferIndex, this->rtvDescriptorSize);
+	this->mainCommandList->OMSetRenderTargets(1, &rtvHandle, true, nullptr);
+	ImGui::Render();
+	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), this->mainCommandList);
+	auto barrierTwo = CD3DX12_RESOURCE_BARRIER::Transition(
+		this->renderTargetBuffers[this->swapChainBufferIndex],
+		D3D12_RESOURCE_STATE_RENDER_TARGET,
+		D3D12_RESOURCE_STATE_PRESENT);
+	this->mainCommandList->ResourceBarrier(1,
+		&barrierTwo
+	);
+	ImGui::EndFrame();
+}
+
+void KG::Renderer::KGDXRenderer::CopyMainCamera()
+{
+	PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Present MainCamera");
+	size_t _cameraCount = 1;
+	for ( KG::Component::CameraComponent& directionalLightCamera : this->graphicSystems->cameraSystem )
+	{
+		if ( directionalLightCamera.isMainCamera )
+		{
+			TryResourceBarrier(this->mainCommandList,
+				directionalLightCamera.GetRenderTexture().BarrierTransition(
+					D3D12_RESOURCE_STATE_COPY_SOURCE,
+					D3D12_RESOURCE_STATE_COMMON,
+					D3D12_RESOURCE_STATE_COMMON
+				)
+			);
+			auto barrierOne = CD3DX12_RESOURCE_BARRIER::Transition(
+				this->renderTargetBuffers[this->swapChainBufferIndex],
+				D3D12_RESOURCE_STATE_PRESENT,
+				D3D12_RESOURCE_STATE_COPY_DEST);
+			this->mainCommandList->ResourceBarrier(1,
+				&barrierOne
+			);
+			this->mainCommandList->CopyResource(this->renderTargetBuffers[this->swapChainBufferIndex], directionalLightCamera.GetRenderTexture().renderTarget);
+			auto barrierTwo = CD3DX12_RESOURCE_BARRIER::Transition(
+				this->renderTargetBuffers[this->swapChainBufferIndex],
+				D3D12_RESOURCE_STATE_COPY_DEST,
+				D3D12_RESOURCE_STATE_RENDER_TARGET);
+			this->mainCommandList->ResourceBarrier(1,
+				&barrierTwo
+			);
+
+			TryResourceBarrier(this->mainCommandList,
+				directionalLightCamera.GetRenderTexture().BarrierTransition(
+					D3D12_RESOURCE_STATE_COMMON,
+					D3D12_RESOURCE_STATE_COMMON,
+					D3D12_RESOURCE_STATE_COMMON
+				)
+			);
+		}
+		PIXEndEvent(mainCommandList);
+	}
 }
 
 void KG::Renderer::KGDXRenderer::OpaqueRender( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex )
@@ -385,6 +431,11 @@ void KGDXRenderer::OnChangeSettings( const RendererSetting& prev, const Renderer
 void KG::Renderer::KGDXRenderer::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->graphicSystems->PostComponentProvider( provider );
+}
+
+void* KG::Renderer::KGDXRenderer::GetImGUIContext()
+{
+	return ImGui::GetCurrentContext();
 }
 
 KG::Component::Render3DComponent* KG::Renderer::KGDXRenderer::GetNewRenderComponent()
@@ -639,6 +690,30 @@ void KG::Renderer::KGDXRenderer::CreateRenderTargetView()
 		this->d3dDevice->CreateRenderTargetView( this->renderTargetBuffers[i], nullptr, rtvCpuDescHandle );
 		rtvCpuDescHandle.ptr += this->rtvDescriptorSize;
 	}
+}
+
+void KG::Renderer::KGDXRenderer::InitializeImGui()
+{
+	// Setup Dear ImGui context
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO(); (void)io;
+	io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;           // Enable Docking
+	//io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	//io.ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+
+		// Setup Dear ImGui style
+	ImGui::StyleColorsDark();
+	//ImGui::StyleColorsClassic();
+
+	this->imguiFontDescIndex = this->descriptorHeapManager->RequestEmptyIndex();
+	// Setup Platform/Renderer backends
+	ImGui_ImplWin32_Init(this->desc.hWnd);
+	ImGui_ImplDX12_Init(this->d3dDevice, this->renderTargetBuffers.size(),
+		DXGI_FORMAT_R8G8B8A8_UNORM, this->descriptorHeapManager->Get(),
+		this->descriptorHeapManager->GetCPUHandle(this->imguiFontDescIndex),
+		this->descriptorHeapManager->GetGPUHandle(this->imguiFontDescIndex));
 }
 
 

@@ -3,6 +3,7 @@
 #include "MathHelper.h"
 #include "IHierarchy.h"
 #include "IComponent.h"
+#include "SerializableProperty.h"
 #include "Debug.h"
 namespace KG::Component
 {
@@ -28,7 +29,7 @@ namespace KG::Component
 			//scale = XMFLOAT3( 1, 1, 1 );
 		};
 	public:
-
+		TransformComponent();
 		//Position
 		XMFLOAT3 GetPosition() const
 		{
@@ -75,19 +76,39 @@ namespace KG::Component
 		}
 
 		//EulerAngle
-		XMFLOAT3 GetEulerAngle() const
+		XMFLOAT3 GetEulerRadian() const
 		{
 			return KG::Math::Quaternion::ToEuler( this->rotation );
 		}
-		void SetEulerAngle( const XMFLOAT3& angle )
+		void SetEulerRadian( const XMFLOAT3& angle )
 		{
 			auto angleQuat = XMQuaternionRotationRollPitchYawFromVector( XMLoadFloat3( &angle ) );
 			this->SetRotation( angleQuat );
 		}
-		void SetEulerAngle( float x, float y, float z )
+		void SetEulerRadian( float x, float y, float z )
 		{
-			this->SetEulerAngle( XMFLOAT3( x, y, z ) );
+			this->SetEulerRadian( XMFLOAT3( x, y, z ) );
 		}
+
+		XMFLOAT3 GetEulerDegree() const
+		{
+			auto rot = KG::Math::Quaternion::ToEuler(this->rotation);
+			rot.x = XMConvertToDegrees(rot.x);
+			rot.y = XMConvertToDegrees(rot.y);
+			rot.z = XMConvertToDegrees(rot.z);
+			return rot;
+		}
+		void SetEulerDegree(const XMFLOAT3& angle)
+		{
+			this->SetEulerDegree(angle.x, angle.y, angle.z);
+		}
+		void SetEulerDegree(float x, float y, float z)
+		{
+			this->SetEulerRadian(XMFLOAT3(XMConvertToRadians(x), XMConvertToRadians(y), XMConvertToRadians(z)));
+		}
+
+
+
 
 		//Scale
 		XMFLOAT3 GetScale() const
@@ -287,7 +308,16 @@ namespace KG::Component
 		{
 			return GlobalTransformNormal( Math::right );
 		}
-
+	private:
+		KG::Core::SerializableProperty<XMFLOAT3> positionProp;
+		DirectX::XMFLOAT3 eulerRotation;
+		KG::Core::SerializableProperty<XMFLOAT3> rotationEulerProp;
+		KG::Core::SerializableProperty<XMFLOAT4> rotationQautProp;
+		KG::Core::SerializableProperty<XMFLOAT3> scaleProp;
+	public:
+		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement) override;
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement) override;
+		virtual bool OnDrawGUI() override;
 	};
-	REGISTER_COMPONENT_ID( KG::Component::TransformComponent );
+	REGISTER_COMPONENT_ID( TransformComponent );
 }

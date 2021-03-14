@@ -514,20 +514,26 @@ void KG::Renderer::RenderTextureProperty::OnDataSave(tinyxml2::XMLElement* objec
 	depthBufferTextureId.OnDataSave(renderTextureDesc);
 }
 
-void KG::Renderer::RenderTextureProperty::OnDrawGUI()
+bool KG::Renderer::RenderTextureProperty::OnDrawGUI()
 {
-	//렌더텍스처 문단으로 들어갈 시간
-	textureWidth.OnDrawGUI();
-	textureHeight.OnDrawGUI();
-	arrayCount.OnDrawGUI();
-	useCubeRender.OnDrawGUI();
-	useGSCubeRender.OnDrawGUI();
-	useGSArrayRender.OnDrawGUI();
-	useRenderTarget.OnDrawGUI();
-	useDeferredRender.OnDrawGUI();
-	useDepthStencilBuffer.OnDrawGUI();
-	uploadSRVRenderTarget.OnDrawGUI();
-	uploadSRVDepthBuffer.OnDrawGUI();
-	renderTargetTextureId.OnDrawGUI();
-	depthBufferTextureId.OnDrawGUI();
+	bool flag = false;
+	if ( ImGui::TreeNode("RenderTextureDesc") )
+	{
+		//렌더텍스처 문단으로 들어갈 시간
+		flag |= textureWidth.OnDrawGUI();
+		flag |= textureHeight.OnDrawGUI();
+		flag |= arrayCount.OnDrawGUI();
+		flag |= useCubeRender.OnDrawGUI();
+		flag |= useGSCubeRender.OnDrawGUI();
+		flag |= useGSArrayRender.OnDrawGUI();
+		flag |= useRenderTarget.OnDrawGUI();
+		flag |= useDeferredRender.OnDrawGUI();
+		flag |= useDepthStencilBuffer.OnDrawGUI();
+		flag |= uploadSRVRenderTarget.OnDrawGUI();
+		flag |= uploadSRVDepthBuffer.OnDrawGUI();
+		flag |= renderTargetTextureId.OnDrawGUI();
+		flag |= depthBufferTextureId.OnDrawGUI();
+		ImGui::TreePop();
+	}
+	return flag;
 }
