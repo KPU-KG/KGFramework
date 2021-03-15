@@ -76,12 +76,12 @@ KG::Component::TransformComponent* KG::Core::GameObject::GetTransform() const
 
 inline KG::Core::GameObject* KG::Core::GameObject::GetChild() const
 {
-	return this->GetTransform()->hasChild() ? this->GetTransform()->GetChild()->GetGameObject() : nullptr;
+	return this->GetTransform() && this->GetTransform()->hasChild() ? this->GetTransform()->GetChild()->GetGameObject() : nullptr;
 }
 
 inline KG::Core::GameObject* KG::Core::GameObject::GetSibling() const
 {
-	return this->GetTransform()->hasSibiling() ? this->GetTransform()->GetNextsibiling()->GetGameObject() : nullptr;
+	return this->GetTransform() && this->GetTransform()->hasSibiling() ? this->GetTransform()->GetNextsibiling()->GetGameObject() : nullptr;
 }
 
 KG::Core::GameObject* KG::Core::GameObject::FindChildObject(const KG::Utill::HashString& tag) const

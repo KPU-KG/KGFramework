@@ -14,6 +14,7 @@ namespace KG::Core
 		using ObjectPool = std::deque<CachePair>;
 		using ActivePool = std::vector<UINT>;
 		using SceneCameraCreator = std::function<void (KG::Core::GameObject&)>;
+		using PresetObjectCreator = std::function<void(KG::Core::GameObject&)>;
 		using SkyBoxCreator = std::function<void (KG::Core::GameObject&, const KG::Utill::HashString&)>;
 
 		tinyxml2::XMLDocument sourceDocument;
@@ -30,6 +31,10 @@ namespace KG::Core
 		
 		SceneCameraCreator sceneCameraCreator;
 		SkyBoxCreator skyBoxCreator;
+
+		std::vector<std::string> objectPresetName;
+		std::vector<PresetObjectCreator> objectPresetFunc;
+		int currentSelectedPreset = 0;
 
 		KG::Utill::HashString skyBoxId = KG::Utill::HashString("SkySnow");
 
@@ -70,6 +75,7 @@ namespace KG::Core
 
 		void AddSceneCameraObjectCreator(SceneCameraCreator&& creator);
 		void AddSkyBoxObjectCreator(SkyBoxCreator&& creator);
+		void AddObjectPreset(std::string name, PresetObjectCreator&& creator);
 
 		// ISerializable을(를) 통해 상속됨
 		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;

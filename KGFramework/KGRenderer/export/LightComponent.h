@@ -85,7 +85,7 @@ namespace KG::Component
 		void SetRenderJob( KG::Renderer::KGRenderJob* renderJob );
 		bool isDirty = true;
 		LightType lightType = LightType::DirectionalLight;
-		LightData light;
+		LightData light = {};
 		ShadowData shadow;
 		KG::Renderer::Shader* currentShader = nullptr;
 		KG::Renderer::Geometry* currentGeometry = nullptr;
@@ -137,6 +137,7 @@ namespace KG::Component
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
+		virtual bool OnDrawGUI();
 	};
 
 	REGISTER_COMPONENT_ID( LightComponent );

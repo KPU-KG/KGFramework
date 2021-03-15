@@ -60,6 +60,20 @@ bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting&
 	this->system->PostComponentProvider(this->componentProvider);
 	this->scene.SetComponentProvider(&this->componentProvider);
 
+	this->PostPresetObject();
+
+	//인풋
+	this->input = std::unique_ptr<KG::Input::InputManager>( KG::Input::InputManager::GetInputManager() );
+
+	//자원 미리 할당
+	this->windowText.reserve( 100 );
+
+	return true;
+}
+
+void KG::GameFramework::PostPresetObject()
+{
+
 	this->scene.AddSceneCameraObjectCreator(
 		[this](KG::Core::GameObject& obj)
 		{
@@ -150,14 +164,32 @@ bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting&
 		}
 	);
 
+	this->scene.AddObjectPreset("TileCube",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* t = this->system->transformSystem.GetNewComponent();
+			auto* g = this->renderer->GetNewGeomteryComponent();
+			g->geometryID = KG::Utill::HashString("cube");
+			auto* m = this->renderer->GetNewMaterialComponent();
+			m->materialID = KG::Utill::HashString("PBRTile");
+			auto* r = this->renderer->GetNewRenderComponent();
+			obj.AddTemporalComponent(t);
+			obj.AddTemporalComponent(g);
+			obj.AddTemporalComponent(m);
+			obj.AddTemporalComponent(r);
+		}
+		);
 
-	//인풋
-	this->input = std::unique_ptr<KG::Input::InputManager>( KG::Input::InputManager::GetInputManager() );
-
-	//자원 미리 할당
-	this->windowText.reserve( 100 );
-
-	return true;
+	this->scene.AddObjectPreset("Directional Light",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* t = this->system->transformSystem.GetNewComponent();
+			auto* l = this->renderer->GetNewLightComponent();
+			l->SetDirectionalLight(DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f) * 1, DirectX::XMFLOAT3(0.0f, -1.0f, -1.0f));
+			obj.AddTemporalComponent(t);
+			obj.AddTemporalComponent(l);
+		}
+	);
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);

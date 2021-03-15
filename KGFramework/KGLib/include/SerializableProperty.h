@@ -63,8 +63,10 @@ namespace KG::Core
 	{
 		std::string title;
 		Ty& ref;
+		int currentIndex = 0;
 		bool isConst = false;
-		std::vector<std::pair<Ty, std::string>> map;
+		using EnumMap = std::vector<std::pair<Ty, std::string>>;
+		EnumMap map;
 		SerializableEnumProperty(const std::string& title, Ty& ref, const std::vector<std::pair<Ty, std::string>>& map, bool isConst = false)
 			: ref(ref), title(title), isConst(isConst), map(map)
 		{
@@ -97,10 +99,20 @@ namespace KG::Core
 			int r = (int)this->ref;
 			KG::Utill::XMLConverter::XMLElementSave<int>(parentElement, title, r);
 		}
-
+		static bool ItemGetter(void* data, int n, const char** out_str)
+		{
+			EnumMap& inMap = *static_cast<EnumMap*>(data);
+			*out_str = inMap[n].second.c_str();
+			return true;
+		}
 		virtual bool OnDrawGUI() override
 		{
-			return false;
+			bool ret = false;
+			if ( ret = ImGui::Combo(title.c_str(), &this->currentIndex, &SerializableEnumProperty<Ty>::ItemGetter, &map, map.size()) )
+			{
+				ref = (Ty)this->map[currentIndex].first;
+			}
+			return ret;
 		}
 	};
 };

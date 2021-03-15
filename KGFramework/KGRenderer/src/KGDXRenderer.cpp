@@ -304,10 +304,12 @@ void KG::Renderer::KGDXRenderer::ShadowMapRender()
 void KG::Renderer::KGDXRenderer::UIRender()
 {
 	ImGui::PopStyleColor(1);
+	PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(0), "ImGui UI Render");
 	auto rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart()).Offset(this->swapChainBufferIndex, this->rtvDescriptorSize);
 	this->mainCommandList->OMSetRenderTargets(1, &rtvHandle, true, nullptr);
 	ImGui::Render();
 	ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), this->mainCommandList);
+	PIXEndEvent(mainCommandList);
 	auto barrierTwo = CD3DX12_RESOURCE_BARRIER::Transition(
 		this->renderTargetBuffers[this->swapChainBufferIndex],
 		D3D12_RESOURCE_STATE_RENDER_TARGET,

@@ -96,8 +96,6 @@ void KG::Component::LightComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
 	IRenderComponent::OnCreate(gameObject);
 	this->RegisterTransform(gameObject->GetComponent<TransformComponent>());
-	auto job = KG::Renderer::KGDXRenderer::GetInstance()->GetRenderEngine()->GetRenderJob(this->currentShader, this->currentGeometry);
-	this->SetRenderJob(job);
 	switch ( this->lightType )
 	{
 		case LightType::DirectionalLight:
@@ -110,6 +108,8 @@ void KG::Component::LightComponent::OnCreate(KG::Core::GameObject* gameObject)
 			this->InitializeSpotLight();
 			break;
 	}
+	auto job = KG::Renderer::KGDXRenderer::GetInstance()->GetRenderEngine()->GetRenderJob(this->currentShader, this->currentGeometry);
+	this->SetRenderJob(job);
 }
 
 void KG::Component::LightComponent::InitializeDirectionalLight()
@@ -260,4 +260,32 @@ void KG::Component::LightComponent::OnDataSave(tinyxml2::XMLElement* parentEleme
 			this->fallOffProp.OnDataSave(componentElement);
 			break;
 	}
+}
+
+bool KG::Component::LightComponent::OnDrawGUI()
+{
+	bool flag = false;
+	this->lightTypeProp.OnDrawGUI();
+	flag |= this->strengthProp.OnDrawGUI();
+	switch ( this->lightType )
+	{
+		case LightType::DirectionalLight:
+			flag |= this->directionProp.OnDrawGUI();
+			break;
+		case LightType::PointLight:
+			flag |= this->fallOffStartProp.OnDrawGUI();
+			flag |= this->fallOffEndProp.OnDrawGUI();
+			break;
+		case LightType::SpotLight:
+			flag |= this->depthProp.OnDrawGUI();
+			flag |= this->phiProp.OnDrawGUI();
+			flag |= this->thetaProp.OnDrawGUI();
+			flag |= this->fallOffProp.OnDrawGUI();
+			break;
+	}
+	if ( flag )
+	{
+		this->UpdateChanged();
+	}
+	return false;
 }

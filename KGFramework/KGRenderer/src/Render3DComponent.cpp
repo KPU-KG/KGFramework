@@ -5,7 +5,7 @@
 #include "ResourceContainer.h"
 #include "AnimationComponent.h"
 
-void KG::Component::Render3DComponent::OnRender( ID3D12GraphicsCommandList* commadList )
+void KG::Component::Render3DComponent::OnRender(ID3D12GraphicsCommandList* commadList)
 {
 }
 
@@ -15,11 +15,11 @@ void KG::Component::Render3DComponent::OnPreRender()
 	{
 		auto* renderJob = this->renderJobs[i];
 		int updateCount = renderJob->GetUpdateCount();
-		auto mat = Math::Matrix4x4::Transpose( this->transform->GetGlobalWorldMatrix() );
+		auto mat = Math::Matrix4x4::Transpose(this->transform->GetGlobalWorldMatrix());
 		renderJob->objectBuffer->mappedData[updateCount].object.world = mat;
 		if ( this->material )
 		{
-			renderJob->objectBuffer->mappedData[updateCount].object.materialIndex = this->material->GetMaterialIndex( this->jobMaterialIndexs[i] );
+			renderJob->objectBuffer->mappedData[updateCount].object.materialIndex = this->material->GetMaterialIndex(this->jobMaterialIndexs[i]);
 		}
 		if ( this->boneAnimation && renderJob->animationBuffer != nullptr )
 		{
@@ -30,12 +30,12 @@ void KG::Component::Render3DComponent::OnPreRender()
 				{
 					//auto wo = Math::Matrix4x4::Inverse( this->transform->GetLocalWorldMatrix() );
 					auto finalTransform = this->boneAnimation->frameCache[i][k]->GetTransform()->GetGlobalWorldMatrix();
-					renderJob->animationBuffer->mappedData[updateCount].currentTransforms[k] = Math::Matrix4x4::Transpose( finalTransform );
+					renderJob->animationBuffer->mappedData[updateCount].currentTransforms[k] = Math::Matrix4x4::Transpose(finalTransform);
 				}
 			}
 			if ( this->boneAnimation->frameCache[i].size() != 0 )
 			{
-				renderJob->animationBuffer->mappedData[updateCount].currentTransforms[63] = Math::Matrix4x4::Transpose( this->gameObject->GetTransform()->GetLocalWorldMatrix() );
+				renderJob->animationBuffer->mappedData[updateCount].currentTransforms[63] = Math::Matrix4x4::Transpose(this->gameObject->GetTransform()->GetLocalWorldMatrix());
 			}
 		}
 		if ( this->reflectionProbe )
@@ -46,35 +46,35 @@ void KG::Component::Render3DComponent::OnPreRender()
 		else
 		{
 			renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
-				KG::Resource::ResourceContainer::GetInstance()->LoadTexture( KG::Renderer::KGDXRenderer::GetInstance()->GetSkymapTexutreId() )->index;
+				KG::Resource::ResourceContainer::GetInstance()->LoadTexture(KG::Renderer::KGDXRenderer::GetInstance()->GetSkymapTexutreId())->index;
 		}
 	}
 }
 
-void KG::Component::Render3DComponent::OnCreate( KG::Core::GameObject* gameObject )
+void KG::Component::Render3DComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
-	IRenderComponent::OnCreate( gameObject );
-	this->RegisterTransform( gameObject->GetComponent<TransformComponent>() );
-	this->RegisterMaterial( gameObject->GetComponent<MaterialComponent>() );
-	this->RegisterGeometry( gameObject->GetComponent<GeometryComponent>() );
-	this->RegisterBoneAnimation( gameObject->GetComponent<BoneTransformComponent>() );
+	IRenderComponent::OnCreate(gameObject);
+	this->RegisterTransform(gameObject->GetComponent<TransformComponent>());
+	this->RegisterMaterial(gameObject->GetComponent<MaterialComponent>());
+	this->RegisterGeometry(gameObject->GetComponent<GeometryComponent>());
+	this->RegisterBoneAnimation(gameObject->GetComponent<BoneTransformComponent>());
 	auto geometryCount = this->geometry->geometrys.size();
 	auto materialCount = this->material->materialIndexs.size();
 
 	if ( materialCount != 1 && geometryCount != materialCount )
 	{
-		DebugErrorMessage( "Material Count Not Matched Geometry" );
+		DebugErrorMessage("Material Count Not Matched Geometry");
 	}
 	for ( size_t i = 0; i < geometryCount; i++ )
 	{
 		auto materialIndex = materialCount == 1 ? 0 : i;
-		auto job = KG::Renderer::KGDXRenderer::GetInstance()->GetRenderEngine()->GetRenderJob( this->material->shaders[materialIndex], this->geometry->geometrys[i] );
-		this->AddRenderJob( job, materialIndex );
+		auto job = KG::Renderer::KGDXRenderer::GetInstance()->GetRenderEngine()->GetRenderJob(this->material->shaders[materialIndex], this->geometry->geometrys[i]);
+		this->AddRenderJob(job, materialIndex);
 	}
 	//조건문 넣고 렌더잡 만들자
 }
 
-void KG::Component::Render3DComponent::SetVisible( bool visible )
+void KG::Component::Render3DComponent::SetVisible(bool visible)
 {
 	for ( auto* renderJob : this->renderJobs )
 	{
@@ -92,7 +92,7 @@ void KG::Component::Render3DComponent::SetVisible( bool visible )
 	}
 }
 
-void KG::Component::Render3DComponent::SetReflectionProbe( CubeCameraComponent* probe )
+void KG::Component::Render3DComponent::SetReflectionProbe(CubeCameraComponent* probe)
 {
 	this->reflectionProbe = probe;
 }
@@ -109,36 +109,41 @@ void KG::Component::Render3DComponent::OnDataSave(tinyxml2::XMLElement* parentEl
 
 bool KG::Component::Render3DComponent::OnDrawGUI()
 {
-	if ( ImGui::CollapsingHeader(KG::Component::ComponentID<KG::Component::Render3DComponent>::name()) )
+	if ( ImGui::ComponentHeader< KG::Component::Render3DComponent>() )
 	{
-		ImGui::Text("Render3DComponent Has not UI");
+		ImGui::BulletText("IsVisible : %d", this->isVisible);
+		ImGui::BulletText("RenderJobs Count : %d", this->renderJobs.size());
+		for ( size_t i = 0; i < this->renderJobs.size(); i++ )
+		{
+			ImGui::BulletText("RenderJob Ptr : %d", (int)this->renderJobs[i]);
+		}
 	}
 	return false;
 }
 
-void KG::Component::Render3DComponent::AddRenderJob( KG::Renderer::KGRenderJob* renderJob, UINT materialIndex )
+void KG::Component::Render3DComponent::AddRenderJob(KG::Renderer::KGRenderJob* renderJob, UINT materialIndex)
 {
-	this->renderJobs.push_back( renderJob );
-	this->jobMaterialIndexs.push_back( materialIndex );
-	renderJob->OnObjectAdd( this->isVisible );
+	this->renderJobs.push_back(renderJob);
+	this->jobMaterialIndexs.push_back(materialIndex);
+	renderJob->OnObjectAdd(this->isVisible);
 }
 
-void KG::Component::Render3DComponent::RegisterTransform( TransformComponent* transform )
+void KG::Component::Render3DComponent::RegisterTransform(TransformComponent* transform)
 {
 	this->transform = transform;
 }
 
-void KG::Component::Render3DComponent::RegisterMaterial( MaterialComponent* material )
+void KG::Component::Render3DComponent::RegisterMaterial(MaterialComponent* material)
 {
 	this->material = material;
 }
 
-void KG::Component::Render3DComponent::RegisterGeometry( GeometryComponent* geometry )
+void KG::Component::Render3DComponent::RegisterGeometry(GeometryComponent* geometry)
 {
 	this->geometry = geometry;
 }
 
-void KG::Component::Render3DComponent::RegisterBoneAnimation( BoneTransformComponent* anim )
+void KG::Component::Render3DComponent::RegisterBoneAnimation(BoneTransformComponent* anim)
 {
 	this->boneAnimation = anim;
 }

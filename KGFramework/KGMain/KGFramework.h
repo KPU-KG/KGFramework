@@ -37,6 +37,7 @@ namespace KG
 		GameFramework& operator=(GameFramework&& rhs);
 
 		bool Initialize(const EngineDesc& engineDesc, const Setting& setting);
+		void PostPresetObject();
 		int WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 		void UIRender();
 		void OnProcess();

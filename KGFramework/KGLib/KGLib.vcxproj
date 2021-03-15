@@ -282,6 +282,7 @@
     <ClCompile Include="src\fbxImpoter.cpp" />
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\IComponent.cpp" />
+    <ClCompile Include="src\ImguiHelper.cpp" />
     <ClCompile Include="src\KGLib.cpp" />
     <ClCompile Include="src\LambdaComponent.cpp" />
     <ClCompile Include="src\ObjectContainer.cpp" />

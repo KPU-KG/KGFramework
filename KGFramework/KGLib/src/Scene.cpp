@@ -247,6 +247,12 @@ void KG::Core::Scene::OnDataSave(tinyxml2::XMLElement* sceneElement)
 	}
 }
 
+void KG::Core::Scene::AddObjectPreset(std::string name, PresetObjectCreator&& creator)
+{
+	this->objectPresetName.push_back(name);
+	this->objectPresetFunc.push_back(creator);
+}
+
 static void DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& focused)
 {
 	bool selected = focused == node;
@@ -282,6 +288,7 @@ bool KG::Core::Scene::OnDrawGUI()
 	static ImGuiWindowFlags flag = ImGuiWindowFlags_MenuBar;
 	static ImGuiTreeNodeFlags treeNodeFlag = ImGuiTreeNodeFlags_DefaultOpen;
 	auto viewportSize = ImGui::GetMainViewport()->Size;
+	//ImGui::ShowDemoWindow();
 	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.8f);
@@ -304,6 +311,7 @@ bool KG::Core::Scene::OnDrawGUI()
 				if ( ImGui::MenuItem("Add New Empty Object To Root") )
 				{
 					auto* newObj = this->CreateNewBackObject();
+					newObj->tag = KG::Utill::HashString("EmptyObject");
 					this->objectTree.push_back(newObj);
 				}
 				if ( ImGui::MenuItem("Add Prefab Object To Root") )
@@ -333,6 +341,15 @@ bool KG::Core::Scene::OnDrawGUI()
 			}
 			ImGui::SameLine();
 			ImGui::InputHashString("", &this->skyBoxId);
+
+			ImGui::Combo("Preset", &this->currentSelectedPreset, &ImGui::VectorStringGetter, &this->objectPresetName, this->objectPresetName.size());
+			if ( ImGui::Button("Add Preset") )
+			{
+				auto* obj = this->CreateNewBackObject();
+				objectPresetFunc[this->currentSelectedPreset](*obj);
+				obj->tag = KG::Utill::HashString(objectPresetName[this->currentSelectedPreset]);
+				this->objectTree.push_back(obj);
+			}
 		}
 		if ( ImGui::CollapsingHeader("Hierarchy", treeNodeFlag) )
 		{
@@ -347,7 +364,7 @@ bool KG::Core::Scene::OnDrawGUI()
 	ImGui::SetNextWindowSize(ImVec2(inspectorSize, viewportSize.y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(viewportSize.x - inspectorSize, 0), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.8f);
-	if( ImGui::Begin("Inspector", &this->isShowGameObjectEdit) )
+	if ( ImGui::Begin("Inspector", &this->isShowGameObjectEdit) )
 	{
 		ImGui::PushItemWidth(160);
 		if ( currentFocusedObject )

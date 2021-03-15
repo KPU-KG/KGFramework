@@ -68,6 +68,17 @@ namespace KG::Core
 
 		std::vector<std::pair<KG::Utill::HashString, KG::Component::IComponent*>> temporalComponents;
 
+
+		template <class Ty>
+		void AddTemporalComponent(Ty* cmp)
+		{
+			this->AddTemporalComponentWithID(KG::Component::ComponentID<Ty>::id(), cmp);
+		}
+		void AddTemporalComponentWithID(const KG::Utill::HashString& componentID, KG::Component::IComponent* component)
+		{
+			temporalComponents.emplace_back(std::make_pair(componentID, component));
+		}
+
 		// ISerializable을(를) 통해 상속됨
 		virtual void OnDataLoad(tinyxml2::XMLElement* parentElement) override;
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement) override;

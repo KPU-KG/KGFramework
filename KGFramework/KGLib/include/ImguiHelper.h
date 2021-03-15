@@ -56,4 +56,5 @@ namespace ImGui
         HashView(my_Hash);
         return ret;
     }
+    bool VectorStringGetter(void* data, int n, const char** out_str);
 };
