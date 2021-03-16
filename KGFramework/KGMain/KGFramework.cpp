@@ -7,6 +7,7 @@
 #include "Debug.h"
 #include "GameObject.h"
 #include "LambdaComponent.h"
+#include "SceneCameraComponent.h"
 #include "InputManager.h"
 
 KG::GameFramework::GameFramework()
@@ -92,63 +93,11 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.width = this->setting.clientWidth;
 			renderTextureDesc.height = this->setting.clientHeight;
 			cam->renderTextureDesc = renderTextureDesc;
-			auto* lam = this->system->lambdaSystem.GetNewComponent();
-			static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
-				[](KG::Core::GameObject* gameObject, float elapsedTime)
-				{
-					auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
-					using namespace KG::Input;
-					auto input = InputManager::GetInputManager();
-					float speed = input->IsTouching(VK_LSHIFT) ? 6.0f : 2.0f;
-					if ( ImGui::IsAnyItemFocused() )
-					{
-						return;
-					}
-					if ( input->IsTouching('W') )
-					{
-						trans->Translate(trans->GetLook() * speed * elapsedTime);
-					}
-					if ( input->IsTouching('A') )
-					{
-						trans->Translate(trans->GetRight() * speed * elapsedTime * -1);
-					}
-					if ( input->IsTouching('S') )
-					{
-						trans->Translate(trans->GetLook() * speed * elapsedTime * -1);
-					}
-					if ( input->IsTouching('D') )
-					{
-						trans->Translate(trans->GetRight() * speed * elapsedTime);
-					}
-					if ( input->IsTouching('E') )
-					{
-						trans->Translate(trans->GetUp() * speed * elapsedTime);
-					}
-					if ( input->IsTouching('Q') )
-					{
-						trans->Translate(trans->GetUp() * speed * elapsedTime * -1);
-					}
-
-					if ( input->IsTouching(VK_RBUTTON) )
-					{
-						auto delta = input->GetDeltaMousePosition();
-						if ( delta.x )
-						{
-							trans->RotateAxis(Math::up, delta.x * 0.3f);
-						}
-						if ( delta.y )
-						{
-							trans->RotateAxis(trans->GetRight(), delta.y * 0.3f);
-						}
-					}
-					auto worldPos = trans->GetWorldPosition();
-					DebugNormalMessage("LambdaTransform : " << worldPos);
-				}
-			);
+			auto* sc = this->system->sceneCameraSystem.GetNewComponent();
 			obj.tag = KG::Utill::HashString("SceneCameraObject");
 			obj.AddComponent(tran);
 			obj.AddComponent(cam);
-			obj.AddComponent(lam);
+			obj.AddComponent(sc);
 		}
 	);
 	this->scene.AddSkyBoxObjectCreator(

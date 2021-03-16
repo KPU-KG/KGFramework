@@ -23,8 +23,8 @@
     <GameObject instanceId="4294967294">
         <Tag hash_id="133944175" srcString="SceneCameraObject"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="3.4537311" y="3.5135052" z="1.6804248"/>
-            <Rotation_Q x="-0.14971651" y="0.82079142" z="-0.25015807" w="-0.49123368"/>
+            <Position x="2.0457437" y="2.9844759" z="2.7533133"/>
+            <Rotation_Q x="-0.10862695" y="0.88905871" z="-0.27861407" w="-0.3466295"/>
             <Scale x="1" y="1" z="1"/>
         </Component>
         <Component name="CameraComponent" hash_id="2216269385">
@@ -49,6 +49,7 @@
                 <depthBufferTextureId hash_id="0" srcString=""/>
             </RenderTextureDesc>
         </Component>
+        <Component name="SceneCameraComponent" hash_id="2404609291"/>
     </GameObject>
     <GameObject instanceId="4294967293">
         <Tag hash_id="1233002686" srcString="TileCube"/>
