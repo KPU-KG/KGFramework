@@ -2,6 +2,7 @@
 #include "imgui.h"
 #include "imgui_impl_win32.h"
 #include "imgui_impl_dx12.h"
+#include "ImGuiFileDialog.h"
 #include "hash.h"
 #include <string>
 namespace ImGui
@@ -12,7 +13,7 @@ namespace ImGui
         if ( data->EventFlag == ImGuiInputTextFlags_CallbackResize )
         {
             IM_ASSERT(my_Hash->srcString.data() == data->Buf);
-            my_Hash->srcString.resize(data->BufSize); // NB: On resizing calls, generally data->BufSize == data->BufTextLen + 1
+            my_Hash->srcString.resize(data->BufSize + 1); // NB: On resizing calls, generally data->BufSize == data->BufTextLen + 1
             data->Buf = my_Hash->srcString.data();
         }
         return 0;
@@ -46,7 +47,7 @@ namespace ImGui
     inline bool InputHashString(const char* label, KG::Utill::HashString* my_Hash, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0)
     {
         IM_ASSERT((flags & (ImGuiInputTextFlags_CallbackResize | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackEdit)) == 0);
-        bool ret = ImGui::InputText(label, my_Hash->srcString.data(), (size_t)my_Hash->srcString.length(), 
+        bool ret = ImGui::InputText(label, my_Hash->srcString.data(), (size_t)my_Hash->srcString.length() + 1, 
             flags | ImGuiInputTextFlags_CallbackResize | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackEdit, MyHashStringCallback, (void*)my_Hash);
         if ( ret )
         {
@@ -57,4 +58,13 @@ namespace ImGui
         return ret;
     }
     bool VectorStringGetter(void* data, int n, const char** out_str);
+
+    inline std::string GetCurrentShortPath(const std::string& plus = "")
+    {
+        char longPath[_MAX_PATH]{};
+        GetCurrentDirectoryA(_MAX_PATH, longPath);
+        //char shortPath[_MAX_PATH]{};
+        GetShortPathNameA(longPath, longPath, _MAX_PATH);
+        return std::string(longPath) + "\\" + plus;
+    }
 };

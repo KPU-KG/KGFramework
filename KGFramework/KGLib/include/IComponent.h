@@ -15,8 +15,8 @@ namespace KG::Component
 		{ inline static constexpr KG::Utill::_ID id() {return #X##_id;}\
 		  inline static constexpr const char* name() {return #X;} }
 #define ADD_COMPONENT_ID_TO_ELEMENT(element, Ty) {\
-	element->UnsignedAttribute("hash_id", KG::Component::ComponentID<Ty>::id());\
-	element->Attribute("name", KG::Component::ComponentID<Ty>::name());\
+	element->SetAttribute("name", KG::Component::ComponentID<Ty>::name());\
+	element->SetAttribute("hash_id", KG::Component::ComponentID<Ty>::id());\
 	}\
 
 	struct SystemInformation

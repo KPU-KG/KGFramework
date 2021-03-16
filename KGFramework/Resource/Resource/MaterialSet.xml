@@ -64,9 +64,9 @@
         <Padding byte="4"/>
     </Material>
     <Material id="SkySunSet" shaderID="SkyBox" hash_id="2048061870" shaderHashID="3327424171">
-        <Texture byte="4" comment="skymacTexture" id="skySunset" hash_id="1553201454"/>
+        <Texture byte="4" comment="skymacTexture" id="SkySunset"/>
     </Material>
     <Material id="SkySnow" shaderID="SkyBox" hash_id="4111474821" shaderHashID="3327424171">
-        <Texture byte="4" comment="skymacTexture" id="skySnow" hash_id="3953192677"/>
+        <Texture byte="4" comment="skymacTexture" id="SkySnow" hash_id="4111474821"/>
     </Material>
 </MaterialSet>

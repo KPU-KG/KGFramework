@@ -97,6 +97,11 @@ UINT32 KG::Core::Scene::FlipID(UINT32 frontID)
 	return NULL_OBJECT - frontID;
 }
 
+KG::Core::Scene::Scene()
+	:skyBoxIdProp("SkyBoxId", this->skyBoxId)
+{
+}
+
 void KG::Core::Scene::SetComponentProvider(KG::Component::ComponentProvider* componentProvider)
 {
 	this->componentProvider = componentProvider;
@@ -177,9 +182,12 @@ void KG::Core::Scene::LoadScene(const std::string& path)
 void KG::Core::Scene::SaveCurrentScene(const std::string& path)
 {
 	tinyxml2::XMLDocument doc;
-	tinyxml2::XMLElement* sceneElement = doc.NewElement("Scene");
-	this->OnDataSave(sceneElement);
-	doc.SaveFile(path.c_str());
+	tinyxml2::XMLDeclaration* dec1 = doc.NewDeclaration();
+	tinyxml2::XMLElement* objectElement = doc.NewElement("Scene");
+	this->OnDataSave(objectElement);
+	doc.LinkEndChild(dec1);
+	doc.LinkEndChild(objectElement);
+	auto e = doc.SaveFile(path.c_str());
 }
 
 KG::Component::IComponent* KG::Core::Scene::SetMainCamera(KG::Component::IComponent* mainCamera)
@@ -206,16 +214,19 @@ void KG::Core::Scene::AddSkyBoxObjectCreator(SkyBoxCreator&& creator)
 
 void KG::Core::Scene::OnDataLoad(tinyxml2::XMLElement* sceneElement)
 {
-	auto* objectElement = sceneElement->FirstChildElement();
+	this->skyBoxIdProp.OnDataLoad(sceneElement);
+	this->skyBoxSetter(this->skyBoxId);
+	auto* objectElement = sceneElement->FirstChildElement("GameObject");
 	while ( objectElement )
 	{
 		auto nameStr = std::string(objectElement->Name());
-		UINT32 id = objectElement->UnsignedAttribute("id");
+		UINT32 id = objectElement->UnsignedAttribute("instanceId");
 
 		if ( nameStr == "GameObject" )
 		{
 			auto* obj = this->CreateNewObject(id);
 			obj->OnDataLoad(objectElement);
+			this->objectTree.push_back(obj);
 		}
 		else if ( nameStr == "Prefab" )
 		{
@@ -229,6 +240,7 @@ void KG::Core::Scene::OnDataLoad(tinyxml2::XMLElement* sceneElement)
 void KG::Core::Scene::OnDataSave(tinyxml2::XMLElement* sceneElement)
 {
 	UINT count = 0;
+	this->skyBoxIdProp.OnDataSave(sceneElement);
 	for ( UINT32 i : this->backActivePool )
 	{
 		if ( i != NULL_OBJECT )
@@ -237,20 +249,25 @@ void KG::Core::Scene::OnDataSave(tinyxml2::XMLElement* sceneElement)
 			count++;
 		}
 	}
-	for ( UINT32 i : this->frontActivePool )
-	{
-		if ( i != NULL_OBJECT )
-		{
-			this->GetFrontObject(i)->OnDataSave(sceneElement);
-			count++;
-		}
-	}
+	//for ( UINT32 i : this->frontActivePool )
+	//{
+	//	if ( i != NULL_OBJECT )
+	//	{
+	//		this->GetFrontObject(i)->OnDataSave(sceneElement);
+	//		count++;
+	//	}
+	//}
 }
 
 void KG::Core::Scene::AddObjectPreset(std::string name, PresetObjectCreator&& creator)
 {
 	this->objectPresetName.push_back(name);
 	this->objectPresetFunc.push_back(creator);
+}
+
+void KG::Core::Scene::AddSkySetter(SkyBoxSetter&& setter)
+{
+	this->skyBoxSetter = setter;
 }
 
 static void DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& focused)
@@ -300,10 +317,14 @@ bool KG::Core::Scene::OnDrawGUI()
 			{
 				if ( ImGui::MenuItem("Clear and New") )
 				{
+
 				}
 				if ( ImGui::MenuItem("Save") )
-				{
-				}
+					ImGuiFileDialog::Instance()->OpenDialog("ChooseSceneSaveKey", " Choose a File", ".xml"
+						, ImGui::GetCurrentShortPath("Resource\\Scenes\\"), "SceneData", 1, nullptr, ImGuiFileDialogFlags_ConfirmOverwrite);
+				if ( ImGui::MenuItem("Load") )
+					ImGuiFileDialog::Instance()->OpenDialog("ChooseSceneOpenKey", " Choose a File", ".xml",
+						ImGui::GetCurrentShortPath("Resource\\Scenes\\"), "SceneData", 1, nullptr, ImGuiFileDialogFlags_None);
 				ImGui::EndMenu();
 			}
 			if ( ImGui::BeginMenu("Object") )
@@ -313,6 +334,11 @@ bool KG::Core::Scene::OnDrawGUI()
 					auto* newObj = this->CreateNewBackObject();
 					newObj->tag = KG::Utill::HashString("EmptyObject");
 					this->objectTree.push_back(newObj);
+				}
+				if ( ImGui::MenuItem("Add Saved Object To Root") )
+				{
+					ImGuiFileDialog::Instance()->OpenDialog("ChooseObjectOpenKey", " Choose a File", ".xml",
+						ImGui::GetCurrentShortPath("Resource\\Objects\\"), "", 1, nullptr, ImGuiFileDialogFlags_None);
 				}
 				if ( ImGui::MenuItem("Add Prefab Object To Root") )
 				{
@@ -336,11 +362,12 @@ bool KG::Core::Scene::OnDrawGUI()
 			if ( ImGui::Button("Add SkyBox Object") )
 			{
 				auto* obj = this->CreateNewBackObject();
+				skyBoxSetter(this->skyBoxId);
 				skyBoxCreator(*obj, this->skyBoxId);
 				this->objectTree.push_back(obj);
 			}
 			ImGui::SameLine();
-			ImGui::InputHashString("", &this->skyBoxId);
+			this->skyBoxIdProp.OnDrawGUI();
 
 			ImGui::Combo("Preset", &this->currentSelectedPreset, &ImGui::VectorStringGetter, &this->objectPresetName, this->objectPresetName.size());
 			if ( ImGui::Button("Add Preset") )
@@ -364,8 +391,20 @@ bool KG::Core::Scene::OnDrawGUI()
 	ImGui::SetNextWindowSize(ImVec2(inspectorSize, viewportSize.y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(viewportSize.x - inspectorSize, 0), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.8f);
-	if ( ImGui::Begin("Inspector", &this->isShowGameObjectEdit) )
+	if ( ImGui::Begin("Inspector", &this->isShowGameObjectEdit, flag) )
 	{
+		if ( ImGui::BeginMenuBar() )
+		{
+			if ( ImGui::BeginMenu("File") )
+			{
+				if ( ImGui::MenuItem("Save") && currentFocusedObject )
+					ImGuiFileDialog::Instance()->OpenDialog("ChooseObjectSaveKey"," Choose a File", ".xml",
+						ImGui::GetCurrentShortPath("Resource\\Objects\\"), currentFocusedObject->tag.srcString, 1, nullptr, ImGuiFileDialogFlags_ConfirmOverwrite);
+				ImGui::EndMenu();
+			}
+			ImGui::EndMenuBar();
+		}
+
 		ImGui::PushItemWidth(160);
 		if ( currentFocusedObject )
 		{
@@ -374,5 +413,64 @@ bool KG::Core::Scene::OnDrawGUI()
 		ImGui::PopItemWidth();
 	}
 	ImGui::End();
+
+
+	//FileDialogs
+
+	if ( ImGuiFileDialog::Instance()->Display("ChooseObjectSaveKey") )
+	{
+		// action if OK
+		if ( ImGuiFileDialog::Instance()->IsOk() )
+		{
+			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+			currentFocusedObject->SaveToFile(filePathName);
+		}
+
+		// close
+		ImGuiFileDialog::Instance()->Close();
+	}
+
+	if ( ImGuiFileDialog::Instance()->Display("ChooseSceneSaveKey") )
+	{
+		// action if OK
+		if ( ImGuiFileDialog::Instance()->IsOk() )
+		{
+			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+			this->SaveCurrentScene(filePathName);
+		}
+
+		// close
+		ImGuiFileDialog::Instance()->Close();
+	}
+
+
+	if ( ImGuiFileDialog::Instance()->Display("ChooseObjectOpenKey") )
+	{
+		// action if OK
+		if ( ImGuiFileDialog::Instance()->IsOk() )
+		{
+			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+			auto* newObj = this->CreateNewBackObject();
+			newObj->LoadToFile(filePathName);
+			this->objectTree.push_back(newObj);
+		}
+
+		// close
+		ImGuiFileDialog::Instance()->Close();
+	}
+
+	if ( ImGuiFileDialog::Instance()->Display("ChooseSceneOpenKey") )
+	{
+		// action if OK
+		if ( ImGuiFileDialog::Instance()->IsOk() )
+		{
+			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+			this->LoadScene(filePathName);
+		}
+
+		// close
+		ImGuiFileDialog::Instance()->Close();
+	}
+
 	return false;
 }

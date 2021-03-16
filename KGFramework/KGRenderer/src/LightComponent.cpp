@@ -264,28 +264,31 @@ void KG::Component::LightComponent::OnDataSave(tinyxml2::XMLElement* parentEleme
 
 bool KG::Component::LightComponent::OnDrawGUI()
 {
-	bool flag = false;
-	this->lightTypeProp.OnDrawGUI();
-	flag |= this->strengthProp.OnDrawGUI();
-	switch ( this->lightType )
+	if ( ImGui::ComponentHeader<LightComponent>() )
 	{
-		case LightType::DirectionalLight:
-			flag |= this->directionProp.OnDrawGUI();
-			break;
-		case LightType::PointLight:
-			flag |= this->fallOffStartProp.OnDrawGUI();
-			flag |= this->fallOffEndProp.OnDrawGUI();
-			break;
-		case LightType::SpotLight:
-			flag |= this->depthProp.OnDrawGUI();
-			flag |= this->phiProp.OnDrawGUI();
-			flag |= this->thetaProp.OnDrawGUI();
-			flag |= this->fallOffProp.OnDrawGUI();
-			break;
-	}
-	if ( flag )
-	{
-		this->UpdateChanged();
+		bool flag = false;
+		this->lightTypeProp.OnDrawGUI();
+		flag |= this->strengthProp.OnDrawGUI();
+		switch ( this->lightType )
+		{
+			case LightType::DirectionalLight:
+				flag |= this->directionProp.OnDrawGUI();
+				break;
+			case LightType::PointLight:
+				flag |= this->fallOffStartProp.OnDrawGUI();
+				flag |= this->fallOffEndProp.OnDrawGUI();
+				break;
+			case LightType::SpotLight:
+				flag |= this->depthProp.OnDrawGUI();
+				flag |= this->phiProp.OnDrawGUI();
+				flag |= this->thetaProp.OnDrawGUI();
+				flag |= this->fallOffProp.OnDrawGUI();
+				break;
+		}
+		if ( flag )
+		{
+			this->UpdateChanged();
+		}
 	}
 	return false;
 }

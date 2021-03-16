@@ -2,6 +2,7 @@
 #include <string>
 #include <vector>
 #include "ISerializable.h"
+#include "SerializableProperty.h"
 #include "IComponent.h"
 #include "ComponentContainer.h"
 namespace KG::Component
@@ -23,6 +24,8 @@ namespace KG::Core
 		void InternalMatchBoneToObject(const std::vector<KG::Utill::HashString>& tags, std::vector<KG::Core::GameObject*>& bones) const;
 	public:
 		KG::Utill::HashString tag = KG::Utill::HashString(0);
+
+		GameObject();
 
 		template <class Ty>
 		auto GetComponent() const
@@ -62,8 +65,9 @@ namespace KG::Core
 		void MatchBoneToObject(const std::vector<KG::Utill::HashString>& tags, std::vector<KG::Core::GameObject*>& bones) const;
 
 
-		virtual void SaveToPrefab(const std::string& name);
-
+		void SaveToPrefab(const std::string& name);
+		void SaveToFile(const std::string& filePath);
+		void LoadToFile(const std::string& filePath);
 
 
 		std::vector<std::pair<KG::Utill::HashString, KG::Component::IComponent*>> temporalComponents;
@@ -80,6 +84,9 @@ namespace KG::Core
 		}
 
 		// ISerializable을(를) 통해 상속됨
+	private:
+		KG::Core::SerializableProperty<KG::Utill::HashString> tagProp;
+	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* parentElement) override;
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement) override;
 		virtual bool OnDrawGUI() override;

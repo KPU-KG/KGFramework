@@ -6,8 +6,8 @@
     <Texture id="grass" fileDir="Resource/Texture/grass.dds" dimension="Texture2D" format="DDS" hash_id="3681460185"/>
     <Texture id="one" fileDir="Resource/Texture/one.dds" dimension="Texture2D" format="DDS" hash_id="94880491"/>
     <Texture id="zero" fileDir="Resource/Texture/zero.dds" dimension="Texture2D" format="DDS" hash_id="3256532051"/>
-    <Texture id="skySunset" fileDir="Resource/Texture/sunsetcube1024.dds" dimension="TextureCube" format="DDS" hash_id="1553201454"/>
-    <Texture id="skySnow" fileDir="Resource/Texture/snowcube1024.dds" dimension="TextureCube" format="DDS" hash_id="3953192677"/>
+    <Texture id="SkySunset" fileDir="Resource/Texture/sunsetcube1024.dds" dimension="TextureCube" format="DDS" hash_id="2071956174"/>
+    <Texture id="SkySnow" fileDir="Resource/Texture/snowcube1024.dds" dimension="TextureCube" format="DDS" hash_id="4111474821"/>
     <!--Metal PBR-->
     <Texture id="metal_color" fileDir="Resource/Texture/cc0_metal/color.dds" dimension="Texture2D" format="DDS" hash_id="1743296994"/>
     <Texture id="metal_metalic" fileDir="Resource/Texture/cc0_metal/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2937800030"/>

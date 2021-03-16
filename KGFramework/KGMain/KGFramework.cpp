@@ -60,7 +60,7 @@ bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting&
 	this->system->PostComponentProvider(this->componentProvider);
 	this->scene.SetComponentProvider(&this->componentProvider);
 
-	this->PostPresetObject();
+	this->PostSceneFunction();
 
 	//ÀÎÇ²
 	this->input = std::unique_ptr<KG::Input::InputManager>( KG::Input::InputManager::GetInputManager() );
@@ -71,9 +71,14 @@ bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting&
 	return true;
 }
 
-void KG::GameFramework::PostPresetObject()
+void KG::GameFramework::PostSceneFunction()
 {
-
+	this->scene.AddSkySetter(
+		[this](const KG::Utill::HashString& skyBox)
+		{
+			this->renderer->SetSkymapTextureId(skyBox);
+		}
+	);
 	this->scene.AddSceneCameraObjectCreator(
 		[this](KG::Core::GameObject& obj)
 		{
@@ -160,7 +165,6 @@ void KG::GameFramework::PostPresetObject()
 			obj.AddComponent(mat);
 			obj.AddComponent(geo);
 			obj.AddComponent(ren);
-			this->renderer->SetSkymapTextureId(KG::Utill::HashString("skySnow"));
 		}
 	);
 
@@ -185,7 +189,7 @@ void KG::GameFramework::PostPresetObject()
 		{
 			auto* t = this->system->transformSystem.GetNewComponent();
 			auto* l = this->renderer->GetNewLightComponent();
-			l->SetDirectionalLight(DirectX::XMFLOAT3(0.1f, 0.1f, 0.1f) * 1, DirectX::XMFLOAT3(0.0f, -1.0f, -1.0f));
+			l->SetDirectionalLight(DirectX::XMFLOAT3(1.2f, 1.2f, 1.2f), DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f));
 			obj.AddTemporalComponent(t);
 			obj.AddTemporalComponent(l);
 		}

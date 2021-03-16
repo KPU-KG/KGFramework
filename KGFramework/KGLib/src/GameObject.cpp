@@ -49,6 +49,11 @@ void KG::Core::GameObject::InternalMatchBoneToObject(const std::vector<KG::Utill
 	if ( sib != nullptr ) sib->InternalMatchBoneToObject(tags, bones);
 }
 
+KG::Core::GameObject::GameObject()
+	: tagProp("Tag", this->tag)
+{
+}
+
 bool KG::Core::GameObject::IsDestroy() const
 {
 	return this->isDestroy;
@@ -131,25 +136,48 @@ void KG::Core::GameObject::SaveToPrefab(const std::string& name)
 {
 }
 
+void KG::Core::GameObject::SaveToFile(const std::string& filePath)
+{
+	tinyxml2::XMLDocument doc;
+	tinyxml2::XMLDeclaration* dec1 = doc.NewDeclaration();
+	tinyxml2::XMLElement* objectElement = doc.NewElement("SavedGameObject");
+	this->OnDataSave(objectElement);
+	doc.LinkEndChild(dec1);
+	doc.LinkEndChild(objectElement);
+	auto e = doc.SaveFile(filePath.c_str());
+}
+
+void KG::Core::GameObject::LoadToFile(const std::string& filePath)
+{
+	tinyxml2::XMLDocument doc;
+	doc.LoadFile(filePath.c_str());
+	auto* objectElement = doc.FirstChildElement("SavedGameObject")->FirstChildElement("GameObject");
+	this->OnDataLoad(objectElement);
+	auto e = doc.SaveFile(filePath.c_str());
+}
+
 void KG::Core::GameObject::OnDataLoad(tinyxml2::XMLElement* objectElement)
 {
-	auto* comp = objectElement->FirstChildElement();
-	while ( comp )
+	this->tagProp.OnDataLoad(objectElement);
+	auto* componentElement = objectElement->FirstChildElement("Component");
+	while ( componentElement != nullptr )
 	{
-		KG::Utill::HashString componentName = comp->UnsignedAttribute("hash_id");
-		this->ownerScene->GetComponentProvider()->AddComponentToObject(componentName, this)->OnDataLoad(comp);
-		comp = objectElement->NextSiblingElement();
+		KG::Utill::HashString componentId = componentElement->UnsignedAttribute("hash_id");
+		auto* component = this->ownerScene->GetComponentProvider()->GetComponent(componentId);
+		component->OnDataLoad(componentElement);
+		this->AddComponentWithID(componentId, component);
+		componentElement = componentElement->NextSiblingElement("Component");
 	}
 }
 
 void KG::Core::GameObject::OnDataSave(tinyxml2::XMLElement* parentElement)
 {
 	auto* objectElement = parentElement->InsertNewChildElement("GameObject");
+	objectElement->SetAttribute("instanceId", this->instanceID);
+	this->tagProp.OnDataSave(objectElement);
 	for ( auto& i : this->components.container )
 	{
-		auto* compElement = objectElement->InsertNewChildElement("Component");
-		compElement->SetAttribute("hash_id", i.first.value);
-		i.second->OnDataSave(compElement);
+		i.second->OnDataSave(objectElement);
 	}
 }
 

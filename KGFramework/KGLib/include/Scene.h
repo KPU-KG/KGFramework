@@ -1,5 +1,6 @@
 #pragma once
 #include "ISerializable.h"
+#include "SerializableProperty.h"
 #include "GameObject.h"
 #include "ComponentProvider.h"
 #include <vector>
@@ -15,7 +16,8 @@ namespace KG::Core
 		using ActivePool = std::vector<UINT>;
 		using SceneCameraCreator = std::function<void (KG::Core::GameObject&)>;
 		using PresetObjectCreator = std::function<void(KG::Core::GameObject&)>;
-		using SkyBoxCreator = std::function<void (KG::Core::GameObject&, const KG::Utill::HashString&)>;
+		using SkyBoxCreator = std::function<void(KG::Core::GameObject&, const KG::Utill::HashString&)>;
+		using SkyBoxSetter = std::function<void(const KG::Utill::HashString&)>;
 
 		tinyxml2::XMLDocument sourceDocument;
 		KG::Component::ComponentProvider* componentProvider = nullptr;
@@ -31,6 +33,7 @@ namespace KG::Core
 		
 		SceneCameraCreator sceneCameraCreator;
 		SkyBoxCreator skyBoxCreator;
+		SkyBoxSetter skyBoxSetter;
 
 		std::vector<std::string> objectPresetName;
 		std::vector<PresetObjectCreator> objectPresetFunc;
@@ -53,6 +56,7 @@ namespace KG::Core
 		bool isShowHierarchy = true;
 		bool isShowGameObjectEdit = true;
 	public:
+		Scene();
 		bool isStartGame = false;
 		void SetComponentProvider(KG::Component::ComponentProvider* componentProvider);
 		KG::Component::ComponentProvider* GetComponentProvider() const;
@@ -70,14 +74,19 @@ namespace KG::Core
 
 		void LoadScene( const std::string& path );
 		void SaveCurrentScene( const std::string& path );
+
 		KG::Component::IComponent* SetMainCamera(KG::Component::IComponent* mainCamera);
 		KG::Component::IComponent* GetMainCamera() const;
 
 		void AddSceneCameraObjectCreator(SceneCameraCreator&& creator);
 		void AddSkyBoxObjectCreator(SkyBoxCreator&& creator);
 		void AddObjectPreset(std::string name, PresetObjectCreator&& creator);
+		void AddSkySetter(SkyBoxSetter&& setter);
 
 		// ISerializable을(를) 통해 상속됨
+	private:
+		SerializableProperty<KG::Utill::HashString> skyBoxIdProp;
+	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;
 		virtual void OnDataSave(tinyxml2::XMLElement* objectElement) override;
 		virtual bool OnDrawGUI() override;

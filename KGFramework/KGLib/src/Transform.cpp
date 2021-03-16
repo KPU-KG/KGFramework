@@ -5,8 +5,8 @@ using namespace KG::Component;
 KG::Component::TransformComponent::TransformComponent()
 	:
 	positionProp("Position", this->position),
-	rotationEulerProp("Rotation(E)", this->eulerRotation),
-	rotationQautProp("Rotation(Q)", this->rotation),
+	rotationEulerProp("Rotation", this->eulerRotation),
+	rotationQautProp("Rotation_Q", this->rotation),
 	scaleProp("Scale", this->scale)
 {
 

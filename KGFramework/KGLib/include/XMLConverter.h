@@ -126,15 +126,17 @@ namespace KG::Utill::XMLConverter
 	{
 		auto* currentElement = parentElement->FirstChildElement(title.c_str());
 		KG::Utill::HashString result;
-		result = currentElement->UnsignedAttribute("value");
-		return result;
+		result = KG::Utill::HashString(currentElement->Attribute("srcString"));
+		auto value = currentElement->UnsignedAttribute("hash_id");
+		return  result.value != value ? KG::Utill::HashString(value) : result;
 	}
 
 	template<>
 	inline void XMLElementSave(tinyxml2::XMLElement* parentElement, const std::string& title, const KG::Utill::HashString& ref)
 	{
 		auto* currentElement = parentElement->InsertNewChildElement(title.c_str());
-		currentElement->SetAttribute("value", ref.value);
+		currentElement->SetAttribute("hash_id", ref.value);
+		currentElement->SetAttribute("srcString", ref.srcString.c_str());
 	}
 
 
