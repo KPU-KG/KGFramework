@@ -331,7 +331,7 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 		float animT = animations[curAnimation.index.begin()->first].timer / animations[curAnimation.index.begin()->first].duration;
 		if (nextAnimations.size() <= 0) {
 			animations[defaultAnimation.value].timer = animT * animations[defaultAnimation.value].duration;
-			ChangeAnimation(defaultAnimation, 0.1f, -1);
+			ChangeAnimation(defaultAnimation, 0.5f, -1);
 		}
 		else {
 			animations[nextAnimations[0].index.begin()->first].timer = animT * animations[nextAnimations[0].index.begin()->first].duration;
@@ -552,7 +552,7 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 		float animT = animations[curAnimation.index.begin()->first].timer / animations[curAnimation.index.begin()->first].duration;
 		if (nextAnimations.size() <= 0) {
 			animations[defaultAnimation.value].timer = animT * animations[defaultAnimation.value].duration;
-			ChangeAnimation(defaultAnimation, 0.1f, -1);
+			ChangeAnimation(defaultAnimation, 0.5f, -1);
 		}
 		else {
 			animations[nextAnimations[0].index.begin()->first].timer = animT * animations[nextAnimations[0].index.begin()->first].duration;
@@ -666,6 +666,17 @@ int KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Utill
 		return ANIMINDEX_CURRENT;
 	}
 	else {
+		if (nextAnimations.size() > 0) {
+			// IsValidAnimationId
+			if (nextAnimations[0].index[animationId.value] != NULL) {
+				nextAnimations[0].time = 0;
+				nextAnimations[0].duration = animationDuration;
+				curAnimation.duration = blendingDuration;
+				state = ANIMSTATE_CHANGING;
+				return ANIMINDEX_CHANGE;
+			}
+		}
+
 		if (state == ANIMSTATE_CHANGING) {
 			changeIntercepted = true;
 			prevFrameCache.clear();
