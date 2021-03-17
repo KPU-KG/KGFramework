@@ -295,10 +295,7 @@ void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameO
 					{
 						this->objectTree.erase(std::find(this->objectTree.begin(), this->objectTree.end(), dragSource));
 					}
-					else
-					{
-						dragSource->GetTransform()->SetParent(nullptr);
-					}
+					dragSource->GetTransform()->ExtractThisNode();
 					node->GetTransform()->AddChild(dragSource->GetTransform());
 				}
 			}
@@ -417,7 +414,25 @@ bool KG::Core::Scene::OnDrawGUI()
 				this->objectTree.push_back(obj);
 			}
 		}
-		if ( ImGui::CollapsingHeader("Hierarchy", treeNodeFlag) )
+		bool isHierarchyOpen = ImGui::CollapsingHeader("Hierarchy", treeNodeFlag);
+		if ( ImGui::BeginDragDropTarget() )
+		{
+			auto* payLoad = ImGui::AcceptDragDropPayload("_GameObject");
+			if ( payLoad )
+			{
+				KG::Core::GameObject* dragSource = *static_cast<KG::Core::GameObject**>(payLoad->Data);
+				if ( dragSource && dragSource->GetTransform())
+				{
+					if ( !(dragSource->GetTransform()->GetParent() == nullptr) )
+					{
+						dragSource->GetTransform()->ExtractThisNode();
+						this->objectTree.push_back(dragSource);
+					}
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+		if ( isHierarchyOpen )
 		{
 			int count = 0;
 			for ( auto& i : this->objectTree )

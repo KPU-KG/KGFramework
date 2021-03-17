@@ -6,13 +6,15 @@ namespace KG::Core
 	template<typename Ty>
 	class IHierarchy
 	{
+		using CurrentType = IHierarchy<Ty>;
 		using ThisType = Ty;
 	protected:
 		ThisType* parent = nullptr;
 		ThisType* child = nullptr;
 		ThisType* sibiling = nullptr;
 
-		ThisType* sibilingFirst = nullptr;
+
+		ThisType* sibilingPrev = nullptr;
 
 	public:
 		bool isEraseSubNode = false;
@@ -46,6 +48,12 @@ namespace KG::Core
 		{
 			return this->parent;
 		}
+
+		ThisType* GetPrevsibiling() const
+		{
+			return this->sibiling;
+		}
+
 		ThisType* GetNextsibiling() const
 		{
 			return this->sibiling;
@@ -56,7 +64,7 @@ namespace KG::Core
 		}
 		void AddChild(ThisType* obj)
 		{
-			obj->SetParent((Ty*)this);
+			obj->SetParent((ThisType*)this);
 			if (this->hasChild())
 			{
 				this->child->AddSibiling(obj);
@@ -68,8 +76,8 @@ namespace KG::Core
 		}
 		void AddSibiling(ThisType* obj)
 		{
-			IHierarchy<Ty>* csr = this;
-			obj->SetParent( (Ty*)this->parent );
+			CurrentType* csr = this;
+			obj->SetParent( (ThisType*)this->parent );
 			while (true)
 			{
 				if (csr->hasSibiling())
@@ -79,9 +87,24 @@ namespace KG::Core
 				else
 				{
 					csr->sibiling = obj;
+					obj->SetPrevSibiling((ThisType*)csr);
 					break;
 				}
 			}
+		}
+
+		void SetPrevSibiling(ThisType* obj)
+		{
+			this->sibilingPrev = obj;
+		}
+
+		void SetNextSibiling(ThisType* obj)
+		{
+			this->sibiling = obj;
+		}
+		void SetChild(ThisType* obj)
+		{
+			this->child = obj;
 		}
 
 		bool hasSibiling()
@@ -153,6 +176,20 @@ namespace KG::Core
 				}
 			}
 
+		}
+
+		void ExtractThisNode()
+		{
+			if ( this->parent && this->parent->GetChild() == (ThisType*)this )
+			{
+				this->parent->SetChild(this->sibiling);
+			}
+			else if ( this->sibilingPrev )
+			{
+				this->sibilingPrev->SetNextSibiling(this->sibiling);
+			}
+			this->parent = nullptr;
+			this->sibiling = nullptr;
 		}
 
 	};
