@@ -80,6 +80,7 @@ namespace KG::Core
 		}
 		void AddTemporalComponentWithID(const KG::Utill::HashString& componentID, KG::Component::IComponent* component)
 		{
+			component->PostReserve();
 			temporalComponents.emplace_back(std::make_pair(componentID, component));
 		}
 

@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include "Transform.h"
 #include <algorithm>
 
 UINT KG::Core::Scene::InternalGetEmptyObject()
@@ -270,14 +271,47 @@ void KG::Core::Scene::AddSkySetter(SkyBoxSetter&& setter)
 	this->skyBoxSetter = setter;
 }
 
-static void DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& focused)
+void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& focused, int& count)
 {
 	bool selected = focused == node;
 	if ( !node )
 	{
 		return;
 	}
-	if ( ImGui::TreeNodeEx(node->tag.srcString.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | (!selected ? 0 : ImGuiTreeNodeFlags_Selected)) )
+	ImGui::PushID(count);
+	count++;
+	bool opend = ImGui::TreeNodeEx(node->tag.srcString.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | (!selected ? 0 : ImGuiTreeNodeFlags_Selected));
+	//Drag And Drop
+	{
+		if ( ImGui::BeginDragDropTarget() )
+		{
+			auto* payLoad = ImGui::AcceptDragDropPayload("_GameObject");
+			if ( payLoad )
+			{
+				KG::Core::GameObject* dragSource = *static_cast<KG::Core::GameObject**>(payLoad->Data);
+				if ( dragSource && dragSource != node && dragSource->GetTransform() && node->GetTransform() )
+				{
+					if ( dragSource->GetTransform()->GetParent() == nullptr )
+					{
+						this->objectTree.erase(std::find(this->objectTree.begin(), this->objectTree.end(), dragSource));
+					}
+					else
+					{
+						dragSource->GetTransform()->SetParent(nullptr);
+					}
+					node->GetTransform()->AddChild(dragSource->GetTransform());
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+		if ( ImGui::BeginDragDropSource() )
+		{
+			ImGui::Text(node->tag.srcString.c_str());
+			ImGui::SetDragDropPayload("_GameObject", &node, sizeof(KG::Core::GameObject*));
+			ImGui::EndDragDropSource();
+		}
+	}
+	if ( opend )
 	{
 		ImVec2 pos = ImGui::GetCursorScreenPos();
 		ImU32 col = ImColor(ImGui::GetStyle().Colors[ImGuiCol_HeaderHovered]);
@@ -285,7 +319,11 @@ static void DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& fo
 		{
 			focused = node;
 		}
-		DrawObjectTree(node->GetChild(), focused);
+
+		if ( node->GetChild() )
+		{
+			DrawObjectTree(node->GetChild(), focused, count);
+		}
 		ImGui::TreePop();
 	}
 	else if ( ImGui::IsItemClicked() )
@@ -293,7 +331,8 @@ static void DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& fo
 		focused = node;
 	}
 
-	DrawObjectTree(node->GetSibling(), focused);
+	DrawObjectTree(node->GetSibling(), focused, count);
+	ImGui::PopID();
 }
 
 bool KG::Core::Scene::OnDrawGUI()
@@ -305,7 +344,7 @@ bool KG::Core::Scene::OnDrawGUI()
 	static ImGuiWindowFlags flag = ImGuiWindowFlags_MenuBar;
 	static ImGuiTreeNodeFlags treeNodeFlag = ImGuiTreeNodeFlags_DefaultOpen;
 	auto viewportSize = ImGui::GetMainViewport()->Size;
-	//ImGui::ShowDemoWindow();
+	ImGui::ShowDemoWindow();
 	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.8f);
@@ -380,9 +419,10 @@ bool KG::Core::Scene::OnDrawGUI()
 		}
 		if ( ImGui::CollapsingHeader("Hierarchy", treeNodeFlag) )
 		{
+			int count = 0;
 			for ( auto& i : this->objectTree )
 			{
-				DrawObjectTree(i, currentFocusedObject);
+				DrawObjectTree(i, currentFocusedObject, count);
 			}
 		}
 	}
@@ -398,7 +438,7 @@ bool KG::Core::Scene::OnDrawGUI()
 			if ( ImGui::BeginMenu("File") )
 			{
 				if ( ImGui::MenuItem("Save") && currentFocusedObject )
-					ImGuiFileDialog::Instance()->OpenDialog("ChooseObjectSaveKey"," Choose a File", ".xml",
+					ImGuiFileDialog::Instance()->OpenDialog("ChooseObjectSaveKey", " Choose a File", ".xml",
 						ImGui::GetCurrentShortPath("Resource\\Objects\\"), currentFocusedObject->tag.srcString, 1, nullptr, ImGuiFileDialogFlags_ConfirmOverwrite);
 				ImGui::EndMenu();
 			}
