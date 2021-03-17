@@ -342,7 +342,7 @@ void KG::Renderer::KGDXRenderer::LightPassRender( ID3D12GraphicsCommandList* cmd
 void KG::Renderer::KGDXRenderer::SkyBoxRender( ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex )
 {
 	PIXSetMarker( cmdList, PIX_COLOR( 255, 0, 0 ), "SkyBox Pass Render" );
-	auto rtvHandle = rt.GetRenderTargetRTVHandle( 0 );
+	auto rtvHandle = rt.GetRenderTargetRTVHandle(cubeIndex);
 	cmdList->OMSetRenderTargets( 1, &rtvHandle, true, &rt.dsvHandle );
 	this->renderEngine->Render( ShaderGroup::SkyBox, ShaderGeometryType::SkyBox, ShaderPixelType::SkyBox, cmdList );
 }
