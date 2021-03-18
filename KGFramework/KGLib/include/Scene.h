@@ -10,6 +10,8 @@ namespace KG::Core
 {
 	class Scene : public ISerializable
 	{
+		friend void KG::Core::GameObject::OnDataLoad(tinyxml2::XMLElement* objectElement);
+		friend void KG::Core::GameObject::OnPrefabLoad(tinyxml2::XMLElement* objectElement);
 		static constexpr UINT NULL_OBJECT = 4294967295;
 		using CachePair = std::pair<bool, GameObject>;
 		using ObjectPool = std::deque<CachePair>;

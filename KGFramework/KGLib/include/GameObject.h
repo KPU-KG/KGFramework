@@ -88,6 +88,7 @@ namespace KG::Core
 	private:
 		KG::Core::SerializableProperty<KG::Utill::HashString> tagProp;
 	public:
+		void OnPrefabLoad(tinyxml2::XMLElement* parentElement);
 		virtual void OnDataLoad(tinyxml2::XMLElement* parentElement) override;
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement) override;
 		virtual bool OnDrawGUI() override;
