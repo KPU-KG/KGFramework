@@ -251,7 +251,7 @@ KG::Core::GameObject* KG::Resource::ResourceContainer::CreateObjectFromModel( co
 			transform->AddChild( childObject->GetComponent<KG::Component::TransformComponent>() );
 			modelStack.push( std::make_pair( childObject, childNode ) );
 		}
-		else if ( node->sibling != nullptr && !transform->hasSibiling() )
+		else if ( node->sibling != nullptr && !transform->hasNextSibiling() )
 		{
 			auto* siblingObject = container.CreateNewObject();
 			auto* siblingNode = node->sibling;

@@ -227,7 +227,7 @@ void KG::Core::Scene::OnDataLoad(tinyxml2::XMLElement* sceneElement)
 		{
 			auto* obj = this->CreateNewObject(id);
 			obj->OnDataLoad(objectElement);
-			this->objectTree.push_back(obj);
+			this->rootNode.GetTransform()->AddChild(obj->GetTransform());
 		}
 		else if ( nameStr == "Prefab" )
 		{
@@ -242,14 +242,7 @@ void KG::Core::Scene::OnDataSave(tinyxml2::XMLElement* sceneElement)
 {
 	UINT count = 0;
 	this->skyBoxIdProp.OnDataSave(sceneElement);
-	for ( UINT32 i : this->backActivePool )
-	{
-		if ( i != NULL_OBJECT )
-		{
-			this->GetBackObject(i)->OnDataSave(sceneElement);
-			count++;
-		}
-	}
+	this->rootNode.OnDataSave(sceneElement);
 	//for ( UINT32 i : this->frontActivePool )
 	//{
 	//	if ( i != NULL_OBJECT )
@@ -269,6 +262,12 @@ void KG::Core::Scene::AddObjectPreset(std::string name, PresetObjectCreator&& cr
 void KG::Core::Scene::AddSkySetter(SkyBoxSetter&& setter)
 {
 	this->skyBoxSetter = setter;
+}
+
+void KG::Core::Scene::InitializeRoot()
+{
+	this->objectPresetFunc[0](this->rootNode);
+	this->rootNode.tag = KG::Utill::HashString("rootNode");
 }
 
 void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& focused, int& count)
@@ -293,7 +292,7 @@ void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameO
 				{
 					if ( dragSource->GetTransform()->GetParent() == nullptr )
 					{
-						this->objectTree.erase(std::find(this->objectTree.begin(), this->objectTree.end(), dragSource));
+						//this->objectTree.erase(std::find(this->objectTree.begin(), this->objectTree.end(), dragSource));
 					}
 					dragSource->GetTransform()->ExtractThisNode();
 					node->GetTransform()->AddChild(dragSource->GetTransform());
@@ -368,8 +367,8 @@ bool KG::Core::Scene::OnDrawGUI()
 				if ( ImGui::MenuItem("Add New Empty Object To Root") )
 				{
 					auto* newObj = this->CreateNewBackObject();
-					newObj->tag = KG::Utill::HashString("EmptyObject");
-					this->objectTree.push_back(newObj);
+					this->objectPresetFunc[0](*newObj);
+					this->rootNode.GetTransform()->AddChild(newObj->GetTransform());
 				}
 				if ( ImGui::MenuItem("Add Saved Object To Root") )
 				{
@@ -393,14 +392,14 @@ bool KG::Core::Scene::OnDrawGUI()
 			{
 				auto* obj = this->CreateNewBackObject();
 				sceneCameraCreator(*obj);
-				this->objectTree.push_back(obj);
+				this->rootNode.GetTransform()->AddChild(obj->GetTransform());
 			}
 			if ( ImGui::Button("Add SkyBox Object") )
 			{
 				auto* obj = this->CreateNewBackObject();
 				skyBoxSetter(this->skyBoxId);
 				skyBoxCreator(*obj, this->skyBoxId);
-				this->objectTree.push_back(obj);
+				this->rootNode.GetTransform()->AddChild(obj->GetTransform());
 			}
 			ImGui::SameLine();
 			this->skyBoxIdProp.OnDrawGUI();
@@ -411,34 +410,31 @@ bool KG::Core::Scene::OnDrawGUI()
 				auto* obj = this->CreateNewBackObject();
 				objectPresetFunc[this->currentSelectedPreset](*obj);
 				obj->tag = KG::Utill::HashString(objectPresetName[this->currentSelectedPreset]);
-				this->objectTree.push_back(obj);
+				this->rootNode.GetTransform()->AddChild(obj->GetTransform());
 			}
 		}
 		bool isHierarchyOpen = ImGui::CollapsingHeader("Hierarchy", treeNodeFlag);
-		if ( ImGui::BeginDragDropTarget() )
-		{
-			auto* payLoad = ImGui::AcceptDragDropPayload("_GameObject");
-			if ( payLoad )
-			{
-				KG::Core::GameObject* dragSource = *static_cast<KG::Core::GameObject**>(payLoad->Data);
-				if ( dragSource && dragSource->GetTransform())
-				{
-					if ( !(dragSource->GetTransform()->GetParent() == nullptr) )
-					{
-						dragSource->GetTransform()->ExtractThisNode();
-						this->objectTree.push_back(dragSource);
-					}
-				}
-			}
-			ImGui::EndDragDropTarget();
-		}
+		//if ( ImGui::BeginDragDropTarget() )
+		//{
+		//	auto* payLoad = ImGui::AcceptDragDropPayload("_GameObject");
+		//	if ( payLoad )
+		//	{
+		//		KG::Core::GameObject* dragSource = *static_cast<KG::Core::GameObject**>(payLoad->Data);
+		//		if ( dragSource && dragSource->GetTransform())
+		//		{
+		//			if ( !(dragSource->GetTransform()->GetParent() == nullptr) )
+		//			{
+		//				dragSource->GetTransform()->ExtractThisNode();
+		//				this->objectTree.push_back(dragSource);
+		//			}
+		//		}
+		//	}
+		//	ImGui::EndDragDropTarget();
+		//}
 		if ( isHierarchyOpen )
 		{
 			int count = 0;
-			for ( auto& i : this->objectTree )
-			{
-				DrawObjectTree(i, currentFocusedObject, count);
-			}
+			DrawObjectTree(&this->rootNode, currentFocusedObject, count);
 		}
 	}
 	ImGui::End();
@@ -493,7 +489,7 @@ bool KG::Core::Scene::OnDrawGUI()
 			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
 			this->SaveCurrentScene(filePathName);
 		}
-
+		
 		// close
 		ImGuiFileDialog::Instance()->Close();
 	}
@@ -507,7 +503,7 @@ bool KG::Core::Scene::OnDrawGUI()
 			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
 			auto* newObj = this->CreateNewBackObject();
 			newObj->LoadToFile(filePathName);
-			this->objectTree.push_back(newObj);
+			this->rootNode.GetTransform()->AddChild(newObj->GetTransform());
 		}
 
 		// close

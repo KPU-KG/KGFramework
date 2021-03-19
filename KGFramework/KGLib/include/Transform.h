@@ -210,9 +210,9 @@ namespace KG::Component
 		{
 			if ( this->isDirtyGlobal )
 			{
-				if ( this->parent )
+				if ( this->GetParent() )
 				{
-					auto parentMatrix = XMLoadFloat4x4( &this->parent->GetGlobalWorldMatrix() );
+					auto parentMatrix = XMLoadFloat4x4( &this->GetParent()->GetGlobalWorldMatrix() );
 					auto thisMatrix = XMLoadFloat4x4( &this->GetLocalWorldMatrix() );
 					XMStoreFloat4x4( &this->globalWorldMatrix, thisMatrix * parentMatrix );
 				}

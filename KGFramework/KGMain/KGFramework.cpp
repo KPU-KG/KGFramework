@@ -62,7 +62,7 @@ bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting&
 	this->scene.SetComponentProvider(&this->componentProvider);
 
 	this->PostSceneFunction();
-
+	this->scene.InitializeRoot();
 	//ÀÎÇ²
 	this->input = std::unique_ptr<KG::Input::InputManager>( KG::Input::InputManager::GetInputManager() );
 
@@ -114,6 +114,14 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(mat);
 			obj.AddComponent(geo);
 			obj.AddComponent(ren);
+		}
+	);
+
+	this->scene.AddObjectPreset("EmptyObject",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* t = this->system->transformSystem.GetNewComponent();
+			obj.AddComponent(t);
 		}
 	);
 
