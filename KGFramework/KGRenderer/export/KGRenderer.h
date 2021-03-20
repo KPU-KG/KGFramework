@@ -5,6 +5,7 @@
 #include "GraphicComponent.h"
 #include "ObjectContainer.h"
 #include "RendererDesc.h"
+#include "MaterialMatch.h"
 
 #define EXTERNC extern "C"
 #ifdef EXPORTS
@@ -12,21 +13,6 @@
 #else
 #define DLL __declspec(dllimport)
 #endif // GRAPHICPART_EXPORTS
-
-namespace KG::Resource
-{
-	using MaterialSet = std::vector<KG::Utill::HashString>;
-	struct DLL MaterialMatch
-	{
-		MaterialSet defaultMaterial;
-		std::map<KG::Utill::HashString, MaterialSet> materialMap;
-		void SetDefaultMaterial(const MaterialSet& materials);
-		void SetDefaultMaterial(MaterialSet&& materials);
-		void AddMaterial(const KG::Utill::HashString& objectId, const MaterialSet& materials);
-		void AddMaterial(const KG::Utill::HashString& objectId, MaterialSet&& materials);
-		const MaterialSet& GetMaterial(const KG::Utill::HashString& objectId) const;
-	};
-}
 
 namespace KG::Renderer
 {
@@ -76,6 +62,7 @@ namespace KG::Renderer
 		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() = 0;
 		virtual KG::Component::AnimationControllerComponent* GetNewAnimationControllerComponent() = 0;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials) = 0;
+		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials) = 0;
 
 	};
 	DLL KG::Renderer::IKGRenderer* GetD3D12Renderer();

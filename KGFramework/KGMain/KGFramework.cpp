@@ -134,7 +134,7 @@ void KG::GameFramework::PostSceneFunction()
 			auto* m = this->renderer->GetNewMaterialComponent();
 			m->materialID = KG::Utill::HashString("PBRTile");
 			auto* r = this->renderer->GetNewRenderComponent();
-			obj.AddTemporalComponent(t);
+			obj.AddComponent(t);
 			obj.AddTemporalComponent(g);
 			obj.AddTemporalComponent(m);
 			obj.AddTemporalComponent(r);
@@ -147,8 +147,14 @@ void KG::GameFramework::PostSceneFunction()
 			auto* t = this->system->transformSystem.GetNewComponent();
 			auto* l = this->renderer->GetNewLightComponent();
 			l->SetDirectionalLight(DirectX::XMFLOAT3(1.2f, 1.2f, 1.2f), DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f));
-			obj.AddTemporalComponent(t);
+			obj.AddComponent(t);
 			obj.AddTemporalComponent(l);
+		}
+	);
+	this->scene.AddModelCreator(
+		[this](const KG::Utill::HashString& modelID, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& material)
+		{
+			this->renderer->LoadFromModel(modelID, scene, material);
 		}
 	);
 }

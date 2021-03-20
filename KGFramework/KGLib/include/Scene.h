@@ -3,6 +3,7 @@
 #include "SerializableProperty.h"
 #include "GameObject.h"
 #include "ComponentProvider.h"
+#include "MaterialMatch.h"
 #include <vector>
 #include <deque>
 #include <set>
@@ -18,6 +19,7 @@ namespace KG::Core
 		using ActivePool = std::vector<UINT>;
 		using SceneCameraCreator = std::function<void (KG::Core::GameObject&)>;
 		using PresetObjectCreator = std::function<void(KG::Core::GameObject&)>;
+		using ModelCreator = std::function<void(const KG::Utill::HashString&, KG::Core::Scene&, const KG::Resource::MaterialMatch&)>;
 		using SkyBoxCreator = std::function<void(KG::Core::GameObject&, const KG::Utill::HashString&)>;
 		using SkyBoxSetter = std::function<void(const KG::Utill::HashString&)>;
 
@@ -32,6 +34,7 @@ namespace KG::Core
 		SceneCameraCreator sceneCameraCreator;
 		SkyBoxCreator skyBoxCreator;
 		SkyBoxSetter skyBoxSetter;
+		ModelCreator modelCreator;
 
 		std::vector<std::string> objectPresetName;
 		std::vector<PresetObjectCreator> objectPresetFunc;
@@ -53,8 +56,10 @@ namespace KG::Core
 		void SetComponentProvider(KG::Component::ComponentProvider* componentProvider);
 		KG::Component::ComponentProvider* GetComponentProvider() const;
 		// 비어있는 오브젝트 할당
-		KG::Core::GameObject* CreateNewObject(); // 런타임
-		KG::Core::GameObject* CreateNewObject( UINT32 instanceID ); // 미리 생성
+		KG::Core::GameObject* CreateNewObject();
+		KG::Core::GameObject* CreateNewObject( UINT32 instanceID );
+		KG::Core::GameObject* CreateNewTransformObject(); 
+		KG::Core::GameObject* CreateNewTransformObject(UINT32 instanceID);
 		// 원본 객체에서 복사해옴
 		KG::Core::GameObject* CreateCopyObject( const KG::Core::GameObject* sourceObject ); // 런타임
 		// XML에 정의되있는 원본 객체에서 복사해옴
@@ -76,7 +81,7 @@ namespace KG::Core
 		void AddSkyBoxObjectCreator(SkyBoxCreator&& creator);
 		void AddObjectPreset(std::string name, PresetObjectCreator&& creator);
 		void AddSkySetter(SkyBoxSetter&& setter);
-
+		void AddModelCreator(ModelCreator&& creator);
 		//Root 노드 프리셋으로 초기화 하도록 설정
 		void InitializeRoot();
 		// ISerializable을(를) 통해 상속됨

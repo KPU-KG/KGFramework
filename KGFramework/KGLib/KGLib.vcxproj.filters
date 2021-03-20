@@ -117,6 +117,9 @@
     <ClCompile Include="src\SceneCameraComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\MaterialMatch.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MathHelper.h">
@@ -193,6 +196,9 @@
     </ClInclude>
     <ClInclude Include="include\SceneCameraComponent.h">
       <Filter>헤더 파일\Core\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\MaterialMatch.h">
+      <Filter>헤더 파일\Utill</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

@@ -107,6 +107,8 @@ namespace KG::Renderer
 		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() override;
 		virtual KG::Component::AnimationControllerComponent* GetNewAnimationControllerComponent() override;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials) override;
+		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials) override;
+
 
 		auto GetD3DDevice() const
 		{

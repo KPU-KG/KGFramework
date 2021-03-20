@@ -1,5 +1,6 @@
 #include "Scene.h"
 #include "Transform.h"
+#include "MaterialMatch.h"
 #include <algorithm>
 
 UINT KG::Core::Scene::InternalGetEmptyObject()
@@ -81,6 +82,20 @@ KG::Core::GameObject* KG::Core::Scene::CreateNewObject(UINT32 instanceID)
 	GameObject* obj = &this->objectPool[index].second;
 	obj->SetOwnerScene(this);
 	obj->SetInstanceID(instanceID);
+	return obj;
+}
+
+KG::Core::GameObject* KG::Core::Scene::CreateNewTransformObject()
+{
+	auto* obj = this->CreateNewObject();
+	this->componentProvider->AddComponentToObject(KG::Component::ComponentID <KG::Component::TransformComponent>::id(), obj);
+	return obj;
+}
+
+KG::Core::GameObject* KG::Core::Scene::CreateNewTransformObject(UINT32 instanceID)
+{
+	auto* obj = this->CreateNewObject(instanceID);
+	this->componentProvider->AddComponentToObject(KG::Component::ComponentID <KG::Component::TransformComponent>::id(), obj);
 	return obj;
 }
 
@@ -185,26 +200,6 @@ void KG::Core::Scene::OnDataLoad(tinyxml2::XMLElement* sceneElement)
 		}
 		objectElement = objectElement->NextSiblingElement();
 	}
-
-	//auto* objectElement = sceneElement->FirstChildElement("GameObject");
-	//while ( objectElement )
-	//{
-	//	auto nameStr = std::string(objectElement->Name());
-	//	UINT32 id = objectElement->UnsignedAttribute("instanceId");
-
-	//	if ( nameStr == "GameObject" )
-	//	{
-	//		auto* obj = this->CreateNewObject(id);
-	//		obj->OnDataLoad(objectElement);
-	//		this->rootNode.GetTransform()->AddChild(obj->GetTransform());
-	//	}
-	//	else if ( nameStr == "Prefab" )
-	//	{
-	//		UINT32 prefabId = objectElement->UnsignedAttribute("prefab_hash_id");
-	//		auto* obj = this->CreatePrefabObjcet(KG::Utill::HashString(prefabId), id);
-	//	}
-	//	objectElement = objectElement->NextSiblingElement();
-	//}
 }
 
 void KG::Core::Scene::OnDataSave(tinyxml2::XMLElement* sceneElement)
@@ -231,6 +226,11 @@ void KG::Core::Scene::AddObjectPreset(std::string name, PresetObjectCreator&& cr
 void KG::Core::Scene::AddSkySetter(SkyBoxSetter&& setter)
 {
 	this->skyBoxSetter = setter;
+}
+
+void KG::Core::Scene::AddModelCreator(ModelCreator&& creator)
+{
+	this->modelCreator = creator;
 }
 
 void KG::Core::Scene::InitializeRoot()
@@ -260,10 +260,6 @@ void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameO
 				KG::Core::GameObject* dragSource = *static_cast<KG::Core::GameObject**>(payLoad->Data);
 				if ( dragSource && dragSource != node && dragSource->GetTransform() && node->GetTransform() )
 				{
-					if ( dragSource->GetTransform()->GetParent() == nullptr )
-					{
-						//this->objectTree.erase(std::find(this->objectTree.begin(), this->objectTree.end(), dragSource));
-					}
 					dragSource->GetTransform()->ExtractThisNode();
 					node->GetTransform()->AddChild(dragSource->GetTransform());
 				}
@@ -309,6 +305,8 @@ bool KG::Core::Scene::OnDrawGUI()
 	static bool isSelectedSave = false;
 	static ImGuiWindowFlags flag = ImGuiWindowFlags_MenuBar;
 	static ImGuiTreeNodeFlags treeNodeFlag = ImGuiTreeNodeFlags_DefaultOpen;
+	static KG::Resource::MaterialMatch materialMatchCache;
+	static KG::Utill::HashString modelHash;
 	auto viewportSize = ImGui::GetMainViewport()->Size;
 	ImGui::ShowDemoWindow();
 	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
@@ -320,10 +318,6 @@ bool KG::Core::Scene::OnDrawGUI()
 		{
 			if ( ImGui::BeginMenu("File") )
 			{
-				if ( ImGui::MenuItem("Clear and New") )
-				{
-
-				}
 				if ( ImGui::MenuItem("Save") )
 					ImGuiFileDialog::Instance()->OpenDialog("ChooseSceneSaveKey", " Choose a File", ".xml"
 						, ImGui::GetCurrentShortPath("Resource\\Scenes\\"), "SceneData", 1, nullptr, ImGuiFileDialogFlags_ConfirmOverwrite);
@@ -332,76 +326,79 @@ bool KG::Core::Scene::OnDrawGUI()
 						ImGui::GetCurrentShortPath("Resource\\Scenes\\"), "SceneData", 1, nullptr, ImGuiFileDialogFlags_None);
 				ImGui::EndMenu();
 			}
-			if ( ImGui::BeginMenu("Object") )
-			{
-				if ( ImGui::MenuItem("Add New Empty Object To Root") )
-				{
-					auto* newObj = this->CreateNewObject();
-					this->objectPresetFunc[0](*newObj);
-					this->rootNode.GetTransform()->AddChild(newObj->GetTransform());
-				}
-				if ( ImGui::MenuItem("Add Saved Object To Root") )
-				{
-					ImGuiFileDialog::Instance()->OpenDialog("ChooseObjectOpenKey", " Choose a File", ".xml",
-						ImGui::GetCurrentShortPath("Resource\\Objects\\"), "", 1, nullptr, ImGuiFileDialogFlags_None);
-				}
-				if ( ImGui::MenuItem("Add Prefab Object To Root") )
-				{
-				}
-				ImGui::EndMenu();
-			}
 			ImGui::EndMenuBar();
 		}
 		if ( ImGui::CollapsingHeader("Info", treeNodeFlag) )
 		{
 			ImGui::BulletText("Current Object Count : %d", this->GetObjectCount());
 		}
-		if ( ImGui::CollapsingHeader("Scene Object", treeNodeFlag) )
+		if ( ImGui::CollapsingHeader("Add Scene Object", treeNodeFlag) )
 		{
-			if ( ImGui::Button("Add Scene Camera Object") )
+			if ( ImGui::TreeNodeEx("System Object", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow) )
 			{
-				auto* obj = this->CreateNewObject();
-				sceneCameraCreator(*obj);
-				this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+				if ( ImGui::Button("Add Scene Camera Object") )
+				{
+					auto* obj = this->CreateNewObject();
+					sceneCameraCreator(*obj);
+					this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+				}
+				if ( ImGui::Button("Add SkyBox Object") )
+				{
+					auto* obj = this->CreateNewObject();
+					skyBoxSetter(this->skyBoxId);
+					skyBoxCreator(*obj, this->skyBoxId);
+					this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+				}
+				ImGui::SetNextItemWidth(160);
+				ImGui::SameLine();
+				this->skyBoxIdProp.OnDrawGUI();
+				ImGui::TreePop();
 			}
-			if ( ImGui::Button("Add SkyBox Object") )
+			if ( ImGui::TreeNodeEx("Normal Object", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow) )
 			{
-				auto* obj = this->CreateNewObject();
-				skyBoxSetter(this->skyBoxId);
-				skyBoxCreator(*obj, this->skyBoxId);
-				this->rootNode.GetTransform()->AddChild(obj->GetTransform());
-			}
-			ImGui::SameLine();
-			this->skyBoxIdProp.OnDrawGUI();
+				if ( ImGui::Button("Add Empty Object") )
+				{
+					auto* obj = this->CreateNewObject();
+					objectPresetFunc[0](*obj);
+					obj->tag = KG::Utill::HashString(objectPresetName[0]);
+					this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+				}
+				if ( ImGui::Button("Add File Object") )
+				{
+					ImGuiFileDialog::Instance()->OpenDialog("ChooseObjectOpenKey", " Choose a File", ".xml",
+						ImGui::GetCurrentShortPath("Resource\\Objects\\"), "", 1, nullptr, ImGuiFileDialogFlags_None);
+				}
 
-			ImGui::Combo("Preset", &this->currentSelectedPreset, &ImGui::VectorStringGetter, &this->objectPresetName, this->objectPresetName.size());
-			if ( ImGui::Button("Add Preset") )
+
+				ImGui::SetNextItemWidth(160);
+				ImGui::Combo("Preset", &this->currentSelectedPreset, &ImGui::VectorStringGetter, &this->objectPresetName, this->objectPresetName.size());
+				ImGui::SameLine();
+				if ( ImGui::SmallButton("Add Preset") )
+				{
+					auto* obj = this->CreateNewObject();
+					objectPresetFunc[this->currentSelectedPreset](*obj);
+					obj->tag = KG::Utill::HashString(objectPresetName[this->currentSelectedPreset]);
+					this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+				}
+				ImGui::TreePop();
+			}
+			if ( ImGui::TreeNodeEx("Model Object", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_OpenOnArrow) )
 			{
-				auto* obj = this->CreateNewObject();
-				objectPresetFunc[this->currentSelectedPreset](*obj);
-				obj->tag = KG::Utill::HashString(objectPresetName[this->currentSelectedPreset]);
-				this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+				materialMatchCache.OnDrawGUI();
+				ImGui::SetNextItemWidth(160);
+				ImGui::InputHashString("modelID", &modelHash);
+				ImGui::SameLine();
+				if ( ImGui::SmallButton("Load") )
+				{
+					this->modelCreator(modelHash, *this, materialMatchCache);
+					modelHash.srcString = "";
+					modelHash.value = 0;
+					materialMatchCache.Clear();
+				}
+				ImGui::TreePop();
 			}
 		}
-		bool isHierarchyOpen = ImGui::CollapsingHeader("Hierarchy", treeNodeFlag);
-		//if ( ImGui::BeginDragDropTarget() )
-		//{
-		//	auto* payLoad = ImGui::AcceptDragDropPayload("_GameObject");
-		//	if ( payLoad )
-		//	{
-		//		KG::Core::GameObject* dragSource = *static_cast<KG::Core::GameObject**>(payLoad->Data);
-		//		if ( dragSource && dragSource->GetTransform())
-		//		{
-		//			if ( !(dragSource->GetTransform()->GetParent() == nullptr) )
-		//			{
-		//				dragSource->GetTransform()->ExtractThisNode();
-		//				this->objectTree.push_back(dragSource);
-		//			}
-		//		}
-		//	}
-		//	ImGui::EndDragDropTarget();
-		//}
-		if ( isHierarchyOpen )
+		if ( ImGui::CollapsingHeader("Hierarchy", treeNodeFlag) )
 		{
 			int count = 0;
 			DrawObjectTree(&this->rootNode, currentFocusedObject, count);
@@ -434,6 +431,9 @@ bool KG::Core::Scene::OnDrawGUI()
 		ImGui::PopItemWidth();
 	}
 	ImGui::End();
+
+
+	//
 
 
 	//FileDialogs
@@ -492,6 +492,5 @@ bool KG::Core::Scene::OnDrawGUI()
 		// close
 		ImGuiFileDialog::Instance()->Close();
 	}
-
 	return false;
 }

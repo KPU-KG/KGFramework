@@ -286,6 +286,7 @@
     <ClCompile Include="src\ImguiHelper.cpp" />
     <ClCompile Include="src\KGLib.cpp" />
     <ClCompile Include="src\LambdaComponent.cpp" />
+    <ClCompile Include="src\MaterialMatch.cpp" />
     <ClCompile Include="src\ObjectContainer.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -316,6 +317,7 @@
     <ClInclude Include="include\ISerializable.h" />
     <ClInclude Include="include\ISystem.h" />
     <ClInclude Include="include\LambdaComponent.h" />
+    <ClInclude Include="include\MaterialMatch.h" />
     <ClInclude Include="include\MathHelper.h" />
     <ClInclude Include="include\ObjectContainer.h" />
     <ClInclude Include="include\Scene.h" />

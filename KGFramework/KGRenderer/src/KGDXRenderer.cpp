@@ -493,6 +493,11 @@ KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel( const KG::Utill
 	return KG::Resource::ResourceContainer::GetInstance()->CreateObjectFromModel( id, container, materials );
 }
 
+KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials)
+{
+	return KG::Resource::ResourceContainer::GetInstance()->CreateObjectFromModel(id, scene, materials);
+}
+
 KG::Renderer::KGDXRenderer* KG::Renderer::KGDXRenderer::GetInstance()
 {
 	return KGDXRenderer::instance;
