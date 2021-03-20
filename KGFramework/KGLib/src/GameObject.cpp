@@ -171,7 +171,7 @@ void KG::Core::GameObject::OnPrefabLoad(tinyxml2::XMLElement* objectElement)
 	auto* childObjectElement = objectElement->FirstChildElement("GameObject");
 	if ( childObjectElement )
 	{
-		auto* childObject = this->GetScene()->CreateNewBackObject();
+		auto* childObject = this->GetScene()->CreateNewObject();
 		childObject->OnDataLoad(childObjectElement);
 		this->GetTransform()->SetChild(childObject->GetTransform());
 	}
@@ -179,7 +179,7 @@ void KG::Core::GameObject::OnPrefabLoad(tinyxml2::XMLElement* objectElement)
 	auto* siblingObjectElement = objectElement->NextSiblingElement("GameObject");
 	if ( siblingObjectElement )
 	{
-		auto* siblingObject = this->GetScene()->CreateNewBackObject();
+		auto* siblingObject = this->GetScene()->CreateNewObject();
 		siblingObject->OnDataLoad(siblingObjectElement);
 		this->GetTransform()->SetNextSibiling(siblingObject->GetTransform());
 	}

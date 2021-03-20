@@ -18,84 +18,29 @@ UINT KG::Core::Scene::InternalGetEmptyObject()
 	return index;
 }
 
-KG::Core::GameObject* KG::Core::Scene::GetFrontObject(UINT32 index)
+KG::Core::GameObject* KG::Core::Scene::GetIndexObject(UINT32 index) const
 {
-	if ( this->frontActivePool.size() < index + 1 )
+	if ( this->activePool.size() < index + 1 )
 	{
 		return nullptr;
 	}
 	else
 	{
-		UINT poolIndex = this->frontActivePool[index];
-		return &this->objectPool[poolIndex].second;
+		UINT poolIndex = this->activePool[index];
+		return const_cast<KG::Core::GameObject*>(&(this->objectPool.at(poolIndex).second));
 	}
 }
 
-KG::Core::GameObject* KG::Core::Scene::GetBackObject(UINT32 index)
+UINT32 KG::Core::Scene::GetEmptyID()
 {
-	if ( this->backActivePool.size() < index + 1 )
+	for ( size_t i = 0; i < this->activePool.size(); i++ )
 	{
-		return nullptr;
-	}
-	else
-	{
-		UINT poolIndex = this->backActivePool[index];
-		return &this->objectPool[poolIndex].second;
-	}
-}
-
-KG::Core::GameObject* KG::Core::Scene::FindFrontObjectWithTag(const KG::Utill::HashString& tag)
-{
-	for ( auto& i : this->frontActivePool )
-	{
-		KG::Core::GameObject* obj = this->GetFrontObject(i);
-		if ( obj != nullptr && obj->tag == tag )
+		if ( this->activePool[i] == NULL_OBJECT )
 		{
-			return obj;
+			return i;
 		}
 	}
-	return nullptr;
-}
-
-KG::Core::GameObject* KG::Core::Scene::FindBackObjectWithTag(const KG::Utill::HashString& tag)
-{
-	for ( auto& i : this->backActivePool )
-	{
-		KG::Core::GameObject* obj = this->GetBackObject(i);
-		if ( obj != nullptr && obj->tag == tag )
-		{
-			return obj;
-		}
-	}
-	return nullptr;
-}
-
-KG::Core::GameObject* KG::Core::Scene::CreateNewBackObject()
-{
-	UINT32 id = GetEmptyBackID();
-	return this->CreateNewObject(id);
-}
-
-UINT32 KG::Core::Scene::GetEmptyBackID()
-{
-	for ( size_t i = 0; i < this->backActivePool.size(); i++ )
-	{
-		if ( this->backActivePool[i] == NULL_OBJECT )
-		{
-			return FlipID(i);
-		}
-	}
-	return FlipID(this->backActivePool.size());
-}
-
-size_t KG::Core::Scene::GetBackObjectCount() const
-{
-	return this->backActivePool.size() - std::count(this->backActivePool.cbegin(), this->backActivePool.cend(), NULL_OBJECT);
-}
-
-UINT32 KG::Core::Scene::FlipID(UINT32 frontID)
-{
-	return NULL_OBJECT - frontID;
+	return this->activePool.size();
 }
 
 KG::Core::Scene::Scene()
@@ -116,8 +61,8 @@ KG::Component::ComponentProvider* KG::Core::Scene::GetComponentProvider() const
 KG::Core::GameObject* KG::Core::Scene::CreateNewObject()
 {
 	UINT index = this->InternalGetEmptyObject();
-	UINT id = this->frontActivePool.size();
-	this->frontActivePool.emplace_back(index);
+	UINT id = this->activePool.size();
+	this->activePool.emplace_back(index);
 	GameObject* obj = &this->objectPool[index].second;
 	obj->SetOwnerScene(this);
 	obj->SetInstanceID(id);
@@ -127,12 +72,11 @@ KG::Core::GameObject* KG::Core::Scene::CreateNewObject()
 KG::Core::GameObject* KG::Core::Scene::CreateNewObject(UINT32 instanceID)
 {
 	UINT index = this->InternalGetEmptyObject();
-	UINT backId = FlipID(instanceID);
-	if ( this->backActivePool.size() < backId + 1 )
+	if ( this->activePool.size() < instanceID + 1 )
 	{
-		this->backActivePool.resize(backId + 1, NULL_OBJECT);
+		this->activePool.resize(instanceID + 1, NULL_OBJECT);
 	}
-	this->backActivePool[backId] = index;
+	this->activePool[instanceID] = index;
 
 	GameObject* obj = &this->objectPool[index].second;
 	obj->SetOwnerScene(this);
@@ -155,22 +99,27 @@ KG::Core::GameObject* KG::Core::Scene::CreatePrefabObjcet(const KG::Utill::HashS
 	return nullptr;
 }
 
-KG::Core::GameObject* KG::Core::Scene::FindObjectWithTag(const KG::Utill::HashString& tag)
+KG::Core::GameObject* KG::Core::Scene::FindObjectWithTag(const KG::Utill::HashString& tag) const
 {
-	KG::Core::GameObject* result = this->FindFrontObjectWithTag(tag);
-	if ( result == nullptr )
-		result = this->FindBackObjectWithTag(tag);
-	return result;
+	for ( size_t i = 0; i < this->activePool.size(); i++ )
+	{
+		auto* object = this->GetIndexObject(i);
+		if ( object && object->tag == tag )
+		{
+			return this->GetIndexObject(i);
+		}
+	}
+	return nullptr;
 }
 
-KG::Core::GameObject* KG::Core::Scene::FindObjectWithID(UINT32 instanceID)
+KG::Core::GameObject* KG::Core::Scene::FindObjectWithID(UINT32 instanceID) const
 {
-	UINT32 frontID = instanceID;
-	UINT32 backID = FlipID(frontID);
-	KG::Core::GameObject* result = this->GetFrontObject(frontID);
-	if ( result == nullptr )
-		result = this->GetBackObject(backID);
-	return result;
+	return this->GetIndexObject(instanceID);
+}
+
+UINT KG::Core::Scene::GetObjectCount() const
+{
+	return this->activePool.size() - std::count(this->activePool.begin(), this->activePool.end(), NULL_OBJECT);
 }
 
 void KG::Core::Scene::LoadScene(const std::string& path)
@@ -387,7 +336,7 @@ bool KG::Core::Scene::OnDrawGUI()
 			{
 				if ( ImGui::MenuItem("Add New Empty Object To Root") )
 				{
-					auto* newObj = this->CreateNewBackObject();
+					auto* newObj = this->CreateNewObject();
 					this->objectPresetFunc[0](*newObj);
 					this->rootNode.GetTransform()->AddChild(newObj->GetTransform());
 				}
@@ -405,19 +354,19 @@ bool KG::Core::Scene::OnDrawGUI()
 		}
 		if ( ImGui::CollapsingHeader("Info", treeNodeFlag) )
 		{
-			ImGui::BulletText("Current Back Object Count : %d", this->GetBackObjectCount());
+			ImGui::BulletText("Current Object Count : %d", this->GetObjectCount());
 		}
 		if ( ImGui::CollapsingHeader("Scene Object", treeNodeFlag) )
 		{
 			if ( ImGui::Button("Add Scene Camera Object") )
 			{
-				auto* obj = this->CreateNewBackObject();
+				auto* obj = this->CreateNewObject();
 				sceneCameraCreator(*obj);
 				this->rootNode.GetTransform()->AddChild(obj->GetTransform());
 			}
 			if ( ImGui::Button("Add SkyBox Object") )
 			{
-				auto* obj = this->CreateNewBackObject();
+				auto* obj = this->CreateNewObject();
 				skyBoxSetter(this->skyBoxId);
 				skyBoxCreator(*obj, this->skyBoxId);
 				this->rootNode.GetTransform()->AddChild(obj->GetTransform());
@@ -428,7 +377,7 @@ bool KG::Core::Scene::OnDrawGUI()
 			ImGui::Combo("Preset", &this->currentSelectedPreset, &ImGui::VectorStringGetter, &this->objectPresetName, this->objectPresetName.size());
 			if ( ImGui::Button("Add Preset") )
 			{
-				auto* obj = this->CreateNewBackObject();
+				auto* obj = this->CreateNewObject();
 				objectPresetFunc[this->currentSelectedPreset](*obj);
 				obj->tag = KG::Utill::HashString(objectPresetName[this->currentSelectedPreset]);
 				this->rootNode.GetTransform()->AddChild(obj->GetTransform());
@@ -510,7 +459,7 @@ bool KG::Core::Scene::OnDrawGUI()
 			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
 			this->SaveCurrentScene(filePathName);
 		}
-		
+
 		// close
 		ImGuiFileDialog::Instance()->Close();
 	}
@@ -522,7 +471,7 @@ bool KG::Core::Scene::OnDrawGUI()
 		if ( ImGuiFileDialog::Instance()->IsOk() )
 		{
 			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-			auto* newObj = this->CreateNewBackObject();
+			auto* newObj = this->CreateNewObject();
 			newObj->LoadToFile(filePathName);
 			this->rootNode.GetTransform()->AddChild(newObj->GetTransform());
 		}

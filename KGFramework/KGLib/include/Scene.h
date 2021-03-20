@@ -26,12 +26,8 @@ namespace KG::Core
 		KG::Component::IComponent* mainCamera = nullptr;
 
 		ObjectPool objectPool;
-		ActivePool frontActivePool; //0번부터 시작하는 런타임 생성 오브젝트
-		ActivePool backActivePool; //UINT_MAX 부터 시작하는 미리 생성된 오브젝트
+		ActivePool activePool; //0번부터 시작하는 런타임 생성 오브젝트
 		KG::Core::GameObject rootNode;
-
-		//GameObject skyBoxObject;
-		//GameObject sceneCameraObject;
 		
 		SceneCameraCreator sceneCameraCreator;
 		SkyBoxCreator skyBoxCreator;
@@ -44,15 +40,8 @@ namespace KG::Core
 		KG::Utill::HashString skyBoxId = KG::Utill::HashString("SkySnow");
 
 		UINT InternalGetEmptyObject();
-		KG::Core::GameObject* GetFrontObject( UINT32 index );
-		KG::Core::GameObject* GetBackObject( UINT32 index );
-		KG::Core::GameObject* FindFrontObjectWithTag( const KG::Utill::HashString& tag );
-		KG::Core::GameObject* FindBackObjectWithTag( const KG::Utill::HashString& tag );
-		KG::Core::GameObject* CreateNewBackObject();
-		UINT32 GetEmptyBackID();
-		size_t GetBackObjectCount() const;
-		//back -> front / front -> back
-		static UINT32 FlipID(UINT32 frontID);
+		KG::Core::GameObject* GetIndexObject( UINT32 index ) const;
+		UINT32 GetEmptyID();
 
 		//ImGui Variable
 		bool isShowHierarchy = true;
@@ -72,8 +61,10 @@ namespace KG::Core
 		KG::Core::GameObject* CreatePrefabObjcet( const KG::Utill::HashString& prefabId ); // 런타임
 		KG::Core::GameObject* CreatePrefabObjcet( const KG::Utill::HashString& prefabId, UINT32 instanceID ); // 미리 생성
 
-		KG::Core::GameObject* FindObjectWithTag( const KG::Utill::HashString& tag );
-		KG::Core::GameObject* FindObjectWithID( UINT32 instanceID );
+		KG::Core::GameObject* FindObjectWithTag( const KG::Utill::HashString& tag ) const;
+		KG::Core::GameObject* FindObjectWithID( UINT32 instanceID ) const;
+
+		UINT GetObjectCount() const;
 
 		void LoadScene( const std::string& path );
 		void SaveCurrentScene( const std::string& path );
