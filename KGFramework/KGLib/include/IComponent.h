@@ -54,46 +54,16 @@ namespace KG::Component
 		{
 		};
 	public:
-		void Create(KG::Core::GameObject* gameObject)
-		{
-			this->gameObject = gameObject;
-			PostUse();
-			this->OnCreate(gameObject);
-		}
-		virtual void Update(float timeElapsed)
-		{
-		};
-		virtual void OnDebugUpdate(float timeElasped)
-		{
-		};
-		virtual void Destroy()
-		{
-			this->systemInfo.isUsing = false; 
-			this->UnReserve(); 
-			this->OnDestroy();
-		};
-		virtual void UnReserve()
-		{
-			this->systemInfo.isReserved = false;
-		}
-		void PostUse()
-		{
-			this->systemInfo.isUsing = true;
-			this->PostReserve();
-		};
-		void PostReserve()
-		{
-			this->systemInfo.isReserved = true;
-		}
-		bool isReserved() const
-		{
-			return this->systemInfo.isUsing || this->systemInfo.isReserved;
-		}
-		bool isUsing() const
-		{
-			return this->systemInfo.isUsing == true;
-		};
-
+		void Create(KG::Core::GameObject* gameObject);
+		virtual void Update(float timeElapsed);
+		virtual void OnDebugUpdate(float timeElasped);
+		virtual void Destroy();
+		virtual void InternalDestroy();
+		virtual void UnReserve();
+		void PostUse();
+		void PostReserve();
+		bool isReserved() const;
+		bool isUsing() const;
 
 		// ISerializable을(를) 통해 상속됨
 		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;

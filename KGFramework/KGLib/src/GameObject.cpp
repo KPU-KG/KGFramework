@@ -230,8 +230,7 @@ void KG::Core::GameObject::OnDataSave(tinyxml2::XMLElement* parentElement)
 	{
 		if ( this->GetChild() )
 		{
-			auto* childElement = objectElement->InsertNewChildElement("GameObject");
-			this->GetChild()->OnDataSave(parentElement);
+			this->GetChild()->OnDataSave(objectElement);
 		}
 		if ( this->GetSibling() )
 		{

@@ -177,6 +177,7 @@ void KG::Core::Scene::LoadScene(const std::string& path)
 {
 	this->sourceDocument.LoadFile(path.c_str());
 	tinyxml2::XMLElement* sceneElement = this->sourceDocument.FirstChildElement("Scene");
+
 	this->OnDataLoad(sceneElement);
 }
 
@@ -217,6 +218,7 @@ void KG::Core::Scene::OnDataLoad(tinyxml2::XMLElement* sceneElement)
 {
 	this->skyBoxIdProp.OnDataLoad(sceneElement);
 	this->skyBoxSetter(this->skyBoxId);
+
 	auto* objectElement = sceneElement->FirstChildElement("GameObject");
 	while ( objectElement )
 	{
@@ -225,9 +227,7 @@ void KG::Core::Scene::OnDataLoad(tinyxml2::XMLElement* sceneElement)
 
 		if ( nameStr == "GameObject" )
 		{
-			auto* obj = this->CreateNewObject(id);
-			obj->OnDataLoad(objectElement);
-			this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+			this->rootNode.OnDataLoad(objectElement);
 		}
 		else if ( nameStr == "Prefab" )
 		{
@@ -236,6 +236,26 @@ void KG::Core::Scene::OnDataLoad(tinyxml2::XMLElement* sceneElement)
 		}
 		objectElement = objectElement->NextSiblingElement();
 	}
+
+	//auto* objectElement = sceneElement->FirstChildElement("GameObject");
+	//while ( objectElement )
+	//{
+	//	auto nameStr = std::string(objectElement->Name());
+	//	UINT32 id = objectElement->UnsignedAttribute("instanceId");
+
+	//	if ( nameStr == "GameObject" )
+	//	{
+	//		auto* obj = this->CreateNewObject(id);
+	//		obj->OnDataLoad(objectElement);
+	//		this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+	//	}
+	//	else if ( nameStr == "Prefab" )
+	//	{
+	//		UINT32 prefabId = objectElement->UnsignedAttribute("prefab_hash_id");
+	//		auto* obj = this->CreatePrefabObjcet(KG::Utill::HashString(prefabId), id);
+	//	}
+	//	objectElement = objectElement->NextSiblingElement();
+	//}
 }
 
 void KG::Core::Scene::OnDataSave(tinyxml2::XMLElement* sceneElement)
@@ -268,6 +288,7 @@ void KG::Core::Scene::InitializeRoot()
 {
 	this->objectPresetFunc[0](this->rootNode);
 	this->rootNode.tag = KG::Utill::HashString("rootNode");
+	this->rootNode.SetOwnerScene(this);
 }
 
 void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& focused, int& count)

@@ -50,6 +50,15 @@ namespace KG::Core
 			this->components.AddComponentWithID(componentID, component);
 		}
 
+		void DeleteComponent(const KG::Utill::HashString& componentId)
+		{
+			this->components.DeleteComponent(componentId);
+		}
+		void DeleteComponent(KG::Component::IComponent* component)
+		{
+			this->components.DeleteComponent(component);
+		}
+
 		bool IsDestroy() const;
 		void Destroy();
 

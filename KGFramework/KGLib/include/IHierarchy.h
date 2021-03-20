@@ -90,11 +90,15 @@ namespace KG::Core
 		void SetPrevSibiling(BaseHierarchy* obj)
 		{
 			this->prevSibling = obj;
+			if( obj )
+				obj->nextSibling = this;
 		}
 
 		void SetNextSibiling(BaseHierarchy* obj)
 		{
 			this->nextSibling = obj;
+			if( obj )
+				obj->prevSibling = this;
 		}
 		void SetChild(BaseHierarchy* obj)
 		{
@@ -129,6 +133,7 @@ namespace KG::Core
 			}
 			this->parent = nullptr;
 			this->nextSibling = nullptr;
+			this->prevSibling = nullptr;
 		}
 
 	};

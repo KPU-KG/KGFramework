@@ -30,6 +30,59 @@ void KG::Component::IComponent::OnDestroy()
 	this->systemInfo.isUsing = true;
 }
 
+void KG::Component::IComponent::Create(KG::Core::GameObject* gameObject)
+{
+	this->gameObject = gameObject;
+	PostUse();
+	this->OnCreate(gameObject);
+}
+
+void KG::Component::IComponent::Update(float timeElapsed)
+{
+}
+
+void KG::Component::IComponent::OnDebugUpdate(float timeElasped)
+{
+}
+
+void KG::Component::IComponent::Destroy()
+{
+	this->gameObject->DeleteComponent(this);
+}
+
+void KG::Component::IComponent::InternalDestroy()
+{
+	this->systemInfo.isUsing = false;
+	this->UnReserve();
+	this->OnDestroy();
+}
+
+void KG::Component::IComponent::UnReserve()
+{
+	this->systemInfo.isReserved = false;
+}
+
+void KG::Component::IComponent::PostUse()
+{
+	this->systemInfo.isUsing = true;
+	this->PostReserve();
+}
+
+void KG::Component::IComponent::PostReserve()
+{
+	this->systemInfo.isReserved = true;
+}
+
+bool KG::Component::IComponent::isReserved() const
+{
+	return this->systemInfo.isUsing || this->systemInfo.isReserved;
+}
+
+bool KG::Component::IComponent::isUsing() const
+{
+	return this->systemInfo.isUsing == true;
+}
+
 void KG::Component::IComponent::OnDataLoad(tinyxml2::XMLElement* objectElement)
 {
 }

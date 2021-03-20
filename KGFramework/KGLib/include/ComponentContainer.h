@@ -14,12 +14,24 @@ namespace KG::Component
 {
 	struct ComponentContainer
 	{
+#ifdef _DEBUG
+		std::set<KG::Utill::HashString> checker;
+#endif
 		std::vector<std::pair<KG::Utill::HashString, IComponent*>> container;
 		//std::map<KG::Utill::HashString, IComponent*> container;
 
 		inline void AddComponentWithID(const KG::Utill::HashString& componentID, IComponent* component)
 		{
 #ifdef COMPONENT_CONTAINER_USE_VECTOR
+#ifdef _DEBUG
+			if ( this->checker.count(componentID) > 0 )
+			{
+				DebugErrorMessage(componentID.value << L" : this Component is already have");
+				return;
+			}
+			this->checker.insert(componentID);
+#endif
+				
 			this->container.emplace_back(std::make_pair(componentID, component));
 #else
 			auto [it, already] = this->container.insert(
@@ -54,6 +66,21 @@ namespace KG::Component
 					KG::Component::ComponentID<Ty>::id()
 				)
 				);
+		}
+
+		void DeleteComponent(const KG::Utill::HashString& componentID)
+		{
+			auto it = std::find_if(this->container.begin(), this->container.end(), [&componentID](auto& p) {return p.first == componentID; });
+			this->checker.erase(componentID);
+			it->second->InternalDestroy();
+			this->container.erase(it);
+		}
+		void DeleteComponent(KG::Component::IComponent* component)
+		{
+			auto it = std::find_if(this->container.begin(), this->container.end(), [component](auto& p) {return p.second == component; });
+			this->checker.erase(it->first);
+			it->second->InternalDestroy();
+			this->container.erase(it);
 		}
 	};
 };
