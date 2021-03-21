@@ -19,7 +19,7 @@ namespace KG::Core
 		using ActivePool = std::vector<UINT>;
 		using SceneCameraCreator = std::function<void (KG::Core::GameObject&)>;
 		using PresetObjectCreator = std::function<void(KG::Core::GameObject&)>;
-		using ModelCreator = std::function<void(const KG::Utill::HashString&, KG::Core::Scene&, const KG::Resource::MaterialMatch&)>;
+		using ModelCreator = std::function<KG::Core::GameObject*(const KG::Utill::HashString&, KG::Core::Scene&, const KG::Resource::MaterialMatch&)>;
 		using SkyBoxCreator = std::function<void(KG::Core::GameObject&, const KG::Utill::HashString&)>;
 		using SkyBoxSetter = std::function<void(const KG::Utill::HashString&)>;
 

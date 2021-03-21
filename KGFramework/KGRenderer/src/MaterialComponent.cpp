@@ -6,23 +6,22 @@
 #pragma region MaterialComponent
 
 KG::Component::MaterialComponent::MaterialComponent()
-	:
-	isRawShaderProp("isRawShader", this->isRawShader, true),
-	materialIDProp("MaterialID", this->materialID, true),
-	slotIndexProp("SlotIndex", this->slotIndex, true)
 {
 }
 
 void KG::Component::MaterialComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	IRenderComponent::OnCreate(obj);
-	if ( this->isRawShader )
+	for ( auto& i : this->materialDescs.descs)
 	{
-		this->InitializeShader(this->materialID, this->slotIndex);
-	}
-	else
-	{
-		this->InitializeMaterial(this->materialID, this->slotIndex);
+		if ( i.isRawShader )
+		{
+			this->InitializeShader(i.materialID, i.slotIndex);
+		}
+		else
+		{
+			this->InitializeMaterial(i.materialID, i.slotIndex);
+		}
 	}
 }
 
@@ -53,29 +52,33 @@ unsigned KG::Component::MaterialComponent::GetMaterialIndex(UINT slotIndex) cons
 	return this->materialIndexs.size() != 0 ? this->materialIndexs[slotIndex] : 0;
 }
 
+void KG::Component::MaterialComponent::PostMaterial(const KG::Utill::HashString& materialID, UINT slotIndex)
+{
+	this->materialDescs.descs.emplace_back(false, materialID, slotIndex);
+}
+
+void KG::Component::MaterialComponent::PostShader(const KG::Utill::HashString& shaderID, UINT slotIndex)
+{
+	this->materialDescs.descs.emplace_back(true, shaderID, slotIndex);
+}
+
 void KG::Component::MaterialComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
 {
-	this->isRawShaderProp.OnDataLoad(componentElement);
-	this->materialIDProp.OnDataLoad(componentElement);
-	this->slotIndexProp.OnDataLoad(componentElement);
+	this->materialDescs.OnDataLoad(componentElement);
 }
 
 void KG::Component::MaterialComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
 {
 	auto* componentElement = parentElement->InsertNewChildElement("Component");
 	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::MaterialComponent);
-	this->isRawShaderProp.OnDataSave(componentElement);
-	this->materialIDProp.OnDataSave(componentElement);
-	this->slotIndexProp.OnDataSave(componentElement);
+	this->materialDescs.OnDataSave(componentElement);
 }
 
 bool KG::Component::MaterialComponent::OnDrawGUI()
 {
 	if ( ImGui::ComponentHeader<KG::Component::MaterialComponent>() )
 	{
-		this->isRawShaderProp.OnDrawGUI();
-		this->materialIDProp.OnDrawGUI();
-		this->slotIndexProp.OnDrawGUI();
+		this->materialDescs.OnDrawGUI();
 	}
 	return false;
 }
@@ -86,3 +89,105 @@ void KG::Component::MaterialComponent::OnDestroy()
 }
 
 #pragma endregion
+
+KG::Component::MateiralDesc::MateiralDesc()
+	:materialIDProp("materialID", materialID),
+	isRawShaderProp("isRawShader", isRawShader),
+	slotIndexProp("slotIndex", slotIndex)
+{
+}
+
+KG::Component::MateiralDesc::MateiralDesc(bool isRawShader, const KG::Utill::HashString& materialID, UINT slotIndex)
+	: MateiralDesc()
+{
+	this->isRawShader = isRawShader;
+	this->materialID = materialID;
+	this->slotIndex = slotIndex;
+}
+
+KG::Component::MateiralDesc::MateiralDesc(const MateiralDesc& other)
+	: MateiralDesc()
+{
+	this->isRawShader = other.isRawShader;
+	this->materialID = other.materialID;
+	this->slotIndex = other.slotIndex;
+}
+
+KG::Component::MateiralDesc::MateiralDesc(MateiralDesc&& other)
+	: MateiralDesc()
+{
+	this->isRawShader = other.isRawShader;
+	this->materialID = other.materialID;
+	this->slotIndex = other.slotIndex;
+}
+
+KG::Component::MateiralDesc& KG::Component::MateiralDesc::operator=(const MateiralDesc& other)
+{
+	this->isRawShader = other.isRawShader;
+	this->materialID = other.materialID;
+	this->slotIndex = other.slotIndex;
+	return *this;
+}
+
+KG::Component::MateiralDesc& KG::Component::MateiralDesc::operator=(MateiralDesc&& other)
+{
+	this->isRawShader = other.isRawShader;
+	this->materialID = other.materialID;
+	this->slotIndex = other.slotIndex;
+	return *this;
+}
+
+void KG::Component::MateiralDescs::OnDataLoad(tinyxml2::XMLElement* objectElement)
+{
+	auto* obj = objectElement->FirstChildElement("MaterialDesc");
+	auto* nextElement = obj->FirstChildElement("Element");
+	while ( nextElement != nullptr )
+	{
+		MateiralDesc desc;
+		desc.isRawShaderProp.OnDataLoad(nextElement);
+		desc.materialIDProp.OnDataLoad(nextElement);
+		desc.slotIndexProp.OnDataLoad(nextElement);
+		this->descs.emplace_back(desc);
+		nextElement = nextElement->NextSiblingElement("Element");
+	}
+}
+
+void KG::Component::MateiralDescs::OnDataSave(tinyxml2::XMLElement* objectElement)
+{
+	auto* materialDescs = objectElement->InsertNewChildElement("MaterialDesc");
+	for ( auto& i : this->descs )
+	{
+		auto* element = materialDescs->InsertNewChildElement("Element");
+		i.isRawShaderProp.OnDataSave(element);
+		i.materialIDProp.OnDataSave(element);
+		i.slotIndexProp.OnDataSave(element);
+	}
+}
+
+bool KG::Component::MateiralDescs::OnDrawGUI()
+{
+	if ( ImGui::TreeNodeEx("MateiralDescs", ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_DefaultOpen) )
+	{
+		for ( size_t i = 0; i < this->descs.size(); i++ )
+		{
+			if ( ImGui::TreeNode(std::to_string(i).c_str()) )
+			{
+				this->descs[i].isRawShaderProp.OnDrawGUI();
+				this->descs[i].materialIDProp.OnDrawGUI();
+				this->descs[i].slotIndexProp.OnDrawGUI();
+				ImGui::TreePop();
+			}
+		}
+		if ( ImGui::SmallButton("Add") )
+		{
+			this->descs.resize(this->descs.size() + 1);
+		}
+		ImGui::SameLine();
+		if ( ImGui::SmallButton("Delete") )
+		{
+			this->descs.resize(this->descs.size() - 1 >= 0 ? this->descs.size() - 1 : 0);
+		}
+		ImGui::TreePop();
+	}
+	return false;
+}

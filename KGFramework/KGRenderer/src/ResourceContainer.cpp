@@ -49,6 +49,11 @@ KG::Resource::FrameModel* KG::Resource::ResourceContainer::LoadModel(const KG::U
 	{
 		auto metaData = ResourceLoader::LoadGeometrySetFromFile("Resource/GeometrySet.xml", id);
 		auto* model = &this->models.emplace(id, metaData).first->second;
+		auto& frame = model->data;
+		for ( size_t i = 0; i < frame.meshs.size(); i++ )
+		{
+			this->CreateGeometry(id, i, frame.meshs[i]);
+		}
 		return model;
 	}
 }
@@ -69,8 +74,8 @@ KG::Renderer::Geometry* KG::Resource::ResourceContainer::LoadGeometry(const KG::
 		}
 		else
 		{
-			DebugErrorMessage("Try Load Invalide model's Geometry");
-			return nullptr;
+			this->LoadModel(id);
+			return this->LoadGeometry(id, geometryIndex);
 		}
 	}
 }
@@ -191,14 +196,11 @@ void KG::Resource::ResourceContainer::ConvertNodeToObject(const KG::Utill::HashS
 		for ( size_t i = 0; i < node->meshs.size(); i++ )
 		{
 			auto index = node->meshs[i];
-			geo->geometryID = id;
-			geo->subMeshIndex = index;
-			geo->slotIndex = i;
+			geo->AddGeometry(id, index, i);
 		}
 		for ( size_t i = 0; i < materialSet.size(); i++ )
 		{
-			mat->materialID = materialSet[i];
-			mat->slotIndex = i;
+			mat->PostMaterial(materialSet[i], i);
 		}
 		if ( geo->HasBone() )
 		{
@@ -285,10 +287,7 @@ KG::Core::GameObject* KG::Resource::ResourceContainer::CreateObjectFromModel(con
 	auto* rootObject = scene.CreateNewTransformObject();
 	auto* rootModelNode = frame.root;
 
-	for ( size_t i = 0; i < frame.meshs.size(); i++ )
-	{
-		this->CreateGeometry(id, i, frame.meshs[i]);
-	}
+
 
 	this->ConvertNodeToObject(id, rootObject, rootModelNode, materials, rootObject);
 

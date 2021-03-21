@@ -308,7 +308,7 @@ bool KG::Core::Scene::OnDrawGUI()
 	static KG::Resource::MaterialMatch materialMatchCache;
 	static KG::Utill::HashString modelHash;
 	auto viewportSize = ImGui::GetMainViewport()->Size;
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.8f);
@@ -390,7 +390,9 @@ bool KG::Core::Scene::OnDrawGUI()
 				ImGui::SameLine();
 				if ( ImGui::SmallButton("Load") )
 				{
-					this->modelCreator(modelHash, *this, materialMatchCache);
+					auto* obj = this->modelCreator(modelHash, *this, materialMatchCache);
+					obj->tag = modelHash;
+					this->rootNode.GetTransform()->AddChild(obj->GetTransform());
 					modelHash.srcString = "";
 					modelHash.value = 0;
 					materialMatchCache.Clear();

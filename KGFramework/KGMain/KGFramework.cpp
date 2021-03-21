@@ -17,34 +17,34 @@ KG::GameFramework::GameFramework()
 KG::GameFramework::~GameFramework()
 {
 }
-KG::GameFramework::GameFramework( const GameFramework& rhs )
+KG::GameFramework::GameFramework(const GameFramework& rhs)
 {
-	assert( false );
+	assert(false);
 }
-KG::GameFramework& KG::GameFramework::operator=( const GameFramework& rhs )
+KG::GameFramework& KG::GameFramework::operator=(const GameFramework& rhs)
 {
-	assert( false );
+	assert(false);
 	return *this;
 }
-KG::GameFramework::GameFramework( GameFramework&& rhs )
+KG::GameFramework::GameFramework(GameFramework&& rhs)
 {
-	assert( false );
+	assert(false);
 }
-KG::GameFramework& KG::GameFramework::operator=( GameFramework&& rhs )
+KG::GameFramework& KG::GameFramework::operator=(GameFramework&& rhs)
 {
-	assert( false );
+	assert(false);
 	return *this;
 }
 
-bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting& setting )
+bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& setting)
 {
-	DebugNormalMessage( "Initialize" );
+	DebugNormalMessage("Initialize");
 	//Desc류 세팅
 	this->engineDesc = engineDesc;
 	this->setting = setting;
 
 	//Renderer
-	this->renderer = std::unique_ptr<KG::Renderer::IKGRenderer>( KG::Renderer::GetD3D12Renderer() );
+	this->renderer = std::unique_ptr<KG::Renderer::IKGRenderer>(KG::Renderer::GetD3D12Renderer());
 
 	KG::Renderer::RendererDesc renderDesc;
 	renderDesc.hInst = this->engineDesc.hInst;
@@ -53,10 +53,10 @@ bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting&
 	KG::Renderer::RendererSetting renderSetting;
 	renderSetting.clientWidth = this->setting.clientWidth;
 	renderSetting.clientHeight = this->setting.clientHeight;
-	DebugNormalMessage( "RECT : " << renderSetting.clientWidth << " , " << renderSetting.clientHeight );
+	DebugNormalMessage("RECT : " << renderSetting.clientWidth << " , " << renderSetting.clientHeight);
 	renderSetting.isVsync = this->setting.isVsync;
 
-	this->renderer->Initialize( renderDesc, renderSetting );
+	this->renderer->Initialize(renderDesc, renderSetting);
 	this->renderer->PostComponentProvider(this->componentProvider);
 	this->system->PostComponentProvider(this->componentProvider);
 	this->scene.SetComponentProvider(&this->componentProvider);
@@ -64,10 +64,10 @@ bool KG::GameFramework::Initialize( const EngineDesc& engineDesc, const Setting&
 	this->PostSceneFunction();
 	this->scene.InitializeRoot();
 	//인풋
-	this->input = std::unique_ptr<KG::Input::InputManager>( KG::Input::InputManager::GetInputManager() );
+	this->input = std::unique_ptr<KG::Input::InputManager>(KG::Input::InputManager::GetInputManager());
 
 	//자원 미리 할당
-	this->windowText.reserve( 100 );
+	this->windowText.reserve(100);
 
 	return true;
 }
@@ -108,8 +108,8 @@ void KG::GameFramework::PostSceneFunction()
 			auto* geo = this->renderer->GetNewGeomteryComponent();
 			auto* ren = this->renderer->GetNewRenderComponent();
 			obj.tag = KG::Utill::HashString("SkyBoxObject");
-			geo->geometryID = KG::Utill::HashString("cube");
-			mat->materialID = skyBox;
+			geo->AddGeometry(KG::Utill::HashString("cube"));
+			mat->PostMaterial(skyBox);
 			obj.AddComponent(tran);
 			obj.AddComponent(mat);
 			obj.AddComponent(geo);
@@ -130,16 +130,16 @@ void KG::GameFramework::PostSceneFunction()
 		{
 			auto* t = this->system->transformSystem.GetNewComponent();
 			auto* g = this->renderer->GetNewGeomteryComponent();
-			g->geometryID = KG::Utill::HashString("cube");
+			g->AddGeometry(KG::Utill::HashString("cube"));
 			auto* m = this->renderer->GetNewMaterialComponent();
-			m->materialID = KG::Utill::HashString("PBRTile");
+			m->PostMaterial(KG::Utill::HashString("PBRTile"));
 			auto* r = this->renderer->GetNewRenderComponent();
 			obj.AddComponent(t);
 			obj.AddTemporalComponent(g);
 			obj.AddTemporalComponent(m);
 			obj.AddTemporalComponent(r);
 		}
-		);
+	);
 
 	this->scene.AddObjectPreset("Directional Light",
 		[this](KG::Core::GameObject& obj)
@@ -154,7 +154,7 @@ void KG::GameFramework::PostSceneFunction()
 	this->scene.AddModelCreator(
 		[this](const KG::Utill::HashString& modelID, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& material)
 		{
-			this->renderer->LoadFromModel(modelID, scene, material);
+			return this->renderer->LoadFromModel(modelID, scene, material);
 		}
 	);
 }
@@ -177,21 +177,21 @@ void KG::GameFramework::OnProcess()
 {
 	this->timer.Tick();
 	this->UpdateWindowText();
-	DebugNormalMessage( "OnUpdatedProcess");
-	this->input->ProcessInput( this->engineDesc.hWnd );
+	DebugNormalMessage("OnUpdatedProcess");
+	this->input->ProcessInput(this->engineDesc.hWnd);
 	this->renderer->PreRenderUI();
 	this->UIRender();
-	this->system->OnUpdate( this->timer.GetTimeElapsed() );
+	this->system->OnUpdate(this->timer.GetTimeElapsed());
 	if ( this->scene.isStartGame )
 	{
-		this->renderer->Update( this->timer.GetTimeElapsed() );
+		this->renderer->Update(this->timer.GetTimeElapsed());
 	}
 	this->renderer->Render();
 }
 
 void KG::GameFramework::OnClose()
 {
-	this->setting.Save( this->setting );
+	this->setting.Save(this->setting);
 }
 
 void KG::GameFramework::UpdateWindowText()
@@ -201,8 +201,8 @@ void KG::GameFramework::UpdateWindowText()
 	if ( duration >= 1.0f )
 	{
 		auto frame = this->timer.GetFrameRate();
-		::_itow_s( frame, this->windowText.data() + 21, 10, 10 );
-		::SetWindowText( this->engineDesc.hWnd, this->windowText.data() );
+		::_itow_s(frame, this->windowText.data() + 21, 10, 10);
+		::SetWindowText(this->engineDesc.hWnd, this->windowText.data());
 		duration = 0.0f;
 	}
 }

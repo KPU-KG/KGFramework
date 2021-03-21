@@ -2,6 +2,7 @@
 #include <DirectXMath.h>
 #include <Windows.h>
 #include <string>
+#include <tuple>
 #include "tinyxml2.h"
 #include "hash.h"
 namespace KG::Utill::XMLConverter
@@ -138,7 +139,6 @@ namespace KG::Utill::XMLConverter
 		currentElement->SetAttribute("hash_id", ref.value);
 		currentElement->SetAttribute("srcString", ref.srcString.c_str());
 	}
-
 
 #pragma endregion
 }

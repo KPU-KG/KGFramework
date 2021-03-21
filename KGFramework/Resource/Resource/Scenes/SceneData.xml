@@ -16,22 +16,30 @@
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="MaterialComponent" hash_id="1886146475">
-                <isRawShader value="false"/>
-                <MaterialID hash_id="4111474821" srcString="SkySnow"/>
-                <SlotIndex value="0"/>
+                <MaterialDesc>
+                    <Element>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="4111474821" srcString="SkySnow"/>
+                        <slotIndex value="0"/>
+                    </Element>
+                </MaterialDesc>
             </Component>
             <Component name="GeometryComponent" hash_id="36578682">
-                <GeometryID hash_id="3056789162" srcString="cube"/>
-                <SlotIndex value="0"/>
-                <SubMeshIndex value="0"/>
+                <GeometryDescs>
+                    <Element>
+                        <geometryID hash_id="3056789162" srcString="cube"/>
+                        <slotIndex value="0"/>
+                        <subMeshIndex value="0"/>
+                    </Element>
+                </GeometryDescs>
             </Component>
             <Component name="Render3DComponent" hash_id="4070531333"/>
         </GameObject>
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="0" y="0" z="0"/>
-                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Position x="2.8222644" y="3.0900161" z="1.5309364"/>
+                <Rotation_Q x="-0.13761136" y="0.83352631" z="-0.23979771" w="-0.47833151"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="CameraComponent" hash_id="2216269385">
@@ -59,11 +67,43 @@
             <Component name="SceneCameraComponent" hash_id="2404609291"/>
         </GameObject>
         <GameObject instanceId="2">
+            <Tag hash_id="1233002686" srcString="TileCube"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <Component name="GeometryComponent" hash_id="36578682">
+                <GeometryDescs>
+                    <Element>
+                        <geometryID hash_id="3056789162" srcString="cube"/>
+                        <slotIndex value="0"/>
+                        <subMeshIndex value="0"/>
+                    </Element>
+                </GeometryDescs>
+            </Component>
+            <Component name="MaterialComponent" hash_id="1886146475">
+                <MaterialDesc>
+                    <Element>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="441810431" srcString="PBRTile"/>
+                        <slotIndex value="0"/>
+                    </Element>
+                </MaterialDesc>
+            </Component>
+            <Component name="Render3DComponent" hash_id="4070531333"/>
+        </GameObject>
+        <GameObject instanceId="3">
             <Tag hash_id="1517008099" srcString="Directional Light"/>
             <Component name="TransformComponent" hash_id="3882513520">
                 <Position x="0" y="0" z="0"/>
                 <Rotation_Q x="0" y="0" z="0" w="1"/>
                 <Scale x="1" y="1" z="1"/>
+            </Component>
+            <Component name="LightComponent" hash_id="3191016132">
+                <LightType value="0"/>
+                <Strength x="1.2" y="1.2" z="1.2"/>
+                <Direction x="-0.57735026" y="-0.57735026" z="-0.57735026"/>
             </Component>
         </GameObject>
     </GameObject>
