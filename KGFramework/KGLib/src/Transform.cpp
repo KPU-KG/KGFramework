@@ -32,11 +32,9 @@ bool KG::Component::TransformComponent::OnDrawGUI()
 {
 	if ( ImGui::ComponentHeader< KG::Component::TransformComponent>())
 	{
+		bool flag = false;
 		this->eulerRotation = this->GetEulerDegree();
-		if ( this->positionProp.OnDrawGUI() )
-		{
-			this->TurnOnLocalDirtyFlag();
-		}
+		flag |= this->positionProp.OnDrawGUI();
 
 		if ( this->rotationEulerProp.OnDrawGUI() )
 		{
@@ -50,12 +48,16 @@ bool KG::Component::TransformComponent::OnDrawGUI()
 				this->rotation.y = Math::CycleValue(this->rotation.y, -1.0f, 1.0f);
 				this->rotation.z = Math::CycleValue(this->rotation.z, -1.0f, 1.0f);
 				this->rotation.w = Math::CycleValue(this->rotation.w, -1.0f, 1.0f);
-				this->TurnOnLocalDirtyFlag();
+				flag = true;
 				//this->eulerRotation = this->GetEulerDegree();
 			}
 			ImGui::TreePop();
 		}
-		this->scaleProp.OnDrawGUI();
+		flag |= this->scaleProp.OnDrawGUI();
+		if ( flag )
+		{
+			this->TurnOnLocalDirtyFlag();
+		}
 	}
 	return false;
 }

@@ -22,6 +22,7 @@ namespace KG::Core
 
 		KG::Core::GameObject* InternalFindChildObject(const KG::Utill::HashString& tag) const;
 		void InternalMatchBoneToObject(const std::vector<KG::Utill::HashString>& tags, std::vector<KG::Core::GameObject*>& bones) const;
+		void InternalDestroy();
 	public:
 		KG::Utill::HashString tag = KG::Utill::HashString(0);
 
@@ -98,6 +99,7 @@ namespace KG::Core
 		KG::Core::SerializableProperty<KG::Utill::HashString> tagProp;
 	public:
 		void OnPrefabLoad(tinyxml2::XMLElement* parentElement);
+		void OnPrefabSave(tinyxml2::XMLElement* parentElement);
 		virtual void OnDataLoad(tinyxml2::XMLElement* parentElement) override;
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement) override;
 		virtual bool OnDrawGUI() override;

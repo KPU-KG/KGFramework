@@ -67,4 +67,11 @@ namespace ImGui
         GetShortPathNameA(longPath, longPath, _MAX_PATH);
         return std::string(longPath) + "\\" + plus;
     }
+
+    inline std::string ShortPathToLongPath(const std::string& shortDir)
+    {
+        char longPath[_MAX_PATH]{};
+        GetLongPathNameA(shortDir.c_str(), longPath, _MAX_PATH);
+        return std::string(longPath);
+    }
 };

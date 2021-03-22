@@ -49,6 +49,17 @@ void KG::Core::GameObject::InternalMatchBoneToObject(const std::vector<KG::Utill
 	if ( sib != nullptr ) sib->InternalMatchBoneToObject(tags, bones);
 }
 
+void KG::Core::GameObject::InternalDestroy()
+{
+	this->isDestroy = true;
+	auto* child = this->GetChild();
+	auto* sib = this->GetSibling();
+	if ( child )
+		child->InternalDestroy();
+	if ( sib )
+		sib->InternalDestroy();
+}
+
 KG::Core::GameObject::GameObject()
 	: tagProp("Tag", this->tag)
 {
@@ -62,6 +73,9 @@ bool KG::Core::GameObject::IsDestroy() const
 void KG::Core::GameObject::Destroy()
 {
 	this->isDestroy = true;
+	auto* child = this->GetChild();
+	if ( child )
+		child->InternalDestroy();
 }
 
 void KG::Core::GameObject::SetOwnerScene(KG::Core::Scene* ownerScene)
@@ -141,7 +155,7 @@ void KG::Core::GameObject::SaveToFile(const std::string& filePath)
 	tinyxml2::XMLDocument doc;
 	tinyxml2::XMLDeclaration* dec1 = doc.NewDeclaration();
 	tinyxml2::XMLElement* objectElement = doc.NewElement("SavedGameObject");
-	this->OnDataSave(objectElement);
+	this->OnPrefabSave(objectElement);
 	doc.LinkEndChild(dec1);
 	doc.LinkEndChild(objectElement);
 	auto e = doc.SaveFile(filePath.c_str());
@@ -182,6 +196,25 @@ void KG::Core::GameObject::OnPrefabLoad(tinyxml2::XMLElement* objectElement)
 		auto* siblingObject = this->GetScene()->CreateNewObject();
 		siblingObject->OnDataLoad(siblingObjectElement);
 		this->GetTransform()->SetNextSibiling(siblingObject->GetTransform());
+	}
+}
+
+void KG::Core::GameObject::OnPrefabSave(tinyxml2::XMLElement* parentElement)
+{
+	auto* objectElement = parentElement->InsertNewChildElement("GameObject");
+	objectElement->SetAttribute("instanceId", this->instanceID);
+	this->tagProp.OnDataSave(objectElement);
+	for ( auto& i : this->components.container )
+	{
+		i.second->OnDataSave(objectElement);
+	}
+
+	if ( this->GetTransform() )
+	{
+		if ( this->GetChild() )
+		{
+			this->GetChild()->OnDataSave(objectElement);
+		}
 	}
 }
 

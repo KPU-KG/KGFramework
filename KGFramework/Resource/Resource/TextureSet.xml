@@ -38,4 +38,16 @@
     <Texture id="soldier_haed_normal" fileDir="Resource/Geometry/animation/Unity_Soldier_Head_NMM_01.dds" dimension="Texture2D" format="DDS" hash_id="4052277792"/>
     <Texture id="soldier_body_albedo" fileDir="Resource/Geometry/animation/Soldier_Body_Albedo.dds" dimension="Texture2D" format="DDS" hash_id="2332798320"/>
     <Texture id="soldier_body_normal" fileDir="Resource/Geometry/animation/Soldier_Body_Normal.dds" dimension="Texture2D" format="DDS" hash_id="4117762142"/>
+    <!--asphalt-->
+    <Texture id="asphalt_color" fileDir="Resource/Texture/asphalt/color.dds" dimension="Texture2D" format="DDS" hash_id="3289000514"/>
+    <Texture id="asphalt_normal" fileDir="Resource/Texture/asphalt/normal.dds" dimension="Texture2D" format="DDS" hash_id="4181683200"/>
+    <Texture id="asphalt_rough" fileDir="Resource/Texture/asphalt/rough.dds" dimension="Texture2D" format="DDS" hash_id="3588301720"/>
+    <!--line_asphalt-->
+    <Texture id="line_asphalt_color" fileDir="Resource/Texture/line_asphalt/color.dds" dimension="Texture2D" format="DDS" hash_id="4198547123"/>
+    <Texture id="line_asphalt_normal" fileDir="Resource/Texture/line_asphalt/normal.dds" dimension="Texture2D" format="DDS" hash_id="438735835"/>
+    <Texture id="line_asphalt_rough" fileDir="Resource/Texture/line_asphalt/rough.dds" dimension="Texture2D" format="DDS" hash_id="3669739897"/>
+    <!--cc0_bricks035-->
+    <Texture id="cc0_bricks035_color" fileDir="Resource/Texture/cc0_bricks035/color.dds" dimension="Texture2D" format="DDS" hash_id="2240613258"/>
+    <Texture id="cc0_bricks035_normal" fileDir="Resource/Texture/cc0_bricks035/normal.dds" dimension="Texture2D" format="DDS" hash_id="1524518696"/>
+    <Texture id="cc0_bricks035_rough" fileDir="Resource/Texture/cc0_bricks035/rough.dds" dimension="Texture2D" format="DDS" hash_id="3202274000"/>
 </TextureSet>

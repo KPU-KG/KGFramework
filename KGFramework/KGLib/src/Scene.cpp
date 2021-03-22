@@ -297,6 +297,21 @@ void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameO
 	ImGui::PopID();
 }
 
+static inline bool exists(const std::string& name)
+{
+	FILE* file = nullptr;
+	fopen_s(&file, name.c_str(), "r");
+	if ( file )
+	{
+		fclose(file);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 bool KG::Core::Scene::OnDrawGUI()
 {
 	static KG::Core::GameObject* currentFocusedObject = nullptr;
@@ -324,6 +339,13 @@ bool KG::Core::Scene::OnDrawGUI()
 				if ( ImGui::MenuItem("Load") )
 					ImGuiFileDialog::Instance()->OpenDialog("ChooseSceneOpenKey", " Choose a File", ".xml",
 						ImGui::GetCurrentShortPath("Resource\\Scenes\\"), "SceneData", 1, nullptr, ImGuiFileDialogFlags_None);
+				ImGui::EndMenu();
+			}
+			if ( ImGui::BeginMenu("Resource") )
+			{
+				if ( ImGui::MenuItem("Make Material From Directory") )
+					ImGuiFileDialog::Instance()->OpenDialog("MakeMaterial", " Choose a Directory", nullptr
+						, ImGui::GetCurrentShortPath("Resource\\Texture\\"), "SceneData", 1, nullptr);
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
@@ -400,7 +422,22 @@ bool KG::Core::Scene::OnDrawGUI()
 				ImGui::TreePop();
 			}
 		}
-		if ( ImGui::CollapsingHeader("Hierarchy", treeNodeFlag) )
+		bool isHierarchyOpen = ImGui::CollapsingHeader("Hierarchy", treeNodeFlag);
+		if ( ImGui::BeginDragDropTarget() )
+		{
+			auto* payLoad = ImGui::AcceptDragDropPayload("_GameObject");
+			if ( payLoad )
+			{
+				KG::Core::GameObject* dragSource = *static_cast<KG::Core::GameObject**>(payLoad->Data);
+				if ( dragSource && dragSource->GetTransform() )
+				{
+					dragSource->GetTransform()->ExtractThisNode();
+					dragSource->Destroy();
+				}
+			}
+			ImGui::EndDragDropTarget();
+		}
+		if ( isHierarchyOpen )
 		{
 			int count = 0;
 			DrawObjectTree(&this->rootNode, currentFocusedObject, count);
@@ -489,6 +526,98 @@ bool KG::Core::Scene::OnDrawGUI()
 		{
 			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
 			this->LoadScene(filePathName);
+		}
+
+		// close
+		ImGuiFileDialog::Instance()->Close();
+	}
+
+	if ( ImGuiFileDialog::Instance()->Display("MakeMaterial") )
+	{
+		// action if OK
+		if ( ImGuiFileDialog::Instance()->IsOk() )
+		{
+			std::string filePathName = ImGui::ShortPathToLongPath(ImGuiFileDialog::Instance()->GetFilePathName());
+			std::string resourcePath = filePathName.substr(filePathName.rfind("Resource"));
+			std::string materialName = filePathName.substr(filePathName.rfind("\\") + 1);
+			for ( auto& i : resourcePath )
+			{
+				if ( i == '\\' )
+				{
+					i = '/';
+				}
+			}
+
+			bool hasColor = exists(resourcePath + "\\color.dds");
+			bool hasNormal = exists(resourcePath + "\\normal.dds");
+			bool hasRough = exists(resourcePath + "\\rough.dds");
+			bool hasMetalic = exists(resourcePath + "\\metalic.dds");
+
+			//Create Textures
+			{
+				tinyxml2::XMLDocument textureSet;
+				textureSet.LoadFile("Resource/TextureSet.xml");
+				textureSet.FirstChildElement("TextureSet")->InsertNewComment(materialName.c_str());
+				auto elementCreator = [&](const std::string& name)
+				{
+					auto* texEle = textureSet.FirstChildElement("TextureSet")->InsertNewChildElement("Texture");
+					texEle->SetAttribute("id", (materialName + "_" + name).c_str());
+					texEle->SetAttribute("fileDir", (resourcePath + "/" + name + ".dds").c_str());
+					texEle->SetAttribute("dimension", "Texture2D");
+					texEle->SetAttribute("format", "DDS");
+				};
+
+				if ( hasColor )
+					elementCreator("color");
+				if ( hasNormal )
+					elementCreator("normal");
+				if ( hasRough )
+					elementCreator("rough");
+				if ( hasMetalic )
+					elementCreator("metalic");
+
+				textureSet.SaveFile("Resource/TextureSet.xml");
+			}
+			//Create Material
+			{
+				tinyxml2::XMLDocument materialSet;
+				materialSet.LoadFile("Resource/MaterialSet.xml");
+				auto* matEle = materialSet.FirstChildElement("MaterialSet")->InsertNewChildElement("Material");
+				matEle->SetAttribute("id", materialName.c_str());
+				matEle->SetAttribute("shaderID", "PBRDefault");
+				{
+					auto nodeFunc = [&](bool has, const std::string& type, const std::string& none) 
+					{
+						auto* node = matEle->InsertNewChildElement("Texture");
+						node->SetAttribute("byte", 4);
+						node->SetAttribute("comment", (type + "Texture").c_str());
+						node->SetAttribute("id", (has ? (materialName + "_" + type) : none).c_str());
+					};
+					nodeFunc(hasColor, "color", "one");
+					nodeFunc(hasNormal, "normal", "one");
+					nodeFunc(hasMetalic, "metalic", "zero");
+					nodeFunc(hasRough, "rough", "zero");
+					{
+						auto* node = matEle->InsertNewChildElement("FLOAT1");
+						node->SetAttribute("byte", 4);
+						node->SetAttribute("comment", "Specular");
+						node->SetAttribute("x", 0.5f);
+					}
+
+					{
+						auto* node = matEle->InsertNewChildElement("FLOAT2");
+						node->SetAttribute("byte", 8);
+						node->SetAttribute("comment", "UVsize");
+						node->SetAttribute("x", 1);
+						node->SetAttribute("y", 1);
+					}
+					{
+						auto* node = matEle->InsertNewChildElement("Padding");
+						node->SetAttribute("byte", 4);
+					}
+				}
+				materialSet.SaveFile("Resource/MaterialSet.xml");
+			}
 		}
 
 		// close

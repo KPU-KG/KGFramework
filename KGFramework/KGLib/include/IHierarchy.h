@@ -103,6 +103,12 @@ namespace KG::Core
 		void SetChild(BaseHierarchy* obj)
 		{
 			this->child = obj;
+			auto* csr = this->child;
+			while ( csr != nullptr  )
+			{
+				csr->parent = this;
+				csr = csr->nextSibling;
+			}
 		}
 
 	public:
