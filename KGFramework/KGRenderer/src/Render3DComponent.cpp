@@ -65,12 +65,7 @@ void KG::Component::Render3DComponent::OnCreate(KG::Core::GameObject* gameObject
 	{
 		DebugErrorMessage("Material Count Not Matched Geometry");
 	}
-	for ( size_t i = 0; i < geometryCount; i++ )
-	{
-		auto materialIndex = materialCount == 1 ? 0 : i;
-		auto job = KG::Renderer::KGDXRenderer::GetInstance()->GetRenderEngine()->GetRenderJob(this->material->shaders[materialIndex], this->geometry->geometrys[i]);
-		this->AddRenderJob(job, materialIndex);
-	}
+	this->ReloadRender();
 	//조건문 넣고 렌더잡 만들자
 }
 
@@ -97,6 +92,29 @@ void KG::Component::Render3DComponent::SetReflectionProbe(CubeCameraComponent* p
 	this->reflectionProbe = probe;
 }
 
+void KG::Component::Render3DComponent::RemoveJobs()
+{
+	for ( size_t i = 0; i < this->renderJobs.size(); i++ )
+	{
+		this->renderJobs[i]->OnObjectRemove(this->isVisible);
+		this->jobMaterialIndexs[i] = 0;
+	}
+	this->renderJobs.clear();
+	this->jobMaterialIndexs.clear();
+}
+
+void KG::Component::Render3DComponent::ReloadRender()
+{
+	auto geometryCount = this->geometry->geometrys.size();
+	auto materialCount = this->material->materialIndexs.size();
+	for ( size_t i = 0; i < geometryCount; i++ )
+	{
+		auto materialIndex = materialCount == 1 ? 0 : i;
+		auto job = KG::Renderer::KGDXRenderer::GetInstance()->GetRenderEngine()->GetRenderJob(this->material->shaders[materialIndex], this->geometry->geometrys[i]);
+		this->AddRenderJob(job, materialIndex);
+	}
+}
+
 void KG::Component::Render3DComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
 {
 }
@@ -116,6 +134,12 @@ bool KG::Component::Render3DComponent::OnDrawGUI()
 		for ( size_t i = 0; i < this->renderJobs.size(); i++ )
 		{
 			ImGui::BulletText("RenderJob Ptr : %d", (int)this->renderJobs[i]);
+		}
+		if ( ImGui::Button("Reload RenderJob") )
+		{
+			this->RemoveJobs();
+			this->material->ReloadMaterial();
+			this->ReloadRender();
 		}
 	}
 	return false;

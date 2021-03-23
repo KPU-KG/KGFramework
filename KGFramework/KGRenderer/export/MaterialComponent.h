@@ -75,6 +75,7 @@ namespace KG::Component
 		unsigned GetMaterialIndex( UINT slotIndex = 0 ) const;
 		void PostMaterial(const KG::Utill::HashString& materialID, UINT slotIndex = 0);
 		void PostShader(const KG::Utill::HashString& shaderID, UINT slotIndex = 0);
+		void ReloadMaterial();
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);

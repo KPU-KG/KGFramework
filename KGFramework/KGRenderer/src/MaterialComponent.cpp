@@ -12,17 +12,7 @@ KG::Component::MaterialComponent::MaterialComponent()
 void KG::Component::MaterialComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	IRenderComponent::OnCreate(obj);
-	for ( auto& i : this->materialDescs.descs)
-	{
-		if ( i.isRawShader )
-		{
-			this->InitializeShader(i.materialID, i.slotIndex);
-		}
-		else
-		{
-			this->InitializeMaterial(i.materialID, i.slotIndex);
-		}
-	}
+	this->ReloadMaterial();
 }
 
 void KG::Component::MaterialComponent::InitializeMaterial(const KG::Utill::HashString& materialID, UINT slotIndex)
@@ -60,6 +50,21 @@ void KG::Component::MaterialComponent::PostMaterial(const KG::Utill::HashString&
 void KG::Component::MaterialComponent::PostShader(const KG::Utill::HashString& shaderID, UINT slotIndex)
 {
 	this->materialDescs.descs.emplace_back(true, shaderID, slotIndex);
+}
+
+void KG::Component::MaterialComponent::ReloadMaterial()
+{
+	for ( auto& i : this->materialDescs.descs )
+	{
+		if ( i.isRawShader )
+		{
+			this->InitializeShader(i.materialID, i.slotIndex);
+		}
+		else
+		{
+			this->InitializeMaterial(i.materialID, i.slotIndex);
+		}
+	}
 }
 
 void KG::Component::MaterialComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
