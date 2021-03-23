@@ -105,4 +105,31 @@
         <FLOAT2 byte="8" comment="UVsize" x="30" y="30"/>
         <Padding byte="4"/>
     </Material>
+    <Material id="cc0_stone_2" shaderID="PBRDefault" hash_id="2716081476" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="cc0_stone_2_color" hash_id="1123633280"/>
+        <Texture byte="4" comment="normalTexture" id="cc0_stone_2_normal" hash_id="2327541142"/>
+        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="cc0_stone_2_rough" hash_id="3338558682"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="30" y="30"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="cc0_stone_3" shaderID="PBRDefault" hash_id="2716082437" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="cc0_stone_3_color" hash_id="3176620481"/>
+        <Texture byte="4" comment="normalTexture" id="cc0_stone_3_normal" hash_id="1886574129"/>
+        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="cc0_stone_3_rough" hash_id="2640944027"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="30" y="30"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="cc0_stone_4" shaderID="PBRDefault" hash_id="2716079554" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="cc0_stone_4_color" hash_id="3570161546"/>
+        <Texture byte="4" comment="normalTexture" id="cc0_stone_4_normal" hash_id="4085809960"/>
+        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="cc0_stone_4_rough" hash_id="236854992"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="60" y="60"/>
+        <Padding byte="4"/>
+    </Material>
 </MaterialSet>

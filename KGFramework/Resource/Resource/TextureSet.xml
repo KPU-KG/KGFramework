@@ -50,4 +50,20 @@
     <Texture id="cc0_bricks035_color" fileDir="Resource/Texture/cc0_bricks035/color.dds" dimension="Texture2D" format="DDS" hash_id="2240613258"/>
     <Texture id="cc0_bricks035_normal" fileDir="Resource/Texture/cc0_bricks035/normal.dds" dimension="Texture2D" format="DDS" hash_id="1524518696"/>
     <Texture id="cc0_bricks035_rough" fileDir="Resource/Texture/cc0_bricks035/rough.dds" dimension="Texture2D" format="DDS" hash_id="3202274000"/>
+    <!--cc0_stone_2-->
+    <Texture id="cc0_stone_2_color" fileDir="Resource/Texture/cc0_stone_2/color.dds" dimension="Texture2D" format="DDS" hash_id="1123633280"/>
+    <Texture id="cc0_stone_2_normal" fileDir="Resource/Texture/cc0_stone_2/normal.dds" dimension="Texture2D" format="DDS" hash_id="2327541142"/>
+    <Texture id="cc0_stone_2_rough" fileDir="Resource/Texture/cc0_stone_2/rough.dds" dimension="Texture2D" format="DDS" hash_id="3338558682"/>
+    <!--cc0_stone_2-->
+    <Texture id="cc0_stone_2_color" fileDir="Resource/Texture/cc0_stone_2/color.dds" dimension="Texture2D" format="DDS" hash_id="1123633280"/>
+    <Texture id="cc0_stone_2_normal" fileDir="Resource/Texture/cc0_stone_2/normal.dds" dimension="Texture2D" format="DDS" hash_id="2327541142"/>
+    <Texture id="cc0_stone_2_rough" fileDir="Resource/Texture/cc0_stone_2/rough.dds" dimension="Texture2D" format="DDS" hash_id="3338558682"/>
+    <!--cc0_stone_3-->
+    <Texture id="cc0_stone_3_color" fileDir="Resource/Texture/cc0_stone_3/color.dds" dimension="Texture2D" format="DDS" hash_id="3176620481"/>
+    <Texture id="cc0_stone_3_normal" fileDir="Resource/Texture/cc0_stone_3/normal.dds" dimension="Texture2D" format="DDS" hash_id="1886574129"/>
+    <Texture id="cc0_stone_3_rough" fileDir="Resource/Texture/cc0_stone_3/rough.dds" dimension="Texture2D" format="DDS" hash_id="2640944027"/>
+    <!--cc0_stone_4-->
+    <Texture id="cc0_stone_4_color" fileDir="Resource/Texture/cc0_stone_4/color.dds" dimension="Texture2D" format="DDS" hash_id="3570161546"/>
+    <Texture id="cc0_stone_4_normal" fileDir="Resource/Texture/cc0_stone_4/normal.dds" dimension="Texture2D" format="DDS" hash_id="4085809960"/>
+    <Texture id="cc0_stone_4_rough" fileDir="Resource/Texture/cc0_stone_4/rough.dds" dimension="Texture2D" format="DDS" hash_id="236854992"/>
 </TextureSet>
