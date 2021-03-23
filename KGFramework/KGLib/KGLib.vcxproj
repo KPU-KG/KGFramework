@@ -271,6 +271,7 @@
   <ItemGroup>
     <ClCompile Include="include\imgui\imgui.cpp" />
     <ClCompile Include="include\imgui\ImGuiFileDialog.cpp" />
+    <ClCompile Include="include\imgui\ImGuizmo.cpp" />
     <ClCompile Include="include\imgui\imgui_demo.cpp" />
     <ClCompile Include="include\imgui\imgui_draw.cpp" />
     <ClCompile Include="include\imgui\imgui_impl_dx12.cpp" />
@@ -313,6 +314,17 @@
     <ClInclude Include="include\IHierarchy.h" />
     <ClInclude Include="include\ImguiHelper.h" />
     <ClInclude Include="include\ImguiProperty.h" />
+    <ClInclude Include="include\imgui\imconfig.h" />
+    <ClInclude Include="include\imgui\imgui.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialog.h" />
+    <ClInclude Include="include\imgui\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="include\imgui\ImGuizmo.h" />
+    <ClInclude Include="include\imgui\imgui_impl_dx12.h" />
+    <ClInclude Include="include\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="include\imgui\imgui_internal.h" />
+    <ClInclude Include="include\imgui\imstb_rectpack.h" />
+    <ClInclude Include="include\imgui\imstb_textedit.h" />
+    <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="include\InputManager.h" />
     <ClInclude Include="include\ISerializable.h" />
     <ClInclude Include="include\ISystem.h" />

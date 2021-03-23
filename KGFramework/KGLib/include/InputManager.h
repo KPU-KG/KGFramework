@@ -37,6 +37,10 @@ namespace KG::Input
 		/// @param hWnd 입력을 받아올 윈도우의 핸들입니다.
 		void ProcessInput(HWND hWnd)
 		{
+			if ( hWnd != GetFocus() )
+			{
+				return;
+			}
 			if ( GetKeyboardState( keyBuffer ) )
 			{
 				for ( size_t i = 0; i < 256; i++ )

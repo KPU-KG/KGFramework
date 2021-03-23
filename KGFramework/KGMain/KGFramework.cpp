@@ -148,13 +148,41 @@ void KG::GameFramework::PostSceneFunction()
 			auto* l = this->renderer->GetNewLightComponent();
 			l->SetDirectionalLight(DirectX::XMFLOAT3(1.2f, 1.2f, 1.2f), DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f));
 			obj.AddComponent(t);
-			obj.AddTemporalComponent(l);
+			obj.AddComponent(l);
+		}
+	);
+	this->scene.AddObjectPreset("Ambient Processor",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* t = this->system->transformSystem.GetNewComponent();
+			auto* m = this->renderer->GetNewMaterialComponent();
+			auto* g = this->renderer->GetNewGeomteryComponent();
+			auto* r = this->renderer->GetNewRenderComponent();
+			m->PostShader(KG::Utill::HashString("AmbientLight"));
+			g->AddGeometry(KG::Utill::HashString("lightPlane"_id));
+			obj.AddComponent(t);
+			obj.AddComponent(m);
+			obj.AddComponent(g);
+			obj.AddComponent(r);
 		}
 	);
 	this->scene.AddModelCreator(
 		[this](const KG::Utill::HashString& modelID, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& material)
 		{
 			return this->renderer->LoadFromModel(modelID, scene, material);
+		}
+	);
+
+	this->scene.AddCameraMatrixGetter(
+		[](KG::Component::IComponent* comp) 
+		{
+			auto* camera = static_cast<KG::Component::CameraComponent*>(comp);
+			return camera->GetView();
+		},
+		[](KG::Component::IComponent* comp)
+		{
+			auto* camera = static_cast<KG::Component::CameraComponent*>(comp);
+			return camera->GetProj();
 		}
 	);
 }

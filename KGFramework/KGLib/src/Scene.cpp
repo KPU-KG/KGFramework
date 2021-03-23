@@ -168,6 +168,16 @@ KG::Component::IComponent* KG::Core::Scene::GetMainCamera() const
 	return this->mainCamera;
 }
 
+DirectX::XMFLOAT4X4 KG::Core::Scene::GetMainCameraView() const
+{
+	return this->getViewFunc(this->GetMainCamera());
+}
+
+DirectX::XMFLOAT4X4 KG::Core::Scene::GetMainCameraProj() const
+{
+	return this->getProjFunc(this->GetMainCamera());
+}
+
 void KG::Core::Scene::AddSceneCameraObjectCreator(SceneCameraCreator&& creator)
 {
 	this->sceneCameraCreator = creator;
@@ -231,6 +241,12 @@ void KG::Core::Scene::AddSkySetter(SkyBoxSetter&& setter)
 void KG::Core::Scene::AddModelCreator(ModelCreator&& creator)
 {
 	this->modelCreator = creator;
+}
+
+void KG::Core::Scene::AddCameraMatrixGetter(GetMatrixFunc&& view, GetMatrixFunc&& proj)
+{
+	this->getViewFunc = view;
+	this->getProjFunc = proj;
 }
 
 void KG::Core::Scene::InitializeRoot()
@@ -324,6 +340,7 @@ bool KG::Core::Scene::OnDrawGUI()
 	static KG::Utill::HashString modelHash;
 	auto viewportSize = ImGui::GetMainViewport()->Size;
 	//ImGui::ShowDemoWindow();
+	ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.8f);
@@ -345,7 +362,13 @@ bool KG::Core::Scene::OnDrawGUI()
 			{
 				if ( ImGui::MenuItem("Make Material From Directory") )
 					ImGuiFileDialog::Instance()->OpenDialog("MakeMaterial", " Choose a Directory", nullptr
-						, ImGui::GetCurrentShortPath("Resource\\Texture\\"), "SceneData", 1, nullptr);
+						, ImGui::GetCurrentShortPath("Resource\\Texture\\"), "", 1, nullptr);
+				if ( ImGui::MenuItem("Make Geometry From File") )
+					ImGuiFileDialog::Instance()->OpenDialog("MakeGeometry", " Choose a File", ".FBX{.fbx,.FBX},"
+						, ImGui::GetCurrentShortPath("Resource\\Geometry\\"), "", 1, nullptr);
+				if ( ImGui::MenuItem("Make Model From File") )
+					ImGuiFileDialog::Instance()->OpenDialog("MakeModel", " Choose a File", ".FBX{.fbx,.FBX}"
+						, ImGui::GetCurrentShortPath("Resource\\Geometry\\"), "", 1, nullptr);
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
@@ -617,6 +640,71 @@ bool KG::Core::Scene::OnDrawGUI()
 					}
 				}
 				materialSet.SaveFile("Resource/MaterialSet.xml");
+			}
+		}
+
+		// close
+		ImGuiFileDialog::Instance()->Close();
+	}
+
+	if ( ImGuiFileDialog::Instance()->Display("MakeGeometry") )
+	{
+		// action if OK
+		if ( ImGuiFileDialog::Instance()->IsOk() )
+		{
+			std::string filePathName = ImGui::ShortPathToLongPath(ImGuiFileDialog::Instance()->GetFilePathName());
+			std::string resourcePath = filePathName.substr(filePathName.rfind("Resource"));
+			std::string geometryName = filePathName.substr(filePathName.rfind("\\") + 1, filePathName.length() - 4);
+			for ( auto& i : resourcePath )
+			{
+				if ( i == '\\' )
+				{
+					i = '/';
+				}
+			}
+
+			//Create Textures
+			{
+				tinyxml2::XMLDocument textureSet;
+				textureSet.LoadFile("Resource/GeometrySet.xml");
+				textureSet.FirstChildElement("GeometrySet")->InsertNewComment(geometryName.c_str());
+				auto* texEle = textureSet.FirstChildElement("GeometrySet")->InsertNewChildElement("Geometry");
+				texEle->SetAttribute("id", (geometryName).c_str());
+				texEle->SetAttribute("fileDir", resourcePath.c_str());
+				texEle->SetAttribute("rawMesh", true);
+				textureSet.SaveFile("Resource/GeometrySet.xml");
+			}
+		}
+
+		// close
+		ImGuiFileDialog::Instance()->Close();
+	}
+	if ( ImGuiFileDialog::Instance()->Display("MakeModel") )
+	{
+		// action if OK
+		if ( ImGuiFileDialog::Instance()->IsOk() )
+		{
+			std::string filePathName = ImGui::ShortPathToLongPath(ImGuiFileDialog::Instance()->GetFilePathName());
+			std::string resourcePath = filePathName.substr(filePathName.rfind("Resource"));
+			std::string geometryName = filePathName.substr(filePathName.rfind("\\") + 1, filePathName.length() - 4);
+			for ( auto& i : resourcePath )
+			{
+				if ( i == '\\' )
+				{
+					i = '/';
+				}
+			}
+
+			//Create Textures
+			{
+				tinyxml2::XMLDocument textureSet;
+				textureSet.LoadFile("Resource/GeometrySet.xml");
+				textureSet.FirstChildElement("GeometrySet")->InsertNewComment(geometryName.c_str());
+				auto* texEle = textureSet.FirstChildElement("GeometrySet")->InsertNewChildElement("Geometry");
+				texEle->SetAttribute("id", (geometryName).c_str());
+				texEle->SetAttribute("fileDir", resourcePath.c_str());
+				texEle->SetAttribute("rawMesh", false);
+				textureSet.SaveFile("Resource/GeometrySet.xml");
 			}
 		}
 

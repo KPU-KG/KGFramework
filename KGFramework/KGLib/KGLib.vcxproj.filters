@@ -43,6 +43,9 @@
     <Filter Include="소스 파일\Imgui">
       <UniqueIdentifier>{0bfa655e-c7d9-4629-bc88-82f736d37b76}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Imgui">
+      <UniqueIdentifier>{3b3f10e2-f1f9-4514-9b62-776cbd5ea88e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -119,6 +122,9 @@
     </ClCompile>
     <ClCompile Include="src\MaterialMatch.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="include\imgui\ImGuizmo.cpp">
+      <Filter>소스 파일\Imgui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -199,6 +205,39 @@
     </ClInclude>
     <ClInclude Include="include\MaterialMatch.h">
       <Filter>헤더 파일\Utill</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\imconfig.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\imgui.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\imgui_impl_dx12.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\imgui_impl_win32.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\imgui_internal.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\ImGuiFileDialog.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\ImGuiFileDialogConfig.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\imstb_rectpack.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\imstb_textedit.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\imstb_truetype.h">
+      <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\imgui\ImGuizmo.h">
+      <Filter>헤더 파일\Imgui</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

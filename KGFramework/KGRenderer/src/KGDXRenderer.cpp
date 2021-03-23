@@ -189,6 +189,8 @@ void KG::Renderer::KGDXRenderer::PreRenderUI()
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
+	ImGuizmo::BeginFrame();
+	ImGuizmo::SetImGuiContext(ImGui::GetCurrentContext());
 	auto viewportSize = ImGui::GetMainViewport()->Size;
 	ImGui::SetNextWindowSize(ImVec2(viewportSize.x, viewportSize.y));
 	ImGui::SetNextWindowPos(ImVec2(0, 0));

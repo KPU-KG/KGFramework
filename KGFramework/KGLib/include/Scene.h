@@ -22,6 +22,7 @@ namespace KG::Core
 		using ModelCreator = std::function<KG::Core::GameObject*(const KG::Utill::HashString&, KG::Core::Scene&, const KG::Resource::MaterialMatch&)>;
 		using SkyBoxCreator = std::function<void(KG::Core::GameObject&, const KG::Utill::HashString&)>;
 		using SkyBoxSetter = std::function<void(const KG::Utill::HashString&)>;
+		using GetMatrixFunc = std::function<DirectX::XMFLOAT4X4(KG::Component::IComponent*)>;
 
 		tinyxml2::XMLDocument sourceDocument;
 		KG::Component::ComponentProvider* componentProvider = nullptr;
@@ -35,6 +36,8 @@ namespace KG::Core
 		SkyBoxCreator skyBoxCreator;
 		SkyBoxSetter skyBoxSetter;
 		ModelCreator modelCreator;
+		GetMatrixFunc getViewFunc;
+		GetMatrixFunc getProjFunc;
 
 		std::vector<std::string> objectPresetName;
 		std::vector<PresetObjectCreator> objectPresetFunc;
@@ -76,12 +79,15 @@ namespace KG::Core
 
 		KG::Component::IComponent* SetMainCamera(KG::Component::IComponent* mainCamera);
 		KG::Component::IComponent* GetMainCamera() const;
+		DirectX::XMFLOAT4X4 GetMainCameraView() const;
+		DirectX::XMFLOAT4X4 GetMainCameraProj() const;
 
 		void AddSceneCameraObjectCreator(SceneCameraCreator&& creator);
 		void AddSkyBoxObjectCreator(SkyBoxCreator&& creator);
 		void AddObjectPreset(std::string name, PresetObjectCreator&& creator);
 		void AddSkySetter(SkyBoxSetter&& setter);
 		void AddModelCreator(ModelCreator&& creator);
+		void AddCameraMatrixGetter(GetMatrixFunc&& view, GetMatrixFunc&& proj);
 		//Root 노드 프리셋으로 초기화 하도록 설정
 		void InitializeRoot();
 		// ISerializable을(를) 통해 상속됨

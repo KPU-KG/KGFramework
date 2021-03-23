@@ -10,6 +10,7 @@ namespace KG::Component
 	private:
 		using UpdateFunctor = std::function<void(KG::Core::GameObject*, float)>;
 		UpdateFunctor updateFunctor;
+		float speedValue = 1.0f;
 	public:
 		virtual void Update(float elapsedTime) override;
 		virtual void PostUpdateFunction(const UpdateFunctor& functor);
