@@ -1,0 +1,1695 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene>
+    <SkyBoxId hash_id="4111474821" srcString="SkySnow"/>
+    <GameObject instanceId="4294967295">
+        <Tag hash_id="2696201701" srcString="rootNode"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="0" y="0" z="0"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="1" y="1" z="1"/>
+        </Component>
+        <GameObject instanceId="0">
+            <Tag hash_id="1077372698" srcString="SkyBoxObject"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <Component name="MaterialComponent" hash_id="1886146475">
+                <MaterialDesc>
+                    <Element>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="4111474821" srcString="SkySnow"/>
+                        <slotIndex value="0"/>
+                    </Element>
+                </MaterialDesc>
+            </Component>
+            <Component name="GeometryComponent" hash_id="36578682">
+                <GeometryDescs>
+                    <Element>
+                        <geometryID hash_id="3056789162" srcString="cube"/>
+                        <slotIndex value="0"/>
+                        <subMeshIndex value="0"/>
+                    </Element>
+                </GeometryDescs>
+            </Component>
+            <Component name="Render3DComponent" hash_id="4070531333"/>
+        </GameObject>
+        <GameObject instanceId="1">
+            <Tag hash_id="133944175" srcString="SceneCameraObject"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="28.211498" y="33.727192" z="-8.5064116"/>
+                <Rotation_Q x="-0.0063704387" y="-0.58573455" z="-0.0046013538" w="0.81065738"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <Component name="CameraComponent" hash_id="2216269385">
+                <IsMainCamera value="true"/>
+                <FovY value="90"/>
+                <AspectRatio value="1.7777778"/>
+                <Near-Z value="0.0099999998"/>
+                <Far-Z value="100"/>
+                <RenderTextureDesc>
+                    <textureWidth value="1600"/>
+                    <textureHeight value="900"/>
+                    <arrayCount value="1"/>
+                    <useCubeRender value="false"/>
+                    <useGSCubeRender value="false"/>
+                    <useGSArrayRender value="false"/>
+                    <useRenderTarget value="true"/>
+                    <useDeferredRender value="true"/>
+                    <useDepthStencilBuffer value="true"/>
+                    <uploadSRVRenderTarget value="false"/>
+                    <uploadSRVDepthBuffer value="false"/>
+                    <renderTargetTextureId hash_id="0" srcString=""/>
+                    <depthBufferTextureId hash_id="0" srcString=""/>
+                </RenderTextureDesc>
+            </Component>
+            <Component name="SceneCameraComponent" hash_id="2404609291"/>
+        </GameObject>
+        <GameObject instanceId="2">
+            <Tag hash_id="1517008099" srcString="Directional Light"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <Component name="LightComponent" hash_id="3191016132">
+                <LightType value="0"/>
+                <Strength x="1.2" y="1.2" z="1.2"/>
+                <Direction x="-0.57735026" y="-0.57735026" z="-0.57735026"/>
+            </Component>
+        </GameObject>
+        <GameObject instanceId="29">
+            <Tag hash_id="759259182" srcString="Roads"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="11">
+                <Tag hash_id="795656798" srcString="RoadConatiner"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="36" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="3">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="4">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="5">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="-36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="6">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="7">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="-36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="8">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="0"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="9">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="10">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="-36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+            <GameObject instanceId="20">
+                <Tag hash_id="795656798" srcString="RoadConatiner"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="72" y="0" z="36"/>
+                    <Rotation_Q x="0" y="0.70710677" z="0" w="0.70710671"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="6">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="8">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="0"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="9">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="10">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="-36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+            <GameObject instanceId="19">
+                <Tag hash_id="795656798" srcString="RoadConatiner"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="36" y="0" z="-72"/>
+                    <Rotation_Q x="0" y="0.99999988" z="-0" w="-1.1920929e-07"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="6">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="8">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="0"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="9">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="10">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="-36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+            <GameObject instanceId="18">
+                <Tag hash_id="795656798" srcString="RoadConatiner"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-72" y="0" z="-36"/>
+                    <Rotation_Q x="0" y="-0.70710677" z="0" w="0.70710671"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="6">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="8">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="0"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="9">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="10">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="-36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+            <GameObject instanceId="17">
+                <Tag hash_id="795656798" srcString="RoadConatiner"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-36" y="0" z="72"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="6">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="8">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="0"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="9">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="10">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="-36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+            <GameObject instanceId="16">
+                <Tag hash_id="795656798" srcString="RoadConatiner"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="36" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0.99999988" z="-0" w="-1.1920929e-07"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="6">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="7">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="-36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="8">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="0"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="9">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="10">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="-36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+            <GameObject instanceId="15">
+                <Tag hash_id="795656798" srcString="RoadConatiner"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="-36"/>
+                    <Rotation_Q x="0" y="-0.70710677" z="0" w="0.70710671"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="6">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="7">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="-36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="8">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="0"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="9">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="10">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="-36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+            <GameObject instanceId="13">
+                <Tag hash_id="795656798" srcString="RoadConatiner"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-36" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="6">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="7">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="-36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="8">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="0"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="9">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="10">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="-36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+            <GameObject instanceId="14">
+                <Tag hash_id="795656798" srcString="RoadConatiner"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="36"/>
+                    <Rotation_Q x="2.8975926e-08" y="0.70710605" z="2.8975988e-08" w="0.70710754"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="6">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="7">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-36" y="0" z="-36"/>
+                        <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="8">
+                    <Tag hash_id="791473260" srcString="Road_Line"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="0"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6" y="30" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="9">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="10">
+                    <Tag hash_id="3982677921" srcString="Road_Center"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-72" y="0" z="-36"/>
+                        <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="792664218" srcString="asphalt"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="30">
+            <Tag hash_id="1450053316" srcString="Tiles"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="12">
+                <Tag hash_id="2489862556" srcString="TileBlock"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="30" y="0.1" z="30"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="28">
+                <Tag hash_id="2489862556" srcString="TileBlock"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-72" y="0" z="-72"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="30" y="0.1" z="30"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="27">
+                <Tag hash_id="2489862556" srcString="TileBlock"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-72" y="0" z="72"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="30" y="0.1" z="30"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="26">
+                <Tag hash_id="2489862556" srcString="TileBlock"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-72" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="30" y="0.1" z="30"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="25">
+                <Tag hash_id="2489862556" srcString="TileBlock"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="-72"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="30" y="0.1" z="30"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="24">
+                <Tag hash_id="2489862556" srcString="TileBlock"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="72"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="30" y="0.1" z="30"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="23">
+                <Tag hash_id="2489862556" srcString="TileBlock"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="72" y="0" z="-72"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="30" y="0.1" z="30"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="22">
+                <Tag hash_id="2489862556" srcString="TileBlock"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="72" y="0" z="72"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="30" y="0.1" z="30"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="21">
+                <Tag hash_id="2489862556" srcString="TileBlock"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="72" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="30" y="0.1" z="30"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="33">
+            <Tag hash_id="3757366396" srcString="bUILDING-2-op2.FBX"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="0.0080000004" y="0.0080000004" z="0.0080000004"/>
+            </Component>
+            <GameObject instanceId="31">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="32">
+                    <Tag hash_id="2805853969" srcString="BUILDING-003"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3757366396" srcString="bUILDING-2-op2.FBX"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="3757366396" srcString="bUILDING-2-op2.FBX"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="1"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="3757366396" srcString="bUILDING-2-op2.FBX"/>
+                                <slotIndex value="2"/>
+                                <subMeshIndex value="2"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="3757366396" srcString="bUILDING-2-op2.FBX"/>
+                                <slotIndex value="3"/>
+                                <subMeshIndex value="3"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="3757366396" srcString="bUILDING-2-op2.FBX"/>
+                                <slotIndex value="4"/>
+                                <subMeshIndex value="4"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="3757366396" srcString="bUILDING-2-op2.FBX"/>
+                                <slotIndex value="5"/>
+                                <subMeshIndex value="5"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="1497045615" srcString="concorete"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="1497045615" srcString="concorete"/>
+                                <slotIndex value="1"/>
+                            </Element>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="1497045615" srcString="concorete"/>
+                                <slotIndex value="2"/>
+                            </Element>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="1497045615" srcString="concorete"/>
+                                <slotIndex value="3"/>
+                            </Element>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="1497045615" srcString="concorete"/>
+                                <slotIndex value="4"/>
+                            </Element>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="1497045615" srcString="concorete"/>
+                                <slotIndex value="5"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</Scene>

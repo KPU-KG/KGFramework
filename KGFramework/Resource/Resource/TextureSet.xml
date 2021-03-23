@@ -6,8 +6,9 @@
     <Texture id="grass" fileDir="Resource/Texture/grass.dds" dimension="Texture2D" format="DDS" hash_id="3681460185"/>
     <Texture id="one" fileDir="Resource/Texture/one.dds" dimension="Texture2D" format="DDS" hash_id="94880491"/>
     <Texture id="zero" fileDir="Resource/Texture/zero.dds" dimension="Texture2D" format="DDS" hash_id="3256532051"/>
-    <Texture id="SkySunset" fileDir="Resource/Texture/sunsetcube1024.dds" dimension="TextureCube" format="DDS" hash_id="2071956174"/>
-    <Texture id="SkySnow" fileDir="Resource/Texture/snowcube1024.dds" dimension="TextureCube" format="DDS" hash_id="4111474821"/>
+    <Texture id="SkySunset" fileDir="Resource/Texture/Skymap/sunset.dds" dimension="TextureCube" format="DDS" hash_id="2071956174"/>
+    <Texture id="SkySnow" fileDir="Resource/Texture/Skymap/snowcube1024.dds" dimension="TextureCube" format="DDS" hash_id="4111474821"/>
+    <Texture id="SkyDay" fileDir="Resource/Texture/Skymap/daytime.dds" dimension="TextureCube" format="DDS" hash_id="3325274414"/>
     <!--Metal PBR-->
     <Texture id="metal_color" fileDir="Resource/Texture/cc0_metal/color.dds" dimension="Texture2D" format="DDS" hash_id="1743296994"/>
     <Texture id="metal_metalic" fileDir="Resource/Texture/cc0_metal/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2937800030"/>
@@ -66,4 +67,26 @@
     <Texture id="cc0_stone_4_color" fileDir="Resource/Texture/cc0_stone_4/color.dds" dimension="Texture2D" format="DDS" hash_id="3570161546"/>
     <Texture id="cc0_stone_4_normal" fileDir="Resource/Texture/cc0_stone_4/normal.dds" dimension="Texture2D" format="DDS" hash_id="4085809960"/>
     <Texture id="cc0_stone_4_rough" fileDir="Resource/Texture/cc0_stone_4/rough.dds" dimension="Texture2D" format="DDS" hash_id="236854992"/>
+    <!--facade-->
+    <Texture id="facade_color" fileDir="Resource/Texture/facade/color.dds" dimension="Texture2D" format="DDS" hash_id="3740279483"/>
+    <Texture id="facade_normal" fileDir="Resource/Texture/facade/normal.dds" dimension="Texture2D" format="DDS" hash_id="1014406307"/>
+    <Texture id="facade_rough" fileDir="Resource/Texture/facade/rough.dds" dimension="Texture2D" format="DDS" hash_id="1508609617"/>
+    <Texture id="facade_metalic" fileDir="Resource/Texture/facade/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2092846883"/>
+    <!--graphite-->
+    <Texture id="graphite_color" fileDir="Resource/Texture/graphite/color.dds" dimension="Texture2D" format="DDS" hash_id="2852291657"/>
+    <Texture id="graphite_normal" fileDir="Resource/Texture/graphite/normal.dds" dimension="Texture2D" format="DDS" hash_id="1330905273"/>
+    <Texture id="graphite_rough" fileDir="Resource/Texture/graphite/rough.dds" dimension="Texture2D" format="DDS" hash_id="2331852819"/>
+    <Texture id="graphite_metalic" fileDir="Resource/Texture/graphite/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2699293165"/>
+    <!--concorete-->
+    <Texture id="concorete_color" fileDir="Resource/Texture/concorete/color.dds" dimension="Texture2D" format="DDS" hash_id="3397583831"/>
+    <Texture id="concorete_normal" fileDir="Resource/Texture/concorete/normal.dds" dimension="Texture2D" format="DDS" hash_id="670383263"/>
+    <Texture id="concorete_rough" fileDir="Resource/Texture/concorete/rough.dds" dimension="Texture2D" format="DDS" hash_id="1908560781"/>
+    <!--white_concrete-->
+    <Texture id="white_concrete_color" fileDir="Resource/Texture/white_concrete/color.dds" dimension="Texture2D" format="DDS" hash_id="76162218"/>
+    <Texture id="white_concrete_normal" fileDir="Resource/Texture/white_concrete/normal.dds" dimension="Texture2D" format="DDS" hash_id="3578399048"/>
+    <Texture id="white_concrete_rough" fileDir="Resource/Texture/white_concrete/rough.dds" dimension="Texture2D" format="DDS" hash_id="2062273520"/>
+    <!--white_porcelain-->
+    <Texture id="white_porcelain_color" fileDir="Resource/Texture/white_porcelain/color.dds" dimension="Texture2D" format="DDS" hash_id="2522505078"/>
+    <Texture id="white_porcelain_normal" fileDir="Resource/Texture/white_porcelain/normal.dds" dimension="Texture2D" format="DDS" hash_id="2801589684"/>
+    <Texture id="white_porcelain_rough" fileDir="Resource/Texture/white_porcelain/rough.dds" dimension="Texture2D" format="DDS" hash_id="3791464364"/>
 </TextureSet>
