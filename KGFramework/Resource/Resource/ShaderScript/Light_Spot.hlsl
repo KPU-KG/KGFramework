@@ -81,7 +81,6 @@ float SpotLightShadowPoissonPCF(float3 worldPosition, LightData lightData, Shado
     {
         return 1.0f;
     }
-    
     float2 uv = float2(1.0f, 1.0f);
     float depth = 1.0f;
     float4 projPos = mul(float4(worldPosition, 1.0f), shadowData.shadowMatrix[0]);
