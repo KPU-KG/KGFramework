@@ -28,4 +28,8 @@
     <Geometry id="soldier_walk_right" fileDir="Resource/Geometry/animation/Soldier@WalkRight.fbx" rawMesh="false" hash_id="1130876612"/>
     <!--bUILDING-2-op2.FBX-->
     <Geometry id="bUILDING-2-op2.FBX" fileDir="Resource/Geometry/building/bUILDING-2-op2.FBX" rawMesh="false" hash_id="3757366396"/>
+    <!--Building1.FBX-->
+    <Geometry id="Building1.FBX" fileDir="Resource/Geometry/building/Building1.FBX" rawMesh="false" hash_id="2955096704"/>
+    <!--building-4.fbx-->
+    <Geometry id="building-4.fbx" fileDir="Resource/Geometry/building/building-4.fbx" rawMesh="false" hash_id="1185853764"/>
 </GeometrySet>

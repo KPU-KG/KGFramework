@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="45">
+        <Tag hash_id="2955096704" srcString="Building1.FBX"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="-71.530487" y="0" z="-69.194153"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="1" y="1" z="1"/>
+        </Component>
+        <GameObject instanceId="42">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="8.8000002" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
+            </Component>
+            <GameObject instanceId="43">
+                <Tag hash_id="1486478551" srcString="MULLIONS001"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="2955096704" srcString="Building1.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="2955096704" srcString="Building1.FBX"/>
+                            <slotIndex value="1"/>
+                            <subMeshIndex value="1"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="2955096704" srcString="Building1.FBX"/>
+                            <slotIndex value="2"/>
+                            <subMeshIndex value="2"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="2955096704" srcString="Building1.FBX"/>
+                            <slotIndex value="3"/>
+                            <subMeshIndex value="3"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="2955096704" srcString="Building1.FBX"/>
+                            <slotIndex value="4"/>
+                            <subMeshIndex value="4"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="2955096704" srcString="Building1.FBX"/>
+                            <slotIndex value="5"/>
+                            <subMeshIndex value="5"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2699346829" srcString="graphite"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2699346829" srcString="graphite"/>
+                            <slotIndex value="1"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="4099079662" srcString="white_porcelain"/>
+                            <slotIndex value="2"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="40299571" srcString="facade"/>
+                            <slotIndex value="3"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="4099079662" srcString="white_porcelain"/>
+                            <slotIndex value="4"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="1769561230" srcString="PBRMetal2"/>
+                            <slotIndex value="5"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="44">
+                <Tag hash_id="3102416481" srcString="door"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-2753.783" y="-1254.0034" z="1954.8198"/>
+                    <Rotation_Q x="-8.4293326e-08" y="0.70710987" z="-0.70710361" w="-8.4294072e-08"/>
+                    <Scale x="1" y="1" z="0.88143098"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="2955096704" srcString="Building1.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="6"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="2955096704" srcString="Building1.FBX"/>
+                            <slotIndex value="1"/>
+                            <subMeshIndex value="7"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2699346829" srcString="graphite"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="40299571" srcString="facade"/>
+                            <slotIndex value="1"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="1361320738" srcString="white_concrete"/>
+                            <slotIndex value="2"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="1361320738" srcString="white_concrete"/>
+                            <slotIndex value="3"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="1361320738" srcString="white_concrete"/>
+                            <slotIndex value="4"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="1361320738" srcString="white_concrete"/>
+                            <slotIndex value="5"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>
