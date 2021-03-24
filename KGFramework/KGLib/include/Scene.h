@@ -52,7 +52,7 @@ namespace KG::Core
 		//ImGui Variable
 		bool isShowHierarchy = true;
 		bool isShowGameObjectEdit = true;
-		void DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& focused, int& count);
+		void DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& focused, int count = 0);
 	public:
 		Scene();
 		bool isStartGame = false;

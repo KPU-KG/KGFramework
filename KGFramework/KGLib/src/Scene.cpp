@@ -256,15 +256,15 @@ void KG::Core::Scene::InitializeRoot()
 	this->rootNode.SetOwnerScene(this);
 }
 
-void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& focused, int& count)
+void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& focused, int count)
 {
 	bool selected = focused == node;
 	if ( !node )
 	{
 		return;
 	}
+	count += 1;
 	ImGui::PushID(count);
-	count++;
 	bool opend = ImGui::TreeNodeEx(node->tag.srcString.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | (!selected ? 0 : ImGuiTreeNodeFlags_Selected));
 	//Drag And Drop
 	{
@@ -289,6 +289,7 @@ void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameO
 			ImGui::EndDragDropSource();
 		}
 	}
+	ImGui::PopID();
 	if ( opend )
 	{
 		ImVec2 pos = ImGui::GetCursorScreenPos();
@@ -310,7 +311,7 @@ void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameO
 	}
 
 	DrawObjectTree(node->GetSibling(), focused, count);
-	ImGui::PopID();
+
 }
 
 static inline bool exists(const std::string& name)
@@ -462,8 +463,7 @@ bool KG::Core::Scene::OnDrawGUI()
 		}
 		if ( isHierarchyOpen )
 		{
-			int count = 0;
-			DrawObjectTree(&this->rootNode, currentFocusedObject, count);
+			DrawObjectTree(&this->rootNode, currentFocusedObject);
 		}
 	}
 	ImGui::End();

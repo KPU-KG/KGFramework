@@ -78,33 +78,30 @@ bool KG::Component::TransformComponent::OnDrawGUI()
 			auto curr = this->GetGlobalWorldMatrix();
 			view = Math::Matrix4x4::Transpose(view);
 			proj = Math::Matrix4x4::Transpose(proj);
-			curr = Math::Matrix4x4::Transpose(curr);
-			float t[3] = { 0,0,0 };
-			float r[3] = { 0,0,0 };
-			float s[3] = { 0,0,0 };
-			ImGuizmo::DecomposeMatrixToComponents((float*)curr.m, t, r, s);
-			auto worldPos = this->GetWorldPosition();
-			t[0] = worldPos.x;
-			t[1] = worldPos.y;
-			t[2] = worldPos.z;
-			ImGuizmo::RecomposeMatrixFromComponents(t, r, s, (float*)curr.m);
-			float delta[16] = {};
-			if ( ImGuizmo::Manipulate((float*)view.m, (float*)proj.m, currentGizmoOperation, currentGizmoMode, (float*)curr.m, delta, NULL) )
+			float t[3] = { 0,0,0 }; float r[3] = { 0,0,0 }; float s[3] = { 0,0,0 };
+			DirectX::XMFLOAT4X4 delta;
+			if ( ImGuizmo::Manipulate((float*)view.m, (float*)proj.m, currentGizmoOperation, currentGizmoMode, (float*)curr.m, NULL, NULL) )
 			{
+				if ( this->GetParent() )
+				{
+					auto parentWorld = this->GetParent()->GetGlobalWorldMatrix();
+					auto parentWorldMat = XMLoadFloat4x4(&parentWorld);
+					auto currentWorldMat = XMLoadFloat4x4(&curr);
+					auto currentLocal = XMMatrixMultiply(currentWorldMat, XMMatrixInverse(NULL, parentWorldMat));
+					XMStoreFloat4x4(&delta, currentLocal);
+				}
 				flag = true;
-				ImGuizmo::DecomposeMatrixToComponents(delta, t, r, s);
+				ImGuizmo::DecomposeMatrixToComponents((float*)delta.m, t, r, s);
 				switch ( currentGizmoOperation )
 				{
 					case ImGuizmo::TRANSLATE:
-						this->SetPosition(Math::Vector3::Add(this->position, XMFLOAT3(t)));
+						this->SetPosition(XMFLOAT3(t));
 						break;
 					case ImGuizmo::ROTATE:
-						this->SetEulerDegree(Math::Vector3::Add(this->eulerRotation, XMFLOAT3(r)));
+						this->SetEulerDegree(XMFLOAT3(r));
 						break;
 					case ImGuizmo::SCALE:
-						this->SetScale(Math::Vector3::Multiply(this->scale, XMFLOAT3(s)));
-						break;
-					default:
+						this->SetScale(XMFLOAT3(s));
 						break;
 				}
 			}
