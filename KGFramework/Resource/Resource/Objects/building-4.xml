@@ -3,9 +3,9 @@
     <GameObject instanceId="48">
         <Tag hash_id="1185853764" srcString="building-4.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="-87.979744" y="8.4594913e-06" z="-132.99147"/>
+            <Position x="-82.35347" y="8.4372277e-06" z="-110.34005"/>
             <Rotation_Q x="0" y="0" z="0" w="1"/>
-            <Scale x="1" y="1" z="1"/>
+            <Scale x="0.80000001" y="0.80000001" z="0.80000001"/>
         </Component>
         <GameObject instanceId="46">
             <Tag hash_id="4257772165" srcString="RootNode"/>
