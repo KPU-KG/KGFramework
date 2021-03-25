@@ -1,0 +1,239 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+  </PropertyGroup>
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="debug|x64">
+      <Configuration>debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="checked|x64">
+      <Configuration>checked</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="profile|x64">
+      <Configuration>profile</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="release|x64">
+      <Configuration>release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{16278DAF-34CA-3006-84A2-5E338B06895C}</ProjectGuid>
+    <WindowsTargetPlatformVersion>10.0.17763.0</WindowsTargetPlatformVersion>
+    <Keyword>Win32Proj</Keyword>
+    <Platform>x64</Platform>
+    <ProjectName>ALL_BUILD</ProjectName>
+    <VCProjectUpgraderObjectName>NoUpgrade</VCProjectUpgraderObjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='checked|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='profile|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'" Label="Configuration">
+    <ConfigurationType>Utility</ConfigurationType>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PlatformToolset>v142</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup>
+    <_ProjectFileVersion>10.0.20506.1</_ProjectFileVersion>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='debug|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='checked|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='profile|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+    <IntDir Condition="'$(Configuration)|$(Platform)'=='release|x64'">$(Platform)\$(Configuration)\$(ProjectName)\</IntDir>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='debug|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='checked|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='profile|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='release|x64'">
+    <Midl>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <OutputDirectory>$(ProjectDir)/$(IntDir)</OutputDirectory>
+      <HeaderFileName>%(Filename).h</HeaderFileName>
+      <TypeLibraryName>%(Filename).tlb</TypeLibraryName>
+      <InterfaceIdentifierFileName>%(Filename)_i.c</InterfaceIdentifierFileName>
+      <ProxyFileName>%(Filename)_p.c</ProxyFileName>
+    </Midl>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\CMakeLists.txt">
+      <StdOutEncoding>UTF-8</StdOutEncoding>
+      <Message Condition="'$(Configuration)|$(Platform)'=='debug|x64'">Building Custom Rule C:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/source/compiler/cmake/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='debug|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/compiler/public -BC:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/compiler/vc16win64 --check-stamp-file C:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/compiler/vc16win64/sdk_source_bin/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='debug|x64'">C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\GetCompilerAndPlatform.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\NvidiaBuildOptions.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\SetOutputPaths.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\template\PxIncludeTemplate.h;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\FastXml.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\LowLevel.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\LowLevelAABB.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\LowLevelDynamics.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysX.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXCharacterKinematic.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXCommon.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXCooking.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXExtensions.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXFoundation.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXPvdSDK.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXTask.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXVehicle.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\SceneQuery.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\SimulationController.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\CMakeLists.txt;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\FastXml.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\LowLevel.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\LowLevelAABB.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\LowLevelDynamics.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysX.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXCharacterKinematic.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXCommon.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXCooking.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXExtensions.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXFoundation.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXPvdSDK.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXTask.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXVehicle.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\SceneQuery.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\SimulationController.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='debug|x64'">C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='debug|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='checked|x64'">Building Custom Rule C:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/source/compiler/cmake/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='checked|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/compiler/public -BC:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/compiler/vc16win64 --check-stamp-file C:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/compiler/vc16win64/sdk_source_bin/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='checked|x64'">C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\GetCompilerAndPlatform.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\NvidiaBuildOptions.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\SetOutputPaths.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\template\PxIncludeTemplate.h;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\FastXml.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\LowLevel.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\LowLevelAABB.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\LowLevelDynamics.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysX.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXCharacterKinematic.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXCommon.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXCooking.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXExtensions.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXFoundation.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXPvdSDK.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXTask.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXVehicle.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\SceneQuery.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\SimulationController.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\CMakeLists.txt;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\FastXml.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\LowLevel.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\LowLevelAABB.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\LowLevelDynamics.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysX.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXCharacterKinematic.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXCommon.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXCooking.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXExtensions.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXFoundation.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXPvdSDK.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXTask.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXVehicle.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\SceneQuery.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\SimulationController.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='checked|x64'">C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='checked|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='profile|x64'">Building Custom Rule C:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/source/compiler/cmake/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='profile|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/compiler/public -BC:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/compiler/vc16win64 --check-stamp-file C:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/compiler/vc16win64/sdk_source_bin/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='profile|x64'">C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\GetCompilerAndPlatform.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\NvidiaBuildOptions.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\SetOutputPaths.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\template\PxIncludeTemplate.h;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\FastXml.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\LowLevel.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\LowLevelAABB.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\LowLevelDynamics.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysX.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXCharacterKinematic.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXCommon.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXCooking.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXExtensions.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXFoundation.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXPvdSDK.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXTask.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXVehicle.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\SceneQuery.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\SimulationController.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\CMakeLists.txt;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\FastXml.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\LowLevel.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\LowLevelAABB.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\LowLevelDynamics.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysX.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXCharacterKinematic.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXCommon.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXCooking.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXExtensions.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXFoundation.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXPvdSDK.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXTask.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXVehicle.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\SceneQuery.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\SimulationController.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='profile|x64'">C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='profile|x64'">false</LinkObjects>
+      <Message Condition="'$(Configuration)|$(Platform)'=='release|x64'">Building Custom Rule C:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/source/compiler/cmake/CMakeLists.txt</Message>
+      <Command Condition="'$(Configuration)|$(Platform)'=='release|x64'">setlocal
+"C:\Program Files\CMake\bin\cmake.exe" -SC:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/compiler/public -BC:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/compiler/vc16win64 --check-stamp-file C:/KGFramework/KGFramework/KGFramework/KGPhysics/PhysX-4.1/physx/compiler/vc16win64/sdk_source_bin/CMakeFiles/generate.stamp
+if %errorlevel% neq 0 goto :cmEnd
+:cmEnd
+endlocal &amp; call :cmErrorLevel %errorlevel% &amp; goto :cmDone
+:cmErrorLevel
+exit /b %1
+:cmDone
+if %errorlevel% neq 0 goto :VCEnd</Command>
+      <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='release|x64'">C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\GetCompilerAndPlatform.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\NvidiaBuildOptions.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\SetOutputPaths.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\externals\cmakemodules\template\PxIncludeTemplate.h;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\FastXml.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\LowLevel.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\LowLevelAABB.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\LowLevelDynamics.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysX.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXCharacterKinematic.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXCommon.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXCooking.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXExtensions.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXFoundation.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXPvdSDK.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXTask.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\PhysXVehicle.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\SceneQuery.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\SimulationController.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\CMakeLists.txt;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\FastXml.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\LowLevel.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\LowLevelAABB.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\LowLevelDynamics.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysX.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXCharacterKinematic.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXCommon.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXCooking.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXExtensions.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXFoundation.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXPvdSDK.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXTask.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\PhysXVehicle.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\SceneQuery.cmake;C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\windows\SimulationController.cmake;%(AdditionalInputs)</AdditionalInputs>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='release|x64'">C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\CMakeFiles\generate.stamp</Outputs>
+      <LinkObjects Condition="'$(Configuration)|$(Platform)'=='release|x64'">false</LinkObjects>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\ZERO_CHECK.vcxproj">
+      <Project>{F9289D1D-A195-324D-BDE4-5F27C86C66A6}</Project>
+      <Name>ZERO_CHECK</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\FastXml.vcxproj">
+      <Project>{AEBF703B-620A-37D9-BD75-543A5A54FB31}</Project>
+      <Name>FastXml</Name>
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\LowLevel.vcxproj">
+      <Project>{A3749C4B-BA07-3286-A78D-FDD8E1AF7B5F}</Project>
+      <Name>LowLevel</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\LowLevelAABB.vcxproj">
+      <Project>{EDBECFE4-61FC-3085-A029-67356B181164}</Project>
+      <Name>LowLevelAABB</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\LowLevelDynamics.vcxproj">
+      <Project>{9B7979B3-62A2-3058-B93B-35C7CAE8BC10}</Project>
+      <Name>LowLevelDynamics</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\PhysX.vcxproj">
+      <Project>{57D0DC53-7106-3775-B5A5-52461C4CB3A6}</Project>
+      <Name>PhysX</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\PhysXCharacterKinematic.vcxproj">
+      <Project>{38CAAFF9-FE03-35D8-9BCB-1C2A439A9D4A}</Project>
+      <Name>PhysXCharacterKinematic</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\PhysXCommon.vcxproj">
+      <Project>{C9E7668D-ECED-35D0-9D4E-027B3E8BFC8D}</Project>
+      <Name>PhysXCommon</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\PhysXCooking.vcxproj">
+      <Project>{EB6BA183-908C-351F-90C3-DE9CF9BFAC8D}</Project>
+      <Name>PhysXCooking</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\PhysXExtensions.vcxproj">
+      <Project>{5117A8EF-CD0B-3641-951F-CC13F02116BF}</Project>
+      <Name>PhysXExtensions</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\PhysXFoundation.vcxproj">
+      <Project>{90463892-8385-3420-A9B4-D7C11718FE29}</Project>
+      <Name>PhysXFoundation</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\PhysXPvdSDK.vcxproj">
+      <Project>{1701DF64-EF47-3F83-8CC0-DE53A6ED444A}</Project>
+      <Name>PhysXPvdSDK</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\PhysXTask.vcxproj">
+      <Project>{0017F30C-543F-3C84-BE74-7313F9E01CA4}</Project>
+      <Name>PhysXTask</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\PhysXVehicle.vcxproj">
+      <Project>{0F516249-EBAE-3265-864D-8C0EAB9E9DD0}</Project>
+      <Name>PhysXVehicle</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\SceneQuery.vcxproj">
+      <Project>{41DFD352-6DD7-3C19-B49E-CF2103B6D3A9}</Project>
+      <Name>SceneQuery</Name>
+    </ProjectReference>
+    <ProjectReference Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\sdk_source_bin\SimulationController.vcxproj">
+      <Project>{F8B2FB79-AD7B-3C21-A386-B1AFB987D7D6}</Project>
+      <Name>SimulationController</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\fastxml\src\PsFastXml.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\fastxml\include\PsFastXml.h">
+      <Filter>include</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\source\compiler\cmake\CMakeLists.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="include">
+      <UniqueIdentifier>{2C25A9B1-8CD7-33AF-B627-EBB202FAC62D}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{E6F164F8-B9C7-3360-893A-F1ACE0BCE8D0}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>

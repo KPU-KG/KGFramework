@@ -1,0 +1,13 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="16.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <CustomBuild Include="C:\KGFramework\KGFramework\KGFramework\KGPhysics\PhysX-4.1\physx\compiler\vc16win64\CMakeFiles\9a54ff11fd92f7c0795e91d3edac1102\generate.stamp.rule">
+      <Filter>CMake Rules</Filter>
+    </CustomBuild>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="CMake Rules">
+      <UniqueIdentifier>{719674CE-485A-3E57-8D62-6D57D1D69D90}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+</Project>
