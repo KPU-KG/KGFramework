@@ -1,0 +1,9 @@
+{
+  "solution": {
+    "path": "KGFramework.sln",
+    "projects": [
+      "KGLib\\KGLib.vcxproj",
+      "KGServer\\KGServer.vcxproj"
+    ]
+  }
+}
