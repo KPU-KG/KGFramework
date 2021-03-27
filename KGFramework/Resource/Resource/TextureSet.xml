@@ -90,7 +90,17 @@
     <Texture id="white_porcelain_normal" fileDir="Resource/Texture/white_porcelain/normal.dds" dimension="Texture2D" format="DDS" hash_id="2801589684"/>
     <Texture id="white_porcelain_rough" fileDir="Resource/Texture/white_porcelain/rough.dds" dimension="Texture2D" format="DDS" hash_id="3791464364"/>
     <!--concorete-->
-    <Texture id="concorete_color" fileDir="Resource/Texture/concorete/color.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="concorete_normal" fileDir="Resource/Texture/concorete/normal.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="concorete_rough" fileDir="Resource/Texture/concorete/rough.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="concorete_color" fileDir="Resource/Texture/concorete/color.dds" dimension="Texture2D" format="DDS" hash_id="3397583831"/>
+    <Texture id="concorete_normal" fileDir="Resource/Texture/concorete/normal.dds" dimension="Texture2D" format="DDS" hash_id="670383263"/>
+    <Texture id="concorete_rough" fileDir="Resource/Texture/concorete/rough.dds" dimension="Texture2D" format="DDS" hash_id="1908560781"/>
+    <!--painted_metal_white-->
+    <Texture id="painted_metal_white_color" fileDir="Resource/Texture/painted_metal_white/color.dds" dimension="Texture2D" format="DDS" hash_id="243629510"/>
+    <Texture id="painted_metal_white_normal" fileDir="Resource/Texture/painted_metal_white/normal.dds" dimension="Texture2D" format="DDS" hash_id="1617852964"/>
+    <Texture id="painted_metal_white_rough" fileDir="Resource/Texture/painted_metal_white/rough.dds" dimension="Texture2D" format="DDS" hash_id="1473363228"/>
+    <Texture id="painted_metal_white_metalic" fileDir="Resource/Texture/painted_metal_white/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2326887002"/>
+    <!--pipe_metal-->
+    <Texture id="pipe_metal_color" fileDir="Resource/Texture/pipe_metal/color.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="pipe_metal_normal" fileDir="Resource/Texture/pipe_metal/normal.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="pipe_metal_rough" fileDir="Resource/Texture/pipe_metal/rough.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="pipe_metal_metalic" fileDir="Resource/Texture/pipe_metal/metalic.dds" dimension="Texture2D" format="DDS"/>
 </TextureSet>
