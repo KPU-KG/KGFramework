@@ -89,4 +89,8 @@
     <Texture id="white_porcelain_color" fileDir="Resource/Texture/white_porcelain/color.dds" dimension="Texture2D" format="DDS" hash_id="2522505078"/>
     <Texture id="white_porcelain_normal" fileDir="Resource/Texture/white_porcelain/normal.dds" dimension="Texture2D" format="DDS" hash_id="2801589684"/>
     <Texture id="white_porcelain_rough" fileDir="Resource/Texture/white_porcelain/rough.dds" dimension="Texture2D" format="DDS" hash_id="3791464364"/>
+    <!--concorete-->
+    <Texture id="concorete_color" fileDir="Resource/Texture/concorete/color.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="concorete_normal" fileDir="Resource/Texture/concorete/normal.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="concorete_rough" fileDir="Resource/Texture/concorete/rough.dds" dimension="Texture2D" format="DDS"/>
 </TextureSet>

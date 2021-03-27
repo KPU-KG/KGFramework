@@ -32,4 +32,6 @@
     <Geometry id="Building1.FBX" fileDir="Resource/Geometry/building/Building1.FBX" rawMesh="false" hash_id="2955096704"/>
     <!--building-4.fbx-->
     <Geometry id="building-4.fbx" fileDir="Resource/Geometry/building/building-4.fbx" rawMesh="false" hash_id="1185853764"/>
+    <!--metal_fence.fbx-->
+    <Geometry id="metal_fence.fbx" fileDir="Resource/Geometry/prop/metal_fence.fbx" rawMesh="true" hash_id="1914570570"/>
 </GeometrySet>
