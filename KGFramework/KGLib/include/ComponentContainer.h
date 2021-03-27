@@ -71,14 +71,18 @@ namespace KG::Component
 		void DeleteComponent(const KG::Utill::HashString& componentID)
 		{
 			auto it = std::find_if(this->container.begin(), this->container.end(), [&componentID](auto& p) {return p.first == componentID; });
+#ifdef _DEBUG
 			this->checker.erase(componentID);
+#endif
 			it->second->InternalDestroy();
 			this->container.erase(it);
 		}
 		void DeleteComponent(KG::Component::IComponent* component)
 		{
 			auto it = std::find_if(this->container.begin(), this->container.end(), [component](auto& p) {return p.second == component; });
+#ifdef _DEBUG
 			this->checker.erase(it->first);
+#endif
 			it->second->InternalDestroy();
 			this->container.erase(it);
 		}
