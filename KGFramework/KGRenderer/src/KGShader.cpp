@@ -288,7 +288,7 @@ void KG::Renderer::Shader::CreateMaterialBuffer( const KG::Resource::Metadata::S
 {
 	auto device = KG::Renderer::KGDXRenderer::GetInstance()->GetD3DDevice();
 	auto elementSize = data.materialParameterSize;
-	auto elementCount = 10;
+	auto elementCount = 50;
 	if ( elementSize > 0 )
 	{
 		DebugNormalMessage( "Create Material Buffer" );
