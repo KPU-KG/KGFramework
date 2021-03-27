@@ -608,16 +608,16 @@ public:
 	virtual		PxRigidBodyFlags	getRigidBodyFlags()	const = 0;
 
 	/**
-	\brief Sets the CCD minimum Advance coefficient.
+	\brief Sets the CCD minimum advance coefficient.
 
-	The CCD minimum Advance coefficient is a value in the range [0, 1] that is used to control the minimum amount of time a body is integrated when
+	The CCD minimum advance coefficient is a value in the range [0, 1] that is used to control the minimum amount of time a body is integrated when
 	it has a CCD contact. The actual minimum amount of time that is integrated depends on various properties, including the relative speed and collision shapes
 	of the bodies involved in the contact. From these properties, a numeric value is calculated that determines the maximum distance (and therefore maximum time) 
-	which these bodies could be integrated forwards that would ensure that these bodies did not pass through each-other. This value is then scaled by CCD minimum Advance
+	which these bodies could be integrated forwards that would ensure that these bodies did not pass through each-other. This value is then scaled by CCD minimum advance
 	coefficient to determine the amount of time that will be consumed in the CCD pass.
 
 	<b>Things to consider:</b> 
-	A large value (approaching 1) ensures that the objects will always Advance some time. However, larger values increase the chances of objects gently drifting through each-other in
+	A large value (approaching 1) ensures that the objects will always advance some time. However, larger values increase the chances of objects gently drifting through each-other in
 	scenes which the constraint solver can't converge, e.g. scenes where an object is being dragged through a wall with a constraint.
 	A value of 0 ensures that the pair of objects stop at the exact time-of-impact and will not gently drift through each-other. However, with very small/thin objects initially in 
 	contact, this can lead to a large amount of time being dropped and increases the chances of jamming. Jamming occurs when the an object is persistently in contact with an object 
@@ -625,15 +625,15 @@ public:
 
 	The chances of jamming can be reduced by increasing the number of CCD mass @see PxSceneDesc.ccdMaxPasses. However, increasing this number increases the CCD overhead.
 
-	\param[in] advanceCoefficient The CCD min Advance coefficient. <b>Range:</b> [0, 1] <b>Default:</b> 0.15
+	\param[in] advanceCoefficient The CCD min advance coefficient. <b>Range:</b> [0, 1] <b>Default:</b> 0.15
 	*/
 
 	virtual void setMinCCDAdvanceCoefficient(PxReal advanceCoefficient) = 0;
 
 	/**
-	\brief Gets the CCD minimum Advance coefficient.
+	\brief Gets the CCD minimum advance coefficient.
 
-	\return The value of the CCD min Advance coefficient.
+	\return The value of the CCD min advance coefficient.
 
 	@see setMinCCDAdvanceCoefficient
 

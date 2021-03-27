@@ -877,7 +877,7 @@ class PxScene
  	...now results of run may be retrieved.
 
 
-	\param[in] elapsedTime Amount of time to Advance simulation by. The parameter has to be larger than 0, else the resulting behavior will be undefined. <b>Range:</b> (0, PX_MAX_F32)
+	\param[in] elapsedTime Amount of time to advance simulation by. The parameter has to be larger than 0, else the resulting behavior will be undefined. <b>Range:</b> (0, PX_MAX_F32)
 	\param[in] completionTask if non-NULL, this task will have its refcount incremented in simulate(), then
 	decremented when the scene is ready to have fetchResults called. So the task will not run until the
 	application also calls removeReference().
@@ -896,14 +896,14 @@ class PxScene
 	/**
  	\brief Performs dynamics phase of the simulation pipeline.
 	
-	\note Calls to Advance() should follow calls to fetchCollision(). An error message will be issued if this sequence is not followed.
+	\note Calls to advance() should follow calls to fetchCollision(). An error message will be issued if this sequence is not followed.
 
-	\param[in] completionTask if non-NULL, this task will have its refcount incremented in Advance(), then
+	\param[in] completionTask if non-NULL, this task will have its refcount incremented in advance(), then
 	decremented when the scene is ready to have fetchResults called. So the task will not run until the
 	application also calls removeReference().
 
 	*/
-	virtual	void				Advance(physx::PxBaseTask* completionTask = 0) = 0;
+	virtual	void				advance(physx::PxBaseTask* completionTask = 0) = 0;
 
 	/**
 	\brief Performs collision detection for the scene over elapsedTime
@@ -911,7 +911,7 @@ class PxScene
 	\note Calls to collide() should be the first method called to simulate a frame.
 
 
-	\param[in] elapsedTime Amount of time to Advance simulation by. The parameter has to be larger than 0, else the resulting behavior will be undefined. <b>Range:</b> (0, PX_MAX_F32)
+	\param[in] elapsedTime Amount of time to advance simulation by. The parameter has to be larger than 0, else the resulting behavior will be undefined. <b>Range:</b> (0, PX_MAX_F32)
 	\param[in] completionTask if non-NULL, this task will have its refcount incremented in collide(), then
 	decremented when the scene is ready to have fetchResults called. So the task will not run until the
 	application also calls removeReference().
@@ -939,7 +939,7 @@ class PxScene
 	virtual	bool				checkResults(bool block = false) = 0;
 
 	/**
-	This method must be called after collide() and before Advance(). It will wait for the collision phase to finish. If the user makes an illegal simulation call, the SDK will issue an error
+	This method must be called after collide() and before advance(). It will wait for the collision phase to finish. If the user makes an illegal simulation call, the SDK will issue an error
 	message.
 
 	\param[in] block When set to true will block until the condition is met, which is collision must finish running.
