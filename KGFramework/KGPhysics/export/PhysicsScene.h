@@ -9,6 +9,7 @@
 
 #include <DirectXMath.h>
 #include <vector>
+#include "IPhysicsScene.h"
 
 namespace physx 
 {
@@ -22,46 +23,63 @@ namespace physx
 	class PxRigidDynamic;
 }
 
+namespace KG::Component 
+{
+	class DynamicRigidComponent;
+}
+
 namespace KG::Physics 
 {
 	// using namespace physx;
-	class DLL PhysicsScene {
-	private:
-		physx::PxDefaultAllocator* allocator;
-		physx::PxDefaultErrorCallback* errorCallback;
-		physx::PxFoundation* foundation;
-		physx::PxPhysics* physics;
-		physx::PxDefaultCpuDispatcher* cpuDispatcher;
-		physx::PxPvd* pvd;
-		physx::PxScene* scene;
+	class DLL PhysicsScene : public IPhysicsScene {
+	protected:
+		physx::PxDefaultAllocator*		allocator;
+		physx::PxDefaultErrorCallback*	errorCallback;
+		physx::PxFoundation*			foundation;
+		physx::PxPhysics*				physics;
+		physx::PxDefaultCpuDispatcher*	cpuDispatcher;
+		physx::PxPvd*					pvd;
+		physx::PxScene*					scene;
 
-		float accumulator = 0.0f;
-		float stepSize = 1.0f / 60.0f;
-	public:
-		bool Initialize();
+		float							accumulator = 0.0f;
+		float							stepSize = 1.0f / 60.0f;
+
+		struct PhysicsSystem;
+		// std::unique_ptr<PhysicsSystem> physicsSystem = nullptr;
+		// Desc
+		// Setting
 		bool CreateScene();
-
+	public:
+		// void SetDsec();
+		// void SetSetting();
+		PhysicsScene();
+		virtual void Initialize() override;
+		// virtual void* GetImGUIContext() override;
+		virtual bool Advance(float timeElapsed) override;
+		// 임시 지평면
+		virtual void AddDynamicActor(KG::Component::DynamicRigidComponent* rigid) override;
+		virtual void AddStaticActor(DirectX::XMFLOAT3 position, float width, float height, float depth) override;
+		virtual void AddFloor(float height) override;
+		// virtual KG::Component::DynamicRigidComponent* GetNewRenderComponent();
 
 		// 물리쪽 업데이트에서 해줘야 할 것
 		// 1. simulate() = Advance()
 		// 2. fetchResult() - rigid값 변동
 		// 3. game object에 적용
-		bool Advance(float timeElapsed);
+		// bool Advance(float timeElapsed);
 
 		// addActor에서 해줘야 할 것
 		// 1. 메터리얼 생성
 		// 2. 리지드 생성 및 설정
 		// 3. 씬에 엑터 추가
-		void AddActor(DirectX::XMFLOAT3 position, float width, float height, float depth);
-		void AddStaticActor(DirectX::XMFLOAT3 position, float width, float height, float depth);
+		// void AddDynamicActor(DirectX::XMFLOAT3 position, float width, float height, float depth);
 
-		// 임시 지평면
-		void AddFloor(float height);
+		
 
 		// 나중에 컴포넌트로 빼줘야 할 부분
-		std::vector<physx::PxRigidDynamic*> rigid;
-		void Move(DirectX::XMFLOAT3 vector);
-		DirectX::XMFLOAT3 GetPosition();
-		void SetRotation(DirectX::XMFLOAT4 quat); // 캐릭터 컨트롤러
+		// std::vector<physx::PxRigidDynamic*> rigid;
+		// void Move(DirectX::XMFLOAT3 vector);
+		// DirectX::XMFLOAT3 GetPosition();
+		// void SetRotation(DirectX::XMFLOAT4 quat); // 캐릭터 컨트롤러
 	};
 }

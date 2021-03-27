@@ -14,5 +14,6 @@ namespace KG::Component
 	{
 	protected:
 	public:
+		virtual void PostUpdate(float timeElapsed) {};
 	};
 };

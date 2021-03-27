@@ -20,18 +20,21 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="export\IPhysicsComponent.h" />
+    <ClInclude Include="export\IPhysicsScene.h" />
     <ClInclude Include="export\PhysicsComponent.h" />
+    <ClInclude Include="export\PhysicsDesc.h" />
     <ClInclude Include="export\PhysicsScene.h" />
     <ClInclude Include="export\PhysicsSystem.h" />
     <ClInclude Include="include\framework.h" />
     <ClInclude Include="include\pch.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="export\PhysicsComponent.cpp" />
-    <ClCompile Include="export\PhysicsScene.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
-    <ClCompile Include="src\IPhysicsComponent.cpp" />
+    <ClCompile Include="src\IPhysicsScene.cpp" />
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\PhysicsComponent.cpp" />
+    <ClCompile Include="src\PhysicsScene.cpp" />
+    <ClCompile Include="src\PhysicsSystem.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KGLib\KGLib.vcxproj">
@@ -99,7 +102,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
     <IncludePath>$(ProjectDir)export;$(SolutionDir)KGLib\include;$(ProjectDir)include;$(IncludePath)</IncludePath>
-    <LibraryPath>$(ProjectDir)PhysX-4.1\physx\bin\win.x86_64.vc142.md\debug;$(SolutionDir)lib\Debug_LIB\;$(SolutionDir)lib\ALL\;$(LibraryPath)</LibraryPath>
+    <LibraryPath>$(ProjectDir)PhysX-4.1\physx\lib;$(SolutionDir)lib\Debug_LIB\;$(SolutionDir)lib\ALL\;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
