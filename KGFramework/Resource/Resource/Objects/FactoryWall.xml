@@ -1,0 +1,659 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="73">
+        <Tag hash_id="2226915945" srcString="FactoryWall"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="-93.875931" y="0" z="36"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="0.76999998" y="0.76999998" z="1"/>
+        </Component>
+        <GameObject instanceId="70">
+            <Tag hash_id="1914570570" srcString="metal_fence.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="66.063843" y="0" z="65.702538"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="62">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="0.050000001" y="0.050000001" z="0.050000001"/>
+                </Component>
+                <GameObject instanceId="63">
+                    <Tag hash_id="3388082306" srcString="metalzaun_01a_1er"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="1"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="64">
+                    <Tag hash_id="1951305630" srcString="metalzaun_01a_1er "/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="2"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="3"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="65">
+                    <Tag hash_id="3390075420" srcString="metalzaun_01a_3er"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="4"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="5"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="66">
+                    <Tag hash_id="3352028469" srcString="metalzaun_01a_end"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="6"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="7"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="67">
+                    <Tag hash_id="3393211163" srcString="metalzaun_01a_4er"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="8"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="9"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="68">
+                    <Tag hash_id="3392045470" srcString="metalzaun_01a_5er"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="10"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="11"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="69">
+                    <Tag hash_id="3699396896" srcString="Camera"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="75" z="400"/>
+                        <Rotation_Q x="-0.030843562" y="-0.70643377" z="-0.030843563" w="0.70643371"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="72">
+            <Tag hash_id="1914570570" srcString="metal_fence.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="-35.944717" y="0" z="65.702538"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="62">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="0.050000001" y="0.050000001" z="0.050000001"/>
+                </Component>
+                <GameObject instanceId="63">
+                    <Tag hash_id="3388082306" srcString="metalzaun_01a_1er"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="1"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="64">
+                    <Tag hash_id="1951305630" srcString="metalzaun_01a_1er "/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="2"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="3"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="65">
+                    <Tag hash_id="3390075420" srcString="metalzaun_01a_3er"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="4"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="5"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="66">
+                    <Tag hash_id="3352028469" srcString="metalzaun_01a_end"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="6"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="7"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="67">
+                    <Tag hash_id="3393211163" srcString="metalzaun_01a_4er"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="8"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="9"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="68">
+                    <Tag hash_id="3392045470" srcString="metalzaun_01a_5er"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="10"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="11"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="69">
+                    <Tag hash_id="3699396896" srcString="Camera"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="75" z="400"/>
+                        <Rotation_Q x="-0.030843562" y="-0.70643377" z="-0.030843563" w="0.70643371"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="71">
+            <Tag hash_id="1914570570" srcString="metal_fence.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="15.03476" y="0" z="65.703003"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="62">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="0.050000001" y="0.050000001" z="0.050000001"/>
+                </Component>
+                <GameObject instanceId="63">
+                    <Tag hash_id="3388082306" srcString="metalzaun_01a_1er"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="1"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="64">
+                    <Tag hash_id="1951305630" srcString="metalzaun_01a_1er "/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="2"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="3"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="65">
+                    <Tag hash_id="3390075420" srcString="metalzaun_01a_3er"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="4"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="5"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="66">
+                    <Tag hash_id="3352028469" srcString="metalzaun_01a_end"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="6"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="7"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="67">
+                    <Tag hash_id="3393211163" srcString="metalzaun_01a_4er"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="8"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="9"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="68">
+                    <Tag hash_id="3392045470" srcString="metalzaun_01a_5er"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="10"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1914570570" srcString="metal_fence.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="11"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="2422600574" srcString="painted_metal_white"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="69">
+                    <Tag hash_id="3699396896" srcString="Camera"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="75" z="400"/>
+                        <Rotation_Q x="-0.030843562" y="-0.70643377" z="-0.030843563" w="0.70643371"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>
