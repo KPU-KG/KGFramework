@@ -13,17 +13,17 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="헤더 파일\etc">
+      <UniqueIdentifier>{21c91bcb-ad75-477d-8465-4bcbb2ff6858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Interface">
+      <UniqueIdentifier>{79313909-338a-4d4f-9e96-df906cf2382f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\etc">
+      <UniqueIdentifier>{511e1540-a3a2-4cc6-a4bb-ae14f9414636}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\framework.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="include\pch.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
-    <ClInclude Include="export\IPhysicsComponent.h">
-      <Filter>헤더 파일</Filter>
-    </ClInclude>
     <ClInclude Include="export\PhysicsComponent.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
@@ -33,21 +33,39 @@
     <ClInclude Include="export\PhysicsScene.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
+    <ClInclude Include="export\PhysicsDesc.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="include\pch.h">
+      <Filter>헤더 파일\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="include\framework.h">
+      <Filter>헤더 파일\etc</Filter>
+    </ClInclude>
+    <ClInclude Include="export\IPhysicsComponent.h">
+      <Filter>헤더 파일\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="export\IPhysicsScene.h">
+      <Filter>헤더 파일\Interface</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\dllmain.cpp">
+    <ClCompile Include="src\PhysicsSystem.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysicsComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PhysicsScene.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\dllmain.cpp">
+      <Filter>소스 파일\etc</Filter>
     </ClCompile>
     <ClCompile Include="src\pch.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\etc</Filter>
     </ClCompile>
-    <ClCompile Include="src\IPhysicsComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="export\PhysicsComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="export\PhysicsScene.cpp">
+    <ClCompile Include="src\IPhysicsScene.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
