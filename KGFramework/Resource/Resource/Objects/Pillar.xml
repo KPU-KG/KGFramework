@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="110">
+        <Tag hash_id="3851329425" srcString="Pillar"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="-8.8397217" y="-6" z="8.218956"/>
+            <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
+            <Scale x="0.0099999998" y="0.0099999998" z="0.029999999"/>
+        </Component>
+        <Component name="GeometryComponent" hash_id="36578682">
+            <GeometryDescs>
+                <Element>
+                    <geometryID hash_id="2441286916" srcString="PillarSmall.FBX"/>
+                    <slotIndex value="0"/>
+                    <subMeshIndex value="0"/>
+                </Element>
+            </GeometryDescs>
+        </Component>
+        <Component name="MaterialComponent" hash_id="1886146475">
+            <MaterialDesc>
+                <Element>
+                    <isRawShader value="false"/>
+                    <materialID hash_id="3528632054" srcString="construction"/>
+                    <slotIndex value="0"/>
+                </Element>
+            </MaterialDesc>
+        </Component>
+        <Component name="Render3DComponent" hash_id="4070531333"/>
+    </GameObject>
+</SavedGameObject>

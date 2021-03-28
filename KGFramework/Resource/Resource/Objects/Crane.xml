@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="97">
+        <Tag hash_id="1318694582" srcString="Crane.FBX"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="29.867516" y="-5.5778514e-06" z="-32.162621"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="1" y="1" z="1"/>
+        </Component>
+        <GameObject instanceId="94">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="2.523495" z="0"/>
+                <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="95">
+                <Tag hash_id="3462005645" srcString="CraneSupport"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="2.9802322e-08" y="0" z="0" w="0.99999988"/>
+                    <Scale x="0.075000003" y="0.075000003" z="0.12"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1318694582" srcString="Crane.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="131052412" srcString="crane"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="96">
+                <Tag hash_id="152122480" srcString="Crane_Top"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0.00010490417" z="52"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="0.075000003" y="0.075000003" z="0.075000003"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1318694582" srcString="Crane.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="1"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="1318694582" srcString="Crane.FBX"/>
+                            <slotIndex value="1"/>
+                            <subMeshIndex value="2"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="131052412" srcString="crane"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

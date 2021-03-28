@@ -34,4 +34,36 @@
     <Geometry id="building-4.fbx" fileDir="Resource/Geometry/building/building-4.fbx" rawMesh="false" hash_id="1185853764"/>
     <!--metal_fence.fbx-->
     <Geometry id="metal_fence.fbx" fileDir="Resource/Geometry/prop/metal_fence.fbx" rawMesh="false" hash_id="1914570570"/>
+    <!--Dumpster.fbx-->
+    <Geometry id="Dumpster.fbx" fileDir="Resource/Geometry/prop/Dumpster.fbx" rawMesh="true" hash_id="188330653"/>
+    <!--barrel.fbx-->
+    <Geometry id="barrel.fbx" fileDir="Resource/Geometry/prop/barrel.fbx" rawMesh="true" hash_id="2579372387"/>
+    <!--container.FBX-->
+    <Geometry id="container.FBX" fileDir="Resource/Geometry/prop/container.FBX" rawMesh="false" hash_id="3612174708"/>
+    <!--Crane.FBX-->
+    <Geometry id="Crane.FBX" fileDir="Resource/Geometry/prop/Crane.FBX" rawMesh="false" hash_id="1318694582"/>
+    <!--Pallet.FBX-->
+    <Geometry id="Pallet.FBX" fileDir="Resource/Geometry/prop/Pallet.FBX" rawMesh="false" hash_id="767236409"/>
+    <!--SupportSmall.FBX-->
+    <Geometry id="SupportSmall.FBX" fileDir="Resource/Geometry/construction/SupportSmall.FBX" rawMesh="true" hash_id="520366173"/>
+    <!--SupportBig.FBX-->
+    <Geometry id="SupportBig.FBX" fileDir="Resource/Geometry/construction/SupportBig.FBX" rawMesh="true" hash_id="926451754"/>
+    <!--Stairs.FBX-->
+    <Geometry id="Stairs.FBX" fileDir="Resource/Geometry/construction/Stairs.FBX" rawMesh="true" hash_id="3525909125"/>
+    <!--PillarSmall.FBX-->
+    <Geometry id="PillarSmall.FBX" fileDir="Resource/Geometry/construction/PillarSmall.FBX" rawMesh="true" hash_id="2441286916"/>
+    <!--MetalFence.FBX-->
+    <Geometry id="MetalFence.FBX" fileDir="Resource/Geometry/construction/MetalFence.FBX" rawMesh="true" hash_id="611478703"/>
+    <!--MetalFence-End.FBX-->
+    <Geometry id="MetalFence-End.FBX" fileDir="Resource/Geometry/construction/MetalFence-End.FBX" rawMesh="true" hash_id="1524293807"/>
+    <!--FloorShort.FBX-->
+    <Geometry id="FloorShort.FBX" fileDir="Resource/Geometry/construction/FloorShort.FBX" rawMesh="true" hash_id="141854415"/>
+    <!--FloorLong.FBX-->
+    <Geometry id="FloorLong.FBX" fileDir="Resource/Geometry/construction/FloorLong.FBX" rawMesh="true" hash_id="1196628437"/>
+    <!--FloorHallSmall.FBX-->
+    <Geometry id="FloorHallSmall.FBX" fileDir="Resource/Geometry/construction/FloorHallSmall.FBX" rawMesh="true" hash_id="3555258275"/>
+    <!--FloorHallBig.FBX-->
+    <Geometry id="FloorHallBig.FBX" fileDir="Resource/Geometry/construction/FloorHallBig.FBX" rawMesh="true" hash_id="4169742444"/>
+    <!--FloorBase.FBX-->
+    <Geometry id="FloorBase.FBX" fileDir="Resource/Geometry/construction/FloorBase.FBX" rawMesh="false" hash_id="2676075796"/>
 </GeometrySet>
