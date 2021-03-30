@@ -74,7 +74,6 @@ namespace KG::Core
 		UINT32 GetInstanceID() const;
 		void MatchBoneToObject(const std::vector<KG::Utill::HashString>& tags, std::vector<KG::Core::GameObject*>& bones) const;
 
-
 		void SaveToPrefab(const std::string& name);
 		void SaveToFile(const std::string& filePath);
 		void LoadToFile(const std::string& filePath);
@@ -93,6 +92,9 @@ namespace KG::Core
 			component->PostReserve();
 			temporalComponents.emplace_back(std::make_pair(componentID, component));
 		}
+
+		void LoadHierarchy(tinyxml2::XMLElement* parentElement, bool prefabMode);
+		void LoadComponent(tinyxml2::XMLElement* parentElement);
 
 		// ISerializable을(를) 통해 상속됨
 	private:

@@ -28,7 +28,7 @@ KG::Core::GameObject* KG::Core::Scene::GetIndexObject(UINT32 index) const
 	else
 	{
 		UINT poolIndex = this->activePool[index];
-		return const_cast<KG::Core::GameObject*>(&(this->objectPool.at(poolIndex).second));
+		return poolIndex == NULL_OBJECT ? nullptr : const_cast<KG::Core::GameObject*>(&(this->objectPool.at(poolIndex).second));
 	}
 }
 
@@ -121,7 +121,7 @@ KG::Core::GameObject* KG::Core::Scene::FindObjectWithTag(const KG::Utill::HashSt
 		auto* object = this->GetIndexObject(i);
 		if ( object && object->tag == tag )
 		{
-			return this->GetIndexObject(i);
+			return object;
 		}
 	}
 	return nullptr;

@@ -2,6 +2,8 @@
 #include <vector>
 #include <unordered_map>
 #include "IRenderComponent.h"
+#include "ISerializable.h"
+#include "SerializableProperty.h"
 
 #define ANIMSTATE_PLAYING 0
 #define ANIMSTATE_CHANGING 1
@@ -34,9 +36,17 @@ namespace KG::Component
 		KG::Component::GeometryComponent* geometry = nullptr;
 		std::vector<FrameCacheVector> frameCache;
 		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
-	public:
-		KG::Core::GameObject* BoneIndexToGameObject( UINT index, UINT submeshIndex = 0 ) const;
+		KG::Core::GameObject* rootNode = nullptr;
+		KG::Utill::HashString rootNodeTag;
+		KG::Core::SerializableProperty<KG::Utill::HashString> rootNodeIdProp;
 		void InitializeBone( KG::Core::GameObject* rootNode );
+	public:
+		BoneTransformComponent();
+		KG::Core::GameObject* BoneIndexToGameObject( UINT index, UINT submeshIndex = 0 ) const;
+		void SetRootNode(KG::Core::GameObject* object);
+		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
+		virtual bool OnDrawGUI();
 	};
 
 	struct Animation {
