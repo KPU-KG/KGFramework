@@ -103,4 +103,8 @@
     <Texture id="pipe_metal_normal" fileDir="Resource/Texture/pipe_metal/normal.dds" dimension="Texture2D" format="DDS"/>
     <Texture id="pipe_metal_rough" fileDir="Resource/Texture/pipe_metal/rough.dds" dimension="Texture2D" format="DDS"/>
     <Texture id="pipe_metal_metalic" fileDir="Resource/Texture/pipe_metal/metalic.dds" dimension="Texture2D" format="DDS"/>
+    <!--cc0_stone_2-->
+    <Texture id="cc0_stone_2_color" fileDir="Resource/Texture/cc0_stone_2/color.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="cc0_stone_2_normal" fileDir="Resource/Texture/cc0_stone_2/normal.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="cc0_stone_2_rough" fileDir="Resource/Texture/cc0_stone_2/rough.dds" dimension="Texture2D" format="DDS"/>
 </TextureSet>

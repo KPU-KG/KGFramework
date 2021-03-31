@@ -2,9 +2,39 @@
 #include "PxPhysicsAPI.h"
 #include "PhysicsComponent.h"
 #include "PhysicsSystem.h"
+#include "ComponentProvider.h"
 
 using namespace physx;
 using namespace KG::Physics;
+
+struct KG::Physics::PhysicsScene::PhysicsSystems
+{
+	KG::System::PhysicsSystem physicsSystem;
+
+	void OnPreRender()
+	{
+		this->physicsSystem.OnPreRender();
+	}
+
+	void OnUpdate(float elapsedTime)
+	{
+		this->physicsSystem.OnUpdate(elapsedTime);
+	}
+	void OnPostUpdate(float elapsedTime)
+	{
+		this->physicsSystem.OnPostUpdate(elapsedTime);
+	}
+
+	void PostComponentProvider(KG::Component::ComponentProvider& provider)
+	{
+		this->physicsSystem.OnPostProvider(provider);
+	}
+
+	void Clear()
+	{
+		this->physicsSystem.Clear();
+	}
+};
 
 KG::Physics::PhysicsScene::PhysicsScene()
 {
@@ -12,6 +42,10 @@ KG::Physics::PhysicsScene::PhysicsScene()
 }
 
 void KG::Physics::PhysicsScene::Initialize() {
+
+	// physicsSystems = std::make_unique<PhysicsSystems>();
+	PhysicsScene::instance = this;
+	physicsSystems = new PhysicsSystems();
 	const char* strTransport = "127.0.0.1";
 
 	allocator = new PxDefaultAllocator();
@@ -23,24 +57,29 @@ void KG::Physics::PhysicsScene::Initialize() {
 		; //
 
 	// PVD
-	pvd = PxCreatePvd(*foundation);
-	PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(strTransport, 5425, 10);
-	bool pvdConnectionResult = pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
-	if (!pvdConnectionResult) {
-	
+	if (desc.connectPVD) {
+		pvd = PxCreatePvd(*foundation);
+		PxPvdTransport* transport = PxDefaultPvdSocketTransportCreate(strTransport, 5425, 10);
+		bool pvdConnectionResult = pvd->connect(*transport, PxPvdInstrumentationFlag::eALL);
+		if (!pvdConnectionResult) {
+
+		}
+
 	}
 
-	physics = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation, PxTolerancesScale(), true, pvd);
+	physics = PxCreatePhysics(PX_PHYSICS_VERSION, *foundation, PxTolerancesScale(), desc.connectPVD, pvd);
 
 	if (!physics)
 		; // return false;
 
 	cpuDispatcher = PxDefaultCpuDispatcherCreate(1);
+
+	CreateScene(desc.gravity);
 }
 
-bool KG::Physics::PhysicsScene::CreateScene() {
+bool KG::Physics::PhysicsScene::CreateScene(float gravity) {
 	PxSceneDesc sceneDesc(physics->getTolerancesScale());
-	sceneDesc.gravity = PxVec3(0.0f, -9.81f, 0.0f);
+	sceneDesc.gravity = PxVec3(0.0f, -gravity, 0.0f);
 	sceneDesc.cpuDispatcher = cpuDispatcher;
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 	scene = physics->createScene(sceneDesc);
@@ -64,6 +103,7 @@ bool KG::Physics::PhysicsScene::Advance(float timeElapsed) {
 		scene->simulate(stepSize);
 	}
 	scene->fetchResults();
+	this->physicsSystems->OnPostUpdate(timeElapsed);
 	return true;
 }
 
@@ -74,7 +114,7 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 	// 그러면 콜리전 박스를 2개로 나눠서 관리 / kinetic, dynamic
 	KG::Component::CollisionBox cb = rigid->GetCollisionBox();
 	PxMaterial* pMaterial = physics->createMaterial(0.5f, 0.5f, 0.0f);		// Basic Setting : 나중에 필요하면 추가 ( 정적 마찰 계수, 동적 마찰 계수, 반탄 계수)
-	PxRigidDynamic* actor = PxCreateDynamic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), PxBoxGeometry(cb.width, cb.height, cb.depth), *pMaterial, 1);
+	PxRigidDynamic* actor = PxCreateDynamic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), PxBoxGeometry(cb.scale.x, cb.scale.y, cb.scale.z), *pMaterial, 1);
 
 #ifdef _DEBUG
 	actor->setActorFlag(PxActorFlag::eVISUALIZATION, true);
@@ -118,9 +158,21 @@ void KG::Physics::PhysicsScene::AddFloor(float height)
 	scene->addActor(*plane);
 }
 
+KG::Component::DynamicRigidComponent* KG::Physics::PhysicsScene::GetNewPhysicsComponent()
+{
+	auto* physicsComponent = physicsSystems->physicsSystem.GetNewComponent();
+	// ddDynamicActor(physicsComponent);
+	return physicsComponent;
+}
+
+void KG::Physics::PhysicsScene::PostComponentProvider(KG::Component::ComponentProvider& provider)
+{
+	physicsSystems->PostComponentProvider(provider);
+}
+
 // KG::Component::DynamicRigidComponent* KG::Physics::PhysicsScene::GetNewRenderComponent()
 // {
-// 	// this->physicsSystem
+// 	// this->physicsSystems
 // 	// return nullptr;
 // }
 

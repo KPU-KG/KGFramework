@@ -18,14 +18,14 @@ namespace KG::Component
 {
 	class TransformComponent;
 
-	enum RigidType {
-		DynamicRigid,
-		StaticRigid
-	};
+	// enum RigidType {
+	// 	DynamicRigid,
+	// 	StaticRigid
+	// };
 
 	struct RigidData {
 		DirectX::XMFLOAT3 position;
-		float width, height, depth;
+		DirectX::XMFLOAT3 scale;
 		DirectX::XMFLOAT3 offset;
 		// bool isKinetic;
 		// bool angleLockX;
@@ -55,32 +55,32 @@ namespace KG::Component
 
 	struct CollisionBox {
 		DirectX::XMFLOAT3 center;
+		DirectX::XMFLOAT3 scale;
 		DirectX::XMFLOAT3 offset;
-		float width, height, depth;
 	};
 
 	class DLL DynamicRigidComponent : public IPhysicsComponent {
 	protected:
 		CollisionBox				collisionBox;
 		TransformComponent*			transform;		// target transform
-		physx::PxRigidDynamic*		actor;		// rigid 
-		RigidType					rigidType = DynamicRigid;
+		physx::PxRigidDynamic*		actor;			// rigid 
 		RigidData					rigid{};
+		bool						apply = false;
+
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 	public:
 		DynamicRigidComponent();
 		virtual void PostUpdate(float timeElapsed) override;
-		void SetCollisionBox(DirectX::XMFLOAT3& position, float w, float h, float d, DirectX::XMFLOAT3 offset = { 0,0,0 });
+		virtual void Update(float timeElapsed) override;
+		void SetCollisionBox(DirectX::XMFLOAT3& position, DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 offset = { 0,0,0 });
 		CollisionBox& GetCollisionBox() { return collisionBox; }
 		void SetActor(physx::PxRigidDynamic* actor);
 	private:
 		// 참고할 코드 (저장 정보)
-		KG::Core::SerializableEnumProperty<RigidType>		rigidTypeProp;
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>	positionProp;
-		KG::Core::SerializableProperty<float>				widthProp;
-		KG::Core::SerializableProperty<float>				heightProp;
-		KG::Core::SerializableProperty<float>				depthProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3>	scaleProp;
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>	offsetProp;
+		KG::Core::SerializableProperty<bool>				applyProp;
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);

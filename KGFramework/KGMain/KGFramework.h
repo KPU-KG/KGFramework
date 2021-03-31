@@ -4,6 +4,7 @@
 #include "Setting.h"
 #include "GameTimer.h"
 #include "KGRenderer.h"
+#include "IPhysicsScene.h"
 #include "InputManager.h"
 #include "ComponentProvider.h"
 #include "Scene.h"
@@ -25,6 +26,7 @@ namespace KG
 		GameTimer timer;
 		std::unique_ptr<Systems> system;
 		std::unique_ptr<KG::Renderer::IKGRenderer> renderer;
+		std::unique_ptr<KG::Physics::IPhysicsScene> physics;
 		std::unique_ptr<KG::Input::InputManager> input;
 		KG::Component::ComponentProvider componentProvider;
 		KG::Core::Scene scene;

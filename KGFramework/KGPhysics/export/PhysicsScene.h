@@ -10,6 +10,7 @@
 #include <DirectXMath.h>
 #include <vector>
 #include "IPhysicsScene.h"
+#include "PhysicsSystem.h"
 
 namespace physx 
 {
@@ -32,6 +33,8 @@ namespace KG::Physics
 {
 	// using namespace physx;
 	class DLL PhysicsScene : public IPhysicsScene {
+	private:
+		static inline PhysicsScene* instance = nullptr;
 	protected:
 		physx::PxDefaultAllocator*		allocator;
 		physx::PxDefaultErrorCallback*	errorCallback;
@@ -44,24 +47,22 @@ namespace KG::Physics
 		float							accumulator = 0.0f;
 		float							stepSize = 1.0f / 60.0f;
 
-		struct PhysicsSystem;
-		// std::unique_ptr<PhysicsSystem> physicsSystem = nullptr;
-		// Desc
-		// Setting
-		bool CreateScene();
+		struct PhysicsSystems;
+		PhysicsSystems* physicsSystems = nullptr;
+		bool CreateScene(float gravity);
 	public:
-		// void SetDsec();
-		// void SetSetting();
 		PhysicsScene();
 		virtual void Initialize() override;
-		// virtual void* GetImGUIContext() override;
 		virtual bool Advance(float timeElapsed) override;
+
 		// 임시 지평면
 		virtual void AddDynamicActor(KG::Component::DynamicRigidComponent* rigid) override;
 		virtual void AddStaticActor(DirectX::XMFLOAT3 position, float width, float height, float depth) override;
 		virtual void AddFloor(float height) override;
-		// virtual KG::Component::DynamicRigidComponent* GetNewRenderComponent();
+		virtual KG::Component::DynamicRigidComponent* GetNewPhysicsComponent() override;
+		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 
+		static PhysicsScene* GetInstance() { return instance; }
 		// 물리쪽 업데이트에서 해줘야 할 것
 		// 1. simulate() = Advance()
 		// 2. fetchResult() - rigid값 변동

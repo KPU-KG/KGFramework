@@ -9,6 +9,7 @@
 #include "LambdaComponent.h"
 #include "SceneCameraComponent.h"
 #include "InputManager.h"
+#include "PhysicsScene.h"
 
 KG::GameFramework::GameFramework()
 {
@@ -57,8 +58,18 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	renderSetting.isVsync = this->setting.isVsync;
 
 	this->renderer->Initialize(renderDesc, renderSetting);
+
+
+	this->physics = std::unique_ptr<KG::Physics::IPhysicsScene>(KG::Physics::GetPhysicsScene());
+	KG::Physics::PhysicsDesc physicsDesc;
+	physicsDesc.connectPVD = true;
+	physicsDesc.gravity = 9.81;
+	physics->Initialize(physicsDesc);
+	physics->AddFloor(0);
+
 	this->renderer->PostComponentProvider(this->componentProvider);
 	this->system->PostComponentProvider(this->componentProvider);
+	this->physics->PostComponentProvider(this->componentProvider);
 	this->scene.SetComponentProvider(&this->componentProvider);
 
 	this->PostSceneFunction();
@@ -166,6 +177,21 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(r);
 		}
 	);
+	this->scene.AddObjectPreset("Physics Test Cube",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* t = this->system->transformSystem.GetNewComponent();
+			auto* g = this->renderer->GetNewGeomteryComponent();
+			g->AddGeometry(KG::Utill::HashString("cube"));
+			auto* m = this->renderer->GetNewMaterialComponent();
+			m->PostMaterial(KG::Utill::HashString("PBRTile"));
+			auto* r = this->renderer->GetNewRenderComponent();
+			obj.AddComponent(t);
+			obj.AddTemporalComponent(g);
+			obj.AddTemporalComponent(m);
+			obj.AddTemporalComponent(r);
+		}
+	);
 	this->scene.AddModelCreator(
 		[this](const KG::Utill::HashString& modelID, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& material)
 		{
@@ -199,6 +225,7 @@ void KG::GameFramework::UIRender()
 	auto* currentContext = (ImGuiContext*)this->renderer->GetImGUIContext();
 	ImGui::SetCurrentContext(currentContext);
 	this->scene.DrawGUI(currentContext);
+	this->physics->DrawGUI(currentContext);
 }
 
 void KG::GameFramework::OnProcess()
@@ -214,6 +241,7 @@ void KG::GameFramework::OnProcess()
 	{
 		this->renderer->Update(this->timer.GetTimeElapsed());
 	}
+	this->physics->Advance(this->timer.GetTimeElapsed());
 	this->renderer->Render();
 }
 
