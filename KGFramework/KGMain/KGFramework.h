@@ -28,6 +28,7 @@ namespace KG
 		std::unique_ptr<KG::Input::InputManager> input;
 		KG::Component::ComponentProvider componentProvider;
 		KG::Core::Scene scene;
+		ImGuiContext* guiContext = nullptr;
 	public:
 		GameFramework();
 		~GameFramework();
@@ -39,6 +40,7 @@ namespace KG
 		bool Initialize(const EngineDesc& engineDesc, const Setting& setting);
 		void PostSceneFunction();
 		int WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
+		void UIPreRender();
 		void UIRender();
 		void OnProcess();
 		void OnClose();

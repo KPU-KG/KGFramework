@@ -194,11 +194,17 @@ int KG::GameFramework::WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LP
 	return ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
 }
 
+void KG::GameFramework::UIPreRender()
+{
+	this->renderer->PreRenderUI();
+	guiContext = (ImGuiContext*)this->renderer->GetImGUIContext();
+	ImGui::SetCurrentContext(guiContext);
+	this->input->SetUIContext(guiContext);
+}
+
 void KG::GameFramework::UIRender()
 {
-	auto* currentContext = (ImGuiContext*)this->renderer->GetImGUIContext();
-	ImGui::SetCurrentContext(currentContext);
-	this->scene.DrawGUI(currentContext);
+	this->scene.DrawGUI(guiContext);
 }
 
 void KG::GameFramework::OnProcess()
@@ -206,9 +212,9 @@ void KG::GameFramework::OnProcess()
 	this->timer.Tick();
 	this->UpdateWindowText();
 	DebugNormalMessage("OnUpdatedProcess");
-	this->input->ProcessInput(this->engineDesc.hWnd);
-	this->renderer->PreRenderUI();
+	this->UIPreRender();
 	this->UIRender();
+	this->input->ProcessInput(this->engineDesc.hWnd);
 	this->system->OnUpdate(this->timer.GetTimeElapsed());
 	if ( this->scene.isStartGame )
 	{

@@ -289,6 +289,7 @@
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\IComponent.cpp" />
     <ClCompile Include="src\ImguiHelper.cpp" />
+    <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\KGLib.cpp" />
     <ClCompile Include="src\LambdaComponent.cpp" />
     <ClCompile Include="src\MaterialMatch.cpp" />
