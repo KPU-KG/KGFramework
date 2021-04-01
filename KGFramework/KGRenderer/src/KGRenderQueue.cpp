@@ -89,7 +89,7 @@ void KG::Renderer::KGRenderEngine::ClearUpdateCount()
 
 bool KG::Renderer::KGRenderJob::CheckBufferFull() const
 {
-	return (this->objectBuffer == nullptr || this->objectBuffer->GetSize() <= this->objectSize);
+	return (this->objectBuffer == nullptr || this->objectBuffer->GetSize() < this->objectSize);
 }
 
 void KG::Renderer::KGRenderJob::GetNewBuffer()
