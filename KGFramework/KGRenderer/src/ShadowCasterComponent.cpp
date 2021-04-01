@@ -50,12 +50,12 @@ void KG::Component::ShadowCasterComponent::InitializeAsDirectionalLightShadow()
 	//desc.width = 4096;
 	//desc.height = 4096;
 	desc.length = 4;
-	this->spotLightCamera->renderTextureDesc = desc;
-	this->directionalLightCamera->SetDefaultRender();
+	this->directionalLightCamera->renderTextureDesc = desc;
 	this->directionalLightCamera->InitalizeCascade( static_cast<CameraComponent*>(this->gameObject->GetScene()->GetMainCamera()), this->targetLight );
 	this->directionalLightCamera->SetNearZ( 0.01f );
 	this->directionalLightCamera->SetFarZ( 500.0f );
 	this->directionalLightCamera->OnCreate(this->gameObject);
+	this->directionalLightCamera->SetDefaultRender();
 	this->targetLight->SetShadowCasterTextureIndex( this->directionalLightCamera->GetRenderTexture().depthStencilSRVIndex );
 }
 

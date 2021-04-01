@@ -95,6 +95,7 @@ void KG::Component::LightComponent::UpdateChanged()
 void KG::Component::LightComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
 	IRenderComponent::OnCreate(gameObject);
+	memset(&this->shadow, 0, sizeof(this->shadow));
 	this->RegisterTransform(gameObject->GetComponent<TransformComponent>());
 	switch ( this->lightType )
 	{

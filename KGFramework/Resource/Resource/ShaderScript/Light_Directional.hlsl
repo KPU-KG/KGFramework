@@ -19,7 +19,7 @@ bool isInPosition(float3 position)
 
 float DirectionalShadowCascadePCF(float3 worldPosition, LightData lightData, ShadowData shadowData, out uint id)
 {
-    //if (shadowData.shadowMapIndex[0] == 0)
+    if (shadowData.shadowMapIndex[0] == 0)
     {
         id = 0;
         return 1.0f;
