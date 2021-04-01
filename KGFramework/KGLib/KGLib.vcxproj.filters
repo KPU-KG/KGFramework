@@ -129,6 +129,9 @@
     <ClCompile Include="src\InputManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\PlayerControllerComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MathHelper.h">
@@ -241,6 +244,9 @@
     </ClInclude>
     <ClInclude Include="include\imgui\ImGuizmo.h">
       <Filter>헤더 파일\Imgui</Filter>
+    </ClInclude>
+    <ClInclude Include="include\PlayerControllerComponent.h">
+      <Filter>헤더 파일\Core\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

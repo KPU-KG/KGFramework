@@ -300,6 +300,7 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 	// }
 
 
+
 	float T = anim->timer / anim->duration;
 	curAnimation.time += elapsedTime;
 
@@ -612,6 +613,7 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 
 void KG::Component::AnimationControllerComponent::Update(float elapsedTime)
 {
+	DebugNormalMessage("Update Animation");
 	switch (state) {
 	case ANIMSTATE_PLAYING:
 		PlayingUpdate(elapsedTime);
@@ -821,4 +823,12 @@ void KG::Component::AnimationControllerComponent::SetAnimationWeight(int index, 
 			nextAnimations[index].index[animationId.value] = 0;
 		nextAnimations[index].index[animationId.value] += 1;
 	}
+}
+
+bool KG::Component::AnimationControllerComponent::OnDrawGUI()
+{
+	if ( ImGui::ComponentHeader<AnimationControllerComponent>() )
+	{
+	}
+	return false;
 }

@@ -6,6 +6,7 @@
 #include "Systems.h"
 #include "Debug.h"
 #include "GameObject.h"
+#include "MaterialMatch.h"
 #include "LambdaComponent.h"
 #include "SceneCameraComponent.h"
 #include "InputManager.h"
@@ -141,6 +142,67 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
+	this->scene.AddModelPreset("PlayerCharacter",
+		[]() 
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("soldierHead");
+			a.defaultMaterial.emplace_back("soldierBody");
+
+			return std::make_pair(
+				KG::Utill::HashString("soldier"),
+				std::move(a)
+			);
+		}
+		,
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_sprint_forward"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_standing"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_right"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_left"_id));
+
+			ctrl->SetAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+			obj.AddComponent(ctrl);
+
+			auto* lam = this->system->lambdaSystem.GetNewComponent();
+			static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+				[ctrl](KG::Core::GameObject* gameObject, float elapsedTime)
+				{
+					auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+					using namespace KG::Input;
+					auto input = InputManager::GetInputManager();
+					if ( input->IsTouching('1') )
+					{
+						// -1 : 무한 루프
+						ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_left"_id), 0.5f, -1);
+					}
+					if ( input->IsTouching('2') )
+					{
+						ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 0.5f, -1);
+					}
+					if ( input->IsTouching('3') )
+					{
+						ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_right"_id), 0.5f, -1);
+					}
+					if ( input->IsTouching('4') )
+					{
+						ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 0.5f, -1);
+						ctrl->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), -1, -1);
+						ctrl->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), -1, 0);
+					}
+				}
+			);
+			obj.AddComponent(lam);
+
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+	);
+
 	this->scene.AddObjectPreset("Directional Light",
 		[this](KG::Core::GameObject& obj)
 		{
@@ -211,7 +273,6 @@ void KG::GameFramework::OnProcess()
 {
 	this->timer.Tick();
 	this->UpdateWindowText();
-	DebugNormalMessage("OnUpdatedProcess");
 	this->UIPreRender();
 	this->UIRender();
 	this->input->ProcessInput(this->engineDesc.hWnd);
