@@ -94,6 +94,7 @@ namespace KG::Component
 	protected:
 		int state = ANIMSTATE_PLAYING;
 		bool changeIntercepted = false;
+		bool isIgnoreScale = true;
 		std::vector<DirectX::XMFLOAT4> prevFrameCache;
 
 		// std::vector<Animation> animations;
@@ -122,6 +123,7 @@ namespace KG::Component
 		int AddNextAnimation(const KG::Utill::HashString& nextAnim, int nextState = ANIMSTATE_PLAYING, float duration = 0.1f, float speed = 0.5f, int weight = 1);
 		void BlendingAnimation(const KG::Utill::HashString& nextAnim, float duration = -1.f, int index = -1, int weight = 1);
 		void SetAnimationWeight(int index, const KG::Utill::HashString& anim, int weight);
+		void SetIgnoreScale(bool isUsing);
 		virtual bool OnDrawGUI() override;
 	};
 

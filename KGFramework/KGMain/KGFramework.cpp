@@ -167,6 +167,7 @@ void KG::GameFramework::PostSceneFunction()
 
 			ctrl->SetAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
 			ctrl->SetDefaultAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+			ctrl->SetIgnoreScale(false);
 			obj.AddComponent(ctrl);
 
 			auto* lam = this->system->lambdaSystem.GetNewComponent();
