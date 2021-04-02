@@ -28,7 +28,7 @@ KG::Core::GameObject* KG::Core::Scene::GetIndexObject(UINT32 index) const
 	else
 	{
 		UINT poolIndex = this->activePool[index];
-		return const_cast<KG::Core::GameObject*>(&(this->objectPool.at(poolIndex).second));
+		return poolIndex == NULL_OBJECT ? nullptr : const_cast<KG::Core::GameObject*>(&(this->objectPool.at(poolIndex).second));
 	}
 }
 
@@ -121,7 +121,7 @@ KG::Core::GameObject* KG::Core::Scene::FindObjectWithTag(const KG::Utill::HashSt
 		auto* object = this->GetIndexObject(i);
 		if ( object && object->tag == tag )
 		{
-			return this->GetIndexObject(i);
+			return object;
 		}
 	}
 	return nullptr;
@@ -229,8 +229,16 @@ void KG::Core::Scene::OnDataSave(tinyxml2::XMLElement* sceneElement)
 
 void KG::Core::Scene::AddObjectPreset(std::string name, PresetObjectCreator&& creator)
 {
-	this->objectPresetName.push_back(name);
-	this->objectPresetFunc.push_back(creator);
+	this->objectPresetName.emplace_back(name);
+	this->objectPresetModel.emplace_back(nullptr);
+	this->objectPresetFunc.emplace_back(creator);
+}
+
+void KG::Core::Scene::AddModelPreset(std::string name, PresetModelCreator&& modelCreator, PresetObjectCreator&& objCreator)
+{
+	this->objectPresetName.emplace_back(name);
+	this->objectPresetModel.emplace_back(modelCreator);
+	this->objectPresetFunc.emplace_back(objCreator);
 }
 
 void KG::Core::Scene::AddSkySetter(SkyBoxSetter&& setter)
@@ -265,7 +273,7 @@ void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameO
 	}
 	count += 1;
 	ImGui::PushID(count);
-	bool opend = ImGui::TreeNodeEx(node->tag.srcString.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | ImGuiTreeNodeFlags_DefaultOpen | (!selected ? 0 : ImGuiTreeNodeFlags_Selected));
+	bool opend = ImGui::TreeNodeEx(node->tag.srcString.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | (!selected ? 0 : ImGuiTreeNodeFlags_Selected));
 	//Drag And Drop
 	{
 		if ( ImGui::BeginDragDropTarget() )
@@ -377,6 +385,7 @@ bool KG::Core::Scene::OnDrawGUI()
 		if ( ImGui::CollapsingHeader("Info", treeNodeFlag) )
 		{
 			ImGui::BulletText("Current Object Count : %d", this->GetObjectCount());
+			ImGui::Checkbox("Update Loop", &this->isStartGame);
 		}
 		if ( ImGui::CollapsingHeader("Add Scene Object", treeNodeFlag) )
 		{
@@ -421,7 +430,16 @@ bool KG::Core::Scene::OnDrawGUI()
 				ImGui::SameLine();
 				if ( ImGui::SmallButton("Add Preset") )
 				{
-					auto* obj = this->CreateNewObject();
+					KG::Core::GameObject* obj = nullptr;
+					if ( objectPresetModel[this->currentSelectedPreset] != nullptr )
+					{
+						auto [modelId, materialMach] = this->objectPresetModel[this->currentSelectedPreset]();
+						obj = this->modelCreator(modelId, *this, materialMach);
+					}
+					else
+					{
+						obj = this->CreateNewObject();
+					}
 					objectPresetFunc[this->currentSelectedPreset](*obj);
 					obj->tag = KG::Utill::HashString(objectPresetName[this->currentSelectedPreset]);
 					this->rootNode.GetTransform()->AddChild(obj->GetTransform());

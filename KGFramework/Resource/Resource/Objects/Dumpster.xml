@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="82">
+        <Tag hash_id="188330653" srcString="Dumpster.fbx"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="28.270241" y="-5.2608584e-07" z="-74.078384"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="1" y="1" z="1"/>
+        </Component>
+        <GameObject instanceId="78">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="2.800354" y="9.8469945e-07" z="-2.2128468"/>
+                <Rotation_Q x="0" y="0.99999988" z="-0" w="-1.1920929e-07"/>
+                <Scale x="0.050000001" y="0.050000001" z="0.050000001"/>
+            </Component>
+            <GameObject instanceId="79">
+                <Tag hash_id="2472180979" srcString="Dumpster_lid02"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="5.9604645e-06" y="135.97807" z="-53.790199"/>
+                    <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                    <Scale x="100" y="100" z="100"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="188330653" srcString="Dumpster.fbx"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="4290803695" srcString="dumpster"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="80">
+                <Tag hash_id="2472178096" srcString="Dumpster_lid01"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="5.9604645e-06" y="135.97807" z="-53.790199"/>
+                    <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                    <Scale x="100" y="100" z="100"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="188330653" srcString="Dumpster.fbx"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="1"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="4290803695" srcString="dumpster"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="81">
+                <Tag hash_id="3547541570" srcString="Dumpster_body"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="64.321922" y="0" z="40.011028"/>
+                    <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                    <Scale x="100" y="100" z="100"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="188330653" srcString="Dumpster.fbx"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="2"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="4290803695" srcString="dumpster"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

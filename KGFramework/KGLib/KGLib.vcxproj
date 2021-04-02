@@ -210,6 +210,7 @@
       <LanguageStandard>stdcpp17</LanguageStandard>
       <PreprocessorDefinitions>PROJECT_NAME="$(ProjectName)";FBXSDK_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -220,6 +221,9 @@
       <AdditionalDependencies>libfbxsdk.lib;</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBMCT</IgnoreSpecificDefaultLibraries>
     </Lib>
+    <ProjectReference>
+      <LinkLibraryDependencies>true</LinkLibraryDependencies>
+    </ProjectReference>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug_ID|x64'">
     <ClCompile>
@@ -285,6 +289,7 @@
     <ClCompile Include="src\GameObject.cpp" />
     <ClCompile Include="src\IComponent.cpp" />
     <ClCompile Include="src\ImguiHelper.cpp" />
+    <ClCompile Include="src\InputManager.cpp" />
     <ClCompile Include="src\KGLib.cpp" />
     <ClCompile Include="src\LambdaComponent.cpp" />
     <ClCompile Include="src\MaterialMatch.cpp" />
@@ -297,6 +302,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_ID|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\PlayerControllerComponent.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\SceneCameraComponent.cpp" />
     <ClCompile Include="src\tinyxml2.cpp" />
@@ -332,6 +338,7 @@
     <ClInclude Include="include\MaterialMatch.h" />
     <ClInclude Include="include\MathHelper.h" />
     <ClInclude Include="include\ObjectContainer.h" />
+    <ClInclude Include="include\PlayerControllerComponent.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\SceneCameraComponent.h" />
     <ClInclude Include="include\SerializableProperty.h" />

@@ -173,6 +173,27 @@ void KG::Core::GameObject::LoadToFile(const std::string& filePath)
 void KG::Core::GameObject::OnPrefabLoad(tinyxml2::XMLElement* objectElement)
 {
 	this->tagProp.OnDataLoad(objectElement);
+
+	auto* childObjectElement = objectElement->FirstChildElement("GameObject");
+	if ( childObjectElement )
+	{
+		auto* childObject = this->GetScene()->CreateNewTransformObject();
+		auto* childTrans = childObject->GetTransform();
+		childTrans->SetParent(this->GetTransform());
+		this->GetTransform()->SetChild(childTrans);
+		childObject->OnDataLoad(childObjectElement);
+	}
+
+	auto* siblingObjectElement = objectElement->NextSiblingElement("GameObject");
+	if ( siblingObjectElement )
+	{
+		auto* siblingObject = this->GetScene()->CreateNewTransformObject();
+		auto siblingTrans = siblingObject->GetTransform();
+		siblingTrans->SetParent(this->GetTransform()->GetParent());
+		this->GetTransform()->SetNextSibiling(siblingTrans);
+		siblingObject->OnDataLoad(siblingObjectElement);
+	}
+
 	auto* componentElement = objectElement->FirstChildElement("Component");
 	while ( componentElement != nullptr )
 	{
@@ -181,21 +202,6 @@ void KG::Core::GameObject::OnPrefabLoad(tinyxml2::XMLElement* objectElement)
 		component->OnDataLoad(componentElement);
 		this->AddComponentWithID(componentId, component);
 		componentElement = componentElement->NextSiblingElement("Component");
-	}
-	auto* childObjectElement = objectElement->FirstChildElement("GameObject");
-	if ( childObjectElement )
-	{
-		auto* childObject = this->GetScene()->CreateNewObject();
-		childObject->OnDataLoad(childObjectElement);
-		this->GetTransform()->SetChild(childObject->GetTransform());
-	}
-
-	auto* siblingObjectElement = objectElement->NextSiblingElement("GameObject");
-	if ( siblingObjectElement )
-	{
-		auto* siblingObject = this->GetScene()->CreateNewObject();
-		siblingObject->OnDataLoad(siblingObjectElement);
-		this->GetTransform()->SetNextSibiling(siblingObject->GetTransform());
 	}
 }
 
@@ -221,33 +227,55 @@ void KG::Core::GameObject::OnPrefabSave(tinyxml2::XMLElement* parentElement)
 void KG::Core::GameObject::OnDataLoad(tinyxml2::XMLElement* objectElement)
 {
 	this->tagProp.OnDataLoad(objectElement);
-	auto* componentElement = objectElement->FirstChildElement("Component");
-	while ( componentElement != nullptr )
-	{
-		KG::Utill::HashString componentId = componentElement->UnsignedAttribute("hash_id");
-		auto* component = this->ownerScene->GetComponentProvider()->GetComponent(componentId);
-		component->OnDataLoad(componentElement);
-		this->AddComponentWithID(componentId, component);
-		componentElement = componentElement->NextSiblingElement("Component");
-	}
 	auto* childObjectElement = objectElement->FirstChildElement("GameObject");
 	if ( childObjectElement )
 	{
 		auto instId = childObjectElement->UnsignedAttribute("instanceId");
-		auto* childObject =  this->GetScene()->CreateNewObject(instId);
+		auto* childObject =  this->GetScene()->CreateNewTransformObject(instId);
+		auto* childTrans = childObject->GetTransform();
+		childTrans->SetParent(this->GetTransform());
+		this->GetTransform()->SetChild(childTrans);
 		childObject->OnDataLoad(childObjectElement);
-		this->GetTransform()->SetChild(childObject->GetTransform());
 	}
 
 	auto* siblingObjectElement = objectElement->NextSiblingElement("GameObject");
 	if ( siblingObjectElement )
 	{
 		auto instId = siblingObjectElement->UnsignedAttribute("instanceId");
-		auto* siblingObject = this->GetScene()->CreateNewObject(instId);
+		auto* siblingObject = this->GetScene()->CreateNewTransformObject(instId);
+		auto siblingTrans = siblingObject->GetTransform();
+		siblingTrans->SetParent(this->GetTransform()->GetParent());
+		this->GetTransform()->SetNextSibiling(siblingTrans);
 		siblingObject->OnDataLoad(siblingObjectElement);
-		this->GetTransform()->SetNextSibiling(siblingObject->GetTransform());
 	}
+
+	auto* componentElement = objectElement->FirstChildElement("Component");
+	while ( componentElement != nullptr )
+	{
+		KG::Utill::HashString componentId = componentElement->UnsignedAttribute("hash_id");
+		if ( componentId.value == KG::Component::ComponentID<KG::Component::TransformComponent>::id() )
+		{
+			this->GetTransform()->OnDataLoad(componentElement);
+		}
+		else
+		{
+			auto* component = this->ownerScene->GetComponentProvider()->GetComponent(componentId);
+			component->OnDataLoad(componentElement);
+			this->AddComponentWithID(componentId, component);
+		}
+		componentElement = componentElement->NextSiblingElement("Component");
+	}
+
 }
+
+void KG::Core::GameObject::LoadHierarchy(tinyxml2::XMLElement* parentElement, bool prefabMode)
+{
+}
+
+void KG::Core::GameObject::LoadComponent(tinyxml2::XMLElement* parentElement)
+{
+}
+
 
 void KG::Core::GameObject::OnDataSave(tinyxml2::XMLElement* parentElement)
 {

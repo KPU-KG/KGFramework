@@ -139,6 +139,7 @@ void KG::System::ShadowCasterSystem::OnPreRender()
 
 void KG::System::AnimationControllerSystem::OnUpdate(float elapsedTime)
 {
+	DebugNormalMessage("Update Animation System");
 	for (auto& com : this->pool)
 	{
 		com.Update(elapsedTime);

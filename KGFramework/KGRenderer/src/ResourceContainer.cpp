@@ -202,14 +202,15 @@ void KG::Resource::ResourceContainer::ConvertNodeToObject(const KG::Utill::HashS
 		{
 			mat->PostMaterial(materialSet[i], i);
 		}
+		object->AddComponent(geo);
+		object->AddComponent(mat);
+		
 		if ( geo->HasBone() )
 		{
 			auto* avatar = renderer->GetNewBoneTransformComponent();
+			avatar->SetRootNode(rootObject);
 			object->AddComponent(avatar);
-			avatar->InitializeBone(rootObject);
 		}
-		object->AddComponent(geo);
-		object->AddComponent(mat);
 		object->AddComponent(renderer->GetNewRenderComponent());
 	}
 	//Bone Debug

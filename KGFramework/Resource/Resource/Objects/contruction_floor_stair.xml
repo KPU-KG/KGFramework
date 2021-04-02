@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="101">
+        <Tag hash_id="3680799626" srcString="contruction_floor_stair"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="0" y="30.762085" z="0"/>
+            <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+            <Scale x="0.0049999999" y="0.0049999999" z="0.0049999999"/>
+        </Component>
+        <Component name="GeometryComponent" hash_id="36578682">
+            <GeometryDescs>
+                <Element>
+                    <geometryID hash_id="3525909125" srcString="Stairs.FBX"/>
+                    <slotIndex value="0"/>
+                    <subMeshIndex value="0"/>
+                </Element>
+            </GeometryDescs>
+        </Component>
+        <Component name="MaterialComponent" hash_id="1886146475">
+            <MaterialDesc>
+                <Element>
+                    <isRawShader value="false"/>
+                    <materialID hash_id="3528632054" srcString="construction"/>
+                    <slotIndex value="0"/>
+                </Element>
+            </MaterialDesc>
+        </Component>
+        <Component name="Render3DComponent" hash_id="4070531333"/>
+    </GameObject>
+</SavedGameObject>

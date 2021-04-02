@@ -5,6 +5,7 @@
 #include "MathHelper.h"
 #include "ResourceContainer.h"
 
+#include "Scene.h"
 #include "AnimationComponent.h"
 #include "GeometryComponent.h"
 
@@ -15,12 +16,37 @@ using namespace DirectX;
 void KG::Component::BoneTransformComponent::OnCreate( KG::Core::GameObject* gameObject )
 {
 	IRenderComponent::OnCreate( gameObject );
+	auto* tran = this->GetGameObject()->GetTransform();
+	while ( rootNode == nullptr && tran != nullptr )
+	{
+		auto* obj = tran->GetGameObject();
+		if ( this->rootNodeTag == obj->tag )
+		{
+			this->SetRootNode(obj);
+		}
+		else
+		{
+			tran = tran->GetParent();
+		}
+	}
+	assert(rootNode != nullptr && "Root Node is Null");
+	this->InitializeBone(rootNode);
+}
 
+KG::Component::BoneTransformComponent::BoneTransformComponent()
+	: rootNodeIdProp("RootNodeID", rootNodeTag)
+{
 }
 
 KG::Core::GameObject* KG::Component::BoneTransformComponent::BoneIndexToGameObject( UINT index, UINT submeshIndex ) const
 {
 	return this->frameCache[submeshIndex][index];
+}
+
+void KG::Component::BoneTransformComponent::SetRootNode(KG::Core::GameObject* object)
+{
+	rootNode = object;
+	this->rootNodeTag = rootNode->tag;
 }
 
 void KG::Component::BoneTransformComponent::InitializeBone( KG::Core::GameObject* rootNode )
@@ -44,6 +70,27 @@ void KG::Component::BoneTransformComponent::InitializeBone( KG::Core::GameObject
 		}
 #endif
 	}
+}
+
+void KG::Component::BoneTransformComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
+{
+	this->rootNodeIdProp.OnDataLoad(componentElement);
+}
+
+void KG::Component::BoneTransformComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
+{
+	auto* componentElement = parentElement->InsertNewChildElement("Component");
+	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::BoneTransformComponent);
+	this->rootNodeIdProp.OnDataSave(componentElement);
+}
+
+bool KG::Component::BoneTransformComponent::OnDrawGUI()
+{
+	if ( ImGui::ComponentHeader<BoneTransformComponent>() )
+	{
+		this->rootNodeIdProp.OnDrawGUI();
+	}
+	return false;
 }
 
 
@@ -251,6 +298,7 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 	// 		}
 	// 	}
 	// }
+
 
 
 	float T = anim->timer / anim->duration;
@@ -565,6 +613,7 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 
 void KG::Component::AnimationControllerComponent::Update(float elapsedTime)
 {
+	DebugNormalMessage("Update Animation");
 	switch (state) {
 	case ANIMSTATE_PLAYING:
 		PlayingUpdate(elapsedTime);
@@ -774,4 +823,12 @@ void KG::Component::AnimationControllerComponent::SetAnimationWeight(int index, 
 			nextAnimations[index].index[animationId.value] = 0;
 		nextAnimations[index].index[animationId.value] += 1;
 	}
+}
+
+bool KG::Component::AnimationControllerComponent::OnDrawGUI()
+{
+	if ( ImGui::ComponentHeader<AnimationControllerComponent>() )
+	{
+	}
+	return false;
 }
