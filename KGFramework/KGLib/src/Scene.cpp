@@ -273,7 +273,9 @@ void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameO
 	}
 	count += 1;
 	ImGui::PushID(count);
-	bool opend = ImGui::TreeNodeEx(node->tag.srcString.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | (!selected ? 0 : ImGuiTreeNodeFlags_Selected));
+	bool opend = ImGui::TreeNodeEx(node->tag.srcString.c_str(), 
+		ImGuiTreeNodeFlags_OpenOnArrow | (count == 1 ? ImGuiTreeNodeFlags_DefaultOpen : 0) | (!selected ? 0 : ImGuiTreeNodeFlags_Selected)
+	);
 	//Drag And Drop
 	{
 		if ( ImGui::BeginDragDropTarget() )
@@ -350,6 +352,7 @@ bool KG::Core::Scene::OnDrawGUI()
 	auto viewportSize = ImGui::GetMainViewport()->Size;
 	//ImGui::ShowDemoWindow();
 	ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+	
 	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.8f);
