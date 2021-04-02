@@ -3,9 +3,10 @@
 #include "PxPhysicsAPI.h"
 #include "Transform.h"
 #include "PhysicsScene.h"
-
+#include "Scene.h"
 void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
+	KG::Component::IComponent::OnCreate(gameObject);
 	transform = gameObject->GetComponent<KG::Component::TransformComponent>();
 	XMFLOAT3 pos = transform->GetPosition();
 	SetCollisionBox(pos, XMFLOAT3(1, 1, 1));
@@ -24,6 +25,7 @@ KG::Component::DynamicRigidComponent::DynamicRigidComponent()
 void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 {
 	if (apply) {
+		this->actor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, false);
 		physx::PxVec3 p = actor->getGlobalPose().p;
 		transform->SetPosition(p.x, p.y, p.z);
 	}
@@ -32,55 +34,13 @@ void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 		actor->setGlobalPose(physx::PxTransform(p.x, p.y, p.z));
 		this->actor->clearForce();
 		this->actor->clearTorque();
+		this->actor->setActorFlag(physx::PxActorFlag::eDISABLE_SIMULATION, true);
 	}
-
-	// rotation 쪽은 좀더 알아보고..
 }
 
 void KG::Component::DynamicRigidComponent::Update(float timeElapsed)
 {
-	// auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
-	// using namespace KG::Input;
-	// auto input = InputManager::GetInputManager();
-	// float speed = input->IsTouching(VK_LSHIFT) ? 6.0f : 2.0f;
-	// speed *= speedValue;
-	// if (ImGui::IsAnyItemFocused())
-	// {
-	// 	return;
-	// }
-	// if (input->IsTouching('W'))
-	// {
-	// 	trans->Translate(trans->GetLook() * speed * elapsedTime);
-	// }
-	// if (input->IsTouching('A'))
-	// {
-	// 	trans->Translate(trans->GetRight() * speed * elapsedTime * -1);
-	// }
-	// if (input->IsTouching('S'))
-	// {
-	// 	trans->Translate(trans->GetLook() * speed * elapsedTime * -1);
-	// }
-	// if (input->IsTouching('D'))
-	// {
-	// 	trans->Translate(trans->GetRight() * speed * elapsedTime);
-	// }
-	// if (input->IsTouching('E'))
-	// {
-	// 	trans->Translate(trans->GetUp() * speed * elapsedTime);
-	// }
-	// if (input->IsTouching('Q'))
-	// {
-	// 	trans->Translate(trans->GetUp() * speed * elapsedTime * -1);
-	// }
-	// 
-	// if (input->IsTouching('O'))
-	// {
-	// 	this->speedValue -= 0.5f;
-	// }
-	// if (input->IsTouching('P'))
-	// {
-	// 	this->speedValue += 0.5f;
-	// }
+
 }
 
 void KG::Component::DynamicRigidComponent::SetCollisionBox(DirectX::XMFLOAT3& position, DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 offset)
@@ -119,7 +79,11 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 	// static ImGuizmo::OPERATION currentGizmoOperation(ImGuizmo::TRANSLATE);
 	// static ImGuizmo::MODE currentGizmoMode(ImGuizmo::WORLD);
 
+	// if (this->isUsing())
+	// 	return false;
+
 	if (ImGui::ComponentHeader<KG::Component::DynamicRigidComponent>()) {
+		ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 		if (ImGui::TreeNode("Collision Box")) {
 			this->positionProp.OnDrawGUI();
 			this->scaleProp.OnDrawGUI();
@@ -127,6 +91,12 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 			ImGui::TreePop();
 		}
 		this->applyProp.OnDrawGUI();
+		auto view = this->gameObject->GetScene()->GetMainCameraView();
+		auto proj = this->gameObject->GetScene()->GetMainCameraProj();
+		auto curr = this->gameObject->GetTransform()->GetGlobalWorldMatrix();
+		view = Math::Matrix4x4::Transpose(view);
+		proj = Math::Matrix4x4::Transpose(proj);
+		ImGuizmo::DrawCubes(reinterpret_cast<const float*>(view.m), reinterpret_cast<const float*>(proj.m), reinterpret_cast<const float*>(curr.m), 1);
 	}
 	return false;
 }

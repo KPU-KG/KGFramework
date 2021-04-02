@@ -299,7 +299,7 @@ bool KG::Core::GameObject::OnDrawGUI()
 					{
 						searchBuffer[0] = '\0';
 						KG::Component::IComponent* obj = i.second();
-						obj->PostReserve();
+						obj->Reserve(this);
 						this->temporalComponents.emplace_back(std::make_pair(i.first, obj));
 					}
 				}

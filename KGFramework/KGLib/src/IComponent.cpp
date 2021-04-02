@@ -37,6 +37,12 @@ void KG::Component::IComponent::Create(KG::Core::GameObject* gameObject)
 	this->OnCreate(gameObject);
 }
 
+void KG::Component::IComponent::Reserve(KG::Core::GameObject* gameObject)
+{
+	this->gameObject = gameObject;
+	PostReserve();
+}
+
 void KG::Component::IComponent::Update(float timeElapsed)
 {
 }

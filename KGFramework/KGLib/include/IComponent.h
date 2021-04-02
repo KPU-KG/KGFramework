@@ -55,6 +55,7 @@ namespace KG::Component
 		};
 	public:
 		void Create(KG::Core::GameObject* gameObject);
+		void Reserve(KG::Core::GameObject* gameObject);
 		virtual void Update(float timeElapsed);
 		virtual void OnDebugUpdate(float timeElasped);
 		virtual void Destroy();
