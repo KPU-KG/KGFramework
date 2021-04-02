@@ -1,22 +1,36 @@
 #include "PhysicsSystem.h"
 
-void KG::System::PhysicsSystem::OnUpdate(float elapsedTime)
+void KG::System::DynamicRigidSystem::OnUpdate(float elapsedTime)
 {
 
 }
 
-void KG::System::PhysicsSystem::OnPostUpdate(float elapsedTime)
+void KG::System::DynamicRigidSystem::OnPostUpdate(float elapsedTime)
 {
 	for (auto& com : this->pool)
 		com.PostUpdate(elapsedTime);
 }
 
-void KG::System::PhysicsSystem::OnPreRender()
+void KG::System::DynamicRigidSystem::OnPreRender()
 {
 
 }
 
-// void KG::System::PhysicsSystem::OnPreRender()
+// void KG::System::DynamicRigidSystem::OnPreRender()
 // {
 // 
 // }
+
+void KG::System::StaticRigidSystem::OnUpdate(float elapsedTime)
+{
+}
+
+void KG::System::StaticRigidSystem::OnPostUpdate(float elapsedTime)
+{
+	for (auto& com : this->pool)
+		com.PostUpdate(elapsedTime);
+}
+
+void KG::System::StaticRigidSystem::OnPreRender()
+{
+}

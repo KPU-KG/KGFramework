@@ -30,12 +30,14 @@ namespace KG::Physics
 		virtual bool Advance(float timeElapsed) = 0;
 
 		virtual void AddDynamicActor(KG::Component::DynamicRigidComponent* rigid) = 0;
-		virtual void AddStaticActor(DirectX::XMFLOAT3 position, float width, float height, float depth) = 0;
+		// virtual void AddStaticActor(DirectX::XMFLOAT3 position, float width, float height, float depth) = 0;
+		virtual void AddStaticActor(KG::Component::StaticRigidComponent* rigid) = 0;
 		virtual void AddFloor(float height) = 0;
 
-		virtual KG::Component::DynamicRigidComponent* GetNewPhysicsComponent() = 0;
+		virtual KG::Component::DynamicRigidComponent* GetNewDynamicRigidComponent() = 0;
+		virtual KG::Component::StaticRigidComponent* GetNewStaticRigidComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
-		bool DrawGUI(ImGuiContext* context)
+		bool SetGUIContext(ImGuiContext* context)
 		{
 			ImGui::SetCurrentContext(context);
 			return true;

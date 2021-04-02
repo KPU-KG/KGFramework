@@ -23,19 +23,19 @@ namespace KG::Component
 	// 	StaticRigid
 	// };
 
-	struct RigidData {
-		DirectX::XMFLOAT3 position;
-		DirectX::XMFLOAT3 scale;
-		DirectX::XMFLOAT3 offset;
-		// bool isKinetic;
-		// bool angleLockX;
-		// bool angleLockY;
-		// bool angleLockZ;
-
-		// collision box - pos / w / h / z / offset pos
-		// kinetic / dynamic
-		// angle lock x / y / z
-	};
+	// struct RigidData {
+	// 	DirectX::XMFLOAT3 position;
+	// 	DirectX::XMFLOAT3 scale;
+	// 	DirectX::XMFLOAT3 offset;
+	// 	// bool isKinetic;
+	// 	// bool angleLockX;
+	// 	// bool angleLockY;
+	// 	// bool angleLockZ;
+	// 
+	// 	// collision box - pos / w / h / z / offset pos
+	// 	// kinetic / dynamic
+	// 	// angle lock x / y / z
+	// };
 
 	// 1. physics 컴포넌트 하나에 여러 기능은 on / off 기능으로??
 	// 2. 파트별로 각자 다른 컴포넌트로??
@@ -57,6 +57,11 @@ namespace KG::Component
 		DirectX::XMFLOAT3 center;
 		DirectX::XMFLOAT3 scale;
 		DirectX::XMFLOAT3 offset;
+		CollisionBox() {
+			center = { 0,0,0 };
+			scale = { 1,1,1 };
+			offset = { 0,0,0 };
+		}
 	};
 
 	class DLL DynamicRigidComponent : public IPhysicsComponent {
@@ -64,7 +69,7 @@ namespace KG::Component
 		CollisionBox				collisionBox;
 		TransformComponent*			transform;		// target transform
 		physx::PxRigidDynamic*		actor;			// rigid 
-		RigidData					rigid{};
+		// RigidData					rigid{};
 		bool						apply = false;
 
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
@@ -72,7 +77,7 @@ namespace KG::Component
 		DynamicRigidComponent();
 		virtual void PostUpdate(float timeElapsed) override;
 		virtual void Update(float timeElapsed) override;
-		void SetCollisionBox(DirectX::XMFLOAT3& position, DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 offset = { 0,0,0 });
+		// void SetCollisionBox(DirectX::XMFLOAT3& position, DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 offset = { 0,0,0 });
 		CollisionBox& GetCollisionBox() { return collisionBox; }
 		void SetActor(physx::PxRigidDynamic* actor);
 	private:
@@ -81,6 +86,30 @@ namespace KG::Component
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>	scaleProp;
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>	offsetProp;
 		KG::Core::SerializableProperty<bool>				applyProp;
+	public:
+		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
+		virtual bool OnDrawGUI();
+	};
+
+	class DLL StaticRigidComponent : public IPhysicsComponent {
+	protected:
+		CollisionBox collisionBox;
+		TransformComponent* transform;
+		physx::PxRigidStatic* actor;
+		bool apply = false;
+		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
+	public:
+		StaticRigidComponent();
+		virtual void PostUpdate(float timeElapsed) override;
+		virtual void Update(float timeElapsed) override;
+		CollisionBox& GetCollisionBox() { return collisionBox; }
+		void SetActor(physx::PxRigidStatic* actor);
+	private:
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3> positionProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3> scaleProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3> offsetProp;
+		KG::Core::SerializableProperty<bool> applyProp;
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
@@ -98,4 +127,5 @@ namespace KG::Component
 	// };
 
 	REGISTER_COMPONENT_ID(DynamicRigidComponent);
+	REGISTER_COMPONENT_ID(StaticRigidComponent);
 }

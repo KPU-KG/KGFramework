@@ -57,30 +57,12 @@ namespace KG::Physics
 
 		// 임시 지평면
 		virtual void AddDynamicActor(KG::Component::DynamicRigidComponent* rigid) override;
-		virtual void AddStaticActor(DirectX::XMFLOAT3 position, float width, float height, float depth) override;
+		virtual void AddStaticActor(KG::Component::StaticRigidComponent* rigid) override;
 		virtual void AddFloor(float height) override;
-		virtual KG::Component::DynamicRigidComponent* GetNewPhysicsComponent() override;
+		virtual KG::Component::DynamicRigidComponent* GetNewDynamicRigidComponent() override;
+		virtual KG::Component::StaticRigidComponent* GetNewStaticRigidComponent() override;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 
 		static PhysicsScene* GetInstance() { return instance; }
-		// 물리쪽 업데이트에서 해줘야 할 것
-		// 1. simulate() = Advance()
-		// 2. fetchResult() - rigid값 변동
-		// 3. game object에 적용
-		// bool Advance(float timeElapsed);
-
-		// addActor에서 해줘야 할 것
-		// 1. 메터리얼 생성
-		// 2. 리지드 생성 및 설정
-		// 3. 씬에 엑터 추가
-		// void AddDynamicActor(DirectX::XMFLOAT3 position, float width, float height, float depth);
-
-		
-
-		// 나중에 컴포넌트로 빼줘야 할 부분
-		// std::vector<physx::PxRigidDynamic*> rigid;
-		// void Move(DirectX::XMFLOAT3 vector);
-		// DirectX::XMFLOAT3 GetPosition();
-		// void SetRotation(DirectX::XMFLOAT4 quat); // 캐릭터 컨트롤러
 	};
 }

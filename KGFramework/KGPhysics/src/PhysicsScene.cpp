@@ -9,30 +9,36 @@ using namespace KG::Physics;
 
 struct KG::Physics::PhysicsScene::PhysicsSystems
 {
-	KG::System::PhysicsSystem physicsSystem;
+	KG::System::DynamicRigidSystem dynamicRigidSystem;
+	KG::System::StaticRigidSystem staticRigidSystem;
 
 	void OnPreRender()
 	{
-		this->physicsSystem.OnPreRender();
+		this->dynamicRigidSystem.OnPreRender();
+		this->staticRigidSystem.OnPreRender();
 	}
 
 	void OnUpdate(float elapsedTime)
 	{
-		this->physicsSystem.OnUpdate(elapsedTime);
+		this->dynamicRigidSystem.OnUpdate(elapsedTime);
+		this->staticRigidSystem.OnUpdate(elapsedTime);
 	}
 	void OnPostUpdate(float elapsedTime)
 	{
-		this->physicsSystem.OnPostUpdate(elapsedTime);
+		this->dynamicRigidSystem.OnPostUpdate(elapsedTime);
+		this->staticRigidSystem.OnPostUpdate(elapsedTime);
 	}
 
 	void PostComponentProvider(KG::Component::ComponentProvider& provider)
 	{
-		this->physicsSystem.OnPostProvider(provider);
+		this->dynamicRigidSystem.OnPostProvider(provider);
+		this->staticRigidSystem.OnPostProvider(provider);
 	}
 
 	void Clear()
 	{
-		this->physicsSystem.Clear();
+		this->dynamicRigidSystem.Clear();
+		this->staticRigidSystem.Clear();
 	}
 };
 
@@ -43,8 +49,9 @@ KG::Physics::PhysicsScene::PhysicsScene()
 
 void KG::Physics::PhysicsScene::Initialize() {
 
-	// physicsSystems = std::make_unique<PhysicsSystems>();
 	PhysicsScene::instance = this;
+
+	// physicsSystems = std::make_unique<PhysicsSystems>();
 	physicsSystems = new PhysicsSystems();
 	const char* strTransport = "127.0.0.1";
 
@@ -113,6 +120,7 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 	// 그 외에 충돌 판정은 해야 하나 물리적 작용은 안해도 되는 것 (총알에 맞는 판정 등)은 KINETIC 플래그 설정
 	// 그러면 콜리전 박스를 2개로 나눠서 관리 / kinetic, dynamic
 	KG::Component::CollisionBox cb = rigid->GetCollisionBox();
+	// DirectX::XMFLOAT3 pos = rigid->
 	PxMaterial* pMaterial = physics->createMaterial(0.5f, 0.5f, 0.0f);		// Basic Setting : 나중에 필요하면 추가 ( 정적 마찰 계수, 동적 마찰 계수, 반탄 계수)
 	PxRigidDynamic* actor = PxCreateDynamic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), PxBoxGeometry(cb.scale.x, cb.scale.y, cb.scale.z), *pMaterial, 1);
 
@@ -125,30 +133,18 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 
 	scene->addActor(*actor);
 	rigid->SetActor(actor);
-
-	// rigid->
 }
 
-// void KG::Physics::PhysicsScene::AddDynamicActor(DirectX::XMFLOAT3 position, float width, float height, float depth)
-// {
-// 	PxMaterial* pMaterial = physics->createMaterial(0.5f, 0.5f, 0.0f);
-// 	PxRigidDynamic* actor = PxCreateDynamic(*physics, PxTransform(position.x, position.y, position.z), PxBoxGeometry(width, height, depth), *pMaterial, 1);
-// 	actor->setActorFlag(PxActorFlag::eVISUALIZATION, true);
-// 
-// 	actor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_X, false);
-// 	actor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z, false);
-// 	actor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, false);
-// 
-// 	scene->addActor(*actor);
-// 	rigid.push_back(actor);
-// }
-
-void KG::Physics::PhysicsScene::AddStaticActor(DirectX::XMFLOAT3 position, float width, float height, float depth)
+void KG::Physics::PhysicsScene::AddStaticActor(KG::Component::StaticRigidComponent* rigid)
 {
 	PxMaterial* pMaterial = physics->createMaterial(0.5f, 0.5f, 0.5f);
-	PxRigidStatic* actor = PxCreateStatic(*physics, PxTransform(position.x, position.y, position.z), PxBoxGeometry(width, height, depth), *pMaterial);
-	actor->setActorFlag(PxActorFlag::eVISUALIZATION, true);
+	KG::Component::CollisionBox cb = rigid->GetCollisionBox();
+	PxRigidStatic* actor = PxCreateStatic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), PxBoxGeometry(cb.scale.x, cb.scale.y, cb.scale.z), *pMaterial);
+#ifdef _DEBUG
+	actor->setActorFlag(PxActorFlag::eVISUALIZATION, true);				// PVD에 보여지는지 체크
+#endif
 	scene->addActor(*actor);
+	rigid->SetActor(actor);
 }
 
 void KG::Physics::PhysicsScene::AddFloor(float height)
@@ -158,11 +154,16 @@ void KG::Physics::PhysicsScene::AddFloor(float height)
 	scene->addActor(*plane);
 }
 
-KG::Component::DynamicRigidComponent* KG::Physics::PhysicsScene::GetNewPhysicsComponent()
+KG::Component::DynamicRigidComponent* KG::Physics::PhysicsScene::GetNewDynamicRigidComponent()
 {
-	auto* physicsComponent = physicsSystems->physicsSystem.GetNewComponent();
-	// ddDynamicActor(physicsComponent);
-	return physicsComponent;
+	auto* comp = physicsSystems->dynamicRigidSystem.GetNewComponent();
+	return comp;
+}
+
+KG::Component::StaticRigidComponent* KG::Physics::PhysicsScene::GetNewStaticRigidComponent()
+{
+	auto* comp = physicsSystems->staticRigidSystem.GetNewComponent();
+	return comp;
 }
 
 void KG::Physics::PhysicsScene::PostComponentProvider(KG::Component::ComponentProvider& provider)

@@ -57,8 +57,21 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	DebugNormalMessage("RECT : " << renderSetting.clientWidth << " , " << renderSetting.clientHeight);
 	renderSetting.isVsync = this->setting.isVsync;
 
+	// Physics
+	this->physics = std::unique_ptr<KG::Physics::IPhysicsScene>(KG::Physics::GetPhysicsScene());
+	KG::Physics::PhysicsDesc physicsDesc;
+#ifdef _DEBUG
+	physicsDesc.connectPVD = true;
+#elif
+	physicsDesc.connectPVD = false;
+#endif
+	physicsDesc.gravity = 9.81f;
+
 	this->renderer->Initialize(renderDesc, renderSetting);
 	this->renderer->PostComponentProvider(this->componentProvider);
+	this->physics->Initialize(physicsDesc);
+	this->physics->AddFloor(0);
+	this->physics->PostComponentProvider(this->componentProvider);
 	this->system->PostComponentProvider(this->componentProvider);
 	this->scene.SetComponentProvider(&this->componentProvider);
 
@@ -262,6 +275,8 @@ void KG::GameFramework::UIPreRender()
 	guiContext = (ImGuiContext*)this->renderer->GetImGUIContext();
 	ImGui::SetCurrentContext(guiContext);
 	this->input->SetUIContext(guiContext);
+	this->physics->SetGUIContext(guiContext);
+	// this->physics->
 }
 
 void KG::GameFramework::UIRender()
@@ -281,6 +296,7 @@ void KG::GameFramework::OnProcess()
 	{
 		this->renderer->Update(this->timer.GetTimeElapsed());
 	}
+	this->physics->Advance(this->timer.GetTimeElapsed());
 	this->renderer->Render();
 }
 
