@@ -99,12 +99,52 @@
     <Texture id="painted_metal_white_rough" fileDir="Resource/Texture/painted_metal_white/rough.dds" dimension="Texture2D" format="DDS" hash_id="1473363228"/>
     <Texture id="painted_metal_white_metalic" fileDir="Resource/Texture/painted_metal_white/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2326887002"/>
     <!--pipe_metal-->
-    <Texture id="pipe_metal_color" fileDir="Resource/Texture/pipe_metal/color.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="pipe_metal_normal" fileDir="Resource/Texture/pipe_metal/normal.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="pipe_metal_rough" fileDir="Resource/Texture/pipe_metal/rough.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="pipe_metal_metalic" fileDir="Resource/Texture/pipe_metal/metalic.dds" dimension="Texture2D" format="DDS"/>
-    <!--cc0_stone_2-->
-    <Texture id="cc0_stone_2_color" fileDir="Resource/Texture/cc0_stone_2/color.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="cc0_stone_2_normal" fileDir="Resource/Texture/cc0_stone_2/normal.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="cc0_stone_2_rough" fileDir="Resource/Texture/cc0_stone_2/rough.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="pipe_metal_color" fileDir="Resource/Texture/pipe_metal/color.dds" dimension="Texture2D" format="DDS" hash_id="3724816981"/>
+    <Texture id="pipe_metal_normal" fileDir="Resource/Texture/pipe_metal/normal.dds" dimension="Texture2D" format="DDS" hash_id="922787365"/>
+    <Texture id="pipe_metal_rough" fileDir="Resource/Texture/pipe_metal/rough.dds" dimension="Texture2D" format="DDS" hash_id="1494903823"/>
+    <Texture id="pipe_metal_metalic" fileDir="Resource/Texture/pipe_metal/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3336866289"/>
+    <!--dumpster-->
+    <Texture id="dumpster_color" fileDir="Resource/Texture/dumpster/color.dds" dimension="Texture2D" format="DDS" hash_id="3488366935"/>
+    <Texture id="dumpster_normal" fileDir="Resource/Texture/dumpster/normal.dds" dimension="Texture2D" format="DDS" hash_id="3484659487"/>
+    <Texture id="dumpster_rough" fileDir="Resource/Texture/dumpster/rough.dds" dimension="Texture2D" format="DDS" hash_id="1999343885"/>
+    <Texture id="dumpster_metalic" fileDir="Resource/Texture/dumpster/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2501136903"/>
+    <!--barrel_old_flame-->
+    <Texture id="barrel_old_flame_color" fileDir="Resource/Texture/barrel_old_flame/color.dds" dimension="Texture2D" format="DDS" hash_id="965932555"/>
+    <Texture id="barrel_old_flame_normal" fileDir="Resource/Texture/barrel_old_flame/normal.dds" dimension="Texture2D" format="DDS" hash_id="395713043"/>
+    <Texture id="barrel_old_flame_rough" fileDir="Resource/Texture/barrel_old_flame/rough.dds" dimension="Texture2D" format="DDS" hash_id="666888897"/>
+    <Texture id="barrel_old_flame_metalic" fileDir="Resource/Texture/barrel_old_flame/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2609716403"/>
+    <!--barrel_clean_flame-->
+    <Texture id="barrel_clean_flame_color" fileDir="Resource/Texture/barrel_clean_flame/color.dds" dimension="Texture2D" format="DDS" hash_id="1085215211"/>
+    <Texture id="barrel_clean_flame_normal" fileDir="Resource/Texture/barrel_clean_flame/normal.dds" dimension="Texture2D" format="DDS" hash_id="34867955"/>
+    <Texture id="barrel_clean_flame_rough" fileDir="Resource/Texture/barrel_clean_flame/rough.dds" dimension="Texture2D" format="DDS" hash_id="786417569"/>
+    <Texture id="barrel_clean_flame_metalic" fileDir="Resource/Texture/barrel_clean_flame/metalic.dds" dimension="Texture2D" format="DDS" hash_id="1274263699"/>
+    <!--container_red-->
+    <Texture id="container_red_color" fileDir="Resource/Texture/container_red/color.dds" dimension="Texture2D" format="DDS" hash_id="1801381842"/>
+    <Texture id="container_red_normal" fileDir="Resource/Texture/container_red/normal.dds" dimension="Texture2D" format="DDS" hash_id="2897733296"/>
+    <Texture id="container_red_rough" fileDir="Resource/Texture/container_red/rough.dds" dimension="Texture2D" format="DDS" hash_id="4031279624"/>
+    <!--container_green-->
+    <Texture id="container_green_color" fileDir="Resource/Texture/container_green/color.dds" dimension="Texture2D" format="DDS" hash_id="3569604522"/>
+    <Texture id="container_green_normal" fileDir="Resource/Texture/container_green/normal.dds" dimension="Texture2D" format="DDS" hash_id="205960776"/>
+    <Texture id="container_green_rough" fileDir="Resource/Texture/container_green/rough.dds" dimension="Texture2D" format="DDS" hash_id="1260748528"/>
+    <!--container_gray-->
+    <Texture id="container_gray_color" fileDir="Resource/Texture/container_gray/color.dds" dimension="Texture2D" format="DDS" hash_id="653918248"/>
+    <Texture id="container_gray_normal" fileDir="Resource/Texture/container_gray/normal.dds" dimension="Texture2D" format="DDS" hash_id="2584379198"/>
+    <Texture id="container_gray_rough" fileDir="Resource/Texture/container_gray/rough.dds" dimension="Texture2D" format="DDS" hash_id="2647659890"/>
+    <!--container_blue-->
+    <Texture id="container_blue_color" fileDir="Resource/Texture/container_blue/color.dds" dimension="Texture2D" format="DDS" hash_id="1528403169"/>
+    <Texture id="container_blue_normal" fileDir="Resource/Texture/container_blue/normal.dds" dimension="Texture2D" format="DDS" hash_id="1070388561"/>
+    <Texture id="container_blue_rough" fileDir="Resource/Texture/container_blue/rough.dds" dimension="Texture2D" format="DDS" hash_id="1221521595"/>
+    <!--fps_pros-->
+    <Texture id="fps_pros_color" fileDir="Resource/Texture/fps_pros/color.dds" dimension="Texture2D" format="DDS" hash_id="2343433261"/>
+    <Texture id="fps_pros_normal" fileDir="Resource/Texture/fps_pros/normal.dds" dimension="Texture2D" format="DDS" hash_id="1271708957"/>
+    <Texture id="fps_pros_rough" fileDir="Resource/Texture/fps_pros/rough.dds" dimension="Texture2D" format="DDS" hash_id="1822748407"/>
+    <Texture id="fps_pros_metalic" fileDir="Resource/Texture/fps_pros/metalic.dds" dimension="Texture2D" format="DDS" hash_id="1092940745"/>
+    <!--crane-->
+    <Texture id="crane_color" fileDir="Resource/Texture/crane/color.dds" dimension="Texture2D" format="DDS" hash_id="1603407992"/>
+    <Texture id="crane_normal" fileDir="Resource/Texture/crane/normal.dds" dimension="Texture2D" format="DDS" hash_id="1837015662"/>
+    <Texture id="crane_metalic" fileDir="Resource/Texture/crane/metalic.dds" dimension="Texture2D" format="DDS" hash_id="820988632"/>
+    <!--construction-->
+    <Texture id="construction_color" fileDir="Resource/Texture/construction/color.dds" dimension="Texture2D" format="DDS" hash_id="3209013374"/>
+    <Texture id="construction_normal" fileDir="Resource/Texture/construction/normal.dds" dimension="Texture2D" format="DDS" hash_id="1897116092"/>
+    <Texture id="construction_metalic" fileDir="Resource/Texture/construction/metalic.dds" dimension="Texture2D" format="DDS" hash_id="4065980882"/>
 </TextureSet>

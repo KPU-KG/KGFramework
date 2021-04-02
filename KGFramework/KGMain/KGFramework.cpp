@@ -6,10 +6,10 @@
 #include "Systems.h"
 #include "Debug.h"
 #include "GameObject.h"
+#include "MaterialMatch.h"
 #include "LambdaComponent.h"
 #include "SceneCameraComponent.h"
 #include "InputManager.h"
-#include "PhysicsScene.h"
 
 KG::GameFramework::GameFramework()
 {
@@ -58,18 +58,8 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	renderSetting.isVsync = this->setting.isVsync;
 
 	this->renderer->Initialize(renderDesc, renderSetting);
-
-
-	this->physics = std::unique_ptr<KG::Physics::IPhysicsScene>(KG::Physics::GetPhysicsScene());
-	KG::Physics::PhysicsDesc physicsDesc;
-	physicsDesc.connectPVD = true;
-	physicsDesc.gravity = 9.81;
-	physics->Initialize(physicsDesc);
-	physics->AddFloor(0);
-
 	this->renderer->PostComponentProvider(this->componentProvider);
 	this->system->PostComponentProvider(this->componentProvider);
-	this->physics->PostComponentProvider(this->componentProvider);
 	this->scene.SetComponentProvider(&this->componentProvider);
 
 	this->PostSceneFunction();
@@ -152,6 +142,67 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
+	this->scene.AddModelPreset("PlayerCharacter",
+		[]() 
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("soldierHead");
+			a.defaultMaterial.emplace_back("soldierBody");
+
+			return std::make_pair(
+				KG::Utill::HashString("soldier"),
+				std::move(a)
+			);
+		}
+		,
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_sprint_forward"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_standing"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_right"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_left"_id));
+
+			ctrl->SetAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+			obj.AddComponent(ctrl);
+
+			auto* lam = this->system->lambdaSystem.GetNewComponent();
+			static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
+				[ctrl](KG::Core::GameObject* gameObject, float elapsedTime)
+				{
+					auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
+					using namespace KG::Input;
+					auto input = InputManager::GetInputManager();
+					if ( input->IsTouching('1') )
+					{
+						// -1 : 무한 루프
+						ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_left"_id), 0.5f, -1);
+					}
+					if ( input->IsTouching('2') )
+					{
+						ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 0.5f, -1);
+					}
+					if ( input->IsTouching('3') )
+					{
+						ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_right"_id), 0.5f, -1);
+					}
+					if ( input->IsTouching('4') )
+					{
+						ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 0.5f, -1);
+						ctrl->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), -1, -1);
+						ctrl->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), -1, 0);
+					}
+				}
+			);
+			obj.AddComponent(lam);
+
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+	);
+
 	this->scene.AddObjectPreset("Directional Light",
 		[this](KG::Core::GameObject& obj)
 		{
@@ -175,21 +226,6 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(m);
 			obj.AddComponent(g);
 			obj.AddComponent(r);
-		}
-	);
-	this->scene.AddObjectPreset("Physics Test Cube",
-		[this](KG::Core::GameObject& obj)
-		{
-			auto* t = this->system->transformSystem.GetNewComponent();
-			auto* g = this->renderer->GetNewGeomteryComponent();
-			g->AddGeometry(KG::Utill::HashString("cube"));
-			auto* m = this->renderer->GetNewMaterialComponent();
-			m->PostMaterial(KG::Utill::HashString("PBRTile"));
-			auto* r = this->renderer->GetNewRenderComponent();
-			obj.AddComponent(t);
-			obj.AddTemporalComponent(g);
-			obj.AddTemporalComponent(m);
-			obj.AddTemporalComponent(r);
 		}
 	);
 	this->scene.AddModelCreator(
@@ -220,28 +256,31 @@ int KG::GameFramework::WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LP
 	return ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
 }
 
+void KG::GameFramework::UIPreRender()
+{
+	this->renderer->PreRenderUI();
+	guiContext = (ImGuiContext*)this->renderer->GetImGUIContext();
+	ImGui::SetCurrentContext(guiContext);
+	this->input->SetUIContext(guiContext);
+}
+
 void KG::GameFramework::UIRender()
 {
-	auto* currentContext = (ImGuiContext*)this->renderer->GetImGUIContext();
-	ImGui::SetCurrentContext(currentContext);
-	this->scene.DrawGUI(currentContext);
-	this->physics->DrawGUI(currentContext);
+	this->scene.DrawGUI(guiContext);
 }
 
 void KG::GameFramework::OnProcess()
 {
 	this->timer.Tick();
 	this->UpdateWindowText();
-	DebugNormalMessage("OnUpdatedProcess");
-	this->input->ProcessInput(this->engineDesc.hWnd);
-	this->renderer->PreRenderUI();
+	this->UIPreRender();
 	this->UIRender();
+	this->input->ProcessInput(this->engineDesc.hWnd);
 	this->system->OnUpdate(this->timer.GetTimeElapsed());
 	if ( this->scene.isStartGame )
 	{
 		this->renderer->Update(this->timer.GetTimeElapsed());
 	}
-	this->physics->Advance(this->timer.GetTimeElapsed());
 	this->renderer->Render();
 }
 
