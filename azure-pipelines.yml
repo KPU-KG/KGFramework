@@ -14,6 +14,9 @@ variables:
   appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\\'
 
 steps:
+- checkout: self
+  clean: true
+  fetchDepth: 1 # Fetch only one commit
 - task: NuGetCommand@2
   inputs:
     command: 'restore'
@@ -25,6 +28,7 @@ steps:
     vsVersion: '16.0'
     platform: 'x64'
     msbuildArchitecture: 'x64'
+    msbuildArgs: -target:KGLib;KGRenderer;KGPhysics;KGMain;
     createLogFile: true
     
 # Build a Universal Windows Platform project using Visual Studio.
