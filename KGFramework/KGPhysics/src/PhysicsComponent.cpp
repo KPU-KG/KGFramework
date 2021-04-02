@@ -27,6 +27,12 @@ void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 		this->actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, false);
 		physx::PxVec3 p = actor->getGlobalPose().p;
 		transform->SetPosition(p.x, p.y, p.z);
+		transform->SetRotation(DirectX::XMQuaternionRotationRollPitchYaw(0, 60, 0));
+		XMFLOAT4 rot = this->transform->GetRotation();
+		physx::PxTransform pxT = this->actor->getGlobalPose();
+		pxT.q = { rot.x, rot.y, rot.z, rot.w };
+		this->actor->setGlobalPose(pxT);
+		physx::PxTransform check = this->actor->getGlobalPose();
 	}
 	else {
 		XMFLOAT3 p = transform->GetPosition();
@@ -94,13 +100,6 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 		XMStoreFloat4x4(&colMat, XMMatrixMultiply(XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), XMMatrixScalingFromVector(XMLoadFloat3(&collisionBox.scale))));
 		XMStoreFloat4x4(&colMat, XMMatrixMultiply(XMLoadFloat4x4(&colMat), XMLoadFloat4x4(&mat)));
 
-		// 근데 생각해보니까 게임 오브젝트의 스케일은 거의 항상 111인데 이걸 가져오면 안되잖아???
-		// 그에에ㅔㅔㄱ..
-			// actor
-		// XMStoreFloat4x4(&mat, DirectX::XMMatrixIdentity());
-		// XMStoreFloat4x4(&mat, XMMatrixMultiply(XMLoadFloat4x4(&mat), DirectX::XMMatrixScalingFromVector(XMLoadFloat3(&collisionBox.scale))));
-		// XMStoreFloat4x4(&mat, XMMatrixMultiply(XMLoadFloat4x4(&mat), DirectX::XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center))));
-		// XMStoreFloat4x4(&curr, XMMatrixMultiply(XMLoadFloat4x4(&curr), DirectX::XMLoadFloat4x4(&mat)));
 		view = Math::Matrix4x4::Transpose(view);
 		proj = Math::Matrix4x4::Transpose(proj);
 		ImGuiIO& io = ImGui::GetIO();
@@ -109,23 +108,7 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 			reinterpret_cast<const float*>(proj.m),
 			reinterpret_cast<const float*>(colMat.m),
 			1);
-		// this->applyProp.OnDrawGUI();
-		// auto view = this->gameObject->GetScene()->GetMainCameraView();
-		// auto proj = this->gameObject->GetScene()->GetMainCameraProj();
-		// auto curr = this->gameObject->GetTransform()->GetGlobalWorldMatrix();		// world matrix
-		// DirectX::XMFLOAT4X4 mat;
-		// // actor
-		// XMStoreFloat4x4(&mat, XMMatrixMultiply(XMLoadFloat4x4(&curr), DirectX::XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center))));
-		// XMStoreFloat4x4(&mat, XMMatrixMultiply(XMLoadFloat4x4(&mat), DirectX::XMMatrixScalingFromVector(XMLoadFloat3(&collisionBox.scale))));
-		// 
-		// view = Math::Matrix4x4::Transpose(view);
-		// proj = Math::Matrix4x4::Transpose(proj);
-		// ImGuiIO& io = ImGui::GetIO();
-		// ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-		// ImGuizmo::DrawCubes(reinterpret_cast<const float*>(view.m), 
-		// 	reinterpret_cast<const float*>(proj.m), 
-		// 	reinterpret_cast<const float*>(mat.m), 
-		// 	1);
+
 	}
 	return false;
 }

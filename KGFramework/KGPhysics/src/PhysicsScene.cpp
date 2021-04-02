@@ -89,6 +89,7 @@ bool KG::Physics::PhysicsScene::CreateScene(float gravity) {
 	sceneDesc.gravity = PxVec3(0.0f, -gravity, 0.0f);
 	sceneDesc.cpuDispatcher = cpuDispatcher;
 	sceneDesc.filterShader = PxDefaultSimulationFilterShader;
+	// sceneDesc.dynamicStructure = PxPruningStructureType::eLAST
 	scene = physics->createScene(sceneDesc);
 	if (!scene)
 		return false;
@@ -129,7 +130,8 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 #endif
 	actor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_X, false);		// DynamicRigidComponent에 플래그 추가
 	actor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z, false);
-	actor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, false);
+	actor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, false); 
+	// actor->
 
 	scene->addActor(*actor);
 	rigid->SetActor(actor);
