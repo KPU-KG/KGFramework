@@ -4,6 +4,7 @@
 #include "Transform.h"
 #include "PhysicsScene.h"
 #include "Scene.h"
+#include "MathHelper.h"
 
 void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
@@ -187,15 +188,20 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 		this->applyProp.OnDrawGUI();
 		auto view = this->gameObject->GetScene()->GetMainCameraView();
 		auto proj = this->gameObject->GetScene()->GetMainCameraProj();
-		// auto curr = this->gameObject->GetTransform()->GetGlobalWorldMatrix();		// world matrix
-		XMFLOAT3 pos = this->gameObject->GetTransform()->GetPosition();
-		XMFLOAT4 rot = this->gameObject->GetTransform()->GetRotation();
-		// XMQUATERNION
-		XMFLOAT4X4 mat;
-		XMStoreFloat4x4(&mat, XMMatrixMultiply(XMMatrixTranslationFromVector(XMLoadFloat3(&pos)), XMMatrixRotationQuaternion(XMLoadFloat4(&rot))));
-		XMFLOAT4X4 colMat;
-		XMStoreFloat4x4(&colMat, XMMatrixMultiply(XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), XMMatrixScalingFromVector(XMLoadFloat3(&collisionBox.scale))));
-		XMStoreFloat4x4(&colMat, XMMatrixMultiply(XMLoadFloat4x4(&colMat), XMLoadFloat4x4(&mat)));
+		auto curr = this->gameObject->GetTransform()->GetGlobalWorldMatrix();		// world matrix
+		//XMFLOAT3 pos = this->gameObject->GetTransform()->GetPosition();
+		//XMFLOAT4 rot = this->gameObject->GetTransform()->GetRotation();
+		//// XMQUATERNION
+		//XMFLOAT4X4 mat;
+		//XMStoreFloat4x4(&mat, XMMatrixMultiply(XMMatrixTranslationFromVector(XMLoadFloat3(&pos)), XMMatrixRotationQuaternion(XMLoadFloat4(&rot))));
+		//XMFLOAT4X4 colMat;
+		//XMStoreFloat4x4(&colMat, XMMatrixMultiply(XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), XMMatrixScalingFromVector(XMLoadFloat3(&collisionBox.scale))));
+		//XMStoreFloat4x4(&colMat, XMMatrixMultiply(XMLoadFloat4x4(&colMat), XMLoadFloat4x4(&mat)));
+
+		curr = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
+			XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)),
+			curr);
+
 
 		// 근데 생각해보니까 게임 오브젝트의 스케일은 거의 항상 111인데 이걸 가져오면 안되잖아???
 		// 그에에ㅔㅔㄱ..
@@ -210,7 +216,7 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 		ImGuizmo::DrawCubes(reinterpret_cast<const float*>(view.m),
 			reinterpret_cast<const float*>(proj.m),
-			reinterpret_cast<const float*>(colMat.m),
+			reinterpret_cast<const float*>(curr.m),
 			1);
 	}
 	return false;
