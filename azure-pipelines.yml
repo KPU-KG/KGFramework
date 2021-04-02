@@ -28,7 +28,7 @@ steps:
     vsVersion: '16.0'
     platform: 'x64'
     msbuildArchitecture: 'x64'
-    msbuildArgs: -target:KGLib;KGRenderer;KGPhysics;KGMain;
+    msbuildArgs: -'target:KGLib;KGRenderer;KGPhysics;KGMain'
     createLogFile: true
     
 # Build a Universal Windows Platform project using Visual Studio.
