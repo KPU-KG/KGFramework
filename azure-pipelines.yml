@@ -1,4 +1,6 @@
 # Universal Windows Platform
+
+
 trigger:
 - master
 
@@ -12,6 +14,11 @@ variables:
   appxPackageDir: '$(build.artifactStagingDirectory)\AppxPackages\\'
 
 steps:
+- task: NuGetCommand@2
+  inputs:
+    command: 'restore'
+    restoreSolution: '**/*.sln'
+    feedsToUse: 'select'
 - task: VSBuild@1
   inputs:
     solution: '**\*.sln'
