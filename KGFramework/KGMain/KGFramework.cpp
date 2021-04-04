@@ -70,7 +70,7 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	this->renderer->Initialize(renderDesc, renderSetting);
 	this->renderer->PostComponentProvider(this->componentProvider);
 	this->physics->Initialize(physicsDesc);
-	this->physics->AddFloor(0);
+	this->physics->AddFloor(-1);
 	this->physics->PostComponentProvider(this->componentProvider);
 	this->system->PostComponentProvider(this->componentProvider);
 	this->scene.SetComponentProvider(&this->componentProvider);
@@ -170,6 +170,7 @@ void KG::GameFramework::PostSceneFunction()
 		,
 		[this](KG::Core::GameObject& obj)
 		{
+			obj.GetTransform()->SetPosition(20, 3, 20);
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
 
 			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_sprint_forward"_id));

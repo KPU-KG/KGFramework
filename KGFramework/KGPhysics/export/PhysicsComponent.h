@@ -56,11 +56,9 @@ namespace KG::Component
 	struct CollisionBox {
 		DirectX::XMFLOAT3 center;
 		DirectX::XMFLOAT3 scale;
-		DirectX::XMFLOAT3 offset;
 		CollisionBox() {
 			center = { 0,0,0 };
 			scale = { 1,1,1 };
-			offset = { 0,0,0 };
 		}
 	};
 
@@ -84,7 +82,6 @@ namespace KG::Component
 		// 참고할 코드 (저장 정보)
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>	positionProp;
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>	scaleProp;
-		KG::Core::SerializableProperty<DirectX::XMFLOAT3>	offsetProp;
 		KG::Core::SerializableProperty<bool>				applyProp;
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
@@ -108,7 +105,6 @@ namespace KG::Component
 	private:
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3> positionProp;
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3> scaleProp;
-		KG::Core::SerializableProperty<DirectX::XMFLOAT3> offsetProp;
 		KG::Core::SerializableProperty<bool> applyProp;
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
