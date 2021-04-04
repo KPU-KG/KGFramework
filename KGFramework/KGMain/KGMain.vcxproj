@@ -119,7 +119,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(SolutionDir)KGLib\include;$(SolutionDir)KGRenderer\export;$(IncludePath)</IncludePath>
+    <IncludePath>$(SolutionDir)KGPhysics\export;$(SolutionDir)KGLib\include;$(SolutionDir)KGRenderer\export;$(IncludePath)</IncludePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -219,7 +219,9 @@
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="KGFramework.h" />
     <ClInclude Include="KGMain.h" />
+    <ClInclude Include="PlayerControllerComponent.h" />
     <ClInclude Include="Resource.h" />
+    <ClInclude Include="SceneCameraComponent.h" />
     <ClInclude Include="Setting.h" />
     <ClInclude Include="Systems.h" />
     <ClInclude Include="targetver.h" />
@@ -229,6 +231,8 @@
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="KGFramework.cpp" />
     <ClCompile Include="KGMain.cpp" />
+    <ClCompile Include="PlayerControllerComponent.cpp" />
+    <ClCompile Include="SceneCameraComponent.cpp" />
     <ClCompile Include="Setting.cpp" />
   </ItemGroup>
   <ItemGroup>

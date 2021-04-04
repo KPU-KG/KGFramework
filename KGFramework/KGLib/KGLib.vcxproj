@@ -302,9 +302,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_ID|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\PlayerControllerComponent.cpp" />
     <ClCompile Include="src\Scene.cpp" />
-    <ClCompile Include="src\SceneCameraComponent.cpp" />
     <ClCompile Include="src\tinyxml2.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\TransformSystem.cpp" />
@@ -338,9 +336,7 @@
     <ClInclude Include="include\MaterialMatch.h" />
     <ClInclude Include="include\MathHelper.h" />
     <ClInclude Include="include\ObjectContainer.h" />
-    <ClInclude Include="include\PlayerControllerComponent.h" />
     <ClInclude Include="include\Scene.h" />
-    <ClInclude Include="include\SceneCameraComponent.h" />
     <ClInclude Include="include\SerializableProperty.h" />
     <ClInclude Include="include\tinyxml2.h" />
     <ClInclude Include="include\Transform.h" />

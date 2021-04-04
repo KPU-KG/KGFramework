@@ -311,6 +311,8 @@ namespace KG::Component
 	private:
 		KG::Core::SerializableProperty<XMFLOAT3> positionProp;
 		DirectX::XMFLOAT3 eulerRotation;
+		DirectX::XMFLOAT3 worldPosition;
+		KG::Core::SerializableProperty<XMFLOAT3> worldPositionProp;
 		KG::Core::SerializableProperty<XMFLOAT3> rotationEulerProp;
 		KG::Core::SerializableProperty<XMFLOAT4> rotationQautProp;
 		KG::Core::SerializableProperty<XMFLOAT3> scaleProp;

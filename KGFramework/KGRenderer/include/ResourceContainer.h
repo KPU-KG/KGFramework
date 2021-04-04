@@ -1,6 +1,8 @@
 #pragma once
 #include <map>
 #include <memory>
+#include <vector>
+#include <functional>
 #include "hash.h"
 #include "KGDXRenderer.h"
 #include "KGGeometry.h"
@@ -46,6 +48,7 @@ namespace KG::Resource
 		//void AddAnimation( const KG::Utill::HashString& id, UINT animationIndex, const KG::Utill::AnimationSet& animation );
 		//void AddAnimation( const KG::Utill::HashString& id, UINT animationIndex, KG::Utill::AnimationSet&& animation );
 
+		std::vector<std::function<void()>> postModelLoadFunctions;
 		void ConvertNodeToObject( const KG::Utill::HashString& id, KG::Core::GameObject* object, KG::Utill::ModelNode* node, const MaterialMatch& materials, KG::Core::GameObject* rootObject );
 		KG::Core::GameObject* CreateObjectFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const MaterialMatch& materials);
 		KG::Core::GameObject* CreateObjectFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const MaterialMatch& materials);

@@ -257,6 +257,30 @@ void KG::Core::Scene::AddCameraMatrixGetter(GetMatrixFunc&& view, GetMatrixFunc&
 	this->getProjFunc = proj;
 }
 
+KG::Core::GameObject* KG::Core::Scene::CallPreset(const std::string& name)
+{
+	KG::Core::GameObject* obj = nullptr;;
+	for ( size_t i = 0; i < this->objectPresetName.size(); i++ )
+	{
+		if ( this->objectPresetName[i] == name )
+		{
+			if ( objectPresetModel[i] != nullptr )
+			{
+				auto [modelId, materialMach] = this->objectPresetModel[i]();
+				obj =  this->modelCreator(modelId, *this, materialMach);
+			}
+			else
+			{
+				obj =  this->CreateNewObject();
+			}
+			objectPresetFunc[i](*obj);
+			obj->tag = KG::Utill::HashString(objectPresetName[i]);
+			return obj;
+		}
+	}
+	return nullptr;
+}
+
 void KG::Core::Scene::InitializeRoot()
 {
 	this->objectPresetFunc[0](this->rootNode);
@@ -273,7 +297,9 @@ void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameO
 	}
 	count += 1;
 	ImGui::PushID(count);
-	bool opend = ImGui::TreeNodeEx(node->tag.srcString.c_str(), ImGuiTreeNodeFlags_OpenOnArrow | (!selected ? 0 : ImGuiTreeNodeFlags_Selected));
+	bool opend = ImGui::TreeNodeEx(node->tag.srcString.c_str(), 
+		ImGuiTreeNodeFlags_OpenOnArrow | (count == 1 ? ImGuiTreeNodeFlags_DefaultOpen : 0) | (!selected ? 0 : ImGuiTreeNodeFlags_Selected)
+	);
 	//Drag And Drop
 	{
 		if ( ImGui::BeginDragDropTarget() )
@@ -350,6 +376,7 @@ bool KG::Core::Scene::OnDrawGUI()
 	auto viewportSize = ImGui::GetMainViewport()->Size;
 	//ImGui::ShowDemoWindow();
 	ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+	
 	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.8f);

@@ -207,11 +207,20 @@ void KG::Resource::ResourceContainer::ConvertNodeToObject(const KG::Utill::HashS
 		
 		if ( geo->HasBone() )
 		{
-			auto* avatar = renderer->GetNewBoneTransformComponent();
-			avatar->SetRootNode(rootObject);
-			object->AddComponent(avatar);
+			this->postModelLoadFunctions.emplace_back(
+				[renderer, rootObject, object]()
+				{
+					auto* avatar = renderer->GetNewBoneTransformComponent();
+					avatar->SetRootNode(rootObject);
+					object->AddComponent(avatar);
+					object->AddComponent(renderer->GetNewRenderComponent());
+				}
+			);
 		}
-		object->AddComponent(renderer->GetNewRenderComponent());
+		else
+		{
+			object->AddComponent(renderer->GetNewRenderComponent());
+		}
 	}
 	//Bone Debug
 	//else 
@@ -329,6 +338,11 @@ KG::Core::GameObject* KG::Resource::ResourceContainer::CreateObjectFromModel(con
 	//rootObject->GetTransform()->SetScale( rootScale.x * scaleFactor, rootScale.y * scaleFactor, rootScale.z * scaleFactor );
 	auto* parentRoot = scene.CreateNewTransformObject();
 	parentRoot->GetTransform()->AddChild(rootObject->GetTransform());
+	for ( auto& i : this->postModelLoadFunctions )
+	{
+		i();
+	}
+	this->postModelLoadFunctions.clear();
 	return parentRoot;
 }
 

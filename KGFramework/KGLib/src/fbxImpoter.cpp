@@ -626,6 +626,8 @@ static KG::Utill::ModelNode* ProcessNode(KG::Utill::ImportData* importData, FbxN
 	importNode.name = nodeName;
 	importNode.nodeId = KG::Utill::HashString(nodeName);
 
+	DebugNormalMessage("ProcessNode : " << nodeName << " : Processed");
+
 	{
 		auto s_t = pFbxNode->LclTranslation.Get();
 		auto s_r = pFbxNode->LclRotation.Get();

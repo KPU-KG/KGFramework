@@ -117,9 +117,6 @@
     <ClCompile Include="include\imgui\ImGuiFileDialog.cpp">
       <Filter>소스 파일\Imgui</Filter>
     </ClCompile>
-    <ClCompile Include="src\SceneCameraComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\MaterialMatch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
@@ -127,9 +124,6 @@
       <Filter>소스 파일\Imgui</Filter>
     </ClCompile>
     <ClCompile Include="src\InputManager.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PlayerControllerComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -206,9 +200,6 @@
     <ClInclude Include="include\ImguiProperty.h">
       <Filter>헤더 파일\Utill</Filter>
     </ClInclude>
-    <ClInclude Include="include\SceneCameraComponent.h">
-      <Filter>헤더 파일\Core\Component</Filter>
-    </ClInclude>
     <ClInclude Include="include\MaterialMatch.h">
       <Filter>헤더 파일\Utill</Filter>
     </ClInclude>
@@ -244,9 +235,6 @@
     </ClInclude>
     <ClInclude Include="include\imgui\ImGuizmo.h">
       <Filter>헤더 파일\Imgui</Filter>
-    </ClInclude>
-    <ClInclude Include="include\PlayerControllerComponent.h">
-      <Filter>헤더 파일\Core\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

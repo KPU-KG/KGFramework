@@ -91,6 +91,8 @@ namespace KG::Core
 		void AddSkySetter(SkyBoxSetter&& setter);
 		void AddModelCreator(ModelCreator&& creator);
 		void AddCameraMatrixGetter(GetMatrixFunc&& view, GetMatrixFunc&& proj);
+
+		GameObject* CallPreset(const std::string& name);
 		//Root 노드 프리셋으로 초기화 하도록 설정
 		void InitializeRoot();
 		// ISerializable을(를) 통해 상속됨

@@ -367,7 +367,7 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 			; // anim->frameCache[0][i]->GetTransform()->SetPosition(pos);
 		if (curAnimation.applyRotation)
 			anim->frameCache[0][i]->GetTransform()->SetRotation(rot);
-		if (curAnimation.applyScale)
+		if (curAnimation.applyScale && this->isIgnoreScale)
 			anim->frameCache[0][i]->GetTransform()->SetScale(scale);
 	}
 
@@ -587,7 +587,7 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 			;
 		if (curAnimation.applyRotation)
 			anim->frameCache[0][i]->GetTransform()->SetRotation(rotation);
-		if (curAnimation.applyScale)
+		if (curAnimation.applyScale && this->isIgnoreScale )
 			anim->frameCache[0][i]->GetTransform()->SetScale(scaling);
 
 	}
@@ -823,6 +823,11 @@ void KG::Component::AnimationControllerComponent::SetAnimationWeight(int index, 
 			nextAnimations[index].index[animationId.value] = 0;
 		nextAnimations[index].index[animationId.value] += 1;
 	}
+}
+
+void KG::Component::AnimationControllerComponent::SetIgnoreScale(bool isUsing)
+{
+	this->isIgnoreScale = isUsing;
 }
 
 bool KG::Component::AnimationControllerComponent::OnDrawGUI()

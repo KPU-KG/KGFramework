@@ -61,8 +61,8 @@ KG::Component::CameraComponent::CameraComponent()
 void KG::Component::CameraComponent::CalculateViewMatrix()
 {
 	auto position = this->transform->GetWorldPosition();
-	auto look = this->isCubeRenderer ? cubeLook[this->cubeIndex] : this->transform->GetLook();
-	auto up = this->isCubeRenderer ? cubeUp[this->cubeIndex] : this->transform->GetUp();
+	auto look = this->isCubeRenderer ? cubeLook[this->cubeIndex] : this->transform->GetWorldLook();
+	auto up = this->isCubeRenderer ? cubeUp[this->cubeIndex] : this->transform->GetWorldUp();
 	auto view = DirectX::XMMatrixLookToLH(
 		XMLoadFloat3(&position),
 		XMLoadFloat3(&look),

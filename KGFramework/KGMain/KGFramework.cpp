@@ -155,8 +155,33 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
+	this->scene.AddModelPreset("PlayerArms",
+		[]()
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("arms");
+
+			return std::make_pair(
+				KG::Utill::HashString("Arms.FBX"),
+				std::move(a)
+			);
+		},
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+
+			ctrl->RegisterAnimation(KG::Utill::HashString("Arms@Idle.FBX"_id));
+
+			ctrl->SetAnimation(KG::Utill::HashString("Arms@Idle.FBX"_id));
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("Arms@Idle.FBX"_id));
+			obj.AddComponent(ctrl);
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+		);
+
+
 	this->scene.AddModelPreset("PlayerCharacter",
-		[]() 
+		[]()
 		{
 			KG::Resource::MaterialMatch a;
 			a.defaultMaterial.emplace_back("soldierHead");
@@ -168,7 +193,7 @@ void KG::GameFramework::PostSceneFunction()
 			);
 		}
 		,
-		[this](KG::Core::GameObject& obj)
+			[this](KG::Core::GameObject& obj)
 		{
 			obj.GetTransform()->SetPosition(10, 2, 10);
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
@@ -181,41 +206,72 @@ void KG::GameFramework::PostSceneFunction()
 
 			ctrl->SetAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
 			ctrl->SetDefaultAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+			ctrl->SetIgnoreScale(false);
 			obj.AddComponent(ctrl);
 
-			auto* lam = this->system->lambdaSystem.GetNewComponent();
-			static_cast<KG::Component::LambdaComponent*>(lam)->PostUpdateFunction(
-				[ctrl](KG::Core::GameObject* gameObject, float elapsedTime)
-				{
-					auto trans = gameObject->GetComponent<KG::Component::TransformComponent>();
-					using namespace KG::Input;
-					auto input = InputManager::GetInputManager();
-					if ( input->IsTouching('1') )
-					{
-						// -1 : 무한 루프
-						ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_left"_id), 0.5f, -1);
-					}
-					if ( input->IsTouching('2') )
-					{
-						ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 0.5f, -1);
-					}
-					if ( input->IsTouching('3') )
-					{
-						ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_right"_id), 0.5f, -1);
-					}
-					if ( input->IsTouching('4') )
-					{
-						ctrl->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 0.5f, -1);
-						ctrl->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), -1, -1);
-						ctrl->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), -1, 0);
-					}
-				}
-			);
-			obj.AddComponent(lam);
+			auto* cameraObj = this->scene.CreateNewTransformObject();
+			cameraObj->tag = KG::Utill::HashString("FPCamera");
+
+			auto* cam = this->renderer->GetNewCameraComponent();
+			KG::Renderer::RenderTextureDesc renderTextureDesc;
+			renderTextureDesc.useDeferredRender = true;
+			renderTextureDesc.useCubeRender = false;
+			renderTextureDesc.useDepthStencilBuffer = true;
+			renderTextureDesc.useRenderTarget = true;
+			renderTextureDesc.width = this->setting.clientWidth;
+			renderTextureDesc.height = this->setting.clientHeight;
+			cam->renderTextureDesc = renderTextureDesc;
+
+			cameraObj->AddComponent(cam);
+			cameraObj->GetTransform()->SetPosition(0.230, 1.45, 0.496);
+
+			auto* arms = this->scene.CallPreset("PlayerArms");
+			arms->GetTransform()->SetEulerRadian(0, 0, 0);
+			arms->GetTransform()->GetChild()->SetPosition(0, -0.175, 0);
+			arms->GetTransform()->GetChild()->SetEulerDegree(0, 90.0f, 0);
+
+			cameraObj->GetTransform()->AddChild(arms->GetTransform());
+
+			obj.GetTransform()->AddChild(cameraObj->GetTransform());
+
+			auto* player = this->system->playerComponentSystem.GetNewComponent();
+			obj.AddComponent(player);
 
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}
-	);
+		);
+
+	this->scene.AddModelPreset("TeamCharacter",
+		[]()
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("soldierHead");
+			a.defaultMaterial.emplace_back("soldierBody");
+
+			return std::make_pair(
+				KG::Utill::HashString("soldier"),
+				std::move(a)
+			);
+		}
+		,
+			[this](KG::Core::GameObject& obj)
+		{
+			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_sprint_forward"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_standing"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_right"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_left"_id));
+
+			ctrl->SetAnimation(KG::Utill::HashString("soldier_standing"_id));
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("soldier_standing"_id));
+			ctrl->SetIgnoreScale(false);
+			obj.AddComponent(ctrl);
+
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+		);
 
 	this->scene.AddObjectPreset("Directional Light",
 		[this](KG::Core::GameObject& obj)
@@ -250,7 +306,7 @@ void KG::GameFramework::PostSceneFunction()
 	);
 
 	this->scene.AddCameraMatrixGetter(
-		[](KG::Component::IComponent* comp) 
+		[](KG::Component::IComponent* comp)
 		{
 			auto* camera = static_cast<KG::Component::CameraComponent*>(comp);
 			return camera->GetView();
@@ -260,7 +316,7 @@ void KG::GameFramework::PostSceneFunction()
 			auto* camera = static_cast<KG::Component::CameraComponent*>(comp);
 			return camera->GetProj();
 		}
-	);
+		);
 }
 
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
