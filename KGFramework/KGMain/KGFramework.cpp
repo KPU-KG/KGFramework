@@ -70,7 +70,7 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	this->renderer->Initialize(renderDesc, renderSetting);
 	this->renderer->PostComponentProvider(this->componentProvider);
 	this->physics->Initialize(physicsDesc);
-	this->physics->AddFloor(-1);
+	this->physics->AddFloor(-10);
 	this->physics->PostComponentProvider(this->componentProvider);
 	this->system->PostComponentProvider(this->componentProvider);
 	this->scene.SetComponentProvider(&this->componentProvider);

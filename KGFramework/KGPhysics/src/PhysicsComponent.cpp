@@ -42,6 +42,10 @@ void KG::Component::DynamicRigidComponent::Update(float timeElapsed)
 
 }
 
+void KG::Component::DynamicRigidComponent::Move(DirectX::XMFLOAT3 direction, float speed) {
+	this->actor->setLinearVelocity(physx::PxVec3(direction.x, direction.y, direction.z) * speed);
+}
+
 void KG::Component::DynamicRigidComponent::SetActor(physx::PxRigidDynamic* actor)
 {
 	this->actor = actor;
@@ -83,17 +87,17 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 		auto view = this->gameObject->GetScene()->GetMainCameraView();
 		auto proj = this->gameObject->GetScene()->GetMainCameraProj();
 		// auto curr = this->gameObject->GetTransform()->GetGlobalWorldMatrix();		// world matrix
+
+		// curr = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
+		// 	XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)),
+		// 	curr);
+
 		auto objectPos = this->gameObject->GetTransform()->GetPosition();
 		
 		XMFLOAT4X4 mat;
 		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&objectPos)));
 		mat = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
 			XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mat);
-		// curr = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
-		// 	XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)),
-		// 	curr);
-		
-
 
 		view = Math::Matrix4x4::Transpose(view);
 		proj = Math::Matrix4x4::Transpose(proj);
@@ -125,11 +129,6 @@ KG::Component::StaticRigidComponent::StaticRigidComponent()
 
 void KG::Component::StaticRigidComponent::PostUpdate(float timeElapsed)
 {
-
-}
-
-void KG::Component::StaticRigidComponent::Update(float timeElapsed)
-{
 	if (apply) {
 		physx::PxVec3 p = actor->getGlobalPose().p;
 		transform->SetPosition(p.x + collisionBox.center.x, p.y + collisionBox.center.y, p.z + collisionBox.center.z);
@@ -138,6 +137,11 @@ void KG::Component::StaticRigidComponent::Update(float timeElapsed)
 		XMFLOAT3 p = transform->GetPosition();
 		actor->setGlobalPose(physx::PxTransform(p.x + collisionBox.center.x, p.y + collisionBox.center.y, p.z + collisionBox.center.z));
 	}
+}
+
+void KG::Component::StaticRigidComponent::Update(float timeElapsed)
+{
+
 }
 
 void KG::Component::StaticRigidComponent::SetActor(physx::PxRigidStatic* actor)
@@ -175,15 +179,26 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 			this->scaleProp.OnDrawGUI();
 			ImGui::TreePop();
 		}
+
+
 		this->applyProp.OnDrawGUI();
 		auto view = this->gameObject->GetScene()->GetMainCameraView();
 		auto proj = this->gameObject->GetScene()->GetMainCameraProj();
-		auto objectPos = this->gameObject->GetTransform()->GetPosition();
+		// auto curr = this->gameObject->GetTransform()->GetGlobalWorldMatrix();
+		// curr = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
+		// 	XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)),
+		// 	curr);
 
+		auto objectPos = this->gameObject->GetTransform()->GetPosition();
+		
 		XMFLOAT4X4 mat;
 		DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&objectPos)));
 		mat = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
 			XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mat);
+
+
+
+
 		view = Math::Matrix4x4::Transpose(view);
 		proj = Math::Matrix4x4::Transpose(proj);
 		ImGuiIO& io = ImGui::GetIO();
@@ -192,6 +207,21 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 			reinterpret_cast<const float*>(proj.m),
 			reinterpret_cast<const float*>(mat.m),
 			1);
+
+		// auto objectPos = this->gameObject->GetTransform()->GetPosition();
+		// 
+		// XMFLOAT4X4 mat;
+		// DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&objectPos)));
+		// mat = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
+		// 	XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mat);
+		// view = Math::Matrix4x4::Transpose(view);
+		// proj = Math::Matrix4x4::Transpose(proj);
+		// ImGuiIO& io = ImGui::GetIO();
+		// ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+		// ImGuizmo::DrawCubes(reinterpret_cast<const float*>(view.m),
+		// 	reinterpret_cast<const float*>(proj.m),
+		// 	reinterpret_cast<const float*>(mat.m),
+		// 	1);
 	}
 	return false;
 }

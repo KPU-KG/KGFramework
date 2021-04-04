@@ -8,6 +8,7 @@ namespace KG::Component
 	class TransformComponent;
 	class CameraComponent;
 	class AnimationControllerComponent;
+	class DynamicRigidComponent;
 
 	class PlayerControllerComponent : public IComponent
 	{

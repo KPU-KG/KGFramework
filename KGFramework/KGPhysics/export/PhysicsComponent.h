@@ -77,6 +77,7 @@ namespace KG::Component
 		virtual void Update(float timeElapsed) override;
 		// void SetCollisionBox(DirectX::XMFLOAT3& position, DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 offset = { 0,0,0 });
 		CollisionBox& GetCollisionBox() { return collisionBox; }
+		void Move(DirectX::XMFLOAT3 direction, float speed);
 		void SetActor(physx::PxRigidDynamic* actor);
 	private:
 		// 참고할 코드 (저장 정보)

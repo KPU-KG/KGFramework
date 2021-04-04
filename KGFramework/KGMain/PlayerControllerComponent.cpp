@@ -3,6 +3,7 @@
 #include "CameraComponent.h"
 #include "AnimationComponent.h"
 #include "PlayerControllerComponent.h"
+#include "PhysicsComponent.h"
 
 void KG::Component::PlayerControllerComponent::OnCreate(KG::Core::GameObject* obj)
 {
@@ -51,23 +52,47 @@ void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
 		this->thisAnimation->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), -1, 0);
 	}
 
-
+	auto dynamicRigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
 
 	if ( input->IsTouching('W') )
 	{
-		this->thisTransform->Translate(this->thisTransform->GetLook() * speed * elapsedTime);
+		if (dynamicRigid) {
+			auto dir = this->thisTransform->GetWorldLook();
+			dir.y = 0;
+			dynamicRigid->Move(dir, speed * 3);
+		}
+		else
+			this->thisTransform->Translate(this->thisTransform->GetLook() * speed * elapsedTime);
 	}
 	if ( input->IsTouching('A') )
 	{
-		this->thisTransform->Translate(this->thisTransform->GetRight() * speed * elapsedTime * -1);
+		if (dynamicRigid) {
+			auto dir = this->thisTransform->GetWorldRight();
+			dir.y = 0;
+			dynamicRigid->Move(dir * -1, speed * 3);
+		}
+		else
+			this->thisTransform->Translate(this->thisTransform->GetRight() * speed * elapsedTime * -1);
 	}
 	if ( input->IsTouching('S') )
 	{
-		this->thisTransform->Translate(this->thisTransform->GetLook() * speed * elapsedTime * -1);
+		if (dynamicRigid) {
+			auto dir = this->thisTransform->GetWorldLook();
+			dir.y = 0;
+			dynamicRigid->Move(dir * -1, speed * 3);
+		}
+		else
+			this->thisTransform->Translate(this->thisTransform->GetLook() * speed * elapsedTime * -1);
 	}
-	if ( input->IsTouching('D') )
+	if (input->IsTouching('D'))
 	{
-		this->thisTransform->Translate(this->thisTransform->GetRight() * speed * elapsedTime);
+		if (dynamicRigid) {
+			auto dir = this->thisTransform->GetWorldRight();
+			dir.y = 0;
+			dynamicRigid->Move(dir, speed * 3);
+		}
+		else
+			this->thisTransform->Translate(this->thisTransform->GetRight() * speed * elapsedTime);
 	}
 
 	if ( input->IsTouching(VK_RBUTTON) )
