@@ -170,7 +170,7 @@ void KG::GameFramework::PostSceneFunction()
 		,
 		[this](KG::Core::GameObject& obj)
 		{
-			obj.GetTransform()->SetPosition(20, 3, 20);
+			obj.GetTransform()->SetPosition(10, 2, 10);
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
 
 			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_sprint_forward"_id));
