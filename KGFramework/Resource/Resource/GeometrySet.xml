@@ -66,4 +66,10 @@
     <Geometry id="FloorHallBig.FBX" fileDir="Resource/Geometry/construction/FloorHallBig.FBX" rawMesh="true" hash_id="4169742444"/>
     <!--FloorBase.FBX-->
     <Geometry id="FloorBase.FBX" fileDir="Resource/Geometry/construction/FloorBase.FBX" rawMesh="false" hash_id="2676075796"/>
+    <!--Arms.FBX-->
+    <Geometry id="Arms.FBX" fileDir="Resource/Geometry/arms/Arms.FBX" rawMesh="false" hash_id="4124141334"/>
+    <!--Arms@Idle.FBX-->
+    <Geometry id="Arms@Idle.FBX" fileDir="Resource/Geometry/arms/Arms@Idle.FBX" rawMesh="false" hash_id="1117444788"/>
+    <!--Vector.FBX-->
+    <Geometry id="Vector.FBX" fileDir="Resource/Geometry/vector/Vector.FBX" rawMesh="false" hash_id="1988863526"/>
 </GeometrySet>

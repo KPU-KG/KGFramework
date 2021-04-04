@@ -257,6 +257,30 @@ void KG::Core::Scene::AddCameraMatrixGetter(GetMatrixFunc&& view, GetMatrixFunc&
 	this->getProjFunc = proj;
 }
 
+KG::Core::GameObject* KG::Core::Scene::CallPreset(const std::string& name)
+{
+	KG::Core::GameObject* obj = nullptr;;
+	for ( size_t i = 0; i < this->objectPresetName.size(); i++ )
+	{
+		if ( this->objectPresetName[i] == name )
+		{
+			if ( objectPresetModel[i] != nullptr )
+			{
+				auto [modelId, materialMach] = this->objectPresetModel[i]();
+				obj =  this->modelCreator(modelId, *this, materialMach);
+			}
+			else
+			{
+				obj =  this->CreateNewObject();
+			}
+			objectPresetFunc[i](*obj);
+			obj->tag = KG::Utill::HashString(objectPresetName[i]);
+			return obj;
+		}
+	}
+	return nullptr;
+}
+
 void KG::Core::Scene::InitializeRoot()
 {
 	this->objectPresetFunc[0](this->rootNode);

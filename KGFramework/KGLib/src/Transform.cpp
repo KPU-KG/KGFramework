@@ -9,7 +9,8 @@ KG::Component::TransformComponent::TransformComponent()
 	positionProp("Position", this->position),
 	rotationEulerProp("Rotation", this->eulerRotation),
 	rotationQautProp("Rotation_Q", this->rotation),
-	scaleProp("Scale", this->scale)
+	scaleProp("Scale", this->scale),
+	worldPositionProp("WPosition", this->worldPosition)
 {
 
 }
@@ -39,7 +40,9 @@ bool KG::Component::TransformComponent::OnDrawGUI()
 	{
 		bool flag = false;
 		this->eulerRotation = this->GetEulerDegree();
+		this->worldPosition = this->GetWorldPosition();
 		flag |= this->positionProp.OnDrawGUI();
+		flag |= this->worldPositionProp.OnDrawGUI();
 
 		if ( this->rotationEulerProp.OnDrawGUI() )
 		{

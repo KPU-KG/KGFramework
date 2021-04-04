@@ -147,4 +147,13 @@
     <Texture id="construction_color" fileDir="Resource/Texture/construction/color.dds" dimension="Texture2D" format="DDS" hash_id="3209013374"/>
     <Texture id="construction_normal" fileDir="Resource/Texture/construction/normal.dds" dimension="Texture2D" format="DDS" hash_id="1897116092"/>
     <Texture id="construction_metalic" fileDir="Resource/Texture/construction/metalic.dds" dimension="Texture2D" format="DDS" hash_id="4065980882"/>
+    <!--Textrue-->
+    <Texture id="arms_color" fileDir="Resource/Geometry/arms/Textrue/color.dds" dimension="Texture2D" format="DDS" hash_id="2273684824"/>
+    <Texture id="arms_normal" fileDir="Resource/Geometry/arms/Textrue/normal.dds" dimension="Texture2D" format="DDS" hash_id="1969247054"/>
+    <!--vectorSight-->
+    <Texture id="vectorSight_color" fileDir="Resource/Geometry/vector/vectorTex/vectorSight/color.dds" dimension="Texture2D" format="DDS" hash_id="2732856979"/>
+    <Texture id="vectorSight_normal" fileDir="Resource/Geometry/vector/vectorTex/vectorSight/normal.dds" dimension="Texture2D" format="DDS" hash_id="986294203"/>
+    <!--vectorNormal-->
+    <Texture id="vectorNormal_color" fileDir="Resource/Geometry/vector/vectorTex/vectorNormal/color.dds" dimension="Texture2D" format="DDS" hash_id="1993964501"/>
+    <Texture id="vectorNormal_normal" fileDir="Resource/Geometry/vector/vectorTex/vectorNormal/normal.dds" dimension="Texture2D" format="DDS" hash_id="3100935333"/>
 </TextureSet>
