@@ -165,6 +165,30 @@ void KG::GameFramework::PostSceneFunction()
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}
 		);
+	this->scene.AddModelPreset("CS5",
+		[]()
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("arms");
+
+			return std::make_pair(
+				KG::Utill::HashString("CS5.FBX"),
+				std::move(a)
+			);
+		},
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+
+			ctrl->RegisterAnimation(KG::Utill::HashString("CS5@Idle.FBX"_id));
+
+			ctrl->SetAnimation(KG::Utill::HashString("CS5@Idle.FBX"_id));
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("CS5@Idle.FBX"_id));
+			ctrl->SetIgnoreScale(true);
+			obj.AddComponent(ctrl);
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+		);
 
 	this->scene.AddModelPreset("PlayerArms",
 		[]()
