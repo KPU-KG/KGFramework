@@ -190,6 +190,31 @@ void KG::GameFramework::PostSceneFunction()
 		}
 		);
 
+	this->scene.AddModelPreset("ACR",
+		[]()
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("arms");
+
+			return std::make_pair(
+				KG::Utill::HashString("ACR.FBX"),
+				std::move(a)
+			);
+		},
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+
+			ctrl->RegisterAnimation(KG::Utill::HashString("ACR@Idle.FBX"_id));
+
+			ctrl->SetAnimation(KG::Utill::HashString("ACR@Idle.FBX"_id));
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("ACR@Idle.FBX"_id));
+			ctrl->SetIgnoreScale(true);
+			obj.AddComponent(ctrl);
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+		);
+
 	this->scene.AddModelPreset("PlayerArms",
 		[]()
 		{

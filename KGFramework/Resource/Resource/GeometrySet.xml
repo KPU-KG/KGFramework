@@ -78,4 +78,8 @@
     <Geometry id="CS5.FBX" fileDir="Resource/Geometry/cs5/CS5.FBX" rawMesh="false" hash_id="3161113290"/>
     <!--CS5@Idle.FBX-->
     <Geometry id="CS5@Idle.FBX" fileDir="Resource/Geometry/cs5/CS5@Idle.FBX" rawMesh="false" hash_id="3088749944"/>
+    <!--ACR.FBX-->
+    <Geometry id="ACR.FBX" fileDir="Resource/Geometry/acr/ACR.FBX" rawMesh="false" hash_id="4021514187"/>
+    <!--ACR@Idle.FBX-->
+    <Geometry id="ACR@Idle.FBX" fileDir="Resource/Geometry/acr/ACR@Idle.FBX" rawMesh="false" hash_id="1388438711"/>
 </GeometrySet>
