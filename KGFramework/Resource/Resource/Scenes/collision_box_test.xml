@@ -38,8 +38,8 @@
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="44.711979" y="54.0457" z="15.780023"/>
-                <Rotation_Q x="0.24446055" y="-0.69465333" z="0.27292371" w="0.62218654"/>
+                <Position x="41.435318" y="51.031963" z="-4.6467543"/>
+                <Rotation_Q x="0.14297456" y="-0.68870729" z="0.14073934" w="0.69961566"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="CameraComponent" hash_id="2216269385">
@@ -1573,7 +1573,7 @@
             <GameObject instanceId="12">
                 <Tag hash_id="2489862556" srcString="TileBlock"/>
                 <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="6" y="-0.1" z="0"/>
+                    <Position x="6" y="0" z="0"/>
                     <Rotation_Q x="0" y="0" z="0" w="1"/>
                     <Scale x="36" y="0.1" z="30"/>
                 </Component>
@@ -1597,9 +1597,9 @@
                 </Component>
                 <Component name="Render3DComponent" hash_id="4070531333"/>
                 <Component name="StaticRigidComponent" hash_id="591825997">
-                    <Position x="3" y="-0.050000001" z="3"/>
-                    <Scale x="77" y="0.1" z="63"/>
-                    <Apply value="false"/>
+                    <Position x="3" y="-0.050000001" z="4"/>
+                    <Scale x="76" y="0.1" z="62"/>
+                    <Show value="2"/>
                 </Component>
             </GameObject>
             <GameObject instanceId="25">
@@ -1908,9 +1908,9 @@
                 <Scale x="0.0074999998" y="0.0070000002" z="0.0070000002"/>
             </Component>
             <Component name="StaticRigidComponent" hash_id="591825997">
-                <Position x="-3" y="32" z="3"/>
-                <Scale x="34" y="87" z="46"/>
-                <Apply value="false"/>
+                <Position x="4" y="34" z="4"/>
+                <Scale x="30" y="88" z="49"/>
+                <Show value="1"/>
             </Component>
             <GameObject instanceId="31">
                 <Tag hash_id="4257772165" srcString="RootNode"/>

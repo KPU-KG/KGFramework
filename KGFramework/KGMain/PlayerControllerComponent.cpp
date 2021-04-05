@@ -59,7 +59,7 @@ void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
 		if (dynamicRigid) {
 			auto dir = this->thisTransform->GetWorldLook();
 			dir.y = 0;
-			dynamicRigid->Move(dir, speed * 3);
+			dynamicRigid->Move(dir, speed * 3 * elapsedTime);
 		}
 		else
 			this->thisTransform->Translate(this->thisTransform->GetLook() * speed * elapsedTime);
@@ -69,7 +69,7 @@ void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
 		if (dynamicRigid) {
 			auto dir = this->thisTransform->GetWorldRight();
 			dir.y = 0;
-			dynamicRigid->Move(dir * -1, speed * 3);
+			dynamicRigid->Move(dir * -1, speed * 3 * elapsedTime);
 		}
 		else
 			this->thisTransform->Translate(this->thisTransform->GetRight() * speed * elapsedTime * -1);
@@ -79,7 +79,7 @@ void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
 		if (dynamicRigid) {
 			auto dir = this->thisTransform->GetWorldLook();
 			dir.y = 0;
-			dynamicRigid->Move(dir * -1, speed * 3);
+			dynamicRigid->Move(dir * -1, speed * 3 * elapsedTime);
 		}
 		else
 			this->thisTransform->Translate(this->thisTransform->GetLook() * speed * elapsedTime * -1);
@@ -89,7 +89,7 @@ void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
 		if (dynamicRigid) {
 			auto dir = this->thisTransform->GetWorldRight();
 			dir.y = 0;
-			dynamicRigid->Move(dir, speed * 3);
+			dynamicRigid->Move(dir, speed * 3 * elapsedTime);
 		}
 		else
 			this->thisTransform->Translate(this->thisTransform->GetRight() * speed * elapsedTime);

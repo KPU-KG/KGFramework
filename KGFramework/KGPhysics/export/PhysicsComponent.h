@@ -53,6 +53,11 @@ namespace KG::Component
 	// 오늘의 목표 2021.3.27
 	// 액터 컴포넌트 만들어서 씬에 띄우기
 
+	enum SHOW_COLLISION_BOX {
+		NONE, GRID, BOX
+	};
+
+
 	struct CollisionBox {
 		DirectX::XMFLOAT3 center;
 		DirectX::XMFLOAT3 scale;
@@ -69,6 +74,7 @@ namespace KG::Component
 		physx::PxRigidDynamic*		actor;			// rigid 
 		// RigidData					rigid{};
 		bool						apply = false;
+		SHOW_COLLISION_BOX			show = BOX;
 
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 	public:
@@ -81,21 +87,22 @@ namespace KG::Component
 		void SetActor(physx::PxRigidDynamic* actor);
 	private:
 		// 참고할 코드 (저장 정보)
-		KG::Core::SerializableProperty<DirectX::XMFLOAT3>	positionProp;
-		KG::Core::SerializableProperty<DirectX::XMFLOAT3>	scaleProp;
-		KG::Core::SerializableProperty<bool>				applyProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		positionProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		scaleProp;
+		KG::Core::SerializableProperty<bool>					applyProp;
+		KG::Core::SerializableEnumProperty<SHOW_COLLISION_BOX>	showProp;
+
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 		virtual bool OnDrawGUI();
 	};
-
 	class DLL StaticRigidComponent : public IPhysicsComponent {
 	protected:
-		CollisionBox collisionBox;
-		TransformComponent* transform;
-		physx::PxRigidStatic* actor;
-		bool apply = false;
+		CollisionBox			collisionBox;
+		TransformComponent*		transform;
+		physx::PxRigidStatic*	actor;
+		SHOW_COLLISION_BOX		show;
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 	public:
 		StaticRigidComponent();
@@ -104,9 +111,9 @@ namespace KG::Component
 		CollisionBox& GetCollisionBox() { return collisionBox; }
 		void SetActor(physx::PxRigidStatic* actor);
 	private:
-		KG::Core::SerializableProperty<DirectX::XMFLOAT3> positionProp;
-		KG::Core::SerializableProperty<DirectX::XMFLOAT3> scaleProp;
-		KG::Core::SerializableProperty<bool> applyProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		positionProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		scaleProp;
+		KG::Core::SerializableEnumProperty<SHOW_COLLISION_BOX>	showProp;
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
