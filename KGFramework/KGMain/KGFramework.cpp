@@ -142,6 +142,30 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
+	this->scene.AddModelPreset("Vector",
+		[]()
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("arms");
+
+			return std::make_pair(
+				KG::Utill::HashString("Vector.FBX"),
+				std::move(a)
+			);
+		},
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+
+			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id));
+
+			ctrl->SetAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id));
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id));
+			obj.AddComponent(ctrl);
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+		);
+
 	this->scene.AddModelPreset("PlayerArms",
 		[]()
 		{

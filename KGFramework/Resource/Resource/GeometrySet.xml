@@ -72,4 +72,8 @@
     <Geometry id="Arms@Idle.FBX" fileDir="Resource/Geometry/arms/Arms@Idle.FBX" rawMesh="false" hash_id="1117444788"/>
     <!--Vector.FBX-->
     <Geometry id="Vector.FBX" fileDir="Resource/Geometry/vector/Vector.FBX" rawMesh="false" hash_id="1988863526"/>
+    <!--Vector@Idle.FBX-->
+    <Geometry id="Vector@Idle.FBX" fileDir="Resource/Geometry/vector/Vector@Idle.FBX" rawMesh="false" hash_id="3217950692"/>
+    <!--CS5.FBX-->
+    <Geometry id="CS5.FBX" fileDir="Resource/Geometry/cs5/CS5.FBX" rawMesh="false" hash_id="3161113290"/>
 </GeometrySet>
