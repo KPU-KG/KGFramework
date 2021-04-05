@@ -135,9 +135,14 @@ static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float curr
 		}
 		else
 		{
-			keyTime1 = last->keyTime;
-			keyValue1 = last->value;
+			while (last != data.end() && keyTime1 <= keyTime0) {
+				keyTime1 = last->keyTime;
+				keyValue1 = last->value;
+				last++;
+			}
 		}
+		if (keyTime0 == keyTime1)
+			return keyValue1;
 		value = KG::Math::Lerp(keyValue0, keyValue1, abs(currentTime - keyTime0) / abs(keyTime1 - keyTime0));
 		//value = keyValue0;
 	}
@@ -161,9 +166,14 @@ static XMFLOAT3 GetAnimationTranslation(const KG::Utill::NodeAnimation& anim, fl
 static XMFLOAT4 GetAnimationRotation(const KG::Utill::NodeAnimation& anim, float currentTime, float duration)
 {
 	XMFLOAT3 r = {};
-	r.x = XMConvertToRadians(GetTimeData(anim.rotation.x, currentTime, duration));
-	r.y = XMConvertToRadians(GetTimeData(anim.rotation.y, currentTime, duration));
-	r.z = XMConvertToRadians(GetTimeData(anim.rotation.z, currentTime, duration));
+
+	r.x = GetTimeData(anim.rotation.x, currentTime, duration);
+	r.y = GetTimeData(anim.rotation.y, currentTime, duration);
+	r.z = GetTimeData(anim.rotation.z, currentTime, duration);
+
+	r.x = XMConvertToRadians(r.x);
+	r.y = XMConvertToRadians(r.y);
+	r.z = XMConvertToRadians(r.z);
 	XMFLOAT4 rQuat = KG::Math::Quaternion::Multiply(KG::Math::Quaternion::FromXYZEuler(r), anim.preRotation);
 	return rQuat;
 }
@@ -364,7 +374,7 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 		}
 
 		if (curAnimation.applyTransform)
-			; // anim->frameCache[0][i]->GetTransform()->SetPosition(pos);
+			anim->frameCache[0][i]->GetTransform()->SetPosition(pos);
 		if (curAnimation.applyRotation)
 			anim->frameCache[0][i]->GetTransform()->SetRotation(rot);
 		if (curAnimation.applyScale && this->isIgnoreScale)
@@ -584,7 +594,7 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 		XMStoreFloat3(&scaling, XMVectorLerp(XMLoadFloat3(&scaling), XMLoadFloat3(&nextScale[i]), weight));
 
 		if (curAnimation.applyTransform)
-			;
+			anim->frameCache[0][i]->GetTransform()->SetPosition(position);
 		if (curAnimation.applyRotation)
 			anim->frameCache[0][i]->GetTransform()->SetRotation(rotation);
 		if (curAnimation.applyScale && this->isIgnoreScale )
