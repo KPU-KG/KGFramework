@@ -70,7 +70,7 @@ namespace KG::Component
 		float time = 0.0f;
 		float speed = 0.5f;
 		int next = ANIMSTATE_PLAYING;
-		bool applyTransform = false;
+		bool applyTransform = true;
 		bool applyRotation = true;
 		bool applyScale = true;
 	};
