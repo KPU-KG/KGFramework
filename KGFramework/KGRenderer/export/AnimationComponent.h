@@ -95,6 +95,7 @@ namespace KG::Component
 		int state = ANIMSTATE_PLAYING;
 		bool changeIntercepted = false;
 		bool isIgnoreScale = true;
+		bool isIgnoreTranslate = false;
 		std::vector<DirectX::XMFLOAT4> prevFrameCache;
 
 		// std::vector<Animation> animations;
@@ -124,6 +125,7 @@ namespace KG::Component
 		void BlendingAnimation(const KG::Utill::HashString& nextAnim, float duration = -1.f, int index = -1, int weight = 1);
 		void SetAnimationWeight(int index, const KG::Utill::HashString& anim, int weight);
 		void SetIgnoreScale(bool isUsing);
+		void SetIgnoreTranslate(bool isUsing);
 		virtual bool OnDrawGUI() override;
 	};
 

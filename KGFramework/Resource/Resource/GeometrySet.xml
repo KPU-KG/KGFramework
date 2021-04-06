@@ -82,4 +82,6 @@
     <Geometry id="ACR.FBX" fileDir="Resource/Geometry/acr/ACR.FBX" rawMesh="false" hash_id="4021514187"/>
     <!--ACR@Idle.FBX-->
     <Geometry id="ACR@Idle.FBX" fileDir="Resource/Geometry/acr/ACR@Idle.FBX" rawMesh="false" hash_id="1388438711"/>
+    <!--Vector@Reload.FBX-->
+    <Geometry id="Vector@Reload.FBX" fileDir="Resource/Geometry/vector/Vector@Reload.FBX" rawMesh="false" hash_id="3176000437"/>
 </GeometrySet>

@@ -147,6 +147,12 @@ void KG::GameFramework::PostSceneFunction()
 		{
 			KG::Resource::MaterialMatch a;
 			a.defaultMaterial.emplace_back("arms");
+			KG::Resource::MaterialSet s;
+			s.emplace_back("vectorNormal"_id);
+			a.AddMaterial("Mesh_Vector"_id, s);
+			s.clear();
+			s.emplace_back("vectorSight"_id);
+			a.AddMaterial("Cube.006"_id, s);
 
 			return std::make_pair(
 				KG::Utill::HashString("Vector.FBX"),
@@ -155,6 +161,12 @@ void KG::GameFramework::PostSceneFunction()
 		},
 		[this](KG::Core::GameObject& obj)
 		{
+			auto* boneVector = obj.FindChildObject("Bone_Vector"_id);
+			auto* sight = obj.FindChildObject("Cube.006"_id);
+			sight->GetTransform()->ExtractThisNode();
+			boneVector->GetTransform()->AddChild(sight->GetTransform());
+			sight->GetTransform()->SetPosition(0.042f, -6.841, 4.2f);
+			sight->GetTransform()->SetEulerDegree(-90,-90,0);
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
 
 			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id));
@@ -265,6 +277,7 @@ void KG::GameFramework::PostSceneFunction()
 
 			ctrl->SetAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
 			ctrl->SetDefaultAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+			ctrl->SetIgnoreTranslate(false);
 			ctrl->SetIgnoreScale(false);
 			obj.AddComponent(ctrl);
 
@@ -280,13 +293,16 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.width = this->setting.clientWidth;
 			renderTextureDesc.height = this->setting.clientHeight;
 			cam->renderTextureDesc = renderTextureDesc;
+			cam->SetFovY(90.0f);
 
 			cameraObj->AddComponent(cam);
 			cameraObj->GetTransform()->SetPosition(0.230, 1.45, 0.496);
 
-			auto* arms = this->scene.CallPreset("PlayerArms");
+			auto* arms = this->scene.CallPreset("Vector");
 			arms->GetTransform()->SetEulerRadian(0, 0, 0);
-			arms->GetTransform()->GetChild()->SetPosition(0, -0.175, 0);
+			arms->GetTransform()->SetPosition(0, 0, -0.1);
+			arms->GetTransform()->SetScale(1.2, 1, 1);
+			arms->GetTransform()->GetChild()->SetPosition(0.0, 0.0, 0.0f);
 			arms->GetTransform()->GetChild()->SetEulerDegree(0, 90.0f, 0);
 
 			cameraObj->GetTransform()->AddChild(arms->GetTransform());

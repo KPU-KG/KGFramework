@@ -373,7 +373,7 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 			XMStoreFloat3(&scale, XMVectorLerp(XMLoadFloat3(&scale), XMLoadFloat3(&s[count][i]), weight));
 		}
 
-		if (curAnimation.applyTransform)
+		if (curAnimation.applyTransform && this->isIgnoreTranslate )
 			anim->frameCache[0][i]->GetTransform()->SetPosition(pos);
 		if (curAnimation.applyRotation)
 			anim->frameCache[0][i]->GetTransform()->SetRotation(rot);
@@ -593,7 +593,7 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 		XMStoreFloat4(&rotation, XMQuaternionSlerp(XMLoadFloat4(&rotation), XMLoadFloat4(&nextRot[i]), weight));
 		XMStoreFloat3(&scaling, XMVectorLerp(XMLoadFloat3(&scaling), XMLoadFloat3(&nextScale[i]), weight));
 
-		if (curAnimation.applyTransform)
+		if (curAnimation.applyTransform && this->isIgnoreTranslate )
 			anim->frameCache[0][i]->GetTransform()->SetPosition(position);
 		if (curAnimation.applyRotation)
 			anim->frameCache[0][i]->GetTransform()->SetRotation(rotation);
@@ -838,6 +838,11 @@ void KG::Component::AnimationControllerComponent::SetAnimationWeight(int index, 
 void KG::Component::AnimationControllerComponent::SetIgnoreScale(bool isUsing)
 {
 	this->isIgnoreScale = isUsing;
+}
+
+void KG::Component::AnimationControllerComponent::SetIgnoreTranslate(bool isUsing)
+{
+	this->isIgnoreTranslate = isUsing;
 }
 
 bool KG::Component::AnimationControllerComponent::OnDrawGUI()
