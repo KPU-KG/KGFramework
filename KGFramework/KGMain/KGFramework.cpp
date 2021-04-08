@@ -170,9 +170,15 @@ void KG::GameFramework::PostSceneFunction()
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
 
 			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Reload.FBX"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@ReloadEmpty.FBX"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Fire.FBX"_id));
+			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Fire Aim.FBX"_id));
 
-			ctrl->SetAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id));
+			ctrl->SetAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id),-1.0f, 1.0f);
 			ctrl->SetDefaultAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id));
+			ctrl->SetIgnoreTranslate(false);
+			ctrl->SetIgnoreScale(true);
 			obj.AddComponent(ctrl);
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}
@@ -277,8 +283,8 @@ void KG::GameFramework::PostSceneFunction()
 
 			ctrl->SetAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
 			ctrl->SetDefaultAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
-			ctrl->SetIgnoreTranslate(false);
-			ctrl->SetIgnoreScale(false);
+			ctrl->SetIgnoreTranslate(true);
+			ctrl->SetIgnoreScale(true);
 			obj.AddComponent(ctrl);
 
 			auto* cameraObj = this->scene.CreateNewTransformObject();

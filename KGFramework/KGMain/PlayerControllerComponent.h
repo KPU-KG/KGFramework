@@ -12,13 +12,18 @@ namespace KG::Component
 	class PlayerControllerComponent : public IComponent
 	{
 	private:
-		TransformComponent* thisTransform = nullptr;
-		AnimationControllerComponent* thisAnimation = nullptr;
+		TransformComponent* characterTransform = nullptr;
+		AnimationControllerComponent* characterAnimation = nullptr;
 
 		CameraComponent* camera = nullptr;
 		TransformComponent* cameraTransform = nullptr;
-		AnimationControllerComponent* cameraAnimation = nullptr;
+		AnimationControllerComponent* vectorAnimation = nullptr;
 		float speedValue = 0.75f;
+
+		// Bullet
+		int bulletCount = 30;
+
+
 	public:
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;

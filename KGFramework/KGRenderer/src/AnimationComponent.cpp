@@ -373,12 +373,15 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 			XMStoreFloat3(&scale, XMVectorLerp(XMLoadFloat3(&scale), XMLoadFloat3(&s[count][i]), weight));
 		}
 
-		if (curAnimation.applyTransform && this->isIgnoreTranslate )
-			anim->frameCache[0][i]->GetTransform()->SetPosition(pos);
-		if (curAnimation.applyRotation)
-			anim->frameCache[0][i]->GetTransform()->SetRotation(rot);
-		if (curAnimation.applyScale && this->isIgnoreScale)
-			anim->frameCache[0][i]->GetTransform()->SetScale(scale);
+		if ( anim->frameCache[0][i] != nullptr )
+		{
+			if (curAnimation.applyTransform && !this->isIgnoreTranslate )
+				anim->frameCache[0][i]->GetTransform()->SetPosition(pos);
+			if (curAnimation.applyRotation)
+				anim->frameCache[0][i]->GetTransform()->SetRotation(rot);
+			if (curAnimation.applyScale && !this->isIgnoreScale)
+				anim->frameCache[0][i]->GetTransform()->SetScale(scale);
+		}
 	}
 
 	curFrame = anim;
@@ -593,11 +596,11 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 		XMStoreFloat4(&rotation, XMQuaternionSlerp(XMLoadFloat4(&rotation), XMLoadFloat4(&nextRot[i]), weight));
 		XMStoreFloat3(&scaling, XMVectorLerp(XMLoadFloat3(&scaling), XMLoadFloat3(&nextScale[i]), weight));
 
-		if (curAnimation.applyTransform && this->isIgnoreTranslate )
+		if (curAnimation.applyTransform && !this->isIgnoreTranslate )
 			anim->frameCache[0][i]->GetTransform()->SetPosition(position);
 		if (curAnimation.applyRotation)
 			anim->frameCache[0][i]->GetTransform()->SetRotation(rotation);
-		if (curAnimation.applyScale && this->isIgnoreScale )
+		if (curAnimation.applyScale && !this->isIgnoreScale )
 			anim->frameCache[0][i]->GetTransform()->SetScale(scaling);
 
 	}

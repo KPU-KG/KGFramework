@@ -31,6 +31,7 @@ namespace KG::Input
 		MousePosition deltaPosition;
 
 		bool startProcessing = false;
+		bool startMouseCapture = false;
 
 		InputManager() = default;
 	public:
@@ -39,6 +40,9 @@ namespace KG::Input
 		/// @brief 해당 프레임의 사용자 입력을 읽고 저장합니다.
 		/// @param hWnd 입력을 받아올 윈도우의 핸들입니다.
 		void ProcessInput(HWND hWnd);
+
+		void SetMouseCapture(bool startMouseCapture);
+		bool GetMouseCapture() const;
 
 		/// @brief 해당 키의 현재 상태를 가져옵니다.
 		/// 사용되는 ID는 윈도우API와 동일하게 VK로 시작하는 특수키와 char로 기능합니다.

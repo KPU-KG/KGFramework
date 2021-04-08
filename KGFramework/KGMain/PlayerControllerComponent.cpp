@@ -11,13 +11,15 @@ void KG::Component::PlayerControllerComponent::OnCreate(KG::Core::GameObject* ob
 	auto* spine = this->gameObject->FindChildObject("Spine3"_id);
 	spine->GetTransform()->SetScale(0, 0, 0);
 
-	this->thisTransform = this->gameObject->GetComponent<TransformComponent>();
-	this->thisAnimation = this->gameObject->GetComponent<AnimationControllerComponent>();
+	this->characterTransform = this->gameObject->GetComponent<TransformComponent>();
+	this->characterAnimation = this->gameObject->GetComponent<AnimationControllerComponent>();
 
 	auto* cameraObject = this->gameObject->FindChildObject("FPCamera"_id);
 	this->cameraTransform = cameraObject->GetTransform();
 	this->camera = cameraObject->GetComponent<CameraComponent>();
-	this->cameraAnimation = cameraObject->GetComponent<AnimationControllerComponent>();
+
+	auto* vectorObject = this->gameObject->FindChildObject("Vector"_id);
+	this->vectorAnimation = vectorObject->GetComponent<AnimationControllerComponent>();
 	//this->camera = this->gameObject->
 }
 
@@ -34,52 +36,74 @@ void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
 	if ( input->IsTouching('1') )
 	{
 		// -1 : 무한 루프
-		this->thisAnimation->ChangeAnimation(KG::Utill::HashString("soldier_walk_left"_id), 0.5f, -1);
+
 	}
 	if ( input->IsTouching('2') )
 	{
-		this->thisAnimation->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 0.5f, -1);
+		this->characterAnimation->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), ANIMSTATE_PLAYING, 0.5f, ANIMLOOP_INF);
 	}
 	if ( input->IsTouching('3') )
 	{
-		this->thisAnimation->ChangeAnimation(KG::Utill::HashString("soldier_walk_right"_id), 0.5f, -1);
+		this->characterAnimation->ChangeAnimation(KG::Utill::HashString("soldier_walk_right"_id), ANIMSTATE_PLAYING, 0.5f, ANIMLOOP_INF);
 	}
 	if ( input->IsTouching('4') )
 	{
-		this->thisAnimation->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), 0.5f, -1);
-		this->thisAnimation->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), -1, -1);
-		this->thisAnimation->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), -1, 0);
+		this->characterAnimation->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), ANIMSTATE_PLAYING, 0.5f, ANIMLOOP_INF);
+		this->characterAnimation->BlendingAnimation(KG::Utill::HashString("soldier_walk_right"_id), ANIMLOOP_INF, ANIMINDEX_CHANGE);
+	}
+
+	if ( input->IsTouching('9') )
+	{
+		input->SetMouseCapture(false);
+	}
+
+	if ( input->IsTouching('0') )
+	{
+		input->SetMouseCapture(true);
 	}
 
 
 
 	if ( input->IsTouching('W') )
 	{
-		this->thisTransform->Translate(this->thisTransform->GetLook() * speed * elapsedTime);
+		this->characterTransform->Translate(this->characterTransform->GetLook() * speed * elapsedTime);
+		this->characterAnimation->ChangeAnimation(KG::Utill::HashString("soldier_walk_forward"_id), ANIMSTATE_PLAYING, 1.0f, ANIMLOOP_INF);
 	}
 	if ( input->IsTouching('A') )
 	{
-		this->thisTransform->Translate(this->thisTransform->GetRight() * speed * elapsedTime * -1);
+		this->characterTransform->Translate(this->characterTransform->GetRight() * speed * elapsedTime * -1);
+		this->characterAnimation->ChangeAnimation(KG::Utill::HashString("soldier_walk_left"_id), ANIMSTATE_PLAYING, 1.0f, ANIMLOOP_INF);
 	}
 	if ( input->IsTouching('S') )
 	{
-		this->thisTransform->Translate(this->thisTransform->GetLook() * speed * elapsedTime * -1);
+		this->characterTransform->Translate(this->characterTransform->GetLook() * speed * elapsedTime * -1);
+		this->characterAnimation->ChangeAnimation(KG::Utill::HashString("soldier_walk_back"_id), ANIMSTATE_PLAYING, 1.0f, ANIMLOOP_INF);
 	}
 	if ( input->IsTouching('D') )
 	{
-		this->thisTransform->Translate(this->thisTransform->GetRight() * speed * elapsedTime);
+		this->characterTransform->Translate(this->characterTransform->GetRight() * speed * elapsedTime);
 	}
 
-	if ( input->IsTouching(VK_RBUTTON) )
+	if ( input->IsTouching(VK_LBUTTON) && input->GetMouseCapture() )
+	{
+		this->vectorAnimation->SetAnimation("Vector@Fire.FBX"_id, -1, 1.0f);
+		//this->vectorAnimation->
+	}
+
+	if ( input->IsTouching(VK_RBUTTON) || input->GetMouseCapture() )
 	{
 		auto delta = input->GetDeltaMousePosition();
 		if ( delta.x )
 		{
-			this->thisTransform->RotateAxis(Math::up, delta.x * 0.3f);
+			this->characterTransform->RotateAxis(Math::up, delta.x * 0.3f);
 		}
 		if ( delta.y )
 		{
-			this->cameraTransform->RotateAxis(Math::right, delta.y * 0.3f);
+			auto euler = this->cameraTransform->GetEulerDegree();
+			if ( delta.y < 0 && euler.x > -85.0f || delta.y > 0 && euler.x < 80.0f )
+			{
+				this->cameraTransform->RotateAxis(Math::right, delta.y * 0.3f);
+			}
 		}
 	}
 
