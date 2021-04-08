@@ -703,7 +703,7 @@ void KG::Component::AnimationControllerComponent::RegisterEvent(const KG::Utill:
 	*/
 }
 
-void KG::Component::AnimationControllerComponent::SetAnimation(const KG::Utill::HashString& animationId, float duration, float speed, bool clearNext, int weight) {
+void KG::Component::AnimationControllerComponent::SetAnimation(const KG::Utill::HashString& animationId, int repeat, float speed, bool clearNext, int weight) {
 	if (clearNext)
 		nextAnimations.clear();
 	curAnimation.index.clear();
@@ -711,17 +711,20 @@ void KG::Component::AnimationControllerComponent::SetAnimation(const KG::Utill::
 	// curAnimation.weight.clear();
 	// curAnimation.weight.push_back(weight);
 	curAnimation.index[animationId.value] = weight;
-	curAnimation.duration = duration;
+	if (repeat == ANIMLOOP_INF)
+		curAnimation.duration = ANIMLOOP_INF;
+	else
+		curAnimation.duration = GetDuration(animationId) * repeat;
 	curAnimation.time = 0;
 	if (speed <= 0.f)
 		speed = 0.01f;
 	curAnimation.speed = speed;
 }
 
-int KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Utill::HashString& animationId, int nextState, float blendingDuration, float animationDuration, bool addWeight, float speed)
+int  KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Utill::HashString& animationId, int nextState, float blendingDuration, int repeat, bool addWeight, float speed)
 {
 	if (blendingDuration <= 0) {
-		SetAnimation(animationId, animationDuration, speed);
+		SetAnimation(animationId, repeat, speed);
 		return ANIMINDEX_CURRENT;
 	}
 	else {
@@ -729,7 +732,10 @@ int KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Utill
 			// IsValidAnimationId
 			if (nextAnimations[0].index[animationId.value] != NULL) {
 				nextAnimations[0].time = 0;
-				nextAnimations[0].duration = animationDuration;
+				if (repeat == ANIMLOOP_INF)
+					nextAnimations[0].duration = ANIMLOOP_INF;
+				else	
+					nextAnimations[0].duration = GetDuration(animationId) * repeat;
 				curAnimation.duration = blendingDuration;
 				state = ANIMSTATE_CHANGING;
 				return ANIMINDEX_CHANGE;
@@ -759,7 +765,7 @@ int KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Utill
 		state = ANIMSTATE_CHANGING;
 		curAnimation.duration = blendingDuration;
 		curAnimation.time = 0;
-		AddNextAnimation(animationId, nextState, animationDuration);
+		AddNextAnimation(animationId, nextState, repeat);
 		return ANIMINDEX_CHANGE;
 	}
 }
@@ -771,13 +777,16 @@ void KG::Component::AnimationControllerComponent::SetDefaultAnimation(KG::Utill:
 }
 
 // return : next animation index
-int KG::Component::AnimationControllerComponent::AddNextAnimation(const KG::Utill::HashString& nextAnim, int nextState, float duration, float speed, int weight)
+int KG::Component::AnimationControllerComponent::AddNextAnimation(const KG::Utill::HashString& nextAnim, int nextState, int repeat, float speed, int weight)
 {
 	if (curAnimation.duration < 0)
 		return -1;
 	AnimationCommand next;
 	next.index[nextAnim.value] = weight;
-	next.duration = duration;
+	if (repeat == ANIMLOOP_INF)
+		next.duration = ANIMLOOP_INF;
+	else
+		next.duration = GetDuration(nextAnim) * repeat;
 	next.time = 0;
 	if (speed <= 0.0f)
 		speed = 0.01f;
