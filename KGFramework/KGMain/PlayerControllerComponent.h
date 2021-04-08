@@ -20,8 +20,29 @@ namespace KG::Component
 		AnimationControllerComponent* vectorAnimation = nullptr;
 		float speedValue = 0.75f;
 
+		constexpr static float inputRatio = 10.0f;
+		constexpr static float inputRetRatio = 10.0f;
+		constexpr static float inputMinimum = 0.1f;
+		constexpr static float walkBlendingDuration = 0.1f;
+		float forwardValue = 0.0f;
+		float rightValue = 0.0f;
+
 		// Bullet
 		int bulletCount = 30;
+
+
+		static constexpr auto anim_soldier_standing = "Soldier@Standing.fbx"_id;
+		static constexpr auto anim_soldier_sprint_f = "Soldier@SprintForward.fbx"_id;
+		static constexpr auto anim_soldier_sprint_fl = "Soldier@SprintForwardLeft.fbx"_id;
+		static constexpr auto anim_soldier_sprint_fr = "Soldier@Standing.SprintForwardRight"_id;
+		static constexpr auto anim_soldier_walk_f = "Soldier@WalkForward.fbx"_id;
+		static constexpr auto anim_soldier_walk_fl = "Soldier@WalkForwardLeft.fbx"_id;
+		static constexpr auto anim_soldier_walk_fr = "Soldier@WalkForwardRight.fbx"_id;
+		static constexpr auto anim_soldier_walk_l = "Soldier@WalkLeft.fbx"_id;
+		static constexpr auto anim_soldier_walk_r = "Soldier@WalkRight.fbx"_id;
+		static constexpr auto anim_soldier_walk_b = "Soldier@WalkBackward.fbx"_id;
+		static constexpr auto anim_soldier_walk_bl = "Soldier@WalkBackwardLeft.fbx"_id;
+		static constexpr auto anim_soldier_walk_br = "Soldier@WalkBackwardRight.fbx"_id;
 
 
 	public:

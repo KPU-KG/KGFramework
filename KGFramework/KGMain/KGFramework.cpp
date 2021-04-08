@@ -275,14 +275,21 @@ void KG::GameFramework::PostSceneFunction()
 		{
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
 
-			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_sprint_forward"_id));
-			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
-			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_standing"_id));
-			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_right"_id));
-			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_left"_id));
+			ctrl->RegisterAnimation("Soldier@Standing.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@SprintForward.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@SprintForwardLeft.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@SprintForwardRight.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkBackward.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkBackwardLeft.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkBackwardRight.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkForward.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkForwardLeft.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkForwardRight.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkLeft.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkRight.fbx"_id);
 
-			ctrl->SetAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
-			ctrl->SetDefaultAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
+			ctrl->SetAnimation(KG::Utill::HashString("Soldier@Standing.fbx"_id));
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("Soldier@Standing.fbx"_id));
 			ctrl->SetIgnoreTranslate(true);
 			ctrl->SetIgnoreScale(true);
 			obj.AddComponent(ctrl);
@@ -339,14 +346,21 @@ void KG::GameFramework::PostSceneFunction()
 		{
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
 
-			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_sprint_forward"_id));
-			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_forward"_id));
-			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_standing"_id));
-			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_right"_id));
-			ctrl->RegisterAnimation(KG::Utill::HashString("soldier_walk_left"_id));
+			ctrl->RegisterAnimation("Soldier@Standing.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@SprintForward.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@SprintForwardLeft.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@SprintForwardRight.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkBackward.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkBackwardLeft.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkBackwardRight.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkForward.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkForwardLeft.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkForwardRight.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkLeft.fbx"_id);
+			ctrl->RegisterAnimation("Soldier@WalkRight.fbx"_id);
 
-			ctrl->SetAnimation(KG::Utill::HashString("soldier_standing"_id));
-			ctrl->SetDefaultAnimation(KG::Utill::HashString("soldier_standing"_id));
+			ctrl->SetAnimation(KG::Utill::HashString("Soldier@Standing.fbx"_id));
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("Soldier@Standing.fbx"_id));
 			ctrl->SetIgnoreScale(false);
 			obj.AddComponent(ctrl);
 
