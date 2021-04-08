@@ -13,45 +13,21 @@ namespace physx
 	class PxPhysics;
 	class PxRigidDynamic;
 	class PxRigidStatic;
+	// class PxActor;
+	// PxU32;
 }
 namespace KG::Component
 {
 	class TransformComponent;
+	
+	// 1. 컴포넌트 생성할 때 람다 함수로 넘겨줌
+	// 2. 이벤트 콜백 클래스에서 람다 함수 가지기
+	// 3. 이벤트에서 람다 함수 실행
+	// unordered map으로 처리하면 될듯? (이벤트 종류, 함수) 이렇게??
 
-	// enum RigidType {
-	// 	DynamicRigid,
-	// 	StaticRigid
-	// };
+	// class PhysicsEventCallback;
 
-	// struct RigidData {
-	// 	DirectX::XMFLOAT3 position;
-	// 	DirectX::XMFLOAT3 scale;
-	// 	DirectX::XMFLOAT3 offset;
-	// 	// bool isKinetic;
-	// 	// bool angleLockX;
-	// 	// bool angleLockY;
-	// 	// bool angleLockZ;
-	// 
-	// 	// collision box - pos / w / h / z / offset pos
-	// 	// kinetic / dynamic
-	// 	// angle lock x / y / z
-	// };
-
-	// 1. physics 컴포넌트 하나에 여러 기능은 on / off 기능으로??
-	// 2. 파트별로 각자 다른 컴포넌트로??
-	// 있어야 할 기능들
-	/// 1. 콜리전 박스
-	//    - position / width / height / depth
-	//    - offset
-	// 2. dynamic 액터
-	//    - PxRigidDynamic*
-	//
-	// 3. static 액터
-	//	  - PxRigidStatic*
-
-
-	// 오늘의 목표 2021.3.27
-	// 액터 컴포넌트 만들어서 씬에 띄우기
+	void SetupFiltering(physx::PxRigidActor* actor, physx::PxU32 filterGroup, physx::PxU32 filterMask);
 
 	enum SHOW_COLLISION_BOX {
 		NONE, GRID, BOX
@@ -70,21 +46,22 @@ namespace KG::Component
 	class DLL DynamicRigidComponent : public IPhysicsComponent {
 	protected:
 		CollisionBox				collisionBox;
-		TransformComponent*			transform;		// target transform
-		physx::PxRigidDynamic*		actor;			// rigid 
-		// RigidData					rigid{};
+		TransformComponent*			transform;		
+		physx::PxRigidDynamic*		actor;			
 		bool						apply = false;
 		SHOW_COLLISION_BOX			show = BOX;
+
+		// PhysicsEventCallback*		eventCallback;
 
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 	public:
 		DynamicRigidComponent();
 		virtual void PostUpdate(float timeElapsed) override;
 		virtual void Update(float timeElapsed) override;
-		// void SetCollisionBox(DirectX::XMFLOAT3& position, DirectX::XMFLOAT3 scale, DirectX::XMFLOAT3 offset = { 0,0,0 });
 		CollisionBox& GetCollisionBox() { return collisionBox; }
 		void Move(DirectX::XMFLOAT3 direction, float speed);
 		void SetActor(physx::PxRigidDynamic* actor);
+		// void OnContact
 	private:
 		// 참고할 코드 (저장 정보)
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		positionProp;

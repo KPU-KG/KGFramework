@@ -31,6 +31,20 @@ namespace KG::Component
 
 namespace KG::Physics 
 {
+	enum PHYSICS_CALLBACK {
+		CONSTRAINT, WAKE, SLEEP, TRIGGER, ADVANCE
+	};
+
+	struct FilterGroup {
+		enum Enum {
+			eFLOOR		= (1 << 0),
+			eBUILDING	= (1 << 1),
+			eBOX		= (1 << 2)
+		};
+	};
+
+	class PhysicsEventCallback;
+	class PhysicsCollisionCallback;
 	// using namespace physx;
 	class DLL PhysicsScene : public IPhysicsScene {
 	private:
@@ -43,6 +57,7 @@ namespace KG::Physics
 		physx::PxDefaultCpuDispatcher*	cpuDispatcher;
 		physx::PxPvd*					pvd;
 		physx::PxScene*					scene;
+		PhysicsEventCallback*			physicsEventCallback;
 
 		float							accumulator = 0.0f;
 		float							stepSize = 1.0f / 60.0f;
