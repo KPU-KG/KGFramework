@@ -68,7 +68,7 @@ namespace KG::Component
 		std::unordered_map<KG::Utill::hashType, int> index;
 		float duration = 0.1f;
 		float time = 0.0f;
-		float speed = 0.5f;
+		float speed = 1.0f;
 		int next = ANIMSTATE_PLAYING;
 		bool applyTransform = true;
 		bool applyRotation = true;
@@ -119,14 +119,42 @@ namespace KG::Component
 		void RegisterAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U);
 		void RegisterEvent(const KG::Utill::HashString& animationId, int keyFrame, const KG::Utill::HashString& eventId);
 		void SetDefaultAnimation(KG::Utill::HashString defaultAnim);
-		void SetAnimation(const KG::Utill::HashString& animationId, float duration = -1, float speed = 0.5f, bool clearNext = true, int weight = 1);
-		int ChangeAnimation(const KG::Utill::HashString& animationId, int nextState = ANIMSTATE_PLAYING, float blendingDuration = 0.1f, float animationDuration = 0.5f, bool addWeight = false, float speed = 0.5f);
-		int AddNextAnimation(const KG::Utill::HashString& nextAnim, int nextState = ANIMSTATE_PLAYING, float duration = 0.1f, float speed = 0.5f, int weight = 1);
+		// void SetAnimation(const KG::Utill::HashString& animationId, float duration = -1, float speed = 0.5f, bool clearNext = true, int weight = 1);
+		void SetAnimation(const KG::Utill::HashString& animationId, int repeat = -1, float speed = 1.0f, bool clearNext = true, int weight = 1);
+		
+		// int ChangeAnimation(const KG::Utill::HashString& animationId, int nextState = ANIMSTATE_PLAYING, float blendingDuration = 0.1f, float animationDuration = 0.5f, bool addWeight = false, float speed = 0.5f);
+		int ChangeAnimation(const KG::Utill::HashString& animationId, int nextState = ANIMSTATE_PLAYING, float blendingDuration = 0.1f, int repeat = 1, bool addWeight = false, float speed = 1.0f);
+		int AddNextAnimation(const KG::Utill::HashString& nextAnim, int nextState = ANIMSTATE_PLAYING, int repeat = 0.1f, float speed = 1.0f, int weight = 1);
 		void BlendingAnimation(const KG::Utill::HashString& nextAnim, float duration = -1.f, int index = -1, int weight = 1);
 		void SetAnimationWeight(int index, const KG::Utill::HashString& anim, int weight);
 		void SetIgnoreScale(bool isUsing);
 		void SetIgnoreTranslate(bool isUsing);
 		virtual bool OnDrawGUI() override;
+
+		float GetDuration(const KG::Utill::HashString& animId) {
+			if (IsValidAnimationId(animId))
+				return animations[animId.value].duration;
+			else
+				return -1;
+		}
+
+		KG::Utill::HashString GetCurrentPlayingAnimationId() const {
+			return curAnimation.index.begin()->first;
+		}
+
+		// float GetCurrentPlayingAnimationFrame() const {
+		// 	
+		// 	return animations]
+		// 	// return curAnimation.;
+		// }
+
+		float GetCurrentPlayingAnimationTime() const {
+			return curAnimation.time;
+		}
+
+		float GetCurrentPlayingAnimationDuration() const {
+			return curAnimation.duration;
+		}
 	};
 
 	REGISTER_COMPONENT_ID( BoneTransformComponent );
