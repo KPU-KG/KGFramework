@@ -11,8 +11,11 @@ namespace KG::Core
 namespace physx
 {
 	class PxPhysics;
+	class PxRigidActor;
 	class PxRigidDynamic;
 	class PxRigidStatic;
+	// PxU32;
+	
 	// class PxActor;
 	// PxU32;
 }
@@ -27,7 +30,7 @@ namespace KG::Component
 
 	// class PhysicsEventCallback;
 
-	void SetupFiltering(physx::PxRigidActor* actor, physx::PxU32 filterGroup, physx::PxU32 filterMask);
+	void SetupFiltering(physx::PxRigidActor* actor, uint32_t filterGroup, uint32_t filterMask);
 
 	enum SHOW_COLLISION_BOX {
 		NONE, GRID, BOX

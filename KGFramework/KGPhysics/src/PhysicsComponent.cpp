@@ -38,6 +38,7 @@ void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameOb
 	KG::Component::IComponent::OnCreate(gameObject);
 	transform = gameObject->GetComponent<KG::Component::TransformComponent>();
 	KG::Physics::PhysicsScene::GetInstance()->AddDynamicActor(this);
+	SetupFiltering(this->actor, KG::Physics::FilterGroup::eBOX, 0);
 }
 
 KG::Component::DynamicRigidComponent::DynamicRigidComponent()
@@ -217,7 +218,7 @@ void KG::Component::StaticRigidComponent::OnCreate(KG::Core::GameObject* gameObj
 	KG::Component::IComponent::OnCreate(gameObject);
 	transform = gameObject->GetComponent<KG::Component::TransformComponent>();
 	KG::Physics::PhysicsScene::GetInstance()->AddStaticActor(this);
-	SetupFiltering(this->actor, KG::Physics::FilterGroup::eBOX, 0);
+	SetupFiltering(this->actor, KG::Physics::FilterGroup::eBUILDING, 0);
 }
 
 KG::Component::StaticRigidComponent::StaticRigidComponent()
@@ -373,7 +374,7 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 	return false;
 }
 
-void KG::Component::SetupFiltering(physx::PxRigidActor* actor, physx::PxU32 filterGroup, physx::PxU32 filterMask)
+void KG::Component::SetupFiltering(physx::PxRigidActor* actor, uint32_t filterGroup, uint32_t filterMask)
 {
 	physx::PxFilterData filterData;
 	filterData.word0 = filterGroup; // word0 = own ID

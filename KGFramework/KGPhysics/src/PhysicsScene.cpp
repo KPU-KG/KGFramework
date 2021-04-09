@@ -48,8 +48,8 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
 	const  void* constantBlock,
 	physx::PxU32 constantBlockSize)
 {
-	(void)(constantBlockSize);
-	(void)(constantBlock);
+	// (void)(constantBlockSize);
+	// (void)(constantBlock);
 
 	//
 	if (physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
@@ -58,8 +58,8 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
 		return physx::PxFilterFlag::eDEFAULT;
 	}
 
-	// pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
-	pairFlags = physx::PxPairFlag::eMODIFY_CONTACTS | physx::PxPairFlag::eCONTACT_DEFAULT;
+	pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
+// 	pairFlags = physx::PxPairFlag::eMODIFY_CONTACTS | physx::PxPairFlag::eCONTACT_DEFAULT;
 	// 위에서 필터링되지 않은 모든 연락처 생성
 	// pairFlags = physx::PxPairFlag::eNOTIFY_CONTACT_POINTS | physx::PxPairFlag::eDETECT_DISCRETE_CONTACT;
 
