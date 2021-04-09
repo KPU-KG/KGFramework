@@ -20,10 +20,11 @@ namespace KG::Component
 		AnimationControllerComponent* vectorAnimation = nullptr;
 		float speedValue = 0.75f;
 
-		constexpr static float inputRatio = 10.0f;
-		constexpr static float inputRetRatio = 10.0f;
+		constexpr static float inputRatio = 25.0f;
+		constexpr static float inputRetRatio = 5.0f;
 		constexpr static float inputMinimum = 0.1f;
 		constexpr static float walkBlendingDuration = 0.1f;
+		constexpr static float bulletRepeatTime = 0.1f;
 		float forwardValue = 0.0f;
 		float rightValue = 0.0f;
 

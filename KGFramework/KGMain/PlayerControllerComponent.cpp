@@ -109,54 +109,71 @@ void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
 	if ( this->forwardValue >= this->inputMinimum )
 	{
 		//¾Õ
-		this->characterAnimation->ChangeAnimation(this->anim_soldier_walk_f, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		if ( this->rightValue >= this->inputMinimum )
 		{
-			this->characterAnimation->ChangeAnimation(this->anim_soldier_walk_fr, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_fr, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 		else if ( this->rightValue <= -this->inputMinimum )
 		{
-			this->characterAnimation->ChangeAnimation(this->anim_soldier_walk_fl, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_fl, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+		}
+		else
+		{
+			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_f, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 	}
 	else if ( this->forwardValue <= -this->inputMinimum )
 	{
 		//µÚ
-		this->characterAnimation->ChangeAnimation(this->anim_soldier_walk_b, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		if ( this->rightValue >= this->inputMinimum )
 		{
-			this->characterAnimation->ChangeAnimation(this->anim_soldier_walk_br, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_br, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 		else if ( this->rightValue <= -this->inputMinimum )
 		{
-			this->characterAnimation->ChangeAnimation(this->anim_soldier_walk_bl, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_bl, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+		}
+		else
+		{
+			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_b, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 	}
 	else
 	{
 		if ( this->rightValue >= this->inputMinimum )
 		{
-			this->characterAnimation->ChangeAnimation(this->anim_soldier_walk_r, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_r, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 		else if ( this->rightValue <= -this->inputMinimum )
 		{
-			this->characterAnimation->ChangeAnimation(this->anim_soldier_walk_l, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_l, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 		else
 		{
-			this->characterAnimation->ChangeAnimation(this->anim_soldier_standing, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_standing, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 	}
 
 	if ( input->IsTouching(VK_LBUTTON) && input->GetMouseCapture() )
 	{
-		this->vectorAnimation->SetAnimation("Vector@Fire.FBX"_id, 1, 1.5f);
+
+		if ( this->vectorAnimation->GetCurrentPlayingAnimationId() != KG::Utill::HashString("Vector@Fire.FBX"_id) )
+		{
+			DebugNormalMessage("Current Vector Anim Not Fire");
+			this->vectorAnimation->SetAnimation("Vector@Fire.FBX"_id, 1, 1.5f);
+		}
+		else if ( this->vectorAnimation->GetCurrentPlayingAnimationTime() > this->bulletRepeatTime )
+		{
+			DebugNormalMessage("Current Vector Anim is Fire But 0.25Sec later");
+			this->vectorAnimation->SetAnimation("Vector@Fire.FBX"_id, 1, 1.5f);
+		}
 		//this->vectorAnimation->
 	}
 
 	if ( input->IsTouching(VK_RBUTTON) || input->GetMouseCapture() )
 	{
 		auto delta = input->GetDeltaMousePosition();
+		//DebugNormalMessage("Mouse Delta : " << delta.x << ", " << delta.y);
 		if ( delta.x )
 		{
 			this->characterTransform->RotateAxis(Math::up, delta.x * 0.3f);

@@ -641,7 +641,7 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 
 void KG::Component::AnimationControllerComponent::Update(float elapsedTime)
 {
-	DebugNormalMessage("Update Animation");
+	//DebugNormalMessage("Update Animation");
 	switch (state) {
 	case ANIMSTATE_PLAYING:
 		PlayingUpdate(elapsedTime);
@@ -736,8 +736,9 @@ void KG::Component::AnimationControllerComponent::SetAnimation(const KG::Utill::
 	curAnimation.speed = speed;
 	curAnimation.time = 0;
 
-	if (curAnimation.index.begin()->first != animationId.value)
-		animations[animationId.value].timer = 0;
+	//if (curAnimation.index.begin()->first != animationId.value)
+	animations[animationId.value].timer = 0;
+
 	state = ANIMSTATE_PLAYING;
 	changeToDefault = false;
 }

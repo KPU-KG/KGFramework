@@ -12,7 +12,7 @@ void KG::Input::InputManager::SetUIContext(void* context)
 void KG::Input::InputManager::ProcessInput(HWND hWnd)
 {
 
-	if ( hWnd != GetFocus() || ImGui::IsAnyItemActive() )
+	if ( hWnd != GetFocus() || (ImGui::IsAnyItemActive() && !this->startMouseCapture) )
 	{
 		return;
 	}
@@ -80,7 +80,7 @@ void KG::Input::InputManager::ProcessInput(HWND hWnd)
 		newMouseBuffer.y = (rect.bottom - rect.top) / 2;
 		mousePosition.x = newMouseBuffer.x;
 		mousePosition.y = newMouseBuffer.y;
-		DebugNormalMessage("MouseCsr : " << newMouseBuffer.x << ", " << newMouseBuffer.y << " / Delta : " << this->deltaPosition.x << ", " << this->deltaPosition.y);
+		//DebugNormalMessage("MouseCsr : " << newMouseBuffer.x << ", " << newMouseBuffer.y << " / Delta : " << this->deltaPosition.x << ", " << this->deltaPosition.y);
 		ClientToScreen(hWnd, &newMouseBuffer);
 		SetCursorPos(newMouseBuffer.x, newMouseBuffer.y);
 	}
