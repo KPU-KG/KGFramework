@@ -50,7 +50,7 @@ namespace KG::Input
 		/// @return 지정한 키의 상태입니다.
 		KeyState GetKeyState( UINT keyId ) const
 		{
-			return this->keyStates[keyId];
+			return this->keyStates[toupper(keyId)];
 		}
 
 		/// @brief 해당 키가 현재 눌려져 있는지 확인합니다.

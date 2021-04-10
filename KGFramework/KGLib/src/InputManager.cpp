@@ -14,6 +14,10 @@ void KG::Input::InputManager::ProcessInput(HWND hWnd)
 
 	if ( hWnd != GetFocus() || (ImGui::IsAnyItemActive() && !this->startMouseCapture) )
 	{
+		for ( auto& i : this->keyStates )
+		{
+			i = KeyState::None;
+		}
 		return;
 	}
 	if ( GetKeyboardState(keyBuffer) )
