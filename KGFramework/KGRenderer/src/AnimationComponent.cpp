@@ -772,7 +772,8 @@ int  KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Util
 
 			if (curFrame) {
 				for (auto& frame : curFrame->frameCache[0]) {
-					prevFrameCache.emplace_back(frame->GetTransform()->GetRotation());
+					if( frame != nullptr )
+						prevFrameCache.emplace_back(frame->GetTransform()->GetRotation());
 				}
 			}
 		}
