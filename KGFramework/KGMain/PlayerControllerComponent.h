@@ -31,20 +31,15 @@ namespace KG::Component
 		// Bullet
 		int bulletCount = 30;
 
+		bool reloadFlag = false;
 
-		static constexpr auto anim_soldier_standing = "Soldier@Standing.fbx"_id;
-		static constexpr auto anim_soldier_sprint_f = "Soldier@SprintForward.fbx"_id;
-		static constexpr auto anim_soldier_sprint_fl = "Soldier@SprintForwardLeft.fbx"_id;
-		static constexpr auto anim_soldier_sprint_fr = "Soldier@Standing.SprintForwardRight"_id;
-		static constexpr auto anim_soldier_walk_f = "Soldier@WalkForward.fbx"_id;
-		static constexpr auto anim_soldier_walk_fl = "Soldier@WalkForwardLeft.fbx"_id;
-		static constexpr auto anim_soldier_walk_fr = "Soldier@WalkForwardRight.fbx"_id;
-		static constexpr auto anim_soldier_walk_l = "Soldier@WalkLeft.fbx"_id;
-		static constexpr auto anim_soldier_walk_r = "Soldier@WalkRight.fbx"_id;
-		static constexpr auto anim_soldier_walk_b = "Soldier@WalkBackward.fbx"_id;
-		static constexpr auto anim_soldier_walk_bl = "Soldier@WalkBackwardLeft.fbx"_id;
-		static constexpr auto anim_soldier_walk_br = "Soldier@WalkBackwardRight.fbx"_id;
-
+		void ProcessMove(float elapsedTime);
+		void ProcessMoveAnimation(float elapsedTime);
+		void ProcessShoot(float elapsedTime);
+		void ProcessMouse(float elapsedTime);
+		void TryShoot(float elapsedTime);
+		void TryReload(float elapsedTime);
+		bool CheckReloading();
 
 	public:
 		virtual void OnCreate(KG::Core::GameObject* obj) override;

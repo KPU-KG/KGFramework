@@ -4,50 +4,40 @@
 #include "AnimationComponent.h"
 #include "PlayerControllerComponent.h"
 
-void KG::Component::PlayerControllerComponent::OnCreate(KG::Core::GameObject* obj)
+static struct SoldierAnimSet
 {
-	IComponent::OnCreate(obj);
+	static constexpr auto standing = "Soldier@Standing.fbx"_id;
+	static constexpr auto sprint_f = "Soldier@SprintForward.fbx"_id;
+	static constexpr auto sprint_fl = "Soldier@SprintForwardLeft.fbx"_id;
+	static constexpr auto sprint_fr = "Soldier@Standing.SprintForwardRight"_id;
+	static constexpr auto walk_f = "Soldier@WalkForward.fbx"_id;
+	static constexpr auto walk_fl = "Soldier@WalkForwardLeft.fbx"_id;
+	static constexpr auto walk_fr = "Soldier@WalkForwardRight.fbx"_id;
+	static constexpr auto walk_l = "Soldier@WalkLeft.fbx"_id;
+	static constexpr auto walk_r = "Soldier@WalkRight.fbx"_id;
+	static constexpr auto walk_b = "Soldier@WalkBackward.fbx"_id;
+	static constexpr auto walk_bl = "Soldier@WalkBackwardLeft.fbx"_id;
+	static constexpr auto walk_br = "Soldier@WalkBackwardRight.fbx"_id;
+};
 
-	auto* spine = this->gameObject->FindChildObject("Spine3"_id);
-	spine->GetTransform()->SetScale(0, 0, 0);
+static struct VectorAnimSet
+{
+	static constexpr auto idle = "Vector@Idle.FBX"_id;
+	static constexpr auto reload = "Vector@Reload.FBX"_id;
+	static constexpr auto reload_e = "Vector@ReloadEmpty.FBX"_id;
+	static constexpr auto fire = "Vector@Fire.FBX"_id;
+	static constexpr auto fireAim = "Vector@Fire Aim.FBX"_id;
+};
 
-	this->characterTransform = this->gameObject->GetComponent<TransformComponent>();
-	this->characterAnimation = this->gameObject->GetComponent<AnimationControllerComponent>();
 
-	auto* cameraObject = this->gameObject->FindChildObject("FPCamera"_id);
-	this->cameraTransform = cameraObject->GetTransform();
-	this->camera = cameraObject->GetComponent<CameraComponent>();
 
-	auto* vectorObject = this->gameObject->FindChildObject("Vector"_id);
-	this->vectorAnimation = vectorObject->GetComponent<AnimationControllerComponent>();
-	//this->camera = this->gameObject->
-}
-
-void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
+void KG::Component::PlayerControllerComponent::ProcessMove(float elapsedTime)
 {
 	auto input = KG::Input::InputManager::GetInputManager();
-	float speed = input->IsTouching(VK_LSHIFT) ? 6.0f : 2.0f;
-	speed *= speedValue;
-	if ( ImGui::IsAnyItemFocused() || !this->camera->isMainCamera )
-	{
-		return;
-	}
-
-
-	if ( input->IsTouching('9') )
-	{
-		input->SetMouseCapture(false);
-	}
-
-	if ( input->IsTouching('0') )
-	{
-		input->SetMouseCapture(true);
-	}
-
-
 	bool forwardInput = false;
 	bool rightInput = false;
-
+	float speed = input->IsTouching(VK_LSHIFT) ? 6.0f : 2.0f;
+	speed *= speedValue;
 	if ( input->IsTouching('W') )
 	{
 		this->forwardValue += inputRatio * +1 * elapsedTime;
@@ -95,7 +85,6 @@ void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
 	forwardValue = KG::Math::Clamp(forwardValue, -1.0f, 1.0f);
 	rightValue = KG::Math::Clamp(rightValue, -1.0f, 1.0f);
 
-
 	if ( abs(this->forwardValue) >= this->inputMinimum )
 	{
 		this->characterTransform->Translate(this->characterTransform->GetLook() * speed * elapsedTime * this->forwardValue);
@@ -104,22 +93,24 @@ void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
 	{
 		this->characterTransform->Translate(this->characterTransform->GetRight() * speed * elapsedTime * this->rightValue);
 	}
+}
 
-
+void KG::Component::PlayerControllerComponent::ProcessMoveAnimation(float elapsedTime)
+{
 	if ( this->forwardValue >= this->inputMinimum )
 	{
 		//¾Õ
 		if ( this->rightValue >= this->inputMinimum )
 		{
-			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_fr, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_fr, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 		else if ( this->rightValue <= -this->inputMinimum )
 		{
-			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_fl, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_fl, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 		else
 		{
-			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_f, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_f, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 	}
 	else if ( this->forwardValue <= -this->inputMinimum )
@@ -127,53 +118,49 @@ void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
 		//µÚ
 		if ( this->rightValue >= this->inputMinimum )
 		{
-			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_br, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_br, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 		else if ( this->rightValue <= -this->inputMinimum )
 		{
-			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_bl, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_bl, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 		else
 		{
-			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_b, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_b, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 	}
 	else
 	{
 		if ( this->rightValue >= this->inputMinimum )
 		{
-			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_r, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_r, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 		else if ( this->rightValue <= -this->inputMinimum )
 		{
-			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_walk_l, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_l, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 		else
 		{
-			this->characterAnimation->ForceChangeAnimation(this->anim_soldier_standing, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::standing, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
 		}
 	}
+}
 
+void KG::Component::PlayerControllerComponent::ProcessShoot(float elapsedTime)
+{
+	auto input = KG::Input::InputManager::GetInputManager();
 	if ( input->IsTouching(VK_LBUTTON) && input->GetMouseCapture() )
 	{
-
-		if ( this->vectorAnimation->GetCurrentPlayingAnimationId() != KG::Utill::HashString("Vector@Fire.FBX"_id) )
-		{
-			DebugNormalMessage("Current Vector Anim Not Fire");
-			this->vectorAnimation->SetAnimation("Vector@Fire.FBX"_id, 1, 1.5f);
-		}
-		else if ( this->vectorAnimation->GetCurrentPlayingAnimationTime() > this->bulletRepeatTime )
-		{
-			DebugNormalMessage("Current Vector Anim is Fire But 0.25Sec later");
-			this->vectorAnimation->SetAnimation("Vector@Fire.FBX"_id, 1, 1.5f);
-		}
-		//this->vectorAnimation->
+		this->TryShoot(elapsedTime);
 	}
+}
 
+void KG::Component::PlayerControllerComponent::ProcessMouse(float elapsedTime)
+{
+	auto input = KG::Input::InputManager::GetInputManager();
 	if ( input->IsTouching(VK_RBUTTON) || input->GetMouseCapture() )
 	{
 		auto delta = input->GetDeltaMousePosition();
-		//DebugNormalMessage("Mouse Delta : " << delta.x << ", " << delta.y);
 		if ( delta.x )
 		{
 			this->characterTransform->RotateAxis(Math::up, delta.x * 0.3f);
@@ -187,7 +174,116 @@ void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
 			}
 		}
 	}
+}
 
+void KG::Component::PlayerControllerComponent::TryShoot(float elapsedTime)
+{
+	if ( this->bulletCount <= 0 )
+	{
+		this->TryReload(elapsedTime);
+		return;
+	}
+	if ( this->vectorAnimation->GetCurrentPlayingAnimationId() != VectorAnimSet::fire )
+	{
+		DebugNormalMessage("Current Vector Anim Not Fire");
+		this->vectorAnimation->SetAnimation(VectorAnimSet::fire, 1, 1.5f);
+		this->bulletCount -= 1;
+	}
+	else if ( this->vectorAnimation->GetCurrentPlayingAnimationTime() > this->bulletRepeatTime )
+	{
+		DebugNormalMessage("Current Vector Anim is Fire But 0.25Sec later");
+		this->vectorAnimation->SetAnimation(VectorAnimSet::fire, 1, 1.5f);
+		this->bulletCount -= 1;
+	}
+}
+
+void KG::Component::PlayerControllerComponent::TryReload(float elapsedTime)
+{
+	if ( !(this->vectorAnimation->GetCurrentPlayingAnimationId() == VectorAnimSet::fire && this->vectorAnimation->GetCurrentPlayingAnimationTime() <= this->bulletRepeatTime )
+		&& this->vectorAnimation->GetCurrentPlayingAnimationId() != VectorAnimSet::reload
+		&& this->vectorAnimation->GetCurrentPlayingAnimationId() != VectorAnimSet::reload_e
+		)
+	{
+		if ( this->bulletCount > 0 )
+		{
+			this->reloadFlag = true;
+			this->vectorAnimation->SetAnimation(VectorAnimSet::reload, 1, 1.0f);
+		}
+		else
+		{
+			this->reloadFlag = true;
+			this->vectorAnimation->SetAnimation(VectorAnimSet::reload_e, 1, 1.0f);
+		}
+	}
+}
+
+bool KG::Component::PlayerControllerComponent::CheckReloading()
+{
+	if ( this->reloadFlag && (this->vectorAnimation->GetCurrentPlayingAnimationId() == VectorAnimSet::reload || this->vectorAnimation->GetCurrentPlayingAnimationId() == VectorAnimSet::reload_e) )
+	{
+		if ( this->vectorAnimation->GetCurrentPlayingAnimationTime() >= this->vectorAnimation->GetCurrentPlayingAnimationDuration() * 0.8f )
+		{
+			this->reloadFlag = false;
+			this->bulletCount = 30;
+			return false;
+		}
+		else
+		{
+			return true;
+		}
+	}
+	else
+	{
+		this->reloadFlag = false;
+		return false;
+	}
+}
+
+void KG::Component::PlayerControllerComponent::OnCreate(KG::Core::GameObject* obj)
+{
+	IComponent::OnCreate(obj);
+
+	auto* spine = this->gameObject->FindChildObject("Spine3"_id);
+	spine->GetTransform()->SetScale(0, 0, 0);
+
+	this->characterTransform = this->gameObject->GetComponent<TransformComponent>();
+	this->characterAnimation = this->gameObject->GetComponent<AnimationControllerComponent>();
+
+	auto* cameraObject = this->gameObject->FindChildObject("FPCamera"_id);
+	this->cameraTransform = cameraObject->GetTransform();
+	this->camera = cameraObject->GetComponent<CameraComponent>();
+
+	auto* vectorObject = this->gameObject->FindChildObject("Vector"_id);
+	this->vectorAnimation = vectorObject->GetComponent<AnimationControllerComponent>();
+	//this->camera = this->gameObject->
+}
+
+void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
+{
+	auto* input = KG::Input::InputManager::GetInputManager();
+	if ( input->IsTouching('9') )
+	{
+		input->SetMouseCapture(false);
+	}
+
+	if ( input->IsTouching('0') )
+	{
+		input->SetMouseCapture(true);
+	}
+	this->ProcessMove(elapsedTime);
+	this->ProcessMoveAnimation(elapsedTime);
+	this->ProcessMouse(elapsedTime);
+	if (! this->CheckReloading() )
+	{
+		if ( input->GetKeyState('R') == Input::KeyState::Down )
+		{
+			this->TryReload(elapsedTime);
+		}
+		else
+		{
+			this->ProcessShoot(elapsedTime);
+		}
+	}
 }
 
 void KG::Component::PlayerControllerComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
@@ -204,7 +300,8 @@ bool KG::Component::PlayerControllerComponent::OnDrawGUI()
 {
 	if ( ImGui::ComponentHeader<PlayerControllerComponent>() )
 	{
-		ImGui::Text("No UI");
+		ImGui::InputInt("BulletCount", &this->bulletCount);
+		ImGui::Checkbox("Reloading", &this->reloadFlag);
 	}
 	return false;
 }
