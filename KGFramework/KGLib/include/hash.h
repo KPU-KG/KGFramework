@@ -101,6 +101,10 @@ namespace KG::Utill
 		{
 			return this->value == other.value;
 		}
+		bool operator==(const hashType& other) const
+		{
+			return this->value == other;
+		}
 		bool operator<(const HashString& other) const
 		{
 			return this->value < other.value;
