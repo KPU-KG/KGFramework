@@ -578,7 +578,7 @@ bool KG::Core::Scene::OnDrawGUI()
 		if ( ImGuiFileDialog::Instance()->IsOk() )
 		{
 			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-			auto* newObj = this->CreateNewObject();
+			auto* newObj = this->CreateNewTransformObject();
 			newObj->LoadToFile(filePathName);
 			this->rootNode.GetTransform()->AddChild(newObj->GetTransform());
 		}
