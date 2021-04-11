@@ -198,6 +198,10 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 	PxRigidDynamic* actor = PxCreateDynamic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), 
 		PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial, 1);
 	
+	PxTransform t = actor->getGlobalPose();
+	DirectX::XMFLOAT3 pos = rigid->GetGameObject()->GetTransform()->GetPosition();
+	t.p = { pos.x, pos.y, pos.z };
+	actor->setGlobalPose(t);
 	// PxShape p =;
 	// PxShape
 	
