@@ -273,7 +273,10 @@ bool KG::Component::CameraComponent::OnDrawGUI()
 {
 	if ( ImGui::ComponentHeader<KG::Component::CameraComponent>() )
 	{
-		this->mainCameraProp.OnDrawGUI();
+		if ( this->mainCameraProp.OnDrawGUI() && this->isMainCamera )
+		{
+			this->gameObject->GetScene()->SetMainCamera(this);
+		}
 		this->fovYProp.OnDrawGUI();
 		this->aspectRatioProp.OnDrawGUI();
 		this->nearZProp.OnDrawGUI();
