@@ -31,6 +31,7 @@ namespace KG::Input
 		MousePosition deltaPosition;
 
 		bool startProcessing = false;
+		bool startMouseCapture = false;
 
 		InputManager() = default;
 	public:
@@ -40,13 +41,16 @@ namespace KG::Input
 		/// @param hWnd 입력을 받아올 윈도우의 핸들입니다.
 		void ProcessInput(HWND hWnd);
 
+		void SetMouseCapture(bool startMouseCapture);
+		bool GetMouseCapture() const;
+
 		/// @brief 해당 키의 현재 상태를 가져옵니다.
 		/// 사용되는 ID는 윈도우API와 동일하게 VK로 시작하는 특수키와 char로 기능합니다.
 		/// @param keyId 구할 키의 ID입니다. 
 		/// @return 지정한 키의 상태입니다.
 		KeyState GetKeyState( UINT keyId ) const
 		{
-			return this->keyStates[keyId];
+			return this->keyStates[toupper(keyId)];
 		}
 
 		/// @brief 해당 키가 현재 눌려져 있는지 확인합니다.

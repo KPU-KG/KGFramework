@@ -11,9 +11,13 @@ void KG::Input::InputManager::SetUIContext(void* context)
 
 void KG::Input::InputManager::ProcessInput(HWND hWnd)
 {
-	
-	if ( hWnd != GetFocus() || ImGui::IsAnyItemActive() )
+
+	if ( hWnd != GetFocus() || (ImGui::IsAnyItemActive() && !this->startMouseCapture) )
 	{
+		for ( auto& i : this->keyStates )
+		{
+			i = KeyState::None;
+		}
 		return;
 	}
 	if ( GetKeyboardState(keyBuffer) )
@@ -56,8 +60,10 @@ void KG::Input::InputManager::ProcessInput(HWND hWnd)
 	}
 
 	//Mouse
-	POINT mouseBuffer;
+	POINT mouseBuffer = {};
 	GetCursorPos(&mouseBuffer);
+	RECT rect = {};
+	GetClientRect(hWnd, &rect);
 	ScreenToClient(hWnd, &mouseBuffer);
 	if ( !startProcessing )
 	{
@@ -70,7 +76,33 @@ void KG::Input::InputManager::ProcessInput(HWND hWnd)
 	this->deltaPosition.x = mouseBuffer.x - mousePosition.x;
 	this->deltaPosition.y = mouseBuffer.y - mousePosition.y;
 
-	mousePosition.x = mouseBuffer.x;
-	mousePosition.y = mouseBuffer.y;
 
+	if ( this->startMouseCapture )
+	{
+		POINT newMouseBuffer;
+		newMouseBuffer.x = (rect.right - rect.left) / 2;
+		newMouseBuffer.y = (rect.bottom - rect.top) / 2;
+		mousePosition.x = newMouseBuffer.x;
+		mousePosition.y = newMouseBuffer.y;
+		//DebugNormalMessage("MouseCsr : " << newMouseBuffer.x << ", " << newMouseBuffer.y << " / Delta : " << this->deltaPosition.x << ", " << this->deltaPosition.y);
+		ClientToScreen(hWnd, &newMouseBuffer);
+		SetCursorPos(newMouseBuffer.x, newMouseBuffer.y);
+	}
+	else
+	{
+		mousePosition.x = mouseBuffer.x;
+		mousePosition.y = mouseBuffer.y;
+	}
+
+}
+
+void KG::Input::InputManager::SetMouseCapture(bool startMouseCapture)
+{
+	this->startMouseCapture = startMouseCapture;
+	ShowCursor(!startMouseCapture);
+}
+
+bool KG::Input::InputManager::GetMouseCapture() const
+{
+	return this->startMouseCapture;
 }

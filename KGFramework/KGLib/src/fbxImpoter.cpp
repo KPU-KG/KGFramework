@@ -528,8 +528,8 @@ static KG::Utill::MeshData ConvertMesh(FbxMesh* mesh)
 			FbxAMatrix fbxmtxBindPoseBoneToRoot; //Cluster Link Transform
 			pfbxCluster->GetTransformLinkMatrix(fbxmtxBindPoseBoneToRoot);
 
-			//FbxAMatrix fbxmtxVertextToLinkNode = fbxmtxBindPoseBoneToRoot.Inverse() * fbxmtxBindPoseMeshToRoot * fbxmtxGeometryOffset;
-			FbxAMatrix fbxmtxVertextToLinkNode = fbxmtxBindPoseBoneToRoot.Inverse() * fbxmtxBindPoseMeshToRoot;
+			FbxAMatrix fbxmtxVertextToLinkNode = fbxmtxBindPoseBoneToRoot.Inverse() * fbxmtxBindPoseMeshToRoot * fbxmtxGeometryOffset;
+			//FbxAMatrix fbxmtxVertextToLinkNode = fbxmtxBindPoseBoneToRoot.Inverse() * fbxmtxBindPoseMeshToRoot;
 
 			KG::Utill::BoneData bone;
 			bone.nodeId = KG::Utill::HashString(pfbxClusterLinkNode->GetName());
@@ -633,6 +633,7 @@ static KG::Utill::ModelNode* ProcessNode(KG::Utill::ImportData* importData, FbxN
 		auto s_r = pFbxNode->LclRotation.Get();
 		auto s_s = pFbxNode->LclScaling.Get();
 		auto s_pr = pFbxNode->PreRotation.Get();
+
 		using namespace DirectX;
 		XMVECTOR t = XMVectorSet(s_t.mData[0], s_t.mData[1], s_t.mData[2], 1.0f);
 		XMVECTOR pr = _XMQuaternionRotationXYZ(
@@ -792,7 +793,7 @@ void KG::Utill::ImportData::LoadFromPathFBX(const std::string& path)
 	pFbxIOSettings->SetBoolProp(IMP_AUDIO, false);
 	pFbxIOSettings->SetBoolProp(IMP_LIGHT, false);
 	pFbxIOSettings->SetBoolProp(IMP_FBX_CHARACTER, false);
-	pFbxIOSettings->SetBoolProp(IMP_FBX_CONSTRAINT, false);
+	pFbxIOSettings->SetBoolProp(IMP_FBX_CONSTRAINT, true);
 	pFbxIOSettings->SetBoolProp(IMP_FBX_AUDIO, false);
 
 	//FbxIOSettings* pFbxIOSettings = FbxIOSettings::Create( pFbxManager, IOSROOT );
@@ -811,7 +812,6 @@ void KG::Utill::ImportData::LoadFromPathFBX(const std::string& path)
 		conv.RemoveBadPolygonsFromMeshes(pFbxScene, NULL);
 		conv.Triangulate(pFbxScene, true);
 		conv.SplitMeshesPerMaterial(pFbxScene, true);
-
 		FbxAxisSystem currentAxis = pFbxScene->GetGlobalSettings().GetAxisSystem();
 		FbxAxisSystem directXAxis(FbxAxisSystem::eDirectX);
 		if ( currentAxis != directXAxis )

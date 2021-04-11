@@ -404,7 +404,7 @@ bool KG::Core::Scene::OnDrawGUI()
 						, ImGui::GetCurrentShortPath("Resource\\Geometry\\"), "", 1, nullptr);
 				if ( ImGui::MenuItem("Make Model From File") )
 					ImGuiFileDialog::Instance()->OpenDialog("MakeModel", " Choose a File", ".FBX{.fbx,.FBX}"
-						, ImGui::GetCurrentShortPath("Resource\\Geometry\\"), "", 1, nullptr);
+						, ImGui::GetCurrentShortPath("Resource\\Geometry\\"), "", 0, nullptr);
 				ImGui::EndMenu();
 			}
 			ImGui::EndMenuBar();
@@ -729,27 +729,31 @@ bool KG::Core::Scene::OnDrawGUI()
 		// action if OK
 		if ( ImGuiFileDialog::Instance()->IsOk() )
 		{
-			std::string filePathName = ImGui::ShortPathToLongPath(ImGuiFileDialog::Instance()->GetFilePathName());
-			std::string resourcePath = filePathName.substr(filePathName.rfind("Resource"));
-			std::string geometryName = filePathName.substr(filePathName.rfind("\\") + 1, filePathName.length() - 4);
-			for ( auto& i : resourcePath )
-			{
-				if ( i == '\\' )
-				{
-					i = '/';
-				}
-			}
 
-			//Create Textures
+			auto map = ImGuiFileDialog::Instance()->GetSelection();
+			for ( auto[fileName, getFilePathName] : map )
 			{
-				tinyxml2::XMLDocument textureSet;
-				textureSet.LoadFile("Resource/GeometrySet.xml");
-				textureSet.FirstChildElement("GeometrySet")->InsertNewComment(geometryName.c_str());
-				auto* texEle = textureSet.FirstChildElement("GeometrySet")->InsertNewChildElement("Geometry");
-				texEle->SetAttribute("id", (geometryName).c_str());
-				texEle->SetAttribute("fileDir", resourcePath.c_str());
-				texEle->SetAttribute("rawMesh", false);
-				textureSet.SaveFile("Resource/GeometrySet.xml");
+				std::string filePathName = ImGui::ShortPathToLongPath(getFilePathName);
+				std::string resourcePath = filePathName.substr(filePathName.rfind("Resource"));
+				std::string geometryName = filePathName.substr(filePathName.rfind("\\") + 1, filePathName.length() - 4);
+				for ( auto& i : resourcePath )
+				{
+					if ( i == '\\' )
+					{
+						i = '/';
+					}
+				}
+
+				{
+					tinyxml2::XMLDocument textureSet;
+					textureSet.LoadFile("Resource/GeometrySet.xml");
+					textureSet.FirstChildElement("GeometrySet")->InsertNewComment(geometryName.c_str());
+					auto* texEle = textureSet.FirstChildElement("GeometrySet")->InsertNewChildElement("Geometry");
+					texEle->SetAttribute("id", (geometryName).c_str());
+					texEle->SetAttribute("fileDir", resourcePath.c_str());
+					texEle->SetAttribute("rawMesh", false);
+					textureSet.SaveFile("Resource/GeometrySet.xml");
+				}
 			}
 		}
 

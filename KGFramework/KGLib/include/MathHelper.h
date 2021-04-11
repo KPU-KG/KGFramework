@@ -5,7 +5,6 @@
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
 
-
 inline DirectX::XMFLOAT3 operator*( const DirectX::XMFLOAT3& vector, float scalar )
 {
 	using namespace DirectX;
@@ -480,6 +479,13 @@ namespace KG::Math
 			}
 		}
 		return value;
+	}
+
+	template<typename Ty>
+	inline Ty Clamp(Ty value, const Ty& _min, const Ty& _max)
+	{
+		using namespace Math::Literal;
+		return (std::max)((std::min)(value, _max), _min);
 	}
 
 }

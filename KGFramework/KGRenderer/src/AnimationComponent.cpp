@@ -112,6 +112,9 @@ static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float curr
 		float keyValue0 = 0.0f;
 		float keyValue1 = 0.0f;
 
+		if (currentTime == duration)
+			return data.back().value;
+
 		if (prev == data.end())
 		{
 			keyTime0 = data.back().keyTime;
@@ -135,9 +138,14 @@ static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float curr
 		}
 		else
 		{
-			keyTime1 = last->keyTime;
-			keyValue1 = last->value;
+			while (last != data.end() && keyTime1 <= keyTime0) {
+				keyTime1 = last->keyTime;
+				keyValue1 = last->value;
+				last++;
+			}
 		}
+		if (keyTime0 == keyTime1)
+			return keyValue1;
 		value = KG::Math::Lerp(keyValue0, keyValue1, abs(currentTime - keyTime0) / abs(keyTime1 - keyTime0));
 		//value = keyValue0;
 	}
@@ -161,9 +169,14 @@ static XMFLOAT3 GetAnimationTranslation(const KG::Utill::NodeAnimation& anim, fl
 static XMFLOAT4 GetAnimationRotation(const KG::Utill::NodeAnimation& anim, float currentTime, float duration)
 {
 	XMFLOAT3 r = {};
-	r.x = XMConvertToRadians(GetTimeData(anim.rotation.x, currentTime, duration));
-	r.y = XMConvertToRadians(GetTimeData(anim.rotation.y, currentTime, duration));
-	r.z = XMConvertToRadians(GetTimeData(anim.rotation.z, currentTime, duration));
+
+	r.x = GetTimeData(anim.rotation.x, currentTime, duration);
+	r.y = GetTimeData(anim.rotation.y, currentTime, duration);
+	r.z = GetTimeData(anim.rotation.z, currentTime, duration);
+
+	r.x = XMConvertToRadians(r.x);
+	r.y = XMConvertToRadians(r.y);
+	r.z = XMConvertToRadians(r.z);
 	XMFLOAT4 rQuat = KG::Math::Quaternion::Multiply(KG::Math::Quaternion::FromXYZEuler(r), anim.preRotation);
 	return rQuat;
 }
@@ -274,7 +287,8 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 
 	if (anim->timer >= anim->duration) {
 		anim->timer -= anim->duration;
-
+		if (curAnimation.repeat != ANIMLOOP_INF)
+			curAnimation.repeat--;
 		// 한 애니메이션 넘어가면 이벤트 초기화
 		// for (int idx : curAnimation.index) {
 		// 	if (events[animations[idx].animationId].size() > 0) {
@@ -299,10 +313,32 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 	// 	}
 	// }
 
+	if (curAnimation.repeat == ANIMLOOP_INF)
+		; // loop inf
+	// else if (curAnimation.time >= curAnimation.duration) {
+	else if (curAnimation.repeat <= 0) {
+		if (animations.size() < 10)
+			DebugNormalMessage("Animation Change Next"); // 알림점
+		float animT = animations[curAnimation.index.begin()->first].timer / animations[curAnimation.index.begin()->first].duration;
+		if (nextAnimations.size() <= 0) {
+			animations[defaultAnimation.value].timer = animT * animations[defaultAnimation.value].duration;
+			state = ANIMSTATE_CHANGING;
+			ChangeAnimation(defaultAnimation, ANIMSTATE_PLAYING, 0.5f, -1);
+			changeToDefault = true;
+		}
+		else {
+			animations[nextAnimations[0].index.begin()->first].timer = animT * animations[nextAnimations[0].index.begin()->first].duration;
+			curAnimation = nextAnimations[0];
+			curAnimation.time = 0;
+			nextAnimations.erase(nextAnimations.begin());
+			state = curAnimation.next;
+		}
+		return;
+	}
 
 
 	float T = anim->timer / anim->duration;
-	curAnimation.time += elapsedTime;
+	curAnimation.time += elapsedTime * curAnimation.speed;
 
 	KG::Utill::AnimationSet* animSet = nullptr;
 
@@ -363,31 +399,18 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 			XMStoreFloat3(&scale, XMVectorLerp(XMLoadFloat3(&scale), XMLoadFloat3(&s[count][i]), weight));
 		}
 
-		if (curAnimation.applyTransform)
-			; // anim->frameCache[0][i]->GetTransform()->SetPosition(pos);
-		if (curAnimation.applyRotation)
-			anim->frameCache[0][i]->GetTransform()->SetRotation(rot);
-		if (curAnimation.applyScale && this->isIgnoreScale)
-			anim->frameCache[0][i]->GetTransform()->SetScale(scale);
+		if ( anim->frameCache[0][i] != nullptr )
+		{
+			if (curAnimation.applyTransform && !this->isIgnoreTranslate )
+				anim->frameCache[0][i]->GetTransform()->SetPosition(pos);
+			if (curAnimation.applyRotation)
+				anim->frameCache[0][i]->GetTransform()->SetRotation(rot);
+			if (curAnimation.applyScale && !this->isIgnoreScale)
+				anim->frameCache[0][i]->GetTransform()->SetScale(scale);
+		}
 	}
 
 	curFrame = anim;
-
-	if (curAnimation.duration < 0)
-		; // loop inf
-	else if (curAnimation.time >= curAnimation.duration) {
-		float animT = animations[curAnimation.index.begin()->first].timer / animations[curAnimation.index.begin()->first].duration;
-		if (nextAnimations.size() <= 0) {
-			animations[defaultAnimation.value].timer = animT * animations[defaultAnimation.value].duration;
-			ChangeAnimation(defaultAnimation, 0.5f, -1);
-		}
-		else {
-			animations[nextAnimations[0].index.begin()->first].timer = animT * animations[nextAnimations[0].index.begin()->first].duration;
-			curAnimation = nextAnimations[0];
-			nextAnimations.erase(nextAnimations.begin());
-		}
-		state = curAnimation.next;
-	}
 }
 
 void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTime)
@@ -402,7 +425,8 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 
 	if (anim->timer >= anim->duration) {
 		anim->timer -= anim->duration;
-
+		if (curAnimation.repeat != ANIMLOOP_INF)
+			curAnimation.repeat--;
 		// 한 애니메이션 넘어가면 이벤트 초기화
 		// for (int idx : curAnimation.index) {
 		// 	if (events[animations[idx].animationId].size() > 0) {
@@ -413,12 +437,39 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 		// }
 	}
 
-	float T = anim->timer / anim->duration;
+	// if (curAnimation.repeat == ANIMLOOP_INF)
+	// 	; // loop inf
+	if (curAnimation.time >= curAnimation.duration) {
+		if (animations.size() < 10)
+			DebugNormalMessage("Animation Change Next"); // 알림점
+	// else if (curAnimation.repeat <= 0) {
+		float animT = animations[curAnimation.index.begin()->first].timer / animations[curAnimation.index.begin()->first].duration;
+		if (nextAnimations.size() <= 0) {
+			animations[defaultAnimation.value].timer = animT * animations[defaultAnimation.value].duration;
+			state = ANIMSTATE_CHANGING;
+			ChangeAnimation(defaultAnimation, ANIMSTATE_PLAYING, 0.5f, -1);
+			changeToDefault = true;
+			changeIntercepted = false;
+		}
+		else {
+			animations[nextAnimations[0].index.begin()->first].timer = animT * animations[nextAnimations[0].index.begin()->first].duration;
+			curAnimation = nextAnimations[0];
+			curAnimation.time = 0;
+			nextAnimations.erase(nextAnimations.begin());
+			state = curAnimation.next;
+		}
+		return;
+	}
 
-	curAnimation.time += elapsedTime;
+	float T = anim->timer / anim->duration;
+	if (changeToDefault)
+		T = 1;
+
+	curAnimation.time += elapsedTime * curAnimation.speed;
 
 	KG::Utill::AnimationSet* animSet = nullptr;
 
+	std::vector<KG::Utill::HashString> prevIndexName;
 	std::vector<std::vector<DirectX::XMFLOAT3>> t;
 	std::vector<std::vector<DirectX::XMFLOAT4>> r;
 	std::vector<std::vector<DirectX::XMFLOAT3>> s;
@@ -435,16 +486,18 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 		anim->timer = T * anim->duration;
 
 		animSet = inst->LoadAnimation(anim->animationId, 0);
+		prevIndexName.resize(animSet->layers[0].nodeAnimations.size());
 		t[animCount].resize(animSet->layers[0].nodeAnimations.size());
 		r[animCount].resize(animSet->layers[0].nodeAnimations.size());
 		s[animCount].resize(animSet->layers[0].nodeAnimations.size());
 		for (size_t i = 0; i < animSet->layers[0].nodeAnimations.size(); i++)
 		{
+			// if (prevIndexName[i]. == 0)
+			prevIndexName[i] = animSet->layers[0].nodeAnimations[i].nodeId;
 			if (animSet->layers[0].nodeAnimations[i].nodeId == KG::Utill::HashString("RootNode"_id))
 			{
 				continue;
 			}
-
 			t[animCount][i] = GetAnimationTranslation(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
 			r[animCount][i] = GetAnimationRotation(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
 			s[animCount][i] = GetAnimationScale(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
@@ -478,6 +531,7 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 			float curWeight = iter->second;
 			float weight = curWeight / (curWeight + prevWeight);
 
+			XMStoreFloat3(&pos[i], XMVectorLerp(XMLoadFloat3(&pos[i]), XMLoadFloat3(&t[count][i]), weight));
 			XMStoreFloat4(&rot[i], XMQuaternionSlerp(XMLoadFloat4(&rot[i]), XMLoadFloat4(&r[count][i]), weight));
 			XMStoreFloat3(&scale[i], XMVectorLerp(XMLoadFloat3(&scale[i]), XMLoadFloat3(&s[count][i]), weight));
 		}
@@ -501,7 +555,9 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 	t.clear();
 	r.clear();
 	s.clear();
+	std::vector<KG::Utill::HashString> nextIndexName;
 
+	nextIndexName.resize(animSet->layers[0].nodeAnimations.size());
 	t.resize(nextAnimations[0].index.size());
 	r.resize(nextAnimations[0].index.size());
 	s.resize(nextAnimations[0].index.size());
@@ -511,8 +567,8 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 	for (auto& idx : nextAnimations[0].index) {
 		anim = &animations[idx.first];
 		auto* inst = KG::Resource::ResourceContainer::GetInstance();
-
-		anim->timer = T * anim->duration;
+		float curT = anim->timer / anim->duration;
+		anim->timer = curT * anim->duration;
 
 		animSet = inst->LoadAnimation(anim->animationId, 0);
 		t[animCount].resize(animSet->layers[0].nodeAnimations.size());
@@ -520,14 +576,15 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 		s[animCount].resize(animSet->layers[0].nodeAnimations.size());
 		for (size_t i = 0; i < animSet->layers[0].nodeAnimations.size(); i++)
 		{
+			nextIndexName[i] = animSet->layers[0].nodeAnimations[i].nodeId;
 			if (animSet->layers[0].nodeAnimations[i].nodeId == KG::Utill::HashString("RootNode"_id))
 			{
 				continue;
 			}
 
-			t[animCount][i] = GetAnimationTranslation(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
-			r[animCount][i] = GetAnimationRotation(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
-			s[animCount][i] = GetAnimationScale(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
+			t[animCount][i] = GetAnimationTranslation(animSet->layers[0].nodeAnimations[i], curT * anim->duration, anim->duration);
+			r[animCount][i] = GetAnimationRotation(animSet->layers[0].nodeAnimations[i], curT * anim->duration, anim->duration);
+			s[animCount][i] = GetAnimationScale(animSet->layers[0].nodeAnimations[i], curT * anim->duration, anim->duration);
 		}
 		animCount++;
 	}
@@ -558,6 +615,7 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 			float curWeight = iter->second;
 			float weight = curWeight / (curWeight + prevWeight);
 
+			XMStoreFloat3(&nextPos[i], XMVectorLerp(XMLoadFloat3(&nextPos[i]), XMLoadFloat3(&t[count][i]), weight));
 			XMStoreFloat4(&nextRot[i], XMQuaternionSlerp(XMLoadFloat4(&nextRot[i]), XMLoadFloat4(&r[count][i]), weight));
 			XMStoreFloat3(&nextScale[i], XMVectorLerp(XMLoadFloat3(&nextScale[i]), XMLoadFloat3(&s[count][i]), weight));
 		}
@@ -570,50 +628,58 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 			continue;
 		}
 
-		XMFLOAT3 position = pos[i];
-		XMFLOAT4 rotation;
-		if (changeIntercepted)
-			rotation = prevFrameCache[i];
-		else
-			rotation = rot[i];
-		XMFLOAT3 scaling = scale[i];
+		XMFLOAT3 position = nextPos[i];
+		for (size_t p = 0; p < prevIndexName.size(); ++p) {
+			if (nextIndexName[i] == prevIndexName[p]) {
+				position = pos[p];
+				break;
+			}
+		}
+
+		XMFLOAT4 rotation = nextRot[i];
+		if (changeIntercepted && !changeToDefault) {
+			if (prevFrameCache.size() >= i + 1)
+				rotation = prevFrameCache[i];
+		}
+		else {
+			for (size_t p = 0; p < prevIndexName.size(); ++p) {
+				if (nextIndexName[i] == prevIndexName[p]) {
+					rotation = rot[p];
+					break;
+				}
+			}
+		}
+
+		// XMFLOAT3 scaling = scale[i];
+		XMFLOAT3 scaling = nextScale[i];
+		for (size_t p = 0; p < prevIndexName.size(); ++p) {
+			if (nextIndexName[i] == prevIndexName[p]) {
+				scaling = scale[p];
+				break;
+			}
+		}
 
 		float weight = curAnimation.time / curAnimation.duration;
 
+		XMStoreFloat3(&position, XMVectorLerp(XMLoadFloat3(&position), XMLoadFloat3(&nextPos[i]), weight));
 		XMStoreFloat4(&rotation, XMQuaternionSlerp(XMLoadFloat4(&rotation), XMLoadFloat4(&nextRot[i]), weight));
 		XMStoreFloat3(&scaling, XMVectorLerp(XMLoadFloat3(&scaling), XMLoadFloat3(&nextScale[i]), weight));
 
-		if (curAnimation.applyTransform)
-			;
+		if (curAnimation.applyTransform && !this->isIgnoreTranslate )
+			anim->frameCache[0][i]->GetTransform()->SetPosition(position);
 		if (curAnimation.applyRotation)
 			anim->frameCache[0][i]->GetTransform()->SetRotation(rotation);
-		if (curAnimation.applyScale && this->isIgnoreScale )
+		if (curAnimation.applyScale && !this->isIgnoreScale )
 			anim->frameCache[0][i]->GetTransform()->SetScale(scaling);
 
 	}
 
 	curFrame = anim;
-
-	if (curAnimation.duration < 0)
-		; // loop inf
-	else if (curAnimation.time >= curAnimation.duration) {
-		float animT = animations[curAnimation.index.begin()->first].timer / animations[curAnimation.index.begin()->first].duration;
-		if (nextAnimations.size() <= 0) {
-			animations[defaultAnimation.value].timer = animT * animations[defaultAnimation.value].duration;
-			ChangeAnimation(defaultAnimation, 0.5f, -1);
-		}
-		else {
-			animations[nextAnimations[0].index.begin()->first].timer = animT * animations[nextAnimations[0].index.begin()->first].duration;
-			curAnimation = nextAnimations[0];
-			nextAnimations.erase(nextAnimations.begin());
-		}
-		state = curAnimation.next;
-	}
 }
 
 void KG::Component::AnimationControllerComponent::Update(float elapsedTime)
 {
-	DebugNormalMessage("Update Animation");
+	//DebugNormalMessage("Update Animation");
 	switch (state) {
 	case ANIMSTATE_PLAYING:
 		PlayingUpdate(elapsedTime);
@@ -693,33 +759,46 @@ void KG::Component::AnimationControllerComponent::RegisterEvent(const KG::Utill:
 	*/
 }
 
-void KG::Component::AnimationControllerComponent::SetAnimation(const KG::Utill::HashString& animationId, float duration, float speed, bool clearNext, int weight) {
+void KG::Component::AnimationControllerComponent::SetAnimation(const KG::Utill::HashString& animationId, int repeat, float speed, bool clearNext, int weight) {
 	if (clearNext)
 		nextAnimations.clear();
 	curAnimation.index.clear();
-	// curAnimation.index.push_back(GetAnimationIndex(animationId));
-	// curAnimation.weight.clear();
-	// curAnimation.weight.push_back(weight);
 	curAnimation.index[animationId.value] = weight;
-	curAnimation.duration = duration;
-	curAnimation.time = 0;
+	curAnimation.duration = GetDuration(animationId);
+	if (repeat == ANIMLOOP_INF)
+		curAnimation.repeat = ANIMLOOP_INF;
+	else
+		curAnimation.repeat = repeat;
 	if (speed <= 0.f)
 		speed = 0.01f;
 	curAnimation.speed = speed;
+	curAnimation.time = 0;
+
+	//if (curAnimation.index.begin()->first != animationId.value)
+	animations[animationId.value].timer = 0;
+
+	state = ANIMSTATE_PLAYING;
+	changeToDefault = false;
+	changeIntercepted = false;
 }
 
-int KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Utill::HashString& animationId, int nextState, float blendingDuration, float animationDuration, bool addWeight, float speed)
+int  KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Utill::HashString& animationId, int nextState, float blendingDuration, int repeat, bool addWeight, float speed)
 {
 	if (blendingDuration <= 0) {
-		SetAnimation(animationId, animationDuration, speed);
+		SetAnimation(animationId, repeat, speed);
 		return ANIMINDEX_CURRENT;
 	}
 	else {
 		if (nextAnimations.size() > 0) {
-			// IsValidAnimationId
+			if (nextAnimations[0].index.count(animationId.value) != 0)
+				return ANIMINDEX_CHANGE;
 			if (nextAnimations[0].index[animationId.value] != NULL) {
 				nextAnimations[0].time = 0;
-				nextAnimations[0].duration = animationDuration;
+				nextAnimations[0].duration = GetDuration(animationId);
+				if (repeat == ANIMLOOP_INF)
+					nextAnimations[0].repeat = ANIMLOOP_INF;
+				else	
+					nextAnimations[0].repeat = repeat;
 				curAnimation.duration = blendingDuration;
 				state = ANIMSTATE_CHANGING;
 				return ANIMINDEX_CHANGE;
@@ -730,16 +809,10 @@ int KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Utill
 			changeIntercepted = true;
 			prevFrameCache.clear();
 
-			// Update에서 마지막으로 사용한 anim
-			// 요거는 변수 하나 저장해놓는게 좋을듯!
-			// Animation* anim = &animations[nextAnimations[0].index[nextAnimations[0].index.size() - 1]];
-			// for (int i = 0; i < anim->frameCache[0].size(); ++i) {
-			// 	prevFrameCache.emplace_back(anim->frameCache[0][i]->GetTransform()->GetRotation());
-			// }
-
 			if (curFrame) {
 				for (auto& frame : curFrame->frameCache[0]) {
-					prevFrameCache.emplace_back(frame->GetTransform()->GetRotation());
+					if( frame != nullptr )
+						prevFrameCache.emplace_back(frame->GetTransform()->GetRotation());
 				}
 			}
 		}
@@ -749,7 +822,8 @@ int KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Utill
 		state = ANIMSTATE_CHANGING;
 		curAnimation.duration = blendingDuration;
 		curAnimation.time = 0;
-		AddNextAnimation(animationId, nextState, animationDuration);
+		AddNextAnimation(animationId, nextState, repeat);
+		changeToDefault = false;
 		return ANIMINDEX_CHANGE;
 	}
 }
@@ -760,14 +834,19 @@ void KG::Component::AnimationControllerComponent::SetDefaultAnimation(KG::Utill:
 		defaultAnimation = defaultAnim;
 }
 
+
 // return : next animation index
-int KG::Component::AnimationControllerComponent::AddNextAnimation(const KG::Utill::HashString& nextAnim, int nextState, float duration, float speed, int weight)
+int KG::Component::AnimationControllerComponent::AddNextAnimation(const KG::Utill::HashString& nextAnim, int nextState, int repeat, float speed, int weight)
 {
 	if (curAnimation.duration < 0)
 		return -1;
 	AnimationCommand next;
 	next.index[nextAnim.value] = weight;
-	next.duration = duration;
+	next.duration = GetDuration(nextAnim);
+	if (repeat == ANIMLOOP_INF)
+		next.repeat = ANIMLOOP_INF;
+	else
+		next.repeat = repeat;
 	next.time = 0;
 	if (speed <= 0.0f)
 		speed = 0.01f;
@@ -830,10 +909,80 @@ void KG::Component::AnimationControllerComponent::SetIgnoreScale(bool isUsing)
 	this->isIgnoreScale = isUsing;
 }
 
+void KG::Component::AnimationControllerComponent::SetIgnoreTranslate(bool isUsing)
+{
+	this->isIgnoreTranslate = isUsing;
+}
+
 bool KG::Component::AnimationControllerComponent::OnDrawGUI()
 {
 	if ( ImGui::ComponentHeader<AnimationControllerComponent>() )
 	{
 	}
 	return false;
+}
+
+float KG::Component::AnimationControllerComponent::GetDuration(const KG::Utill::HashString& animId) {
+	if (IsValidAnimationId(animId))
+		return animations[animId.value].duration;
+	else
+		return -1;
+}
+
+KG::Utill::HashString KG::Component::AnimationControllerComponent::GetCurrentPlayingAnimationId() const {
+	return curAnimation.index.begin()->first;
+}
+
+float KG::Component::AnimationControllerComponent::GetCurrentPlayingAnimationTime() const {
+	return curAnimation.time;
+}
+
+float KG::Component::AnimationControllerComponent::GetCurrentPlayingAnimationDuration() const {
+	return curAnimation.duration;
+}
+
+int KG::Component::AnimationControllerComponent::ForceChangeAnimation(const KG::Utill::HashString& animationId, int nextState, float blendingDuration, int repeat, bool addWeight, float speed) {
+	if (blendingDuration <= 0) {
+		SetAnimation(animationId, repeat, speed);
+		return ANIMINDEX_CURRENT;
+	}
+	else {
+		if (nextAnimations.size() > 0) {
+			if (nextAnimations[0].index.count(animationId.value) != 0)
+				return ANIMINDEX_CHANGE;
+			if (nextAnimations[0].index[animationId.value] != NULL) {
+				nextAnimations[0].time = 0;
+				nextAnimations[0].duration = GetDuration(animationId);
+				if (repeat == ANIMLOOP_INF)
+					nextAnimations[0].repeat = ANIMLOOP_INF;
+				else
+					nextAnimations[0].repeat = GetDuration(animationId) * repeat;
+				curAnimation.duration = blendingDuration;
+				state = ANIMSTATE_CHANGING;
+				return ANIMINDEX_CHANGE;
+			}
+		}
+
+		if (state == ANIMSTATE_CHANGING) {
+			changeIntercepted = true;
+			prevFrameCache.clear();
+
+			if (curFrame) {
+				for (auto& frame : curFrame->frameCache[0]) {
+					prevFrameCache.emplace_back(frame->GetTransform()->GetRotation());
+				}
+			}
+		}
+		else
+			changeIntercepted = false;
+		nextAnimations.clear();
+		state = ANIMSTATE_CHANGING;
+		curAnimation.duration = blendingDuration;
+		curAnimation.time = 0;
+		if (curAnimation.index.begin()->first != animationId.value)
+			animations[curAnimation.index.begin()->first].timer = 0;
+		AddNextAnimation(animationId, nextState, repeat);
+		return ANIMINDEX_CHANGE;
+
+	}
 }

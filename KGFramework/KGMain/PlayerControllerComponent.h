@@ -13,13 +13,35 @@ namespace KG::Component
 	class PlayerControllerComponent : public IComponent
 	{
 	private:
-		TransformComponent* thisTransform = nullptr;
-		AnimationControllerComponent* thisAnimation = nullptr;
+		TransformComponent* characterTransform = nullptr;
+		AnimationControllerComponent* characterAnimation = nullptr;
 
 		CameraComponent* camera = nullptr;
 		TransformComponent* cameraTransform = nullptr;
-		AnimationControllerComponent* cameraAnimation = nullptr;
+		AnimationControllerComponent* vectorAnimation = nullptr;
 		float speedValue = 0.75f;
+
+		constexpr static float inputRatio = 25.0f;
+		constexpr static float inputRetRatio = 5.0f;
+		constexpr static float inputMinimum = 0.1f;
+		constexpr static float walkBlendingDuration = 0.1f;
+		constexpr static float bulletRepeatTime = 0.1f;
+		float forwardValue = 0.0f;
+		float rightValue = 0.0f;
+
+		// Bullet
+		int bulletCount = 30;
+
+		bool reloadFlag = false;
+
+		void ProcessMove(float elapsedTime);
+		void ProcessMoveAnimation(float elapsedTime);
+		void ProcessShoot(float elapsedTime);
+		void ProcessMouse(float elapsedTime);
+		void TryShoot(float elapsedTime);
+		void TryReload(float elapsedTime);
+		bool CheckReloading();
+
 	public:
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;

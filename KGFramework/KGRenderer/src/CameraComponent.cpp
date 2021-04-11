@@ -691,7 +691,7 @@ void KG::Component::GSCascadeCameraComponent::InitalizeCascade(KG::Component::Ca
 void KG::Component::GSCascadeCameraComponent::RefreshNormalViewProj()
 {
 	auto worldPos = this->mainCamera->GetGameObject()->GetTransform()->GetWorldPosition();
-	DebugNormalMessage("RefreshNormalViewProj : " << worldPos);
+	//DebugNormalMessage("RefreshNormalViewProj : " << worldPos);
 	auto lightDirection = this->directionalLight->GetDirectionalLightRef().Direction;
 	auto radius = 400.0f;
 	auto eyePos = XMVectorSubtract(XMLoadFloat3(&worldPos), XMVectorScale(XMLoadFloat3(&lightDirection), radius));

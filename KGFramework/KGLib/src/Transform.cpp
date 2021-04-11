@@ -44,9 +44,23 @@ bool KG::Component::TransformComponent::OnDrawGUI()
 		flag |= this->positionProp.OnDrawGUI();
 		flag |= this->worldPositionProp.OnDrawGUI();
 
+		XMFLOAT3 prev = this->eulerRotation;
+
 		if ( this->rotationEulerProp.OnDrawGUI() )
 		{
-			this->SetEulerDegree(this->eulerRotation);
+			if ( prev.x != this->eulerRotation.x )
+			{
+				this->RotateAxis(this->GetRight(), this->eulerRotation.x - prev.x);
+			}
+			else if ( prev.y != this->eulerRotation.y )
+			{
+				this->RotateAxis(this->GetUp(), this->eulerRotation.y - prev.y);
+			}
+			else if ( prev.z != this->eulerRotation.z )
+			{
+				this->RotateAxis(this->GetLook(), this->eulerRotation.z - prev.z);
+			}
+			//this->SetEulerDegree(this->eulerRotation);
 		}
 		if ( ImGui::TreeNode("Quaternion") )
 		{
