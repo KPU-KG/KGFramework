@@ -88,6 +88,10 @@ bool KG::Component::TransformComponent::OnDrawGUI()
 			if ( ImGui::RadioButton("Scale", currentGizmoOperation == ImGuizmo::SCALE) )
 				currentGizmoOperation = ImGuizmo::SCALE;
 
+			ImGui::SameLine();
+			if ( ImGui::RadioButton("Off", currentGizmoOperation == 0) )
+				currentGizmoOperation = (ImGuizmo::OPERATION)0;
+
 			ImGuiIO& io = ImGui::GetIO();
 			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 			auto view = this->gameObject->GetScene()->GetMainCameraView();
@@ -97,7 +101,8 @@ bool KG::Component::TransformComponent::OnDrawGUI()
 			proj = Math::Matrix4x4::Transpose(proj);
 			float t[3] = { 0,0,0 }; float r[3] = { 0,0,0 }; float s[3] = { 0,0,0 };
 			DirectX::XMFLOAT4X4 delta;
-			if ( ImGuizmo::Manipulate((float*)view.m, (float*)proj.m, currentGizmoOperation, currentGizmoMode, (float*)curr.m, NULL, NULL) )
+
+			if ( currentGizmoOperation != 0 && ImGuizmo::Manipulate((float*)view.m, (float*)proj.m, currentGizmoOperation, currentGizmoMode, (float*)curr.m, NULL, NULL) )
 			{
 				if ( this->GetParent() )
 				{
