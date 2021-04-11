@@ -277,11 +277,14 @@ bool KG::Component::CameraComponent::OnDrawGUI()
 		{
 			this->gameObject->GetScene()->SetMainCamera(this);
 		}
-		this->fovYProp.OnDrawGUI();
-		this->aspectRatioProp.OnDrawGUI();
-		this->nearZProp.OnDrawGUI();
-		this->farZProp.OnDrawGUI();
-		this->renderTextureProperty.OnDrawGUI();
+		bool dirty = false;
+		dirty |= this->fovYProp.OnDrawGUI();
+		dirty |= this->aspectRatioProp.OnDrawGUI();
+		dirty |= this->nearZProp.OnDrawGUI();
+		dirty |= this->farZProp.OnDrawGUI();
+		dirty |= this->renderTextureProperty.OnDrawGUI();
+		if ( dirty )
+			OnProjDirty();
 	}
 	return false;
 }
