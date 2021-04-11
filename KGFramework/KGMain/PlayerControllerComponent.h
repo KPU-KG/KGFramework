@@ -29,6 +29,8 @@ namespace KG::Component
 		float forwardValue = 0.0f;
 		float rightValue = 0.0f;
 
+		bool isActive = true;
+
 		// Bullet
 		int bulletCount = 30;
 

@@ -340,6 +340,7 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(player);
 
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+			obj.GetTransform()->SetPosition(10.0, 0.00f, 5.00f);
 		}
 		);
 

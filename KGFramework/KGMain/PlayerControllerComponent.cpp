@@ -261,6 +261,10 @@ void KG::Component::PlayerControllerComponent::OnCreate(KG::Core::GameObject* ob
 void KG::Component::PlayerControllerComponent::Update(float elapsedTime)
 {
 	auto* input = KG::Input::InputManager::GetInputManager();
+	if ( !isActive )
+	{
+		return;
+	}
 	if ( input->IsTouching('9') )
 	{
 		input->SetMouseCapture(false);
@@ -300,6 +304,7 @@ bool KG::Component::PlayerControllerComponent::OnDrawGUI()
 {
 	if ( ImGui::ComponentHeader<PlayerControllerComponent>() )
 	{
+		ImGui::Checkbox("isActive", &this->isActive);
 		ImGui::InputInt("BulletCount", &this->bulletCount);
 		ImGui::Checkbox("Reloading", &this->reloadFlag);
 	}
