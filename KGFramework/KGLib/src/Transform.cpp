@@ -34,7 +34,7 @@ void KG::Component::TransformComponent::OnDataSave(tinyxml2::XMLElement* parentE
 bool KG::Component::TransformComponent::OnDrawGUI()
 {
 	static ImGuizmo::OPERATION currentGizmoOperation(ImGuizmo::TRANSLATE);
-	static ImGuizmo::MODE currentGizmoMode(ImGuizmo::WORLD);
+	static ImGuizmo::MODE currentGizmoMode(ImGuizmo::LOCAL);
 
 	if ( ImGui::ComponentHeader< KG::Component::TransformComponent>() )
 	{
@@ -81,16 +81,23 @@ bool KG::Component::TransformComponent::OnDrawGUI()
 			ImGui::Text("Edit Mode");
 			if ( ImGui::RadioButton("Translate", currentGizmoOperation == ImGuizmo::TRANSLATE) )
 				currentGizmoOperation = ImGuizmo::TRANSLATE;
-			//ImGui::SameLine();
-			//if ( ImGui::RadioButton("Rotate", currentGizmoOperation == ImGuizmo::ROTATE) )
-			//	currentGizmoOperation = ImGuizmo::ROTATE;
 			ImGui::SameLine();
 			if ( ImGui::RadioButton("Scale", currentGizmoOperation == ImGuizmo::SCALE) )
 				currentGizmoOperation = ImGuizmo::SCALE;
-
 			ImGui::SameLine();
 			if ( ImGui::RadioButton("Off", currentGizmoOperation == 0) )
 				currentGizmoOperation = (ImGuizmo::OPERATION)0;
+
+			if ( ImGui::RadioButton("RotateX", currentGizmoOperation == ImGuizmo::ROTATE_X) )
+				currentGizmoOperation = ImGuizmo::ROTATE_X;
+			ImGui::SameLine();
+			if ( ImGui::RadioButton("RotateY", currentGizmoOperation == ImGuizmo::ROTATE_Y) )
+				currentGizmoOperation = ImGuizmo::ROTATE_Y;
+			ImGui::SameLine();
+			if ( ImGui::RadioButton("RotateZ", currentGizmoOperation == ImGuizmo::ROTATE_Z) )
+				currentGizmoOperation = ImGuizmo::ROTATE_Z;
+
+
 
 			ImGuiIO& io = ImGui::GetIO();
 			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
@@ -114,13 +121,20 @@ bool KG::Component::TransformComponent::OnDrawGUI()
 				}
 				flag = true;
 				ImGuizmo::DecomposeMatrixToComponents((float*)delta.m, t, r, s);
+				auto euler = this->GetEulerDegree();
 				switch ( currentGizmoOperation )
 				{
 					case ImGuizmo::TRANSLATE:
 						this->SetPosition(XMFLOAT3(t));
 						break;
-					case ImGuizmo::ROTATE:
-						this->SetEulerDegree(XMFLOAT3(r));
+					case ImGuizmo::ROTATE_X:
+						this->RotateAxis(this->GetRight(), this->eulerRotation.x -  r[0]);
+						break;
+					case ImGuizmo::ROTATE_Y:
+						this->RotateAxis(this->GetUp(), r[1] - this->eulerRotation.y);
+						break;
+					case ImGuizmo::ROTATE_Z:
+						this->RotateAxis(this->GetLook(), r[2] - this->eulerRotation.z);
 						break;
 					case ImGuizmo::SCALE:
 						this->SetScale(XMFLOAT3(s));
