@@ -35,7 +35,7 @@
     <!--metal_fence.fbx-->
     <Geometry id="metal_fence.fbx" fileDir="Resource/Geometry/prop/metal_fence.fbx" rawMesh="false" hash_id="1914570570"/>
     <!--Dumpster.fbx-->
-    <Geometry id="Dumpster.fbx" fileDir="Resource/Geometry/prop/Dumpster.fbx" rawMesh="true" hash_id="188330653"/>
+    <Geometry id="Dumpster.fbx" fileDir="Resource/Geometry/prop/Dumpster.fbx" rawMesh="false" hash_id="188330653"/>
     <!--barrel.fbx-->
     <Geometry id="barrel.fbx" fileDir="Resource/Geometry/prop/barrel.fbx" rawMesh="true" hash_id="2579372387"/>
     <!--container.FBX-->
@@ -114,4 +114,6 @@
     <Geometry id="Soldier@WalkLeft.fbx" fileDir="Resource/Geometry/animation/Soldier@WalkLeft.fbx" rawMesh="false" hash_id="2685557805"/>
     <!--Soldier@WalkRight.fbx-->
     <Geometry id="Soldier@WalkRight.fbx" fileDir="Resource/Geometry/animation/Soldier@WalkRight.fbx" rawMesh="false" hash_id="4155939972"/>
+    <!--mountain.fbx-->
+    <Geometry id="mountain.fbx" fileDir="Resource/Geometry/back/mountain.fbx" rawMesh="true" hash_id="2676274078"/>
 </GeometrySet>

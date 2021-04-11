@@ -156,4 +156,7 @@
     <!--vectorNormal-->
     <Texture id="vectorNormal_color" fileDir="Resource/Geometry/vector/vectorTex/vectorNormal/color.dds" dimension="Texture2D" format="DDS" hash_id="1993964501"/>
     <Texture id="vectorNormal_normal" fileDir="Resource/Geometry/vector/vectorTex/vectorNormal/normal.dds" dimension="Texture2D" format="DDS" hash_id="3100935333"/>
+    <!--mountain-->
+    <Texture id="mountain_color" fileDir="Resource/Geometry/back/mountain/color.dds" dimension="Texture2D" format="DDS" hash_id="3235815808"/>
+    <Texture id="mountain_normal" fileDir="Resource/Geometry/back/mountain/normal.dds" dimension="Texture2D" format="DDS" hash_id="3380690070"/>
 </TextureSet>

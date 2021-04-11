@@ -1,0 +1,807 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="109">
+        <Tag hash_id="1692822230" srcString="Construction"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="-15.778824" y="5.9397735e-08" z="14.028545"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="0.5" y="0.5" z="0.5"/>
+        </Component>
+        <GameObject instanceId="108">
+            <Tag hash_id="2551026690" srcString="stairFloor"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0.00047302246" y="1.3806106" z="-8.392334e-05"/>
+                <Rotation_Q x="0" y="0.99999988" z="-0" w="-1.1920929e-07"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="100">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="7.5794907" y="0" z="5.5985718"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.001" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="98">
+                <Tag hash_id="3348576222" srcString="contruction_big_hall"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-11.253174" y="-0.00099945068" z="5.5671043"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.0055" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="100">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-41.372108" y="0" z="5.5985146"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.0049999999" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="104">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-22.713692" y="0" z="24.039955"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.01145" y="0.001" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="107">
+            <Tag hash_id="2551026690" srcString="stairFloor"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="45.231995" y="58.718674" z="-17.275002"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="101">
+                <Tag hash_id="3680799626" srcString="contruction_floor_stair"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="20.965"/>
+                    <Rotation_Q x="-8.4293326e-08" y="0.70710987" z="-0.70710361" w="-8.4294072e-08"/>
+                    <Scale x="0.0049999999" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3525909125" srcString="Stairs.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="100">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="7.5794907" y="0" z="5.5985718"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.001" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="98">
+                <Tag hash_id="3348576222" srcString="contruction_big_hall"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-11.083878" y="0" z="5.6536179"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.0049999999" y="0.0053500002" z="0.004999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3555258275" srcString="FloorHallSmall.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="100">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-41.372108" y="0" z="5.5985146"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.0049999999" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="104">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-22.713692" y="0" z="24.039955"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.01145" y="0.001" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="105">
+            <Tag hash_id="2551026690" srcString="stairFloor"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="45.231995" y="30.0427" z="-17.27544"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="101">
+                <Tag hash_id="3680799626" srcString="contruction_floor_stair"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="20.965"/>
+                    <Rotation_Q x="-8.4293326e-08" y="0.70710987" z="-0.70710361" w="-8.4294072e-08"/>
+                    <Scale x="0.0049999999" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3525909125" srcString="Stairs.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="100">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="7.5794907" y="0" z="5.5985718"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.001" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="98">
+                <Tag hash_id="3348576222" srcString="contruction_big_hall"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-11.083878" y="0" z="5.6536179"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.0049999999" y="0.0053500002" z="0.004999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3555258275" srcString="FloorHallSmall.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="100">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-41.372108" y="0" z="5.5985146"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.0049999999" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="104">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-22.713692" y="0" z="24.039955"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.01145" y="0.001" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="106">
+            <Tag hash_id="2551026690" srcString="stairFloor"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0.00047302246" y="44.38015" z="-8.392334e-05"/>
+                <Rotation_Q x="0" y="0.99999988" z="-0" w="-1.1920929e-07"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="101">
+                <Tag hash_id="3680799626" srcString="contruction_floor_stair"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="20.965"/>
+                    <Rotation_Q x="-8.4293326e-08" y="0.70710987" z="-0.70710361" w="-8.4294072e-08"/>
+                    <Scale x="0.0049999999" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3525909125" srcString="Stairs.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="100">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="7.5794907" y="0" z="5.5985718"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.001" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="98">
+                <Tag hash_id="3348576222" srcString="contruction_big_hall"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-11.083878" y="0" z="5.6536179"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.0049999999" y="0.0053500002" z="0.004999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3555258275" srcString="FloorHallSmall.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="100">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-41.372108" y="0" z="5.5985146"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.0049999999" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="104">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-22.713692" y="0" z="24.039955"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.01145" y="0.001" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="103">
+            <Tag hash_id="2551026690" srcString="stairFloor"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0.00047302246" y="15.678387" z="-8.392334e-05"/>
+                <Rotation_Q x="0" y="0.99999988" z="-0" w="-1.1920929e-07"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="101">
+                <Tag hash_id="3680799626" srcString="contruction_floor_stair"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="20.965"/>
+                    <Rotation_Q x="-8.4293326e-08" y="0.70710987" z="-0.70710361" w="-8.4294072e-08"/>
+                    <Scale x="0.0049999999" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3525909125" srcString="Stairs.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="100">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="7.5794907" y="0" z="5.5985718"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.001" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="98">
+                <Tag hash_id="3348576222" srcString="contruction_big_hall"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-11.083878" y="0" z="5.6536179"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.0049999999" y="0.0053500002" z="0.004999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3555258275" srcString="FloorHallSmall.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="100">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-41.372108" y="0" z="5.5985146"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.0049999999" y="0.0049999999" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+            <GameObject instanceId="104">
+                <Tag hash_id="2857829449" srcString="contruction_floor_long"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-22.713692" y="0" z="24.039955"/>
+                    <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="0.01145" y="0.001" z="0.0049999999"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1196628437" srcString="FloorLong.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="3528632054" srcString="construction"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="110">
+            <Tag hash_id="3851329425" srcString="Pillar"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="54.162682" y="-6" z="8.218956"/>
+                <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
+                <Scale x="0.0099999998" y="0.0099999998" z="0.029999999"/>
+            </Component>
+            <Component name="GeometryComponent" hash_id="36578682">
+                <GeometryDescs>
+                    <Element>
+                        <geometryID hash_id="2441286916" srcString="PillarSmall.FBX"/>
+                        <slotIndex value="0"/>
+                        <subMeshIndex value="0"/>
+                    </Element>
+                </GeometryDescs>
+            </Component>
+            <Component name="MaterialComponent" hash_id="1886146475">
+                <MaterialDesc>
+                    <Element>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="3528632054" srcString="construction"/>
+                        <slotIndex value="0"/>
+                    </Element>
+                </MaterialDesc>
+            </Component>
+            <Component name="Render3DComponent" hash_id="4070531333"/>
+        </GameObject>
+        <GameObject instanceId="111">
+            <Tag hash_id="3851329425" srcString="Pillar"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="54.162994" y="-6" z="-25.330112"/>
+                <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
+                <Scale x="0.0099999998" y="0.0099999998" z="0.029999999"/>
+            </Component>
+            <Component name="GeometryComponent" hash_id="36578682">
+                <GeometryDescs>
+                    <Element>
+                        <geometryID hash_id="2441286916" srcString="PillarSmall.FBX"/>
+                        <slotIndex value="0"/>
+                        <subMeshIndex value="0"/>
+                    </Element>
+                </GeometryDescs>
+            </Component>
+            <Component name="MaterialComponent" hash_id="1886146475">
+                <MaterialDesc>
+                    <Element>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="3528632054" srcString="construction"/>
+                        <slotIndex value="0"/>
+                    </Element>
+                </MaterialDesc>
+            </Component>
+            <Component name="Render3DComponent" hash_id="4070531333"/>
+        </GameObject>
+        <GameObject instanceId="112">
+            <Tag hash_id="3851329425" srcString="Pillar"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="-8.8397217" y="-6" z="-25.33"/>
+                <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
+                <Scale x="0.0099999998" y="0.0099999998" z="0.029999999"/>
+            </Component>
+            <Component name="GeometryComponent" hash_id="36578682">
+                <GeometryDescs>
+                    <Element>
+                        <geometryID hash_id="2441286916" srcString="PillarSmall.FBX"/>
+                        <slotIndex value="0"/>
+                        <subMeshIndex value="0"/>
+                    </Element>
+                </GeometryDescs>
+            </Component>
+            <Component name="MaterialComponent" hash_id="1886146475">
+                <MaterialDesc>
+                    <Element>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="3528632054" srcString="construction"/>
+                        <slotIndex value="0"/>
+                    </Element>
+                </MaterialDesc>
+            </Component>
+            <Component name="Render3DComponent" hash_id="4070531333"/>
+        </GameObject>
+        <GameObject instanceId="113">
+            <Tag hash_id="3851329425" srcString="Pillar"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="-8.8397217" y="-6" z="8.218956"/>
+                <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
+                <Scale x="0.0099999998" y="0.0099999998" z="0.029999999"/>
+            </Component>
+            <Component name="GeometryComponent" hash_id="36578682">
+                <GeometryDescs>
+                    <Element>
+                        <geometryID hash_id="2441286916" srcString="PillarSmall.FBX"/>
+                        <slotIndex value="0"/>
+                        <subMeshIndex value="0"/>
+                    </Element>
+                </GeometryDescs>
+            </Component>
+            <Component name="MaterialComponent" hash_id="1886146475">
+                <MaterialDesc>
+                    <Element>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="3528632054" srcString="construction"/>
+                        <slotIndex value="0"/>
+                    </Element>
+                </MaterialDesc>
+            </Component>
+            <Component name="Render3DComponent" hash_id="4070531333"/>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

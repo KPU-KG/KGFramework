@@ -10,9 +10,9 @@
         <GameObject instanceId="92">
             <Tag hash_id="225237078" srcString="Container_v1_whole"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="0" y="4.3000002" z="-1"/>
+                <Position x="0" y="1.6" z="0"/>
                 <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
-                <Scale x="3" y="3" z="3"/>
+                <Scale x="1.3" y="1.3" z="1.3"/>
             </Component>
             <Component name="GeometryComponent" hash_id="36578682">
                 <GeometryDescs>

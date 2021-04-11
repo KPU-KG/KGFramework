@@ -10,9 +10,9 @@
         <GameObject instanceId="84">
             <Tag hash_id="4257772165" srcString="RootNode"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="0" y="-1.615913" z="0"/>
+                <Position x="0" y="-0.69999999" z="0"/>
                 <Rotation_Q x="0" y="0" z="0" w="1"/>
-                <Scale x="0.035" y="0.035" z="0.035"/>
+                <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
             </Component>
             <GameObject instanceId="85">
                 <Tag hash_id="2406749713" srcString="Barrel"/>

@@ -1,18 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SavedGameObject>
-    <GameObject instanceId="82">
+    <GameObject instanceId="83">
         <Tag hash_id="188330653" srcString="Dumpster.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="28.270241" y="-5.2608584e-07" z="-74.078384"/>
+            <Position x="0.6005249" y="-0.3861033" z="-72.890732"/>
             <Rotation_Q x="0" y="0" z="0" w="1"/>
             <Scale x="1" y="1" z="1"/>
         </Component>
         <GameObject instanceId="78">
             <Tag hash_id="4257772165" srcString="RootNode"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="2.800354" y="9.8469945e-07" z="-2.2128468"/>
+                <Position x="0" y="9.8469945e-07" z="0"/>
                 <Rotation_Q x="0" y="0.99999988" z="-0" w="-1.1920929e-07"/>
-                <Scale x="0.050000001" y="0.050000001" z="0.050000001"/>
+                <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
             </Component>
             <GameObject instanceId="79">
                 <Tag hash_id="2472180979" srcString="Dumpster_lid02"/>
