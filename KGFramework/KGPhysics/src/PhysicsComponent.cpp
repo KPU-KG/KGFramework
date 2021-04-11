@@ -7,32 +7,6 @@
 #include "MathHelper.h"
 #include <unordered_map>
 
-// class KG::Component::PhysicsEventCallback : public physx::PxSimulationEventCallback{
-// 	std::unordered_map<PHYSICS_CALLBACK, void*()> eventCallback;
-//    public:
-// 	   virtual void onConstraintBreak(physx::PxConstraintInfo* constraints, physx::PxU32 count) override {
-// 		   DebugNormalMessage("Called onConstraintBreak()");
-// 		  //  eventCallback[PHYSICS_CALLBACK::CONSTRAINT]();
-// 	   }
-// 	   void onWake(physx::PxActor** actors, physx::PxU32 count) override {
-// 		   DebugNormalMessage("Called onWake()");
-// 		    //eventCallback[PHYSICS_CALLBACK::WAKE]();
-// 	   }
-// 	   void onSleep(physx::PxActor** actors, physx::PxU32 count) override {
-// 		   DebugNormalMessage("Called onSleep()");
-// 		  //  eventCallback[PHYSICS_CALLBACK::SLEEP]();
-// 	   }
-// 	   void onTrigger(physx::PxTriggerPair* pairs, physx::PxU32 count) override {
-// 		   DebugNormalMessage("Called onTrigger()");
-// 		   // eventCallback[PHYSICS_CALLBACK::TRIGGER]();
-// 	   }
-// 	   void onAdvance(const physx::PxRigidBody* const* bodyBuffer, const physx::PxTransform* poseBuffer, const physx::PxU32 count) override {
-// 		   DebugNormalMessage("Called onAdvance()");
-// 		   // eventCallback[PHYSICS_CALLBACK::ADVANCE]();
-// 	   }
-// };
-
-
 void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
 	KG::Component::IComponent::OnCreate(gameObject);
@@ -380,8 +354,7 @@ void KG::Component::SetupFiltering(physx::PxRigidActor* actor, uint32_t filterGr
 	filterData.word0 = filterGroup; // word0 = own ID
 	filterData.word1 = filterMask;	// word1 = ID mask to filter pairs that trigger a contact callback;
 	const physx::PxU32 numShapes = actor->getNbShapes();
-	// physx::PxShape** shapes = (physx::PxShape**)(sizeof(physx::PxShape*) * numShapes);
-	physx::PxShape** shapes = new physx::PxShape * [numShapes]; // (physx::PxShape**)(sizeof(physx::PxShape*) * numShapes);
+	physx::PxShape** shapes = new physx::PxShape * [numShapes];
 	actor->getShapes(shapes, numShapes);
 	for (physx::PxU32 i = 0; i < numShapes; i++)
 	{
@@ -389,5 +362,4 @@ void KG::Component::SetupFiltering(physx::PxRigidActor* actor, uint32_t filterGr
 		shape->setSimulationFilterData(filterData);
 	}
 	delete[] shapes;
-// 	SAMPLE_FREE(shapes);
 }

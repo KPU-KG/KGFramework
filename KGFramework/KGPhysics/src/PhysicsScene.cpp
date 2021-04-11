@@ -48,10 +48,7 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
 	const  void* constantBlock,
 	physx::PxU32 constantBlockSize)
 {
-	// (void)(constantBlockSize);
-	// (void)(constantBlock);
-
-	//
+	// 여기서 어떤 충돌인지 정의하고 콜백 호출
 	if (physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
 	{
 		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
@@ -59,25 +56,15 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
 	}
 
 	pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
-// 	pairFlags = physx::PxPairFlag::eMODIFY_CONTACTS | physx::PxPairFlag::eCONTACT_DEFAULT;
-	// 위에서 필터링되지 않은 모든 연락처 생성
-	// pairFlags = physx::PxPairFlag::eNOTIFY_CONTACT_POINTS | physx::PxPairFlag::eDETECT_DISCRETE_CONTACT;
 
-	// 쌍 (A, B)에 대한 연락처 콜백을 트리거합니다. 여기서 
-	// A의 필터 마스크는 B의 ID를 포함하고 그 반대의 경우도 마찬가지입니다. 
+	if (!(filterData0.word0 & filterData1.word1) && !(filterData0.word1 & filterData1.word0)) {
+		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT | physx::PxPairFlag::eCONTACT_DEFAULT;
+		return physx::PxFilterFlag::eDEFAULT;
+	}
+
 	if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1))
 		pairFlags |= physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
-	// return physx::PxFilterFlag::eCALLBACK;
 	return physx::PxFilterFlag::eDEFAULT;
-
-	// physx::PxDefaultSimulationFilterShader
-
-	//   // 모든 항목에 대한 모든 초기 및 지속 보고서 (포인트 별 데이터 포함) 
-	//   pairFlags = physx :: PxPairFlag :: eSOLVE_CONTACT | physx :: PxPairFlag :: eDETECT_DISCRETE_CONTACT 
-	//         | physx :: PxPairFlag :: eNOTIFY_TOUCH_FOUND 
-	//         | physx :: PxPairFlag :: eNOTIFY_TOUCH_PERSISTS 
-	//         | physx :: PxPairFlag :: eNOTIFY_CONTACT_POINTS; 
-	//   physx :: PxFilterFlag :: eNOTIFY를 반환합니다. // : eCALLBACK; // physx :: PxFilterFlag :: eDEFAULT;
 }
 
 
@@ -165,7 +152,7 @@ bool KG::Physics::PhysicsScene::CreateScene(float gravity) {
 	physicsEventCallback = new PhysicsEventCallback();
 	sceneDesc.simulationEventCallback = physicsEventCallback;
 	sceneDesc.filterShader = contactReportFilterShader;
-	sceneDesc.filterCallback;
+	// sceneDesc.filterCallback;
 	// sceneDesc.filterShader = PxDefaultSimulationFilterShader;
 
 	// sceneDesc.dynamicStructure = PxPruningStructureType::eLAST
