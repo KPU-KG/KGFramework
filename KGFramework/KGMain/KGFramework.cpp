@@ -433,6 +433,7 @@ extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg
 
 int KG::GameFramework::WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	input->HandlingInputProc(hWnd, message, wParam, lParam);
 	return ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
 }
 
@@ -465,6 +466,7 @@ void KG::GameFramework::OnProcess()
 	}
 	this->physics->Advance(this->timer.GetTimeElapsed());
 	this->renderer->Render();
+	this->input->PostProcessInput();
 }
 
 void KG::GameFramework::OnClose()

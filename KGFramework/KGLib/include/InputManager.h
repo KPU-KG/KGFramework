@@ -34,12 +34,17 @@ namespace KG::Input
 		bool startMouseCapture = false;
 
 		InputManager() = default;
+		void GetVKState(int keyId);
 	public:
 		void SetUIContext(void* context);
+
+
+		LRESULT HandlingInputProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
 		/// @brief 해당 프레임의 사용자 입력을 읽고 저장합니다.
 		/// @param hWnd 입력을 받아올 윈도우의 핸들입니다.
 		void ProcessInput(HWND hWnd);
+		void PostProcessInput();
 
 		void SetMouseCapture(bool startMouseCapture);
 		bool GetMouseCapture() const;
