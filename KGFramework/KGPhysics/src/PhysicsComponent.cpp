@@ -12,7 +12,7 @@ void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameOb
 	KG::Component::IComponent::OnCreate(gameObject);
 	transform = gameObject->GetComponent<KG::Component::TransformComponent>();
 	KG::Physics::PhysicsScene::GetInstance()->AddDynamicActor(this);
-	SetupFiltering(this->actor, KG::Physics::FilterGroup::eBOX, 0);
+	SetupFiltering(this->actor, FilterGroup::eBOX, 0);		// filter ∑Œ πŸ≤„¡÷±‚
 }
 
 KG::Component::DynamicRigidComponent::DynamicRigidComponent()
@@ -38,11 +38,19 @@ void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 		transform->SetPosition(p.x - collisionBox.center.x, p.y - collisionBox.center.y, p.z - collisionBox.center.z);
 	}
 	else {
-		XMFLOAT3 p = transform->GetPosition();
-		actor->setGlobalPose(physx::PxTransform(p.x + collisionBox.center.x, p.y + collisionBox.center.y, p.z + collisionBox.center.z));
-		this->actor->clearForce();
-		this->actor->clearTorque();
-		this->actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
+		DirectX::XMFLOAT4X4 worldMat = gameObject->GetTransform()->GetGlobalWorldMatrix();
+		XMFLOAT3 pos = Math::Vector3::Add(collisionBox.center, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
+
+		physx::PxTransform t = actor->getGlobalPose();
+		t.p = { pos.x,pos.y, pos.z };
+		actor->setGlobalPose(t);
+
+
+		// XMFLOAT3 p = transform->GetPosition();
+		// actor->setGlobalPose(physx::PxTransform(p.x + collisionBox.center.x, p.y + collisionBox.center.y, p.z + collisionBox.center.z));
+		// this->actor->clearForce();
+		// this->actor->clearTorque();
+		// this->actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
 	}
 }
 
@@ -102,27 +110,9 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 		switch (show) {
 		case SHOW_COLLISION_BOX::NONE:
 			break;
-		case SHOW_COLLISION_BOX::BOX:
-		{
-			auto objectPos = this->gameObject->GetTransform()->GetPosition();
-			XMFLOAT4X4 mat;
-			DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&objectPos)));
-			mat = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mat);
-
-			view = Math::Matrix4x4::Transpose(view);
-			proj = Math::Matrix4x4::Transpose(proj);
-
-			ImGuiIO& io = ImGui::GetIO();
-			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-			ImGuizmo::DrawCubes(
-				reinterpret_cast<const float*>(view.m),
-				reinterpret_cast<const float*>(proj.m),
-				reinterpret_cast<const float*>(mat.m),
-				1);
-		}
-			break;
 		case SHOW_COLLISION_BOX::GRID:
+			// ¿œ¥‹ ¥›æ∆µ–¥Ÿ..
+			/*
 			view = Math::Matrix4x4::Transpose(view);
 			proj = Math::Matrix4x4::Transpose(proj);
 
@@ -180,6 +170,32 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 					reinterpret_cast<const float*>(mats[i].m),
 					1);
 			}
+			break;*/
+		case SHOW_COLLISION_BOX::BOX:
+		{
+			XMFLOAT4X4 worldMat = this->gameObject->GetTransform()->GetGlobalWorldMatrix();
+			XMFLOAT4X4 mat;
+			DirectX::XMStoreFloat4x4(&mat, XMMatrixScalingFromVector(XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)));
+
+			mat = Math::Matrix4x4::Multiply(mat, worldMat);
+
+			// auto objectPos = this->gameObject->GetTransform()->GetPosition();
+			// XMFLOAT4X4 mat;
+			// DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&objectPos)));
+			// mat = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
+			// 	XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mat);
+
+			view = Math::Matrix4x4::Transpose(view);
+			proj = Math::Matrix4x4::Transpose(proj);
+
+			ImGuiIO& io = ImGui::GetIO();
+			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+			ImGuizmo::DrawCubes(
+				reinterpret_cast<const float*>(view.m),
+				reinterpret_cast<const float*>(proj.m),
+				reinterpret_cast<const float*>(mat.m),
+				1);
+		}
 			break;
 		}
 
@@ -192,7 +208,7 @@ void KG::Component::StaticRigidComponent::OnCreate(KG::Core::GameObject* gameObj
 	KG::Component::IComponent::OnCreate(gameObject);
 	transform = gameObject->GetComponent<KG::Component::TransformComponent>();
 	KG::Physics::PhysicsScene::GetInstance()->AddStaticActor(this);
-	SetupFiltering(this->actor, KG::Physics::FilterGroup::eBUILDING, 0);
+	SetupFiltering(this->actor, FilterGroup::eBUILDING, 0);
 }
 
 KG::Component::StaticRigidComponent::StaticRigidComponent()
@@ -211,8 +227,15 @@ KG::Component::StaticRigidComponent::StaticRigidComponent()
 
 void KG::Component::StaticRigidComponent::PostUpdate(float timeElapsed)
 {
-	XMFLOAT3 p = transform->GetPosition();
-	actor->setGlobalPose(physx::PxTransform(p.x + collisionBox.center.x, p.y + collisionBox.center.y, p.z + collisionBox.center.z));
+	DirectX::XMFLOAT4X4 worldMat = gameObject->GetTransform()->GetGlobalWorldMatrix();
+	XMFLOAT3 pos = Math::Vector3::Add(collisionBox.center, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
+
+	physx::PxTransform t = actor->getGlobalPose();
+	t.p = { pos.x,pos.y, pos.z };
+	actor->setGlobalPose(t);
+
+	// XMFLOAT3 p = transform->GetPosition();
+	// actor->setGlobalPose(physx::PxTransform(p.x + collisionBox.center.x, p.y + collisionBox.center.y, p.z + collisionBox.center.z));
 }
 
 void KG::Component::StaticRigidComponent::Update(float timeElapsed)
@@ -264,27 +287,8 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 		switch (show) {
 		case SHOW_COLLISION_BOX::NONE:
 			break;
-		case SHOW_COLLISION_BOX::BOX:
-		{
-			auto objectPos = this->gameObject->GetTransform()->GetPosition();
-			XMFLOAT4X4 mat;
-			DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&objectPos)));
-			mat = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mat);
-
-			view = Math::Matrix4x4::Transpose(view);
-			proj = Math::Matrix4x4::Transpose(proj);
-
-			ImGuiIO& io = ImGui::GetIO();
-			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-			ImGuizmo::DrawCubes(
-				reinterpret_cast<const float*>(view.m),
-				reinterpret_cast<const float*>(proj.m),
-				reinterpret_cast<const float*>(mat.m),
-				1);
-		}
-		break;
 		case SHOW_COLLISION_BOX::GRID:
+			/*
 			view = Math::Matrix4x4::Transpose(view);
 			proj = Math::Matrix4x4::Transpose(proj);
 
@@ -343,6 +347,37 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 					1);
 			}
 			break;
+			*/
+		case SHOW_COLLISION_BOX::BOX:
+		{
+			XMFLOAT4X4 worldMat = this->gameObject->GetTransform()->GetGlobalWorldMatrix();
+			XMFLOAT4X4 mat;
+			DirectX::XMStoreFloat4x4(&mat, XMMatrixScalingFromVector(XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)));
+
+			mat = Math::Matrix4x4::Multiply(mat, worldMat);
+
+
+			// TRS * parent
+
+			// auto objectPos = this->gameObject->GetTransform()->GetPosition();
+			// XMFLOAT4X4 mat;
+			// DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&objectPos)));
+			// 
+			// mat = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
+			// 	XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mat);
+
+			view = Math::Matrix4x4::Transpose(view);
+			proj = Math::Matrix4x4::Transpose(proj);
+
+			ImGuiIO& io = ImGui::GetIO();
+			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+			ImGuizmo::DrawCubes(
+				reinterpret_cast<const float*>(view.m),
+				reinterpret_cast<const float*>(proj.m),
+				reinterpret_cast<const float*>(mat.m),
+				1);
+		}
+		break;
 		}
 	}
 	return false;

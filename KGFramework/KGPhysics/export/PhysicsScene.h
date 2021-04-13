@@ -35,14 +35,6 @@ namespace KG::Physics
 		CONSTRAINT, WAKE, SLEEP, TRIGGER, ADVANCE
 	};
 
-	struct FilterGroup {
-		enum Enum {
-			eFLOOR		= (1 << 0),
-			eBUILDING	= (1 << 1),
-			eBOX		= (1 << 2)
-		};
-	};
-
 	class PhysicsEventCallback;
 	class PhysicsCollisionCallback;
 	// using namespace physx;

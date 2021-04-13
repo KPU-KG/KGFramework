@@ -14,21 +14,11 @@ namespace physx
 	class PxRigidActor;
 	class PxRigidDynamic;
 	class PxRigidStatic;
-	// PxU32;
-	
-	// class PxActor;
-	// PxU32;
 }
+
 namespace KG::Component
 {
 	class TransformComponent;
-	
-	// 1. 컴포넌트 생성할 때 람다 함수로 넘겨줌
-	// 2. 이벤트 콜백 클래스에서 람다 함수 가지기
-	// 3. 이벤트에서 람다 함수 실행
-	// unordered map으로 처리하면 될듯? (이벤트 종류, 함수) 이렇게??
-
-	// class PhysicsEventCallback;
 
 	void SetupFiltering(physx::PxRigidActor* actor, uint32_t filterGroup, uint32_t filterMask);
 
@@ -36,6 +26,15 @@ namespace KG::Component
 		NONE, GRID, BOX
 	};
 
+	struct FilterGroup {
+		enum Enum {
+			eFLOOR = (1 << 0),
+			eBUILDING = (1 << 1),
+			eBOX = (1 << 2),
+			eENEMY = (1 << 3),
+			ePLAYER = (1 << 4)
+		};
+	};
 
 	struct CollisionBox {
 		DirectX::XMFLOAT3 center;
@@ -54,7 +53,14 @@ namespace KG::Component
 		bool						apply = false;
 		SHOW_COLLISION_BOX			show = BOX;
 
-		// PhysicsEventCallback*		eventCallback;
+		// 추가해줘야 할것 (04.11 기준)
+		// 1. 계층구조 계산
+		// 2. 충돌 필터
+		// 3. 콜백함수 등록 - 이거는 스크립트로 해야겠죠??
+		// 4. KINETIC 기능 추가
+		FilterGroup filter;		// enum type prop
+		void (*callback)();						// 매개변수로 둘의 위치 / 타입이 들어가야 할듯
+		bool kinetic;							// prop
 
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 	public:
@@ -64,7 +70,7 @@ namespace KG::Component
 		CollisionBox& GetCollisionBox() { return collisionBox; }
 		void Move(DirectX::XMFLOAT3 direction, float speed);
 		void SetActor(physx::PxRigidDynamic* actor);
-		// void OnContact
+
 	private:
 		// 참고할 코드 (저장 정보)
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		positionProp;
@@ -99,16 +105,6 @@ namespace KG::Component
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 		virtual bool OnDrawGUI();
 	};
-
-	// 계층구조 충돌도 생각해야함 - 총알 피격판정용
-
-	// class DLL PhysicsComponent : public IPhysicsComponent 
-	// {
-	// protected:
-	// 	virtual void OnCreate(KG::Core::GameObject* gameObject) override;
-	// public:
-	// 	virtual void Update(float timeElapsed) override;
-	// };
 
 	REGISTER_COMPONENT_ID(DynamicRigidComponent);
 	REGISTER_COMPONENT_ID(StaticRigidComponent);

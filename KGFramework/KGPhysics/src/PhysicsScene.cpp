@@ -186,24 +186,20 @@ bool KG::Physics::PhysicsScene::Advance(float timeElapsed) {
 
 void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidComponent* rigid)
 {
-	// 실제로 물리적으로 작용이 일어나는 것은 박스로 처리
-	// 그 외에 충돌 판정은 해야 하나 물리적 작용은 안해도 되는 것 (총알에 맞는 판정 등)은 KINETIC 플래그 설정
-	// 그러면 콜리전 박스를 2개로 나눠서 관리 / kinetic, dynamic
 	KG::Component::CollisionBox cb = rigid->GetCollisionBox();
-	// DirectX::XMFLOAT3 pos = rigid->
 	PxMaterial* pMaterial = physics->createMaterial(0.5f, 0.5f, 0.0f);		// Basic Setting : 나중에 필요하면 추가 ( 정적 마찰 계수, 동적 마찰 계수, 반탄 계수)
-	// auto box = PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2);
-	// box.
-	// PxFilterFlag::
+
+	DirectX::XMFLOAT4X4 worldMat = rigid->GetGameObject()->GetTransform()->GetGlobalWorldMatrix();
+	// trans 41 42 43
+	Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
+
 	PxRigidDynamic* actor = PxCreateDynamic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), 
 		PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial, 1);
 	
+	cb.center = Math::Vector3::Add(cb.center, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
 	PxTransform t = actor->getGlobalPose();
-	DirectX::XMFLOAT3 pos = rigid->GetGameObject()->GetTransform()->GetPosition();
-	t.p = { pos.x, pos.y, pos.z };
+	t.p = { cb.center.x, cb.center.y, cb.center.z };
 	actor->setGlobalPose(t);
-	// PxShape p =;
-	// PxShape
 	
 
 #ifdef _DEBUG
@@ -222,6 +218,11 @@ void KG::Physics::PhysicsScene::AddStaticActor(KG::Component::StaticRigidCompone
 {
 	PxMaterial* pMaterial = physics->createMaterial(0.5f, 0.5f, 0.5f);
 	KG::Component::CollisionBox cb = rigid->GetCollisionBox();
+
+	DirectX::XMFLOAT4X4 worldMat = rigid->GetGameObject()->GetTransform()->GetGlobalWorldMatrix();
+	// trans 41 42 43
+	Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
+
 	PxRigidStatic* actor = PxCreateStatic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), 
 		PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial);
 #ifdef _DEBUG
