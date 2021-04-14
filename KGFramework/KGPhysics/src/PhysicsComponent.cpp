@@ -12,6 +12,7 @@ void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameOb
 	KG::Component::IComponent::OnCreate(gameObject);
 	transform = gameObject->GetComponent<KG::Component::TransformComponent>();
 	KG::Physics::PhysicsScene::GetInstance()->AddDynamicActor(this);
+	filter = FilterGroup::eBOX;
 	SetupFiltering(this->actor, FilterGroup::eBOX, 0);		// filter 로 바꿔주기
 }
 
@@ -26,6 +27,15 @@ KG::Component::DynamicRigidComponent::DynamicRigidComponent()
 			{SHOW_COLLISION_BOX::NONE, "None"},
 			{SHOW_COLLISION_BOX::BOX, "Box"},
 			{SHOW_COLLISION_BOX::GRID, "Grid"}
+		}, false),
+	filterProp(
+		"CollisionFilter", this->filter,
+		{
+			{FilterGroup::eBOX, "Box"},
+			{FilterGroup::eBUILDING, "Building"},
+			{FilterGroup::eENEMY, "Enemy"},
+			{FilterGroup::eFLOOR, "Floor"},
+			{FilterGroup::ePLAYER, "Player"}
 		}, false)
 {
 }
@@ -44,13 +54,6 @@ void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 		physx::PxTransform t = actor->getGlobalPose();
 		t.p = { pos.x,pos.y, pos.z };
 		actor->setGlobalPose(t);
-
-
-		// XMFLOAT3 p = transform->GetPosition();
-		// actor->setGlobalPose(physx::PxTransform(p.x + collisionBox.center.x, p.y + collisionBox.center.y, p.z + collisionBox.center.z));
-		// this->actor->clearForce();
-		// this->actor->clearTorque();
-		// this->actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
 	}
 }
 
@@ -76,6 +79,8 @@ void KG::Component::DynamicRigidComponent::OnDataLoad(tinyxml2::XMLElement* comp
 	this->positionProp.OnDataLoad(componentElement);
 	this->scaleProp.OnDataLoad(componentElement);
 	this->applyProp.OnDataLoad(componentElement);
+	this->showProp.OnDataLoad(componentElement);
+	this->filterProp.OnDataLoad(componentElement);
 }
 
 void KG::Component::DynamicRigidComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
@@ -85,6 +90,8 @@ void KG::Component::DynamicRigidComponent::OnDataSave(tinyxml2::XMLElement* pare
 	this->positionProp.OnDataSave(componentElement);
 	this->scaleProp.OnDataSave(componentElement);
 	this->applyProp.OnDataSave(componentElement);
+	this->showProp.OnDataSave(componentElement);
+	this->filterProp.OnDataSave(componentElement);
 }
 
 bool KG::Component::DynamicRigidComponent::OnDrawGUI()
@@ -93,17 +100,21 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 			ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 		if (this->isUsing()) {
 			this->positionProp.OnDrawGUI();
-			// ImGui::TextDisabled("Position (%.3f, %.3f, %.3f)", collisionBox.center.x, collisionBox.center.y, collisionBox.center.z);
 			ImGui::TextDisabled("Scaling  (%.3f, %.3f, %.3f)", collisionBox.scale.x, collisionBox.scale.y, collisionBox.scale.z);
+			this->showProp.OnDrawGUI();
 		}
 		else if (ImGui::TreeNode("Collision Box")) {
 			this->positionProp.OnDrawGUI();
 			this->scaleProp.OnDrawGUI();
+			this->showProp.OnDrawGUI();
 			ImGui::TreePop();
 		}
 
-		// 큐브 그리기
+		this->filterProp.OnDrawGUI();			// 나중에 고정시킬것
 		this->applyProp.OnDrawGUI();
+		
+		// 큐브 그리기
+
 		auto view = this->gameObject->GetScene()->GetMainCameraView();
 		auto proj = this->gameObject->GetScene()->GetMainCameraProj();
 
@@ -208,6 +219,7 @@ void KG::Component::StaticRigidComponent::OnCreate(KG::Core::GameObject* gameObj
 	KG::Component::IComponent::OnCreate(gameObject);
 	transform = gameObject->GetComponent<KG::Component::TransformComponent>();
 	KG::Physics::PhysicsScene::GetInstance()->AddStaticActor(this);
+	filter = FilterGroup::eBUILDING;
 	SetupFiltering(this->actor, FilterGroup::eBUILDING, 0);
 }
 
@@ -221,7 +233,16 @@ KG::Component::StaticRigidComponent::StaticRigidComponent()
 			{SHOW_COLLISION_BOX::NONE, "None"},
 			{SHOW_COLLISION_BOX::BOX, "Box"},
 			{SHOW_COLLISION_BOX::GRID, "Grid"}
-		},false)
+		},false),
+	filterProp(
+		"CollisionFilter", this->filter,
+		{
+			{FilterGroup::eBOX, "Box"},
+			{FilterGroup::eBUILDING, "Building"},
+			{FilterGroup::eENEMY, "Enemy"},
+			{FilterGroup::eFLOOR, "Floor"},
+			{FilterGroup::ePLAYER, "Player"}
+		}, false)
 {
 }
 
@@ -276,10 +297,11 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 		else if (ImGui::TreeNode("Collision Box")) {
 			this->positionProp.OnDrawGUI();
 			this->scaleProp.OnDrawGUI();
-			ImGui::TreePop();
 			this->showProp.OnDrawGUI();
+			ImGui::TreePop();
 		}
 
+		this->filterProp.OnDrawGUI();
 
 		auto view = this->gameObject->GetScene()->GetMainCameraView();
 		auto proj = this->gameObject->GetScene()->GetMainCameraProj();
