@@ -4,17 +4,27 @@
 #include "PhysicsSystem.h"
 #include "ComponentProvider.h"
 #include "Transform.h"
-#include <queue>
+#include <unordered_map>
 
 using namespace physx;
 using namespace KG::Physics;
 
+constexpr const int MAX_COMPONENT = 10000;
+
+struct CallbackParam {
+	std::function<void(KG::Component::IRigidComponent*, KG::Component::IRigidComponent*)> callback;
+	KG::Component::IRigidComponent* my;
+	KG::Component::IRigidComponent* other;
+
+	void DoCallback() {
+		callback(my, other);
+	}
+};
+
+std::unordered_map<physx::PxActor*, CallbackParam> CollisionCallback;
+std::unordered_map<unsigned int, KG::Component::IRigidComponent*> compIndex;
+
 class KG::Physics::PhysicsEventCallback : public physx::PxSimulationEventCallback {
-	// std::unordered_map<KG::Physics::PHYSICS_CALLBACK, void* ()> eventCallback;
-	// 콜백 함수에 들어갈 것
-	// 충돌 대상(이름 혹은 ID) - simulation에서 가져오는거라 아마도 이름
-	// 물리 컴포넌트 - 이거 특정할 수 있을까?
-	// 
 public:
 	virtual void onConstraintBreak(physx::PxConstraintInfo* constraints, physx::PxU32 count) override {
 		DebugNormalMessage("Called onConstraintBreak()");
@@ -37,14 +47,11 @@ public:
 		// eventCallback[PHYSICS_CALLBACK::ADVANCE]();
 	}
 	void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override {
-		// while (!callbackQueue.empty()) {
-		// 	// pairHeader.actors[0].
-		// 	callbackQueue.front()()
-		// }
-		// for (auto& callback : callbackQueue) {
-		// 
-		// }
 		DebugNormalMessage("Called onContact()");
+		if (CollisionCallback.count(pairHeader.actors[0]) != 0)
+			CollisionCallback[pairHeader.actors[0]].DoCallback();
+		if (CollisionCallback.count(pairHeader.actors[1]) != 0)
+			CollisionCallback[pairHeader.actors[1]].DoCallback();
 	}
 };
 
@@ -66,12 +73,41 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
 	pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
 
 	if (!(filterData0.word0 & filterData1.word1) && !(filterData0.word1 & filterData1.word0)) {
-
 		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT | physx::PxPairFlag::eCONTACT_DEFAULT;
-		// if (attributes0)
-		// 	callbackQueue.push(reinterpret_cast<KG::Component::DynamicRigidComponent*>(&filterData0.word2)->GetCollisionCallback());
-		// if (attributes1)
-		// 	callbackQueue.push(reinterpret_cast<KG::Component::DynamicRigidComponent*>(&filterData1.word2)->GetCollisionCallback());
+
+		KG::Component::IRigidComponent* comp1 = nullptr;
+		KG::Component::IRigidComponent* comp2 = nullptr;
+
+		if (compIndex.count(filterData0.word2) != 0)
+			comp1 = compIndex[filterData0.word2];
+
+		if (compIndex.count(filterData1.word2) != 0)
+			comp2 = compIndex[filterData1.word2];
+
+
+		if (comp1 == nullptr)
+			;
+		else if (CollisionCallback.count(comp1->GetActor()) == 0) {
+			if (comp1->GetCollisionCallback() != nullptr) {
+				CallbackParam cp;
+				cp.callback = comp1->GetCollisionCallback();
+				cp.my = comp1;
+				cp.other = comp2;
+				CollisionCallback[comp1->GetActor()] = cp;
+			}
+		}
+
+		if (comp2 == nullptr)
+			;
+		else if (CollisionCallback.count(comp2->GetActor()) == 0) {
+			if (comp2->GetCollisionCallback() != nullptr) {
+				CallbackParam cp;
+				cp.callback = comp2->GetCollisionCallback();
+				cp.my = comp2;
+				cp.other = comp1;
+				CollisionCallback[comp2->GetActor()] =cp;
+			}
+		}
 		return physx::PxFilterFlag::eDEFAULT;
 	}
 
@@ -225,6 +261,16 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 
 	scene->addActor(*actor);
 	rigid->SetActor(actor);
+
+	// 나중에 아이디 생성 추가
+	for (int i = UINT_MAX; i > UINT_MAX - MAX_COMPONENT; --i) {
+		if (compIndex.count(i) == 0) {
+			compIndex[i] = rigid;
+			rigid->SetId(i);
+			break;
+		}
+	}
+
 }
 
 void KG::Physics::PhysicsScene::AddStaticActor(KG::Component::StaticRigidComponent* rigid)
@@ -243,6 +289,13 @@ void KG::Physics::PhysicsScene::AddStaticActor(KG::Component::StaticRigidCompone
 #endif
 	scene->addActor(*actor);
 	rigid->SetActor(actor);
+	for (int i = UINT_MAX; i > UINT_MAX - MAX_COMPONENT; --i) {
+		if (compIndex.count(i) == 0) {
+			compIndex[i] = rigid;
+			rigid->SetId(i);
+			break;
+		}
+	}
 }
 
 void KG::Physics::PhysicsScene::AddFloor(float height)

@@ -9,10 +9,15 @@
 
 void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
-	KG::Component::IComponent::OnCreate(gameObject);
-	transform = gameObject->GetComponent<KG::Component::TransformComponent>();
+	IRigidComponent::OnCreate(gameObject);
 	KG::Physics::PhysicsScene::GetInstance()->AddDynamicActor(this);
-	SetupFiltering(filter, 0);		// filter 로 바꿔주기
+	dynamic = true;
+
+	SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
+		DebugNormalMessage("callback!!")
+		});
+
+	SetupFiltering(static_cast<unsigned int>(filter), 0);
 }
 
 KG::Component::DynamicRigidComponent::DynamicRigidComponent()
@@ -62,41 +67,30 @@ void KG::Component::DynamicRigidComponent::Update(float timeElapsed)
 }
 
 void KG::Component::DynamicRigidComponent::Move(DirectX::XMFLOAT3 direction, float speed) {
-	this->actor->setLinearVelocity(physx::PxVec3(direction.x, direction.y, direction.z) * speed * 100);
+	actor->setLinearVelocity(physx::PxVec3(direction.x, direction.y, direction.z) * speed * 100);
 }
 
 void KG::Component::DynamicRigidComponent::SetActor(physx::PxRigidDynamic* actor)
 {
 	this->actor = actor;
-	// actor->
 }
 
-void KG::Component::DynamicRigidComponent::SetupCollisionCallback(CollisionCallback&& collisionCallback)
-{
-	this->callback = collisionCallback;
-}
 
-void KG::Component::DynamicRigidComponent::SetupFiltering(uint32_t filterGroup, uint32_t filterMask)
+void KG::Component::DynamicRigidComponent::SetupFiltering(unsigned int filterGroup, unsigned int filterMask)
 {
-	physx::PxFilterData filterData;
-	filterData.word0 = filterGroup;										// word0 - 해당 액터의 충돌 필터
-	filterData.word1 = filterMask;										// word1 - 충돌 처리를 하지 않을 필터 - 이건 나중에 테이블로 정리
-	filterData.word2 = reinterpret_cast<physx::PxU32>(this);			// 콜백함수 포인터 전달
-
+	IRigidComponent::SetupFiltering(filterGroup, filterMask);
 	const physx::PxU32 numShapes = this->actor->getNbShapes();
 	physx::PxShape** shapes = new physx::PxShape * [numShapes];
 	this->actor->getShapes(shapes, numShapes);
 	for (physx::PxU32 i = 0; i < numShapes; i++)
 	{
 		physx::PxShape* shape = shapes[i];
-		shape->setSimulationFilterData(filterData);
-		// if (callback)
+		shape->setSimulationFilterData(*filterData);
+		if (callback != nullptr)
 			shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
 	}
 	delete[] shapes;
 }
-
-// physx::PxSimulationEventCallback::onContact
 
 void KG::Component::DynamicRigidComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
 {
@@ -240,10 +234,28 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 
 void KG::Component::StaticRigidComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
-	KG::Component::IComponent::OnCreate(gameObject);
-	transform = gameObject->GetComponent<KG::Component::TransformComponent>();
+	IRigidComponent::OnCreate(gameObject);
 	KG::Physics::PhysicsScene::GetInstance()->AddStaticActor(this);
-	// SetupFiltering(this->actor, filter, 0);
+	dynamic = false;
+	SetupFiltering(static_cast<unsigned int>(filter), 0);
+}
+
+
+void KG::Component::StaticRigidComponent::SetupFiltering(uint32_t filterGroup, uint32_t filterMask)
+{
+	IRigidComponent::SetupFiltering(filterGroup, filterMask);
+
+	const physx::PxU32 numShapes = this->actor->getNbShapes();
+	physx::PxShape** shapes = new physx::PxShape * [numShapes];
+	this->actor->getShapes(shapes, numShapes);
+	for (physx::PxU32 i = 0; i < numShapes; i++)
+	{
+		physx::PxShape* shape = shapes[i];
+		shape->setSimulationFilterData(*filterData);
+		if (callback != nullptr)
+			shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+	}
+	delete[] shapes;
 }
 
 KG::Component::StaticRigidComponent::StaticRigidComponent()
@@ -277,9 +289,6 @@ void KG::Component::StaticRigidComponent::PostUpdate(float timeElapsed)
 	physx::PxTransform t = actor->getGlobalPose();
 	t.p = { pos.x,pos.y, pos.z };
 	actor->setGlobalPose(t);
-
-	// XMFLOAT3 p = transform->GetPosition();
-	// actor->setGlobalPose(physx::PxTransform(p.x + collisionBox.center.x, p.y + collisionBox.center.y, p.z + collisionBox.center.z));
 }
 
 void KG::Component::StaticRigidComponent::Update(float timeElapsed)
@@ -342,16 +351,6 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 
 			mat = Math::Matrix4x4::Multiply(mat, worldMat);
 
-
-			// TRS * parent
-
-			// auto objectPos = this->gameObject->GetTransform()->GetPosition();
-			// XMFLOAT4X4 mat;
-			// DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&objectPos)));
-			// 
-			// mat = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
-			// 	XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mat);
-
 			view = Math::Matrix4x4::Transpose(view);
 			proj = Math::Matrix4x4::Transpose(proj);
 
@@ -369,19 +368,16 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 	return false;
 }
 
-// void KG::Component::SetupFiltering(physx::PxRigidActor* actor, uint32_t filterGroup, uint32_t filterMask)
-// {
-// 	physx::PxFilterData filterData;
-// 	filterData.word0 = filterGroup; // word0 = own ID
-// 	filterData.word1 = filterMask;	// word1 = ID mask to filter pairs that trigger a contact callback;
-// 	filterData.word2 = static_cast<physx::PxU32>(this);
-// 	const physx::PxU32 numShapes = actor->getNbShapes();
-// 	physx::PxShape** shapes = new physx::PxShape * [numShapes];
-// 	actor->getShapes(shapes, numShapes);
-// 	for (physx::PxU32 i = 0; i < numShapes; i++)
-// 	{
-// 		physx::PxShape* shape = shapes[i];
-// 		shape->setSimulationFilterData(filterData);
-// 	}
-// 	delete[] shapes;
-// }
+void KG::Component::IRigidComponent::OnCreate(KG::Core::GameObject* gameObject)
+{
+	KG::Component::IComponent::OnCreate(gameObject);
+	transform = gameObject->GetComponent<KG::Component::TransformComponent>();
+}
+
+void KG::Component::IRigidComponent::SetupFiltering(uint32_t filterGroup, uint32_t filterMask) {
+	filterData = new physx::PxFilterData;
+	filterData->word0 = filterGroup;									// word0 - 해당 액터의 충돌 필터
+	filterData->word1 = filterMask;										// word1 - 충돌 처리를 하지 않을 필터 - 이건 나중에 테이블로 정리
+	filterData->word2 = this->id;										// 피직스 씬에서의 아이디
+
+}
