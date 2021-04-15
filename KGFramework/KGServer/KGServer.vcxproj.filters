@@ -21,6 +21,12 @@
     <ClCompile Include="Server.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="ServerComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="ServerSystem.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Data.h">
@@ -30,6 +36,12 @@
       <Filter>헤더 파일</Filter>
     </ClInclude>
     <ClInclude Include="Server.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerComponent.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="ServerSystem.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>

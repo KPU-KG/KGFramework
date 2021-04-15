@@ -4,9 +4,52 @@
 /// @brief 해당 프레임의 사용자 입력을 읽고 저장합니다.
 /// @param hWnd 입력을 받아올 윈도우의 핸들입니다.
 
+void KG::Input::InputManager::GetVKState(int keyId)
+{
+	if ( GetAsyncKeyState(keyId) & 0x8000 )
+	{
+		keyStates[keyId] = KeyState::Down;
+	}
+	else
+	{
+		keyStates[keyId] = KeyState::Up;
+	}
+}
+
 void KG::Input::InputManager::SetUIContext(void* context)
 {
 	ImGui::SetCurrentContext(reinterpret_cast<ImGuiContext*>(context));
+}
+
+LRESULT KG::Input::InputManager::HandlingInputProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
+{
+	int key = static_cast<int>(wParam);
+	if ( key > 256 )
+	{
+		return true;
+	}
+	switch ( message )
+	{
+		case WM_LBUTTONDOWN:
+			keyStates[VK_LBUTTON] = KeyState::Down;
+			break;
+		case WM_LBUTTONUP:
+			keyStates[VK_LBUTTON] = KeyState::Up;
+			break;
+		case WM_RBUTTONDOWN:
+			keyStates[VK_RBUTTON] = KeyState::Down;
+			break;
+		case WM_RBUTTONUP:
+			keyStates[VK_RBUTTON] = KeyState::Up;
+			break;
+		case WM_KEYDOWN:
+			keyStates[key] = KeyState::Down;
+			break;
+		case WM_KEYUP:
+			keyStates[key] = KeyState::Up;
+			break;
+	}
+	return true;
 }
 
 void KG::Input::InputManager::ProcessInput(HWND hWnd)
@@ -20,44 +63,13 @@ void KG::Input::InputManager::ProcessInput(HWND hWnd)
 		}
 		return;
 	}
-	if ( GetKeyboardState(keyBuffer) )
-	{
-		for ( size_t i = 0; i < 256; i++ )
-		{
-			if ( keyBuffer[i] & 0xF0 )
-			{
-				switch ( keyStates[i] )
-				{
-					//클릭중
-					case KeyState::Up:
-					case KeyState::None:
-						keyStates[i] = KeyState::Down;
-						break;
-					case KeyState::Down:
-						keyStates[i] = KeyState::Pressing;
-						break;
-					case KeyState::Pressing:
-						break;
-				}
-			}
-			else
-			{
-				switch ( keyStates[i] )
-				{
-					//클릭 안함
-					case KeyState::Down:
-					case KeyState::Pressing:
-						keyStates[i] = KeyState::Up;
-						break;
-					case KeyState::Up:
-						keyStates[i] = KeyState::None;
-						break;
-					case KeyState::None:
-						break;
-				}
-			}
-		}
-	}
+
+	//특수키
+	this->GetVKState(VK_LSHIFT);
+	this->GetVKState(VK_RSHIFT);
+	this->GetVKState(VK_SPACE);
+
+
 
 	//Mouse
 	POINT mouseBuffer = {};
@@ -92,6 +104,29 @@ void KG::Input::InputManager::ProcessInput(HWND hWnd)
 	{
 		mousePosition.x = mouseBuffer.x;
 		mousePosition.y = mouseBuffer.y;
+	}
+
+}
+
+void KG::Input::InputManager::PostProcessInput()
+{
+	if ( GetKeyboardState(keyBuffer) )
+	{
+		for ( size_t i = 0; i < 256; i++ )
+		{
+			switch ( keyStates[i] )
+			{
+				//클릭 안함
+				case KeyState::Down:
+					keyStates[i] = KeyState::Pressing;
+					break;
+				case KeyState::Up:
+					keyStates[i] = KeyState::None;
+					break;
+				case KeyState::None:
+					break;
+			}
+		}
 	}
 
 }
