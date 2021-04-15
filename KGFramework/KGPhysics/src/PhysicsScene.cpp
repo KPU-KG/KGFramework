@@ -4,6 +4,7 @@
 #include "PhysicsSystem.h"
 #include "ComponentProvider.h"
 #include "Transform.h"
+#include <queue>
 
 using namespace physx;
 using namespace KG::Physics;
@@ -36,6 +37,13 @@ public:
 		// eventCallback[PHYSICS_CALLBACK::ADVANCE]();
 	}
 	void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override {
+		// while (!callbackQueue.empty()) {
+		// 	// pairHeader.actors[0].
+		// 	callbackQueue.front()()
+		// }
+		// for (auto& callback : callbackQueue) {
+		// 
+		// }
 		DebugNormalMessage("Called onContact()");
 	}
 };
@@ -58,7 +66,12 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
 	pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
 
 	if (!(filterData0.word0 & filterData1.word1) && !(filterData0.word1 & filterData1.word0)) {
+
 		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT | physx::PxPairFlag::eCONTACT_DEFAULT;
+		// if (attributes0)
+		// 	callbackQueue.push(reinterpret_cast<KG::Component::DynamicRigidComponent*>(&filterData0.word2)->GetCollisionCallback());
+		// if (attributes1)
+		// 	callbackQueue.push(reinterpret_cast<KG::Component::DynamicRigidComponent*>(&filterData1.word2)->GetCollisionCallback());
 		return physx::PxFilterFlag::eDEFAULT;
 	}
 

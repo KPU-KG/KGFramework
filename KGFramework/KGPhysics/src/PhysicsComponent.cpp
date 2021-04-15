@@ -12,8 +12,7 @@ void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameOb
 	KG::Component::IComponent::OnCreate(gameObject);
 	transform = gameObject->GetComponent<KG::Component::TransformComponent>();
 	KG::Physics::PhysicsScene::GetInstance()->AddDynamicActor(this);
-	filter = FilterGroup::eBOX;
-	SetupFiltering(this->actor, FilterGroup::eBOX, 0);		// filter 로 바꿔주기
+	SetupFiltering(filter, 0);		// filter 로 바꿔주기
 }
 
 KG::Component::DynamicRigidComponent::DynamicRigidComponent()
@@ -70,6 +69,31 @@ void KG::Component::DynamicRigidComponent::SetActor(physx::PxRigidDynamic* actor
 {
 	this->actor = actor;
 	// actor->
+}
+
+void KG::Component::DynamicRigidComponent::SetupCollisionCallback(CollisionCallback&& collisionCallback)
+{
+	this->callback = collisionCallback;
+}
+
+void KG::Component::DynamicRigidComponent::SetupFiltering(uint32_t filterGroup, uint32_t filterMask)
+{
+	physx::PxFilterData filterData;
+	filterData.word0 = filterGroup;										// word0 - 해당 액터의 충돌 필터
+	filterData.word1 = filterMask;										// word1 - 충돌 처리를 하지 않을 필터 - 이건 나중에 테이블로 정리
+	filterData.word2 = reinterpret_cast<physx::PxU32>(this);			// 콜백함수 포인터 전달
+
+	const physx::PxU32 numShapes = this->actor->getNbShapes();
+	physx::PxShape** shapes = new physx::PxShape * [numShapes];
+	this->actor->getShapes(shapes, numShapes);
+	for (physx::PxU32 i = 0; i < numShapes; i++)
+	{
+		physx::PxShape* shape = shapes[i];
+		shape->setSimulationFilterData(filterData);
+		// if (callback)
+			shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
+	}
+	delete[] shapes;
 }
 
 // physx::PxSimulationEventCallback::onContact
@@ -219,8 +243,7 @@ void KG::Component::StaticRigidComponent::OnCreate(KG::Core::GameObject* gameObj
 	KG::Component::IComponent::OnCreate(gameObject);
 	transform = gameObject->GetComponent<KG::Component::TransformComponent>();
 	KG::Physics::PhysicsScene::GetInstance()->AddStaticActor(this);
-	filter = FilterGroup::eBUILDING;
-	SetupFiltering(this->actor, FilterGroup::eBUILDING, 0);
+	// SetupFiltering(this->actor, filter, 0);
 }
 
 KG::Component::StaticRigidComponent::StaticRigidComponent()
@@ -310,66 +333,7 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 		case SHOW_COLLISION_BOX::NONE:
 			break;
 		case SHOW_COLLISION_BOX::GRID:
-			/*
-			view = Math::Matrix4x4::Transpose(view);
-			proj = Math::Matrix4x4::Transpose(proj);
-
-			ImGuiIO& io = ImGui::GetIO();
-			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-
-			auto objectPos = this->gameObject->GetTransform()->GetPosition();
-			XMFLOAT4X4 mats[6];
-
-			// front
-			auto front = objectPos;
-			front.z += collisionBox.scale.z / 2;
-			DirectX::XMStoreFloat4x4(&mats[0], DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&front)));
-			mats[0] = Math::Matrix4x4::Multiply(XMMatrixRotationRollPitchYaw(XMConvertToRadians(90), 0, 0) * XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale) / 2) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mats[0]);
-
-			// back
-			auto back = objectPos;
-			back.z -= collisionBox.scale.z / 2;
-			DirectX::XMStoreFloat4x4(&mats[1], DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&back)));
-			mats[1] = Math::Matrix4x4::Multiply(XMMatrixRotationRollPitchYaw(XMConvertToRadians(90), 0, 0) * XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale) / 2) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mats[1]);
-
-			// right
-			auto right = objectPos;
-			right.x += collisionBox.scale.x / 2;
-			DirectX::XMStoreFloat4x4(&mats[2], DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&right)));
-			mats[2] = Math::Matrix4x4::Multiply(XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(90)) * XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale) / 2) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mats[2]);
-
-			// left
-			auto left = objectPos;
-			back.x -= collisionBox.scale.x / 2;
-			DirectX::XMStoreFloat4x4(&mats[3], DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&left)));
-			mats[3] = Math::Matrix4x4::Multiply(XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(90)) * XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale) / 2) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mats[3]);
-
-			// up
-			auto up = objectPos;
-			up.y += collisionBox.scale.y / 2;
-			DirectX::XMStoreFloat4x4(&mats[4], DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&up)));
-			mats[4] = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale) / 2) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mats[4]);
-
-			// down
-			auto down = objectPos;
-			back.y -= collisionBox.scale.y / 2;
-			DirectX::XMStoreFloat4x4(&mats[5], DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&up)));
-			mats[5] = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale) / 2) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mats[5]);
-
-			for (int i = 0; i < 6; ++i) {
-				ImGuizmo::DrawGrid(reinterpret_cast<const float*>(view.m),
-					reinterpret_cast<const float*>(proj.m),
-					reinterpret_cast<const float*>(mats[i].m),
-					1);
-			}
-			break;
-			*/
+			// 지금은 다른 작업이 우선
 		case SHOW_COLLISION_BOX::BOX:
 		{
 			XMFLOAT4X4 worldMat = this->gameObject->GetTransform()->GetGlobalWorldMatrix();
@@ -405,18 +369,19 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 	return false;
 }
 
-void KG::Component::SetupFiltering(physx::PxRigidActor* actor, uint32_t filterGroup, uint32_t filterMask)
-{
-	physx::PxFilterData filterData;
-	filterData.word0 = filterGroup; // word0 = own ID
-	filterData.word1 = filterMask;	// word1 = ID mask to filter pairs that trigger a contact callback;
-	const physx::PxU32 numShapes = actor->getNbShapes();
-	physx::PxShape** shapes = new physx::PxShape * [numShapes];
-	actor->getShapes(shapes, numShapes);
-	for (physx::PxU32 i = 0; i < numShapes; i++)
-	{
-		physx::PxShape* shape = shapes[i];
-		shape->setSimulationFilterData(filterData);
-	}
-	delete[] shapes;
-}
+// void KG::Component::SetupFiltering(physx::PxRigidActor* actor, uint32_t filterGroup, uint32_t filterMask)
+// {
+// 	physx::PxFilterData filterData;
+// 	filterData.word0 = filterGroup; // word0 = own ID
+// 	filterData.word1 = filterMask;	// word1 = ID mask to filter pairs that trigger a contact callback;
+// 	filterData.word2 = static_cast<physx::PxU32>(this);
+// 	const physx::PxU32 numShapes = actor->getNbShapes();
+// 	physx::PxShape** shapes = new physx::PxShape * [numShapes];
+// 	actor->getShapes(shapes, numShapes);
+// 	for (physx::PxU32 i = 0; i < numShapes; i++)
+// 	{
+// 		physx::PxShape* shape = shapes[i];
+// 		shape->setSimulationFilterData(filterData);
+// 	}
+// 	delete[] shapes;
+// }

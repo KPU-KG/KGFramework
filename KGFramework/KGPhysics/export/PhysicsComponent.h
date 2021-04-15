@@ -43,24 +43,36 @@ namespace KG::Component
 		}
 	};
 
+	// conponent에 콜백 함수 추가 (충돌한 상대 타입, 충돌 위치를 매개변수로 받음)
+	// scene의 filter 함수에서 매개변수 결정
+	struct CollisionInfo {
+		unsigned int otherType;
+		DirectX::XMFLOAT3 otherPosition;
+		DirectX::XMFLOAT3 myPosition;
+	};
+
+	using  CollisionCallback = std::function<CollisionInfo(unsigned int, DirectX::XMFLOAT3, DirectX::XMFLOAT3)>;
+
 	class DLL DynamicRigidComponent : public IPhysicsComponent {
 	protected:
 		CollisionBox				collisionBox;
 		TransformComponent*			transform;		
 		physx::PxRigidDynamic*		actor;			
 		bool						apply = false;
-		SHOW_COLLISION_BOX			show = BOX;
+		SHOW_COLLISION_BOX			show = SHOW_COLLISION_BOX::BOX;
 
 		// 추가해줘야 할것 (04.11 기준)
 		// 1. 계층구조 계산
 		// 2. 충돌 필터
 		// 3. 콜백함수 등록 - 이거는 스크립트로 해야겠죠??
 		// 4. KINETIC 기능 추가
-		FilterGroup filter = FilterGroup::eBOX;						// enum type prop
-		void (*callback)();						// 매개변수로 둘의 위치 / 타입이 들어가야 할듯
-		bool kinetic;							// prop
+		FilterGroup filter = FilterGroup::eBOX;															// enum type prop
+		CollisionCallback callback = nullptr;					// 매개변수로 둘의 위치 / 타입이 들어가야 할듯
+																										// 충돌 대상 타입, 충돌 대상 위치, 내 위치
+		bool kinetic;																					// prop
 
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
+		void SetupFiltering(uint32_t filterGroup, uint32_t filterMask);
 	public:
 		DynamicRigidComponent();
 		virtual void PostUpdate(float timeElapsed) override;
@@ -69,6 +81,8 @@ namespace KG::Component
 		void Move(DirectX::XMFLOAT3 direction, float speed);
 		void SetActor(physx::PxRigidDynamic* actor);
 
+		void SetupCollisionCallback(CollisionCallback&& collisionCallback);
+		CollisionCallback GetCollisionCallback() { return callback; }
 	private:
 		// 참고할 코드 (저장 정보)
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		positionProp;
@@ -89,8 +103,8 @@ namespace KG::Component
 		CollisionBox			collisionBox;
 		TransformComponent*		transform;
 		physx::PxRigidStatic*	actor;
-		SHOW_COLLISION_BOX		show;
-		FilterGroup				filter;
+		SHOW_COLLISION_BOX		show = SHOW_COLLISION_BOX::BOX;
+		FilterGroup				filter = FilterGroup::eBUILDING;
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 	public:
 		StaticRigidComponent();
@@ -98,6 +112,7 @@ namespace KG::Component
 		virtual void Update(float timeElapsed) override;
 		CollisionBox& GetCollisionBox() { return collisionBox; }
 		void SetActor(physx::PxRigidStatic* actor);
+
 	private:
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		positionProp;
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		scaleProp;
