@@ -9,6 +9,7 @@
 
 #include <DirectXMath.h>
 #include <vector>
+#include <unordered_map>
 #include "IPhysicsScene.h"
 #include "PhysicsSystem.h"
 
@@ -27,6 +28,7 @@ namespace physx
 namespace KG::Component 
 {
 	class DynamicRigidComponent;
+	class IRigidComponent;
 }
 
 namespace KG::Physics 
@@ -35,16 +37,7 @@ namespace KG::Physics
 		CONSTRAINT, WAKE, SLEEP, TRIGGER, ADVANCE
 	};
 
-	struct FilterGroup {
-		enum Enum {
-			eFLOOR		= (1 << 0),
-			eBUILDING	= (1 << 1),
-			eBOX		= (1 << 2)
-		};
-	};
-
 	class PhysicsEventCallback;
-	class PhysicsCollisionCallback;
 	// using namespace physx;
 	class DLL PhysicsScene : public IPhysicsScene {
 	private:
@@ -62,9 +55,11 @@ namespace KG::Physics
 		float							accumulator = 0.0f;
 		float							stepSize = 1.0f / 60.0f;
 
+
 		struct PhysicsSystems;
 		PhysicsSystems* physicsSystems = nullptr;
 		bool CreateScene(float gravity);
+
 	public:
 		PhysicsScene();
 		virtual void Initialize() override;
