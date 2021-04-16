@@ -253,6 +253,7 @@
     <ClInclude Include="include\MaterialMatch.h" />
     <ClInclude Include="include\MathHelper.h" />
     <ClInclude Include="include\ObjectContainer.h" />
+    <ClInclude Include="include\Protocol.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\SerializableProperty.h" />
     <ClInclude Include="include\tinyxml2.h" />
