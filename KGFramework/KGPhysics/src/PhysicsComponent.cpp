@@ -219,6 +219,71 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 
 			ImGuiIO& io = ImGui::GetIO();
 			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+
+			//물리 작업용 툴 섹션
+			{
+				static ImGuizmo::OPERATION currentGizmoOperation = (ImGuizmo::OPERATION)0;
+				static ImGuizmo::MODE currentGizmoMode(ImGuizmo::LOCAL);
+				XMFLOAT4X4 delta;
+				float t[3] = { 0,0,0 }; float r[3] = { 0,0,0 }; float s[3] = { 0,0,0 };
+
+				ImGui::Text("Edit Mode");
+				if ( ImGui::RadioButton("Translate", currentGizmoOperation == ImGuizmo::TRANSLATE) )
+					currentGizmoOperation = ImGuizmo::TRANSLATE;
+				ImGui::SameLine();
+				if ( ImGui::RadioButton("Scale", currentGizmoOperation == ImGuizmo::SCALE) )
+					currentGizmoOperation = ImGuizmo::SCALE;
+				ImGui::SameLine();
+				if ( ImGui::RadioButton("Off", currentGizmoOperation == 0) )
+					currentGizmoOperation = (ImGuizmo::OPERATION)0;
+
+				//if ( ImGui::RadioButton("RotateX", currentGizmoOperation == ImGuizmo::ROTATE_X) )
+				//	currentGizmoOperation = ImGuizmo::ROTATE_X;
+				//ImGui::SameLine();
+				//if ( ImGui::RadioButton("RotateY", currentGizmoOperation == ImGuizmo::ROTATE_Y) )
+				//	currentGizmoOperation = ImGuizmo::ROTATE_Y;
+				//ImGui::SameLine();
+				//if ( ImGui::RadioButton("RotateZ", currentGizmoOperation == ImGuizmo::ROTATE_Z) )
+				//	currentGizmoOperation = ImGuizmo::ROTATE_Z;
+
+				if ( currentGizmoOperation != 0 && ImGuizmo::Manipulate((float*)view.m, (float*)proj.m, currentGizmoOperation, currentGizmoMode, (float*)mat.m, NULL, NULL) )
+				{
+					if ( this->gameObject->GetTransform()->GetParent() )
+					{
+						auto parentWorld = this->gameObject->GetTransform()->GetParent()->GetGlobalWorldMatrix();
+						auto parentWorldMat = XMLoadFloat4x4(&parentWorld);
+						auto currentWorldMat = XMLoadFloat4x4(&mat);
+						auto currentLocal = XMMatrixMultiply(currentWorldMat, XMMatrixInverse(NULL, parentWorldMat));
+						XMStoreFloat4x4(&delta, currentLocal);
+					}
+					ImGuizmo::DecomposeMatrixToComponents((float*)delta.m, t, r, s);
+					//auto euler = this->GetEulerDegree();
+					switch ( currentGizmoOperation )
+					{
+						case ImGuizmo::TRANSLATE:
+							this->collisionBox.center = XMFLOAT3(t[0], t[1], t[2]);
+							break;
+						//case ImGuizmo::ROTATE_X:
+						//	this->RotateAxis(this->GetRight(), this->eulerRotation.x - r[0]);
+						//	break;
+						//case ImGuizmo::ROTATE_Y:
+						//	this->RotateAxis(this->GetUp(), r[1] - this->eulerRotation.y);
+						//	break;
+						//case ImGuizmo::ROTATE_Z:
+						//	this->RotateAxis(this->GetLook(), r[2] - this->eulerRotation.z);
+							break;
+						case ImGuizmo::SCALE:
+							this->collisionBox.scale = XMFLOAT3(s[0], s[1], s[2]);
+							break;
+					}
+				}
+
+			}
+
+
+
+
 			ImGuizmo::DrawCubes(
 				reinterpret_cast<const float*>(view.m),
 				reinterpret_cast<const float*>(proj.m),
@@ -356,6 +421,71 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 
 			ImGuiIO& io = ImGui::GetIO();
 			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+
+			//물리 작업용 툴 섹션
+			{
+				static ImGuizmo::OPERATION currentGizmoOperation = (ImGuizmo::OPERATION)0;
+				static ImGuizmo::MODE currentGizmoMode(ImGuizmo::LOCAL);
+				XMFLOAT4X4 delta;
+				float t[3] = { 0,0,0 }; float r[3] = { 0,0,0 }; float s[3] = { 0,0,0 };
+
+				ImGui::Text("Edit Mode");
+				if ( ImGui::RadioButton("Translate", currentGizmoOperation == ImGuizmo::TRANSLATE) )
+					currentGizmoOperation = ImGuizmo::TRANSLATE;
+				ImGui::SameLine();
+				if ( ImGui::RadioButton("Scale", currentGizmoOperation == ImGuizmo::SCALE) )
+					currentGizmoOperation = ImGuizmo::SCALE;
+				ImGui::SameLine();
+				if ( ImGui::RadioButton("Off", currentGizmoOperation == 0) )
+					currentGizmoOperation = (ImGuizmo::OPERATION)0;
+
+				//if ( ImGui::RadioButton("RotateX", currentGizmoOperation == ImGuizmo::ROTATE_X) )
+				//	currentGizmoOperation = ImGuizmo::ROTATE_X;
+				//ImGui::SameLine();
+				//if ( ImGui::RadioButton("RotateY", currentGizmoOperation == ImGuizmo::ROTATE_Y) )
+				//	currentGizmoOperation = ImGuizmo::ROTATE_Y;
+				//ImGui::SameLine();
+				//if ( ImGui::RadioButton("RotateZ", currentGizmoOperation == ImGuizmo::ROTATE_Z) )
+				//	currentGizmoOperation = ImGuizmo::ROTATE_Z;
+
+				if ( currentGizmoOperation != 0 && ImGuizmo::Manipulate((float*)view.m, (float*)proj.m, currentGizmoOperation, currentGizmoMode, (float*)mat.m, NULL, NULL) )
+				{
+					if ( this->gameObject->GetTransform()->GetParent() )
+					{
+						auto parentWorld = this->gameObject->GetTransform()->GetParent()->GetGlobalWorldMatrix();
+						auto parentWorldMat = XMLoadFloat4x4(&parentWorld);
+						auto currentWorldMat = XMLoadFloat4x4(&mat);
+						auto currentLocal = XMMatrixMultiply(currentWorldMat, XMMatrixInverse(NULL, parentWorldMat));
+						XMStoreFloat4x4(&delta, currentLocal);
+					}
+					ImGuizmo::DecomposeMatrixToComponents((float*)delta.m, t, r, s);
+					//auto euler = this->GetEulerDegree();
+					switch ( currentGizmoOperation )
+					{
+						case ImGuizmo::TRANSLATE:
+							this->collisionBox.center = XMFLOAT3(t[0], t[1], t[2]);
+							break;
+							//case ImGuizmo::ROTATE_X:
+							//	this->RotateAxis(this->GetRight(), this->eulerRotation.x - r[0]);
+							//	break;
+							//case ImGuizmo::ROTATE_Y:
+							//	this->RotateAxis(this->GetUp(), r[1] - this->eulerRotation.y);
+							//	break;
+							//case ImGuizmo::ROTATE_Z:
+							//	this->RotateAxis(this->GetLook(), r[2] - this->eulerRotation.z);
+							break;
+						case ImGuizmo::SCALE:
+							this->collisionBox.scale = XMFLOAT3(s[0], s[1], s[2]);
+							break;
+					}
+				}
+
+			}
+
+
+
+
 			ImGuizmo::DrawCubes(
 				reinterpret_cast<const float*>(view.m),
 				reinterpret_cast<const float*>(proj.m),
