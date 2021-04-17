@@ -42,6 +42,7 @@ namespace KG::Physics
 			ImGui::SetCurrentContext(context);
 			return true;
 		}
+		virtual KG::Component::IRigidComponent* QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance) = 0;
 	};
 
 	DLL KG::Physics::IPhysicsScene* GetPhysicsScene();

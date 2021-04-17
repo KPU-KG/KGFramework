@@ -13,9 +13,9 @@ void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameOb
 	KG::Physics::PhysicsScene::GetInstance()->AddDynamicActor(this);
 	dynamic = true;
 
-	SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
-		DebugNormalMessage("callback!!")
-		});
+	// SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
+	// 	DebugNormalMessage("callback!!")
+	// 	});
 
 	SetupFiltering(static_cast<unsigned int>(filter), 0);
 }

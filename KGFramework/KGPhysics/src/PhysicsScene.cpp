@@ -321,3 +321,18 @@ void KG::Physics::PhysicsScene::PostComponentProvider(KG::Component::ComponentPr
 {
 	physicsSystems->PostComponentProvider(provider);
 }
+
+KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance)
+{
+	PxVec3 org{ origin.x, origin.y, origin.z };
+	PxVec3 dir{ direction.x, direction.y, direction.z };
+	PxReal dst = maxDistance;
+	PxRaycastBuffer hit;
+	PxQueryFilterData filter;
+	if (scene->raycast(org, dir, dst, hit, PxHitFlag::eDEFAULT, filter)) {
+		if (compIndex.count(filter.data.word2) == 0)
+			return nullptr;
+		return compIndex[filter.data.word2];
+	}
+	return nullptr;
+}

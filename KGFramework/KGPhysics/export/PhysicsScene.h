@@ -66,12 +66,14 @@ namespace KG::Physics
 		virtual bool Advance(float timeElapsed) override;
 
 		// 임시 지평면
-		virtual void AddDynamicActor(KG::Component::DynamicRigidComponent* rigid) override;
-		virtual void AddStaticActor(KG::Component::StaticRigidComponent* rigid) override;
-		virtual void AddFloor(float height) override;
-		virtual KG::Component::DynamicRigidComponent* GetNewDynamicRigidComponent() override;
-		virtual KG::Component::StaticRigidComponent* GetNewStaticRigidComponent() override;
-		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
+		virtual void AddDynamicActor(KG::Component::DynamicRigidComponent* rigid) override final;
+		virtual void AddStaticActor(KG::Component::StaticRigidComponent* rigid) override final;
+		virtual void AddFloor(float height) override final;
+		virtual KG::Component::DynamicRigidComponent* GetNewDynamicRigidComponent() override final;
+		virtual KG::Component::StaticRigidComponent* GetNewStaticRigidComponent() override final;
+		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override final;
+
+		virtual KG::Component::IRigidComponent* QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance) override final;
 
 		static PhysicsScene* GetInstance() { return instance; }
 	};
