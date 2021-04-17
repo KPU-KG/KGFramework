@@ -53,7 +53,6 @@ namespace KG::Physics
 		PhysicsEventCallback*			physicsEventCallback;
 
 		float							accumulator = 0.0f;
-		float							stepSize = 1.0f / 60.0f;
 
 
 		struct PhysicsSystems;

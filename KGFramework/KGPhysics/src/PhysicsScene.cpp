@@ -220,13 +220,13 @@ bool KG::Physics::PhysicsScene::CreateScene(float gravity) {
 }
 
 bool KG::Physics::PhysicsScene::Advance(float timeElapsed) {
+	this->physicsSystems->OnUpdate(timeElapsed);
 	accumulator += timeElapsed;
 	while (accumulator >= stepSize) {
 		accumulator -= stepSize;
 		scene->simulate(stepSize);
 		scene->collide(stepSize);
 		scene->fetchCollision();
-		// scene->advance();
 		scene->fetchResults();
 	}
 	this->physicsSystems->OnPostUpdate(timeElapsed);
@@ -329,7 +329,14 @@ KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX:
 	PxReal dst = maxDistance;
 	PxRaycastBuffer hit;
 	PxQueryFilterData filter;
+
 	if (scene->raycast(org, dir, dst, hit, PxHitFlag::eDEFAULT, filter)) {
+		for (auto& com : compIndex) {
+			if (com.second->GetActor() == hit.block.actor) {
+				return com.second;
+			}
+		}
+
 		if (compIndex.count(filter.data.word2) == 0)
 			return nullptr;
 		return compIndex[filter.data.word2];

@@ -155,6 +155,29 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
+	this->scene.AddObjectPreset("TestCube-raycast",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* t = this->system->transformSystem.GetNewComponent();
+			auto* g = this->renderer->GetNewGeomteryComponent();
+			g->AddGeometry(KG::Utill::HashString("cube"));
+			auto* m = this->renderer->GetNewMaterialComponent();
+			m->PostMaterial(KG::Utill::HashString("PBRTile"));
+			auto* r = this->renderer->GetNewRenderComponent();
+			auto* p = this->physics->GetNewDynamicRigidComponent();
+			p->SetCollisionCallback(
+				[this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
+					DebugNormalMessage("callback!!");
+					// my->SetVelocity({ 0,1,0 }, 10);
+				});
+			obj.AddComponent(t);
+			obj.AddTemporalComponent(g);
+			obj.AddTemporalComponent(m);
+			obj.AddTemporalComponent(r);
+			obj.AddTemporalComponent(p);
+		}
+	);
+
 	this->scene.AddModelPreset("Vector",
 		[]()
 		{

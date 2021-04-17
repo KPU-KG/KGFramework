@@ -17,6 +17,7 @@ namespace KG::Physics
 	protected:
 		PhysicsDesc desc;
 		IPhysicsScene() = default;
+		float							stepSize = 1.0f / 120.0f;
 	public:
 		void SetDsec(const PhysicsDesc& desc);
 
@@ -43,6 +44,9 @@ namespace KG::Physics
 			return true;
 		}
 		virtual KG::Component::IRigidComponent* QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance) = 0;
+		void SetStepSize(float stepSize) {
+			this->stepSize = stepSize;
+		}
 	};
 
 	DLL KG::Physics::IPhysicsScene* GetPhysicsScene();

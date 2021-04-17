@@ -2,7 +2,8 @@
 
 void KG::System::DynamicRigidSystem::OnUpdate(float elapsedTime)
 {
-
+	for (auto& com : this->pool)
+		com.Update(elapsedTime);
 }
 
 void KG::System::DynamicRigidSystem::OnPostUpdate(float elapsedTime)
