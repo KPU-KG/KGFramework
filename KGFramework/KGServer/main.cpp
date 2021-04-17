@@ -11,6 +11,6 @@ Server S;
 
 int main()
 {
-	S.Initialize();
+	S.InitServer();
 }
  

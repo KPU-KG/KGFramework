@@ -1,4 +1,5 @@
 #pragma once
+#include <mutex>
 
 constexpr unsigned char C2S_CONNECT = 1;
 constexpr unsigned char C2S_READY_ON = 2;
@@ -14,25 +15,42 @@ constexpr unsigned char S2C_SCENE_DATA = 9;
 
 constexpr int MAX_NAME = 100;
 constexpr int MAX_BUFFER = 1024;
-constexpr short SERVER_PORT = 8688;
+constexpr short SERVER_PORT = 3500;
 constexpr int MAX_USER = 100;
 constexpr int SERVER_ID = 0;
 
+
+enum OP_TYPE {
+	OP_RECV,
+	OP_SEND,
+	OP_ACCEPT,
+};
+
+enum PL_STATE {
+	PLST_FREE,
+	PLST_CONNECTED,
+	PLST_INGAME
+};
 
 struct EX_OVER
 {
 	WSAOVERLAPPED m_over;
 	WSABUF m_wsabuf[1];
 	unsigned char m_packetbuf[MAX_BUFFER];
-	bool m_op; // true - recv, false - send
+	OP_TYPE m_op;
+	SOCKET m_csocket;
 };
 
 struct SESSION
 {
-	SOCKET socket;
+	std::mutex m_slock;
+	PL_STATE m_state;
+	SOCKET m_socket;
 	int id;
+
 	EX_OVER m_recv_over;
 	int m_prev_size;
+
 	//char m_name[MAX_NAME];
 	//short x, y;
 };
