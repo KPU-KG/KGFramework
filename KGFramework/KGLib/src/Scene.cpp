@@ -286,9 +286,38 @@ KG::Core::GameObject* KG::Core::Scene::CallPreset(const std::string& name)
 	return nullptr;
 }
 
+KG::Core::GameObject* KG::Core::Scene::CallPreset(const KG::Utill::HashString& hashid)
+{
+	KG::Core::GameObject* obj = nullptr;;
+	for ( size_t i = 0; i < this->objectPresetName.size(); i++ )
+	{
+		if ( KG::Utill::HashString(this->objectPresetName[i]) == hashid )
+		{
+			if ( objectPresetModel[i] != nullptr )
+			{
+				auto [modelId, materialMach] = this->objectPresetModel[i]();
+				obj = this->modelCreator(modelId, *this, materialMach);
+			}
+			else
+			{
+				obj = this->CreateNewObject();
+			}
+			objectPresetFunc[i](*obj);
+			obj->tag = KG::Utill::HashString(objectPresetName[i]);
+			return obj;
+		}
+	}
+	return nullptr;
+}
+
 void KG::Core::Scene::AddObjectFromPreset(const std::string& name)
 {
 	this->rootNode.GetTransform()->AddChild(this->CallPreset(name)->GetTransform());
+}
+
+void KG::Core::Scene::AddObjectFromPreset(const KG::Utill::HashString& hashid)
+{
+	this->rootNode.GetTransform()->AddChild(this->CallPreset(hashid)->GetTransform());
 }
 
 void KG::Core::Scene::InitializeRoot()

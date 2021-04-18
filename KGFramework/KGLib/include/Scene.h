@@ -94,7 +94,9 @@ namespace KG::Core
 		void AddCameraMatrixGetter(GetMatrixFunc&& view, GetMatrixFunc&& proj);
 
 		GameObject* CallPreset(const std::string& name);
+		GameObject* CallPreset(const KG::Utill::HashString& hashid);
 		void AddObjectFromPreset(const std::string& name);
+		void AddObjectFromPreset(const KG::Utill::HashString& hashid);
 
 		//Root 노드 프리셋으로 초기화 하도록 설정
 		void InitializeRoot();
