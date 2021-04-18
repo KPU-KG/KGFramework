@@ -17,6 +17,7 @@ namespace physx
 {
 	class PxDefaultAllocator;
 	class PxDefaultErrorCallback;
+	class PxErrorCallback;
 	class PxFoundation;
 	class PxPhysics;
 	class PxDefaultCpuDispatcher;
@@ -44,7 +45,6 @@ namespace KG::Physics
 		static inline PhysicsScene* instance = nullptr;
 	protected:
 		physx::PxDefaultAllocator*		allocator;
-		//physx::PxDefaultErrorCallback* errorCallback;
 		physx::PxErrorCallback*			errorCallback;
 		physx::PxFoundation*			foundation;
 		physx::PxPhysics*				physics;
@@ -54,7 +54,6 @@ namespace KG::Physics
 		PhysicsEventCallback*			physicsEventCallback;
 
 		float							accumulator = 0.0f;
-		float							stepSize = 1.0f / 60.0f;
 
 
 		struct PhysicsSystems;
@@ -67,12 +66,14 @@ namespace KG::Physics
 		virtual bool Advance(float timeElapsed) override;
 
 		// 임시 지평면
-		virtual void AddDynamicActor(KG::Component::DynamicRigidComponent* rigid) override;
-		virtual void AddStaticActor(KG::Component::StaticRigidComponent* rigid) override;
-		virtual void AddFloor(float height) override;
-		virtual KG::Component::DynamicRigidComponent* GetNewDynamicRigidComponent() override;
-		virtual KG::Component::StaticRigidComponent* GetNewStaticRigidComponent() override;
-		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
+		virtual void AddDynamicActor(KG::Component::DynamicRigidComponent* rigid) override final;
+		virtual void AddStaticActor(KG::Component::StaticRigidComponent* rigid) override final;
+		virtual void AddFloor(float height) override final;
+		virtual KG::Component::DynamicRigidComponent* GetNewDynamicRigidComponent() override final;
+		virtual KG::Component::StaticRigidComponent* GetNewStaticRigidComponent() override final;
+		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override final;
+
+		virtual KG::Component::IRigidComponent* QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance) override final;
 
 		static PhysicsScene* GetInstance() { return instance; }
 	};
