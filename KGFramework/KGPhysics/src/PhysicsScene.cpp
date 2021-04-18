@@ -253,7 +253,7 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 
 	DirectX::XMFLOAT4X4 worldMat = rigid->GetGameObject()->GetTransform()->GetGlobalWorldMatrix();
 	// trans 41 42 43
-	Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
+	cb.scale = Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
 
 	PxRigidDynamic* actor = PxCreateDynamic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), 
 		PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial, 1);
@@ -293,7 +293,7 @@ void KG::Physics::PhysicsScene::AddStaticActor(KG::Component::StaticRigidCompone
 
 	DirectX::XMFLOAT4X4 worldMat = rigid->GetGameObject()->GetTransform()->GetGlobalWorldMatrix();
 	// trans 41 42 43
-	Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
+	cb.scale = Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
 
 	PxRigidStatic* actor = PxCreateStatic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), 
 		PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial);
@@ -342,7 +342,6 @@ KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX:
 	PxReal dst = maxDistance;
 	PxRaycastBuffer hit;
 	PxQueryFilterData filter;
-
 	if (scene->raycast(org, dir, dst, hit, PxHitFlag::eDEFAULT, filter)) {
 		for (auto& com : compIndex) {
 			if (com.second->GetActor() == hit.block.actor) {

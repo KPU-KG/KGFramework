@@ -71,6 +71,15 @@ namespace KG::Component
 		void SetId(unsigned int id) { this->id = id; }
 		unsigned int GetId() const { return this->id; }
 		physx::PxFilterData* GetFilterData() { return filterData; }
+
+
+	protected:
+		std::function<void()> updateLambda = nullptr;
+	public:
+		// 임시 업데이트 람다함수
+		// 후에 AI 컴포넌트로 뺄것
+		virtual void SetUpdateCallback(std::function<void()>&& lam) { this->updateLambda = lam; };
+		virtual bool IsDynamic() const { return dynamic; }
 	};
 
 	class DLL DynamicRigidComponent : public IRigidComponent {

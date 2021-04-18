@@ -53,6 +53,9 @@ void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 		transform->SetPosition(p.x - collisionBox.center.x, p.y - collisionBox.center.y, p.z - collisionBox.center.z);
 	}
 	else {
+		this->actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
+		this->actor->setLinearVelocity(physx::PxVec3(0, 0, 0));
+
 		DirectX::XMFLOAT4X4 worldMat = gameObject->GetTransform()->GetGlobalWorldMatrix();
 		XMFLOAT3 pos = Math::Vector3::Add(collisionBox.center, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
 
@@ -64,15 +67,8 @@ void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 
 void KG::Component::DynamicRigidComponent::Update(float timeElapsed)
 {
-	static auto* input = KG::Input::InputManager::GetInputManager();
-	if (input->GetKeyState('b') == KG::Input::KeyState::Down) {
-		auto* s = KG::Physics::PhysicsScene::GetInstance();
-		physx::PxTransform t = this->actor->getGlobalPose();
-		auto* hit = s->QueryRaycast({ t.p.x + collisionBox.scale.x * transform->GetScale().x +  + 0.2f, t.p.y, t.p.z }, { 1,0,0 }, 1);
-		if (hit != nullptr) {
-			SetVelocity({ 0,1,0 }, 10);
-		}
-	}
+	if (updateLambda != nullptr)
+		updateLambda();
 }
 
 void KG::Component::DynamicRigidComponent::Move(DirectX::XMFLOAT3 direction, float speed) {

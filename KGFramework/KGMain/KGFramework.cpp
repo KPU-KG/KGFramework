@@ -364,6 +364,27 @@ void KG::GameFramework::PostSceneFunction()
 
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 			obj.GetTransform()->SetPosition(10.0, 0.00f, 5.00f);
+
+			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			phy->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
+				DebugNormalMessage("Collide");
+				});
+			phy->SetUpdateCallback([this, obj]() {
+				if (this->input->IsTouching(VK_LBUTTON) && this->input->GetMouseCapture())
+				{
+					auto* tran = obj.GetTransform();
+					DirectX::XMFLOAT3 start = tran->GetPosition();
+					start = Math::Vector3::Add(start, tran->GetLook() * 2);
+					auto* other = this->physics->QueryRaycast(start, tran->GetLook(), 100);
+					if (other != nullptr) {
+						if (other->IsDynamic()) {
+							other->AddForce(tran->GetLook(), 15);
+						}
+					}
+				}
+				});
+			obj.AddTemporalComponent(phy);
+
 		}
 		);
 
