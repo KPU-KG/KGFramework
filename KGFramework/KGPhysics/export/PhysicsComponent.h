@@ -17,6 +17,7 @@ namespace physx
 	class PxRigidDynamic;
 	class PxRigidStatic;
 	class PxFilterData;
+	class PxErrorCallback;
 }
 
 namespace KG::Component
