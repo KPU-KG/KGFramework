@@ -511,10 +511,14 @@ void KG::GameFramework::UIRender()
 	{
 		if ( ImGui::Button("Open Console") )
 		{
-			AllocConsole();
+			if ( !AllocConsole() )
+				MessageBox(NULL, L"The console window was not created", NULL, MB_ICONEXCLAMATION);
 			FILE* console;
-			freopen_s(&console, "CONOUT$", "a", stdout);
-			printf("hello DEBUG\n");
+			freopen_s(&console, "CONIN$", "r", stdin);
+			freopen_s(&console, "CONOUT$", "w", stderr);
+			freopen_s(&console, "CONOUT$", "w", stdout);
+			printf("DEBUG CONSOLE OPEN\n");
+			std::cout.clear();
 		}
 		if ( this->networkClient == nullptr && this->networkServer == nullptr )
 		{

@@ -2,6 +2,7 @@
 #include "ServerGameManagerComponent.h"
 #include "Scene.h"
 #include "KGServer.h"
+#include "Transform.h"
 
 void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 {
@@ -21,11 +22,9 @@ bool KG::Component::SGameManagerComponent::OnDrawGUI()
 		ImGui::SameLine();
 		if ( ImGui::Button("Add Server") )
 		{
+			auto presetId = KG::Utill::HashString(presetName);
 			auto* scene = this->gameObject->GetScene();
-			auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
-
-			auto id = this->server->GetNewObjectId();
-			this->server->SetServerObject(id, comp);
+			auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(presetId));
 
 			KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
 			auto tag = KG::Utill::HashString(presetName);
@@ -33,6 +32,22 @@ bool KG::Component::SGameManagerComponent::OnDrawGUI()
 			addObjectPacket.parentTag = 0;
 			addObjectPacket.presetId = tag;
 			addObjectPacket.position = KG::Packet::RawFloat3();
+
+			if ( !comp )
+			{
+				addObjectPacket.newObjectId = KG::Server::NULL_NET_OBJECT_ID;
+
+				auto* obj = scene->CallPreset(presetId);
+				this->GetGameObject()->GetTransform()->AddChild(obj->GetTransform());
+			}
+			else
+			{
+				auto id = this->server->GetNewObjectId();
+				addObjectPacket.newObjectId = id;
+				this->server->SetServerObject(id, comp);
+				this->GetGameObject()->GetTransform()->AddChild(comp->GetGameObject()->GetTransform());
+			}
+
 			this->BroadcastPacket(&addObjectPacket);
 		}
 	}

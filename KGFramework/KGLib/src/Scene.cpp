@@ -319,7 +319,10 @@ KG::Core::GameObject* KG::Core::Scene::CallPreset(const KG::Utill::HashString& h
 KG::Component::IComponent* KG::Core::Scene::CallNetworkCreator(const KG::Utill::HashString& hashid)
 {
 	auto* node =this->CallPreset(hashid);
-	auto* comp = this->networkPresetFunc[hashid](*node);
+	auto it = this->networkPresetFunc.find(hashid);
+	if ( it == this->networkPresetFunc.end() )
+		return nullptr;
+	auto* comp = it->second(*node);
 	return comp;
 }
 
