@@ -157,6 +157,17 @@ KG::Physics::PhysicsScene::PhysicsScene()
 
 }
 
+class ErrorCallback : public PxErrorCallback
+{
+public:
+	ErrorCallback() {};
+	~ErrorCallback() {};
+
+	virtual void reportError(PxErrorCode::Enum code, const char* message, const char* file, int line) override {
+		std::cout << "µÇ³ª?" << std::endl;
+	}
+};
+
 void KG::Physics::PhysicsScene::Initialize() {
 
 	PhysicsScene::instance = this;
@@ -166,7 +177,9 @@ void KG::Physics::PhysicsScene::Initialize() {
 	const char* strTransport = "127.0.0.1";
 
 	allocator = new PxDefaultAllocator();
-	errorCallback = new PxDefaultErrorCallback();
+	// errorCallback = new PxDefaultErrorCallback();
+	errorCallback = new ErrorCallback();
+	// errorCallback->reportError()
 
 	foundation = PxCreateFoundation(PX_PHYSICS_VERSION, *allocator, *errorCallback);
 

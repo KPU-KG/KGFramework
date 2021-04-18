@@ -17,6 +17,7 @@ namespace physx
 {
 	class PxDefaultAllocator;
 	class PxDefaultErrorCallback;
+	class PxErrorCallback;
 	class PxFoundation;
 	class PxPhysics;
 	class PxDefaultCpuDispatcher;
@@ -44,7 +45,7 @@ namespace KG::Physics
 		static inline PhysicsScene* instance = nullptr;
 	protected:
 		physx::PxDefaultAllocator*		allocator;
-		physx::PxDefaultErrorCallback*	errorCallback;
+		physx::PxErrorCallback*			errorCallback;
 		physx::PxFoundation*			foundation;
 		physx::PxPhysics*				physics;
 		physx::PxDefaultCpuDispatcher*	cpuDispatcher;
