@@ -17,6 +17,7 @@ namespace physx
 	class PxRigidDynamic;
 	class PxRigidStatic;
 	class PxFilterData;
+	class PxErrorCallback;
 }
 
 namespace KG::Component
@@ -44,10 +45,6 @@ namespace KG::Component
 		}
 	};
 
-	// using CollisionInfo = std::function<void(KG::Component::IRigidComponent*, KG::Component::IRigidComponent*)>;
-
-	// conponent에 콜백 함수 추가 (충돌한 상대 타입, 충돌 위치를 매개변수로 받음)
-	// scene의 filter 함수에서 매개변수 결정
 	class IRigidComponent : public IPhysicsComponent {
 	protected:
 		CollisionBox											collisionBox;
@@ -69,8 +66,20 @@ namespace KG::Component
 		virtual void SetCollisionCallback(std::function<void(KG::Component::IRigidComponent*, KG::Component::IRigidComponent*)>&& collisionCallback) { this->callback = collisionCallback; };
 		std::function<void(KG::Component::IRigidComponent*, KG::Component::IRigidComponent*)> GetCollisionCallback() { return callback; }
 		virtual physx::PxActor* GetActor() { return nullptr; };
+		virtual void AddForce(DirectX::XMFLOAT3 dir, float distance = 1.0f) {};
+		virtual void SetVelocity(DirectX::XMFLOAT3 dir, float distance = 1.0f) {};
 		void SetId(unsigned int id) { this->id = id; }
 		unsigned int GetId() const { return this->id; }
+		physx::PxFilterData* GetFilterData() { return filterData; }
+
+
+	protected:
+		std::function<void()> updateLambda = nullptr;
+	public:
+		// 임시 업데이트 람다함수
+		// 후에 AI 컴포넌트로 뺄것
+		virtual void SetUpdateCallback(std::function<void()>&& lam) { this->updateLambda = lam; };
+		virtual bool IsDynamic() const { return dynamic; }
 	};
 
 	class DLL DynamicRigidComponent : public IRigidComponent {
@@ -87,6 +96,12 @@ namespace KG::Component
 		void Move(DirectX::XMFLOAT3 direction, float speed);
 		void SetActor(physx::PxRigidDynamic* actor);
 		virtual physx::PxActor* GetActor() override final { return reinterpret_cast<physx::PxActor*>(actor); };
+		virtual void AddForce(DirectX::XMFLOAT3 dir, float distance = 1.0f) override;
+		virtual void SetVelocity(DirectX::XMFLOAT3 dir, float distance = 1.0f) override;
+		// raycast 테스트
+
+
+
 	private:
 		// 참고할 코드 (저장 정보)
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		positionProp;

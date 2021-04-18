@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "MathHelper.h"
 #include <unordered_map>
+#include "InputManager.h"
 
 void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
@@ -13,9 +14,9 @@ void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameOb
 	KG::Physics::PhysicsScene::GetInstance()->AddDynamicActor(this);
 	dynamic = true;
 
-	SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
-		DebugNormalMessage("callback!!")
-		});
+	// SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
+	// 	DebugNormalMessage("callback!!")
+	// 	});
 
 	SetupFiltering(static_cast<unsigned int>(filter), 0);
 }
@@ -52,6 +53,9 @@ void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 		transform->SetPosition(p.x - collisionBox.center.x, p.y - collisionBox.center.y, p.z - collisionBox.center.z);
 	}
 	else {
+		this->actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
+		this->actor->setLinearVelocity(physx::PxVec3(0, 0, 0));
+
 		DirectX::XMFLOAT4X4 worldMat = gameObject->GetTransform()->GetGlobalWorldMatrix();
 		XMFLOAT3 pos = Math::Vector3::Add(collisionBox.center, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
 
@@ -63,7 +67,8 @@ void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 
 void KG::Component::DynamicRigidComponent::Update(float timeElapsed)
 {
-	
+	if (updateLambda != nullptr)
+		updateLambda();
 }
 
 void KG::Component::DynamicRigidComponent::Move(DirectX::XMFLOAT3 direction, float speed) {
@@ -73,6 +78,14 @@ void KG::Component::DynamicRigidComponent::Move(DirectX::XMFLOAT3 direction, flo
 void KG::Component::DynamicRigidComponent::SetActor(physx::PxRigidDynamic* actor)
 {
 	this->actor = actor;
+}
+
+void KG::Component::DynamicRigidComponent::AddForce(DirectX::XMFLOAT3 dir, float distance) {
+	actor->addForce(physx::PxVec3(dir.x, dir.y, dir.z) * distance * actor->getMass());
+}
+
+void KG::Component::DynamicRigidComponent::SetVelocity(DirectX::XMFLOAT3 dir, float distance) {
+	actor->setLinearVelocity(physx::PxVec3(dir.x, dir.y, dir.z) * distance);
 }
 
 
@@ -114,6 +127,9 @@ void KG::Component::DynamicRigidComponent::OnDataSave(tinyxml2::XMLElement* pare
 
 bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 {
+	if (gameObject == nullptr)
+		return false;
+
 	if (ImGui::ComponentHeader<KG::Component::DynamicRigidComponent>()) {
 			ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 		if (this->isUsing()) {

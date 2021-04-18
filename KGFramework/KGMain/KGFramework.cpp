@@ -155,6 +155,29 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
+	this->scene.AddObjectPreset("TestCube-raycast",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* t = this->system->transformSystem.GetNewComponent();
+			auto* g = this->renderer->GetNewGeomteryComponent();
+			g->AddGeometry(KG::Utill::HashString("cube"));
+			auto* m = this->renderer->GetNewMaterialComponent();
+			m->PostMaterial(KG::Utill::HashString("PBRTile"));
+			auto* r = this->renderer->GetNewRenderComponent();
+			auto* p = this->physics->GetNewDynamicRigidComponent();
+			p->SetCollisionCallback(
+				[this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
+					DebugNormalMessage("callback!!");
+					// my->SetVelocity({ 0,1,0 }, 10);
+				});
+			obj.AddComponent(t);
+			obj.AddTemporalComponent(g);
+			obj.AddTemporalComponent(m);
+			obj.AddTemporalComponent(r);
+			obj.AddTemporalComponent(p);
+		}
+	);
+
 	this->scene.AddModelPreset("Vector",
 		[]()
 		{
@@ -341,6 +364,27 @@ void KG::GameFramework::PostSceneFunction()
 
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 			obj.GetTransform()->SetPosition(10.0, 0.00f, 5.00f);
+
+			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			phy->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
+				DebugNormalMessage("Collide");
+				});
+			phy->SetUpdateCallback([this, obj]() {
+				if (this->input->IsTouching(VK_LBUTTON) && this->input->GetMouseCapture())
+				{
+					auto* tran = obj.GetTransform();
+					DirectX::XMFLOAT3 start = tran->GetPosition();
+					start = Math::Vector3::Add(start, tran->GetLook() * 2);
+					auto* other = this->physics->QueryRaycast(start, tran->GetLook(), 100);
+					if (other != nullptr) {
+						if (other->IsDynamic()) {
+							other->AddForce(tran->GetLook(), 15);
+						}
+					}
+				}
+				});
+			obj.AddTemporalComponent(phy);
+
 		}
 		);
 

@@ -157,6 +157,17 @@ KG::Physics::PhysicsScene::PhysicsScene()
 
 }
 
+class ErrorCallback : public PxErrorCallback
+{
+public:
+	ErrorCallback() {};
+	~ErrorCallback() {};
+
+	virtual void reportError(PxErrorCode::Enum code, const char* message, const char* file, int line) override {
+		std::cout << "µÇ³ª?" << std::endl;
+	}
+};
+
 void KG::Physics::PhysicsScene::Initialize() {
 
 	PhysicsScene::instance = this;
@@ -166,7 +177,9 @@ void KG::Physics::PhysicsScene::Initialize() {
 	const char* strTransport = "127.0.0.1";
 
 	allocator = new PxDefaultAllocator();
-	errorCallback = new PxDefaultErrorCallback();
+	// errorCallback = new PxDefaultErrorCallback();
+	errorCallback = new ErrorCallback();
+	// errorCallback->reportError()
 
 	foundation = PxCreateFoundation(PX_PHYSICS_VERSION, *allocator, *errorCallback);
 
@@ -220,13 +233,13 @@ bool KG::Physics::PhysicsScene::CreateScene(float gravity) {
 }
 
 bool KG::Physics::PhysicsScene::Advance(float timeElapsed) {
+	this->physicsSystems->OnUpdate(timeElapsed);
 	accumulator += timeElapsed;
 	while (accumulator >= stepSize) {
 		accumulator -= stepSize;
 		scene->simulate(stepSize);
 		scene->collide(stepSize);
 		scene->fetchCollision();
-		// scene->advance();
 		scene->fetchResults();
 	}
 	this->physicsSystems->OnPostUpdate(timeElapsed);
@@ -240,7 +253,7 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 
 	DirectX::XMFLOAT4X4 worldMat = rigid->GetGameObject()->GetTransform()->GetGlobalWorldMatrix();
 	// trans 41 42 43
-	Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
+	cb.scale = Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
 
 	PxRigidDynamic* actor = PxCreateDynamic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), 
 		PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial, 1);
@@ -280,7 +293,7 @@ void KG::Physics::PhysicsScene::AddStaticActor(KG::Component::StaticRigidCompone
 
 	DirectX::XMFLOAT4X4 worldMat = rigid->GetGameObject()->GetTransform()->GetGlobalWorldMatrix();
 	// trans 41 42 43
-	Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
+	cb.scale = Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
 
 	PxRigidStatic* actor = PxCreateStatic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), 
 		PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial);
@@ -320,4 +333,25 @@ KG::Component::StaticRigidComponent* KG::Physics::PhysicsScene::GetNewStaticRigi
 void KG::Physics::PhysicsScene::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	physicsSystems->PostComponentProvider(provider);
+}
+
+KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance)
+{
+	PxVec3 org{ origin.x, origin.y, origin.z };
+	PxVec3 dir{ direction.x, direction.y, direction.z };
+	PxReal dst = maxDistance;
+	PxRaycastBuffer hit;
+	PxQueryFilterData filter;
+	if (scene->raycast(org, dir, dst, hit, PxHitFlag::eDEFAULT, filter)) {
+		for (auto& com : compIndex) {
+			if (com.second->GetActor() == hit.block.actor) {
+				return com.second;
+			}
+		}
+
+		if (compIndex.count(filter.data.word2) == 0)
+			return nullptr;
+		return compIndex[filter.data.word2];
+	}
+	return nullptr;
 }
