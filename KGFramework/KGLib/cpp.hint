@@ -1,0 +1,2 @@
+#define DEFAULT_PACKET_HEADER(x)
+#define REGISTER_PACKET( x )

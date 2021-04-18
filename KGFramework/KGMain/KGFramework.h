@@ -6,6 +6,8 @@
 #include "KGRenderer.h"
 #include "IPhysicsScene.h"
 #include "InputManager.h"
+#include "IKGServer.h"
+#include "IKGNetwork.h"
 #include "ComponentProvider.h"
 #include "Scene.h"
 #include <memory>
@@ -28,8 +30,10 @@ namespace KG
 		std::unique_ptr<KG::Renderer::IKGRenderer> renderer;
 		std::unique_ptr<KG::Physics::IPhysicsScene> physics;
 		std::unique_ptr<KG::Input::InputManager> input;
+		std::unique_ptr<KG::Server::INetwork> networkClient;
+		std::unique_ptr<KG::Server::IServer> networkServer;
+		std::unique_ptr<KG::Core::Scene> scene;
 		KG::Component::ComponentProvider componentProvider;
-		KG::Core::Scene scene;
 		ImGuiContext* guiContext = nullptr;
 	public:
 		GameFramework();
@@ -41,10 +45,14 @@ namespace KG
 
 		bool Initialize(const EngineDesc& engineDesc, const Setting& setting);
 		void PostSceneFunction();
+		void PostNetworkFunction();
+		void PostServerFunction();
 		int WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 		void UIPreRender();
 		void UIRender();
 		void OnProcess();
+		void ServerProcess();
+		void ServerProcessEnd();
 		void OnClose();
 	private:
 		std::wstring windowText = L"KG Framework : FPS : ##########";

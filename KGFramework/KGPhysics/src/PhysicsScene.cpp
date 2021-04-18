@@ -164,7 +164,7 @@ public:
 	~ErrorCallback() {};
 
 	virtual void reportError(PxErrorCode::Enum code, const char* message, const char* file, int line) override {
-		std::cout << "되나?" << std::endl;
+		//std::cout << "되나?" << std::endl;
 	}
 };
 
