@@ -246,6 +246,12 @@ void KG::Core::Scene::AddModelPreset(std::string name, PresetModelCreator&& mode
 	this->objectPresetFunc.emplace_back(objCreator);
 }
 
+
+void KG::Core::Scene::AddNetworkCreator(const KG::Utill::HashString& hashId, NetworkObjectCreator&& creator)
+{
+	this->networkPresetFunc.emplace(hashId, creator);
+}
+
 void KG::Core::Scene::AddSkySetter(SkyBoxSetter&& setter)
 {
 	this->skyBoxSetter = setter;
@@ -310,14 +316,17 @@ KG::Core::GameObject* KG::Core::Scene::CallPreset(const KG::Utill::HashString& h
 	return nullptr;
 }
 
-void KG::Core::Scene::AddObjectFromPreset(const std::string& name)
+KG::Component::IComponent* KG::Core::Scene::CallNetworkCreator(const KG::Utill::HashString& hashid)
 {
-	this->rootNode.GetTransform()->AddChild(this->CallPreset(name)->GetTransform());
+	auto* node =this->CallPreset(hashid);
+	auto* comp = this->networkPresetFunc[hashid](*node);
+	return comp;
 }
 
-void KG::Core::Scene::AddObjectFromPreset(const KG::Utill::HashString& hashid)
+
+void KG::Core::Scene::AddSceneComponent(const KG::Utill::HashString& hashid, KG::Component::IComponent* component)
 {
-	this->rootNode.GetTransform()->AddChild(this->CallPreset(hashid)->GetTransform());
+	this->rootNode.AddComponentWithID(hashid, component);
 }
 
 void KG::Core::Scene::InitializeRoot()

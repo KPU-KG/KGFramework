@@ -1,8 +1,8 @@
 #pragma once
 #include "IComponent.h"
 #include "ISystem.h"
-#include "Protocol.h"
 #include "Debug.h"
+#include "Protocol.h"
 #include <functional>
 
 #define EXTERNC extern "C"
@@ -15,33 +15,32 @@
 
 namespace KG::Server
 {
-	class Server;
+	class Network;
 };
 namespace KG::Component
 {
-	class DLL SBaseComponent : public IComponent
+	class DLL CBaseComponent : public IComponent
 	{
 	protected:
 		KG::Server::NET_OBJECT_ID networkObjectId = KG::Server::NULL_NET_OBJECT_ID;
-		KG::Server::Server* server;
+		KG::Server::Network* network;
 	public:
 		void SetNetObjectId(KG::Server::NET_OBJECT_ID id);
-		void SetServerInstance(KG::Server::Server* server);
-		void BroadcastPacket(void* packet, KG::Server::SESSION_ID sessionId = 0);
-		void SendPacket(KG::Server::SESSION_ID sessionId, unsigned char* packet);
-		bool ProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
-		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
+		void SetNetworkInstance(KG::Server::Network* network);
+		void SendPacket(unsigned char* packet);
+		bool ProcessPacket(unsigned char* packet, KG::Packet::PacketType type);
+		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type) = 0;
 	};
 
 	template<typename Ty>
-	class DLL SBaseComponentSystem : public KG::System::IComponentSystem<Ty>
+	class DLL CBaseComponentSystem : public KG::System::IComponentSystem<Ty>
 	{
 	protected:
-		KG::Server::Server* server;
+		KG::Server::Network* network;
 	public:
-		void SetServerInstance(KG::Server::Server* server)
+		void SetNetworkInstance(KG::Server::Network* network)
 		{
-			this->server = server;
+			this->network = network;
 		}
 		virtual void OnPostProvider(KG::Component::ComponentProvider& provider) override
 		{
@@ -49,7 +48,7 @@ namespace KG::Component
 				[this](KG::Core::GameObject* object)
 				{
 					auto* comp = this->GetNewComponent();
-					comp->SetServerInstance(this->server);
+					comp->SetNetworkInstance(this->network);
 					object->AddComponent<Ty>(comp);
 					return comp;
 				}
@@ -58,7 +57,7 @@ namespace KG::Component
 				[this]()->KG::Component::IComponent*
 				{
 					auto* comp = this->GetNewComponent();
-					comp->SetServerInstance(this->server);
+					comp->SetNetworkInstance(this->network);
 					return static_cast<KG::Component::IComponent*>(comp);
 				}
 			);

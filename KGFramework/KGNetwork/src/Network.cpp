@@ -15,6 +15,7 @@ void KG::Server::Network::Initialize()
 {
 	WSAData wsaData = {};
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
+	this->cGameManagerSystem.SetNetworkInstance(this);
 }
 
 void KG::Server::Network::SetAddress(DWORD address)
@@ -86,26 +87,28 @@ void KG::Server::Network::TryRecv()
 
 void KG::Server::Network::ProcessPacket(unsigned char* buffer)
 {
-	switch ( static_cast<KG::Packet::PacketType>(buffer[1]) )
+	auto* header = reinterpret_cast<KG::Packet::PacketHeader*>(buffer);
+	auto it = this->networkObjects.find(header->objectId);
+	if ( it == this->networkObjects.end() )
 	{
-		case KG::Packet::PacketType::SC_ADD_OBJECT:
-		{
-			auto* packet = (KG::Packet::SC_ADD_OBJECT*)(buffer);
-			std::cout << "Received / SC_ADD_OBJECT / " << packet->objectTag << "\n";
-			this->scene->AddObjectFromPreset(packet->objectTag);
-		}
-			break;
-		default:
-			std::cout << "UnkownPacket Received / Number : " << buffer[1] << "\n";
-			break;
+		std::cout << "Unknown Packet Receiver Object : " << header->objectId << '\n';
 	}
+	else
+	{
+		bool processed = it->second->ProcessPacket(buffer, KG::Packet::ToPacketType(header->type));
+		if ( !processed )
+		{
+			std::cout << "Packet Owner Object Not Processd / Object ID : " << header->objectId << " / PacketType : " << header->type << "\n";
+		}
+	}
+	
 }
 
-void KG::Server::Network::SendPacket(unsigned char* data)
+void KG::Server::Network::SendPacket(void* data)
 {
 	WSABUF sendBuf;
 	sendBuf.buf = (char*)data;
-	sendBuf.len = data[0];
+	sendBuf.len = static_cast<unsigned char*>(data)[0];
 	while ( true )
 	{
 		DWORD byteSent = 0;
@@ -136,12 +139,21 @@ void KG::Server::Network::SendPacket(unsigned char* data)
 	}
 }
 
-void KG::Server::Network::GetNewPlayerNetworkController()
+void KG::Server::Network::SetNetworkObject(KG::Server::NET_OBJECT_ID id, KG::Component::CBaseComponent* obj)
 {
+	this->networkObjects.emplace(id, obj);
+}
+
+KG::Component::CGameManagerComponent* KG::Server::Network::GetNewGameManagerComponent()
+{
+	auto* comp = this->cGameManagerSystem.GetNewComponent();
+	comp->SetNetworkInstance(this);
+	return comp;
 }
 
 void KG::Server::Network::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
+	this->cGameManagerSystem.OnPostProvider(provider);
 }
 
 void KG::Server::Network::DrawImGUI()
@@ -172,3 +184,4 @@ void KG::Server::Network::SetScene(KG::Core::Scene* scene)
 {
 	this->scene = scene;
 }
+

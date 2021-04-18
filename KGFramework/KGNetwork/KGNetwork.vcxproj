@@ -167,12 +167,16 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="export\ClientBaseComponent.cpp" />
+    <ClCompile Include="src\ClientGameManagerComponent.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\Network.cpp" />
     <ClCompile Include="src\NetworkUtill.cpp" />
     <ClCompile Include="src\pch.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="export\ClientBaseComponent.h" />
+    <ClInclude Include="export\ClientGameManagerComponent.h" />
     <ClInclude Include="export\IKGNetwork.h" />
     <ClInclude Include="include\framework.h" />
     <ClInclude Include="include\Network.h" />

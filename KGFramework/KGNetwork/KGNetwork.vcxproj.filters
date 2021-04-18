@@ -22,6 +22,9 @@
     <Filter Include="헤더 파일\Utill">
       <UniqueIdentifier>{aa3350f9-85bc-46d0-a2f7-9ae0004041e6}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\Component">
+      <UniqueIdentifier>{1a2aab36-951a-4e33-84fb-38a15d676a37}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -34,6 +37,12 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\Network.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ClientGameManagerComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="export\ClientBaseComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
@@ -52,6 +61,12 @@
     </ClInclude>
     <ClInclude Include="include\NetworkUtill.h">
       <Filter>헤더 파일\Utill</Filter>
+    </ClInclude>
+    <ClInclude Include="export\ClientBaseComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="export\ClientGameManagerComponent.h">
+      <Filter>헤더 파일\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

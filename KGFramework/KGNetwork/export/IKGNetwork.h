@@ -2,6 +2,7 @@
 
 #include "ISystem.h"
 #include "IComponent.h"
+#include "Protocol.h"
 
 #define EXTERNC extern "C"
 #ifdef EXPORTS
@@ -10,6 +11,11 @@
 #define DLL __declspec(dllimport)
 #endif
 
+namespace KG::Component
+{
+	class CBaseComponent;
+	class CGameManagerComponent;
+}
 
 namespace KG::Server
 {
@@ -21,18 +27,8 @@ namespace KG::Server
 		virtual void Connect() = 0;
 		virtual void Close() = 0;
 		virtual void SetScene(KG::Core::Scene* scene) = 0;
-
-
 		virtual void TryRecv() = 0;
-		virtual void SendPacket(unsigned char* data) = 0;
-
-		template <typename PacketType>
-		void SendTypedPacket(const PacketType& packet)
-		{
-			this->SendPacket(static_cast<unsigned char*>(&packet));
-		}
-
-		virtual void GetNewPlayerNetworkController() = 0;
+		virtual KG::Component::CGameManagerComponent* GetNewGameManagerComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 
 		virtual void DrawImGUI() = 0;

@@ -5,6 +5,7 @@
 
 void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 {
+	this->SetNetObjectId(KG::Server::SCENE_CONTROLLER_ID);
 }
 
 void KG::Component::SGameManagerComponent::Update(float elapsedTime)
@@ -21,7 +22,10 @@ bool KG::Component::SGameManagerComponent::OnDrawGUI()
 		if ( ImGui::Button("Add Server") )
 		{
 			auto* scene = this->gameObject->GetScene();
-			scene->AddObjectFromPreset(presetName);
+			auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
+
+			auto id = this->server->GetNewObjectId();
+			this->server->SetServerObject(id, comp);
 
 			KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
 			auto tag = KG::Utill::HashString(presetName);
@@ -29,7 +33,7 @@ bool KG::Component::SGameManagerComponent::OnDrawGUI()
 			addObjectPacket.parentTag = 0;
 			addObjectPacket.presetId = tag;
 			addObjectPacket.position = KG::Packet::RawFloat3();
-			this->server->BroadcastPacket(&addObjectPacket);
+			this->BroadcastPacket(&addObjectPacket);
 		}
 	}
 	return false;

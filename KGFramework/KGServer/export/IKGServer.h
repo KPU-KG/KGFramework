@@ -29,9 +29,6 @@ namespace KG::Server
 		virtual void LockWorld() = 0;
 		virtual void UnlockWorld() = 0;
 
-		virtual void BroadcastPacket(void* packet, SESSION_ID ignore = SERVER_ID) = 0;
-		virtual void SendPacket(SESSION_ID playerId, void* packet) = 0;
-
 		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 		virtual void DrawImGUI() = 0;

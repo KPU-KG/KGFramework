@@ -45,6 +45,8 @@ namespace KG
 
 		bool Initialize(const EngineDesc& engineDesc, const Setting& setting);
 		void PostSceneFunction();
+		void PostNetworkFunction();
+		void PostServerFunction();
 		int WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 		void UIPreRender();
 		void UIRender();

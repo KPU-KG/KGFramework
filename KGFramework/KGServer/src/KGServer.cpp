@@ -208,12 +208,17 @@ bool KG::Server::Server::isStarted() const
 	return this->iocpWorkers.size() != 0;
 }
 
+void KG::Server::Server::SetServerObject(KG::Server::NET_OBJECT_ID id, KG::Component::SBaseComponent* obj)
+{
+	this->netObjects.insert(std::make_pair(id, obj));
+}
+
 //Worker 
 KG::Server::SESSION_ID KG::Server::Server::GetNewPlayerId()
 {
-	std::lock_guard lg{ this->idStartMutex };
-	int ret = this->idStart;
-	this->idStart += 1;
+	std::lock_guard lg{ this->sessionIdStartMutex };
+	int ret = this->sessionIdStart;
+	this->sessionIdStart += 1;
 	return ret;
 }
 
@@ -364,5 +369,13 @@ void KG::Server::Server::ProcessPacket(SESSION_ID playerId, unsigned char* buffe
 			while ( true );
 			break;
 	}
+}
+
+KG::Server::NET_OBJECT_ID KG::Server::Server::GetNewObjectId()
+{
+	std::lock_guard lg{ this->objectIdStartMutex };
+	int ret = this->objectIdStart;
+	this->objectIdStart += 1;
+	return ret;
 }
 

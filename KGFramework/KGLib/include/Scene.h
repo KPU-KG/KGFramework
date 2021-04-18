@@ -20,6 +20,7 @@ namespace KG::Core
 		using SceneCameraCreator = std::function<void (KG::Core::GameObject&)>;
 		using PresetObjectCreator = std::function<void(KG::Core::GameObject&)>;
 		using PresetModelCreator = std::function<std::pair<KG::Utill::HashString, KG::Resource::MaterialMatch>()>;
+		using NetworkObjectCreator = std::function<KG::Component::IComponent*(KG::Core::GameObject&)>;
 		using ModelCreator = std::function<KG::Core::GameObject*(const KG::Utill::HashString&, KG::Core::Scene&, const KG::Resource::MaterialMatch&)>;
 		using SkyBoxCreator = std::function<void(KG::Core::GameObject&, const KG::Utill::HashString&)>;
 		using SkyBoxSetter = std::function<void(const KG::Utill::HashString&)>;
@@ -44,6 +45,9 @@ namespace KG::Core
 		std::vector<PresetModelCreator> objectPresetModel;
 		std::vector<PresetObjectCreator> objectPresetFunc;
 		int currentSelectedPreset = 0;
+
+		std::map<KG::Utill::HashString, NetworkObjectCreator> networkPresetFunc;
+
 
 		KG::Utill::HashString skyBoxId = KG::Utill::HashString("SkySnow");
 
@@ -89,14 +93,17 @@ namespace KG::Core
 		void AddSkyBoxObjectCreator(SkyBoxCreator&& creator);
 		void AddObjectPreset(std::string name, PresetObjectCreator&& creator);
 		void AddModelPreset(std::string name, PresetModelCreator&& modelCreator, PresetObjectCreator&& objCreator);
+		void AddNetworkCreator(const KG::Utill::HashString& hashId, NetworkObjectCreator&& creator);
 		void AddSkySetter(SkyBoxSetter&& setter);
 		void AddModelCreator(ModelCreator&& creator);
 		void AddCameraMatrixGetter(GetMatrixFunc&& view, GetMatrixFunc&& proj);
 
 		GameObject* CallPreset(const std::string& name);
 		GameObject* CallPreset(const KG::Utill::HashString& hashid);
-		void AddObjectFromPreset(const std::string& name);
-		void AddObjectFromPreset(const KG::Utill::HashString& hashid);
+
+		KG::Component::IComponent* CallNetworkCreator(const KG::Utill::HashString& hashid);
+
+		void AddSceneComponent(const KG::Utill::HashString& hashid, KG::Component::IComponent* component);
 
 		//Root 노드 프리셋으로 초기화 하도록 설정
 		void InitializeRoot();

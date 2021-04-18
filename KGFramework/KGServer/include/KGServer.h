@@ -31,9 +31,14 @@ namespace KG::Server
 
 		// https://docs.microsoft.com/ko-kr/cpp/parallel/concrt/parallel-containers-and-objects?view=msvc-160#unordered_map
 		concurrency::concurrent_unordered_map<SESSION_ID, SESSION> players;
+		concurrency::concurrent_unordered_map<NET_OBJECT_ID, KG::Component::SBaseComponent*> netObjects;
 
-		std::mutex idStartMutex;
-		SESSION_ID idStart = SERVER_ID + 1;
+		std::mutex sessionIdStartMutex;
+		SESSION_ID sessionIdStart = SERVER_ID + 1;
+
+		std::mutex objectIdStartMutex;
+		NET_OBJECT_ID objectIdStart = SCENE_CONTROLLER_ID + 1;
+
 		EX_OVERLAPPED acceptOver;
 
 		//Server System
@@ -44,8 +49,6 @@ namespace KG::Server
 
 		//Worker Thread
 		SESSION_ID GetNewPlayerId();
-		virtual void BroadcastPacket(void* packet, SESSION_ID ignore = SERVER_ID);
-		virtual void SendPacket(SESSION_ID playerId, void* packet);
 		void SendLoginOkPacket(SESSION_ID playerId);
 		void SendWorldState(SESSION_ID playerId);
 		void SendRemovePlayer(SESSION_ID playerId, SESSION_ID targetId);
@@ -55,6 +58,8 @@ namespace KG::Server
 		void ProcessPacket(SESSION_ID playerId, unsigned char* buffer);
 
 	public:
+		NET_OBJECT_ID GetNewObjectId();
+
 		// IServer을(를) 통해 상속됨
 		virtual void Initialize() override;
 		virtual void Start() override;
@@ -63,9 +68,10 @@ namespace KG::Server
 		virtual void UnlockWorld() override;
 		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() override;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
-
-		// IServer을(를) 통해 상속됨
 		virtual void DrawImGUI() override;
 		virtual bool isStarted() const override;
+		virtual void SetServerObject(KG::Server::NET_OBJECT_ID id, KG::Component::SBaseComponent* obj);
+		virtual void BroadcastPacket(void* packet, SESSION_ID ignore = SERVER_ID);
+		virtual void SendPacket(SESSION_ID playerId, void* packet);
 	};
 };

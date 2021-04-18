@@ -437,6 +437,14 @@ void KG::GameFramework::PostSceneFunction()
 		);
 }
 
+void KG::GameFramework::PostNetworkFunction()
+{
+}
+
+void KG::GameFramework::PostServerFunction()
+{
+}
+
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 int KG::GameFramework::WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
@@ -496,6 +504,11 @@ void KG::GameFramework::UIRender()
 				this->networkClient->Initialize();
 				this->networkClient->SetScene(this->scene.get());
 				this->networkClient->PostComponentProvider(this->componentProvider);
+
+				this->PostNetworkFunction();
+
+				//Hard Code
+				this->scene->AddSceneComponent("CGameManagerComponent"_id, this->componentProvider.GetComponent("CGameManagerComponent"_id));
 			}
 			if ( ImGui::Button("Start Network Server") )
 			{
@@ -503,6 +516,11 @@ void KG::GameFramework::UIRender()
 				this->networkServer->SetGUIContext(this->guiContext);
 				this->networkServer->Initialize();
 				this->networkServer->PostComponentProvider(this->componentProvider);
+
+				this->PostServerFunction();
+
+				//Hard Code
+				this->scene->AddSceneComponent("SGameManagerComponent"_id, this->componentProvider.GetComponent("SGameManagerComponent"_id));
 			}
 		}
 		else

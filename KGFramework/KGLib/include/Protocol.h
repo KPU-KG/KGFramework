@@ -1,5 +1,5 @@
 #pragma once
-#define DEFAULT_PACKET_HEADER( x ) PacketHeader header{sizeof(x), PacketID(KG::Packet::PacketType::x) }
+#define DEFAULT_PACKET_HEADER( x ) PacketHeader header = PacketHeader{sizeof(x), PacketID(KG::Packet::PacketType::x), KG::Server::NULL_NET_OBJECT_ID }
 
 #include "hash.h"
 #include <DirectXMath.h>
@@ -10,13 +10,19 @@ namespace KG::Server
 	constexpr int MAX_BUFFER = 1024;
 	constexpr short SERVER_PORT = 3500;
 	using SESSION_ID = int;
+	using NET_OBJECT_ID = int;
 	constexpr SESSION_ID SERVER_ID = 0;
+	constexpr NET_OBJECT_ID SCENE_CONTROLLER_ID = 0;
+	constexpr NET_OBJECT_ID NULL_NET_OBJECT_ID = -343434;
+
 };
 namespace KG::Packet
 {
 	enum class PacketType : unsigned char
 	{
 		None = 0,
+		PacketHeader = 1,
+
 		SC_LOGIN_OK = 100, // 초기버전 미사용
 		SC_PLAYER_INFO,
 		SC_ADD_OBJECT,
@@ -28,21 +34,24 @@ namespace KG::Packet
 		CS_FIRE // 초기버전 미사용
 	};
 
+	
 	constexpr unsigned char PacketID(PacketType type)
 	{
 		return static_cast<unsigned char>(type);
 	}
 
+	constexpr PacketType ToPacketType(unsigned char type)
+	{
+		return static_cast<PacketType>(type);
+	}
+
+	template<typename Ty>
+	inline auto* PacketCast(unsigned char* buffer)
+	{
+		return reinterpret_cast<Ty*>(buffer);
+	}
 
 #pragma pack(push, 1)
-
-
-	struct PacketHeader
-	{
-		unsigned char size;
-		unsigned char type;
-	};
-
 	struct RawFloat3
 	{
 		float x;
@@ -113,6 +122,14 @@ namespace KG::Packet
 			return DirectX::XMFLOAT4(x, y, z, w);
 		}
 	};
+
+	struct PacketHeader
+	{
+		unsigned char size;
+		unsigned char type;
+		KG::Server::NET_OBJECT_ID objectId;
+	};
+	
 	//struct SC_LOGIN_OK
 	//{
 	//	DEFAULT_PACKET_HEADER(SC_LOGIN_OK);
@@ -132,6 +149,7 @@ namespace KG::Packet
 		KG::Utill::hashType presetId;
 		KG::Utill::hashType parentTag;
 		KG::Utill::hashType objectTag;
+		KG::Server::NET_OBJECT_ID newObjectId;
 		RawFloat3 position;
 		RawFloat4 rotation;
 	};
@@ -147,6 +165,5 @@ namespace KG::Packet
 	};
 
 #pragma pack(pop)
-
 
 };
