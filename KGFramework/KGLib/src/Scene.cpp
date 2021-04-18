@@ -49,6 +49,11 @@ KG::Core::Scene::Scene()
 {
 }
 
+KG::Core::Scene::~Scene()
+{
+	DebugNormalMessage("SceneDestroy");
+}
+
 void KG::Core::Scene::SetComponentProvider(KG::Component::ComponentProvider* componentProvider)
 {
 	this->componentProvider = componentProvider;
@@ -281,6 +286,11 @@ KG::Core::GameObject* KG::Core::Scene::CallPreset(const std::string& name)
 	return nullptr;
 }
 
+void KG::Core::Scene::AddObjectFromPreset(const std::string& name)
+{
+	this->rootNode.GetTransform()->AddChild(this->CallPreset(name)->GetTransform());
+}
+
 void KG::Core::Scene::InitializeRoot()
 {
 	this->objectPresetFunc[0](this->rootNode);
@@ -374,7 +384,7 @@ bool KG::Core::Scene::OnDrawGUI()
 	static KG::Resource::MaterialMatch materialMatchCache;
 	static KG::Utill::HashString modelHash;
 	auto viewportSize = ImGui::GetMainViewport()->Size;
-	ImGui::ShowDemoWindow();
+	//ImGui::ShowDemoWindow();
 	ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 	
 	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);

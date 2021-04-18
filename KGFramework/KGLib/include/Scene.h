@@ -57,6 +57,7 @@ namespace KG::Core
 		void DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameObject*& focused, int count = 0);
 	public:
 		Scene();
+		~Scene();
 		bool isStartGame = false;
 		void SetComponentProvider(KG::Component::ComponentProvider* componentProvider);
 		KG::Component::ComponentProvider* GetComponentProvider() const;
@@ -93,6 +94,8 @@ namespace KG::Core
 		void AddCameraMatrixGetter(GetMatrixFunc&& view, GetMatrixFunc&& proj);
 
 		GameObject* CallPreset(const std::string& name);
+		void AddObjectFromPreset(const std::string& name);
+
 		//Root 노드 프리셋으로 초기화 하도록 설정
 		void InitializeRoot();
 		// ISerializable을(를) 통해 상속됨
