@@ -6,6 +6,7 @@
 #include "Scene.h"
 #include "MathHelper.h"
 #include <unordered_map>
+#include "InputManager.h"
 
 void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
@@ -13,9 +14,9 @@ void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameOb
 	KG::Physics::PhysicsScene::GetInstance()->AddDynamicActor(this);
 	dynamic = true;
 
-	SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
-		DebugNormalMessage("callback!!")
-		});
+	// SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
+	// 	DebugNormalMessage("callback!!")
+	// 	});
 
 	SetupFiltering(static_cast<unsigned int>(filter), 0);
 }
@@ -63,7 +64,15 @@ void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 
 void KG::Component::DynamicRigidComponent::Update(float timeElapsed)
 {
-	
+	static auto* input = KG::Input::InputManager::GetInputManager();
+	if (input->GetKeyState('b') == KG::Input::KeyState::Down) {
+		auto* s = KG::Physics::PhysicsScene::GetInstance();
+		physx::PxTransform t = this->actor->getGlobalPose();
+		auto* hit = s->QueryRaycast({ t.p.x + collisionBox.scale.x * transform->GetScale().x +  + 0.2f, t.p.y, t.p.z }, { 1,0,0 }, 1);
+		if (hit != nullptr) {
+			SetVelocity({ 0,1,0 }, 10);
+		}
+	}
 }
 
 void KG::Component::DynamicRigidComponent::Move(DirectX::XMFLOAT3 direction, float speed) {
@@ -73,6 +82,14 @@ void KG::Component::DynamicRigidComponent::Move(DirectX::XMFLOAT3 direction, flo
 void KG::Component::DynamicRigidComponent::SetActor(physx::PxRigidDynamic* actor)
 {
 	this->actor = actor;
+}
+
+void KG::Component::DynamicRigidComponent::AddForce(DirectX::XMFLOAT3 dir, float distance) {
+	actor->addForce(physx::PxVec3(dir.x, dir.y, dir.z) * distance * actor->getMass());
+}
+
+void KG::Component::DynamicRigidComponent::SetVelocity(DirectX::XMFLOAT3 dir, float distance) {
+	actor->setLinearVelocity(physx::PxVec3(dir.x, dir.y, dir.z) * distance);
 }
 
 
@@ -114,6 +131,9 @@ void KG::Component::DynamicRigidComponent::OnDataSave(tinyxml2::XMLElement* pare
 
 bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 {
+	if (gameObject == nullptr)
+		return false;
+
 	if (ImGui::ComponentHeader<KG::Component::DynamicRigidComponent>()) {
 			ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 		if (this->isUsing()) {
