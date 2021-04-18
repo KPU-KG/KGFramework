@@ -4,16 +4,27 @@
 #include "PhysicsSystem.h"
 #include "ComponentProvider.h"
 #include "Transform.h"
+#include <unordered_map>
 
 using namespace physx;
 using namespace KG::Physics;
 
+constexpr const int MAX_COMPONENT = 10000;
+
+struct CallbackParam {
+	std::function<void(KG::Component::IRigidComponent*, KG::Component::IRigidComponent*)> callback;
+	KG::Component::IRigidComponent* my;
+	KG::Component::IRigidComponent* other;
+
+	void DoCallback() {
+		callback(my, other);
+	}
+};
+
+std::unordered_map<physx::PxActor*, CallbackParam> CollisionCallback;
+std::unordered_map<unsigned int, KG::Component::IRigidComponent*> compIndex;
+
 class KG::Physics::PhysicsEventCallback : public physx::PxSimulationEventCallback {
-	// std::unordered_map<KG::Physics::PHYSICS_CALLBACK, void* ()> eventCallback;
-	// 콜백 함수에 들어갈 것
-	// 충돌 대상(이름 혹은 ID) - simulation에서 가져오는거라 아마도 이름
-	// 물리 컴포넌트 - 이거 특정할 수 있을까?
-	// 
 public:
 	virtual void onConstraintBreak(physx::PxConstraintInfo* constraints, physx::PxU32 count) override {
 		DebugNormalMessage("Called onConstraintBreak()");
@@ -37,6 +48,10 @@ public:
 	}
 	void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override {
 		DebugNormalMessage("Called onContact()");
+		if (CollisionCallback.count(pairHeader.actors[0]) != 0)
+			CollisionCallback[pairHeader.actors[0]].DoCallback();
+		if (CollisionCallback.count(pairHeader.actors[1]) != 0)
+			CollisionCallback[pairHeader.actors[1]].DoCallback();
 	}
 };
 
@@ -59,6 +74,40 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
 
 	if (!(filterData0.word0 & filterData1.word1) && !(filterData0.word1 & filterData1.word0)) {
 		pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT | physx::PxPairFlag::eCONTACT_DEFAULT;
+
+		KG::Component::IRigidComponent* comp1 = nullptr;
+		KG::Component::IRigidComponent* comp2 = nullptr;
+
+		if (compIndex.count(filterData0.word2) != 0)
+			comp1 = compIndex[filterData0.word2];
+
+		if (compIndex.count(filterData1.word2) != 0)
+			comp2 = compIndex[filterData1.word2];
+
+
+		if (comp1 == nullptr)
+			;
+		else if (CollisionCallback.count(comp1->GetActor()) == 0) {
+			if (comp1->GetCollisionCallback() != nullptr) {
+				CallbackParam cp;
+				cp.callback = comp1->GetCollisionCallback();
+				cp.my = comp1;
+				cp.other = comp2;
+				CollisionCallback[comp1->GetActor()] = cp;
+			}
+		}
+
+		if (comp2 == nullptr)
+			;
+		else if (CollisionCallback.count(comp2->GetActor()) == 0) {
+			if (comp2->GetCollisionCallback() != nullptr) {
+				CallbackParam cp;
+				cp.callback = comp2->GetCollisionCallback();
+				cp.my = comp2;
+				cp.other = comp1;
+				CollisionCallback[comp2->GetActor()] =cp;
+			}
+		}
 		return physx::PxFilterFlag::eDEFAULT;
 	}
 
@@ -108,6 +157,23 @@ KG::Physics::PhysicsScene::PhysicsScene()
 
 }
 
+
+class ErrorCallback : public PxErrorCallback
+{
+public:
+	ErrorCallback()
+	{
+	};
+	~ErrorCallback()
+	{
+	};
+
+	virtual void reportError(PxErrorCode::Enum code, const char* message, const char* file, int line) override
+	{
+	}
+};
+
+
 void KG::Physics::PhysicsScene::Initialize() {
 
 	PhysicsScene::instance = this;
@@ -117,7 +183,9 @@ void KG::Physics::PhysicsScene::Initialize() {
 	const char* strTransport = "127.0.0.1";
 
 	allocator = new PxDefaultAllocator();
-	errorCallback = new PxDefaultErrorCallback();
+	errorCallback = new ErrorCallback();
+	//errorCallback = new PxDefaultErrorCallback();
+
 
 	foundation = PxCreateFoundation(PX_PHYSICS_VERSION, *allocator, *errorCallback);
 
@@ -141,7 +209,6 @@ void KG::Physics::PhysicsScene::Initialize() {
 		; // return false;
 
 	cpuDispatcher = PxDefaultCpuDispatcherCreate(1);
-
 	CreateScene(desc.gravity);
 }
 
@@ -186,24 +253,20 @@ bool KG::Physics::PhysicsScene::Advance(float timeElapsed) {
 
 void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidComponent* rigid)
 {
-	// 실제로 물리적으로 작용이 일어나는 것은 박스로 처리
-	// 그 외에 충돌 판정은 해야 하나 물리적 작용은 안해도 되는 것 (총알에 맞는 판정 등)은 KINETIC 플래그 설정
-	// 그러면 콜리전 박스를 2개로 나눠서 관리 / kinetic, dynamic
 	KG::Component::CollisionBox cb = rigid->GetCollisionBox();
-	// DirectX::XMFLOAT3 pos = rigid->
 	PxMaterial* pMaterial = physics->createMaterial(0.5f, 0.5f, 0.0f);		// Basic Setting : 나중에 필요하면 추가 ( 정적 마찰 계수, 동적 마찰 계수, 반탄 계수)
-	// auto box = PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2);
-	// box.
-	// PxFilterFlag::
+
+	DirectX::XMFLOAT4X4 worldMat = rigid->GetGameObject()->GetTransform()->GetGlobalWorldMatrix();
+	// trans 41 42 43
+	Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
+
 	PxRigidDynamic* actor = PxCreateDynamic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), 
 		PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial, 1);
 	
+	cb.center = Math::Vector3::Add(cb.center, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
 	PxTransform t = actor->getGlobalPose();
-	DirectX::XMFLOAT3 pos = rigid->GetGameObject()->GetTransform()->GetPosition();
-	t.p = { pos.x, pos.y, pos.z };
+	t.p = { cb.center.x, cb.center.y, cb.center.z };
 	actor->setGlobalPose(t);
-	// PxShape p =;
-	// PxShape
 	
 
 #ifdef _DEBUG
@@ -216,12 +279,27 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 
 	scene->addActor(*actor);
 	rigid->SetActor(actor);
+
+	// 나중에 아이디 생성 추가
+	for (int i = UINT_MAX; i > UINT_MAX - MAX_COMPONENT; --i) {
+		if (compIndex.count(i) == 0) {
+			compIndex[i] = rigid;
+			rigid->SetId(i);
+			break;
+		}
+	}
+
 }
 
 void KG::Physics::PhysicsScene::AddStaticActor(KG::Component::StaticRigidComponent* rigid)
 {
 	PxMaterial* pMaterial = physics->createMaterial(0.5f, 0.5f, 0.5f);
 	KG::Component::CollisionBox cb = rigid->GetCollisionBox();
+
+	DirectX::XMFLOAT4X4 worldMat = rigid->GetGameObject()->GetTransform()->GetGlobalWorldMatrix();
+	// trans 41 42 43
+	Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
+
 	PxRigidStatic* actor = PxCreateStatic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), 
 		PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial);
 #ifdef _DEBUG
@@ -229,6 +307,13 @@ void KG::Physics::PhysicsScene::AddStaticActor(KG::Component::StaticRigidCompone
 #endif
 	scene->addActor(*actor);
 	rigid->SetActor(actor);
+	for (int i = UINT_MAX; i > UINT_MAX - MAX_COMPONENT; --i) {
+		if (compIndex.count(i) == 0) {
+			compIndex[i] = rigid;
+			rigid->SetId(i);
+			break;
+		}
+	}
 }
 
 void KG::Physics::PhysicsScene::AddFloor(float height)

@@ -72,7 +72,7 @@ bld/
 [Ll]og/
 [Ll]ogs/
 polygonHeist/
-ShaderDebugCache/
+
 
 # Visual Studio 2015/2017 cache/options directory
 .vs/
@@ -395,3 +395,4 @@ MigrationBackup/
 
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,c++
 
+KGFramework/Resource/Resource/ShaderScript/ShaderDebugCache/*.hlsl
