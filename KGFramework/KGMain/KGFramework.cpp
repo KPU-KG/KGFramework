@@ -369,13 +369,13 @@ void KG::GameFramework::PostSceneFunction()
 			phy->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
 				DebugNormalMessage("Collide");
 				});
-			phy->SetUpdateCallback([this, obj]() {
+			phy->SetUpdateCallback([this, obj, phy]() {
 				if (this->input->IsTouching(VK_LBUTTON) && this->input->GetMouseCapture())
 				{
 					auto* tran = obj.GetTransform();
 					DirectX::XMFLOAT3 start = tran->GetPosition();
-					start = Math::Vector3::Add(start, tran->GetLook() * 2);
-					auto* other = this->physics->QueryRaycast(start, tran->GetLook(), 100);
+					// start = Math::Vector3::Add(start, tran->GetLook() * 2);
+					auto* other = this->physics->QueryRaycast(start, tran->GetLook(), 100, phy->GetId());
 					if (other != nullptr) {
 						if (other->IsDynamic()) {
 							other->AddForce(tran->GetLook(), 15);

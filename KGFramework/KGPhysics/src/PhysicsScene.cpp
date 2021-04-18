@@ -254,9 +254,18 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 	DirectX::XMFLOAT4X4 worldMat = rigid->GetGameObject()->GetTransform()->GetGlobalWorldMatrix();
 	// trans 41 42 43
 	cb.scale = Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
-
-	PxRigidDynamic* actor = PxCreateDynamic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), 
-		PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial, 1);
+	PxRigidDynamic* actor = nullptr;
+	for (int i = 0; i < 3; ++i) {
+		actor = PxCreateDynamic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z),
+			PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial, 1);
+		if (actor != nullptr)
+			break;
+	}
+	
+	if (actor == nullptr) {
+		DebugErrorMessage("actor is null!");
+		return;
+	}
 	
 	cb.center = Math::Vector3::Add(cb.center, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
 	PxTransform t = actor->getGlobalPose();
@@ -276,7 +285,7 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 	rigid->SetActor(actor);
 
 	// 나중에 아이디 생성 추가
-	for (int i = UINT_MAX; i > UINT_MAX - MAX_COMPONENT; --i) {
+	for (unsigned int i = UINT_MAX; i > UINT_MAX - MAX_COMPONENT; --i) {
 		if (compIndex.count(i) == 0) {
 			compIndex[i] = rigid;
 			rigid->SetId(i);
@@ -302,7 +311,7 @@ void KG::Physics::PhysicsScene::AddStaticActor(KG::Component::StaticRigidCompone
 #endif
 	scene->addActor(*actor);
 	rigid->SetActor(actor);
-	for (int i = UINT_MAX; i > UINT_MAX - MAX_COMPONENT; --i) {
+	for (unsigned int i = UINT_MAX; i > UINT_MAX - MAX_COMPONENT; --i) {
 		if (compIndex.count(i) == 0) {
 			compIndex[i] = rigid;
 			rigid->SetId(i);
@@ -335,23 +344,21 @@ void KG::Physics::PhysicsScene::PostComponentProvider(KG::Component::ComponentPr
 	physicsSystems->PostComponentProvider(provider);
 }
 
-KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance)
+KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId)
 {
 	PxVec3 org{ origin.x, origin.y, origin.z };
 	PxVec3 dir{ direction.x, direction.y, direction.z };
 	PxReal dst = maxDistance;
-	PxRaycastBuffer hit;
-	PxQueryFilterData filter;
-	if (scene->raycast(org, dir, dst, hit, PxHitFlag::eDEFAULT, filter)) {
-		for (auto& com : compIndex) {
-			if (com.second->GetActor() == hit.block.actor) {
-				return com.second;
+	PxRaycastHit hit[2];
+	PxRaycastBuffer buf(hit, 2);
+	if (scene->raycast(org, dir, dst, buf)) {
+		for (int i = 0; i < buf.getNbTouches(); ++i) {
+			PxU32 hitId = hit[i].shape->getSimulationFilterData().word2;
+			if (myId != hitId) {
+				if (compIndex.count(hitId) != 0)
+					return compIndex[hitId];
 			}
 		}
-
-		if (compIndex.count(filter.data.word2) == 0)
-			return nullptr;
-		return compIndex[filter.data.word2];
 	}
 	return nullptr;
 }

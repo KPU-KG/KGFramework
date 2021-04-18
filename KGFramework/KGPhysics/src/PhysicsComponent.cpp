@@ -224,12 +224,6 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 
 			mat = Math::Matrix4x4::Multiply(mat, worldMat);
 
-			// auto objectPos = this->gameObject->GetTransform()->GetPosition();
-			// XMFLOAT4X4 mat;
-			// DirectX::XMStoreFloat4x4(&mat, DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&objectPos)));
-			// mat = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
-			// 	XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mat);
-
 			view = Math::Matrix4x4::Transpose(view);
 			proj = Math::Matrix4x4::Transpose(proj);
 
