@@ -15,6 +15,8 @@
 
 #include "Session.h"
 
+#include "ServerGameManagerComponent.h"
+
 namespace KG::Server
 {
 	class Server : public IServer
@@ -22,8 +24,6 @@ namespace KG::Server
 		HANDLE hIocp;
 		SYSTEM_INFO systemInfo;
 		SOCKET listenSocket;
-
-		using SESSION_ID = int;
 
 		std::mutex worldLock;
 
@@ -33,17 +33,19 @@ namespace KG::Server
 		concurrency::concurrent_unordered_map<SESSION_ID, SESSION> players;
 
 		std::mutex idStartMutex;
-		SESSION_ID idStart = 1;
+		SESSION_ID idStart = SERVER_ID + 1;
 		EX_OVERLAPPED acceptOver;
 
+		//Server System
+		KG::Component::SGameManagerComponentSystem sGameManagerSystem;
 
-		static constexpr int SERVER_ID = 0;
 
 		static void IOCPWorker(Server* server);
 
 		//Worker Thread
 		SESSION_ID GetNewPlayerId();
-		void SendPacket(SESSION_ID playerId, void* packet);
+		virtual void BroadcastPacket(void* packet, SESSION_ID ignore = SERVER_ID);
+		virtual void SendPacket(SESSION_ID playerId, void* packet);
 		void SendLoginOkPacket(SESSION_ID playerId);
 		void SendWorldState(SESSION_ID playerId);
 		void SendRemovePlayer(SESSION_ID playerId, SESSION_ID targetId);
@@ -59,7 +61,7 @@ namespace KG::Server
 		virtual void Close() override;
 		virtual void LockWorld() override;
 		virtual void UnlockWorld() override;
-		virtual void GetNewPlayerServerController() override;
+		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() override;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 
 		// IServer을(를) 통해 상속됨

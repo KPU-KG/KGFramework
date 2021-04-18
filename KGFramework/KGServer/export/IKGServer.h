@@ -2,6 +2,7 @@
 
 #include "ISystem.h"
 #include "IComponent.h"
+#include "Protocol.h"
 
 #define EXTERNC extern "C"
 #ifdef EXPORTS
@@ -9,6 +10,11 @@
 #else
 #define DLL __declspec(dllimport)
 #endif
+
+namespace KG::Component
+{
+	class SGameManagerComponent;
+};
 
 namespace KG::Server
 {
@@ -23,7 +29,10 @@ namespace KG::Server
 		virtual void LockWorld() = 0;
 		virtual void UnlockWorld() = 0;
 
-		virtual void GetNewPlayerServerController() = 0;
+		virtual void BroadcastPacket(void* packet, SESSION_ID ignore = SERVER_ID) = 0;
+		virtual void SendPacket(SESSION_ID playerId, void* packet) = 0;
+
+		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 		virtual void DrawImGUI() = 0;
 		virtual bool isStarted() const = 0;

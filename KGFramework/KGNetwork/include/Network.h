@@ -3,6 +3,8 @@
 #include <windows.h>
 #include "IKGNetwork.h"
 #include "Protocol.h"
+#include "ISystem.h"
+
 namespace KG::Server
 {
 	struct NetworkBuffer
@@ -17,7 +19,8 @@ namespace KG::Server
 		SOCKET clientSocket;
 		int prevRecvSize = 0;
 		NetworkBuffer networkBuffer;
-		// INetwork을(를) 통해 상속됨
+
+		KG::Core::Scene* scene;
 
 		void ProcessPacket(unsigned char* buffer);
 	public:
@@ -31,5 +34,7 @@ namespace KG::Server
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 		virtual void DrawImGUI() override;
 		virtual bool IsConnected() const override;
+		virtual void SetScene(KG::Core::Scene* scene) override;
+
 	};
 };

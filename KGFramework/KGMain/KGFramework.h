@@ -32,8 +32,8 @@ namespace KG
 		std::unique_ptr<KG::Input::InputManager> input;
 		std::unique_ptr<KG::Server::INetwork> networkClient;
 		std::unique_ptr<KG::Server::IServer> networkServer;
+		std::unique_ptr<KG::Core::Scene> scene;
 		KG::Component::ComponentProvider componentProvider;
-		KG::Core::Scene scene;
 		ImGuiContext* guiContext = nullptr;
 	public:
 		GameFramework();

@@ -14,9 +14,17 @@
 KG::GameFramework::GameFramework()
 {
 	this->system = std::make_unique<Systems>();
+	this->scene = std::make_unique<KG::Core::Scene>();
 }
 KG::GameFramework::~GameFramework()
 {
+	system.release();
+	renderer.release();
+	physics.release();
+	input.release();
+	networkClient.release();
+	networkServer.release();
+	scene.release();
 }
 KG::GameFramework::GameFramework(const GameFramework& rhs)
 {
@@ -73,10 +81,10 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	this->physics->AddFloor(-10);
 	this->physics->PostComponentProvider(this->componentProvider);
 	this->system->PostComponentProvider(this->componentProvider);
-	this->scene.SetComponentProvider(&this->componentProvider);
+	this->scene->SetComponentProvider(&this->componentProvider);
 
 	this->PostSceneFunction();
-	this->scene.InitializeRoot();
+	this->scene->InitializeRoot();
 	//ÀÎÇ²
 	this->input = std::unique_ptr<KG::Input::InputManager>(KG::Input::InputManager::GetInputManager());
 
@@ -88,13 +96,13 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 
 void KG::GameFramework::PostSceneFunction()
 {
-	this->scene.AddSkySetter(
+	this->scene->AddSkySetter(
 		[this](const KG::Utill::HashString& skyBox)
 		{
 			this->renderer->SetSkymapTextureId(skyBox);
 		}
 	);
-	this->scene.AddSceneCameraObjectCreator(
+	this->scene->AddSceneCameraObjectCreator(
 		[this](KG::Core::GameObject& obj)
 		{
 			auto* tran = this->system->transformSystem.GetNewComponent();
@@ -114,7 +122,7 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(sc);
 		}
 	);
-	this->scene.AddSkyBoxObjectCreator(
+	this->scene->AddSkyBoxObjectCreator(
 		[this](KG::Core::GameObject& obj, const KG::Utill::HashString& skyBox)
 		{
 			auto* tran = this->system->transformSystem.GetNewComponent();
@@ -131,7 +139,7 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
-	this->scene.AddObjectPreset("EmptyObject",
+	this->scene->AddObjectPreset("EmptyObject",
 		[this](KG::Core::GameObject& obj)
 		{
 			auto* t = this->system->transformSystem.GetNewComponent();
@@ -139,7 +147,7 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
-	this->scene.AddObjectPreset("TileCube",
+	this->scene->AddObjectPreset("TileCube",
 		[this](KG::Core::GameObject& obj)
 		{
 			auto* t = this->system->transformSystem.GetNewComponent();
@@ -155,7 +163,7 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
-	this->scene.AddModelPreset("Vector",
+	this->scene->AddModelPreset("Vector",
 		[]()
 		{
 			KG::Resource::MaterialMatch a;
@@ -196,7 +204,7 @@ void KG::GameFramework::PostSceneFunction()
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}
 		);
-	this->scene.AddModelPreset("CS5",
+	this->scene->AddModelPreset("CS5",
 		[]()
 		{
 			KG::Resource::MaterialMatch a;
@@ -221,7 +229,7 @@ void KG::GameFramework::PostSceneFunction()
 		}
 		);
 
-	this->scene.AddModelPreset("ACR",
+	this->scene->AddModelPreset("ACR",
 		[]()
 		{
 			KG::Resource::MaterialMatch a;
@@ -246,7 +254,7 @@ void KG::GameFramework::PostSceneFunction()
 		}
 		);
 
-	this->scene.AddModelPreset("PlayerArms",
+	this->scene->AddModelPreset("PlayerArms",
 		[]()
 		{
 			KG::Resource::MaterialMatch a;
@@ -271,7 +279,7 @@ void KG::GameFramework::PostSceneFunction()
 		);
 
 
-	this->scene.AddModelPreset("PlayerCharacter",
+	this->scene->AddModelPreset("PlayerCharacter",
 		[]()
 		{
 			KG::Resource::MaterialMatch a;
@@ -308,7 +316,7 @@ void KG::GameFramework::PostSceneFunction()
 			ctrl->SetIgnoreScale(true);
 			obj.AddComponent(ctrl);
 
-			auto* cameraObj = this->scene.CreateNewTransformObject();
+			auto* cameraObj = this->scene->CreateNewTransformObject();
 			cameraObj->tag = KG::Utill::HashString("FPCamera");
 
 			auto* cam = this->renderer->GetNewCameraComponent();
@@ -325,7 +333,7 @@ void KG::GameFramework::PostSceneFunction()
 			cameraObj->AddComponent(cam);
 			cameraObj->GetTransform()->SetPosition(0.230, 1.45, 0.496);
 
-			auto* arms = this->scene.CallPreset("Vector");
+			auto* arms = this->scene->CallPreset("Vector");
 			arms->GetTransform()->SetEulerRadian(0, 0, 0);
 			arms->GetTransform()->SetPosition(0, 0, -0.1);
 			arms->GetTransform()->SetScale(1.2, 1, 1);
@@ -344,7 +352,7 @@ void KG::GameFramework::PostSceneFunction()
 		}
 		);
 
-	this->scene.AddModelPreset("TeamCharacter",
+	this->scene->AddModelPreset("TeamCharacter",
 		[]()
 		{
 			KG::Resource::MaterialMatch a;
@@ -383,7 +391,7 @@ void KG::GameFramework::PostSceneFunction()
 		}
 		);
 
-	this->scene.AddObjectPreset("Directional Light",
+	this->scene->AddObjectPreset("Directional Light",
 		[this](KG::Core::GameObject& obj)
 		{
 			auto* t = this->system->transformSystem.GetNewComponent();
@@ -393,7 +401,7 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(l);
 		}
 	);
-	this->scene.AddObjectPreset("Ambient Processor",
+	this->scene->AddObjectPreset("Ambient Processor",
 		[this](KG::Core::GameObject& obj)
 		{
 			auto* t = this->system->transformSystem.GetNewComponent();
@@ -408,14 +416,14 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(r);
 		}
 	);
-	this->scene.AddModelCreator(
+	this->scene->AddModelCreator(
 		[this](const KG::Utill::HashString& modelID, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& material)
 		{
 			return this->renderer->LoadFromModel(modelID, scene, material);
 		}
 	);
 
-	this->scene.AddCameraMatrixGetter(
+	this->scene->AddCameraMatrixGetter(
 		[](KG::Component::IComponent* comp)
 		{
 			auto* camera = static_cast<KG::Component::CameraComponent*>(comp);
@@ -449,11 +457,24 @@ void KG::GameFramework::UIPreRender()
 
 void KG::GameFramework::UIRender()
 {
-	this->scene.DrawGUI(guiContext);
+	this->scene->DrawGUI(guiContext);
 
 	static constexpr int sceneInfoSize = 250;
 	static constexpr int inspectorSize = 400;
 	auto viewportSize = ImGui::GetWindowViewport()->Size;
+	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowBgAlpha(0.8f);
+	if ( ImGui::Begin("GameFramework") )
+	{
+		if ( ImGui::Button("Reset Scene") )
+		{
+			this->scene.release();
+			this->scene = std::make_unique<KG::Core::Scene>();
+		}
+	}
+	ImGui::End();
+
 	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
 	ImGui::SetNextWindowBgAlpha(0.8f);
@@ -473,12 +494,15 @@ void KG::GameFramework::UIRender()
 				this->networkClient = std::unique_ptr<KG::Server::INetwork>(KG::Server::GetNetwork());
 				this->networkClient->SetGUIContext(this->guiContext);
 				this->networkClient->Initialize();
+				this->networkClient->SetScene(this->scene.get());
+				this->networkClient->PostComponentProvider(this->componentProvider);
 			}
 			if ( ImGui::Button("Start Network Server") )
 			{
 				this->networkServer = std::unique_ptr<KG::Server::IServer>(KG::Server::GetServer());
 				this->networkServer->SetGUIContext(this->guiContext);
 				this->networkServer->Initialize();
+				this->networkServer->PostComponentProvider(this->componentProvider);
 			}
 		}
 		else
@@ -502,7 +526,7 @@ void KG::GameFramework::OnProcess()
 	this->UIRender();
 	this->input->ProcessInput(this->engineDesc.hWnd);
 	this->system->OnUpdate(this->timer.GetTimeElapsed());
-	if ( this->scene.isStartGame )
+	if ( this->scene->isStartGame )
 	{
 		this->renderer->Update(this->timer.GetTimeElapsed());
 	}

@@ -19,6 +19,7 @@
 #include <WS2tcpip.h>
 #include <mutex>
 #include <MSWSock.h>
+#include <DirectXMath.h>
 
 #pragma comment(lib, "Ws2_32.lib")
 #pragma comment(lib, "mswsock.lib")

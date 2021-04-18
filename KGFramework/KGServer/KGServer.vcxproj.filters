@@ -51,6 +51,12 @@
     <ClInclude Include="include\ServerUtill.h">
       <Filter>헤더 파일\Utill</Filter>
     </ClInclude>
+    <ClInclude Include="export\ServerBaseComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="export\ServerGameManagerComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -64,6 +70,9 @@
     </ClCompile>
     <ClCompile Include="src\KGServer.cpp">
       <Filter>소스 파일\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="export\ServerGameManagerComponent.cpp">
+      <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

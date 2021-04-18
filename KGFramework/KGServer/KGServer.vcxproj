@@ -168,6 +168,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="export\IKGServer.h" />
+    <ClInclude Include="export\ServerBaseComponent.h" />
+    <ClInclude Include="export\ServerGameManagerComponent.h" />
     <ClInclude Include="include\framework.h" />
     <ClInclude Include="include\KGServer.h" />
     <ClInclude Include="include\pch.h" />
@@ -175,6 +177,7 @@
     <ClInclude Include="include\Session.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="export\ServerGameManagerComponent.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\KGServer.cpp" />
     <ClCompile Include="src\pch.cpp" />

@@ -3,6 +3,7 @@
 #include <windows.h>
 #include "Network.h"
 #include "NetworkUtill.h"
+#include "Scene.h"
 
 
 DLL KG::Server::INetwork* KG::Server::GetNetwork()
@@ -85,24 +86,19 @@ void KG::Server::Network::TryRecv()
 
 void KG::Server::Network::ProcessPacket(unsigned char* buffer)
 {
-	//switch ( buffer[1] ) // Packet Type
-	//{
-	//	case P_SC_INIT:
-	//		this->ProcessInitPacket(reinterpret_cast<packet_sc_init*>(buffer));
-	//		break;
-	//	case P_SC_ENTER:
-	//		this->ProcessEnterPacket(reinterpret_cast<packet_sc_enter*>(buffer));
-	//		break;
-	//	case P_SC_LEAVE:
-	//		this->ProcessLeavePacket(reinterpret_cast<packet_sc_leave*>(buffer));
-	//		break;
-	//	case P_SC_MOVE:
-	//		this->ProcessMovePacket(reinterpret_cast<packet_sc_move*>(buffer));
-	//		break;
-	//	default:
-	//		assert(false);
-	//		break;
-	//}
+	switch ( static_cast<KG::Packet::PacketType>(buffer[1]) )
+	{
+		case KG::Packet::PacketType::SC_ADD_OBJECT:
+		{
+			auto* packet = (KG::Packet::SC_ADD_OBJECT*)(buffer);
+			std::cout << "Received / SC_ADD_OBJECT / " << packet->objectTag << "\n";
+			this->scene->AddObjectFromPreset(packet->objectTag);
+		}
+			break;
+		default:
+			std::cout << "UnkownPacket Received / Number : " << buffer[1] << "\n";
+			break;
+	}
 }
 
 void KG::Server::Network::SendPacket(unsigned char* data)
@@ -170,4 +166,9 @@ void KG::Server::Network::DrawImGUI()
 bool KG::Server::Network::IsConnected() const
 {
 	return this->clientSocket != NULL;
+}
+
+void KG::Server::Network::SetScene(KG::Core::Scene* scene)
+{
+	this->scene = scene;
 }

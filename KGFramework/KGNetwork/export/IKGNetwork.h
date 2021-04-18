@@ -20,9 +20,17 @@ namespace KG::Server
 		virtual void SetAddress(DWORD address) = 0;
 		virtual void Connect() = 0;
 		virtual void Close() = 0;
+		virtual void SetScene(KG::Core::Scene* scene) = 0;
+
 
 		virtual void TryRecv() = 0;
 		virtual void SendPacket(unsigned char* data) = 0;
+
+		template <typename PacketType>
+		void SendTypedPacket(const PacketType& packet)
+		{
+			this->SendPacket(static_cast<unsigned char*>(&packet));
+		}
 
 		virtual void GetNewPlayerNetworkController() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;

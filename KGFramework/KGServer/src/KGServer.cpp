@@ -82,7 +82,7 @@ void KG::Server::Server::IOCPWorker(Server* server)
 					newSession.prevSize = 0;
 					newSession.recvExOver.op = OP_RECV;
 					newSession.socket = ex_over->csocket;
-					newSession.state = PLAYER_STATE_CONNECTED;
+					newSession.state = PLAYER_STATE_INGAME;
 					server->players.insert(
 						std::make_pair(std::move(clientId), std::move(newSession))
 					);
@@ -116,6 +116,9 @@ void KG::Server::Server::Initialize()
 
 	listenSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(listenSocket), hIocp, SERVER_ID, 0);
+
+	//Init Systems
+	this->sGameManagerSystem.SetServerInstance(this);
 }
 
 void KG::Server::Server::Start()
@@ -173,12 +176,16 @@ void KG::Server::Server::UnlockWorld()
 	worldLock.unlock();
 }
 
-void KG::Server::Server::GetNewPlayerServerController()
+KG::Component::SGameManagerComponent* KG::Server::Server::GetNewGameManagerComponent()
 {
+	auto* comp = this->sGameManagerSystem.GetNewComponent();
+	comp->SetServerInstance(this);
+	return comp;
 }
 
 void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
+	this->sGameManagerSystem.OnPostProvider(provider);
 }
 
 void KG::Server::Server::DrawImGUI()
@@ -202,12 +209,28 @@ bool KG::Server::Server::isStarted() const
 }
 
 //Worker 
-KG::Server::Server::SESSION_ID KG::Server::Server::GetNewPlayerId()
+KG::Server::SESSION_ID KG::Server::Server::GetNewPlayerId()
 {
 	std::lock_guard lg{ this->idStartMutex };
 	int ret = this->idStart;
 	this->idStart += 1;
 	return ret;
+}
+
+void KG::Server::Server::BroadcastPacket(void* packet, SESSION_ID ignore)
+{
+	std::cout << "BroadCast Packet!\n";
+	for ( auto& i : this->players )
+	{
+		if ( i.first != ignore )
+		{
+			std::shared_lock<std::shared_mutex> lg{ i.second.sessionLock };
+			if ( i.second.state == PLAYER_STATE_INGAME )
+			{
+				this->SendPacket(i.first, packet);
+			}
+		}
+	}
 }
 
 void KG::Server::Server::SendPacket(SESSION_ID playerId, void* packet)
