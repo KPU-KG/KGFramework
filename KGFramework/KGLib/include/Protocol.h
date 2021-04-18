@@ -1,4 +1,8 @@
 #pragma once
+#define DEFAULT_PACKET_HEADER( x ) PacketHeader header{sizeof(x), PacketID(KG::Packet::PacketType::x) }
+
+#include "hash.h"
+#include <DirectXMath.h>
 
 namespace KG::Server
 {
@@ -8,88 +12,68 @@ namespace KG::Server
 };
 namespace KG::Packet
 {
-#pragma once
-	namespace PacketId
+	enum class PacketType : unsigned char
 	{
-		constexpr unsigned char C2S_CONNECT = 1;
-		constexpr unsigned char C2S_READY_ON = 2;
-		constexpr unsigned char C2S_READY_OFF = 3;
-		constexpr unsigned char C2S_MODE_SELECT = 4;
-		constexpr unsigned char C2S_EXIT = 5;
+		None = 0,
+		SC_LOGIN_OK = 100, // 초기버전 미사용
+		SC_PLAYER_INFO,
+		SC_ADD_OBJECT,
+		SC_REMOVE_OBJECT, // 초기버전 미사용
+		SC_FIRE, // 초기버전 미사용
 
-		constexpr unsigned char C2S_INPUT = 6;
-		constexpr unsigned char C2S_FIRE = 7;
-
-		constexpr unsigned char S2C_ROOM_DATA = 8;
-		constexpr unsigned char S2C_SCENE_DATA = 9;
+		CS_LOGIN = 200, // 초기버전 미사용
+		CS_INPUT, // 사용
+		CS_FIRE // 초기버전 미사용
 	};
+
+	constexpr unsigned char PacketID(PacketType type)
+	{
+		return static_cast<unsigned char>(type);
+	}
+
 
 #pragma pack(push, 1)
-	struct CONNECT
+
+
+	struct PacketHeader
 	{
 		unsigned char size;
 		unsigned char type;
-		unsigned short id;
 	};
 
-	struct READY_ON
+	//struct SC_LOGIN_OK
+	//{
+	//	DEFAULT_PACKET_HEADER(SC_LOGIN_OK);
+	//};
+
+	struct SC_PLAYER_INFO
 	{
-		unsigned char size;
-		unsigned char type;
-		unsigned short id;
+		DEFAULT_PACKET_HEADER(SC_PLAYER_INFO);
+		int playerId;
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT3 rotation;
 	};
 
-	struct READY_OFF
+	struct SC_ADD_OBJECT
 	{
-		unsigned char size;
-		unsigned char type;
-		unsigned short id;
+		DEFAULT_PACKET_HEADER(SC_ADD_OBJECT);
+		KG::Utill::hashType presetId;
+		KG::Utill::hashType parentTag;
+		KG::Utill::hashType objectTag;
+		DirectX::XMFLOAT3 position;
+		DirectX::XMFLOAT3 rotation;
 	};
 
-	struct MODE_SELECT
+	struct CS_INPUT
 	{
-		unsigned char size;
-		unsigned char type;
-		bool mode;
+		DEFAULT_PACKET_HEADER(CS_INPUT);
+		unsigned char stateW;
+		unsigned char stateA;
+		unsigned char stateS;
+		unsigned char stateD;
+		unsigned char stateShift;
 	};
 
-	struct EXIT
-	{
-		unsigned char size;
-		unsigned char type;
-		unsigned short id;
-	};
-
-	///////////////
-	struct INPUT_DATA
-	{
-		unsigned char size;
-		unsigned char type;
-		unsigned short id;
-		//bool input[];
-	};
-
-	struct FIRE
-	{
-		unsigned char size;
-		unsigned char type;
-		unsigned short id;
-		//
-	};
-
-	struct ROOM_DATA
-	{
-		unsigned char size;
-		unsigned char type;
-		// 방 정보
-	};
-
-	struct SCENE_DATA
-	{
-		unsigned char size;
-		unsigned char type;
-		// 씬 정보
-	};
 #pragma pack(pop)
 
 

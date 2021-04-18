@@ -10,4 +10,17 @@
 // 여기에 미리 컴파일하려는 헤더 추가
 #include "framework.h"
 
+#include <cassert>
+#include <iostream>
+#include <unordered_map>
+#include <map>
+#include <array>
+#include <thread>
+#include <WS2tcpip.h>
+#include <mutex>
+#include <MSWSock.h>
+
+
+#pragma comment(lib, "Ws2_32.lib")
+
 #endif //PCH_H

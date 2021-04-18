@@ -10,23 +10,27 @@
 #define DLL __declspec(dllimport)
 #endif
 
+
 namespace KG::Server
 {
-	class DLL IServer
+	class DLL INetwork
 	{
 	public:
 		virtual void Initialize() = 0;
-
-		virtual void Start() = 0;
+		virtual void SetAddress(DWORD address) = 0;
+		virtual void Connect() = 0;
 		virtual void Close() = 0;
 
-		virtual void LockWorld() = 0;
-		virtual void UnlockWorld() = 0;
+		virtual void TryRecv() = 0;
+		virtual void SendPacket(unsigned char* data) = 0;
 
-		virtual void GetNewPlayerServerController() = 0;
+		virtual void GetNewPlayerNetworkController() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
+
 		virtual void DrawImGUI() = 0;
-		virtual bool isStarted() const = 0;
+
+		virtual bool IsConnected() const = 0;
+
 		bool SetGUIContext(ImGuiContext* context)
 		{
 			ImGui::SetCurrentContext(context);
@@ -34,5 +38,5 @@ namespace KG::Server
 		};
 	};
 
-	DLL IServer* GetServer();
+	DLL KG::Server::INetwork* GetNetwork();
 };

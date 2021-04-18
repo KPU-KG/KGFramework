@@ -43,6 +43,16 @@ namespace KG::Server
 
 		// Game Content Part
 		//KG::Core::GameObject* playerObject; // or PlayerController;
+	public:
+		SESSION() = default;
+		SESSION(SESSION&& other)
+		{
+			state = std::move(other.state);
+			socket = std::move(other.socket);
+			id = std::move(other.id);
+			recvExOver = std::move(other.recvExOver);
+			prevSize = std::move(other.prevSize);
+		}
 	};
 
 

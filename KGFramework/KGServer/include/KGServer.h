@@ -1,5 +1,6 @@
 #pragma once
 #include "IKGServer.h"
+#include <vector>
 #include <ppl.h>
 #include <concurrent_unordered_map.h>
 
@@ -8,7 +9,6 @@
 #include <iostream>
 #include <unordered_map>
 #include <WS2tcpip.h>
-#include <vector>
 #include <thread>
 #include <atomic>
 #include <MSWSock.h>
@@ -32,9 +32,10 @@ namespace KG::Server
 		// https://docs.microsoft.com/ko-kr/cpp/parallel/concrt/parallel-containers-and-objects?view=msvc-160#unordered_map
 		concurrency::concurrent_unordered_map<SESSION_ID, SESSION> players;
 
-
 		std::mutex idStartMutex;
 		SESSION_ID idStart = 1;
+		EX_OVERLAPPED acceptOver;
+
 
 		static constexpr int SERVER_ID = 0;
 
@@ -58,7 +59,11 @@ namespace KG::Server
 		virtual void Close() override;
 		virtual void LockWorld() override;
 		virtual void UnlockWorld() override;
-		virtual void GetNewPlayerNetworkController() override;
+		virtual void GetNewPlayerServerController() override;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
+
+		// IServer을(를) 통해 상속됨
+		virtual void DrawImGUI() override;
+		virtual bool isStarted() const override;
 	};
 };

@@ -374,7 +374,7 @@ bool KG::Core::Scene::OnDrawGUI()
 	static KG::Resource::MaterialMatch materialMatchCache;
 	static KG::Utill::HashString modelHash;
 	auto viewportSize = ImGui::GetMainViewport()->Size;
-	//ImGui::ShowDemoWindow();
+	ImGui::ShowDemoWindow();
 	ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 	
 	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);

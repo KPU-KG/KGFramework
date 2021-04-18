@@ -450,12 +450,54 @@ void KG::GameFramework::UIPreRender()
 void KG::GameFramework::UIRender()
 {
 	this->scene.DrawGUI(guiContext);
+
+	static constexpr int sceneInfoSize = 250;
+	static constexpr int inspectorSize = 400;
+	auto viewportSize = ImGui::GetWindowViewport()->Size;
+	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowBgAlpha(0.8f);
+	if ( ImGui::Begin("Network") )
+	{
+		if ( ImGui::Button("Open Console") )
+		{
+			AllocConsole();
+			FILE* console;
+			freopen_s(&console, "CONOUT$", "a", stdout);
+			printf("hello DEBUG\n");
+		}
+		if ( this->networkClient == nullptr && this->networkServer == nullptr )
+		{
+			if ( ImGui::Button("Start Network Client") )
+			{
+				this->networkClient = std::unique_ptr<KG::Server::INetwork>(KG::Server::GetNetwork());
+				this->networkClient->SetGUIContext(this->guiContext);
+				this->networkClient->Initialize();
+			}
+			if ( ImGui::Button("Start Network Server") )
+			{
+				this->networkServer = std::unique_ptr<KG::Server::IServer>(KG::Server::GetServer());
+				this->networkServer->SetGUIContext(this->guiContext);
+				this->networkServer->Initialize();
+			}
+		}
+		else
+		{
+			if ( this->networkClient ) this->networkClient->DrawImGUI();
+			if ( this->networkServer ) this->networkServer->DrawImGUI();
+		}
+
+	}
+	ImGui::End();
 }
 
 void KG::GameFramework::OnProcess()
 {
 	this->timer.Tick();
 	this->UpdateWindowText();
+
+	this->ServerProcess();
+
 	this->UIPreRender();
 	this->UIRender();
 	this->input->ProcessInput(this->engineDesc.hWnd);
@@ -466,7 +508,29 @@ void KG::GameFramework::OnProcess()
 	}
 	this->physics->Advance(this->timer.GetTimeElapsed());
 	this->renderer->Render();
+
+	this->ServerProcessEnd();
 	this->input->PostProcessInput();
+}
+
+void KG::GameFramework::ServerProcess()
+{
+	if ( this->networkClient && this->networkClient->IsConnected() )
+	{
+		this->networkClient->TryRecv();
+	}
+	else if ( this->networkServer && this->networkServer->isStarted() )
+	{
+		this->networkServer->LockWorld();
+	}
+}
+
+void KG::GameFramework::ServerProcessEnd()
+{
+	if ( this->networkServer && this->networkServer->isStarted() )
+	{
+		this->networkServer->UnlockWorld();
+	}
 }
 
 void KG::GameFramework::OnClose()
