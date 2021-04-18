@@ -49,6 +49,11 @@ KG::Core::Scene::Scene()
 {
 }
 
+KG::Core::Scene::~Scene()
+{
+	DebugNormalMessage("SceneDestroy");
+}
+
 void KG::Core::Scene::SetComponentProvider(KG::Component::ComponentProvider* componentProvider)
 {
 	this->componentProvider = componentProvider;
@@ -241,6 +246,12 @@ void KG::Core::Scene::AddModelPreset(std::string name, PresetModelCreator&& mode
 	this->objectPresetFunc.emplace_back(objCreator);
 }
 
+
+void KG::Core::Scene::AddNetworkCreator(const KG::Utill::HashString& hashId, NetworkObjectCreator&& creator)
+{
+	this->networkPresetFunc.emplace(hashId, creator);
+}
+
 void KG::Core::Scene::AddSkySetter(SkyBoxSetter&& setter)
 {
 	this->skyBoxSetter = setter;
@@ -279,6 +290,43 @@ KG::Core::GameObject* KG::Core::Scene::CallPreset(const std::string& name)
 		}
 	}
 	return nullptr;
+}
+
+KG::Core::GameObject* KG::Core::Scene::CallPreset(const KG::Utill::HashString& hashid)
+{
+	KG::Core::GameObject* obj = nullptr;;
+	for ( size_t i = 0; i < this->objectPresetName.size(); i++ )
+	{
+		if ( KG::Utill::HashString(this->objectPresetName[i]) == hashid )
+		{
+			if ( objectPresetModel[i] != nullptr )
+			{
+				auto [modelId, materialMach] = this->objectPresetModel[i]();
+				obj = this->modelCreator(modelId, *this, materialMach);
+			}
+			else
+			{
+				obj = this->CreateNewObject();
+			}
+			objectPresetFunc[i](*obj);
+			obj->tag = KG::Utill::HashString(objectPresetName[i]);
+			return obj;
+		}
+	}
+	return nullptr;
+}
+
+KG::Component::IComponent* KG::Core::Scene::CallNetworkCreator(const KG::Utill::HashString& hashid)
+{
+	auto* node =this->CallPreset(hashid);
+	auto* comp = this->networkPresetFunc[hashid](*node);
+	return comp;
+}
+
+
+void KG::Core::Scene::AddSceneComponent(const KG::Utill::HashString& hashid, KG::Component::IComponent* component)
+{
+	this->rootNode.AddComponentWithID(hashid, component);
 }
 
 void KG::Core::Scene::InitializeRoot()

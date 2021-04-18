@@ -12,10 +12,10 @@ namespace KG::Input
 	/// @brief 키 상태 열거형입니다.
 	enum class KeyState
 	{
+		None,
 		Down,
 		Pressing,
 		Up,
-		None
 	};
 
 	/// @brief 사용자 입력을 저장, 관리하는 매니저 클래스 입니다.

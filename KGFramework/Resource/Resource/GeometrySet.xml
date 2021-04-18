@@ -116,4 +116,6 @@
     <Geometry id="Soldier@WalkRight.fbx" fileDir="Resource/Geometry/animation/Soldier@WalkRight.fbx" rawMesh="false" hash_id="4155939972"/>
     <!--mountain.fbx-->
     <Geometry id="mountain.fbx" fileDir="Resource/Geometry/back/mountain.fbx" rawMesh="true" hash_id="2676274078"/>
+    <!--crawler.fbx-->
+    <Geometry id="crawler.fbx" fileDir="Resource/Geometry/crawler/crawler.fbx" rawMesh="false" hash_id="2883921385"/>
 </GeometrySet>
