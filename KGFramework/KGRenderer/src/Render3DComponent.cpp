@@ -45,6 +45,7 @@ void KG::Component::Render3DComponent::OnPreRender()
 		}
 		else
 		{
+			assert(KG::Renderer::KGDXRenderer::GetInstance()->GetSkymapTexutreId() != 0 && "SkyBox Texture should not null! add SkyBox to scene!!");
 			renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
 				KG::Resource::ResourceContainer::GetInstance()->LoadTexture(KG::Renderer::KGDXRenderer::GetInstance()->GetSkymapTexutreId())->index;
 		}
