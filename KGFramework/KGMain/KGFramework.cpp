@@ -368,7 +368,7 @@ void KG::GameFramework::PostSceneFunction()
 					}
 				}
 				});
-			obj.AddTemporalComponent(phy);
+			obj.AddComponent(phy);
 
 		}
 		);
