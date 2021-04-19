@@ -14,6 +14,7 @@
 namespace KG::Component
 {
 	class SGameManagerComponent;
+	class SPlayerComponent;
 };
 
 namespace KG::Server
@@ -30,6 +31,7 @@ namespace KG::Server
 		virtual void UnlockWorld() = 0;
 
 		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() = 0;
+		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 		virtual void DrawImGUI() = 0;
 		virtual bool isStarted() const = 0;

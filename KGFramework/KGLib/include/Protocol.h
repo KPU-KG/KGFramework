@@ -24,12 +24,14 @@ namespace KG::Packet
 		PacketHeader = 1,
 
 		SC_LOGIN_OK = 100, // 초기버전 미사용
-		SC_PLAYER_INFO,
+		SC_PLAYER_INIT,
 		SC_ADD_OBJECT,
 		SC_REMOVE_OBJECT, // 초기버전 미사용
 		SC_FIRE, // 초기버전 미사용
+		SC_ADD_PLAYER,
+		SC_PLAYER_SYNC,
 
-		CS_LOGIN = 200, // 초기버전 미사용
+		CS_REQ_LOGIN = 200, // 초기버전 미사용
 		CS_INPUT, // 사용
 		CS_FIRE // 초기버전 미사용
 	};
@@ -135,12 +137,12 @@ namespace KG::Packet
 	//	DEFAULT_PACKET_HEADER(SC_LOGIN_OK);
 	//};
 
-	struct SC_PLAYER_INFO
+	struct SC_PLAYER_INIT
 	{
-		DEFAULT_PACKET_HEADER(SC_PLAYER_INFO);
-		int playerId;
+		DEFAULT_PACKET_HEADER(SC_PLAYER_INIT);
+		KG::Server::NET_OBJECT_ID playerObjectId;
 		RawFloat3 position;
-		RawFloat3 rotation;
+		RawFloat4 rotation;
 	};
 
 	struct SC_ADD_OBJECT
@@ -152,6 +154,24 @@ namespace KG::Packet
 		KG::Server::NET_OBJECT_ID newObjectId;
 		RawFloat3 position;
 		RawFloat4 rotation;
+	};
+
+	struct SC_ADD_PLAYER
+	{
+		DEFAULT_PACKET_HEADER(SC_ADD_PLAYER);
+		KG::Server::NET_OBJECT_ID playerObjectId;
+		RawFloat3 position;
+		RawFloat4 rotation;
+	};
+	struct SC_PLAYER_SYNC
+	{
+		DEFAULT_PACKET_HEADER(SC_PLAYER_SYNC);
+		RawFloat4 rotation;
+	};
+
+	struct CS_REQ_LOGIN
+	{
+		DEFAULT_PACKET_HEADER(CS_REQ_LOGIN);
 	};
 
 	struct CS_INPUT

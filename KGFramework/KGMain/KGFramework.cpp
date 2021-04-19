@@ -1,4 +1,5 @@
 #include <string>
+#include <mutex>
 #include "ImguiHelper.h"
 #include "KGFramework.h"
 #include "GraphicComponent.h"
@@ -10,6 +11,7 @@
 #include "LambdaComponent.h"
 #include "SceneCameraComponent.h"
 #include "InputManager.h"
+
 
 KG::GameFramework::GameFramework()
 {
@@ -458,20 +460,13 @@ void KG::GameFramework::PostSceneFunction()
 		);
 }
 
-void KG::GameFramework::PostNetworkFunction()
-{
-}
-
-void KG::GameFramework::PostServerFunction()
-{
-}
-
 extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 int KG::GameFramework::WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+	bool ret = ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
 	input->HandlingInputProc(hWnd, message, wParam, lParam);
-	return ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam);
+	return ret;
 }
 
 void KG::GameFramework::UIPreRender()

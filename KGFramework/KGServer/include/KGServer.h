@@ -16,6 +16,7 @@
 #include "Session.h"
 
 #include "ServerGameManagerComponent.h"
+#include "ServerPlayerControllerComponent.h"
 
 namespace KG::Server
 {
@@ -25,7 +26,6 @@ namespace KG::Server
 		SYSTEM_INFO systemInfo;
 		SOCKET listenSocket;
 
-		std::mutex worldLock;
 
 		std::vector<std::thread> iocpWorkers;
 
@@ -43,6 +43,7 @@ namespace KG::Server
 
 		//Server System
 		KG::Component::SGameManagerComponentSystem sGameManagerSystem;
+		KG::Component::SPlayerComponentSystem sPlayerSystem;
 
 
 		static void IOCPWorker(Server* server);
@@ -58,6 +59,7 @@ namespace KG::Server
 		void ProcessPacket(SESSION_ID playerId, unsigned char* buffer);
 
 	public:
+		std::mutex worldLock;
 		NET_OBJECT_ID GetNewObjectId();
 
 		// IServer을(를) 통해 상속됨
@@ -67,6 +69,7 @@ namespace KG::Server
 		virtual void LockWorld() override;
 		virtual void UnlockWorld() override;
 		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() override;
+		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() override;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 		virtual void DrawImGUI() override;
 		virtual bool isStarted() const override;

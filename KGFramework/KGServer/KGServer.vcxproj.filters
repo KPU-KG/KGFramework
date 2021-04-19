@@ -57,7 +57,7 @@
     <ClInclude Include="export\ServerGameManagerComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
-    <ClInclude Include="export\ServerPlayerComponent.h">
+    <ClInclude Include="export\ServerPlayerControllerComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
   </ItemGroup>
@@ -68,19 +68,19 @@
     <ClCompile Include="src\pch.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\ServerUtill.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
     <ClCompile Include="src\KGServer.cpp">
       <Filter>소스 파일\Core</Filter>
     </ClCompile>
-    <ClCompile Include="export\ServerGameManagerComponent.cpp">
+    <ClCompile Include="src\ServerUtill.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="export\ServerPlayerComponent.cpp">
+    <ClCompile Include="src\ServerBaseComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="export\ServerBaseComponent.cpp">
+    <ClCompile Include="src\ServerGameManagerComponent.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ServerPlayerControllerComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

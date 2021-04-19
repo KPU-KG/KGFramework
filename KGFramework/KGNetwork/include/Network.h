@@ -6,6 +6,8 @@
 #include "Protocol.h"
 #include "ISystem.h"
 #include "ClientGameManagerComponent.h"
+#include "ClientCharacterComponent.h"
+#include "ClientPlayerControllerComponent.h"
 
 namespace KG::Server
 {
@@ -24,6 +26,9 @@ namespace KG::Server
 
 		KG::Core::Scene* scene;
 		KG::Component::CGameManagerComponentSystem cGameManagerSystem;
+		KG::Component::CPlayerControllerComponentSystem cPlayerSystem;
+		KG::Component::CCharacterComponentSystem cCharacterSystem;
+
 
 		std::unordered_map<KG::Server::NET_OBJECT_ID, KG::Component::CBaseComponent*> networkObjects;
 
@@ -39,11 +44,16 @@ namespace KG::Server
 		virtual void SetNetworkObject(KG::Server::NET_OBJECT_ID id, KG::Component::CBaseComponent* obj);
 
 		virtual KG::Component::CGameManagerComponent* GetNewGameManagerComponent() override;
+		virtual KG::Component::CPlayerControllerComponent* GetNewPlayerControllerComponent() override;
+		virtual KG::Component::CCharacterComponent* GetNewCharacterComponent() override;
+
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 
 		virtual void DrawImGUI() override;
 		virtual bool IsConnected() const override;
 		virtual void SetScene(KG::Core::Scene* scene) override;
+
+
 
 	};
 };

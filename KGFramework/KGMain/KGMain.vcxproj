@@ -171,8 +171,10 @@
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="KGFramework.cpp" />
     <ClCompile Include="KGMain.cpp" />
+    <ClCompile Include="NetworkFunctions.cpp" />
     <ClCompile Include="PlayerControllerComponent.cpp" />
     <ClCompile Include="SceneCameraComponent.cpp" />
+    <ClCompile Include="ServerFunction.cpp" />
     <ClCompile Include="Setting.cpp" />
   </ItemGroup>
   <ItemGroup>

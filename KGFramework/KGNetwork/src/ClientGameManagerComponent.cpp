@@ -20,6 +20,11 @@ bool KG::Component::CGameManagerComponent::OnDrawGUI()
 {
 	if ( ImGui::ComponentHeader<CGameManagerComponent>() )
 	{
+		if ( ImGui::Button("REQ_LOGIN") )
+		{
+			KG::Packet::CS_REQ_LOGIN login = {};
+			this->SendPacket(&login);
+		}
 	}
 	return false;
 }
@@ -43,6 +48,24 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 				this->network->SetNetworkObject(addPacket->newObjectId, (newComp));
 				this->GetGameObject()->GetTransform()->AddChild(newComp->GetGameObject()->GetTransform());
 			}
+		}
+		return true;
+		case KG::Packet::PacketType::SC_PLAYER_INIT:
+		{
+			auto* initPacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_INIT>(packet);
+			auto* playerController = static_cast<KG::Component::CBaseComponent*>(this->GetGameObject()->GetScene()->CallNetworkCreator("PlayerCharacter"_id));
+			playerController->SetNetObjectId(initPacket->playerObjectId);
+			this->network->SetNetworkObject(initPacket->playerObjectId, playerController);
+			this->GetGameObject()->GetTransform()->AddChild(playerController->GetGameObject()->GetTransform());
+		}
+		return true;
+		case KG::Packet::PacketType::SC_ADD_PLAYER:
+		{
+			auto* addPlayerPacket = KG::Packet::PacketCast<KG::Packet::SC_ADD_PLAYER>(packet);
+			auto* teamController = static_cast<KG::Component::CBaseComponent*>(this->GetGameObject()->GetScene()->CallNetworkCreator("TeamCharacter"_id));
+			teamController->SetNetObjectId(addPlayerPacket->playerObjectId);
+			this->network->SetNetworkObject(addPlayerPacket->playerObjectId, teamController);
+			this->GetGameObject()->GetTransform()->AddChild(teamController->GetGameObject()->GetTransform());
 		}
 		return true;
 	}

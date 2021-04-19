@@ -1,12 +1,13 @@
 #pragma once
 #include "IComponent.h"
 #include "ISystem.h"
-#include "ServerBaseComponent.h"
+#include "ClientBaseComponent.h"
 #include "Debug.h"
 #include <functional>
+
 namespace KG::Component
 {
-	class DLL SGameManagerComponent : public SBaseComponent
+	class DLL CPlayerControllerComponent : public CBaseComponent
 	{
 	public:
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
@@ -17,12 +18,14 @@ namespace KG::Component
 		}
 
 		virtual bool OnDrawGUI();
-		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
-	};
-	REGISTER_COMPONENT_ID(SGameManagerComponent);
 
-	
-	class DLL SGameManagerComponentSystem : public KG::Component::SBaseComponentSystem<SGameManagerComponent>
+		// CBaseComponent을(를) 통해 상속됨
+		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type) override;
+	};
+	REGISTER_COMPONENT_ID(CPlayerControllerComponent);
+
+
+	class DLL CPlayerControllerComponentSystem : public KG::Component::CBaseComponentSystem<CPlayerControllerComponent>
 	{
 	public:
 		virtual void OnUpdate(float elapsedTime) override

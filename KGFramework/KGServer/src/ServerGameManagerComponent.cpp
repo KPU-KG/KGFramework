@@ -7,6 +7,7 @@
 void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	this->SetNetObjectId(KG::Server::SCENE_CONTROLLER_ID);
+	this->server->SetServerObject(this->networkObjectId, this);
 }
 
 void KG::Component::SGameManagerComponent::Update(float elapsedTime)
@@ -50,6 +51,50 @@ bool KG::Component::SGameManagerComponent::OnDrawGUI()
 
 			this->BroadcastPacket(&addObjectPacket);
 		}
+	}
+	return false;
+}
+
+bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender)
+{
+	switch ( type )
+	{
+		case KG::Packet::PacketType::None:
+		case KG::Packet::PacketType::PacketHeader:
+		case KG::Packet::PacketType::SC_LOGIN_OK:
+		case KG::Packet::PacketType::SC_PLAYER_INIT:
+		case KG::Packet::PacketType::SC_ADD_OBJECT:
+		case KG::Packet::PacketType::SC_REMOVE_OBJECT:
+		case KG::Packet::PacketType::SC_FIRE:
+		case KG::Packet::PacketType::SC_ADD_PLAYER:
+		case KG::Packet::PacketType::SC_PLAYER_SYNC:
+			std::cout << "Error Packet Received\n";
+			return false;
+		case KG::Packet::PacketType::CS_REQ_LOGIN:
+		{
+			//플레이어 추가!
+			std::lock_guard lg{ this->server->worldLock };
+			auto* playerComp = this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id);
+			this->GetGameObject()->GetTransform()->AddChild(playerComp->GetGameObject()->GetTransform());
+
+			KG::Packet::SC_PLAYER_INIT initPacket = {};
+			auto id = this->server->GetNewObjectId();
+			initPacket.playerObjectId = id;
+			initPacket.position = KG::Packet::RawFloat3(0, 0, 0);
+			initPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
+			this->SendPacket(sender, &initPacket);
+
+			KG::Packet::SC_ADD_PLAYER addPacket = {};
+			addPacket.playerObjectId = id;
+			addPacket.position = KG::Packet::RawFloat3(0, 0, 0);
+			addPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
+			//this->BroadcastPacket(&addPacket, sender);
+		}
+			return true;
+		case KG::Packet::PacketType::CS_INPUT:
+		case KG::Packet::PacketType::CS_FIRE:
+			std::cout << "Error Packet Received\n";
+			return false;
 	}
 	return false;
 }

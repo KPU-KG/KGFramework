@@ -78,12 +78,12 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\include\;$(SolutionDir)KGRenderer\include\;$(IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\include\;$(SolutionDir)KGRenderer\include\;$(IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)src;$(SourcePath)</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -129,7 +129,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)Include;$(SolutionDir)KGLib\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\include\;$(SolutionDir)KGRenderer\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -148,7 +148,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)Include;$(SolutionDir)KGLib\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\include\;$(SolutionDir)KGRenderer\include\;</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -170,7 +170,7 @@
     <ClInclude Include="export\IKGServer.h" />
     <ClInclude Include="export\ServerBaseComponent.h" />
     <ClInclude Include="export\ServerGameManagerComponent.h" />
-    <ClInclude Include="export\ServerPlayerComponent.h" />
+    <ClInclude Include="export\ServerPlayerControllerComponent.h" />
     <ClInclude Include="include\framework.h" />
     <ClInclude Include="include\KGServer.h" />
     <ClInclude Include="include\pch.h" />
@@ -178,12 +178,12 @@
     <ClInclude Include="include\Session.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="export\ServerBaseComponent.cpp" />
-    <ClCompile Include="export\ServerGameManagerComponent.cpp" />
-    <ClCompile Include="export\ServerPlayerComponent.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
     <ClCompile Include="src\KGServer.cpp" />
     <ClCompile Include="src\pch.cpp" />
+    <ClCompile Include="src\ServerBaseComponent.cpp" />
+    <ClCompile Include="src\ServerGameManagerComponent.cpp" />
+    <ClCompile Include="src\ServerPlayerControllerComponent.cpp" />
     <ClCompile Include="src\ServerUtill.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

@@ -27,7 +27,7 @@ namespace KG::Component
 	public:
 		void SetNetObjectId(KG::Server::NET_OBJECT_ID id);
 		void SetNetworkInstance(KG::Server::Network* network);
-		void SendPacket(unsigned char* packet);
+		void SendPacket(void* packet);
 		bool ProcessPacket(unsigned char* packet, KG::Packet::PacketType type);
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type) = 0;
 	};

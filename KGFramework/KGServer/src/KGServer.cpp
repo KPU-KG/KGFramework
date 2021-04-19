@@ -18,6 +18,7 @@ void KG::Server::Server::IOCPWorker(Server* server)
 		DWORD numBytes;
 		ULONG_PTR ikey;
 		WSAOVERLAPPED* over;
+		std::cout << "GQCS : Queued\n";
 		BOOL ret = GetQueuedCompletionStatus(server->hIocp, &numBytes, &ikey, &over, INFINITE);
 		SESSION_ID key = static_cast<SESSION_ID>(ikey);
 		if ( FALSE == ret )
@@ -183,9 +184,17 @@ KG::Component::SGameManagerComponent* KG::Server::Server::GetNewGameManagerCompo
 	return comp;
 }
 
+KG::Component::SPlayerComponent* KG::Server::Server::GetNewPlayerComponent()
+{
+	auto* comp = this->sPlayerSystem.GetNewComponent();
+	comp->SetServerInstance(this);
+	return comp;
+}
+
 void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->sGameManagerSystem.OnPostProvider(provider);
+	this->sPlayerSystem.OnPostProvider(provider);
 }
 
 void KG::Server::Server::DrawImGUI()
@@ -296,6 +305,7 @@ void KG::Server::Server::SendAddPlayer(SESSION_ID playerId, SESSION_ID targetId)
 
 void KG::Server::Server::Disconnect(SESSION_ID playerId)
 {
+	std::cout << "Disconnected Client[" << playerId << "]\n";
 	{
 		std::lock_guard<std::shared_mutex> lg{ players[playerId].sessionLock };
 		players[playerId].state = PLAYER_STATE_FREE;
@@ -311,7 +321,6 @@ void KG::Server::Server::Disconnect(SESSION_ID playerId)
 		}
 	}
 
-	std::cout << "Disconnected Client[" << playerId << "]\n";
 }
 
 void KG::Server::Server::DoRecv(SESSION_ID key)
@@ -334,40 +343,19 @@ void KG::Server::Server::DoRecv(SESSION_ID key)
 
 void KG::Server::Server::ProcessPacket(SESSION_ID playerId, unsigned char* buffer)
 {
-	switch ( buffer[1] ) // Packet Type
+	auto* header = reinterpret_cast<KG::Packet::PacketHeader*>(buffer);
+	auto it = this->netObjects.find(header->objectId);
+	if ( it == this->netObjects.end() )
 	{
-		//case CS_LOGIN:
-		//{
-		//	auto* packet = reinterpret_cast<packet_c2s_login*>(buffer);
-		//	strcpy_s(players[playerId].name, packet->name);
-		//	SendLoginOkPacket(playerId);
-
-		//	lock_guard<mutex> lg{ players[playerId].sessionLock };
-		//	players[playerId].state = PLAYERSTATE_INGAME;
-		//	for ( auto& pl : players )
-		//	{
-		//		if ( playerId == pl.id ) continue;
-
-		//		lock_guard<mutex> lg2{ pl.sessionLock };
-		//		if ( pl.state == PLAYERSTATE_INGAME )
-		//		{
-		//			SendAddPlayer(playerId, pl.id);
-		//			SendAddPlayer(pl.id, playerId);
-		//		}
-
-		//	}
-		//}
-		//break;
-		//case CS_MOVE:
-		//{
-		//	auto* packet = reinterpret_cast<packet_c2s_move*>(buffer);
-		//	DoMove(playerId, packet->dir);
-		//}
-		//break;
-		default:
-			std::cout << "UNKNOWN Packet Type From Client[" << playerId << "] Packet Type [" << buffer[1] << "]\n";
-			while ( true );
-			break;
+		std::cout << "Unknown Packet Receiver Object : " << header->objectId << '\n';
+	}
+	else
+	{
+		bool processed = it->second->ProcessPacket(buffer, KG::Packet::ToPacketType(header->type), playerId);
+		if ( !processed )
+		{
+			std::cout << "Packet Owner Object Not Processd / Object ID : " << header->objectId << " / PacketType : " << header->type << "\n";
+		}
 	}
 }
 

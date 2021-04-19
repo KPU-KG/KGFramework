@@ -151,6 +151,20 @@ KG::Component::CGameManagerComponent* KG::Server::Network::GetNewGameManagerComp
 	return comp;
 }
 
+KG::Component::CPlayerControllerComponent* KG::Server::Network::GetNewPlayerControllerComponent()
+{
+	auto* comp = this->cPlayerSystem.GetNewComponent();
+	comp->SetNetworkInstance(this);
+	return comp;
+}
+
+KG::Component::CCharacterComponent* KG::Server::Network::GetNewCharacterComponent()
+{
+	auto* comp = this->cCharacterSystem.GetNewComponent();
+	comp->SetNetworkInstance(this);
+	return comp;
+}
+
 void KG::Server::Network::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->cGameManagerSystem.OnPostProvider(provider);

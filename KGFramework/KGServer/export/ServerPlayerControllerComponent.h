@@ -4,9 +4,10 @@
 #include "ServerBaseComponent.h"
 #include "Debug.h"
 #include <functional>
+
 namespace KG::Component
 {
-	class DLL SGameManagerComponent : public SBaseComponent
+	class DLL SPlayerComponent : public SBaseComponent
 	{
 	public:
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
@@ -19,10 +20,10 @@ namespace KG::Component
 		virtual bool OnDrawGUI();
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
 	};
-	REGISTER_COMPONENT_ID(SGameManagerComponent);
+	REGISTER_COMPONENT_ID(SPlayerComponent);
 
-	
-	class DLL SGameManagerComponentSystem : public KG::Component::SBaseComponentSystem<SGameManagerComponent>
+
+	class DLL SPlayerComponentSystem : public KG::Component::SBaseComponentSystem<SPlayerComponent>
 	{
 	public:
 		virtual void OnUpdate(float elapsedTime) override

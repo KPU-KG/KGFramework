@@ -12,14 +12,14 @@ inline void KG::Component::SBaseComponent::SetServerInstance(KG::Server::Server*
 	this->server = server;
 }
 
-void KG::Component::SBaseComponent::BroadcastPacket(void* packet, KG::Server::SESSION_ID sessionId)
+void KG::Component::SBaseComponent::BroadcastPacket(void* packet, KG::Server::SESSION_ID ignoreId)
 {
 	auto* header = reinterpret_cast<KG::Packet::PacketHeader*>(packet);
 	header->objectId = this->networkObjectId;
-	this->server->BroadcastPacket(packet, sessionId);
+	this->server->BroadcastPacket(packet, ignoreId);
 }
 
-void KG::Component::SBaseComponent::SendPacket(KG::Server::SESSION_ID sessionId, unsigned char* packet)
+void KG::Component::SBaseComponent::SendPacket(KG::Server::SESSION_ID sessionId, void* packet)
 {
 	auto* header = reinterpret_cast<KG::Packet::PacketHeader*>(packet);
 	header->objectId = this->networkObjectId;
