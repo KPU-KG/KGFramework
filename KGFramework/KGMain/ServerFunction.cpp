@@ -25,4 +25,14 @@ void KG::GameFramework::PostServerFunction()
 			return comp;
 		}
 	);
+
+	this->scene->AddNetworkCreator(
+		KG::Utill::HashString("TileCube"),
+		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent*
+		{
+			auto* comp = this->networkServer->GetNewPlayerComponent();
+			obj.AddComponent(comp);
+			return comp;
+		}
+	);
 }

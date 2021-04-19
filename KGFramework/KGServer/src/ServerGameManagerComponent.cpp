@@ -72,23 +72,28 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 			return false;
 		case KG::Packet::PacketType::CS_REQ_LOGIN:
 		{
+			auto id = this->server->GetNewObjectId();
+
 			//플레이어 추가!
-			std::lock_guard lg{ this->server->worldLock };
-			auto* playerComp = this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id);
-			this->GetGameObject()->GetTransform()->AddChild(playerComp->GetGameObject()->GetTransform());
+			this->server->LockWorld();
+			auto* playerComp = static_cast<KG::Component::SBaseComponent*>(this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id));
+			playerComp->SetNetObjectId(id);
+			auto* trans = playerComp->GetGameObject()->GetTransform();
+			trans->SetPosition(id, 0, id);
+			this->GetGameObject()->GetTransform()->AddChild(trans);
+			this->server->UnlockWorld();
 
 			KG::Packet::SC_PLAYER_INIT initPacket = {};
-			auto id = this->server->GetNewObjectId();
 			initPacket.playerObjectId = id;
-			initPacket.position = KG::Packet::RawFloat3(0, 0, 0);
+			initPacket.position = KG::Packet::RawFloat3(id, 0, id);
 			initPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
 			this->SendPacket(sender, &initPacket);
 
 			KG::Packet::SC_ADD_PLAYER addPacket = {};
 			addPacket.playerObjectId = id;
-			addPacket.position = KG::Packet::RawFloat3(0, 0, 0);
+			addPacket.position = KG::Packet::RawFloat3(id, 0, id);
 			addPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
-			//this->BroadcastPacket(&addPacket, sender);
+			this->BroadcastPacket(&addPacket, sender);
 		}
 			return true;
 		case KG::Packet::PacketType::CS_INPUT:

@@ -3,6 +3,8 @@
 #include "ServerUtill.h"
 #include "KGServer.h"
 
+#include <sstream>
+
 
 DLL KG::Server::IServer* KG::Server::GetServer()
 {
@@ -12,7 +14,9 @@ DLL KG::Server::IServer* KG::Server::GetServer()
 
 void KG::Server::Server::IOCPWorker(Server* server)
 {
-	std::cout << "IOCP Worker Started\n";
+	std::stringstream ss;
+	ss << "IOCP Worker Started ThreadId : " << std::this_thread::get_id() << "\n";
+	std::cout << ss.str();
 	while ( true )
 	{
 		DWORD numBytes;
@@ -170,10 +174,16 @@ void KG::Server::Server::Close()
 void KG::Server::Server::LockWorld()
 {
 	worldLock.lock();
+	std::stringstream ss;
+	ss << "World Lock / ThreadId : " << std::this_thread::get_id() << "\n";
+	std::cout << ss.str();
 }
 
 void KG::Server::Server::UnlockWorld()
 {
+	std::stringstream ss;
+	ss << "World UnLock / ThreadId : " << std::this_thread::get_id() << "\n";
+	std::cout << ss.str();
 	worldLock.unlock();
 }
 

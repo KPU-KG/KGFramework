@@ -56,7 +56,9 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 			auto* playerController = static_cast<KG::Component::CBaseComponent*>(this->GetGameObject()->GetScene()->CallNetworkCreator("PlayerCharacter"_id));
 			playerController->SetNetObjectId(initPacket->playerObjectId);
 			this->network->SetNetworkObject(initPacket->playerObjectId, playerController);
-			this->GetGameObject()->GetTransform()->AddChild(playerController->GetGameObject()->GetTransform());
+			auto* trans = playerController->GetGameObject()->GetTransform();
+			trans->SetPosition(initPacket->position);
+			this->GetGameObject()->GetTransform()->AddChild(trans);
 		}
 		return true;
 		case KG::Packet::PacketType::SC_ADD_PLAYER:
@@ -65,7 +67,9 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 			auto* teamController = static_cast<KG::Component::CBaseComponent*>(this->GetGameObject()->GetScene()->CallNetworkCreator("TeamCharacter"_id));
 			teamController->SetNetObjectId(addPlayerPacket->playerObjectId);
 			this->network->SetNetworkObject(addPlayerPacket->playerObjectId, teamController);
-			this->GetGameObject()->GetTransform()->AddChild(teamController->GetGameObject()->GetTransform());
+			auto* trans = teamController->GetGameObject()->GetTransform();
+			trans->SetPosition(addPlayerPacket->position);
+			this->GetGameObject()->GetTransform()->AddChild(trans);
 		}
 		return true;
 	}
