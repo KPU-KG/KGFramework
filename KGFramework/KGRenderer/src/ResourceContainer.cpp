@@ -116,6 +116,10 @@ KG::Renderer::Geometry* KG::Resource::ResourceContainer::CreateFakeGeometry(D3D1
 
 KG::Resource::Texture* KG::Resource::ResourceContainer::LoadTexture(const KG::Utill::HashString& id)
 {
+	if ( id == 0 )
+	{
+		std::cout << "Texture id 0 Load\n";
+	}
 	if ( this->textures.count(id) )
 	{
 		return &this->textures.at(id);
