@@ -405,6 +405,7 @@ void KG::GameFramework::PostSceneFunction()
 
 			ctrl->SetAnimation(KG::Utill::HashString("Soldier@Standing.fbx"_id));
 			ctrl->SetDefaultAnimation(KG::Utill::HashString("Soldier@Standing.fbx"_id));
+			ctrl->SetIgnoreTranslate(true);
 			ctrl->SetIgnoreScale(false);
 			obj.AddComponent(ctrl);
 

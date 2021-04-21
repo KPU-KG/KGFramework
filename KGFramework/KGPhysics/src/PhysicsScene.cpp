@@ -4,6 +4,7 @@
 #include "PhysicsSystem.h"
 #include "ComponentProvider.h"
 #include "Transform.h"
+#include "MathHelper.h"
 #include <unordered_map>
 
 using namespace physx;
@@ -177,8 +178,8 @@ void KG::Physics::PhysicsScene::Initialize() {
 	const char* strTransport = "127.0.0.1";
 
 	allocator = new PxDefaultAllocator();
-	// errorCallback = new PxDefaultErrorCallback();
-	errorCallback = new ErrorCallback();
+	errorCallback = new PxDefaultErrorCallback();
+	// errorCallback = new ErrorCallback();
 	// errorCallback->reportError()
 
 	foundation = PxCreateFoundation(PX_PHYSICS_VERSION, *allocator, *errorCallback);
@@ -256,7 +257,7 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 	cb.scale = Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
 	PxRigidDynamic* actor = nullptr;
 	for (int i = 0; i < 3; ++i) {
-		actor = PxCreateDynamic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z),
+		actor = PxCreateDynamic(*physics, PxTransform(cb.position.x, cb.position.y, cb.position.z),
 			PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial, 1);
 		if (actor != nullptr)
 			break;
@@ -267,9 +268,12 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 		return;
 	}
 	
-	cb.center = Math::Vector3::Add(cb.center, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
+	cb.position = Math::Vector3::Add(cb.position, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
 	PxTransform t = actor->getGlobalPose();
-	t.p = { cb.center.x, cb.center.y, cb.center.z };
+	t.p = { cb.position.x, cb.position.y, cb.position.z };
+	auto objectQuat = rigid->GetGameObject()->GetTransform()->GetRotation();
+	DirectX::XMStoreFloat4(&objectQuat, DirectX::XMQuaternionRotationMatrix(DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&objectQuat)) * DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMLoadFloat3(&cb.rotation))));
+	t.q = PxQuat(objectQuat.x, objectQuat.y, objectQuat.z, objectQuat.w);
 	actor->setGlobalPose(t);
 	
 
@@ -304,11 +308,36 @@ void KG::Physics::PhysicsScene::AddStaticActor(KG::Component::StaticRigidCompone
 	// trans 41 42 43
 	cb.scale = Math::Vector3::Multiply(cb.scale, DirectX::XMFLOAT3(worldMat._11, worldMat._22, worldMat._33));
 
-	PxRigidStatic* actor = PxCreateStatic(*physics, PxTransform(cb.center.x, cb.center.y, cb.center.z), 
-		PxBoxGeometry(cb.scale.x / 2, cb.scale.y / 2, cb.scale.z / 2), *pMaterial);
+	PxRigidStatic* actor = nullptr;
+
+	for (int i = 0; i < 3; ++i) {
+		actor = PxCreateStatic(*physics, PxTransform(cb.position.x, cb.position.y, cb.position.z),
+			PxBoxGeometry(abs(cb.scale.x / 2), abs(cb.scale.y / 2), abs(cb.scale.z / 2)), *pMaterial);
+		if (actor != nullptr)
+			break;
+	}
+
+	if (actor == nullptr) {
+		rigid->SetActor(actor);
+		DebugErrorMessage("actor is null!");
+		return;
+	}
+
+
+
+
+
 #ifdef _DEBUG
 	actor->setActorFlag(PxActorFlag::eVISUALIZATION, true);				// PVD에 보여지는지 체크
 #endif
+	cb.position = Math::Vector3::Add(cb.position, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
+	PxTransform t = actor->getGlobalPose();
+	t.p = { cb.position.x, cb.position.y, cb.position.z };
+	auto objectQuat = rigid->GetGameObject()->GetTransform()->GetRotation();
+	DirectX::XMStoreFloat4(&objectQuat, DirectX::XMQuaternionRotationMatrix(DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&objectQuat)) * DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMLoadFloat3(&cb.rotation))));
+	t.q = PxQuat(objectQuat.x, objectQuat.y, objectQuat.z, objectQuat.w);
+	actor->setGlobalPose(t);
+
 	scene->addActor(*actor);
 	rigid->SetActor(actor);
 	for (unsigned int i = UINT_MAX; i > UINT_MAX - MAX_COMPONENT; --i) {

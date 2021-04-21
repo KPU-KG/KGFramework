@@ -23,9 +23,12 @@ namespace physx
 namespace KG::Component
 {
 	class TransformComponent;
+	class IRigidComponent;
+	using CollisionCallbackFunc = std::function<void(KG::Component::IRigidComponent*, KG::Component::IRigidComponent*)>;
 
-	enum class SHOW_COLLISION_BOX {
-		NONE = 0, GRID, BOX
+	enum class COLLISION_SHAPE {
+		NONE = 0, 
+		BOX
 	};
 
 	enum class FilterGroup {
@@ -37,10 +40,12 @@ namespace KG::Component
 	};
 
 	struct CollisionBox {
-		DirectX::XMFLOAT3 center;
+		DirectX::XMFLOAT3 position;
 		DirectX::XMFLOAT3 scale;
+		DirectX::XMFLOAT3 rotation;
 		CollisionBox() {
-			center = { 0,0,0 };
+			position = { 0,0,0 };
+			rotation = { 0,0,0 };
 			scale = { 1,1,1 };
 		}
 	};
@@ -49,28 +54,38 @@ namespace KG::Component
 	protected:
 		CollisionBox											collisionBox;
 		TransformComponent*										transform = nullptr;
-		SHOW_COLLISION_BOX										show = SHOW_COLLISION_BOX::BOX;
-		FilterGroup												filter = FilterGroup::eBOX;						// enum type prop
-		std::function<void(KG::Component::IRigidComponent*, KG::Component::IRigidComponent*)> callback = nullptr;								// 매개변수로 둘의 위치 / 타입이 들어가야 할듯					// 충돌 대상 타입, 충돌 대상 위치, 내 위치
-		physx::PxFilterData*		filterData = nullptr;
-		bool kinetic = false;														// prop
+		COLLISION_SHAPE										show = COLLISION_SHAPE::BOX;
+		FilterGroup												filter = FilterGroup::eBOX;										
+		KG::Component::CollisionCallbackFunc					callback = nullptr;
+		physx::PxFilterData*									filterData = nullptr;
+		bool kinetic = false;														
 		bool dynamic = false;
 		unsigned int id = 0;
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 		virtual void SetupFiltering(uint32_t filterGroup, uint32_t filterMask);
 	public:
-		IRigidComponent() {};
+		IRigidComponent();;
 		virtual void PostUpdate(float timeElapsed) override {};
 		virtual void Update(float timeElapsed) override {};
 		CollisionBox& GetCollisionBox() { return collisionBox; }
-		virtual void SetCollisionCallback(std::function<void(KG::Component::IRigidComponent*, KG::Component::IRigidComponent*)>&& collisionCallback) { this->callback = collisionCallback; };
-		std::function<void(KG::Component::IRigidComponent*, KG::Component::IRigidComponent*)> GetCollisionCallback() { return callback; }
+		virtual void SetCollisionCallback(KG::Component::CollisionCallbackFunc&& collisionCallback) { this->callback = collisionCallback; };
+		KG::Component::CollisionCallbackFunc GetCollisionCallback() { return callback; }
 		virtual physx::PxActor* GetActor() { return nullptr; };
 		virtual void AddForce(DirectX::XMFLOAT3 dir, float distance = 1.0f) {};
 		virtual void SetVelocity(DirectX::XMFLOAT3 dir, float distance = 1.0f) {};
+		virtual void AddTorque(DirectX::XMFLOAT3 axis, float power) {};
+		virtual void SetAngle(DirectX::XMFLOAT4 quat) {};
 		void SetId(unsigned int id) { this->id = id; }
 		unsigned int GetId() const { return this->id; }
 		physx::PxFilterData* GetFilterData() { return filterData; }
+
+	public:
+		// property
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		positionProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		scaleProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		rotationProp;
+		KG::Core::SerializableEnumProperty<FilterGroup>			filterProp;
+		KG::Core::SerializableEnumProperty<COLLISION_SHAPE>		shapeProp;
 
 
 	protected:
@@ -98,18 +113,13 @@ namespace KG::Component
 		virtual physx::PxActor* GetActor() override final { return reinterpret_cast<physx::PxActor*>(actor); };
 		virtual void AddForce(DirectX::XMFLOAT3 dir, float distance = 1.0f) override;
 		virtual void SetVelocity(DirectX::XMFLOAT3 dir, float distance = 1.0f) override;
+		virtual void AddTorque(DirectX::XMFLOAT3 axis, float power) override;
+		virtual void SetAngle(DirectX::XMFLOAT4 quat) override;
 		// raycast 테스트
-
-
 
 	private:
 		// 참고할 코드 (저장 정보)
-		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		positionProp;
-		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		scaleProp;
 		KG::Core::SerializableProperty<bool>					applyProp;
-		KG::Core::SerializableEnumProperty<SHOW_COLLISION_BOX>	showProp;
-		KG::Core::SerializableEnumProperty<FilterGroup>			filterProp;
-
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
@@ -130,10 +140,6 @@ namespace KG::Component
 		void SetActor(physx::PxRigidStatic* actor);
 		virtual physx::PxActor* GetActor() override final { return reinterpret_cast<physx::PxActor*>(actor); };
 	private:
-		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		positionProp;
-		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		scaleProp;
-		KG::Core::SerializableEnumProperty<SHOW_COLLISION_BOX>	showProp;
-		KG::Core::SerializableEnumProperty<FilterGroup>			filterProp;
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
