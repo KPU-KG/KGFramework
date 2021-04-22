@@ -109,7 +109,7 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 		KG::Utill::HashString("mountain.fbx"),
 		KG::Utill::HashString("crawler.fbx"),
 	};
-	this->renderer->PreloadModels(preLoads);
+	this->renderer->PreloadModels(std::move(preLoads));
 
 
 	this->PostSceneFunction();

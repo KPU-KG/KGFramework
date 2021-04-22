@@ -783,11 +783,14 @@ static void ProcessAnimationNode(KG::Utill::AnimationLayer& result, FbxNode* pFb
 
 FbxManager* pFbxManager = nullptr;
 
+std::mutex fbxSdkMutex;
+
 void KG::Utill::ImportData::LoadFromPathFBX(const std::string& path)
 {
 	std::string prePath = (path.substr(0, path.size() - 4) + "_pre.fbx");
 	bool isPreProcessed = exists(prePath);
 	std::string currentPath = isPreProcessed ? prePath : path;
+	std::lock_guard<std::mutex> lg{ fbxSdkMutex };
 	DebugNormalMessage("Load FBX From " << currentPath.c_str());
 	if( !pFbxManager )  pFbxManager = FbxManager::Create();
 	FbxIOSettings* pFbxIOSettings = FbxIOSettings::Create(pFbxManager, IOSROOT);

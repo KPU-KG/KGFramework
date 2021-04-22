@@ -202,9 +202,9 @@ void KG::Renderer::KGDXRenderer::PreRenderUI()
 
 }
 
-void KG::Renderer::KGDXRenderer::PreloadModels(const std::vector<KG::Utill::HashString>& ids)
+void KG::Renderer::KGDXRenderer::PreloadModels(std::vector<KG::Utill::HashString>&& ids)
 {
-	return KG::Resource::ResourceContainer::GetInstance()->PreLoadModels(ids);
+	return KG::Resource::ResourceContainer::GetInstance()->PreLoadModels(std::move(ids));
 }
 
 void KG::Renderer::KGDXRenderer::CubeCaemraRender()
