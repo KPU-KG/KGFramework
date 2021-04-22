@@ -158,6 +158,16 @@ void KGDXRenderer::Render()
 	ID3D12DescriptorHeap* heaps[] = { this->descriptorHeapManager->Get() };
 	this->mainCommandList->SetDescriptorHeaps( 1, heaps );
 
+	if ( !this->renderEngine->hasRenderJobs() )
+	{
+		auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+			this->renderTargetBuffers[this->swapChainBufferIndex],
+			D3D12_RESOURCE_STATE_PRESENT,
+			D3D12_RESOURCE_STATE_RENDER_TARGET);
+		this->mainCommandList->ResourceBarrier(1,
+			&barrier
+		);
+	}
 	this->ShadowMapRender();
 	this->CubeCaemraRender();
 	this->NormalCameraRender();

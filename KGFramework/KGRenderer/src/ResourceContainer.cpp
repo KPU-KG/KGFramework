@@ -94,7 +94,9 @@ void KG::Resource::ResourceContainer::PreLoadModels(std::vector<KG::Utill::HashS
 	{
 		this->preloadModels.emplace(vectors[i], promises[i].get_future());
 	}
-	std::async(AsyncLoadFrameModel, std::move(vectors), std::move(promises));
+	std::thread preloadThread{ AsyncLoadFrameModel , std::move(vectors), std::move(promises) };
+	preloadThread.detach();
+	//std::async(std::launch::async, AsyncLoadFrameModel, std::move(vectors), std::move(promises));
 	DebugNormalMessage("Preload Models Req End");
 }
 
