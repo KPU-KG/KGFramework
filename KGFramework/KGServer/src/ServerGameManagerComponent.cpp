@@ -12,6 +12,7 @@ void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 
 void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 {
+	DebugNormalMessage("Server Update");
 }
 
 bool KG::Component::SGameManagerComponent::OnDrawGUI()

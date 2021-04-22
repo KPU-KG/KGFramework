@@ -30,6 +30,8 @@ namespace KG::Server
 		virtual void LockWorld() = 0;
 		virtual void UnlockWorld() = 0;
 
+		virtual void Update(float elapsedTime) = 0;
+
 		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() = 0;
 		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;

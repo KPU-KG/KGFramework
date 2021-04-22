@@ -76,5 +76,8 @@ namespace KG::Server
 		virtual void SetServerObject(KG::Server::NET_OBJECT_ID id, KG::Component::SBaseComponent* obj);
 		virtual void BroadcastPacket(void* packet, SESSION_ID ignore = SERVER_ID);
 		virtual void SendPacket(SESSION_ID playerId, void* packet);
+
+		// IServer을(를) 통해 상속됨
+		virtual void Update(float elapsedTime) override;
 	};
 };

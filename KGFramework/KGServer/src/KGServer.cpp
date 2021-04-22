@@ -284,6 +284,12 @@ void KG::Server::Server::SendPacket(SESSION_ID playerId, void* packet)
 	}
 }
 
+void KG::Server::Server::Update(float elapsedTime)
+{
+	this->sGameManagerSystem.OnUpdate(elapsedTime);
+	this->sPlayerSystem.OnUpdate(elapsedTime);
+}
+
 void KG::Server::Server::SendLoginOkPacket(SESSION_ID playerId)
 {
 }
