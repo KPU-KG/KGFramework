@@ -17,6 +17,7 @@
 
 #include "ServerGameManagerComponent.h"
 #include "ServerPlayerControllerComponent.h"
+#include "ServerEnemyControllerComponent.h"
 
 namespace KG::Server
 {
@@ -44,7 +45,7 @@ namespace KG::Server
 		//Server System
 		KG::Component::SGameManagerComponentSystem sGameManagerSystem;
 		KG::Component::SPlayerComponentSystem sPlayerSystem;
-
+		KG::Component::SEnemyControllerComponentSystem sEnemyControllerSystem;
 
 		static void IOCPWorker(Server* server);
 

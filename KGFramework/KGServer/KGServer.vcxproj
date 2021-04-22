@@ -169,6 +169,7 @@
   <ItemGroup>
     <ClInclude Include="export\IKGServer.h" />
     <ClInclude Include="export\ServerBaseComponent.h" />
+    <ClInclude Include="export\ServerEnemyControllerComponent.h" />
     <ClInclude Include="export\ServerGameManagerComponent.h" />
     <ClInclude Include="export\ServerPlayerControllerComponent.h" />
     <ClInclude Include="include\framework.h" />
@@ -182,6 +183,9 @@
     <ClCompile Include="src\KGServer.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\ServerBaseComponent.cpp" />
+    <ClCompile Include="src\ServerEnemyControllerComponent.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
+    </ClCompile>
     <ClCompile Include="src\ServerGameManagerComponent.cpp" />
     <ClCompile Include="src\ServerPlayerControllerComponent.cpp" />
     <ClCompile Include="src\ServerUtill.cpp" />

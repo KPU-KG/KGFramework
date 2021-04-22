@@ -205,6 +205,7 @@ void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider&
 {
 	this->sGameManagerSystem.OnPostProvider(provider);
 	this->sPlayerSystem.OnPostProvider(provider);
+	this->sEnemyControllerSystem.OnPostProvider(provider);
 }
 
 void KG::Server::Server::DrawImGUI()
