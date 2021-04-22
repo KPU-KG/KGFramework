@@ -6,6 +6,7 @@
 #include <DirectXMathConvert.inl>
 #include <DirectXMath.h>
 #include <DirectXMathMisc.inl>
+#include <mutex>
 
 
 
@@ -780,13 +781,15 @@ static void ProcessAnimationNode(KG::Utill::AnimationLayer& result, FbxNode* pFb
 	}
 }
 
+FbxManager* pFbxManager = nullptr;
+
 void KG::Utill::ImportData::LoadFromPathFBX(const std::string& path)
 {
 	std::string prePath = (path.substr(0, path.size() - 4) + "_pre.fbx");
 	bool isPreProcessed = exists(prePath);
 	std::string currentPath = isPreProcessed ? prePath : path;
 	DebugNormalMessage("Load FBX From " << currentPath.c_str());
-	FbxManager* pFbxManager = FbxManager::Create();
+	if( !pFbxManager )  pFbxManager = FbxManager::Create();
 	FbxIOSettings* pFbxIOSettings = FbxIOSettings::Create(pFbxManager, IOSROOT);
 	pFbxIOSettings->SetBoolProp(IMP_FBX_TEXTURE, false);
 	pFbxIOSettings->SetBoolProp(IMP_CAMERA, false);
@@ -866,8 +869,8 @@ void KG::Utill::ImportData::LoadFromPathFBX(const std::string& path)
 		DebugNormalMessage(meshes[i]->GetName() << " : Load Mesh");
 		this->meshs.push_back(ConvertMesh(meshes[i]));
 	}
+	//pFbxManager->Destroy();
 
-	pFbxManager->Destroy();
 }
 
 DirectX::XMFLOAT4 KG::Utill::ChangeEulerToDxQuat(float x, float y, float z)
@@ -878,4 +881,22 @@ DirectX::XMFLOAT4 KG::Utill::ChangeEulerToDxQuat(float x, float y, float z)
 	fbxQuat.ComposeSphericalXYZ(a);
 	XMFLOAT4 result = XMFLOAT4(fbxQuat.mData[0], fbxQuat.mData[1], fbxQuat.mData[2], fbxQuat.mData[3]);
 	return result;
+}
+
+KG::Utill::ImportData::ImportData(ImportData&& other) noexcept
+{
+	auto otherRootIndex =  other.root - &other.nodes[0];
+	this->meshs = std::move(other.meshs);
+	this->nodes = std::move(other.nodes);
+	this->animations = std::move(other.animations);
+	this->root = &this->nodes[otherRootIndex];
+}
+KG::Utill::ImportData& KG::Utill::ImportData::operator=(ImportData&& other) noexcept
+{
+	auto otherRootIndex = other.root - &other.nodes[0];
+	this->meshs = std::move(other.meshs);
+	this->nodes = std::move(other.nodes);
+	this->animations = std::move(other.animations);
+	this->root = &this->nodes[otherRootIndex];
+	return *this;
 }

@@ -36,6 +36,7 @@ namespace KG::Resource
 
 		KG::Renderer::Shader* LoadShader(const KG::Utill::HashString& id);
 		KG::Resource::FrameModel* LoadModel( const KG::Utill::HashString& id );
+		void PreLoadModels(const std::vector<KG::Utill::HashString>& vectors);
 		KG::Renderer::Geometry* LoadGeometry( const KG::Utill::HashString& id, UINT geometryIndex = 0 );
 		KG::Renderer::Geometry* LoadRawModel( const KG::Utill::HashString& id );
 		KG::Renderer::Geometry* CreateGeometry( const KG::Utill::HashString& id, UINT geometryIndex, KG::Utill::MeshData& mesh );

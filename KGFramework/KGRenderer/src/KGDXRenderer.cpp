@@ -202,6 +202,11 @@ void KG::Renderer::KGDXRenderer::PreRenderUI()
 
 }
 
+void KG::Renderer::KGDXRenderer::PreloadModels(const std::vector<KG::Utill::HashString>& ids)
+{
+	return KG::Resource::ResourceContainer::GetInstance()->PreLoadModels(ids);
+}
+
 void KG::Renderer::KGDXRenderer::CubeCaemraRender()
 {
 	PIXBeginEvent( mainCommandList, PIX_COLOR_INDEX( 0 ), "CubeCameraRender" );
@@ -492,7 +497,7 @@ KG::Component::AnimationControllerComponent* KG::Renderer::KGDXRenderer::GetNewA
 
 KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials )
 {
-	return KG::Resource::ResourceContainer::GetInstance()->CreateObjectFromModel( id, container, materials );
+	return KG::Resource::ResourceContainer::GetInstance()->CreateObjectFromModel(id, container, materials);
 }
 
 KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials)

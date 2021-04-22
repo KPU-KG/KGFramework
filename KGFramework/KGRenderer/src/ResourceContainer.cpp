@@ -3,6 +3,9 @@
 #include <mutex>
 #include <algorithm>
 #include <stack>
+
+#include <future>
+
 #include "Debug.h"
 #include "Scene.h"
 #include "ResourceContainer.h"
@@ -56,6 +59,26 @@ KG::Resource::FrameModel* KG::Resource::ResourceContainer::LoadModel(const KG::U
 		}
 		return model;
 	}
+}
+
+//프리로드 루틴 -> 프로그램 시작되면 프로미스 걸고 컨테이너에 퓨처 넣은 후 비동기 로딩
+// 실제 로드 모델 불리우면 퓨처 리스트에 있나 확인
+//없으면 그냥 로딩
+// 있으면 get으로 받아옴 
+
+static std::vector<KG::Resource::FrameModel> AsyncLoadFrameModel(const std::vector<KG::Utill::HashString>& vectors)
+{
+	std::vector<KG::Resource::FrameModel> models;
+	for ( auto& i : vectors )
+	{
+		models.emplace_back(i);
+	}
+	return models;
+}
+
+void KG::Resource::ResourceContainer::PreLoadModels(const std::vector<KG::Utill::HashString>& vectors)
+{
+	std::promise<int> a;
 }
 
 KG::Renderer::Geometry* KG::Resource::ResourceContainer::LoadGeometry(const KG::Utill::HashString& id, UINT geometryIndex)
