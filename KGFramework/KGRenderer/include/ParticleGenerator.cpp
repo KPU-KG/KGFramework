@@ -4,6 +4,7 @@
 size_t KG::Renderer::ParticleGenerator::GetEmptyIndex() const
 {
 	auto it = std::find_if(this->particles.begin(), this->particles.end(), [](auto& a) { return isExpired(a); });
+
 	return size_t();
 }
 void KG::Renderer::ParticleGenerator::DestroyExpired()

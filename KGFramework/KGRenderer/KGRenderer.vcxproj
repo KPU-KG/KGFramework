@@ -175,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\ParticleGenerator.cpp" />
     <ClCompile Include="src\AnimationComponent.cpp" />
     <ClCompile Include="src\CameraComponent.cpp" />
     <ClCompile Include="src\D3D12Helper.cpp" />
@@ -238,6 +239,7 @@
     <ClInclude Include="include\KGRenderQueue.h" />
     <ClInclude Include="include\KGResourceLoader.h" />
     <ClInclude Include="include\KGShader.h" />
+    <ClInclude Include="include\ParticleGenerator.h" />
     <ClInclude Include="include\RenderTexture.h" />
     <ClInclude Include="include\RootParameterIndex.h" />
     <ClInclude Include="include\ShaderData.h" />

@@ -144,6 +144,9 @@
     <ClCompile Include="src\ParticleEmitterComponent.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
+    <ClCompile Include="include\ParticleGenerator.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">
@@ -256,6 +259,9 @@
     </ClInclude>
     <ClInclude Include="export\ParticleEmitterComponent.h">
       <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ParticleGenerator.h">
+      <Filter>헤더 파일\Core\Utill</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
