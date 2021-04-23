@@ -535,6 +535,16 @@ DescriptorHeapManager* KG::Renderer::KGDXRenderer::GetDescriptorHeapManager() co
 	return this->descriptorHeapManager.get();
 }
 
+double KG::Renderer::KGDXRenderer::GetGameTime() const
+{
+	return this->gameTime;
+}
+
+void KG::Renderer::KGDXRenderer::SetGameTime(double gameTime)
+{
+	this->gameTime = gameTime;
+}
+
 void KG::Renderer::KGDXRenderer::QueryHardwareFeature()
 {
 	D3D12_FEATURE_DATA_D3D12_OPTIONS featureSupport;

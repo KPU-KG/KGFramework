@@ -41,12 +41,18 @@ namespace KG::Renderer
 		
 		size_t imguiFontDescIndex = 0;
 
+		double gameTime = 0.0f;
+
 
 		struct GraphicSystems;
 		std::unique_ptr<GraphicSystems> graphicSystems = nullptr;
 		std::unique_ptr<KGRenderEngine> renderEngine = nullptr;
 		std::unique_ptr<DescriptorHeapManager> descriptorHeapManager = nullptr;
 		static inline KGDXRenderer* instance = nullptr;
+
+		//ParticleBuffer
+
+
 	private:
 		void QueryHardwareFeature();
 
@@ -78,6 +84,7 @@ namespace KG::Renderer
 
 
 		virtual void Initialize() override;
+		virtual void SetGameTime(double gameTime) override;
 		virtual void Render() override;
 		virtual void PreRenderUI() override;
 		virtual void PreloadModels(std::vector<KG::Utill::HashString>&& ids) override;
@@ -91,6 +98,8 @@ namespace KG::Renderer
 		virtual void LightPassRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void SkyBoxRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void PassRenderEnd(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+
+		void EmitParticle(const KG::Component::ParticleDesc& particleDesc);
 
 		virtual void Update(float elapsedTime) override;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) override;
@@ -137,5 +146,9 @@ namespace KG::Renderer
 			return this->dsvDescriptoSize;
 		};
 
-	};
+
+		// IKGRenderer을(를) 통해 상속됨
+		virtual double GetGameTime() const override;
+
+};
 }
