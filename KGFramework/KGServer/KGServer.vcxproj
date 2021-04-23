@@ -78,8 +78,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\include\;$(SolutionDir)KGRenderer\include\;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\export\;$(SolutionDir)KGRenderer\export\;$(IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)src;$(SourcePath)</SourcePath>
+    <LibraryPath>$(SolutionDir)x64\Debug;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
@@ -124,17 +125,18 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>EXPORTS;PROJECT_NAME="$(ProjectName)";%(PreprocessorDefinitions);_DEBUG;KGSERVER_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>EXPORTS;PROJECT_NAME="$(ProjectName)";%(PreprocessorDefinitions);_DEBUG;KGSERVER_EXPORTS;_WINDOWS;_USRDLL</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\include\;$(SolutionDir)KGRenderer\include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\export\;$(SolutionDir)KGRenderer\export\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
+      <AdditionalDependencies>KGPhysics.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -164,6 +166,9 @@
     </ProjectReference>
     <ProjectReference Include="..\KGPhysics\KGPhysics.vcxproj">
       <Project>{cdd29c29-fc1d-4d1b-8802-8407fa7d20a3}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\KGRenderer\KGRenderer.vcxproj">
+      <Project>{499a312c-a98f-4419-a6f9-5fb246a425c0}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>

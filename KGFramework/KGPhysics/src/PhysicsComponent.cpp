@@ -88,6 +88,17 @@ void KG::Component::DynamicRigidComponent::SetVelocity(DirectX::XMFLOAT3 dir, fl
 	actor->setLinearVelocity(physx::PxVec3(dir.x, dir.y, dir.z) * distance);
 }
 
+void KG::Component::DynamicRigidComponent::SetAngularVelocity(DirectX::XMFLOAT3 angle)
+{
+	physx::PxVec3 vec = { DirectX::XMConvertToRadians(angle.x), DirectX::XMConvertToRadians(angle.y) ,DirectX::XMConvertToRadians(angle.z) };
+	actor->setAngularVelocity(vec);
+}
+
+void  KG::Component::DynamicRigidComponent::SetRotation(DirectX::XMFLOAT4 quat) {
+	auto pose = actor->getGlobalPose();
+	pose.q = physx::PxQuat(quat.x, quat.y, quat.z, quat.w);
+	actor->setGlobalPose(pose);
+}
 
 void KG::Component::DynamicRigidComponent::SetupFiltering(unsigned int filterGroup, unsigned int filterMask)
 {

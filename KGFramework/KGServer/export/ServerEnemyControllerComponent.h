@@ -3,23 +3,66 @@
 #include "ISystem.h"
 #include "ServerBaseComponent.h"
 #include "Debug.h"
-#include "SerializableProperty.h"
-#include <functional>
+#include <vector>
 
 namespace KG::Component
 {
 	// 1. 주어진 위치에서 범위 설정 - 이거 GUI 필요할까?
 	// 2. 범위 내에서 돌아다니기 - 이건 노드 설치하면 A*나 길찾기 알고리즘 적용해야 할듯
 
+	// action
+	// 대기
+	// 이동
+	// 공격
+	// 피격
+
+	// state
+	// 배회
+	// 추적 (플레이어 발견)
+	// 도망 (?)
+	enum class EnemyAction {
+		eIDLE = 0,
+		eSETGOAL,
+		eROTATE,
+		eMOVE,
+		eATTACK,
+		eATTACKED
+	};
+
+	enum class EnemyState {
+		eWANDER = 0,			// 타겟 위치 정하기 -> 이동하기 -> 잠시 대기 -> 타겟 위치 정하기
+		eTRACE,					
+		eRUNAWAY
+	};
+
+	class IRigidComponent;
+
 	class DLL SEnemyControllerComponent : public SBaseComponent
 	{
 	private:
+		KG::Component::IRigidComponent*				 rigid = nullptr;
+		// KG::Component::AnimationControllerComponent* anim = nullptr;
+
+		EnemyAction				action = EnemyAction::eSETGOAL;
+		EnemyState				state = EnemyState::eWANDER;
+
 		DirectX::XMFLOAT3		center = { 0,0,0 };			// onCreate에서 정해줌
 		float					range = 10;
 		DirectX::XMFLOAT3		direction = { 0,0,0 };		// 일단 z값은 고려하지 않을 예정이나 비행 몹에는 쓸지도..?
 		DirectX::XMFLOAT3		goal = { 0,0,0 };
 		float					speed = 10;
-		float					watingTime = 3;
+		float					idleInterval = 3;
+		float					idleTimer = 0;
+
+		float					angleTo;
+		bool					rotateClockwise;
+
+		void UpdateState();
+		bool SetGoal();
+		bool RotateToGoal();
+		bool MoveToGoal();
+		bool Idle(float elapsedTime);
+		bool IsClockwise() const;
 	public:
 		SEnemyControllerComponent();
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
@@ -28,16 +71,9 @@ namespace KG::Component
 		{
 			IComponent::OnDestroy();
 		}
-		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender) override;
-	private:
-		// property
-		KG::Core::SerializableProperty<float>					rangeProp;
-		KG::Core::SerializableProperty<float>					speedProp;
 
-	public:
+		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender) override;
 		virtual bool OnDrawGUI();
-		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement) override;
-		virtual void OnDataSave(tinyxml2::XMLElement* parentElement) override;
 
 	};
 
