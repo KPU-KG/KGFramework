@@ -278,7 +278,7 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
 #endif
 	actor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_X, true);		// DynamicRigidComponent에 플래그 추가
 	actor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z, true);
-	actor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, true); 
+	// actor->setRigidDynamicLockFlag(PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, true); 
 	// actor->
 
 	scene->addActor(*actor);

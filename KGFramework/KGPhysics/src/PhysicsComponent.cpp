@@ -50,7 +50,9 @@ void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 	if (apply) {
 		this->actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, false);
 		physx::PxVec3 p = actor->getGlobalPose().p;
+		physx::PxQuat q = actor->getGlobalPose().q;
 		transform->SetPosition(p.x - collisionBox.center.x, p.y - collisionBox.center.y, p.z - collisionBox.center.z);
+		transform->SetRotation(q.x, q.y, q.z, q.w);
 	}
 	else {
 		this->actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
@@ -61,6 +63,8 @@ void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 
 		physx::PxTransform t = actor->getGlobalPose();
 		t.p = { pos.x,pos.y, pos.z };
+		auto rot = transform->GetRotation();
+		t.q = physx::PxQuat(rot.x, rot.y, rot.z, rot.w);
 		actor->setGlobalPose(t);
 	}
 }
@@ -90,14 +94,22 @@ void KG::Component::DynamicRigidComponent::SetVelocity(DirectX::XMFLOAT3 dir, fl
 
 void KG::Component::DynamicRigidComponent::SetAngularVelocity(DirectX::XMFLOAT3 angle)
 {
-	physx::PxVec3 vec = { DirectX::XMConvertToRadians(angle.x), DirectX::XMConvertToRadians(angle.y) ,DirectX::XMConvertToRadians(angle.z) };
+	physx::PxVec3 vec = { angle.x, angle.y ,angle.z };
+	// physx::PxVec3 vec = { DirectX::XMConvertToRadians(angle.x), DirectX::XMConvertToRadians(angle.y) ,DirectX::XMConvertToRadians(angle.z) };
 	actor->setAngularVelocity(vec);
+	actor->setAngularDamping(0);
 }
 
 void  KG::Component::DynamicRigidComponent::SetRotation(DirectX::XMFLOAT4 quat) {
 	auto pose = actor->getGlobalPose();
 	pose.q = physx::PxQuat(quat.x, quat.y, quat.z, quat.w);
 	actor->setGlobalPose(pose);
+}
+
+DirectX::XMFLOAT4 KG::Component::DynamicRigidComponent::GetActorAngle() const
+{
+	auto q = actor->getGlobalPose().q;
+	return DirectX::XMFLOAT4(q.x, q.y, q.z, q.w);
 }
 
 void KG::Component::DynamicRigidComponent::SetupFiltering(unsigned int filterGroup, unsigned int filterMask)

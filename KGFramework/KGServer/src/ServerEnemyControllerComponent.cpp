@@ -2,6 +2,7 @@
 #include "PhysicsComponent.h"
 #include "Transform.h"
 #include "imgui/imgui.h"
+#include "MathHelper.h"
 #include <string>
 #include <random>
 
@@ -22,16 +23,41 @@ bool KG::Component::SEnemyControllerComponent::SetGoal()
 	// goal.y = goalRange(gen) * range;
 	goal.z = goalRange(gen) * range;
 
-	angleTo = std::atan2(goal.z, goal.x);
+	direction = Math::Vector3::Subtract(goal, transform->GetPosition());
+	direction.y = 0;
+
+	XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&direction)));
+
+	auto angleTo = std::atan2(goal.z, goal.x);
+	XMStoreFloat4(&quatTo, Math::Quaternion::XMQuaternionRotationRollPitchYaw(0, angleTo, 0));
+	quatFrom = transform->GetRotation();
+
+	rotateTimer = 0;
+	// XMQuaternionSlerp()
+
+
 	
-	rotateClockwise = IsClockwise();
+	// rotateClockwise = IsClockwise();
 
 	// 나중에는 이동 불가능한 위치 선택시 false 리턴
 	return true;
 }
 
-bool KG::Component::SEnemyControllerComponent::RotateToGoal()
+bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 {
+	rotateTimer += elapsedTime;
+	if (rotateInterval <= rotateTimer) {
+		rigid->SetRotation(quatTo);
+		return true;
+	}
+	else {
+		DirectX::XMFLOAT4 quat;
+		XMStoreFloat4(&quat, XMQuaternionSlerp(XMLoadFloat4(&quatFrom), XMLoadFloat4(&quatTo), rotateTimer / rotateInterval));
+		rigid->SetRotation(quat);
+	}
+	return false;
+
+	/*
 	int rotDir = 1;
 	bool completeRotate = false;
 	if (rotateClockwise) {
@@ -63,7 +89,7 @@ bool KG::Component::SEnemyControllerComponent::RotateToGoal()
 			rigid->SetAngularVelocity(DirectX::XMFLOAT3(0, rotDir, 0));
 	}
 
-	return completeRotate;
+	return completeRotate;*/
 }
 
 bool KG::Component::SEnemyControllerComponent::MoveToGoal()
@@ -93,7 +119,12 @@ bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 			flag_z = true;
 	}
 
-	return (flag_x && /*flag_y &&*/ flag_z);
+	if ((flag_x && /*flag_y &&*/ flag_z)) {
+		rigid->SetVelocity(direction, 0);
+		return true;
+	}
+
+	return false;
 }
 
 bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
@@ -109,19 +140,12 @@ KG::Component::SEnemyControllerComponent::SEnemyControllerComponent()
 
 }
 
-bool KG::Component::SEnemyControllerComponent::IsClockwise() const
-{
-	auto objAngle = gameObject->GetTransform()->GetEulerDegree();
-	float curAngle = std::atan2(objAngle.y, objAngle.x);
-
-	return !(abs(angleTo - curAngle) <= 180);
-}
-
 void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	SBaseComponent::OnCreate(obj);
-	this->center = this->gameObject->GetTransform()->GetWorldPosition();
-	// this->rigid = this->gameObject->GetComponent<KG::Component::IRigidComponent>();
+	this->transform = this->gameObject->GetTransform();
+	this->center = this->transform->GetWorldPosition();
+	this->rigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
 	// this->anim = this->gameObject->GetComponent<AnimationControllerComponent>();
 }
 
@@ -137,7 +161,7 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 		action = EnemyAction::eROTATE;
 		break;
 	case EnemyAction::eROTATE:
-		if (RotateToGoal())
+		if (RotateToGoal(elapsedTime))
 			action = EnemyAction::eMOVE;
 		break;
 	case EnemyAction::eMOVE:
@@ -184,7 +208,9 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 				break;
 			}
 			ImGui::TextDisabled("Action : %s", curAction);
-			ImGui::TextDisabled("Center : (%f, %f, %f)", goal.x, goal.y, goal.z);
+			ImGui::TextDisabled("Goal : (%f, %f, %f)", goal.x, goal.y, goal.z);
+			auto angle = transform->GetEulerDegree();
+			ImGui::TextDisabled("rotation : (%f, %f, %f)", angle.x, angle.y, angle.z);
 		}
 		else {
 			std::string cs("center");

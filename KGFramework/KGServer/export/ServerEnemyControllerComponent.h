@@ -35,12 +35,13 @@ namespace KG::Component
 		eRUNAWAY
 	};
 
-	class IRigidComponent;
+	class DynamicRigidComponent;
 
 	class DLL SEnemyControllerComponent : public SBaseComponent
 	{
 	private:
-		KG::Component::IRigidComponent*				 rigid = nullptr;
+		KG::Component::DynamicRigidComponent*		rigid = nullptr;
+		TransformComponent*							transform = nullptr;
 		// KG::Component::AnimationControllerComponent* anim = nullptr;
 
 		EnemyAction				action = EnemyAction::eSETGOAL;
@@ -50,19 +51,19 @@ namespace KG::Component
 		float					range = 10;
 		DirectX::XMFLOAT3		direction = { 0,0,0 };		// 일단 z값은 고려하지 않을 예정이나 비행 몹에는 쓸지도..?
 		DirectX::XMFLOAT3		goal = { 0,0,0 };
-		float					speed = 10;
+		float					speed = 3;
 		float					idleInterval = 3;
 		float					idleTimer = 0;
+		float					rotateInterval = 2;
+		float					rotateTimer = 0;
 
-		float					angleTo;
-		bool					rotateClockwise;
-
+		DirectX::XMFLOAT4		quatTo;
+		DirectX::XMFLOAT4		quatFrom;
 		void UpdateState();
 		bool SetGoal();
-		bool RotateToGoal();
+		bool RotateToGoal(float elapsedTime);
 		bool MoveToGoal();
 		bool Idle(float elapsedTime);
-		bool IsClockwise() const;
 	public:
 		SEnemyControllerComponent();
 		virtual void OnCreate(KG::Core::GameObject* obj) override;

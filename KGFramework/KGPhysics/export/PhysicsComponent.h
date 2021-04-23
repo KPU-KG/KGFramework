@@ -73,7 +73,7 @@ namespace KG::Component
 		void SetId(unsigned int id) { this->id = id; }
 		unsigned int GetId() const { return this->id; }
 		physx::PxFilterData* GetFilterData() { return filterData; }
-
+		virtual DirectX::XMFLOAT4 GetActorAngle() const { return DirectX::XMFLOAT4::XMFLOAT4(); }
 
 	protected:
 		std::function<void()> updateLambda = nullptr;
@@ -102,6 +102,7 @@ namespace KG::Component
 		virtual void SetVelocity(DirectX::XMFLOAT3 dir, float distance = 1.0f) override;
 		virtual void SetAngularVelocity(DirectX::XMFLOAT3 angle) override;
 		virtual void SetRotation(DirectX::XMFLOAT4 quat) override;
+		virtual DirectX::XMFLOAT4 GetActorAngle() const override;
 		// raycast Å×½ºÆ®
 
 

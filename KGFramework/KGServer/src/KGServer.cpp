@@ -289,6 +289,7 @@ void KG::Server::Server::Update(float elapsedTime)
 {
 	this->sGameManagerSystem.OnUpdate(elapsedTime);
 	this->sPlayerSystem.OnUpdate(elapsedTime);
+	this->sEnemyControllerSystem.OnUpdate(elapsedTime);
 }
 
 void KG::Server::Server::SendLoginOkPacket(SESSION_ID playerId)
