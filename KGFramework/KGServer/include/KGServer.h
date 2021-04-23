@@ -45,6 +45,7 @@ namespace KG::Server
 		KG::Component::SGameManagerComponentSystem sGameManagerSystem;
 		KG::Component::SPlayerComponentSystem sPlayerSystem;
 
+	
 
 		static void IOCPWorker(Server* server);
 
@@ -60,7 +61,13 @@ namespace KG::Server
 
 	public:
 		std::mutex worldLock;
+		bool isConnect = false;
+		//std::vector<KG::Component::TransformComponent> transforms; 
+		// 트랜스폼 + id 구조체? 받은 뒤 해당 id settransform
+		//std::vector<KG::Packet::CS_INPUT> inputs;
 		NET_OBJECT_ID GetNewObjectId();
+
+		//void AddPlayer();
 
 		// IServer을(를) 통해 상속됨
 		virtual void Initialize() override;

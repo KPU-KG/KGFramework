@@ -383,3 +383,6 @@ KG::Server::NET_OBJECT_ID KG::Server::Server::GetNewObjectId()
 	return ret;
 }
 
+//void KG::Server::Server::AddPlayer(KG::Component::TransformComponent* trans) {
+//	
+//}
