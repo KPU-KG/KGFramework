@@ -36,13 +36,14 @@ namespace KG::Component
 	};
 
 	class DynamicRigidComponent;
+	class AnimationControllerComponent;
 
 	class DLL SEnemyControllerComponent : public SBaseComponent
 	{
 	private:
-		KG::Component::DynamicRigidComponent*		rigid = nullptr;
+		DynamicRigidComponent*						rigid = nullptr;
 		TransformComponent*							transform = nullptr;
-		// KG::Component::AnimationControllerComponent* anim = nullptr;
+		AnimationControllerComponent*				anim = nullptr;
 
 		EnemyAction				action = EnemyAction::eSETGOAL;
 		EnemyState				state = EnemyState::eWANDER;
@@ -66,13 +67,27 @@ namespace KG::Component
 		bool Idle(float elapsedTime);
 	public:
 		SEnemyControllerComponent();
+		void SetCenter(DirectX::XMFLOAT3 center) {
+			this->center = center;
+		}
+		void SetSpeed(float speed) {
+			this->speed = speed;
+		}
+		void SetIdleInterval(float interval) {
+			this->idleInterval = interval;
+		}
+		void SetRotateInterval(float interval) {
+			this->rotateInterval = interval;
+		}
+		void SetWanderRange(float range) {
+			this->range = range;
+		}
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override
 		{
 			IComponent::OnDestroy();
 		}
-
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender) override;
 		virtual bool OnDrawGUI();
 

@@ -1,5 +1,6 @@
 #include "ServerEnemyControllerComponent.h"
 #include "PhysicsComponent.h"
+#include "AnimationComponent.h"
 #include "Transform.h"
 #include "imgui/imgui.h"
 #include "MathHelper.h"
@@ -25,7 +26,6 @@ bool KG::Component::SEnemyControllerComponent::SetGoal()
 
 	direction = Math::Vector3::Subtract(goal, transform->GetPosition());
 	direction.y = 0;
-
 	XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&direction)));
 
 	auto angleTo = std::atan2(goal.z, goal.x);
@@ -146,7 +146,7 @@ void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* ob
 	this->transform = this->gameObject->GetTransform();
 	this->center = this->transform->GetWorldPosition();
 	this->rigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
-	// this->anim = this->gameObject->GetComponent<AnimationControllerComponent>();
+	this->anim = this->gameObject->GetComponent<AnimationControllerComponent>();
 }
 
 void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)

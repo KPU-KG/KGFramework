@@ -78,6 +78,7 @@ namespace KG::Server
 		virtual void UnlockWorld() override;
 		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() override;
 		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() override;
+		virtual KG::Component::SEnemyControllerComponent* GetNewEnemyControllerComponent() override;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 		virtual void DrawImGUI() override;
 		virtual bool isStarted() const override;

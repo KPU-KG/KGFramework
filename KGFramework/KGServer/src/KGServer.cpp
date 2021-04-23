@@ -201,6 +201,13 @@ KG::Component::SPlayerComponent* KG::Server::Server::GetNewPlayerComponent()
 	return comp;
 }
 
+KG::Component::SEnemyControllerComponent* KG::Server::Server::GetNewEnemyControllerComponent()
+{
+	auto* comp = this->sEnemyControllerSystem.GetNewComponent();
+	comp->SetServerInstance(this);
+	return comp;
+}
+
 void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->sGameManagerSystem.OnPostProvider(provider);
