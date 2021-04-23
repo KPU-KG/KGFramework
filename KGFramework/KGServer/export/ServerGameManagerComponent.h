@@ -9,6 +9,7 @@ namespace KG::Component
 	class DLL SGameManagerComponent : public SBaseComponent
 	{
 	public:
+		float timer = 0;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override

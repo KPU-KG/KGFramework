@@ -30,7 +30,7 @@ namespace KG::Packet
 		SC_FIRE, // 초기버전 미사용
 		SC_ADD_PLAYER,
 		SC_PLAYER_SYNC,
-
+		SC_SCENE_DATA,
 		CS_REQ_LOGIN = 200, // 초기버전 미사용
 		CS_INPUT, // 사용
 		CS_FIRE // 초기버전 미사용
@@ -143,6 +143,18 @@ namespace KG::Packet
 		KG::Server::NET_OBJECT_ID playerObjectId;
 		RawFloat3 position;
 		RawFloat4 rotation;
+	};
+
+	struct SC_SCENE_DATA // 플레이어, 적 관련 좌표만 주기적으로 송신
+	{
+		DEFAULT_PACKET_HEADER(SC_SCENE_DATA);
+		// 트랜스폼
+		RawFloat3 position; 
+		RawFloat4 rotation;
+		// std::vector<RawFloat3> positions
+		// std::vector<RawFloat4> rotations
+		// 인풋
+		// std::vector<CS_INPUT> inputs
 	};
 
 	struct SC_ADD_OBJECT

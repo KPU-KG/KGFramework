@@ -199,3 +199,9 @@ void KG::Server::Network::SetScene(KG::Core::Scene* scene)
 	this->scene = scene;
 }
 
+void KG::Server::Network::Update(float elapsedTime)
+{
+	this->cGameManagerSystem.OnUpdate(elapsedTime);
+	this->cPlayerSystem.OnUpdate(elapsedTime);
+}
+

@@ -10,6 +10,8 @@ namespace KG::Component
 	class DLL CGameManagerComponent : public CBaseComponent
 	{
 	public:
+		CBaseComponent* playerController;
+		TransformComponent* playerTransform;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override

@@ -564,6 +564,7 @@ void KG::GameFramework::OnProcess()
 	this->UIRender();
 	this->input->ProcessInput(this->engineDesc.hWnd);
 	this->system->OnUpdate(this->timer.GetTimeElapsed());
+	this->ServerUpdate(this->timer.GetTimeElapsed());
 	if ( this->scene->isStartGame )
 	{
 		this->renderer->Update(this->timer.GetTimeElapsed());
@@ -584,6 +585,18 @@ void KG::GameFramework::ServerProcess()
 	else if ( this->networkServer && this->networkServer->isStarted() )
 	{
 		this->networkServer->LockWorld();
+	}
+}
+
+void KG::GameFramework::ServerUpdate(float elapsedTime)
+{
+	if ( this->networkClient && this->networkClient->IsConnected() )
+	{
+		this->networkClient->Update(elapsedTime);
+	}
+	if ( this->networkServer && this->networkServer->isStarted() )
+	{
+		this->networkServer->Update(elapsedTime);
 	}
 }
 

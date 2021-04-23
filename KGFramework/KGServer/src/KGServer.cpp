@@ -285,6 +285,12 @@ void KG::Server::Server::SendPacket(SESSION_ID playerId, void* packet)
 	}
 }
 
+void KG::Server::Server::Update(float elapsedTime)
+{
+	this->sGameManagerSystem.OnUpdate(elapsedTime);
+	this->sPlayerSystem.OnUpdate(elapsedTime);
+}
+
 void KG::Server::Server::SendLoginOkPacket(SESSION_ID playerId)
 {
 }
@@ -378,3 +384,6 @@ KG::Server::NET_OBJECT_ID KG::Server::Server::GetNewObjectId()
 	return ret;
 }
 
+//void KG::Server::Server::AddPlayer(KG::Component::TransformComponent* trans) {
+//	
+//}
