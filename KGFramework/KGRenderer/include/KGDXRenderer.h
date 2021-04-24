@@ -51,7 +51,7 @@ namespace KG::Renderer
 		static inline KGDXRenderer* instance = nullptr;
 
 		//ParticleBuffer
-
+		ParticleGenerator particleGenerator;
 
 	private:
 		void QueryHardwareFeature();
