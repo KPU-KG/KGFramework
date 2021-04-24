@@ -14,7 +14,6 @@
 #include <MSWSock.h>
 
 #include "Session.h"
-
 #include "ServerGameManagerComponent.h"
 #include "ServerPlayerControllerComponent.h"
 
@@ -61,10 +60,12 @@ namespace KG::Server
 
 	public:
 		std::mutex worldLock;
-		bool isConnect = false;
-		//std::vector<KG::Component::TransformComponent> transforms; 
-		// 트랜스폼 + id 구조체? 받은 뒤 해당 id settransform
-		//std::vector<KG::Packet::CS_INPUT> inputs;
+		int currentnum = 0;
+		
+		KG::Server::NET_OBJECT_ID playerObjectIds[4];
+		KG::Packet::RawFloat3 positions[4];
+		KG::Packet::CS_INPUT inputs[4];
+
 		NET_OBJECT_ID GetNewObjectId();
 
 		//void AddPlayer();

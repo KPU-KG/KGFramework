@@ -13,16 +13,35 @@ void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 {
 	DebugNormalMessage("Server Update");
-	if (this->server->isConnect) {
-		if (timer < 1.0f)
-			timer += elapsedTime;
+	if (this->server->currentnum > 0) {
+		for (size_t i = 0; i < 4; i++)
+		{
+			if (server->inputs[i].stateW) {
+				server->positions[i].z += 0.01;
+			}
+			if (server->inputs[i].stateA) {
+				server->positions[i].x -= 0.01;
+			}
+			if (server->inputs[i].stateS) {
+				server->positions[i].z -= 0.01;
+			}
+			if (server->inputs[i].stateD) {
+				server->positions[i].x += 0.01;
+			}
+		}
+
+		if (updatetimer < 1.0f)
+			updatetimer += elapsedTime;
 		else {
-			KG::Packet::SC_SCENE_DATA DataPacket = {};
-			DataPacket.position = KG::Packet::RawFloat3(rand() % 5, 0, rand() % 5);
-			// DataPacket.positions = this->server->positions
+			KG::Packet::SC_PLAYER_DATA DataPacket = {};
+			for (size_t i = 0; i < 4; i++)
+			{
+				DataPacket.playerObjectIds[i] = server->playerObjectIds[i];
+				DataPacket.positions[i] = server->positions[i];
+			}
 			this->BroadcastPacket(&DataPacket);
 			std::cout << "send scene data\n";
-			timer = 0;
+			updatetimer = 0;
 		}
 	}
 	/*
@@ -99,14 +118,22 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 
 		//플레이어 추가!
 		this->server->LockWorld();
-		this->server->isConnect = true;
+		
 		auto* playerComp = static_cast<KG::Component::SBaseComponent*>(this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id));
 		playerComp->SetNetObjectId(id);
 		auto* trans = playerComp->GetGameObject()->GetTransform();
 		trans->SetPosition(id, 0, id);
 		this->GetGameObject()->GetTransform()->AddChild(trans);
 		this->server->UnlockWorld();
-		//this->server->Addplayer(trans)
+
+		server->playerObjectIds[server->currentnum] = id;
+		this->server->currentnum += 1;
+		this->server->SetServerObject(id, playerComp);
+		/*server->playerObjectIds.emplace_back(id);
+		server->positions.emplace_back(trans->GetPosition());*/
+		/*KG::Packet::SC_PLAYER_DATA t;
+		t.position = trans->GetPosition();
+		this->server->playerDatas.emplace_back(t);*/
 
 		KG::Packet::SC_PLAYER_INIT initPacket = {};
 		initPacket.playerObjectId = id;
@@ -122,10 +149,15 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 	}
 	return true;
 	case KG::Packet::PacketType::CS_INPUT: {
-		// this->server->inputs
-		// 해당 인풋을 보낸 클라이언트의 인풋 정보 변경
+		auto* InputPacket = KG::Packet::PacketCast<KG::Packet::CS_INPUT>(packet);
+		this->server->inputs[InputPacket->header.objectId].stateW = InputPacket->stateW;
+		this->server->inputs[InputPacket->header.objectId].stateA = InputPacket->stateA;
+		this->server->inputs[InputPacket->header.objectId].stateS = InputPacket->stateS;
+		this->server->inputs[InputPacket->header.objectId].stateD = InputPacket->stateD;
+		this->server->inputs[InputPacket->header.objectId].stateShift = InputPacket->stateShift;
+		std::cout << "get input" << InputPacket->header.objectId << std::endl;
 	}
-										 return true;
+	return true;
 	case KG::Packet::PacketType::CS_FIRE:
 		std::cout << "Error Packet Received\n";
 		return false;

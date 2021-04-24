@@ -2,6 +2,7 @@
 #include "Protocol.h"
 #include "Network.h"
 #include "ClientGameManagerComponent.h"
+#include "InputManager.h"
 #include "Scene.h"
 #include "Transform.h"
 
@@ -13,7 +14,34 @@ void KG::Component::CGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 
 void KG::Component::CGameManagerComponent::Update(float elapsedTime)
 {
-
+	if (playerController != nullptr) {
+		KG::Packet::CS_INPUT inputPacket = {};
+		auto input = KG::Input::InputManager::GetInputManager();
+		if (input->IsTouching('W'))
+			inputPacket.stateW = true;
+		else
+			inputPacket.stateW = false;
+		if (input->IsTouching('S'))
+			inputPacket.stateS = true;
+		else
+			inputPacket.stateS = false;
+		if (input->IsTouching('D'))
+			inputPacket.stateD = true;
+		else
+			inputPacket.stateD = false;
+		if (input->IsTouching('A'))
+			inputPacket.stateA = true;
+		else
+			inputPacket.stateA = false;
+		inputPacket.stateShift = false;
+		if (updatetimer < 1.0f)
+			updatetimer += elapsedTime;
+		else {
+			playerController->SendPacket(&inputPacket);
+			updatetimer = 0;
+		}
+	}
+	
 }
 
 bool KG::Component::CGameManagerComponent::OnDrawGUI()
@@ -70,14 +98,29 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 			auto* trans = teamController->GetGameObject()->GetTransform();
 			trans->SetPosition(addPlayerPacket->position);
 			this->GetGameObject()->GetTransform()->AddChild(trans);
+			/*teamControllers.emplace_back(teamController);
+			teamTransforms.emplace_back(trans)*/
 		}
 		return true;
-		case KG::Packet::PacketType::SC_SCENE_DATA:
+		case KG::Packet::PacketType::SC_PLAYER_DATA:
 		{
 			if (playerController != nullptr) {
-				auto* ScenePacket = KG::Packet::PacketCast<KG::Packet::SC_SCENE_DATA>(packet);
-				std::cout << "scene data recv" << std::endl;
-				playerTransform->SetPosition(ScenePacket->position);
+				auto* ScenePacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_DATA>(packet);
+
+				for (size_t i = 0; i < 4; i++)
+				{
+					if (ScenePacket->playerObjectIds[i] != KG::Server::NULL_NET_OBJECT_ID) {
+						if (ScenePacket->playerObjectIds[i] == networkObjectId) {
+							std::cout << "scene data recv" << std::endl;
+							playerTransform->SetPosition(ScenePacket->positions[i]);
+						}
+						else {
+							/*auto* teamController = static_cast<KG::Component::CBaseComponent*>(this->GetGameObject()->GetScene()->CallNetworkCreator("TeamCharacter"_id));
+							auto* trans = teamController->GetGameObject()->GetTransform();
+							trans->SetPosition(ScenePacket->positions[i]);*/
+						}
+					}
+				}
 			}
 		}
 		return true;

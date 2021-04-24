@@ -10,6 +10,8 @@ namespace KG::Component
 	class DLL CGameManagerComponent : public CBaseComponent
 	{
 	public:
+		KG::Packet::CS_INPUT inputPacket = {};
+		float updatetimer = 0;
 		CBaseComponent* playerController;
 		TransformComponent* playerTransform;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;

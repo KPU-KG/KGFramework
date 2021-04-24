@@ -175,14 +175,14 @@ void KG::Server::Server::LockWorld()
 {
 	worldLock.lock();
 	std::stringstream ss;
-	ss << "World Lock / ThreadId : " << std::this_thread::get_id() << "\n";
+	//ss << "World Lock / ThreadId : " << std::this_thread::get_id() << "\n";
 	std::cout << ss.str();
 }
 
 void KG::Server::Server::UnlockWorld()
 {
 	std::stringstream ss;
-	ss << "World UnLock / ThreadId : " << std::this_thread::get_id() << "\n";
+	//ss << "World UnLock / ThreadId : " << std::this_thread::get_id() << "\n";
 	std::cout << ss.str();
 	worldLock.unlock();
 }
