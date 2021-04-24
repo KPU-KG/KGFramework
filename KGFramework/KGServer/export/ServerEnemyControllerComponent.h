@@ -58,8 +58,6 @@ namespace KG::Component
 		float					rotateInterval = 2;
 		float					rotateTimer = 0;
 
-		// DirectX::XMFLOAT4		quatTo;
-		// DirectX::XMFLOAT4		quatFrom;
 		DirectX::XMFLOAT2		angle;
 		void UpdateState();
 		bool SetGoal();

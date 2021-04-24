@@ -199,7 +199,7 @@ void KG::GameFramework::PostSceneFunction()
 			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Fire.FBX"_id));
 			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Fire Aim.FBX"_id));
 
-			ctrl->SetAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id),-1.0f, 1.0f);
+			ctrl->SetAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id), 0, -1.0f, 1.0f);
 			ctrl->SetDefaultAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id));
 			ctrl->SetIgnoreTranslate(false);
 			ctrl->SetIgnoreScale(true);
@@ -337,9 +337,8 @@ void KG::GameFramework::PostSceneFunction()
 		{
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
 			ctrl->RegisterAnimation("mech.fbx"_id, 12);
-			ctrl->SetAnimation(KG::Utill::HashString("mech.fbx"_id));
-
-			ctrl->SetDefaultAnimation(KG::Utill::HashString("mech.fbx"_id));
+			ctrl->SetAnimation(KG::Utill::HashString("mech.fbx"_id), 12);
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("mech.fbx"_id), 12);
 			ctrl->SetIgnoreScale(false);
 			ctrl->SetIgnoreTranslate(true);
 			obj.AddComponent(ctrl);
