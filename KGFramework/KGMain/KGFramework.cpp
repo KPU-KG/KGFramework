@@ -346,15 +346,15 @@ void KG::GameFramework::PostSceneFunction()
 			ctrl->SetIgnoreTranslate(true);
 			obj.AddComponent(ctrl);
 
+			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			obj.AddComponent(phy);
+
 			auto* enemyController = this->networkServer->GetNewEnemyControllerComponent();
 			enemyController->SetIdleInterval(2);
 			enemyController->SetRotateInterval(3);
 			enemyController->SetSpeed(3);
 			enemyController->SetWanderRange(3);
-			obj.AddTemporalComponent(enemyController);
-
-			auto* phy = this->physics->GetNewDynamicRigidComponent();
-			obj.AddComponent(phy);
+			obj.AddComponent(enemyController);
 
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}

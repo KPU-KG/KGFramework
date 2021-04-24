@@ -43,7 +43,7 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 			}
 			else
 			{
-				auto* newComp = static_cast<KG::Component::CBaseComponent*>(this->gameObject->GetScene()->CallNetworkCreator(addPacket->newObjectId));
+				auto* newComp = static_cast<KG::Component::CBaseComponent*>(this->gameObject->GetScene()->CallNetworkCreator(addPacket->presetId));
 				newComp->SetNetObjectId(addPacket->newObjectId);
 				this->network->SetNetworkObject(addPacket->newObjectId, (newComp));
 				this->GetGameObject()->GetTransform()->AddChild(newComp->GetGameObject()->GetTransform());

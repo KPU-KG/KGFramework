@@ -1,9 +1,14 @@
+#include "pch.h"
 #include "ServerEnemyControllerComponent.h"
+#include "KGServer.h"
+#include "Transform.h"
+
 #include "PhysicsComponent.h"
 #include "AnimationComponent.h"
-#include "Transform.h"
+
 #include "imgui/imgui.h"
 #include "MathHelper.h"
+
 #include <string>
 #include <random>
 
@@ -116,10 +121,19 @@ KG::Component::SEnemyControllerComponent::SEnemyControllerComponent()
 void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	SBaseComponent::OnCreate(obj);
+	this->SetNetObjectId(this->server->GetNewObjectId());
+
 	this->transform = this->gameObject->GetTransform();
 	this->center = this->transform->GetWorldPosition();
 	this->rigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
 	this->anim = this->gameObject->GetComponent<AnimationControllerComponent>();
+
+	KG::Packet::SC_ADD_OBJECT p = {};
+	p.presetId = KG::Utill::HashString("EnemyMech"_id);
+	p.newObjectId = this->networkObjectId;
+	p.position = this->transform->GetPosition();
+	p.rotation = this->transform->GetRotation();
+	this->BroadcastPacket(&p, this->networkObjectId);
 }
 
 void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
@@ -200,6 +214,58 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 
 bool KG::Component::SEnemyControllerComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender)
 {
+	/*
+	switch (type)
+	{
+	case KG::Packet::PacketType::None:
+	case KG::Packet::PacketType::PacketHeader:
+	case KG::Packet::PacketType::SC_LOGIN_OK:
+	case KG::Packet::PacketType::SC_PLAYER_INIT:
+	case KG::Packet::PacketType::SC_ADD_OBJECT:
+
+	case KG::Packet::PacketType::SC_REMOVE_OBJECT:
+	case KG::Packet::PacketType::SC_FIRE:
+	case KG::Packet::PacketType::SC_ADD_PLAYER:
+	case KG::Packet::PacketType::SC_PLAYER_SYNC:
+		std::cout << "Error Packet Received\n";
+		return false;
+	case KG::Packet::PacketType::CS_REQ_LOGIN:
+	{
+		// auto id = this->server->GetNewObjectId();
+		// 
+		// //플레이어 추가!
+		// this->server->LockWorld();
+		// this->server->isConnect = true;
+		// auto* playerComp = static_cast<KG::Component::SBaseComponent*>(this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id));
+		// playerComp->SetNetObjectId(id);
+		// auto* trans = playerComp->GetGameObject()->GetTransform();
+		// trans->SetPosition(id, 0, id);
+		// this->GetGameObject()->GetTransform()->AddChild(trans);
+		// this->server->UnlockWorld();
+		// //this->server->Addplayer(trans)
+		// 
+		// KG::Packet::SC_PLAYER_INIT initPacket = {};
+		// initPacket.playerObjectId = id;
+		// initPacket.position = KG::Packet::RawFloat3(id, 0, id);
+		// initPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
+		// this->SendPacket(sender, &initPacket);
+		// 
+		// KG::Packet::SC_ADD_PLAYER addPacket = {};
+		// addPacket.playerObjectId = id;
+		// addPacket.position = KG::Packet::RawFloat3(id, 0, id);
+		// addPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
+		// this->BroadcastPacket(&addPacket, sender);
+	}
+	return true;
+	case KG::Packet::PacketType::CS_INPUT: {
+		// this->server->inputs
+		// 해당 인풋을 보낸 클라이언트의 인풋 정보 변경
+	}
+										 return true;
+	case KG::Packet::PacketType::CS_FIRE:
+		std::cout << "Error Packet Received\n";
+		return false;
+	}*/
 	return false;
 }
 
