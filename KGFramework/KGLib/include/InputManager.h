@@ -92,5 +92,10 @@ namespace KG::Input
 				instance = new InputManager();
 			return instance;
 		}
+
+		static void SetInputManager(InputManager* manager)
+		{
+			instance = manager;
+		}
 	};
 }

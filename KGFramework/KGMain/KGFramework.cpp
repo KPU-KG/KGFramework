@@ -523,6 +523,7 @@ void KG::GameFramework::UIRender()
 				this->networkClient->SetGUIContext(this->guiContext);
 				this->networkClient->Initialize();
 				this->networkClient->SetScene(this->scene.get());
+				this->networkClient->SetInputManager(this->input.get());
 				this->networkClient->PostComponentProvider(this->componentProvider);
 
 				this->PostNetworkFunction();

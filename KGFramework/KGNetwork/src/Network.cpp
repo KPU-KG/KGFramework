@@ -4,6 +4,7 @@
 #include "Network.h"
 #include "NetworkUtill.h"
 #include "Scene.h"
+#include "InputManager.h"
 
 
 DLL KG::Server::INetwork* KG::Server::GetNetwork()
@@ -197,6 +198,11 @@ bool KG::Server::Network::IsConnected() const
 void KG::Server::Network::SetScene(KG::Core::Scene* scene)
 {
 	this->scene = scene;
+}
+
+void KG::Server::Network::SetInputManager(KG::Input::InputManager* manager)
+{
+	KG::Input::InputManager::SetInputManager(manager);
 }
 
 void KG::Server::Network::Update(float elapsedTime)

@@ -55,9 +55,12 @@ namespace KG::Server
 
 
 
-
 		// INetwork을(를) 통해 상속됨
 		virtual void Update(float elapsedTime) override;
+
+
+		// INetwork을(를) 통해 상속됨
+		virtual void SetInputManager(KG::Input::InputManager* manager) override;
 
 	};
 };
