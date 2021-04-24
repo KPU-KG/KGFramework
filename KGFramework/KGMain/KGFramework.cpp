@@ -336,9 +336,12 @@ void KG::GameFramework::PostSceneFunction()
 			[this](KG::Core::GameObject& obj)
 		{
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
-			ctrl->RegisterAnimation("mech.fbx"_id, 12);
-			ctrl->SetAnimation(KG::Utill::HashString("mech.fbx"_id), 12);
-			ctrl->SetDefaultAnimation(KG::Utill::HashString("mech.fbx"_id), 12);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::shotSmallCanon);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::walk);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::walkInPlace);
+
+			ctrl->SetAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace);
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon);
 			ctrl->SetIgnoreScale(false);
 			ctrl->SetIgnoreTranslate(true);
 			obj.AddComponent(ctrl);

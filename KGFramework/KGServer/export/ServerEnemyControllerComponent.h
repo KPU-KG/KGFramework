@@ -35,6 +35,12 @@ namespace KG::Component
 		eRUNAWAY
 	};
 
+	static struct MechAnimIndex {
+		const static UINT shotSmallCanon = 8U;
+		const static UINT walk = 11U;
+		const static UINT walkInPlace = 12U;
+	};
+
 	class DynamicRigidComponent;
 	class AnimationControllerComponent;
 

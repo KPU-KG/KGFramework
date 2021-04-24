@@ -701,17 +701,17 @@ void KG::Component::AnimationControllerComponent::Update(float elapsedTime)
 
 void KG::Component::AnimationControllerComponent::RegisterAnimation(const KG::Utill::HashString& animationId, UINT animationIndex)
 {
-	if (animations.count(animationId.value) == 0) {
-		if (animations[animationId.value].count(animationIndex) == 0) {
-			auto* inst = KG::Resource::ResourceContainer::GetInstance();
-			KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, animationIndex);
-			animations[animationId.value][animationIndex].animationId = animationId;
-			if (animations.size() <= 1) {
-				defaultAnimation.first = animationId;
-				defaultAnimation.second = animationIndex;
-			}
+	// if (animations.count(animationId.value) == 0) {
+	if (animations[animationId.value].count(animationIndex) == 0) {
+		auto* inst = KG::Resource::ResourceContainer::GetInstance();
+		KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, animationIndex);
+		animations[animationId.value][animationIndex].animationId = animationId;
+		if (animations.size() <= 1) {
+			defaultAnimation.first = animationId;
+			defaultAnimation.second = animationIndex;
 		}
 	}
+	// }
 }
 
 // 애니메이션을 다 등록한 뒤에 사용할 것

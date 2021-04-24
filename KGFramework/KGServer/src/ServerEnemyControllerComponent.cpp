@@ -34,19 +34,26 @@ bool KG::Component::SEnemyControllerComponent::SetGoal()
 	// 나중에는 이동 불가능한 위치 선택시 false 리턴
 
 	XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
+	XMFLOAT2 crs;
+	XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
+	if (crs.x >= 0)
+		angle.x *= -1;
 	return true;
 }
 
 bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 {
+	if (anim)
+		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING);
 	rotateTimer += elapsedTime;
 	if (rotateInterval <= rotateTimer) {
 		return true;
 	}
 	else {
-		// DirectX::XMFLOAT4 quat;
 		DirectX::XMFLOAT4 rot;
-		XMStoreFloat4(&rot, XMQuaternionRotationRollPitchYaw(0, angle.x * elapsedTime / rotateInterval, 0));
+		float r = angle.x * elapsedTime / rotateInterval;
+		angle.y -= abs(r);
+		XMStoreFloat4(&rot, XMQuaternionRotationRollPitchYaw(0, r, 0));
 		gameObject->GetTransform()->Rotate(rot);
 		rigid->SetRotation(transform->GetRotation());
 	}
@@ -55,6 +62,9 @@ bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 
 bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 {
+	if (anim)
+		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING);
+
 	if (rigid) {
 		rigid->SetVelocity(direction, speed);
 	}
@@ -90,6 +100,8 @@ bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 
 bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
 {
+	if (anim)
+		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING);
 	idleTimer += elapsedTime;
 	if (idleInterval <= idleTimer)
 		return true;
@@ -172,6 +184,7 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 			ImGui::TextDisabled("Goal : (%f, %f, %f)", goal.x, goal.y, goal.z);
 			auto angle = transform->GetEulerDegree();
 			ImGui::TextDisabled("rotation : (%f, %f, %f)", angle.x, angle.y, angle.z);
+			ImGui::TextDisabled("this->angle : (%f, %f)", this->angle.x, this->angle.y);
 		}
 		else {
 			std::string cs("center");
