@@ -205,7 +205,7 @@ void KG::Component::PlayerControllerComponent::ProcessMouse(float elapsedTime)
 		{
 			this->characterTransform->RotateAxis(Math::up, delta.x * 0.3f);
 			if (physics != nullptr) {
-				physics->SetAngle(this->characterTransform->GetRotation());
+				physics->SetRotation(this->characterTransform->GetRotation());
 			}
 		}
 		if ( delta.y )
@@ -215,7 +215,7 @@ void KG::Component::PlayerControllerComponent::ProcessMouse(float elapsedTime)
 			{
 				this->cameraTransform->RotateAxis(Math::right, delta.y * 0.3f);
 				if (physics != nullptr) {
-					physics->SetAngle(this->characterTransform->GetRotation());
+					physics->SetRotation(this->characterTransform->GetRotation());
 				}
 			}
 		}
