@@ -298,16 +298,12 @@ void KG::GameFramework::PostSceneFunction()
 			[this](KG::Core::GameObject& obj)
 		{
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
-			ctrl->RegisterAnimation("crawler.fbx"_id);
-			// ctrl->RegisterAnimation("Soldier@WalkRight.fbx"_id);
-
-			// ctrl->SetAnimation(KG::Utill::HashString("Soldier@Standing.fbx"_id));
+			ctrl->RegisterAnimation("crawler.fbx"_id, 0);
 			ctrl->SetAnimation(KG::Utill::HashString("crawler.fbx"_id));
 
-			// ctrl->SetDefaultAnimation(KG::Utill::HashString("Soldier@Standing.fbx"_id));
 			ctrl->SetDefaultAnimation(KG::Utill::HashString("crawler.fbx"_id));
 			ctrl->SetIgnoreScale(false);
-			ctrl->SetIgnoreTranslate(false);
+			ctrl->SetIgnoreTranslate(true);
 			obj.AddComponent(ctrl);
 
 			auto* enemyController = this->networkServer->GetNewEnemyControllerComponent();
@@ -325,6 +321,44 @@ void KG::GameFramework::PostSceneFunction()
 		}
 		);
 		
+	this->scene->AddModelPreset("EnemyMech",
+		[]()
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("MechMetal");
+
+			return std::make_pair(
+				KG::Utill::HashString("mech.fbx"),
+				std::move(a)
+			);
+		}
+		,
+			[this](KG::Core::GameObject& obj)
+		{
+			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+			ctrl->RegisterAnimation("mech.fbx"_id, 11);
+			ctrl->SetAnimation(KG::Utill::HashString("mech.fbx"_id));
+
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("mech.fbx"_id));
+			ctrl->SetIgnoreScale(false);
+			ctrl->SetIgnoreTranslate(true);
+			obj.AddComponent(ctrl);
+
+			auto* enemyController = this->networkServer->GetNewEnemyControllerComponent();
+			// enemyController->SetCenter();
+			enemyController->SetIdleInterval(2);
+			enemyController->SetRotateInterval(3);
+			enemyController->SetSpeed(3);
+			enemyController->SetWanderRange(3);
+			obj.AddTemporalComponent(enemyController);
+
+			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			obj.AddComponent(phy);
+
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+		);
+
 	this->scene->AddModelPreset("PlayerCharacter",
 		[]()
 		{

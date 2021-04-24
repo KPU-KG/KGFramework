@@ -118,4 +118,6 @@
     <Geometry id="mountain.fbx" fileDir="Resource/Geometry/back/mountain.fbx" rawMesh="true" hash_id="2676274078"/>
     <!--crawler.fbx-->
     <Geometry id="crawler.fbx" fileDir="Resource/Geometry/crawler/crawler.fbx" rawMesh="false" hash_id="2883921385"/>
+    <!--mech.fbx-->
+    <Geometry id="mech.fbx" fileDir="Resource/Geometry/mech/mech.fbx" rawMesh="false" hash_id="1381674436"/>
 </GeometrySet>

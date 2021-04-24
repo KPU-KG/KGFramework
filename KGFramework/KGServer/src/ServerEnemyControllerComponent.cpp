@@ -19,7 +19,6 @@ void KG::Component::SEnemyControllerComponent::UpdateState()
 bool KG::Component::SEnemyControllerComponent::SetGoal()
 {
 	// 나중에는 노드 생성해서 그걸로 변경
-
 	goal.x = goalRange(gen) * range;
 	// goal.y = goalRange(gen) * range;
 	goal.z = goalRange(gen) * range;
@@ -29,16 +28,13 @@ bool KG::Component::SEnemyControllerComponent::SetGoal()
 	XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&direction)));
 
 	auto angleTo = std::atan2(goal.z, goal.x);
-	XMStoreFloat4(&quatTo, Math::Quaternion::XMQuaternionRotationRollPitchYaw(0, angleTo, 0));
-	quatFrom = transform->GetRotation();
-
-	rotateTimer = 0;
-	// XMQuaternionSlerp()
-
-
+	XMStoreFloat4(&quatTo, Math::XMQuaternionRotationXYZ(0, angleTo, 0));
+	auto look = transform->GetLook();
 	
-	// rotateClockwise = IsClockwise();
-
+	// look.y = 0;
+	angleTo = std::atan2(look.z, look.x);
+	XMStoreFloat4(&quatFrom, Math::XMQuaternionRotationXYZ(0, angleTo, 0));
+	rotateTimer = 0;
 	// 나중에는 이동 불가능한 위치 선택시 false 리턴
 	return true;
 }
@@ -56,40 +52,6 @@ bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 		rigid->SetRotation(quat);
 	}
 	return false;
-
-	/*
-	int rotDir = 1;
-	bool completeRotate = false;
-	if (rotateClockwise) {
-		if (!IsClockwise()) {
-			// 회전 완료
-			completeRotate = true;
-			// rigid->GetActor()
-		}
-		else
-			rotDir = 1;
-	}
-	else {
-		if (IsClockwise()) {
-			// 회전 완료
-			completeRotate = true;
-		}
-		else
-			rotDir = -1;
-	}
-
-	if (completeRotate) {
-		if (rigid) {
-			rigid->SetRotation(gameObject->GetTransform()->GetRotation());
-			rigid->SetAngularVelocity(DirectX::XMFLOAT3(0, 0, 0));
-		}
-	}
-	else {
-		if (rigid)
-			rigid->SetAngularVelocity(DirectX::XMFLOAT3(0, rotDir, 0));
-	}
-
-	return completeRotate;*/
 }
 
 bool KG::Component::SEnemyControllerComponent::MoveToGoal()

@@ -174,4 +174,5 @@
     <Texture id="crawlerLaser_normal" fileDir="Resource/Geometry/crawler/Texture/crawlerLaser/normal.dds" dimension="Texture2D" format="DDS" hash_id="3447469566"/>
     <Texture id="crawlerLaser_rough" fileDir="Resource/Geometry/crawler/Texture/crawlerLaser/rough.dds" dimension="Texture2D" format="DDS" hash_id="1844213554"/>
     <Texture id="crawlerLaser_metalic" fileDir="Resource/Geometry/crawler/Texture/crawlerLaser/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3500419400"/>
+    <!--MechMetal-->
 </TextureSet>
