@@ -50,7 +50,7 @@ namespace KG::Component
 		}
 	};
 
-	class IRigidComponent : public IPhysicsComponent {
+	class DLL IRigidComponent : public IPhysicsComponent {
 	protected:
 		CollisionBox											collisionBox;
 		TransformComponent*										transform = nullptr;
@@ -74,7 +74,7 @@ namespace KG::Component
 		virtual void AddForce(DirectX::XMFLOAT3 dir, float distance = 1.0f) {};
 		virtual void SetVelocity(DirectX::XMFLOAT3 dir, float distance = 1.0f) {};
 		virtual void AddTorque(DirectX::XMFLOAT3 axis, float power) {};
-		virtual void SetAngle(DirectX::XMFLOAT4 quat) {};
+		virtual void SetRotation(DirectX::XMFLOAT4 quat) {};
 		void SetId(unsigned int id) { this->id = id; }
 		unsigned int GetId() const { return this->id; }
 		physx::PxFilterData* GetFilterData() { return filterData; }
@@ -114,7 +114,7 @@ namespace KG::Component
 		virtual void AddForce(DirectX::XMFLOAT3 dir, float distance = 1.0f) override;
 		virtual void SetVelocity(DirectX::XMFLOAT3 dir, float distance = 1.0f) override;
 		virtual void AddTorque(DirectX::XMFLOAT3 axis, float power) override;
-		virtual void SetAngle(DirectX::XMFLOAT4 quat) override;
+		virtual void SetRotation(DirectX::XMFLOAT4 quat) override;
 		// raycast Å×½ºÆ®
 
 	private:

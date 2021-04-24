@@ -94,7 +94,7 @@ void KG::Component::DynamicRigidComponent::AddTorque(DirectX::XMFLOAT3 axis, flo
 	actor->setAngularVelocity(physx::PxVec3{ axis.x, axis.y, axis.z } *power);
 }
 
-void KG::Component::DynamicRigidComponent::SetAngle(DirectX::XMFLOAT4 quat)
+void KG::Component::DynamicRigidComponent::SetRotation(DirectX::XMFLOAT4 quat)
 {
 	auto pose = actor->getGlobalPose();
 	pose.q = physx::PxQuat(quat.x, quat.y, quat.z, quat.w);
