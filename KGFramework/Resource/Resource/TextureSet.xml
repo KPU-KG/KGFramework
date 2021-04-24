@@ -159,4 +159,20 @@
     <!--mountain-->
     <Texture id="mountain_color" fileDir="Resource/Geometry/back/mountain/color.dds" dimension="Texture2D" format="DDS" hash_id="3235815808"/>
     <Texture id="mountain_normal" fileDir="Resource/Geometry/back/mountain/normal.dds" dimension="Texture2D" format="DDS" hash_id="3380690070"/>
+    <!--crowlerLow-->
+    <Texture id="crawlerLow_color" fileDir="Resource/Geometry/crawler/Texture/crawlerLow/color.dds" dimension="Texture2D" format="DDS" hash_id="3541456263"/>
+    <Texture id="crawlerLow_normal" fileDir="Resource/Geometry/crawler/Texture/crawlerLow/normal.dds" dimension="Texture2D" format="DDS" hash_id="2885800239"/>
+    <Texture id="crawlerLow_rough" fileDir="Resource/Geometry/crawler/Texture/crawlerLow/rough.dds" dimension="Texture2D" format="DDS" hash_id="2493430877"/>
+    <Texture id="crawlerLow_metalic" fileDir="Resource/Geometry/crawler/Texture/crawlerLow/metalic.dds" dimension="Texture2D" format="DDS" hash_id="91980343"/>
+    <!--crowlerModular-->
+    <Texture id="crawlerModular_color" fileDir="Resource/Geometry/crawler/Texture/crawlerModular/color.dds" dimension="Texture2D" format="DDS" hash_id="3089577039"/>
+    <Texture id="crawlerModular_normal" fileDir="Resource/Geometry/crawler/Texture/crawlerModular/normal.dds" dimension="Texture2D" format="DDS" hash_id="2584108535"/>
+    <Texture id="crawlerModular_rough" fileDir="Resource/Geometry/crawler/Texture/crawlerModular/rough.dds" dimension="Texture2D" format="DDS" hash_id="3822379797"/>
+    <Texture id="crawlerModular_metalic" fileDir="Resource/Geometry/crawler/Texture/crawlerModular/metalic.dds" dimension="Texture2D" format="DDS" hash_id="339200735"/>
+    <!--crowlerLaser-->
+    <Texture id="crawlerLaser_color" fileDir="Resource/Geometry/crawler/Texture/crawlerLaser/color.dds" dimension="Texture2D" format="DDS" hash_id="3901637352"/>
+    <Texture id="crawlerLaser_normal" fileDir="Resource/Geometry/crawler/Texture/crawlerLaser/normal.dds" dimension="Texture2D" format="DDS" hash_id="3447469566"/>
+    <Texture id="crawlerLaser_rough" fileDir="Resource/Geometry/crawler/Texture/crawlerLaser/rough.dds" dimension="Texture2D" format="DDS" hash_id="1844213554"/>
+    <Texture id="crawlerLaser_metalic" fileDir="Resource/Geometry/crawler/Texture/crawlerLaser/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3500419400"/>
+    <!--MechMetal-->
 </TextureSet>

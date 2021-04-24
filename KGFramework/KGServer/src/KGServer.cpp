@@ -3,6 +3,8 @@
 #include "ServerUtill.h"
 #include "KGServer.h"
 
+#include <sstream>
+
 
 DLL KG::Server::IServer* KG::Server::GetServer()
 {
@@ -12,12 +14,15 @@ DLL KG::Server::IServer* KG::Server::GetServer()
 
 void KG::Server::Server::IOCPWorker(Server* server)
 {
-	std::cout << "IOCP Worker Started\n";
+	std::stringstream ss;
+	ss << "IOCP Worker Started ThreadId : " << std::this_thread::get_id() << "\n";
+	std::cout << ss.str();
 	while ( true )
 	{
 		DWORD numBytes;
 		ULONG_PTR ikey;
 		WSAOVERLAPPED* over;
+		std::cout << "GQCS : Queued\n";
 		BOOL ret = GetQueuedCompletionStatus(server->hIocp, &numBytes, &ikey, &over, INFINITE);
 		SESSION_ID key = static_cast<SESSION_ID>(ikey);
 		if ( FALSE == ret )
@@ -169,10 +174,16 @@ void KG::Server::Server::Close()
 void KG::Server::Server::LockWorld()
 {
 	worldLock.lock();
+	std::stringstream ss;
+	ss << "World Lock / ThreadId : " << std::this_thread::get_id() << "\n";
+	std::cout << ss.str();
 }
 
 void KG::Server::Server::UnlockWorld()
 {
+	std::stringstream ss;
+	ss << "World UnLock / ThreadId : " << std::this_thread::get_id() << "\n";
+	std::cout << ss.str();
 	worldLock.unlock();
 }
 
@@ -183,9 +194,25 @@ KG::Component::SGameManagerComponent* KG::Server::Server::GetNewGameManagerCompo
 	return comp;
 }
 
+KG::Component::SPlayerComponent* KG::Server::Server::GetNewPlayerComponent()
+{
+	auto* comp = this->sPlayerSystem.GetNewComponent();
+	comp->SetServerInstance(this);
+	return comp;
+}
+
+KG::Component::SEnemyControllerComponent* KG::Server::Server::GetNewEnemyControllerComponent()
+{
+	auto* comp = this->sEnemyControllerSystem.GetNewComponent();
+	comp->SetServerInstance(this);
+	return comp;
+}
+
 void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->sGameManagerSystem.OnPostProvider(provider);
+	this->sPlayerSystem.OnPostProvider(provider);
+	this->sEnemyControllerSystem.OnPostProvider(provider);
 }
 
 void KG::Server::Server::DrawImGUI()
@@ -265,6 +292,13 @@ void KG::Server::Server::SendPacket(SESSION_ID playerId, void* packet)
 	}
 }
 
+void KG::Server::Server::Update(float elapsedTime)
+{
+	this->sGameManagerSystem.OnUpdate(elapsedTime);
+	this->sPlayerSystem.OnUpdate(elapsedTime);
+	this->sEnemyControllerSystem.OnUpdate(elapsedTime);
+}
+
 void KG::Server::Server::SendLoginOkPacket(SESSION_ID playerId)
 {
 }
@@ -296,6 +330,7 @@ void KG::Server::Server::SendAddPlayer(SESSION_ID playerId, SESSION_ID targetId)
 
 void KG::Server::Server::Disconnect(SESSION_ID playerId)
 {
+	std::cout << "Disconnected Client[" << playerId << "]\n";
 	{
 		std::lock_guard<std::shared_mutex> lg{ players[playerId].sessionLock };
 		players[playerId].state = PLAYER_STATE_FREE;
@@ -311,7 +346,6 @@ void KG::Server::Server::Disconnect(SESSION_ID playerId)
 		}
 	}
 
-	std::cout << "Disconnected Client[" << playerId << "]\n";
 }
 
 void KG::Server::Server::DoRecv(SESSION_ID key)
@@ -334,40 +368,19 @@ void KG::Server::Server::DoRecv(SESSION_ID key)
 
 void KG::Server::Server::ProcessPacket(SESSION_ID playerId, unsigned char* buffer)
 {
-	switch ( buffer[1] ) // Packet Type
+	auto* header = reinterpret_cast<KG::Packet::PacketHeader*>(buffer);
+	auto it = this->netObjects.find(header->objectId);
+	if ( it == this->netObjects.end() )
 	{
-		//case CS_LOGIN:
-		//{
-		//	auto* packet = reinterpret_cast<packet_c2s_login*>(buffer);
-		//	strcpy_s(players[playerId].name, packet->name);
-		//	SendLoginOkPacket(playerId);
-
-		//	lock_guard<mutex> lg{ players[playerId].sessionLock };
-		//	players[playerId].state = PLAYERSTATE_INGAME;
-		//	for ( auto& pl : players )
-		//	{
-		//		if ( playerId == pl.id ) continue;
-
-		//		lock_guard<mutex> lg2{ pl.sessionLock };
-		//		if ( pl.state == PLAYERSTATE_INGAME )
-		//		{
-		//			SendAddPlayer(playerId, pl.id);
-		//			SendAddPlayer(pl.id, playerId);
-		//		}
-
-		//	}
-		//}
-		//break;
-		//case CS_MOVE:
-		//{
-		//	auto* packet = reinterpret_cast<packet_c2s_move*>(buffer);
-		//	DoMove(playerId, packet->dir);
-		//}
-		//break;
-		default:
-			std::cout << "UNKNOWN Packet Type From Client[" << playerId << "] Packet Type [" << buffer[1] << "]\n";
-			while ( true );
-			break;
+		std::cout << "Unknown Packet Receiver Object : " << header->objectId << '\n';
+	}
+	else
+	{
+		bool processed = it->second->ProcessPacket(buffer, KG::Packet::ToPacketType(header->type), playerId);
+		if ( !processed )
+		{
+			std::cout << "Packet Owner Object Not Processd / Object ID : " << header->objectId << " / PacketType : " << header->type << "\n";
+		}
 	}
 }
 
@@ -379,3 +392,6 @@ KG::Server::NET_OBJECT_ID KG::Server::Server::GetNewObjectId()
 	return ret;
 }
 
+//void KG::Server::Server::AddPlayer(KG::Component::TransformComponent* trans) {
+//	
+//}

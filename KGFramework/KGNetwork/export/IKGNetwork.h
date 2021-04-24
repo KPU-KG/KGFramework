@@ -15,6 +15,8 @@ namespace KG::Component
 {
 	class CBaseComponent;
 	class CGameManagerComponent;
+	class CPlayerControllerComponent;
+	class CCharacterComponent;
 }
 
 namespace KG::Server
@@ -28,7 +30,11 @@ namespace KG::Server
 		virtual void Close() = 0;
 		virtual void SetScene(KG::Core::Scene* scene) = 0;
 		virtual void TryRecv() = 0;
+		virtual void Update(float elapsedTime) = 0;
 		virtual KG::Component::CGameManagerComponent* GetNewGameManagerComponent() = 0;
+		virtual KG::Component::CPlayerControllerComponent* GetNewPlayerControllerComponent() = 0;
+		virtual KG::Component::CCharacterComponent* GetNewCharacterComponent() = 0;
+
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 
 		virtual void DrawImGUI() = 0;

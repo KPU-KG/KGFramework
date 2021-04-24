@@ -190,10 +190,10 @@ static XMFLOAT3 GetAnimationScale(const KG::Utill::NodeAnimation& anim, float cu
 	return s;
 }
 
-void KG::Component::Animation::MatchNode(KG::Core::GameObject* gameObject)
+void KG::Component::Animation::MatchNode(KG::Core::GameObject* gameObject, UINT animIndex)
 {
 	auto* inst = KG::Resource::ResourceContainer::GetInstance();
-	KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, 0);
+	KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, animIndex);
 	for (auto& layer : anim->layers)
 	{
 		auto& cache = this->frameCache.emplace_back();
@@ -224,11 +224,11 @@ void KG::Component::Animation::SetDuration(KG::Utill::AnimationSet* anim)
 	}
 }
 
-void KG::Component::Animation::Initialize(KG::Core::GameObject* gameObject)
+void KG::Component::Animation::Initialize(KG::Core::GameObject* gameObject, UINT animIndex)
 {
-	MatchNode(gameObject);
+	MatchNode(gameObject, animIndex);
 	auto* inst = KG::Resource::ResourceContainer::GetInstance();
-	KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, 0);
+	KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, animIndex);
 	SetDuration(anim);
 }
 
@@ -254,7 +254,7 @@ int KG::Component::AnimationControllerComponent::GetTotalWeight(int index)
 void KG::Component::AnimationControllerComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
 	for (auto& animation : animations) {
-		animation.second.Initialize(this->gameObject);
+		animation.second.Initialize(this->gameObject, animation.second.animIndex);
 		// animation.Initialize(this->gameObject);
 	}
 }
@@ -679,7 +679,6 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 
 void KG::Component::AnimationControllerComponent::Update(float elapsedTime)
 {
-	//DebugNormalMessage("Update Animation");
 	switch (state) {
 	case ANIMSTATE_PLAYING:
 		PlayingUpdate(elapsedTime);
@@ -699,6 +698,7 @@ void KG::Component::AnimationControllerComponent::RegisterAnimation(const KG::Ut
 		animations[animationId.value].isRegistered = true;
 		if (animations.size() <= 1)
 			defaultAnimation = animationId;
+		animations[animationId.value].animIndex = animationIndex;
 	}
 	else {
 		animations.erase(animationId.value);

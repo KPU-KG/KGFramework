@@ -1,0 +1,12 @@
+{
+  "solution": {
+    "path": "KGFramework.sln",
+    "projects": [
+      "KGLib\\KGLib.vcxproj",
+      "KGMain\\KGMain.vcxproj",
+      "KGPhysics\\KGPhysics.vcxproj",
+      "KGRenderer\\KGRenderer.vcxproj",
+      "KGServer\\KGServer.vcxproj"
+    ]
+  }
+}

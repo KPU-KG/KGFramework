@@ -16,6 +16,8 @@
 #include "Session.h"
 
 #include "ServerGameManagerComponent.h"
+#include "ServerPlayerControllerComponent.h"
+#include "ServerEnemyControllerComponent.h"
 
 namespace KG::Server
 {
@@ -25,7 +27,6 @@ namespace KG::Server
 		SYSTEM_INFO systemInfo;
 		SOCKET listenSocket;
 
-		std::mutex worldLock;
 
 		std::vector<std::thread> iocpWorkers;
 
@@ -43,7 +44,9 @@ namespace KG::Server
 
 		//Server System
 		KG::Component::SGameManagerComponentSystem sGameManagerSystem;
-
+		KG::Component::SPlayerComponentSystem sPlayerSystem;
+		KG::Component::SEnemyControllerComponentSystem sEnemyControllerSystem;
+	
 
 		static void IOCPWorker(Server* server);
 
@@ -58,7 +61,14 @@ namespace KG::Server
 		void ProcessPacket(SESSION_ID playerId, unsigned char* buffer);
 
 	public:
+		std::mutex worldLock;
+		bool isConnect = false;
+		//std::vector<KG::Component::TransformComponent> transforms; 
+		// 트랜스폼 + id 구조체? 받은 뒤 해당 id settransform
+		//std::vector<KG::Packet::CS_INPUT> inputs;
 		NET_OBJECT_ID GetNewObjectId();
+
+		//void AddPlayer();
 
 		// IServer을(를) 통해 상속됨
 		virtual void Initialize() override;
@@ -67,11 +77,16 @@ namespace KG::Server
 		virtual void LockWorld() override;
 		virtual void UnlockWorld() override;
 		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() override;
+		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() override;
+		virtual KG::Component::SEnemyControllerComponent* GetNewEnemyControllerComponent() override;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 		virtual void DrawImGUI() override;
 		virtual bool isStarted() const override;
 		virtual void SetServerObject(KG::Server::NET_OBJECT_ID id, KG::Component::SBaseComponent* obj);
 		virtual void BroadcastPacket(void* packet, SESSION_ID ignore = SERVER_ID);
 		virtual void SendPacket(SESSION_ID playerId, void* packet);
+
+		// IServer을(를) 통해 상속됨
+		virtual void Update(float elapsedTime) override;
 	};
 };

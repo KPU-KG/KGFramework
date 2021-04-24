@@ -151,6 +151,20 @@ KG::Component::CGameManagerComponent* KG::Server::Network::GetNewGameManagerComp
 	return comp;
 }
 
+KG::Component::CPlayerControllerComponent* KG::Server::Network::GetNewPlayerControllerComponent()
+{
+	auto* comp = this->cPlayerSystem.GetNewComponent();
+	comp->SetNetworkInstance(this);
+	return comp;
+}
+
+KG::Component::CCharacterComponent* KG::Server::Network::GetNewCharacterComponent()
+{
+	auto* comp = this->cCharacterSystem.GetNewComponent();
+	comp->SetNetworkInstance(this);
+	return comp;
+}
+
 void KG::Server::Network::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->cGameManagerSystem.OnPostProvider(provider);
@@ -183,5 +197,11 @@ bool KG::Server::Network::IsConnected() const
 void KG::Server::Network::SetScene(KG::Core::Scene* scene)
 {
 	this->scene = scene;
+}
+
+void KG::Server::Network::Update(float elapsedTime)
+{
+	this->cGameManagerSystem.OnUpdate(elapsedTime);
+	this->cPlayerSystem.OnUpdate(elapsedTime);
 }
 

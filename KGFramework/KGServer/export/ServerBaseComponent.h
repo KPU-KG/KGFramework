@@ -27,8 +27,8 @@ namespace KG::Component
 	public:
 		void SetNetObjectId(KG::Server::NET_OBJECT_ID id);
 		void SetServerInstance(KG::Server::Server* server);
-		void BroadcastPacket(void* packet, KG::Server::SESSION_ID sessionId = 0);
-		void SendPacket(KG::Server::SESSION_ID sessionId, unsigned char* packet);
+		void BroadcastPacket(void* packet, KG::Server::SESSION_ID ignoreId = 0);
+		void SendPacket(KG::Server::SESSION_ID sessionId, void* packet);
 		bool ProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
 	};

@@ -52,15 +52,16 @@ namespace KG::Component
 
 	struct Animation {
 	private:
-		void MatchNode(KG::Core::GameObject* gameObject);
+		void MatchNode(KG::Core::GameObject* gameObject, UINT animIndex = 0U);
 		void SetDuration(KG::Utill::AnimationSet* anim);
 	public:
+		int animIndex = 0;
 		bool isRegistered = false;
 		KG::Utill::HashString animationId;
 		std::vector<std::vector<KG::Core::GameObject*>> frameCache;
 		float timer = 0.0f;
 		float duration = 0.0f;
-		void Initialize(KG::Core::GameObject* gameObject);
+		void Initialize(KG::Core::GameObject* gameObject, UINT animIndex = 0U);
 	};
 
 	struct AnimationCommand {

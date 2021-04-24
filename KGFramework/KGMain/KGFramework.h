@@ -52,6 +52,7 @@ namespace KG
 		void UIRender();
 		void OnProcess();
 		void ServerProcess();
+		void ServerUpdate(float elapsedTime);
 		void ServerProcessEnd();
 		void OnClose();
 	private:
