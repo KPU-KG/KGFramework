@@ -27,15 +27,20 @@ bool KG::Component::SEnemyControllerComponent::SetGoal()
 	direction.y = 0;
 	XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&direction)));
 
-	auto angleTo = std::atan2(goal.z, goal.x);
-	XMStoreFloat4(&quatTo, Math::XMQuaternionRotationXYZ(0, angleTo, 0));
-	auto look = transform->GetLook();
+	auto dir = DirectX::XMFLOAT2{ direction.x, direction.z };
+
+	// auto angleTo = std::atan2(goal.z, goal.x);
+	// XMStoreFloat4(&quatTo, Math::XMQuaternionRotationXYZ(0, angleTo, 0));
 	
+	auto look = DirectX::XMFLOAT2{ transform->GetLook().x, transform->GetLook().z };
 	// look.y = 0;
-	angleTo = std::atan2(look.z, look.x);
-	XMStoreFloat4(&quatFrom, Math::XMQuaternionRotationXYZ(0, angleTo, 0));
+	// angleTo = std::atan2(look.z, look.x);
+
+	// XMStoreFloat4(&quatFrom, Math::XMQuaternionRotationXYZ(0, angleTo, 0));
 	rotateTimer = 0;
 	// 나중에는 이동 불가능한 위치 선택시 false 리턴
+
+	XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
 	return true;
 }
 
@@ -43,13 +48,20 @@ bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 {
 	rotateTimer += elapsedTime;
 	if (rotateInterval <= rotateTimer) {
-		rigid->SetRotation(quatTo);
+		// rigid->SetRotation(quatTo);
 		return true;
 	}
 	else {
-		DirectX::XMFLOAT4 quat;
-		XMStoreFloat4(&quat, XMQuaternionSlerp(XMLoadFloat4(&quatFrom), XMLoadFloat4(&quatTo), rotateTimer / rotateInterval));
-		rigid->SetRotation(quat);
+		// DirectX::XMFLOAT4 quat;
+		DirectX::XMFLOAT4 rot;
+		XMStoreFloat4(&rot, XMQuaternionRotationRollPitchYaw(0, angle.x * elapsedTime / rotateInterval, 0));
+		gameObject->GetTransform()->Rotate(rot);
+		// XMStoreFloat4(&quat, XMQuaternionSlerp(XMLoadFloat4(&quatFrom), XMLoadFloat4(&quatTo), rotateTimer / rotateInterval));
+
+		
+		// XMStoreFloat4(&quat, XMQuaternionSlerp(XMLoadFloat4(&quatFrom), XMLoadFloat4(&quatTo), rotateTimer / rotateInterval));
+		rigid->SetRotation(transform->GetRotation());
+		// rigid->Rotate(DirectX::XMFLOAT3(0, angle.x, 0));
 	}
 	return false;
 }

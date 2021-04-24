@@ -60,6 +60,7 @@ namespace KG::Component
 
 		DirectX::XMFLOAT4		quatTo;
 		DirectX::XMFLOAT4		quatFrom;
+		DirectX::XMFLOAT2		angle;
 		void UpdateState();
 		bool SetGoal();
 		bool RotateToGoal(float elapsedTime);

@@ -18,49 +18,50 @@ void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameOb
 
 KG::Component::DynamicRigidComponent::DynamicRigidComponent()
 	:
-	positionProp("Position", this->collisionBox.center),
-	scaleProp("Scale", this->collisionBox.scale),
-	applyProp("Apply", this->apply),
-	showProp(
-		"Show", this->show,
-		{
-			{SHOW_COLLISION_BOX::NONE, "None"},
-			{SHOW_COLLISION_BOX::BOX, "Box"},
-			{SHOW_COLLISION_BOX::GRID, "Grid"}
-		}, false),
-	filterProp(
-		"CollisionFilter", this->filter,
-		{
-			{FilterGroup::eBOX, "Box"},
-			{FilterGroup::eBUILDING, "Building"},
-			{FilterGroup::eENEMY, "Enemy"},
-			{FilterGroup::eFLOOR, "Floor"},
-			{FilterGroup::ePLAYER, "Player"}
-		}, false)
+	KG::Component::IRigidComponent(),
+	applyProp("Apply", this->apply)
 {
 }
 
 void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 {
 	if (apply) {
+		// cb.position = Math::Vector3::Add(cb.position, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
+		// PxTransform t = actor->getGlobalPose();
+		// t.p = { cb.position.x, cb.position.y, cb.position.z };
+		// auto objectQuat = rigid->GetGameObject()->GetTransform()->GetRotation();
+		// DirectX::XMStoreFloat4(&objectQuat, DirectX::XMQuaternionRotationMatrix(DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&objectQuat)) * // DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMLoadFloat3(&cb.rotation))));
+		// t.q = PxQuat(objectQuat.x, objectQuat.y, objectQuat.z, objectQuat.w);
+		// actor->setGlobalPose(t);
+
+
+
 		this->actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, false);
 		physx::PxVec3 p = actor->getGlobalPose().p;
 		physx::PxQuat q = actor->getGlobalPose().q;
-		transform->SetPosition(p.x - collisionBox.center.x, p.y - collisionBox.center.y, p.z - collisionBox.center.z);
+		transform->SetPosition(p.x - collisionBox.position.x, p.y - collisionBox.position.y, p.z - collisionBox.position.z);
 		transform->SetRotation(q.x, q.y, q.z, q.w);
 	}
 	else {
 		this->actor->setActorFlag(physx::PxActorFlag::eDISABLE_GRAVITY, true);
 		this->actor->setLinearVelocity(physx::PxVec3(0, 0, 0));
 
-		DirectX::XMFLOAT4X4 worldMat = gameObject->GetTransform()->GetGlobalWorldMatrix();
-		XMFLOAT3 pos = Math::Vector3::Add(collisionBox.center, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
-
+		auto position = Math::Vector3::Add(collisionBox.position, transform->GetWorldPosition());
 		physx::PxTransform t = actor->getGlobalPose();
-		t.p = { pos.x,pos.y, pos.z };
-		auto rot = transform->GetRotation();
-		t.q = physx::PxQuat(rot.x, rot.y, rot.z, rot.w);
+		t.p = { position.x, position.y, position.z };
+
+		auto objectQuat = transform->GetRotation();		// 이거 로컬 로테이션 아닌가?? 따로 계산해줘야되나
+		DirectX::XMStoreFloat4(&objectQuat, DirectX::XMQuaternionRotationMatrix(DirectX::XMMatrixRotationQuaternion(DirectX::XMLoadFloat4(&objectQuat)) * DirectX::XMMatrixRotationRollPitchYawFromVector(DirectX::XMLoadFloat3(&collisionBox.rotation))));
+		t.q = physx::PxQuat(objectQuat.x, objectQuat.y, objectQuat.z, objectQuat.w);
 		actor->setGlobalPose(t);
+
+
+		// DirectX::XMFLOAT4X4 worldMat = gameObject->GetTransform()->GetGlobalWorldMatrix();
+		// XMFLOAT3 pos = Math::Vector3::Add(collisionBox.position, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
+		// 
+		// physx::PxTransform t = actor->getGlobalPose();
+		// t.p = { pos.x,pos.y, pos.z };
+		// actor->setGlobalPose(t);
 	}
 }
 
@@ -87,25 +88,19 @@ void KG::Component::DynamicRigidComponent::SetVelocity(DirectX::XMFLOAT3 dir, fl
 	actor->setLinearVelocity(physx::PxVec3(dir.x, dir.y, dir.z) * distance);
 }
 
-void KG::Component::DynamicRigidComponent::SetAngularVelocity(DirectX::XMFLOAT3 angle)
+void KG::Component::DynamicRigidComponent::AddTorque(DirectX::XMFLOAT3 axis, float power)
 {
-	physx::PxVec3 vec = { angle.x, angle.y ,angle.z };
-	// physx::PxVec3 vec = { DirectX::XMConvertToRadians(angle.x), DirectX::XMConvertToRadians(angle.y) ,DirectX::XMConvertToRadians(angle.z) };
-	actor->setAngularVelocity(vec);
-	actor->setAngularDamping(0);
+	// actor->addTorque(physx::PxVec3{ axis.x, axis.y, axis.z } *power);
+	actor->setAngularVelocity(physx::PxVec3{ axis.x, axis.y, axis.z } *power);
 }
 
-void  KG::Component::DynamicRigidComponent::SetRotation(DirectX::XMFLOAT4 quat) {
+void KG::Component::DynamicRigidComponent::SetRotation(DirectX::XMFLOAT4 quat)
+{
 	auto pose = actor->getGlobalPose();
 	pose.q = physx::PxQuat(quat.x, quat.y, quat.z, quat.w);
 	actor->setGlobalPose(pose);
 }
 
-DirectX::XMFLOAT4 KG::Component::DynamicRigidComponent::GetActorAngle() const
-{
-	auto q = actor->getGlobalPose().q;
-	return DirectX::XMFLOAT4(q.x, q.y, q.z, q.w);
-}
 
 void KG::Component::DynamicRigidComponent::SetupFiltering(unsigned int filterGroup, unsigned int filterMask)
 {
@@ -125,10 +120,11 @@ void KG::Component::DynamicRigidComponent::SetupFiltering(unsigned int filterGro
 
 void KG::Component::DynamicRigidComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
 {
-	this->positionProp.OnDataLoad(componentElement);
-	this->scaleProp.OnDataLoad(componentElement);
 	this->applyProp.OnDataLoad(componentElement);
-	this->showProp.OnDataLoad(componentElement);
+	this->positionProp.OnDataLoad(componentElement);
+	this->rotationProp.OnDataLoad(componentElement);
+	this->scaleProp.OnDataLoad(componentElement);
+	this->shapeProp.OnDataLoad(componentElement);
 	this->filterProp.OnDataLoad(componentElement);
 }
 
@@ -137,9 +133,10 @@ void KG::Component::DynamicRigidComponent::OnDataSave(tinyxml2::XMLElement* pare
 	auto* componentElement = parentElement->InsertNewChildElement("Component");
 	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::DynamicRigidComponent);
 	this->positionProp.OnDataSave(componentElement);
+	this->rotationProp.OnDataSave(componentElement);
 	this->scaleProp.OnDataSave(componentElement);
 	this->applyProp.OnDataSave(componentElement);
-	this->showProp.OnDataSave(componentElement);
+	this->shapeProp.OnDataSave(componentElement);
 	this->filterProp.OnDataSave(componentElement);
 }
 
@@ -152,13 +149,15 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 			ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 		if (this->isUsing()) {
 			this->positionProp.OnDrawGUI();
+			this->rotationProp.OnDrawGUI();
 			ImGui::TextDisabled("Scaling  (%.3f, %.3f, %.3f)", collisionBox.scale.x, collisionBox.scale.y, collisionBox.scale.z);
-			this->showProp.OnDrawGUI();
+			this->shapeProp.OnDrawGUI();
 		}
 		else if (ImGui::TreeNode("Collision Box")) {
 			this->positionProp.OnDrawGUI();
+			this->rotationProp.OnDrawGUI();
 			this->scaleProp.OnDrawGUI();
-			this->showProp.OnDrawGUI();
+			this->shapeProp.OnDrawGUI();
 			ImGui::TreePop();
 		}
 
@@ -171,75 +170,14 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 		auto proj = this->gameObject->GetScene()->GetMainCameraProj();
 
 		switch (show) {
-		case SHOW_COLLISION_BOX::NONE:
+		case COLLISION_SHAPE::NONE:
 			break;
-		case SHOW_COLLISION_BOX::GRID:
-			// 일단 닫아둔다..
-			/*
-			view = Math::Matrix4x4::Transpose(view);
-			proj = Math::Matrix4x4::Transpose(proj);
-
-			ImGuiIO& io = ImGui::GetIO();
-			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
-
-			auto objectPos = this->gameObject->GetTransform()->GetPosition();
-			XMFLOAT4X4 mats[6];
-
-			// front
-			auto front = objectPos;
-			front.z += collisionBox.scale.z / 2;
-			DirectX::XMStoreFloat4x4(&mats[0], DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&front)));
-			mats[0] = Math::Matrix4x4::Multiply(XMMatrixRotationRollPitchYaw(XMConvertToRadians(90), 0, 0) * XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale) / 2) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mats[0]);
-
-			// back
-			auto back = objectPos;
-			back.z -= collisionBox.scale.z / 2;
-			DirectX::XMStoreFloat4x4(&mats[1], DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&back)));
-			mats[1] = Math::Matrix4x4::Multiply(XMMatrixRotationRollPitchYaw(XMConvertToRadians(90), 0, 0) * XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale) / 2) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mats[1]);
-
-			// right
-			auto right = objectPos;
-			right.x += collisionBox.scale.x / 2;
-			DirectX::XMStoreFloat4x4(&mats[2], DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&right)));
-			mats[2] = Math::Matrix4x4::Multiply(XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(90)) * XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale) / 2) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mats[2]);
-
-			// left
-			auto left = objectPos;
-			back.x -= collisionBox.scale.x / 2;
-			DirectX::XMStoreFloat4x4(&mats[3], DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&left)));
-			mats[3] = Math::Matrix4x4::Multiply(XMMatrixRotationRollPitchYaw(0, 0, XMConvertToRadians(90)) * XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale) / 2) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mats[3]);
-
-			// up
-			auto up = objectPos;
-			up.y += collisionBox.scale.y / 2;
-			DirectX::XMStoreFloat4x4(&mats[4], DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&up)));
-			mats[4] = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale) / 2) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mats[4]);
-
-			// down
-			auto down = objectPos;
-			back.y -= collisionBox.scale.y / 2;
-			DirectX::XMStoreFloat4x4(&mats[5], DirectX::XMMatrixTranslationFromVector(DirectX::XMLoadFloat3(&up)));
-			mats[5] = Math::Matrix4x4::Multiply(XMMatrixScalingFromVector(
-				XMLoadFloat3(&collisionBox.scale) / 2) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)), mats[5]);
-
-			for (int i = 0; i < 6; ++i) {
-				ImGuizmo::DrawGrid(reinterpret_cast<const float*>(view.m),
-					reinterpret_cast<const float*>(proj.m),
-					reinterpret_cast<const float*>(mats[i].m),
-					1);
-			}
-			break;*/
-		case SHOW_COLLISION_BOX::BOX:
+		case COLLISION_SHAPE::BOX:
 		{
 			XMFLOAT4X4 worldMat = this->gameObject->GetTransform()->GetGlobalWorldMatrix();
 			XMFLOAT4X4 mat;
-			DirectX::XMStoreFloat4x4(&mat, XMMatrixScalingFromVector(XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)));
-
+			DirectX::XMStoreFloat4x4(&mat, XMMatrixScalingFromVector(XMLoadFloat3(&collisionBox.scale)) * XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&collisionBox.rotation)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.position)));
+			
 			mat = Math::Matrix4x4::Multiply(mat, worldMat);
 
 			view = Math::Matrix4x4::Transpose(view);
@@ -290,7 +228,7 @@ bool KG::Component::DynamicRigidComponent::OnDrawGUI()
 					switch ( currentGizmoOperation )
 					{
 						case ImGuizmo::TRANSLATE:
-							this->collisionBox.center = XMFLOAT3(t[0], t[1], t[2]);
+							this->collisionBox.position = XMFLOAT3(t[0], t[1], t[2]);
 							break;
 						//case ImGuizmo::ROTATE_X:
 						//	this->RotateAxis(this->GetRight(), this->eulerRotation.x - r[0]);
@@ -352,32 +290,13 @@ void KG::Component::StaticRigidComponent::SetupFiltering(uint32_t filterGroup, u
 }
 
 KG::Component::StaticRigidComponent::StaticRigidComponent()
-	:
-	positionProp("Position", this->collisionBox.center),
-	scaleProp("Scale", this->collisionBox.scale),
-	showProp(
-		"Show", this->show,
-		{
-			{SHOW_COLLISION_BOX::NONE, "None"},
-			{SHOW_COLLISION_BOX::BOX, "Box"},
-			{SHOW_COLLISION_BOX::GRID, "Grid"}
-		},false),
-	filterProp(
-		"CollisionFilter", this->filter,
-		{
-			{FilterGroup::eBOX, "Box"},
-			{FilterGroup::eBUILDING, "Building"},
-			{FilterGroup::eENEMY, "Enemy"},
-			{FilterGroup::eFLOOR, "Floor"},
-			{FilterGroup::ePLAYER, "Player"}
-		}, false)
 {
 }
 
 void KG::Component::StaticRigidComponent::PostUpdate(float timeElapsed)
 {
 	DirectX::XMFLOAT4X4 worldMat = gameObject->GetTransform()->GetGlobalWorldMatrix();
-	XMFLOAT3 pos = Math::Vector3::Add(collisionBox.center, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
+	XMFLOAT3 pos = Math::Vector3::Add(collisionBox.position, DirectX::XMFLOAT3(worldMat._41, worldMat._42, worldMat._43));
 
 	physx::PxTransform t = actor->getGlobalPose();
 	t.p = { pos.x,pos.y, pos.z };
@@ -398,7 +317,7 @@ void KG::Component::StaticRigidComponent::OnDataLoad(tinyxml2::XMLElement* compo
 {
 	this->positionProp.OnDataLoad(componentElement);
 	this->scaleProp.OnDataLoad(componentElement);
-	this->showProp.OnDataLoad(componentElement);
+	this->shapeProp.OnDataLoad(componentElement);
 }
 
 void KG::Component::StaticRigidComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
@@ -407,7 +326,7 @@ void KG::Component::StaticRigidComponent::OnDataSave(tinyxml2::XMLElement* paren
 	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::StaticRigidComponent);
 	this->positionProp.OnDataSave(componentElement);
 	this->scaleProp.OnDataSave(componentElement);
-	this->showProp.OnDataSave(componentElement);
+	this->shapeProp.OnDataSave(componentElement);
 }
 
 bool KG::Component::StaticRigidComponent::OnDrawGUI()
@@ -416,13 +335,15 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 		ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 		if (this->isUsing()) {
 			this->positionProp.OnDrawGUI();
+			this->rotationProp.OnDrawGUI();
 			ImGui::TextDisabled("Scaling  (%.3f, %.3f, %.3f)", collisionBox.scale.x, collisionBox.scale.y, collisionBox.scale.z);
-			this->showProp.OnDrawGUI();
+			this->shapeProp.OnDrawGUI();
 		}
 		else if (ImGui::TreeNode("Collision Box")) {
 			this->positionProp.OnDrawGUI();
+			this->rotationProp.OnDrawGUI();
 			this->scaleProp.OnDrawGUI();
-			this->showProp.OnDrawGUI();
+			this->shapeProp.OnDrawGUI();
 			ImGui::TreePop();
 		}
 
@@ -432,16 +353,13 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 		auto proj = this->gameObject->GetScene()->GetMainCameraProj();
 
 		switch (show) {
-		case SHOW_COLLISION_BOX::NONE:
+		case COLLISION_SHAPE::NONE:
 			break;
-		case SHOW_COLLISION_BOX::GRID:
-			// 지금은 다른 작업이 우선
-		case SHOW_COLLISION_BOX::BOX:
+		case COLLISION_SHAPE::BOX:
 		{
 			XMFLOAT4X4 worldMat = this->gameObject->GetTransform()->GetGlobalWorldMatrix();
 			XMFLOAT4X4 mat;
-			DirectX::XMStoreFloat4x4(&mat, XMMatrixScalingFromVector(XMLoadFloat3(&collisionBox.scale)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.center)));
-
+			DirectX::XMStoreFloat4x4(&mat, XMMatrixScalingFromVector(XMLoadFloat3(&collisionBox.scale)) * XMMatrixRotationRollPitchYawFromVector(XMLoadFloat3(&collisionBox.rotation)) * XMMatrixTranslationFromVector(XMLoadFloat3(&collisionBox.position)));
 			mat = Math::Matrix4x4::Multiply(mat, worldMat);
 
 			view = Math::Matrix4x4::Transpose(view);
@@ -492,7 +410,7 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 					switch ( currentGizmoOperation )
 					{
 						case ImGuizmo::TRANSLATE:
-							this->collisionBox.center = XMFLOAT3(t[0], t[1], t[2]);
+							this->collisionBox.position = XMFLOAT3(t[0], t[1], t[2]);
 							break;
 							//case ImGuizmo::ROTATE_X:
 							//	this->RotateAxis(this->GetRight(), this->eulerRotation.x - r[0]);
@@ -510,10 +428,6 @@ bool KG::Component::StaticRigidComponent::OnDrawGUI()
 				}
 
 			}
-
-
-
-
 			ImGuizmo::DrawCubes(
 				reinterpret_cast<const float*>(view.m),
 				reinterpret_cast<const float*>(proj.m),
@@ -538,4 +452,27 @@ void KG::Component::IRigidComponent::SetupFiltering(uint32_t filterGroup, uint32
 	filterData->word1 = filterMask;										// word1 - 충돌 처리를 하지 않을 필터 - 이건 나중에 테이블로 정리
 	filterData->word2 = this->id;										// 피직스 씬에서의 아이디
 
+}
+
+KG::Component::IRigidComponent::IRigidComponent() 
+	:
+	positionProp("Position", this->collisionBox.position),
+	scaleProp("Scale", this->collisionBox.scale),
+	rotationProp("Rotation", this->collisionBox.rotation),
+	shapeProp(
+		"Show", this->show,
+		{
+			{COLLISION_SHAPE::NONE, "None"},
+			{COLLISION_SHAPE::BOX, "Box"},
+		}, false),
+	filterProp(
+		"CollisionFilter", this->filter,
+		{
+			{FilterGroup::eBOX, "Box"},
+			{FilterGroup::eBUILDING, "Building"},
+			{FilterGroup::eENEMY, "Enemy"},
+			{FilterGroup::eFLOOR, "Floor"},
+			{FilterGroup::ePLAYER, "Player"}
+		}, false)
+{
 }
