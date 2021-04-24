@@ -336,7 +336,7 @@ void KG::GameFramework::PostSceneFunction()
 			[this](KG::Core::GameObject& obj)
 		{
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
-			ctrl->RegisterAnimation("mech.fbx"_id, 11);
+			ctrl->RegisterAnimation("mech.fbx"_id, 12);
 			ctrl->SetAnimation(KG::Utill::HashString("mech.fbx"_id));
 
 			ctrl->SetDefaultAnimation(KG::Utill::HashString("mech.fbx"_id));
@@ -345,7 +345,6 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(ctrl);
 
 			auto* enemyController = this->networkServer->GetNewEnemyControllerComponent();
-			// enemyController->SetCenter();
 			enemyController->SetIdleInterval(2);
 			enemyController->SetRotateInterval(3);
 			enemyController->SetSpeed(3);
