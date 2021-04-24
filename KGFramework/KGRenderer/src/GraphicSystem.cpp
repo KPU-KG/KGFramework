@@ -153,3 +153,15 @@ void KG::System::AnimationControllerSystem::OnPostUpdate(float elapsedTime)
 void KG::System::AnimationControllerSystem::OnPreRender()
 {
 }
+
+void KG::System::ParticleEmitterSystem::OnUpdate(float elapsedTime)
+{
+}
+
+void KG::System::ParticleEmitterSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::ParticleEmitterSystem::OnPreRender()
+{
+}

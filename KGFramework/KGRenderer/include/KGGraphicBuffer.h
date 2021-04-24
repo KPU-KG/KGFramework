@@ -107,11 +107,11 @@ namespace KG::Renderer
 	};
 
 
-	template<class Ty, size_t fixed_pool = 10>
+	template<class Ty, size_t fixed_pool = 11>
 	struct BufferPool
 	{
-		constexpr static std::array<size_t, 10> defaultFixedSize = { 1, 4, 16, 32, 64, 128, 256, 512, 1024, 2048 };
-		constexpr static std::array<size_t, 10> defaultReservedSize = { 100, 50, 25, 15, 10 , 10, 10, 5, 5, 1 };
+		constexpr static std::array<size_t, 11> defaultFixedSize = { 1, 4, 16, 32, 64, 128, 256, 512, 1024, 2048, 100000 };
+		constexpr static std::array<size_t, 11> defaultReservedSize = { 100, 50, 25, 15, 10 , 10, 10, 5, 5, 1 };
 		ID3D12Device* device = nullptr;
 		std::map<size_t, SameCountBufferPool<Ty>> pool;
 		std::array<size_t, fixed_pool> fixedSize;

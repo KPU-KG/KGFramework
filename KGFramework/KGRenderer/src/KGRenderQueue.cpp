@@ -94,6 +94,11 @@ bool KG::Renderer::KGRenderJob::CheckBufferFull() const
 
 void KG::Renderer::KGRenderJob::GetNewBuffer()
 {
+	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::Particle )
+	{
+		this->objectSize = 100000;
+	}
+
 	if ( this->objectBuffer )
 		this->objectBuffer->isUsing = false;
 	this->objectBuffer = this->objectBufferPool->GetNewBuffer( this->objectSize );
@@ -119,14 +124,28 @@ void KG::Renderer::KGRenderJob::GetNewBuffer()
 void KG::Renderer::KGRenderJob::OnObjectAdd( bool isVisible )
 {
 	this->objectSize += 1;
-
 	if ( isVisible ) OnVisibleAdd();
+	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::Particle )
+	{
+		this->objectSize = 100000;
+		this->visibleSize = 100000;
+	}
 }
 
-void KG::Renderer::KGRenderJob::OnObjectRemove( bool isVisible )
+void KG::Renderer::KGRenderJob::OnObjectRemove(bool isVisible)
 {
 	this->objectSize -= 1;
 	if ( isVisible ) OnVisibleRemove();
+	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::Particle )
+	{
+		this->objectSize = 100000;
+		this->visibleSize = 100000;
+	}
+}
+
+void KG::Renderer::KGRenderJob::SetVisibleSize(int count)
+{
+	this->visibleSize = count;
 }
 
 void KG::Renderer::KGRenderJob::OnVisibleAdd()

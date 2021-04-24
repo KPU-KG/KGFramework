@@ -1,6 +1,9 @@
 #include "KGDXRenderer.h"
 #include "ParticleGenerator.h"
 #include "KGGraphicBuffer.h"
+#include "KGRenderQueue.h"
+#include "RootParameterIndex.h"
+#include "ResourceContainer.h"
 #include <iterator>
 #include <algorithm>
 
@@ -15,12 +18,16 @@ void KG::Renderer::ParticleGenerator::DestroyExpired()
 	currentParticleCount = std::distance(this->particles.begin(), bound);
 }
 
+void KG::Renderer::ParticleGenerator::PreRender()
+{
+	memcpy(this->renderJob->objectBuffer, this->particles.data(), this->currentParticleCount);
+}
+
 void KG::Renderer::ParticleGenerator::Initialize()
 {
-	this->uploadBuffer.Initialize(KGDXRenderer::GetInstance()->GetD3DDevice(), MAX_PARTICLE_COUNT);
-	this->uploadBuffer.resource->Map(0, nullptr, (void**)&this->particles);
-
-	//KGDXRenderer::GetInstance()->GetD3DDevice()->
+	this->particleShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader("ParticleShader"_id);
+	this->particleGeometry = KG::Resource::ResourceContainer::GetInstance()->CreateFakeGeometry(D3D12_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST, 1);
+	this->renderJob =  KGDXRenderer::GetInstance()->GetRenderEngine()->GetRenderJob(this->particleShader, this->particleGeometry);
 }
 
 void KG::Renderer::ParticleGenerator::EmitParticle(const KG::Component::ParticleDesc& desc, bool autoFillTime)

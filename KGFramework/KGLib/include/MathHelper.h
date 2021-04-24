@@ -367,6 +367,32 @@ namespace KG::Math
 	
 	namespace Literal
 	{
+
+		inline DirectX::XMFLOAT2 operator+(const DirectX::XMFLOAT2& a, const DirectX::XMFLOAT2& b)
+		{
+			return DirectX::XMFLOAT2(a.x + b.x, a.y + b.y);
+		}
+
+		inline DirectX::XMFLOAT2 operator-(const DirectX::XMFLOAT2& a, const DirectX::XMFLOAT2& b)
+		{
+			return DirectX::XMFLOAT2(a.x - b.x, a.y - b.y);
+		}
+
+		inline DirectX::XMFLOAT2 operator*(const DirectX::XMFLOAT2& a, const DirectX::XMFLOAT2& b)
+		{
+			return DirectX::XMFLOAT2(a.x * b.x, a.y * b.y);
+		}
+		inline DirectX::XMFLOAT2 operator*(float scalar, const DirectX::XMFLOAT2& a)
+		{
+			return DirectX::XMFLOAT2(scalar * a.x, scalar * a.y);
+		}
+		inline DirectX::XMFLOAT2 operator*(const DirectX::XMFLOAT2& a, float scalar)
+		{
+			return DirectX::XMFLOAT2(scalar * a.x, scalar * a.y);
+		}
+
+
+
 		inline DirectX::XMFLOAT3 operator+( const DirectX::XMFLOAT3& a, const DirectX::XMFLOAT3& b )
 		{
 			return Vector3::Add( a, b );
@@ -422,6 +448,67 @@ namespace KG::Math
 	inline float RandomFloat()
 	{
 		return rand() / float(RAND_MAX);
+	}
+
+	inline float RandomFloat(float value)
+	{
+		return RandomFloat() * value;
+	}
+	inline float RandomFloat(float min, float max)
+	{
+		return min + RandomFloat(max - min);
+	}
+	inline float RandomAbsRangeFloat(float absRange)
+	{
+		return RandomFloat(-absRange, absRange);
+	}
+
+	inline int RandomInt()
+	{
+		return rand();
+	}
+
+	inline int RandomInt(int value)
+	{
+		return RandomInt() % value;
+	}
+	inline int RandomInt(int min, int max)
+	{
+		return min + RandomInt(max - min);
+	}
+	inline int RandomAbsRangeInt(int absRange)
+	{
+		return RandomInt(-absRange, absRange);
+	}
+
+
+
+
+	inline DirectX::XMFLOAT2 RandomVector2(const DirectX::XMFLOAT2& min, const DirectX::XMFLOAT2& max)
+	{
+		return DirectX::XMFLOAT2(
+			RandomFloat(min.x, max.x),
+			RandomFloat(min.y, max.y)
+		);
+	}
+
+	inline DirectX::XMFLOAT3 RandomVector3(const DirectX::XMFLOAT3& min, const DirectX::XMFLOAT3& max)
+	{
+		return DirectX::XMFLOAT3(
+			RandomFloat(min.x, max.x),
+			RandomFloat(min.y, max.y),
+			RandomFloat(min.z, max.z)
+		);
+	}
+
+	inline DirectX::XMFLOAT4 RandomVector4(const DirectX::XMFLOAT4& min, const DirectX::XMFLOAT4& max)
+	{
+		return DirectX::XMFLOAT4(
+			RandomFloat(min.x, max.x),
+			RandomFloat(min.y, max.y),
+			RandomFloat(min.z, max.z),
+			RandomFloat(min.w, max.w)
+			);
 	}
 
 

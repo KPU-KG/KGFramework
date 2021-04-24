@@ -43,6 +43,8 @@ namespace KG::Renderer
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) = 0;
 		virtual void PreloadModels(std::vector<KG::Utill::HashString>&& ids) = 0;
 
+		virtual UINT QueryMaterialIndex(const KG::Utill::HashString& materialId) const = 0;
+
 		virtual double GetGameTime() const = 0;
 
 		virtual void SetSkymapTextureId(const KG::Utill::HashString& id)

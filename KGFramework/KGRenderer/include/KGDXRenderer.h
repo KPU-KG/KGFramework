@@ -5,6 +5,7 @@
 #include <functional>
 #include "KGRenderer.h"
 #include "KGShader.h"
+#include "ParticleGenerator.h"
 namespace KG::Renderer
 {
 	class KGRenderEngine;
@@ -95,11 +96,12 @@ namespace KG::Renderer
 		virtual void UIRender();
 		virtual void OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void TransparentRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+		virtual void ParticleRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void LightPassRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void SkyBoxRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void PassRenderEnd(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 
-		void EmitParticle(const KG::Component::ParticleDesc& particleDesc);
+		void EmitParticle(const KG::Component::ParticleDesc& particleDesc, bool autofillTime);
 
 		virtual void Update(float elapsedTime) override;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) override;
@@ -149,6 +151,10 @@ namespace KG::Renderer
 
 		// IKGRenderer을(를) 통해 상속됨
 		virtual double GetGameTime() const override;
+
+
+		// IKGRenderer을(를) 통해 상속됨
+		virtual UINT QueryMaterialIndex(const KG::Utill::HashString& materialId) const override;
 
 };
 }

@@ -1,6 +1,9 @@
 #pragma once
 #include <vector>
 #include "IRenderComponent.h"
+#include "ISerializable.h"
+#include "SerializableProperty.h"
+#include <DirectXCollision.h>
 
 namespace KG::Renderer
 {
@@ -22,28 +25,100 @@ namespace KG::Component
 	// ºûÀº °í·Á X
 	
 
-
+	class TransformComponent;
 	struct ParticleDesc
 	{
-		DirectX::XMFLOAT4 position;
-		DirectX::XMFLOAT4 speed;
-		DirectX::XMFLOAT4 acc;
+		DirectX::XMFLOAT3 position;
+		float rotation;
+		DirectX::XMFLOAT3 speed;
+		float rotationSpeed;
+		DirectX::XMFLOAT2 size;
+		UINT materialIndex;
+		float pad1;
 		DirectX::XMFLOAT4 color;
 		double startTime;
-		double lifeTime;
+		float lifeTime;
+		float pad0;
 	};
 
 	class DLL ParticleEmitterComponent : public IRenderComponent
 	{
+		float emitTimer = 0.0f;
+		TransformComponent* transform = nullptr;
+		KG::Utill::HashString particleMaterial;
+		UINT particleMaterialIndex = 0;
+
+
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 	public:
+		ParticleEmitterComponent();
 		virtual void OnRender(ID3D12GraphicsCommandList* commadList) override;
 		virtual void OnPreRender() override;
 	public:
-		void EmitParticle(const ParticleDesc& desc);
+		DirectX::XMFLOAT3 baseDeltaPosition;
+		DirectX::XMFLOAT3 rangeDeltaPosition;
+
+		DirectX::XMFLOAT2 baseSize;
+		DirectX::XMFLOAT2 rangeSize;
+
+		DirectX::XMFLOAT3 baseSpeed;
+		DirectX::XMFLOAT3 rangeSpeed;
+
+		DirectX::XMFLOAT4 color;
+
+		float baselifeTime;
+		float rangelifeTime;
+
+		float baseRotation;
+		float rangeRotation;
+
+		float baseRotationSpeed;
+		float rangeRotationSpeed;
+
+		float emitPerSecond;
+
+		float baseEmitCount;
+		float rangeEmitCount;
+
+
+		void EmitParticle();
+		void EmitParticle(const ParticleDesc& desc, bool autoFillTime);
+		UINT GetParticleMaterialIndex(const KG::Utill::HashString& id) const;
+	private:
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3> baseDeltaPositionProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3> rangeDeltaPositionProp;
+
+		KG::Core::SerializableProperty<DirectX::XMFLOAT2> baseSizeProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT2> rangeSizeProp;
+
+
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3> baseSpeedProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3> rangeSpeedProp;
+
+		KG::Core::SerializableProperty<DirectX::XMFLOAT4> colorProp;
+
+		KG::Core::SerializableProperty<float> baselifeTimeProp;
+		KG::Core::SerializableProperty<float> rangelifeTimeProp;
+
+		KG::Core::SerializableProperty<float> baseRotationProp;
+		KG::Core::SerializableProperty<float> rangeRotationProp;
+
+		KG::Core::SerializableProperty<float> baseRotationSpeedProp;
+		KG::Core::SerializableProperty<float> ramgeRotationSpeedProp;
+
+		KG::Core::SerializableProperty<float> emitPerSecondProp;
+
+		KG::Core::SerializableProperty<float> baseEmitCountSecondProp;
+		KG::Core::SerializableProperty<float> rangeEmitCountSecondProp;
+
+		KG::Core::SerializableProperty<KG::Utill::HashString> particleMaterialProp;
+
+	public:
+		virtual void Update(float elapsedTime) override;
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 		virtual bool OnDrawGUI();
+		void SetParticleMaterial(const KG::Utill::HashString& materialId);
 	};
 	REGISTER_COMPONENT_ID(ParticleEmitterComponent);
 };

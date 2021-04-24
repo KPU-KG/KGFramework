@@ -78,6 +78,26 @@ namespace KG::Utill::XMLConverter
 		currentElement->SetAttribute("value", ref);
 	}
 
+
+	// XMFLOAT2
+	template<>
+	inline DirectX::XMFLOAT2 XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
+	{
+		auto* currentElement = parentElement->FirstChildElement(title.c_str());
+		DirectX::XMFLOAT2 result;
+		result.x = currentElement->FloatAttribute("x");
+		result.y = currentElement->FloatAttribute("y");
+		return result;
+	}
+	template<>
+	inline void XMLElementSave(tinyxml2::XMLElement* parentElement, const std::string& title, const DirectX::XMFLOAT2& ref)
+	{
+		auto* currentElement = parentElement->InsertNewChildElement(title.c_str());
+		currentElement->SetAttribute("x", ref.x);
+		currentElement->SetAttribute("y", ref.y);
+	}
+
+
 	// XMFLOAT3
 	template<>
 	inline DirectX::XMFLOAT3 XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
