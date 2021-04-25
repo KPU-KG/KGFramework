@@ -46,7 +46,7 @@ namespace KG::Server
 		KG::System::SGameManagerComponentSystem sGameManagerSystem;
 		KG::System::SPlayerComponentSystem sPlayerSystem;
 		KG::System::SEnemyControllerComponentSystem sEnemyControllerSystem;
-	
+		KG::Physics::IPhysicsScene* physicsScene;
 
 		static void IOCPWorker(Server* server);
 
@@ -86,6 +86,8 @@ namespace KG::Server
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 		virtual void DrawImGUI() override;
 		virtual bool isStarted() const override;
+		virtual void SetPhysicsScene(KG::Physics::IPhysicsScene* physicsScene) override;
+		virtual KG::Physics::IPhysicsScene* GetPhysicsScene() override;
 		virtual void SetServerObject(KG::Server::NET_OBJECT_ID id, KG::Component::SBaseComponent* obj);
 		virtual void BroadcastPacket(void* packet, SESSION_ID ignore = SERVER_ID);
 		virtual void SendPacket(SESSION_ID playerId, void* packet);

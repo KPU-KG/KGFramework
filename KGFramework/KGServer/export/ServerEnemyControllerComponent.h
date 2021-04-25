@@ -67,6 +67,8 @@ namespace KG::Component
 		float					rotateInterval = 2;
 		float					rotateTimer = 0;
 		
+		KG::Component::RaycastCallbackFunc raycastCallback = nullptr;
+
 		int						hp = 10;
 
 		DirectX::XMFLOAT2		angle;
@@ -101,7 +103,8 @@ namespace KG::Component
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender) override;
 		virtual bool OnDrawGUI();
 		void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback) {
-			this->rigid->SetRaycastCallback(callback);
+			// this->rigid->SetRaycastCallback(callback);
+			this->raycastCallback = callback;
 		}
 		void HitBullet() {
 			this->hp -= 1;

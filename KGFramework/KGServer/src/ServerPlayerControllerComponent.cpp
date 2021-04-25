@@ -128,13 +128,15 @@ bool KG::Component::SPlayerComponent::OnProcessPacket(unsigned char* packet, KG:
 	return true;
 	case KG::Packet::PacketType::CS_FIRE:
 	{
-		auto* firePacket = KG::Packet::PacketCast<KG::Packet::CS_FIRE>(packet);
-		auto* physics = KG::Physics::GetPhysicsScene();
-		auto comp = physics->QueryRaycast(firePacket->origin, firePacket->direction, firePacket->distance);
-		if (comp) {
-			auto callback = comp->GetRaycastCallback();
-			if (callback) {
-				callback(KG::Component::RaycastType::BULLET_HIT, this->rigid);
+		if (this->physicsScene) {
+
+			auto* firePacket = KG::Packet::PacketCast<KG::Packet::CS_FIRE>(packet);
+			auto comp = this->physicsScene->QueryRaycast(firePacket->origin, firePacket->direction, firePacket->distance);
+			if (comp) {
+				auto callback = comp->GetRaycastCallback();
+				if (callback) {
+					callback(KG::Component::RaycastType::BULLET_HIT, this->rigid);
+				}
 			}
 		}
 	}

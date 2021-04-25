@@ -24,7 +24,8 @@ KG::GameFramework::~GameFramework()
 {
 	system.release();
 	renderer.release();
-	physics.release();
+	delete physics;
+	// physics->release();
 	input.release();
 	networkClient.release();
 	networkServer.release();
@@ -70,7 +71,8 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	renderSetting.isVsync = this->setting.isVsync;
 
 	// Physics
-	this->physics = std::unique_ptr<KG::Physics::IPhysicsScene>(KG::Physics::GetPhysicsScene());
+	// this->physics = std::unique_ptr<KG::Physics::IPhysicsScene>(KG::Physics::GetPhysicsScene());
+	this->physics = KG::Physics::GetPhysicsScene();
 	KG::Physics::PhysicsDesc physicsDesc;
 #ifdef _DEBUG
 	physicsDesc.connectPVD = true;
@@ -396,20 +398,13 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(ctrl);
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			KG::Component::CollisionBox box;
+			box.position = { 0, 2, 0 };
+			box.scale = { 4,6,4 };
+			phy->SetCollisionBox(box);
+			// phy->GetCollisionBox().scale = DirectX::XMFLOAT3{}
+			// obj.AddComponent(phy);
 			obj.AddComponent(phy);
-
-
-			// this->
-			// if (this->networkServer) {
-			// 	auto* enemyController = this->networkServer->GetNewEnemyControllerComponent();
-
-			// 	obj.AddComponent(enemyController);
-			// }
-			// else if (this->networkClient) {
-			// 	auto* enemyController = this->networkClient->GetNewEnemyControllerOomponent();
-			// 	obj.AddComponent(enemyController);
-			// 	// auto* enemyController = this->networkClient->GetNewEnemyControllerComponent();
-			// }
 
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}
@@ -487,24 +482,6 @@ void KG::GameFramework::PostSceneFunction()
 			obj.GetTransform()->SetPosition(10.0, 0.00f, 5.00f);
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
-			phy->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
-				DebugNormalMessage("Collide");
-				});
-			phy->SetUpdateCallback([this, obj, phy]() {
-				if (this->input->IsTouching(VK_LBUTTON) && this->input->GetMouseCapture())
-				{
-					auto* tran = obj.GetTransform();
-					DirectX::XMFLOAT3 start = tran->GetPosition();
-					// start = Math::Vector3::Add(start, tran->GetLook() * 2);
-					auto* other = this->physics->QueryRaycast(start, tran->GetLook(), 100, phy->GetId());
-					if (other != nullptr) {
-						if (other->IsDynamic()) {
-							other->AddForce(tran->GetLook(), 15);
-						}
-						other->GetRaycastCallback()(KG::Component::RaycastType::BULLET_HIT, phy);
-					}
-				}
-				});
 			obj.AddComponent(phy);
 
 		}
@@ -673,6 +650,7 @@ void KG::GameFramework::UIRender()
 				this->networkServer->SetGUIContext(this->guiContext);
 				this->networkServer->Initialize();
 				this->networkServer->PostComponentProvider(this->componentProvider);
+				this->networkServer->SetPhysicsScene(physics);
 
 				this->PostServerFunction();
 

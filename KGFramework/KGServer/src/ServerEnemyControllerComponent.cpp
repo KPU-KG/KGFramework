@@ -126,13 +126,15 @@ void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* ob
 	this->transform = this->gameObject->GetTransform();
 	this->center = this->transform->GetWorldPosition();
 	this->rigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
+	if (this->rigid)
+		this->rigid->SetRaycastCallback(raycastCallback);
 	this->anim = this->gameObject->GetComponent<AnimationControllerComponent>();
 }
 
 void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 {
 	if (hp <= 0) {
-		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING);
+		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::dead, ANIMSTATE_PLAYING, 0.1);
 
 	}
 	else {

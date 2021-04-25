@@ -3,11 +3,13 @@
 #include "Scene.h"
 #include "KGServer.h"
 #include "Transform.h"
+#include "IPhysicsScene.h"
 
 void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	this->SetNetObjectId(KG::Server::SCENE_CONTROLLER_ID);
 	this->server->SetServerObject(this->networkObjectId, this);
+	this->physicsScene = this->server->GetPhysicsScene();
 }
 
 void KG::Component::SGameManagerComponent::Update(float elapsedTime)
@@ -82,6 +84,7 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 		this->server->SetSessionState(sender, KG::Server::PLAYER_STATE::PLAYER_STATE_INGAME);
 		auto* playerComp = static_cast<KG::Component::SPlayerComponent*>(this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id));
 		playerComp->SetNetObjectId(newPlayerId);
+		playerComp->SetPhysicsScene(this->physicsScene);
 		auto* trans = playerComp->GetGameObject()->GetTransform();
 		trans->SetPosition(newPlayerId, 0, newPlayerId);
 		this->GetGameObject()->GetTransform()->AddChild(trans);
