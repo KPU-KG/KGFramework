@@ -2,7 +2,9 @@
 #include "ServerPlayerControllerComponent.h"
 #include "Transform.h"
 #include "KGServer.h"
-#include "PhysicsScene.h"
+#include "PhysicsComponent.h"
+
+using namespace KG::Math::Literal;
 
 static enum KeyState
 {
@@ -21,14 +23,16 @@ static bool IsTouching(unsigned char state)
 void KG::Component::SPlayerComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	this->trasnform = this->GetGameObject()->GetComponent<TransformComponent>();
-	this->rigid = this->GetGameObject()->GetComponent<DynamicRigidComponent>();
+	this->rotationTrasnform = this->GetGameObject()->GetChild()->GetTransform();
+	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
 }
 
 void KG::Component::SPlayerComponent::Update(float elapsedTime)
 {
+	this->rotationTrasnform->SetRotation(this->inputs.rotation);
+	//auto eulerInputs = KG::Math::Quaternion::ToEuler(this->inputs.rotation);
+	//this->physics->AddTorque(XMFLOAT3(0, 1, 0), 40000);
 	this->ProcessMove(elapsedTime);
-	this->trasnform->SetRotation(this->inputs.rotation);
-
 	packetSendTimer += elapsedTime;
 	if ( packetSendTimer > this->packetInterval )
 	{
@@ -101,14 +105,23 @@ void KG::Component::SPlayerComponent::ProcessMove(float elapsedTime)
 	forwardValue = KG::Math::Clamp(forwardValue, -1.0f, 1.0f);
 	rightValue = KG::Math::Clamp(rightValue, -1.0f, 1.0f);
 
+	XMFLOAT3 rightVelo = XMFLOAT3(0,0,0);
+	XMFLOAT3 forwardVelo = XMFLOAT3(0, 0, 0);
 	if ( abs(this->forwardValue) >= this->inputMinimum )
 	{
-		this->trasnform->Translate(this->trasnform->GetLook() * speed * elapsedTime * this->forwardValue);
+		rightVelo = Math::Vector3::Normalize(this->rotationTrasnform->GetWorldLook()) * (500 * speed * elapsedTime * this->forwardValue);
+		//physics->AddForce(vec, 500 * speed * elapsedTime * this->forwardValue);
+		//physics->SetVelocity(vec, 500 * speed * elapsedTime * this->forwardValue);
 	}
 	if ( abs(this->rightValue) >= this->inputMinimum )
 	{
-		this->trasnform->Translate(this->trasnform->GetRight() * speed * elapsedTime * this->rightValue);
+
+		forwardVelo = Math::Vector3::Normalize(this->rotationTrasnform->GetWorldRight()) * (500 * speed * elapsedTime * this->rightValue);
+		//physics->SetVelocity(vec, 500 * speed * elapsedTime * this->rightValue);
+		//physics->AddForce(vec, 500 * speed * elapsedTime * this->rightValue);
 	}
+	auto resultVector = rightVelo + forwardVelo;
+	this->physics->SetVelocity(Math::Vector3::Normalize(resultVector), Math::Vector3::Length(resultVector));
 }
 
 bool KG::Component::SPlayerComponent::OnDrawGUI()
@@ -126,20 +139,6 @@ bool KG::Component::SPlayerComponent::OnProcessPacket(unsigned char* packet, KG:
 		this->inputs = *InputPacket;
 	}
 	return true;
-	case KG::Packet::PacketType::CS_FIRE:
-	{
-		if (this->physicsScene) {
-
-			auto* firePacket = KG::Packet::PacketCast<KG::Packet::CS_FIRE>(packet);
-			auto comp = this->physicsScene->QueryRaycast(firePacket->origin, firePacket->direction, firePacket->distance);
-			if (comp) {
-				auto callback = comp->GetRaycastCallback();
-				if (callback) {
-					callback(KG::Component::RaycastType::BULLET_HIT, this->rigid);
-				}
-			}
-		}
-	}
 	}
 	return false;
 }

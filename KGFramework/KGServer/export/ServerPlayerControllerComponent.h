@@ -6,24 +6,22 @@
 #include <functional>
 #include <shared_mutex>
 
-namespace KG::Physics {
-	class IPhysicsScene;
-}
-
 namespace KG::Component
 {
 	class TransformComponent;
+	class CameraComponent;
+	class AnimationControllerComponent;
 	class DynamicRigidComponent;
 
 	class DLL SPlayerComponent : public SBaseComponent
 	{
 	private:
-		static constexpr float packetInterval = 1 / 20.0f;
+		static constexpr float packetInterval = 1 / 60.0f;
 		float packetSendTimer = 0;
 		KG::Packet::CS_INPUT inputs;
 		KG::Component::TransformComponent* trasnform = nullptr;
-		KG::Component::DynamicRigidComponent* rigid = nullptr;
-		KG::Physics::IPhysicsScene* physicsScene = nullptr;
+		KG::Component::TransformComponent* rotationTrasnform = nullptr;
+		KG::Component::DynamicRigidComponent* physics = nullptr;
 
 		float speedValue = 0.75f;
 
@@ -52,10 +50,7 @@ namespace KG::Component
 		{
 			IComponent::OnDestroy();
 		}
-		virtual void SetPhysicsScene(KG::Physics::IPhysicsScene* physicsScene) 
-		{
-			this->physicsScene = physicsScene;
-		}
+
 		virtual bool OnDrawGUI();
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
 	};
