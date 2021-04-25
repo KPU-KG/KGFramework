@@ -6,6 +6,11 @@
 #include <functional>
 #include <shared_mutex>
 
+namespace KG::Physics {
+	class IPhysicsScene;
+}
+
+
 namespace KG::Component
 {
 	class TransformComponent;
@@ -22,6 +27,7 @@ namespace KG::Component
 		KG::Component::TransformComponent* trasnform = nullptr;
 		KG::Component::TransformComponent* rotationTrasnform = nullptr;
 		KG::Component::DynamicRigidComponent* physics = nullptr;
+		KG::Physics::IPhysicsScene* physicsScene = nullptr;
 
 		float speedValue = 0.75f;
 
@@ -50,7 +56,10 @@ namespace KG::Component
 		{
 			IComponent::OnDestroy();
 		}
-
+		virtual void SetPhysicsScene(KG::Physics::IPhysicsScene* physicsScene)
+		{
+			this->physicsScene = physicsScene;
+		}
 		virtual bool OnDrawGUI();
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
 	};

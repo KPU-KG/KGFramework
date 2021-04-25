@@ -191,6 +191,7 @@ KG::Component::SGameManagerComponent* KG::Server::Server::GetNewGameManagerCompo
 {
 	auto* comp = this->sGameManagerSystem.GetNewComponent();
 	comp->SetServerInstance(this);
+	comp->SetPhysicsScene(this->physicsScene);
 	return comp;
 }
 
@@ -233,6 +234,16 @@ void KG::Server::Server::DrawImGUI()
 bool KG::Server::Server::isStarted() const
 {
 	return this->iocpWorkers.size() != 0;
+}
+
+void KG::Server::Server::SetPhysicsScene(KG::Physics::IPhysicsScene* physicsScene)
+{
+	this->physicsScene = physicsScene;
+}
+
+KG::Physics::IPhysicsScene* KG::Server::Server::GetPhysicsScene()
+{
+	return this->physicsScene;
 }
 
 void KG::Server::Server::SetServerObject(KG::Server::NET_OBJECT_ID id, KG::Component::SBaseComponent* obj)

@@ -36,7 +36,7 @@ namespace KG::Packet
 		SC_PLAYER_DATA,
 		CS_REQ_LOGIN = 200, // 초기버전 미사용
 		CS_INPUT, // 사용
-		CS_FIRE // 초기버전 미사용
+		CS_FIRE
 	};
 
 	
@@ -211,6 +211,14 @@ namespace KG::Packet
 		unsigned char stateD;
 		unsigned char stateShift;
 		RawFloat4 rotation;
+	};
+
+	struct CS_FIRE
+	{
+		DEFAULT_PACKET_HEADER(CS_FIRE);
+		RawFloat3 origin;
+		RawFloat3 direction;
+		float distance;
 	};
 
 #pragma pack(pop)

@@ -18,6 +18,10 @@ namespace KG::Component
 	class SEnemyControllerComponent;
 };
 
+namespace KG::Physics {
+	class IPhysicsScene;
+}
+
 namespace KG::Server
 {
 	class DLL IServer
@@ -44,6 +48,8 @@ namespace KG::Server
 			ImGui::SetCurrentContext(context);
 			return true;
 		};
+		virtual void SetPhysicsScene(KG::Physics::IPhysicsScene* physicsScene) = 0;
+		virtual KG::Physics::IPhysicsScene* GetPhysicsScene() = 0;
 	};
 
 	DLL IServer* GetServer();

@@ -126,45 +126,56 @@ void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* ob
 	this->transform = this->gameObject->GetTransform();
 	this->center = this->transform->GetWorldPosition();
 	this->rigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
+	if (this->rigid)
+		this->rigid->SetRaycastCallback(raycastCallback);
 	this->anim = this->gameObject->GetComponent<AnimationControllerComponent>();
 }
 
 void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 {
-	switch (this->action) {
-	case EnemyAction::eIDLE:
-		if (Idle(elapsedTime))
-			action = EnemyAction::eSETGOAL;
-		break;
-	case EnemyAction::eSETGOAL:
-		SetGoal();
-		action = EnemyAction::eROTATE;
-		break;
-	case EnemyAction::eROTATE:
-		if (RotateToGoal(elapsedTime))
-			action = EnemyAction::eMOVE;
-		break;
-	case EnemyAction::eMOVE:
-		if (MoveToGoal()) {
-			action = EnemyAction::eIDLE;
-			idleTimer = 0;
+	if (hp <= 0) {
+		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::dead, ANIMSTATE_PLAYING, 0.1);
+
+	}
+	else {
+		switch (this->action) {
+		case EnemyAction::eIDLE:
+			if (Idle(elapsedTime))
+				action = EnemyAction::eSETGOAL;
+			break;
+		case EnemyAction::eSETGOAL:
+			SetGoal();
+			action = EnemyAction::eROTATE;
+			break;
+		case EnemyAction::eROTATE:
+			if (RotateToGoal(elapsedTime))
+				action = EnemyAction::eMOVE;
+			break;
+		case EnemyAction::eMOVE:
+			if (MoveToGoal()) {
+				action = EnemyAction::eIDLE;
+				idleTimer = 0;
+			}
+			break;
+		case EnemyAction::eATTACK:
+			break;
+		case EnemyAction::eATTACKED:
+			break;
 		}
-		break;
-	case EnemyAction::eATTACK:
-		break;
-	case EnemyAction::eATTACKED:
-		break;
 	}
 
 	KG::Packet::SC_MOVE_OBJECT p = {};
 	p.position = this->transform->GetPosition();
 	p.rotation = this->transform->GetRotation();
 	this->BroadcastPacket(&p);
+
 	KG::Packet::SC_SYNC_ANIMATION pa = {};
 	pa.animId = this->anim->GetCurrentPlayingAnimationId();
 	pa.animIndex = this->anim->GetCurrentPlayingAnimationIndex();
 	pa.timer = this->anim->GetCurrentPlayingAnimationTime();
 	this->BroadcastPacket(&pa);
+
+
 }
 
 bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
