@@ -2,6 +2,9 @@
 #include "ClientCharacterComponent.h"
 #include "Transform.h"
 #include "AnimationComponent.h"
+#include "PhysicsComponent.h"
+#include "PhysicsScene.h"
+
 
 static struct SoldierAnimSet
 {
@@ -86,6 +89,9 @@ void KG::Component::CCharacterComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	this->transform = this->GetGameObject()->GetComponent<TransformComponent>();
 	this->characterAnimation = this->GetGameObject()->GetComponent<AnimationControllerComponent>();
+	this->rotationTrasnform = this->GetGameObject()->GetChild()->GetTransform();
+	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
+	this->physics->SetApply(false);
 }
 
 void KG::Component::CCharacterComponent::Update(float elapsedTime)
@@ -110,8 +116,8 @@ bool KG::Component::CCharacterComponent::OnProcessPacket(unsigned char* packet, 
 		case KG::Packet::PacketType::SC_PLAYER_DATA:
 		{
 			auto* ScenePacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_DATA>(packet);
-			this->transform->SetPosition(ScenePacket->position);
-			this->transform->SetRotation(ScenePacket->rotation);
+			this->physics->SetPosition(ScenePacket->position);
+			this->rotationTrasnform->SetRotation(ScenePacket->rotation);
 			this->rightValue = ScenePacket->rightValue;
 			this->forwardValue = ScenePacket->forwardValue;
 			return true;

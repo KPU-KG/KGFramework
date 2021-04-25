@@ -47,7 +47,7 @@ void KG::Component::SPlayerComponent::SendSyncPacket()
 {
 	KG::Packet::SC_PLAYER_DATA syncPacket;
 	syncPacket.position = this->trasnform->GetPosition();
-	syncPacket.rotation = this->trasnform->GetRotation();
+	syncPacket.rotation = this->rotationTrasnform->GetRotation();
 	syncPacket.forwardValue = this->forwardValue;
 	syncPacket.rightValue = this->rightValue;
 	std::cout << "SendSyncPacket f : " << forwardValue << " / r :" << rightValue << "\n";
