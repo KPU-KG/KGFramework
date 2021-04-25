@@ -121,7 +121,7 @@ KG::Component::SEnemyControllerComponent::SEnemyControllerComponent()
 void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	SBaseComponent::OnCreate(obj);
-	this->SetNetObjectId(this->server->GetNewObjectId());
+	// this->SetNetObjectId(this->server->GetNewObjectId());
 
 	this->transform = this->gameObject->GetTransform();
 	this->center = this->transform->GetWorldPosition();
@@ -160,6 +160,11 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 	p.position = this->transform->GetPosition();
 	p.rotation = this->transform->GetRotation();
 	this->BroadcastPacket(&p);
+	KG::Packet::SC_SYNC_ANIMATION pa = {};
+	pa.animId = this->anim->GetCurrentPlayingAnimationId();
+	pa.animIndex = this->anim->GetCurrentPlayingAnimationIndex();
+	pa.timer = this->anim->GetCurrentPlayingAnimationTime();
+	this->BroadcastPacket(&pa);
 }
 
 bool KG::Component::SEnemyControllerComponent::OnDrawGUI()

@@ -40,17 +40,6 @@ namespace KG::Component
 		TransformComponent* transform = nullptr;
 		AnimationControllerComponent* anim = nullptr;
 
-		// EnemyAction				action = EnemyAction::eSETGOAL;
-		// EnemyState				state = EnemyState::eWANDER;
-
-		DirectX::XMFLOAT3		direction = { 0,0,0 };		// 일단 z값은 고려하지 않을 예정이나 비행 몹에는 쓸지도..?
-		DirectX::XMFLOAT3		goal = { 0,0,0 };
-		float					speed = 3;
-		DirectX::XMFLOAT2		angle;
-
-		bool RotateToGoal(float elapsedTime);
-		bool MoveToGoal();
-		bool Idle(float elapsedTime);
 	public:
 		CEnemyControllerComponent();
 		virtual void OnCreate(KG::Core::GameObject* obj) override;

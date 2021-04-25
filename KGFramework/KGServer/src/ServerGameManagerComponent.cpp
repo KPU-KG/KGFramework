@@ -68,6 +68,7 @@ bool KG::Component::SGameManagerComponent::OnDrawGUI()
 			{
 				auto id = this->server->GetNewObjectId();
 				addObjectPacket.newObjectId = id;
+				comp->SetNetObjectId(id);
 				this->server->SetServerObject(id, comp);
 				this->GetGameObject()->GetTransform()->AddChild(comp->GetGameObject()->GetTransform());
 			}

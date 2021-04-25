@@ -32,6 +32,7 @@ namespace KG::Packet
 		SC_PLAYER_SYNC,
 		SC_SCENE_DATA,
 		SC_MOVE_OBJECT,
+		SC_SYNC_ANIMATION,
 		CS_REQ_LOGIN = 200, // 초기버전 미사용
 		CS_INPUT, // 사용
 		CS_FIRE // 초기버전 미사용
@@ -175,6 +176,14 @@ namespace KG::Packet
 		RawFloat3 position;
 		RawFloat4 rotation;
 		// KG::Utill::hashType parentTag;
+	};
+
+	struct SC_SYNC_ANIMATION
+	{
+		DEFAULT_PACKET_HEADER(SC_SYNC_ANIMATION);
+		KG::Utill::HashString animId;
+		UINT animIndex;
+		float timer;
 	};
 
 	struct SC_ADD_PLAYER
