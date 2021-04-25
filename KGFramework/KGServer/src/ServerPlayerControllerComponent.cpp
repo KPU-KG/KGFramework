@@ -21,12 +21,15 @@ static bool IsTouching(unsigned char state)
 void KG::Component::SPlayerComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	this->trasnform = this->GetGameObject()->GetComponent<TransformComponent>();
+	this->rotationTrasnform = this->GetGameObject()->GetChild()->GetTransform();
 	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
 }
 
 void KG::Component::SPlayerComponent::Update(float elapsedTime)
 {
-	this->physics->SetRotation(this->inputs.rotation);
+	this->rotationTrasnform->SetRotation(this->inputs.rotation);
+	//auto eulerInputs = KG::Math::Quaternion::ToEuler(this->inputs.rotation);
+	//this->physics->AddTorque(XMFLOAT3(0, 1, 0), 40000);
 	this->ProcessMove(elapsedTime);
 	packetSendTimer += elapsedTime;
 	if ( packetSendTimer > this->packetInterval )
@@ -102,13 +105,15 @@ void KG::Component::SPlayerComponent::ProcessMove(float elapsedTime)
 
 	if ( abs(this->forwardValue) >= this->inputMinimum )
 	{
-		//this->trasnform->Translate(this->trasnform->GetLook() * speed * elapsedTime * this->forwardValue);
-		physics->AddForce(this->trasnform->GetWorldLook(), 500 * speed * elapsedTime * this->forwardValue);
+		auto vec = Math::Vector3::Normalize(this->rotationTrasnform->GetWorldLook());
+		std::cout << "PlayerLook = " << vec << "\n";
+		physics->AddForce(vec, 500 * speed * elapsedTime * this->forwardValue);
 	}
 	if ( abs(this->rightValue) >= this->inputMinimum )
 	{
-		//this->trasnform->Translate(this->trasnform->GetRight() * speed * elapsedTime * this->rightValue);
-		physics->AddForce(this->trasnform->GetWorldRight(), 500 * speed * elapsedTime * this->rightValue);
+		auto vec = Math::Vector3::Normalize(this->rotationTrasnform->GetWorldRight());
+		std::cout << "PlayerRight = " << vec << "\n";
+		physics->AddForce(vec, 500 * speed * elapsedTime * this->rightValue);
 	}
 }
 

@@ -74,7 +74,7 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	KG::Physics::PhysicsDesc physicsDesc;
 #ifdef _DEBUG
 	physicsDesc.connectPVD = true;
-#elif
+#else
 	physicsDesc.connectPVD = false;
 #endif
 	physicsDesc.gravity = 9.81f;
@@ -577,10 +577,16 @@ void KG::GameFramework::PostSceneFunction()
 			ctrl->SetIgnoreScale(false);
 			obj.AddComponent(ctrl);
 
+			auto* rotateObj = this->scene->CreateNewTransformObject();
+			rotateObj->tag = KG::Utill::HashString("RotateHelper");
+			auto* rootNode = obj.GetTransform()->GetChild();
+			rootNode->ExtractThisNode();
+			obj.GetTransform()->AddChild(rotateObj->GetTransform());
+			rotateObj->GetTransform()->AddChild(rootNode);
+			rootNode->SetPosition(-23.3, 0, -15.8);
+
 			auto* dynCol = this->physics->GetNewDynamicRigidComponent();
-			dynCol->GetCollisionBox().position.x = 0.3f;
 			dynCol->GetCollisionBox().position.y = 1.0f;
-			dynCol->GetCollisionBox().position.z = 0.2f;
 			dynCol->GetCollisionBox().scale.x = 0.7;
 			dynCol->GetCollisionBox().scale.y = 2.1;
 			dynCol->GetCollisionBox().scale.z = 0.7;

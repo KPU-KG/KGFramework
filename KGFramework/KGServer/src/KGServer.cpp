@@ -22,7 +22,7 @@ void KG::Server::Server::IOCPWorker(Server* server)
 		DWORD numBytes;
 		ULONG_PTR ikey;
 		WSAOVERLAPPED* over;
-		std::cout << "GQCS : Queued\n";
+		//std::cout << "GQCS : Queued\n";
 		BOOL ret = GetQueuedCompletionStatus(server->hIocp, &numBytes, &ikey, &over, INFINITE);
 		SESSION_ID key = static_cast<SESSION_ID>(ikey);
 		if ( FALSE == ret )
@@ -251,7 +251,7 @@ KG::Server::SESSION_ID KG::Server::Server::GetNewPlayerId()
 
 void KG::Server::Server::BroadcastPacket(void* packet, SESSION_ID ignore)
 {
-	std::cout << "BroadCast Packet!\n";
+	//std::cout << "BroadCast Packet!\n";
 	for ( auto& i : this->players )
 	{
 		if ( i.first != ignore )
@@ -270,8 +270,8 @@ void KG::Server::Server::SendPacket(SESSION_ID playerId, void* packet)
 	int packetSize = reinterpret_cast<unsigned char*>(packet)[0];
 	int packetType = reinterpret_cast<unsigned char*>(packet)[1];
 
-	std::cout << "To client [" << playerId << "] : ";
-	std::cout << "Packet / Type : " << packetType << " / Size : " << packetSize << "\n";
+	//std::cout << "To client [" << playerId << "] : ";
+	//std::cout << "Packet / Type : " << packetType << " / Size : " << packetSize << "\n";
 
 	auto* exOver = new EX_OVERLAPPED();
 

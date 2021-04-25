@@ -20,6 +20,7 @@ namespace KG::Component
 		float packetSendTimer = 0;
 		KG::Packet::CS_INPUT inputs;
 		KG::Component::TransformComponent* trasnform = nullptr;
+		KG::Component::TransformComponent* rotationTrasnform = nullptr;
 		KG::Component::DynamicRigidComponent* physics = nullptr;
 
 		float speedValue = 0.75f;
