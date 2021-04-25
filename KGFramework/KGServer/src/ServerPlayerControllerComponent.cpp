@@ -26,6 +26,7 @@ void KG::Component::SPlayerComponent::OnCreate(KG::Core::GameObject* obj)
 	this->trasnform = this->GetGameObject()->GetComponent<TransformComponent>();
 	this->rotationTrasnform = this->GetGameObject()->GetChild()->GetTransform();
 	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
+	this->physicsScene = this->server->GetPhysicsScene();
 }
 
 void KG::Component::SPlayerComponent::Update(float elapsedTime)
