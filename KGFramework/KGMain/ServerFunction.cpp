@@ -11,6 +11,7 @@
 #include "SceneCameraComponent.h"
 #include "IKGServer.h"
 #include "ServerPlayerControllerComponent.h"
+#include "ServerEnemyControllerComponent.h"
 #include "InputManager.h"
 
 void KG::GameFramework::PostServerFunction()
@@ -31,6 +32,15 @@ void KG::GameFramework::PostServerFunction()
 		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent*
 		{
 			auto* comp = this->networkServer->GetNewPlayerComponent();
+			obj.AddComponent(comp);
+			return comp;
+		}
+	);
+
+	this->scene->AddNetworkCreator(
+		KG::Utill::HashString("EnemyMech"),
+		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent* {
+			auto* comp = this->networkServer->GetNewEnemyControllerComponent();
 			obj.AddComponent(comp);
 			return comp;
 		}

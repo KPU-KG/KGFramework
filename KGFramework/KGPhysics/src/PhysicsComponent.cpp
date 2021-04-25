@@ -101,6 +101,13 @@ void KG::Component::DynamicRigidComponent::SetRotation(DirectX::XMFLOAT4 quat)
 	actor->setGlobalPose(pose);
 }
 
+void KG::Component::DynamicRigidComponent::SetPosition(DirectX::XMFLOAT3 pos)
+{
+	auto pose = actor->getGlobalPose();
+	pose.p = physx::PxVec3(pos.x, pos.y, pos.z);
+	actor->setGlobalPose(pose);
+}
+
 
 void KG::Component::DynamicRigidComponent::SetupFiltering(unsigned int filterGroup, unsigned int filterMask)
 {

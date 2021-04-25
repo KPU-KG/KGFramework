@@ -78,7 +78,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\include\;$(SolutionDir)KGRenderer\include\;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\export\;$(SolutionDir)KGRenderer\include\;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)src;$(VC_SourcePath);</SourcePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -169,6 +169,7 @@
   <ItemGroup>
     <ClCompile Include="src\ClientBaseComponent.cpp" />
     <ClCompile Include="src\ClientCharacterComponent.cpp" />
+    <ClCompile Include="src\ClientEnemyControllerComponent.cpp" />
     <ClCompile Include="src\ClientGameManagerComponent.cpp" />
     <ClCompile Include="src\ClientPlayerControllerComponent.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
@@ -179,6 +180,7 @@
   <ItemGroup>
     <ClInclude Include="export\ClientBaseComponent.h" />
     <ClInclude Include="export\ClientCharacterComponent.h" />
+    <ClInclude Include="export\ClientEnemyControllerComponent.h" />
     <ClInclude Include="export\ClientGameManagerComponent.h" />
     <ClInclude Include="export\ClientPlayerControllerComponent.h" />
     <ClInclude Include="export\IKGNetwork.h" />

@@ -25,21 +25,12 @@
     <Filter Include="헤더 파일\Component">
       <UniqueIdentifier>{1a2aab36-951a-4e33-84fb-38a15d676a37}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\Component">
+      <UniqueIdentifier>{05c2fc19-7e8e-410b-bf63-a2b730a28c13}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ClientBaseComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ClientCharacterComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ClientGameManagerComponent.cpp">
-      <Filter>소스 파일</Filter>
-    </ClCompile>
-    <ClCompile Include="src\ClientPlayerControllerComponent.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\dllmain.cpp">
@@ -50,6 +41,21 @@
     </ClCompile>
     <ClCompile Include="src\NetworkUtill.cpp">
       <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ClientBaseComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ClientCharacterComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ClientEnemyControllerComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ClientGameManagerComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ClientPlayerControllerComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -78,6 +84,9 @@
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
     <ClInclude Include="export\ClientCharacterComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="export\ClientEnemyControllerComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
   </ItemGroup>

@@ -78,6 +78,7 @@ namespace KG::Component
 		void SetId(unsigned int id) { this->id = id; }
 		unsigned int GetId() const { return this->id; }
 		physx::PxFilterData* GetFilterData() { return filterData; }
+		virtual void SetPosition(DirectX::XMFLOAT3 pos) {};
 
 	public:
 		// property
@@ -115,6 +116,7 @@ namespace KG::Component
 		virtual void SetVelocity(DirectX::XMFLOAT3 dir, float distance = 1.0f) override;
 		virtual void AddTorque(DirectX::XMFLOAT3 axis, float power) override;
 		virtual void SetRotation(DirectX::XMFLOAT4 quat) override;
+		virtual void SetPosition(DirectX::XMFLOAT3 pos) override;
 		// raycast Å×½ºÆ®
 
 	private:

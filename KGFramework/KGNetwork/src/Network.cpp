@@ -165,9 +165,17 @@ KG::Component::CCharacterComponent* KG::Server::Network::GetNewCharacterComponen
 	return comp;
 }
 
+KG::Component::CEnemyControllerComponent* KG::Server::Network::GetNewEnemyControllerOomponent()
+{
+	auto* comp = this->cEnemyControllerSystem.GetNewComponent();
+	comp->SetNetworkInstance(this);
+	return comp;
+}
+
 void KG::Server::Network::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->cGameManagerSystem.OnPostProvider(provider);
+	this->cEnemyControllerSystem.OnPostProvider(provider);
 }
 
 void KG::Server::Network::DrawImGUI()

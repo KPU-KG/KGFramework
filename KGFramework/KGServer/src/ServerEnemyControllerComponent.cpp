@@ -127,13 +127,6 @@ void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* ob
 	this->center = this->transform->GetWorldPosition();
 	this->rigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
 	this->anim = this->gameObject->GetComponent<AnimationControllerComponent>();
-
-	KG::Packet::SC_ADD_OBJECT p = {};
-	p.presetId = KG::Utill::HashString("EnemyMech"_id);
-	p.newObjectId = this->networkObjectId;
-	p.position = this->transform->GetPosition();
-	p.rotation = this->transform->GetRotation();
-	this->BroadcastPacket(&p, this->networkObjectId);
 }
 
 void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
@@ -162,6 +155,11 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 	case EnemyAction::eATTACKED:
 		break;
 	}
+
+	KG::Packet::SC_MOVE_OBJECT p = {};
+	p.position = this->transform->GetPosition();
+	p.rotation = this->transform->GetRotation();
+	this->BroadcastPacket(&p, this->networkObjectId);
 }
 
 bool KG::Component::SEnemyControllerComponent::OnDrawGUI()

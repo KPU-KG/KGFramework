@@ -17,6 +17,7 @@ namespace KG::Component
 	class CGameManagerComponent;
 	class CPlayerControllerComponent;
 	class CCharacterComponent;
+	class CEnemyControllerComponent;
 }
 
 namespace KG::Server
@@ -34,6 +35,7 @@ namespace KG::Server
 		virtual KG::Component::CGameManagerComponent* GetNewGameManagerComponent() = 0;
 		virtual KG::Component::CPlayerControllerComponent* GetNewPlayerControllerComponent() = 0;
 		virtual KG::Component::CCharacterComponent* GetNewCharacterComponent() = 0;
+		virtual KG::Component::CEnemyControllerComponent* GetNewEnemyControllerOomponent() = 0;
 
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 

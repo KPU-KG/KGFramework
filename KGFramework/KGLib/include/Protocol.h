@@ -31,6 +31,7 @@ namespace KG::Packet
 		SC_ADD_PLAYER,
 		SC_PLAYER_SYNC,
 		SC_SCENE_DATA,
+		SC_MOVE_OBJECT,
 		CS_REQ_LOGIN = 200, // 초기버전 미사용
 		CS_INPUT, // 사용
 		CS_FIRE // 초기버전 미사용
@@ -166,6 +167,14 @@ namespace KG::Packet
 		KG::Server::NET_OBJECT_ID newObjectId;
 		RawFloat3 position;
 		RawFloat4 rotation;
+	};
+
+	struct SC_MOVE_OBJECT
+	{
+		DEFAULT_PACKET_HEADER(SC_MOVE_OBJECT);
+		RawFloat3 position;
+		RawFloat4 rotation;
+		// KG::Utill::hashType parentTag;
 	};
 
 	struct SC_ADD_PLAYER
