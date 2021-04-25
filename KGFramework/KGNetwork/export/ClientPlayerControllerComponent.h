@@ -3,6 +3,7 @@
 #include "ISystem.h"
 #include "ClientBaseComponent.h"
 #include "Debug.h"
+#include "InputManager.h"
 #include <functional>
 
 namespace KG::Component
@@ -10,6 +11,10 @@ namespace KG::Component
 	class DLL CPlayerControllerComponent : public CBaseComponent
 	{
 	public:
+		KG::Input::InputManager* input;
+		float updatetimer = 0;
+		int id = -1;
+		KG::Component::TransformComponent* transform;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override

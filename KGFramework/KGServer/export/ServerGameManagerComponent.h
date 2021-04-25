@@ -10,6 +10,8 @@ namespace KG::Component
 	{
 	public:
 		float updatetimer = 0;
+		KG::Server::NET_OBJECT_ID playerObjectIds[4] = { 0, };
+		KG::Packet::RawFloat3 positions[4];
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override

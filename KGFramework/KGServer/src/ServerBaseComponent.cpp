@@ -33,19 +33,5 @@ bool KG::Component::SBaseComponent::ProcessPacket(unsigned char* packet, KG::Pac
 
 bool KG::Component::SBaseComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender)
 {
-	/*switch (type)
-	{
-	case KG::Packet::PacketType::CS_INPUT:
-	{
-		auto* InputPacket = KG::Packet::PacketCast<KG::Packet::CS_INPUT>(packet);
-		this->server->inputs[InputPacket->header.objectId].stateW = InputPacket->stateW;
-		this->server->inputs[InputPacket->header.objectId].stateA = InputPacket->stateA;
-		this->server->inputs[InputPacket->header.objectId].stateS = InputPacket->stateS;
-		this->server->inputs[InputPacket->header.objectId].stateD = InputPacket->stateD;
-		this->server->inputs[InputPacket->header.objectId].stateShift = InputPacket->stateShift;
-		std::cout << "get input" << InputPacket->header.objectId << std::endl;
-	}
-	return true;
-	}*/
 	return false;
 }
