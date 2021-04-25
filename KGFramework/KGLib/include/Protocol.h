@@ -33,6 +33,7 @@ namespace KG::Packet
 		SC_SCENE_DATA,
 		SC_MOVE_OBJECT,
 		SC_SYNC_ANIMATION,
+		SC_PLAYER_DATA,
 		CS_REQ_LOGIN = 200, // 초기버전 미사용
 		CS_INPUT, // 사용
 		CS_FIRE // 초기버전 미사용
@@ -147,16 +148,13 @@ namespace KG::Packet
 		RawFloat4 rotation;
 	};
 
-	struct SC_SCENE_DATA // 플레이어, 적 관련 좌표만 주기적으로 송신
+	struct SC_PLAYER_DATA // 플레이어, 적 관련 좌표만 주기적으로 송신
 	{
-		DEFAULT_PACKET_HEADER(SC_SCENE_DATA);
-		// 트랜스폼
-		RawFloat3 position; 
-		RawFloat4 rotation;
-		// std::vector<RawFloat3> positions
-		// std::vector<RawFloat4> rotations
+		DEFAULT_PACKET_HEADER(SC_PLAYER_DATA);
+		RawFloat3 position;
+		//RawFloat4 rotation;
 		// 인풋
-		// std::vector<CS_INPUT> inputs
+		//KG::Packet::CS_INPUT inputs[4];
 	};
 
 	struct SC_ADD_OBJECT

@@ -3,6 +3,9 @@
 #include <mutex>
 #include <algorithm>
 #include <stack>
+
+#include <future>
+
 #include "Debug.h"
 #include "Scene.h"
 #include "ResourceContainer.h"
@@ -45,6 +48,16 @@ KG::Resource::FrameModel* KG::Resource::ResourceContainer::LoadModel(const KG::U
 	{
 		return &this->models.at(id);
 	}
+	else if (this->preloadModels.count(id))
+	{
+		auto* model = &this->models.emplace(id, this->preloadModels[id].get()).first->second;
+		auto& frame = model->data;
+		for ( size_t i = 0; i < frame.meshs.size(); i++ )
+		{
+			this->CreateGeometry(id, i, frame.meshs[i]);
+		}
+		return model;
+	}
 	else
 	{
 		auto metaData = ResourceLoader::LoadGeometrySetFromFile("Resource/GeometrySet.xml", id);
@@ -56,6 +69,35 @@ KG::Resource::FrameModel* KG::Resource::ResourceContainer::LoadModel(const KG::U
 		}
 		return model;
 	}
+}
+
+//프리로드 루틴 -> 프로그램 시작되면 프로미스 걸고 컨테이너에 퓨처 넣은 후 비동기 로딩
+// 실제 로드 모델 불리우면 퓨처 리스트에 있나 확인
+//없으면 그냥 로딩
+// 있으면 get으로 받아옴 
+
+static void AsyncLoadFrameModel(std::vector<KG::Utill::HashString>&& vectors, std::vector<std::promise<KG::Resource::FrameModel>>&& promises)
+{
+	for ( size_t i = 0; i < vectors.size(); i++ )
+	{
+		auto metaData = KG::Resource::ResourceLoader::LoadGeometrySetFromFile("Resource/GeometrySet.xml", vectors[i]);
+		promises[i].set_value(KG::Resource::FrameModel(metaData));
+	}
+}
+
+void KG::Resource::ResourceContainer::PreLoadModels(std::vector<KG::Utill::HashString>&& vectors)
+{
+	DebugNormalMessage("Preload Models Start");
+	std::vector<std::promise<KG::Resource::FrameModel>> promises;
+	promises.resize(vectors.size());
+	for ( size_t i = 0; i < vectors.size(); i++ )
+	{
+		this->preloadModels.emplace(vectors[i], promises[i].get_future());
+	}
+	std::thread preloadThread{ AsyncLoadFrameModel , std::move(vectors), std::move(promises) };
+	preloadThread.detach();
+	//std::async(std::launch::async, AsyncLoadFrameModel, std::move(vectors), std::move(promises));
+	DebugNormalMessage("Preload Models Req End");
 }
 
 KG::Renderer::Geometry* KG::Resource::ResourceContainer::LoadGeometry(const KG::Utill::HashString& id, UINT geometryIndex)

@@ -23,3 +23,8 @@ bool KG::Component::CBaseComponent::ProcessPacket(unsigned char* packet, KG::Pac
 {
 	return this->OnProcessPacket(packet, type);
 }
+
+bool KG::Component::CBaseComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type)
+{
+    return false;
+}

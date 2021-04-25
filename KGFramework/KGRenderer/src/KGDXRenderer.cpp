@@ -158,6 +158,16 @@ void KGDXRenderer::Render()
 	ID3D12DescriptorHeap* heaps[] = { this->descriptorHeapManager->Get() };
 	this->mainCommandList->SetDescriptorHeaps( 1, heaps );
 
+	if ( !this->renderEngine->hasRenderJobs() )
+	{
+		auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
+			this->renderTargetBuffers[this->swapChainBufferIndex],
+			D3D12_RESOURCE_STATE_PRESENT,
+			D3D12_RESOURCE_STATE_RENDER_TARGET);
+		this->mainCommandList->ResourceBarrier(1,
+			&barrier
+		);
+	}
 	this->ShadowMapRender();
 	this->CubeCaemraRender();
 	this->NormalCameraRender();
@@ -200,6 +210,11 @@ void KG::Renderer::KGDXRenderer::PreRenderUI()
 	ImGui::SetNextWindowBgAlpha(0);
 	ImGui::DockSpaceOverViewport();
 
+}
+
+void KG::Renderer::KGDXRenderer::PreloadModels(std::vector<KG::Utill::HashString>&& ids)
+{
+	return KG::Resource::ResourceContainer::GetInstance()->PreLoadModels(std::move(ids));
 }
 
 void KG::Renderer::KGDXRenderer::CubeCaemraRender()
@@ -492,7 +507,7 @@ KG::Component::AnimationControllerComponent* KG::Renderer::KGDXRenderer::GetNewA
 
 KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel( const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials )
 {
-	return KG::Resource::ResourceContainer::GetInstance()->CreateObjectFromModel( id, container, materials );
+	return KG::Resource::ResourceContainer::GetInstance()->CreateObjectFromModel(id, container, materials);
 }
 
 KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials)

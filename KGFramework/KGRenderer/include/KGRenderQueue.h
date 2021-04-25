@@ -81,5 +81,14 @@ namespace KG::Renderer
 		void Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType, ShaderTesselation tessel, ID3D12GraphicsCommandList* cmdList );
 		void ClearJobs();
 		void ClearUpdateCount();
+		bool hasRenderJobs() const
+		{
+			for ( auto& i : this->group )
+			{
+				if ( i.size() )
+					return true;
+			}
+			return false;
+		}
 	};
 }

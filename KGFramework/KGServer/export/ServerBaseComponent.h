@@ -38,6 +38,10 @@ namespace KG::Component
 	{
 	protected:
 		KG::Server::Server* server;
+		virtual void OnGetNewComponent(Ty* comp) override
+		{
+			comp->SetServerInstance(this->server);
+		}
 	public:
 		void SetServerInstance(KG::Server::Server* server)
 		{

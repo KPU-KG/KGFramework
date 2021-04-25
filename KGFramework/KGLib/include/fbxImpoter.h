@@ -99,6 +99,13 @@ namespace KG::Utill
 	struct ImportData
 	{
 	public:
+		ImportData() = default;
+		ImportData(const ImportData&) = delete;
+		ImportData(ImportData&& other) noexcept;
+
+		ImportData& operator=(const ImportData&) = delete;
+		ImportData& operator=(ImportData&& other) noexcept;
+
 		std::vector<MeshData> meshs;
 		std::deque<ModelNode> nodes;
 		std::vector<AnimationSet> animations;

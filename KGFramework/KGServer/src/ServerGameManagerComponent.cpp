@@ -12,29 +12,6 @@ void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 
 void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 {
-	DebugNormalMessage("Server Update");
-	if (this->server->isConnect) {
-		if (timer < 1.0f)
-			timer += elapsedTime;
-		else {
-			KG::Packet::SC_SCENE_DATA DataPacket = {};
-			DataPacket.position = KG::Packet::RawFloat3(rand() % 5, 0, rand() % 5);
-			// DataPacket.positions = this->server->positions
-			this->BroadcastPacket(&DataPacket);
-			std::cout << "send scene data\n";
-			timer = 0;
-		}
-	}
-	/*
-	서버
-	------
-	벡터 만들어서 플레이어 추가 시 해당 플레이어의 정보 저장(트랜스폼, 애니메이션 등)
-	벡터 만들어서 플레이어 추가 시 해당 플레이어의 인풋 정보 저장->클라에서 인풋 정보 보낼 때마다 갱신되는 정보
-	업데이트에서 인풋 정보에 따라 이동 및 애니메이션 정보 갱신 + 브로드캐스팅으로 모든 플레이어 정보(위에 만든 벡터 내부 정보) 전송
-	
-	*/
-
-
 }
 
 bool KG::Component::SGameManagerComponent::OnDrawGUI()
@@ -92,44 +69,50 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 	case KG::Packet::PacketType::SC_FIRE:
 	case KG::Packet::PacketType::SC_ADD_PLAYER:
 	case KG::Packet::PacketType::SC_PLAYER_SYNC:
+	case KG::Packet::PacketType::CS_INPUT:
+	case KG::Packet::PacketType::CS_FIRE:
 		std::cout << "Error Packet Received\n";
 		return false;
 	case KG::Packet::PacketType::CS_REQ_LOGIN:
 	{
-		auto id = this->server->GetNewObjectId();
+		auto newPlayerId = this->server->GetNewObjectId();
 
 		//플레이어 추가!
 		this->server->LockWorld();
-		this->server->isConnect = true;
-		auto* playerComp = static_cast<KG::Component::SBaseComponent*>(this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id));
-		playerComp->SetNetObjectId(id);
+
+		auto* playerComp = static_cast<KG::Component::SPlayerComponent*>(this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id));
+		playerComp->SetNetObjectId(newPlayerId);
 		auto* trans = playerComp->GetGameObject()->GetTransform();
-		trans->SetPosition(id, 0, id);
+		trans->SetPosition(newPlayerId, 0, newPlayerId);
 		this->GetGameObject()->GetTransform()->AddChild(trans);
+		playerObjects.insert(std::make_pair(newPlayerId, playerComp));
 		this->server->UnlockWorld();
-		//this->server->Addplayer(trans)
 
 		KG::Packet::SC_PLAYER_INIT initPacket = {};
-		initPacket.playerObjectId = id;
-		initPacket.position = KG::Packet::RawFloat3(id, 0, id);
+		initPacket.playerObjectId = newPlayerId;
+		initPacket.position = KG::Packet::RawFloat3(newPlayerId, 0, newPlayerId);
 		initPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
 		this->SendPacket(sender, &initPacket);
 
 		KG::Packet::SC_ADD_PLAYER addPacket = {};
-		addPacket.playerObjectId = id;
-		addPacket.position = KG::Packet::RawFloat3(id, 0, id);
+		addPacket.playerObjectId = newPlayerId;
+		addPacket.position = KG::Packet::RawFloat3(newPlayerId, 0, newPlayerId);
 		addPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
 		this->BroadcastPacket(&addPacket, sender);
+
+		for ( auto& [id, ptr] : this->playerObjects )
+		{
+			if ( id == newPlayerId ) continue;
+			std::shared_lock sl{ ptr->playerInfoLock };
+
+			KG::Packet::SC_ADD_PLAYER addPacket = {};
+			addPacket.playerObjectId = id;
+			addPacket.position = ptr->GetGameObject()->GetTransform()->GetPosition();
+			addPacket.rotation = ptr->GetGameObject()->GetTransform()->GetRotation();
+			this->SendPacket(sender, &addPacket);
+		}
 	}
 	return true;
-	case KG::Packet::PacketType::CS_INPUT: {
-		// this->server->inputs
-		// 해당 인풋을 보낸 클라이언트의 인풋 정보 변경
-	}
-										 return true;
-	case KG::Packet::PacketType::CS_FIRE:
-		std::cout << "Error Packet Received\n";
-		return false;
 	}
 	return false;
 }

@@ -15,6 +15,13 @@ namespace KG::Resource
 		void CreateFromFBX( const std::string& fileDir );
 		void CreateFromMetadata( const KG::Resource::Metadata::GeometrySetData& metadata );
 		FrameModel() = default;
+		FrameModel(const FrameModel&) = delete;
+		FrameModel& operator=(const FrameModel&) = delete;
+
+		FrameModel(FrameModel&& other) noexcept;
+		FrameModel& operator=(FrameModel&& other) noexcept;
+
 		FrameModel( const KG::Resource::Metadata::GeometrySetData& metadata );
+
 	};
 }

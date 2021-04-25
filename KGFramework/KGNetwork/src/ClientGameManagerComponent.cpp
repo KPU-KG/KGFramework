@@ -2,6 +2,7 @@
 #include "Protocol.h"
 #include "Network.h"
 #include "ClientGameManagerComponent.h"
+
 #include "Scene.h"
 #include "Transform.h"
 
@@ -18,9 +19,9 @@ void KG::Component::CGameManagerComponent::Update(float elapsedTime)
 
 bool KG::Component::CGameManagerComponent::OnDrawGUI()
 {
-	if ( ImGui::ComponentHeader<CGameManagerComponent>() )
+	if (ImGui::ComponentHeader<CGameManagerComponent>())
 	{
-		if ( ImGui::Button("REQ_LOGIN") )
+		if (ImGui::Button("REQ_LOGIN"))
 		{
 			KG::Packet::CS_REQ_LOGIN login = {};
 			this->SendPacket(&login);
@@ -31,7 +32,8 @@ bool KG::Component::CGameManagerComponent::OnDrawGUI()
 
 bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type)
 {
-	switch ( type )
+
+	switch (type)
 	{
 		case KG::Packet::PacketType::SC_ADD_OBJECT:
 		{
@@ -54,13 +56,13 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 		return true;
 		case KG::Packet::PacketType::SC_PLAYER_INIT:
 		{
-			auto* initPacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_INIT>(packet);
-			playerController = static_cast<KG::Component::CBaseComponent*>(this->GetGameObject()->GetScene()->CallNetworkCreator("PlayerCharacter"_id));
-			playerController->SetNetObjectId(initPacket->playerObjectId);
-			this->network->SetNetworkObject(initPacket->playerObjectId, playerController);
-			playerTransform = playerController->GetGameObject()->GetTransform();
-			playerTransform->SetPosition(initPacket->position);
-			this->GetGameObject()->GetTransform()->AddChild(playerTransform);
+			//auto* initPacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_INIT>(packet);
+			//playerController = static_cast<KG::Component::CBaseComponent*>(this->GetGameObject()->GetScene()->CallNetworkCreator("PlayerCharacter"_id));
+			//playerController->SetNetObjectId(initPacket->playerObjectId);
+			//this->network->SetNetworkObject(initPacket->playerObjectId, playerController);
+			//playerTransform = playerController->GetGameObject()->GetTransform();
+			//playerTransform->SetPosition(initPacket->position);
+			//this->GetGameObject()->GetTransform()->AddChild(playerTransform);
 		}
 		return true;
 		case KG::Packet::PacketType::SC_ADD_PLAYER:
@@ -76,11 +78,11 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 		return true;
 		case KG::Packet::PacketType::SC_SCENE_DATA:
 		{
-			if (playerController != nullptr) {
-				auto* ScenePacket = KG::Packet::PacketCast<KG::Packet::SC_SCENE_DATA>(packet);
-				std::cout << "scene data recv" << std::endl;
-				playerTransform->SetPosition(ScenePacket->position);
-			}
+			//if (playerController != nullptr) {
+			//	auto* ScenePacket = KG::Packet::PacketCast<KG::Packet::SC_SCENE_DATA>(packet);
+			//	std::cout << "scene data recv" << std::endl;
+			//	playerTransform->SetPosition(ScenePacket->position);
+			//}
 		}
 		return true;
 		
@@ -88,9 +90,8 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 		------
 		플레이어 정보 받고 플레이어 + 팀 정보로 처리
 		인풋 전송
-		데드레커닝
+		데드레커닝 - kgmain->playercontroller 계산과 동일하게 서버 연산 +
 	*/
-
 	}
 	return false;
 }

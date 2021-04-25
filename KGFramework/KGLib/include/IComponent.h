@@ -34,6 +34,7 @@ namespace KG::Component
 		SystemInformation systemInfo;
 
 		IComponent();
+		IComponent(const IComponent& other) = delete;
 		void SetActive(bool isActive);
 		KG::Core::GameObject* GetGameObject() const
 		{

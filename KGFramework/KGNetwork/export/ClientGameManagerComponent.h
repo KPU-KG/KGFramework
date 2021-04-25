@@ -10,8 +10,11 @@ namespace KG::Component
 	class DLL CGameManagerComponent : public CBaseComponent
 	{
 	public:
-		CBaseComponent* playerController;
-		TransformComponent* playerTransform;
+		KG::Packet::CS_INPUT inputPacket = {};
+		float updatetimer = 0;
+
+		//KG::Component::CPlayerControllerComponent* teamControllers[4];
+		//KG::Component::CPlayerControllerComponent* playerController;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override
@@ -27,9 +30,18 @@ namespace KG::Component
 	REGISTER_COMPONENT_ID(CGameManagerComponent);
 
 
-	class DLL CGameManagerComponentSystem : public KG::Component::CBaseComponentSystem<CGameManagerComponent>
+	class DLL CGameManagerComponentSystem : public KG::System::IComponentSystem<CGameManagerComponent>
 	{
+		KG::Server::Network* network = nullptr;
+		virtual void OnGetNewComponent(CGameManagerComponent* comp)
+		{
+			comp->SetNetworkInstance(network);
+		}
 	public:
+		void SetNetworkInstance(KG::Server::Network* network)
+		{
+			this->network = network;
+		}
 		virtual void OnUpdate(float elapsedTime) override
 		{
 			for ( auto& com : *this )

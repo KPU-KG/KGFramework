@@ -11,6 +11,11 @@
 #define DLL __declspec(dllimport)
 #endif
 
+namespace KG::Input
+{
+	class InputManager;
+}
+
 namespace KG::Component
 {
 	class CBaseComponent;
@@ -42,6 +47,8 @@ namespace KG::Server
 		virtual void DrawImGUI() = 0;
 
 		virtual bool IsConnected() const = 0;
+
+		virtual void SetInputManager(KG::Input::InputManager* manager) = 0;
 
 		bool SetGUIContext(ImGuiContext* context)
 		{

@@ -7,8 +7,10 @@
 
 namespace KG::Component
 {
+	class TransformComponent;
 	class DLL CCharacterComponent : public CBaseComponent
 	{
+		KG::Component::TransformComponent* transform = nullptr;
 	public:
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
@@ -23,9 +25,18 @@ namespace KG::Component
 	REGISTER_COMPONENT_ID(CCharacterComponent);
 
 
-	class DLL CCharacterComponentSystem : public KG::Component::CBaseComponentSystem<CCharacterComponent>
+	class DLL CCharacterComponentSystem : public KG::System::IComponentSystem<CCharacterComponent>
 	{
+		KG::Server::Network* network = nullptr;
+		virtual void OnGetNewComponent(CCharacterComponent* comp)
+		{
+			comp->SetNetworkInstance(network);
+		}
 	public:
+		void SetNetworkInstance(KG::Server::Network* network)
+		{
+			this->network = network;
+		}
 		virtual void OnUpdate(float elapsedTime) override
 		{
 			for ( auto& com : *this )

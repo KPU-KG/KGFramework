@@ -55,9 +55,18 @@ namespace KG::Component
 
 	REGISTER_COMPONENT_ID(CEnemyControllerComponent);
 
-	class DLL CEnemyControllerComponentSystem : public KG::Component::CBaseComponentSystem<CEnemyControllerComponent>
+	class DLL CEnemyControllerComponentSystem : public KG::System::IComponentSystem<CEnemyControllerComponent>
 	{
+		KG::Server::Network* network = nullptr;
+		virtual void OnGetNewComponent(CEnemyControllerComponent* comp)
+		{
+			comp->SetNetworkInstance(network);
+		}
 	public:
+		void SetNetworkInstance(KG::Server::Network* network)
+		{
+			this->network = network;
+		}
 		virtual void OnUpdate(float elapsedTime) override
 		{
 			for (auto& com : *this)
