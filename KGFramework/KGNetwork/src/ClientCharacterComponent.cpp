@@ -116,7 +116,8 @@ bool KG::Component::CCharacterComponent::OnProcessPacket(unsigned char* packet, 
 		case KG::Packet::PacketType::SC_PLAYER_DATA:
 		{
 			auto* ScenePacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_DATA>(packet);
-			this->physics->SetPosition(ScenePacket->position);
+			//this->physics->SetPosition(ScenePacket->position);
+			this->transform->SetPosition(ScenePacket->position);
 			this->rotationTrasnform->SetRotation(ScenePacket->rotation);
 			this->rightValue = ScenePacket->rightValue;
 			this->forwardValue = ScenePacket->forwardValue;
