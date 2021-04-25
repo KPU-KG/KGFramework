@@ -30,7 +30,7 @@ namespace KG::Component
 		BULLET_HIT = 0
 	};
 
-	using RaycastCallbackFunc = std::function<void(KG::Component::RaycastType type, KG::Component::IRigidComponent*)>;
+	using RaycastCallbackFunc = std::function<void(KG::Component::RaycastType, KG::Component::IRigidComponent*)>;
 
 	enum class COLLISION_SHAPE {
 		NONE = 0, 
@@ -63,7 +63,7 @@ namespace KG::Component
 		COLLISION_SHAPE											show = COLLISION_SHAPE::BOX;
 		FilterGroup												filter = FilterGroup::eBOX;										
 		KG::Component::CollisionCallbackFunc					collisionCallback = nullptr;
-		KG::Component::RaycastCallbackFunc						raycastCallback = nullptr;
+		RaycastCallbackFunc										raycastCallback = nullptr;
 		physx::PxFilterData*									filterData = nullptr;
 		bool kinetic = false;														
 		bool dynamic = false;
@@ -79,7 +79,7 @@ namespace KG::Component
 		virtual void SetCollisionCallback(KG::Component::CollisionCallbackFunc&& collisionCallback) { this->collisionCallback = collisionCallback; };
 		KG::Component::CollisionCallbackFunc GetCollisionCallback() { return collisionCallback; }
 
-		virtual void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& raycastCallback) { this->raycastCallback = raycastCallback; }
+		virtual void SetRaycastCallback(KG::Component::RaycastCallbackFunc raycastCallback) { this->raycastCallback = raycastCallback; }
 		virtual KG::Component::RaycastCallbackFunc GetRaycastCallback() const { return this->raycastCallback; }
 
 		virtual physx::PxActor* GetActor() { return nullptr; };

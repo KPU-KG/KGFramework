@@ -9,6 +9,7 @@
 namespace KG::Component
 {
 	class TransformComponent;
+	class DynamicRigidComponent;
 
 	class DLL SPlayerComponent : public SBaseComponent
 	{
@@ -17,6 +18,7 @@ namespace KG::Component
 		float packetSendTimer = 0;
 		KG::Packet::CS_INPUT inputs;
 		KG::Component::TransformComponent* trasnform = nullptr;
+		KG::Component::DynamicRigidComponent* rigid = nullptr;
 
 		float speedValue = 0.75f;
 

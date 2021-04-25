@@ -45,6 +45,11 @@ void KG::GameFramework::PostServerFunction()
 			comp->SetRotateInterval(3);
 			comp->SetSpeed(3);
 			comp->SetWanderRange(3);
+			comp->SetRaycastCallback([this, comp](KG::Component::RaycastType type, KG::Component::IRigidComponent* other) {
+				if (type == KG::Component::RaycastType::BULLET_HIT) {
+					comp->HitBullet();
+				}
+				});
 			obj.AddComponent(comp);
 			return comp;
 		}

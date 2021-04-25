@@ -4,6 +4,7 @@
 #include "AnimationComponent.h"
 #include "PlayerControllerComponent.h"
 #include "PhysicsComponent.h"
+#include "Protocol.h"
 
 static struct SoldierAnimSet
 {

@@ -387,6 +387,7 @@ void KG::GameFramework::PostSceneFunction()
 			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::shotSmallCanon);
 			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::walk);
 			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::walkInPlace);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::dead);
 
 			ctrl->SetAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace);
 			ctrl->SetDefaultAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon);

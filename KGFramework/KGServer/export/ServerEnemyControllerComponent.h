@@ -2,6 +2,7 @@
 #include "IComponent.h"
 #include "ISystem.h"
 #include "ServerBaseComponent.h"
+#include "PhysicsComponent.h"
 #include "Debug.h"
 #include <vector>
 
@@ -36,6 +37,7 @@ namespace KG::Component
 	};
 
 	static struct MechAnimIndex {
+		const static UINT dead = 1U;
 		const static UINT shotSmallCanon = 8U;
 		const static UINT walk = 11U;
 		const static UINT walkInPlace = 12U;
@@ -43,6 +45,7 @@ namespace KG::Component
 
 	class DynamicRigidComponent;
 	class AnimationControllerComponent;
+
 
 	class DLL SEnemyControllerComponent : public SBaseComponent
 	{
@@ -63,6 +66,8 @@ namespace KG::Component
 		float					idleTimer = 0;
 		float					rotateInterval = 2;
 		float					rotateTimer = 0;
+		
+		int						hp = 10;
 
 		DirectX::XMFLOAT2		angle;
 		void UpdateState();
@@ -95,7 +100,12 @@ namespace KG::Component
 		}
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender) override;
 		virtual bool OnDrawGUI();
-
+		void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback) {
+			this->rigid->SetRaycastCallback(callback);
+		}
+		void HitBullet() {
+			this->hp -= 1;
+		}
 	};
 
 	REGISTER_COMPONENT_ID(SEnemyControllerComponent);

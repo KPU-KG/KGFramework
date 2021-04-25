@@ -343,12 +343,22 @@ void KG::Component::CPlayerControllerComponent::TryShoot(float elapsedTime)
 		DebugNormalMessage("Current Vector Anim Not Fire");
 		this->vectorAnimation->SetAnimation(VectorAnimSet::fire, 0, 1, 1.5f);
 		this->bulletCount -= 1;
+		Packet::CS_FIRE p = { };
+		p.origin = this->cameraTransform->GetPosition();
+		p.direction = this->characterTransform->GetWorldLook();
+		p.distance = 100;
+		this->SendPacket(&p);
 	}
 	else if ( this->vectorAnimation->GetCurrentPlayingAnimationTime() > this->bulletRepeatTime )
 	{
 		DebugNormalMessage("Current Vector Anim is Fire But 0.25Sec later");
 		this->vectorAnimation->SetAnimation(VectorAnimSet::fire, 0, 1, 1.5f);
 		this->bulletCount -= 1;
+		Packet::CS_FIRE p = { };
+		p.origin = this->cameraTransform->GetPosition();
+		p.direction = this->characterTransform->GetWorldLook();
+		p.distance = 100;
+		this->SendPacket(&p);
 	}
 }
 
