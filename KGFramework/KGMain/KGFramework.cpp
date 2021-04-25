@@ -14,7 +14,6 @@
 #include "ServerEnemyControllerComponent.h"
 #include "ClientEnemyControllerComponent.h"
 
-
 KG::GameFramework::GameFramework()
 {
 	this->system = std::make_unique<Systems>();

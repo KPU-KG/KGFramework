@@ -3,6 +3,7 @@
 #include "Scene.h"
 #include "KGServer.h"
 #include "Transform.h"
+#include "PhysicsComponent.h"
 
 void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 {
@@ -82,22 +83,24 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 		this->server->SetSessionState(sender, KG::Server::PLAYER_STATE::PLAYER_STATE_INGAME);
 		auto* playerComp = static_cast<KG::Component::SPlayerComponent*>(this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id));
 		playerComp->SetNetObjectId(newPlayerId);
+		auto* dyn = playerComp->GetGameObject()->GetComponent<DynamicRigidComponent>();
 		auto* trans = playerComp->GetGameObject()->GetTransform();
-		trans->SetPosition(newPlayerId, 0, newPlayerId);
 		this->GetGameObject()->GetTransform()->AddChild(trans);
+		trans->SetPosition(newPlayerId + 10, 1, newPlayerId + 10);
+		dyn->SetPosition(XMFLOAT3(newPlayerId + 10, 1, newPlayerId + 10));
 		playerObjects.insert(std::make_pair(newPlayerId, playerComp));
 		this->server->SetServerObject(newPlayerId, playerComp);
 		this->server->UnlockWorld();
 
 		KG::Packet::SC_PLAYER_INIT initPacket = {};
 		initPacket.playerObjectId = newPlayerId;
-		initPacket.position = KG::Packet::RawFloat3(newPlayerId, 0, newPlayerId);
+		initPacket.position = KG::Packet::RawFloat3(newPlayerId + 10, 1, newPlayerId + 5);
 		initPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
 		this->SendPacket(sender, &initPacket);
 
 		KG::Packet::SC_ADD_PLAYER addPacket = {};
 		addPacket.playerObjectId = newPlayerId;
-		addPacket.position = KG::Packet::RawFloat3(newPlayerId, 0, newPlayerId);
+		addPacket.position = KG::Packet::RawFloat3(newPlayerId + 10, 1, newPlayerId + 5);
 		addPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
 		this->BroadcastPacket(&addPacket, sender);
 
