@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ClientEnemyControllerComponent.h"
 #include "PhysicsComponent.h"
+#include "AnimationComponent.h"
 #include "imgui/imgui.h"
 #include "Transform.h"
 
@@ -26,6 +27,13 @@ KG::Component::CEnemyControllerComponent::CEnemyControllerComponent()
 
 void KG::Component::CEnemyControllerComponent::OnCreate(KG::Core::GameObject* obj)
 {
+	CBaseComponent::OnCreate(obj);
+	// this->SetNetObjectId(this->server->GetNewObjectId());
+
+	this->transform = this->gameObject->GetTransform();
+	// this->center = this->transform->GetWorldPosition();
+	this->rigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
+	this->anim = this->gameObject->GetComponent<AnimationControllerComponent>();
 }
 
 void KG::Component::CEnemyControllerComponent::Update(float elapsedTime)

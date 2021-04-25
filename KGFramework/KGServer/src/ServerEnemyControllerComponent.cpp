@@ -159,7 +159,7 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 	KG::Packet::SC_MOVE_OBJECT p = {};
 	p.position = this->transform->GetPosition();
 	p.rotation = this->transform->GetRotation();
-	this->BroadcastPacket(&p, this->networkObjectId);
+	this->BroadcastPacket(&p);
 }
 
 bool KG::Component::SEnemyControllerComponent::OnDrawGUI()

@@ -352,19 +352,16 @@ void KG::GameFramework::PostSceneFunction()
 
 
 			// this->
-			if (this->networkServer) {
-				auto* enemyController = this->networkServer->GetNewEnemyControllerComponent();
-				enemyController->SetIdleInterval(2);
-				enemyController->SetRotateInterval(3);
-				enemyController->SetSpeed(3);
-				enemyController->SetWanderRange(3);
-				obj.AddComponent(enemyController);
-			}
-			else if (this->networkClient) {
-				auto* enemyController = this->networkClient->GetNewEnemyControllerOomponent();
-				obj.AddComponent(enemyController);
-				// auto* enemyController = this->networkClient->GetNewEnemyControllerComponent();
-			}
+			// if (this->networkServer) {
+			// 	auto* enemyController = this->networkServer->GetNewEnemyControllerComponent();
+
+			// 	obj.AddComponent(enemyController);
+			// }
+			// else if (this->networkClient) {
+			// 	auto* enemyController = this->networkClient->GetNewEnemyControllerOomponent();
+			// 	obj.AddComponent(enemyController);
+			// 	// auto* enemyController = this->networkClient->GetNewEnemyControllerComponent();
+			// }
 
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}

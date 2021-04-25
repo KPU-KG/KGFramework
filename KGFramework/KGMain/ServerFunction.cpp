@@ -41,6 +41,10 @@ void KG::GameFramework::PostServerFunction()
 		KG::Utill::HashString("EnemyMech"),
 		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent* {
 			auto* comp = this->networkServer->GetNewEnemyControllerComponent();
+			comp->SetIdleInterval(2);
+			comp->SetRotateInterval(3);
+			comp->SetSpeed(3);
+			comp->SetWanderRange(3);
 			obj.AddComponent(comp);
 			return comp;
 		}
