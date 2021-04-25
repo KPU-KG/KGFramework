@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "KGServer.h"
 #include "PhysicsComponent.h"
+#include "PhysicsScene.h"
 
 using namespace KG::Math::Literal;
 
@@ -139,7 +140,23 @@ bool KG::Component::SPlayerComponent::OnProcessPacket(unsigned char* packet, KG:
 		this->inputs = *InputPacket;
 	}
 	return true;
+	case KG::Packet::PacketType::CS_FIRE:
+	{
+		if (this->physicsScene) {
+
+			auto* firePacket = KG::Packet::PacketCast<KG::Packet::CS_FIRE>(packet);
+			auto comp = this->physicsScene->QueryRaycast(firePacket->origin, firePacket->direction, firePacket->distance);
+			if (comp) {
+				auto callback = comp->GetRaycastCallback();
+				if (callback) {
+					callback(KG::Component::RaycastType::BULLET_HIT, this->physics);
+				}
+			}
+		}
 	}
+	return true;
+	}
+
 	return false;
 }
 

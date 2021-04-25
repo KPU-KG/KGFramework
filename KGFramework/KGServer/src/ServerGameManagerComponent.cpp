@@ -10,7 +10,7 @@ void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	this->SetNetObjectId(KG::Server::SCENE_CONTROLLER_ID);
 	this->server->SetServerObject(this->networkObjectId, this);
-	//this->physicsScene = this->server->GetPhysicsScene();
+	this->physicsScene = this->server->GetPhysicsScene();
 }
 
 void KG::Component::SGameManagerComponent::Update(float elapsedTime)
