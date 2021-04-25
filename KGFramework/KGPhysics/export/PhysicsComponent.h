@@ -26,6 +26,12 @@ namespace KG::Component
 	class IRigidComponent;
 	using CollisionCallbackFunc = std::function<void(KG::Component::IRigidComponent*, KG::Component::IRigidComponent*)>;
 
+	enum class RaycastType {
+		BULLET_HIT = 0
+	};
+
+	using RaycastCallbackFunc = std::function<void(KG::Component::RaycastType type, KG::Component::IRigidComponent*)>;
+
 	enum class COLLISION_SHAPE {
 		NONE = 0, 
 		BOX
@@ -54,9 +60,10 @@ namespace KG::Component
 	protected:
 		CollisionBox											collisionBox;
 		TransformComponent*										transform = nullptr;
-		COLLISION_SHAPE										show = COLLISION_SHAPE::BOX;
+		COLLISION_SHAPE											show = COLLISION_SHAPE::BOX;
 		FilterGroup												filter = FilterGroup::eBOX;										
-		KG::Component::CollisionCallbackFunc					callback = nullptr;
+		KG::Component::CollisionCallbackFunc					collisionCallback = nullptr;
+		KG::Component::RaycastCallbackFunc						raycastCallback = nullptr;
 		physx::PxFilterData*									filterData = nullptr;
 		bool kinetic = false;														
 		bool dynamic = false;
@@ -68,8 +75,13 @@ namespace KG::Component
 		virtual void PostUpdate(float timeElapsed) override {};
 		virtual void Update(float timeElapsed) override {};
 		CollisionBox& GetCollisionBox() { return collisionBox; }
-		virtual void SetCollisionCallback(KG::Component::CollisionCallbackFunc&& collisionCallback) { this->callback = collisionCallback; };
-		KG::Component::CollisionCallbackFunc GetCollisionCallback() { return callback; }
+
+		virtual void SetCollisionCallback(KG::Component::CollisionCallbackFunc&& collisionCallback) { this->collisionCallback = collisionCallback; };
+		KG::Component::CollisionCallbackFunc GetCollisionCallback() { return collisionCallback; }
+
+		virtual void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& raycastCallback) { this->raycastCallback = raycastCallback; }
+		virtual KG::Component::RaycastCallbackFunc GetRaycastCallback() const { return this->raycastCallback; }
+
 		virtual physx::PxActor* GetActor() { return nullptr; };
 		virtual void AddForce(DirectX::XMFLOAT3 dir, float distance = 1.0f) {};
 		virtual void SetVelocity(DirectX::XMFLOAT3 dir, float distance = 1.0f) {};

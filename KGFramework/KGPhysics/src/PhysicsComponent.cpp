@@ -119,7 +119,7 @@ void KG::Component::DynamicRigidComponent::SetupFiltering(unsigned int filterGro
 	{
 		physx::PxShape* shape = shapes[i];
 		shape->setSimulationFilterData(*filterData);
-		if (callback != nullptr)
+		if (collisionCallback != nullptr)
 			shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
 	}
 	delete[] shapes;
@@ -290,7 +290,7 @@ void KG::Component::StaticRigidComponent::SetupFiltering(uint32_t filterGroup, u
 	{
 		physx::PxShape* shape = shapes[i];
 		shape->setSimulationFilterData(*filterData);
-		if (callback != nullptr)
+		if (collisionCallback != nullptr)
 			shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
 	}
 	delete[] shapes;

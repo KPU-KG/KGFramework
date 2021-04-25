@@ -13,12 +13,12 @@ using namespace KG::Physics;
 constexpr const int MAX_COMPONENT = 10000;
 
 struct CallbackParam {
-	std::function<void(KG::Component::IRigidComponent*, KG::Component::IRigidComponent*)> callback;
+	std::function<void(KG::Component::IRigidComponent*, KG::Component::IRigidComponent*)> collisionCallback;
 	KG::Component::IRigidComponent* my;
 	KG::Component::IRigidComponent* other;
 
 	void DoCallback() {
-		callback(my, other);
+		collisionCallback(my, other);
 	}
 };
 
@@ -91,7 +91,7 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
 		else if (CollisionCallback.count(comp1->GetActor()) == 0) {
 			if (comp1->GetCollisionCallback() != nullptr) {
 				CallbackParam cp;
-				cp.callback = comp1->GetCollisionCallback();
+				cp.collisionCallback = comp1->GetCollisionCallback();
 				cp.my = comp1;
 				cp.other = comp2;
 				CollisionCallback[comp1->GetActor()] = cp;
@@ -103,7 +103,7 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
 		else if (CollisionCallback.count(comp2->GetActor()) == 0) {
 			if (comp2->GetCollisionCallback() != nullptr) {
 				CallbackParam cp;
-				cp.callback = comp2->GetCollisionCallback();
+				cp.collisionCallback = comp2->GetCollisionCallback();
 				cp.my = comp2;
 				cp.other = comp1;
 				CollisionCallback[comp2->GetActor()] =cp;
