@@ -190,6 +190,17 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
+	this->scene->AddObjectPreset("Directional Light",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* t = this->system->transformSystem.GetNewComponent();
+			auto* l = this->renderer->GetNewLightComponent();
+			l->SetDirectionalLight(DirectX::XMFLOAT3(1.2f, 1.2f, 1.2f), DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f));
+			obj.AddComponent(t);
+			obj.AddComponent(l);
+		}
+	);
+
 	this->scene->AddObjectPreset("EmptyObject",
 		[this](KG::Core::GameObject& obj)
 		{
@@ -211,6 +222,27 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddTemporalComponent(g);
 			obj.AddTemporalComponent(m);
 			obj.AddTemporalComponent(r);
+		}
+	);
+
+	this->scene->AddObjectPreset("StaticTileCube",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* t = this->system->transformSystem.GetNewComponent();
+			auto* g = this->renderer->GetNewGeomteryComponent();
+			g->AddGeometry(KG::Utill::HashString("cube"));
+			auto* m = this->renderer->GetNewMaterialComponent();
+			m->PostMaterial(KG::Utill::HashString("PBRTile"));
+			auto* r = this->renderer->GetNewRenderComponent();
+			auto* c = this->physics->GetNewStaticRigidComponent();
+			c->GetCollisionBox().scale.x = 2;
+			c->GetCollisionBox().scale.y = 2;
+			c->GetCollisionBox().scale.z = 2;
+			obj.AddComponent(t);
+			obj.AddComponent(g);
+			obj.AddComponent(m);
+			obj.AddComponent(r);
+			obj.AddComponent(c);
 		}
 	);
 
@@ -545,20 +577,21 @@ void KG::GameFramework::PostSceneFunction()
 			ctrl->SetIgnoreScale(false);
 			obj.AddComponent(ctrl);
 
+			auto* dynCol = this->physics->GetNewDynamicRigidComponent();
+			dynCol->GetCollisionBox().position.x = 0.3f;
+			dynCol->GetCollisionBox().position.y = 1.0f;
+			dynCol->GetCollisionBox().position.z = 0.2f;
+			dynCol->GetCollisionBox().scale.x = 0.7;
+			dynCol->GetCollisionBox().scale.y = 2.1;
+			dynCol->GetCollisionBox().scale.z = 0.7;
+
+			dynCol->SetApply(true);
+
+			obj.AddComponent(dynCol);
+
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}
 		);
-
-	this->scene->AddObjectPreset("Directional Light",
-		[this](KG::Core::GameObject& obj)
-		{
-			auto* t = this->system->transformSystem.GetNewComponent();
-			auto* l = this->renderer->GetNewLightComponent();
-			l->SetDirectionalLight(DirectX::XMFLOAT3(1.2f, 1.2f, 1.2f), DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f));
-			obj.AddComponent(t);
-			obj.AddComponent(l);
-		}
-	);
 	this->scene->AddObjectPreset("Ambient Processor",
 		[this](KG::Core::GameObject& obj)
 		{

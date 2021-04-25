@@ -9,14 +9,18 @@
 namespace KG::Component
 {
 	class TransformComponent;
+	class CameraComponent;
+	class AnimationControllerComponent;
+	class DynamicRigidComponent;
 
 	class DLL SPlayerComponent : public SBaseComponent
 	{
 	private:
-		static constexpr float packetInterval = 1 / 20.0f;
+		static constexpr float packetInterval = 1 / 60.0f;
 		float packetSendTimer = 0;
 		KG::Packet::CS_INPUT inputs;
 		KG::Component::TransformComponent* trasnform = nullptr;
+		KG::Component::DynamicRigidComponent* physics = nullptr;
 
 		float speedValue = 0.75f;
 

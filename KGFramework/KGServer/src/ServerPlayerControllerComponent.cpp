@@ -2,6 +2,7 @@
 #include "ServerPlayerControllerComponent.h"
 #include "Transform.h"
 #include "KGServer.h"
+#include "PhysicsComponent.h"
 
 static enum KeyState
 {
@@ -20,13 +21,13 @@ static bool IsTouching(unsigned char state)
 void KG::Component::SPlayerComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	this->trasnform = this->GetGameObject()->GetComponent<TransformComponent>();
+	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
 }
 
 void KG::Component::SPlayerComponent::Update(float elapsedTime)
 {
+	this->physics->SetRotation(this->inputs.rotation);
 	this->ProcessMove(elapsedTime);
-	this->trasnform->SetRotation(this->inputs.rotation);
-
 	packetSendTimer += elapsedTime;
 	if ( packetSendTimer > this->packetInterval )
 	{
@@ -101,11 +102,13 @@ void KG::Component::SPlayerComponent::ProcessMove(float elapsedTime)
 
 	if ( abs(this->forwardValue) >= this->inputMinimum )
 	{
-		this->trasnform->Translate(this->trasnform->GetLook() * speed * elapsedTime * this->forwardValue);
+		//this->trasnform->Translate(this->trasnform->GetLook() * speed * elapsedTime * this->forwardValue);
+		physics->AddForce(this->trasnform->GetWorldLook(), 500 * speed * elapsedTime * this->forwardValue);
 	}
 	if ( abs(this->rightValue) >= this->inputMinimum )
 	{
-		this->trasnform->Translate(this->trasnform->GetRight() * speed * elapsedTime * this->rightValue);
+		//this->trasnform->Translate(this->trasnform->GetRight() * speed * elapsedTime * this->rightValue);
+		physics->AddForce(this->trasnform->GetWorldRight(), 500 * speed * elapsedTime * this->rightValue);
 	}
 }
 
