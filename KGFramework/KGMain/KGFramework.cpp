@@ -428,15 +428,6 @@ void KG::GameFramework::PostSceneFunction()
 			ctrl->SetIgnoreTranslate(true);
 			obj.AddComponent(ctrl);
 
-			auto* phy = this->physics->GetNewDynamicRigidComponent();
-			KG::Component::CollisionBox box;
-			box.position = { 0, 2, 0 };
-			box.scale = { 4,6,4 };
-			phy->SetCollisionBox(box);
-			// phy->GetCollisionBox().scale = DirectX::XMFLOAT3{}
-			// obj.AddComponent(phy);
-			obj.AddComponent(phy);
-
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}
 		);

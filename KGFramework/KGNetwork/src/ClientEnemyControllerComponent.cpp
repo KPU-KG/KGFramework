@@ -15,7 +15,6 @@ void KG::Component::CEnemyControllerComponent::OnCreate(KG::Core::GameObject* ob
 	CBaseComponent::OnCreate(obj);
 
 	this->transform = this->gameObject->GetTransform();
-	this->rigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
 	this->anim = this->gameObject->GetComponent<AnimationControllerComponent>();
 }
 
@@ -30,8 +29,8 @@ bool KG::Component::CEnemyControllerComponent::OnProcessPacket(unsigned char* pa
 	case KG::Packet::PacketType::SC_MOVE_OBJECT:
 	{
 		auto* p = KG::Packet::PacketCast<KG::Packet::SC_MOVE_OBJECT>(packet);
-		this->rigid->SetPosition(p->position);
-		this->rigid->SetRotation(p->rotation);
+		this->transform->SetPosition(p->position);
+		this->transform->SetRotation(p->rotation);
 		return true;
 	}
 	case KG::Packet::PacketType::SC_SYNC_ANIMATION:

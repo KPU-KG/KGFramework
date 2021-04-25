@@ -40,6 +40,15 @@ void KG::GameFramework::PostServerFunction()
 	this->scene->AddNetworkCreator(
 		KG::Utill::HashString("EnemyMech"),
 		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent* {
+
+			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			KG::Component::CollisionBox box;
+			box.position = { 0, 2, 0 };
+			box.scale = { 4,6,4 };
+			phy->SetCollisionBox(box);
+			phy->SetApply(true);
+			obj.AddComponent(phy);
+
 			auto* comp = this->networkServer->GetNewEnemyControllerComponent();
 			comp->SetIdleInterval(2);
 			comp->SetRotateInterval(3);
