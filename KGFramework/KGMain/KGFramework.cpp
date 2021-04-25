@@ -480,6 +480,7 @@ void KG::GameFramework::PostSceneFunction()
 						if (other->IsDynamic()) {
 							other->AddForce(tran->GetLook(), 15);
 						}
+						other->GetRaycastCallback()(KG::Component::RaycastType::BULLET_HIT, phy);
 					}
 				}
 				});
