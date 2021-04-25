@@ -1,49 +1,104 @@
 #include "pch.h"
 #include "ServerPlayerControllerComponent.h"
+#include "Transform.h"
 
-void KG::Component::SPlayerComponent::InitData(KG::Server::NET_OBJECT_ID managerplayerObjectIds[] , KG::Packet::RawFloat3 managerpositions[]) {
-	for (size_t i = 0; i < 4; i++)
-	{
-		playerObjectIds[i] = managerplayerObjectIds[i];
-		positions[i] = managerpositions[i];
-	}
+static enum KeyState
+{
+	None,
+	Down,
+	Pressing,
+	Up,
+};
+
+static bool IsTouching(unsigned char state)
+{
+	return state == KeyState::Down || state == KeyState::Pressing;
 }
+
 
 void KG::Component::SPlayerComponent::OnCreate(KG::Core::GameObject* obj)
 {
+	this->trasnform = this->GetGameObject()->GetComponent<TransformComponent>();
 }
 
 void KG::Component::SPlayerComponent::Update(float elapsedTime)
 {
-	for (size_t i = 0; i < 4; i++)
+	this->ProcessMove(elapsedTime);
+
+	packetSendTimer += elapsedTime;
+	if ( packetSendTimer > this->packetInterval )
 	{
-		//positions[i] = gameObject->GetComponentWithID(playerObjectIds[i])->GetGameObject()->GetTransform();
-		if (inputs[i].stateW) {
-			positions[i].z += 0.05;
+		this->SendSyncPacket();
+	}
+}
+
+void KG::Component::SPlayerComponent::SendSyncPacket()
+{
+	KG::Packet::SC_PLAYER_DATA syncPacket;
+	syncPacket.position = this->trasnform->GetPosition();
+	this->BroadcastPacket(&syncPacket);
+}
+
+void KG::Component::SPlayerComponent::ProcessMove(float elapsedTime)
+{
+	bool forwardInput = false;
+	bool rightInput = false;
+	float speed = IsTouching(this->inputs.stateShift) ? 6.0f : 2.0f;
+	speed *= speedValue;
+	if ( IsTouching(this->inputs.stateW) )
+	{
+		this->forwardValue += inputRatio * +1 * elapsedTime;
+		forwardInput = true;
+	}
+	if ( IsTouching(this->inputs.stateS) )
+	{
+		this->forwardValue += inputRatio * -1 * elapsedTime;
+		forwardInput = true;
+	}
+	if ( IsTouching(this->inputs.stateD) )
+	{
+		this->rightValue += inputRatio * +1 * elapsedTime;
+		rightInput = true;
+	}
+	if ( IsTouching(this->inputs.stateA) )
+	{
+		this->rightValue += inputRatio * -1 * elapsedTime;
+		rightInput = true;
+	}
+
+	if ( !forwardInput )
+	{
+		if ( abs(forwardValue) > this->inputMinimum )
+		{
+			forwardValue += inputRetRatio * ((forwardValue > 0) ? -1 : 1) * elapsedTime;
 		}
-		if (inputs[i].stateA) {
-			positions[i].x -= 0.05;
-		}
-		if (inputs[i].stateS) {
-			positions[i].z -= 0.05;
-		}
-		if (inputs[i].stateD) {
-			positions[i].x += 0.05;
+		else
+		{
+			forwardValue = 0.0f;
 		}
 	}
 
-	if (updatetimer < 0.015f)
-		updatetimer += elapsedTime;
-	else {
-		KG::Packet::SC_PLAYER_DATA DataPacket = {};
-		for (size_t i = 0; i < 4; i++)
+	if ( !rightInput )
+	{
+		if ( abs(rightValue) > this->inputMinimum )
 		{
-			DataPacket.playerObjectIds[i] = playerObjectIds[i];
-			DataPacket.positions[i] = positions[i];
+			rightValue += inputRetRatio * ((rightValue > 0) ? -1 : 1) * elapsedTime;
 		}
-		this->BroadcastPacket(&DataPacket);
-		std::cout << "send scene data\n";
-		updatetimer = 0;
+		else
+		{
+			rightValue = 0.0f;
+		}
+	}
+	forwardValue = KG::Math::Clamp(forwardValue, -1.0f, 1.0f);
+	rightValue = KG::Math::Clamp(rightValue, -1.0f, 1.0f);
+
+	if ( abs(this->forwardValue) >= this->inputMinimum )
+	{
+		this->trasnform->Translate(this->trasnform->GetLook() * speed * elapsedTime * this->forwardValue);
+	}
+	if ( abs(this->rightValue) >= this->inputMinimum )
+	{
+		this->trasnform->Translate(this->trasnform->GetRight() * speed * elapsedTime * this->rightValue);
 	}
 }
 
@@ -59,21 +114,7 @@ bool KG::Component::SPlayerComponent::OnProcessPacket(unsigned char* packet, KG:
 	case KG::Packet::PacketType::CS_INPUT:
 	{
 		auto* InputPacket = KG::Packet::PacketCast<KG::Packet::CS_INPUT>(packet);
-		for (size_t i = 0; i < 4; i++)
-		{
-			if (playerObjectIds[i] == InputPacket->header.objectId) {
-				inputs[i].stateW = InputPacket->stateW;
-				inputs[i].stateA = InputPacket->stateA;
-				inputs[i].stateS = InputPacket->stateS;
-				inputs[i].stateD = InputPacket->stateD;
-				inputs[i].stateShift = InputPacket->stateShift;
-			}
-		}
-		std::cout << "get input" << InputPacket->header.objectId <<
-			"w:" << (int)InputPacket->stateW <<
-			"a:" << (int)InputPacket->stateA <<
-			"s:" << (int)InputPacket->stateS <<
-			"d:" << (int)InputPacket->stateD << std::endl;
+		this->inputs = *InputPacket;
 	}
 	return true;
 	}

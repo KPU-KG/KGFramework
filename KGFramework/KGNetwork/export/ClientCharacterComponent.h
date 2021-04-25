@@ -7,8 +7,10 @@
 
 namespace KG::Component
 {
+	class TransformComponent;
 	class DLL CCharacterComponent : public CBaseComponent
 	{
+		KG::Component::TransformComponent* transform = nullptr;
 	public:
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;

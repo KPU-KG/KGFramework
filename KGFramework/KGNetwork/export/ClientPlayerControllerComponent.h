@@ -8,13 +8,15 @@
 
 namespace KG::Component
 {
+	class TransformComponent;
 	class DLL CPlayerControllerComponent : public CBaseComponent
 	{
 	public:
 		KG::Input::InputManager* input;
 		float updatetimer = 0;
 		int id = -1;
-		KG::Component::TransformComponent* transform;
+		KG::Component::TransformComponent* transform = nullptr;
+		KG::Packet::CS_INPUT inputCache;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override

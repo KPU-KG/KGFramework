@@ -148,9 +148,7 @@ namespace KG::Packet
 	struct SC_PLAYER_DATA // 플레이어, 적 관련 좌표만 주기적으로 송신
 	{
 		DEFAULT_PACKET_HEADER(SC_PLAYER_DATA);
-		KG::Server::NET_OBJECT_ID playerObjectIds[4];
-		// 트랜스폼
-		RawFloat3 positions[4];
+		RawFloat3 position;
 		//RawFloat4 rotation;
 		// 인풋
 		//KG::Packet::CS_INPUT inputs[4];
