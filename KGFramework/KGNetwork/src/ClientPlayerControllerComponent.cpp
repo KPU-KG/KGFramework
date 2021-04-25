@@ -5,6 +5,8 @@
 #include "AnimationComponent.h"
 #include "PhysicsComponent.h"
 
+using namespace KG::Math::Literal;
+
 static struct SoldierAnimSet
 {
 	static constexpr auto standing = "Soldier@Standing.fbx"_id;

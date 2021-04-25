@@ -4,6 +4,8 @@
 #include "KGServer.h"
 #include "PhysicsComponent.h"
 
+using namespace KG::Math::Literal;
+
 static enum KeyState
 {
 	None,
@@ -103,18 +105,23 @@ void KG::Component::SPlayerComponent::ProcessMove(float elapsedTime)
 	forwardValue = KG::Math::Clamp(forwardValue, -1.0f, 1.0f);
 	rightValue = KG::Math::Clamp(rightValue, -1.0f, 1.0f);
 
+	XMFLOAT3 rightVelo = XMFLOAT3(0,0,0);
+	XMFLOAT3 forwardVelo = XMFLOAT3(0, 0, 0);
 	if ( abs(this->forwardValue) >= this->inputMinimum )
 	{
-		auto vec = Math::Vector3::Normalize(this->rotationTrasnform->GetWorldLook());
-		std::cout << "PlayerLook = " << vec << "\n";
-		physics->AddForce(vec, 500 * speed * elapsedTime * this->forwardValue);
+		rightVelo = Math::Vector3::Normalize(this->rotationTrasnform->GetWorldLook()) * (500 * speed * elapsedTime * this->forwardValue);
+		//physics->AddForce(vec, 500 * speed * elapsedTime * this->forwardValue);
+		//physics->SetVelocity(vec, 500 * speed * elapsedTime * this->forwardValue);
 	}
 	if ( abs(this->rightValue) >= this->inputMinimum )
 	{
-		auto vec = Math::Vector3::Normalize(this->rotationTrasnform->GetWorldRight());
-		std::cout << "PlayerRight = " << vec << "\n";
-		physics->AddForce(vec, 500 * speed * elapsedTime * this->rightValue);
+
+		forwardVelo = Math::Vector3::Normalize(this->rotationTrasnform->GetWorldRight()) * (500 * speed * elapsedTime * this->rightValue);
+		//physics->SetVelocity(vec, 500 * speed * elapsedTime * this->rightValue);
+		//physics->AddForce(vec, 500 * speed * elapsedTime * this->rightValue);
 	}
+	auto resultVector = rightVelo + forwardVelo;
+	this->physics->SetVelocity(Math::Vector3::Normalize(resultVector), Math::Vector3::Length(resultVector));
 }
 
 bool KG::Component::SPlayerComponent::OnDrawGUI()
