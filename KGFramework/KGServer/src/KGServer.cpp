@@ -87,7 +87,7 @@ void KG::Server::Server::IOCPWorker(Server* server)
 					newSession.prevSize = 0;
 					newSession.recvExOver.op = OP_RECV;
 					newSession.socket = ex_over->csocket;
-					newSession.state = PLAYER_STATE_INGAME;
+					newSession.state = PLAYER_STATE_CONNECTED;
 					server->players.insert(
 						std::make_pair(std::move(clientId), std::move(newSession))
 					);
@@ -382,6 +382,11 @@ void KG::Server::Server::ProcessPacket(SESSION_ID playerId, unsigned char* buffe
 			std::cout << "Packet Owner Object Not Processd / Object ID : " << header->objectId << " / PacketType : " << header->type << "\n";
 		}
 	}
+}
+
+void KG::Server::Server::SetSessionState(SESSION_ID session, KG::Server::PLAYER_STATE state)
+{
+	this->players[session].state = state;
 }
 
 KG::Server::NET_OBJECT_ID KG::Server::Server::GetNewObjectId()

@@ -60,6 +60,7 @@ namespace KG::Server
 		void DoRecv(SESSION_ID key);
 		void ProcessPacket(SESSION_ID playerId, unsigned char* buffer);
 
+
 	public:
 		std::mutex worldLock;
 		int currentnum = 0;
@@ -69,6 +70,7 @@ namespace KG::Server
 		KG::Packet::CS_INPUT inputs[4];
 
 		NET_OBJECT_ID GetNewObjectId();
+		void SetSessionState(SESSION_ID session, KG::Server::PLAYER_STATE state);
 
 		//void AddPlayer();
 

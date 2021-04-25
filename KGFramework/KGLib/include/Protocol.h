@@ -152,9 +152,9 @@ namespace KG::Packet
 	{
 		DEFAULT_PACKET_HEADER(SC_PLAYER_DATA);
 		RawFloat3 position;
-		//RawFloat4 rotation;
-		// ¿Œ«≤
-		//KG::Packet::CS_INPUT inputs[4];
+		RawFloat4 rotation;
+		float forwardValue;
+		float rightValue;
 	};
 
 	struct SC_ADD_OBJECT
@@ -210,6 +210,7 @@ namespace KG::Packet
 		unsigned char stateS;
 		unsigned char stateD;
 		unsigned char stateShift;
+		RawFloat4 rotation;
 	};
 
 #pragma pack(pop)

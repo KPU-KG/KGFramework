@@ -56,13 +56,13 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 		return true;
 		case KG::Packet::PacketType::SC_PLAYER_INIT:
 		{
-			//auto* initPacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_INIT>(packet);
-			//playerController = static_cast<KG::Component::CBaseComponent*>(this->GetGameObject()->GetScene()->CallNetworkCreator("PlayerCharacter"_id));
-			//playerController->SetNetObjectId(initPacket->playerObjectId);
-			//this->network->SetNetworkObject(initPacket->playerObjectId, playerController);
-			//playerTransform = playerController->GetGameObject()->GetTransform();
-			//playerTransform->SetPosition(initPacket->position);
-			//this->GetGameObject()->GetTransform()->AddChild(playerTransform);
+			auto* initPacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_INIT>(packet);
+			auto* playerController = static_cast<KG::Component::CBaseComponent*>(this->GetGameObject()->GetScene()->CallNetworkCreator("PlayerCharacter"_id));
+			playerController->SetNetObjectId(initPacket->playerObjectId);
+			this->network->SetNetworkObject(initPacket->playerObjectId, playerController);
+			auto* playerTransform = playerController->GetGameObject()->GetTransform();
+			playerTransform->SetPosition(initPacket->position);
+			this->GetGameObject()->GetTransform()->AddChild(playerTransform);
 		}
 		return true;
 		case KG::Packet::PacketType::SC_ADD_PLAYER:

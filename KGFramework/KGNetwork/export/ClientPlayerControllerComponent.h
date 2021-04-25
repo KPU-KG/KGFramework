@@ -9,13 +9,50 @@
 namespace KG::Component
 {
 	class TransformComponent;
+	class CameraComponent;
+	class AnimationControllerComponent;
+	class DynamicRigidComponent;
+
 	class DLL CPlayerControllerComponent : public CBaseComponent
 	{
+	private:
+		TransformComponent* characterTransform = nullptr;
+		AnimationControllerComponent* characterAnimation = nullptr;
+		CameraComponent* camera = nullptr;
+		TransformComponent* cameraTransform = nullptr;
+		AnimationControllerComponent* vectorAnimation = nullptr;
+		DynamicRigidComponent* physics = nullptr;
+		float speedValue = 0.75f;
+
+		constexpr static float inputRatio = 25.0f;
+		constexpr static float inputRetRatio = 5.0f;
+		constexpr static float inputMinimum = 0.1f;
+		constexpr static float walkBlendingDuration = 0.1f;
+		constexpr static float bulletRepeatTime = 0.1f;
+		float forwardValue = 0.0f;
+		float rightValue = 0.0f;
+
+		bool isActive = true;
+
+		// Bullet
+		int bulletCount = 30;
+
+		bool reloadFlag = false;
+
+		void ProcessMove(float elapsedTime);
+		void ProcessMoveAnimation(float elapsedTime);
+		void ProcessShoot(float elapsedTime);
+		void ProcessMouse(float elapsedTime);
+		void TryShoot(float elapsedTime);
+		void TryReload(float elapsedTime);
+		bool CheckReloading();
+		void InternalUpdate(float elapsedTime);
+		void SendUpdate(float elapsedTime);
 	public:
 		KG::Input::InputManager* input;
-		float updatetimer = 0;
+		static constexpr float sendPacketTimeInterval = 1 / 20.0f;
+		float sendPacketTimer = 0;
 		int id = -1;
-		KG::Component::TransformComponent* transform = nullptr;
 		KG::Packet::CS_INPUT inputCache;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;

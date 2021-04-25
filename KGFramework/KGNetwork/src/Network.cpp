@@ -217,5 +217,6 @@ void KG::Server::Network::Update(float elapsedTime)
 {
 	this->cGameManagerSystem.OnUpdate(elapsedTime);
 	this->cPlayerSystem.OnUpdate(elapsedTime);
+	this->cCharacterSystem.OnUpdate(elapsedTime);
 }
 

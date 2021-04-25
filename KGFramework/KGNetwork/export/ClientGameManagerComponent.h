@@ -12,9 +12,6 @@ namespace KG::Component
 	public:
 		KG::Packet::CS_INPUT inputPacket = {};
 		float updatetimer = 0;
-
-		//KG::Component::CPlayerControllerComponent* teamControllers[4];
-		//KG::Component::CPlayerControllerComponent* playerController;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override

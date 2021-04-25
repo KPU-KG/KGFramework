@@ -459,8 +459,8 @@ void KG::GameFramework::PostSceneFunction()
 
 			obj.GetTransform()->AddChild(cameraObj->GetTransform());
 
-			auto* player = this->system->playerComponentSystem.GetNewComponent();
-			obj.AddComponent(player);
+			//auto* player = this->system->playerComponentSystem.GetNewComponent();
+			//obj.AddComponent(player);
 
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 			obj.GetTransform()->SetPosition(10.0, 0.00f, 5.00f);

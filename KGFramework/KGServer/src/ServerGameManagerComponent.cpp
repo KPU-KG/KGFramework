@@ -79,13 +79,14 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 
 		//플레이어 추가!
 		this->server->LockWorld();
-
+		this->server->SetSessionState(sender, KG::Server::PLAYER_STATE::PLAYER_STATE_INGAME);
 		auto* playerComp = static_cast<KG::Component::SPlayerComponent*>(this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id));
 		playerComp->SetNetObjectId(newPlayerId);
 		auto* trans = playerComp->GetGameObject()->GetTransform();
 		trans->SetPosition(newPlayerId, 0, newPlayerId);
 		this->GetGameObject()->GetTransform()->AddChild(trans);
 		playerObjects.insert(std::make_pair(newPlayerId, playerComp));
+		this->server->SetServerObject(newPlayerId, playerComp);
 		this->server->UnlockWorld();
 
 		KG::Packet::SC_PLAYER_INIT initPacket = {};

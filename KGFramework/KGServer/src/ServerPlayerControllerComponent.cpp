@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ServerPlayerControllerComponent.h"
 #include "Transform.h"
+#include "KGServer.h"
 
 static enum KeyState
 {
@@ -24,11 +25,13 @@ void KG::Component::SPlayerComponent::OnCreate(KG::Core::GameObject* obj)
 void KG::Component::SPlayerComponent::Update(float elapsedTime)
 {
 	this->ProcessMove(elapsedTime);
+	this->trasnform->SetRotation(this->inputs.rotation);
 
 	packetSendTimer += elapsedTime;
 	if ( packetSendTimer > this->packetInterval )
 	{
 		this->SendSyncPacket();
+		packetSendTimer = 0.0f;
 	}
 }
 
@@ -36,6 +39,10 @@ void KG::Component::SPlayerComponent::SendSyncPacket()
 {
 	KG::Packet::SC_PLAYER_DATA syncPacket;
 	syncPacket.position = this->trasnform->GetPosition();
+	syncPacket.rotation = this->trasnform->GetRotation();
+	syncPacket.forwardValue = this->forwardValue;
+	syncPacket.rightValue = this->rightValue;
+	std::cout << "SendSyncPacket f : " << forwardValue << " / r :" << rightValue << "\n";
 	this->BroadcastPacket(&syncPacket);
 }
 
