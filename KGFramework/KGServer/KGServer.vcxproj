@@ -180,6 +180,7 @@
     <ClInclude Include="include\framework.h" />
     <ClInclude Include="include\KGServer.h" />
     <ClInclude Include="include\pch.h" />
+    <ClInclude Include="include\ServerSystems.h" />
     <ClInclude Include="include\ServerUtill.h" />
     <ClInclude Include="include\Session.h" />
   </ItemGroup>
@@ -193,6 +194,7 @@
     </ClCompile>
     <ClCompile Include="src\ServerGameManagerComponent.cpp" />
     <ClCompile Include="src\ServerPlayerControllerComponent.cpp" />
+    <ClCompile Include="src\ServerSystems.cpp" />
     <ClCompile Include="src\ServerUtill.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

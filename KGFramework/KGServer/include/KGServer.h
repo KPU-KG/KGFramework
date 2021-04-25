@@ -17,6 +17,7 @@
 #include "ServerGameManagerComponent.h"
 #include "ServerPlayerControllerComponent.h"
 #include "ServerEnemyControllerComponent.h"
+#include "ServerSystems.h"
 
 namespace KG::Server
 {
@@ -42,9 +43,9 @@ namespace KG::Server
 		EX_OVERLAPPED acceptOver;
 
 		//Server System
-		KG::Component::SGameManagerComponentSystem sGameManagerSystem;
-		KG::Component::SPlayerComponentSystem sPlayerSystem;
-		KG::Component::SEnemyControllerComponentSystem sEnemyControllerSystem;
+		KG::System::SGameManagerComponentSystem sGameManagerSystem;
+		KG::System::SPlayerComponentSystem sPlayerSystem;
+		KG::System::SEnemyControllerComponentSystem sEnemyControllerSystem;
 	
 
 		static void IOCPWorker(Server* server);

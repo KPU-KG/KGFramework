@@ -59,10 +59,3 @@ bool KG::Component::CPlayerControllerComponent::OnProcessPacket(unsigned char* p
 	return false;
 }
 
-void KG::Component::CPlayerControllerComponentSystem::OnPostUpdate(float elapsedTime)
-{
-}
-
-void KG::Component::CPlayerControllerComponentSystem::OnPreRender()
-{
-}

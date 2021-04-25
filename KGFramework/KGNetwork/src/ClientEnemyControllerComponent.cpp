@@ -59,11 +59,3 @@ bool KG::Component::CEnemyControllerComponent::OnDrawGUI()
 	}
 	return false;
 }
-
-void KG::Component::CEnemyControllerComponentSystem::OnPostUpdate(float elapsedTime)
-{
-}
-
-void KG::Component::CEnemyControllerComponentSystem::OnPreRender()
-{
-}

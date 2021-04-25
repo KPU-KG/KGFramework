@@ -28,30 +28,4 @@ namespace KG::Component
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type) override;
 	};
 	REGISTER_COMPONENT_ID(CGameManagerComponent);
-
-
-	class DLL CGameManagerComponentSystem : public KG::System::IComponentSystem<CGameManagerComponent>
-	{
-		KG::Server::Network* network = nullptr;
-		virtual void OnGetNewComponent(CGameManagerComponent* comp)
-		{
-			comp->SetNetworkInstance(network);
-		}
-	public:
-		void SetNetworkInstance(KG::Server::Network* network)
-		{
-			this->network = network;
-		}
-		virtual void OnUpdate(float elapsedTime) override
-		{
-			for ( auto& com : *this )
-			{
-				com.Update(elapsedTime);
-			}
-		}
-
-		// IComponentSystem을(를) 통해 상속됨
-		virtual void OnPostUpdate(float elapsedTime) override;
-		virtual void OnPreRender() override;
-	};
 }

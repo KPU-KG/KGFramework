@@ -30,10 +30,3 @@ bool KG::Component::CCharacterComponent::OnProcessPacket(unsigned char* packet, 
 	return false;
 }
 
-void KG::Component::CCharacterComponentSystem::OnPostUpdate(float elapsedTime)
-{
-}
-
-void KG::Component::CCharacterComponentSystem::OnPreRender()
-{
-}

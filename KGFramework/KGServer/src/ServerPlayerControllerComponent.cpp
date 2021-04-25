@@ -121,10 +121,3 @@ bool KG::Component::SPlayerComponent::OnProcessPacket(unsigned char* packet, KG:
 	return false;
 }
 
-void KG::Component::SPlayerComponentSystem::OnPostUpdate(float elapsedTime)
-{
-}
-
-void KG::Component::SPlayerComponentSystem::OnPreRender()
-{
-}

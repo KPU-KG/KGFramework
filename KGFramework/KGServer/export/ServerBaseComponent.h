@@ -33,41 +33,5 @@ namespace KG::Component
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
 	};
 
-	template<typename Ty>
-	class DLL SBaseComponentSystem : public KG::System::IComponentSystem<Ty>
-	{
-	protected:
-		KG::Server::Server* server;
-		virtual void OnGetNewComponent(Ty* comp) override
-		{
-			comp->SetServerInstance(this->server);
-		}
-	public:
-		void SetServerInstance(KG::Server::Server* server)
-		{
-			this->server = server;
-		}
-		virtual void OnPostProvider(KG::Component::ComponentProvider& provider) override
-		{
-			provider.PostInjectionFunction(KG::Utill::HashString(KG::Component::ComponentID<Ty>::name()),
-				[this](KG::Core::GameObject* object)
-				{
-					auto* comp = this->GetNewComponent();
-					comp->SetServerInstance(this->server);
-					object->AddComponent<Ty>(comp);
-					return comp;
-				}
-			);
-			provider.PostGetterFunction(KG::Utill::HashString(KG::Component::ComponentID<Ty>::name()),
-				[this]()->KG::Component::IComponent*
-				{
-					auto* comp = this->GetNewComponent();
-					comp->SetServerInstance(this->server);
-					return static_cast<KG::Component::IComponent*>(comp);
-				}
-			);
-
-		}
-	};
 
 }

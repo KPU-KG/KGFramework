@@ -9,6 +9,7 @@
 #include "ClientCharacterComponent.h"
 #include "ClientPlayerControllerComponent.h"
 #include "ClientEnemyControllerComponent.h"
+#include "ClientSystems.h"
 
 namespace KG::Server
 {
@@ -26,10 +27,10 @@ namespace KG::Server
 		NetworkBuffer networkBuffer;
 
 		KG::Core::Scene* scene;
-		KG::Component::CGameManagerComponentSystem cGameManagerSystem;
-		KG::Component::CPlayerControllerComponentSystem cPlayerSystem;
-		KG::Component::CCharacterComponentSystem cCharacterSystem;
-		KG::Component::CEnemyControllerComponentSystem cEnemyControllerSystem;
+		KG::System::CGameManagerComponentSystem cGameManagerSystem;
+		KG::System::CPlayerControllerComponentSystem cPlayerSystem;
+		KG::System::CCharacterComponentSystem cCharacterSystem;
+		KG::System::CEnemyControllerComponentSystem cEnemyControllerSystem;
 
 
 		std::unordered_map<KG::Server::NET_OBJECT_ID, KG::Component::CBaseComponent*> networkObjects;

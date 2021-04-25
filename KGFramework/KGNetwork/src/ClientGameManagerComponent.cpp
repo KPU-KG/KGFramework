@@ -95,11 +95,3 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 	}
 	return false;
 }
-
-void KG::Component::CGameManagerComponentSystem::OnPostUpdate(float elapsedTime)
-{
-}
-
-void KG::Component::CGameManagerComponentSystem::OnPreRender()
-{
-}

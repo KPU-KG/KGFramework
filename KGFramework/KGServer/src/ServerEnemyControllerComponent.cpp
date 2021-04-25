@@ -272,12 +272,3 @@ bool KG::Component::SEnemyControllerComponent::OnProcessPacket(unsigned char* pa
 	return false;
 }
 
-void KG::Component::SEnemyControllerComponentSystem::OnPostUpdate(float elapsedTime)
-{
-
-}
-
-void KG::Component::SEnemyControllerComponentSystem::OnPreRender()
-{
-
-}

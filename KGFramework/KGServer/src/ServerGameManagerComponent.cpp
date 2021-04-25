@@ -117,10 +117,3 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 	return false;
 }
 
-void KG::Component::SGameManagerComponentSystem::OnPostUpdate(float elapsedTime)
-{
-}
-
-void KG::Component::SGameManagerComponentSystem::OnPreRender()
-{
-}

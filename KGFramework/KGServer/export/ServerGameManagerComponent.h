@@ -26,19 +26,5 @@ namespace KG::Component
 	REGISTER_COMPONENT_ID(SGameManagerComponent);
 
 	
-	class DLL SGameManagerComponentSystem : public KG::Component::SBaseComponentSystem<SGameManagerComponent>
-	{
-	public:
-		virtual void OnUpdate(float elapsedTime) override
-		{
-			for ( auto& com : *this )
-			{
-				com.Update(elapsedTime);
-			}
-		}
 
-		// IComponentSystem을(를) 통해 상속됨
-		virtual void OnPostUpdate(float elapsedTime) override;
-		virtual void OnPreRender() override;
-	};
 }

@@ -57,6 +57,9 @@
     <ClCompile Include="src\ClientPlayerControllerComponent.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
+    <ClCompile Include="src\ClientSystems.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">
@@ -88,6 +91,9 @@
     </ClInclude>
     <ClInclude Include="export\ClientEnemyControllerComponent.h">
       <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ClientSystems.h">
+      <Filter>헤더 파일</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
