@@ -40,7 +40,8 @@ namespace KG::Renderer
 		virtual void* GetImGUIContext() = 0;
 		virtual void Update(float elaspedTime) = 0;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) = 0;
-		
+		virtual void PreloadModels(std::vector<KG::Utill::HashString>&& ids) = 0;
+
 		virtual void SetSkymapTextureId(const KG::Utill::HashString& id)
 		{
 			this->skymapTextureId = id;

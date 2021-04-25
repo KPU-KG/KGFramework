@@ -85,6 +85,33 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	this->system->PostComponentProvider(this->componentProvider);
 	this->scene->SetComponentProvider(&this->componentProvider);
 
+
+	std::vector<KG::Utill::HashString> preLoads = 
+	{
+		KG::Utill::HashString("Vector.FBX"),
+		KG::Utill::HashString("Vector@Idle.FBX"),
+		KG::Utill::HashString("Vector@Reload.FBX"),
+		KG::Utill::HashString("Vector@ReloadEmpty.FBX"),
+		KG::Utill::HashString("Vector@Fire.FBX"),
+		KG::Utill::HashString("Vector@Fire Aim.FBX"),
+		KG::Utill::HashString("Soldier@SprintForward.fbx"),
+		KG::Utill::HashString("Soldier@SprintForwardLeft.fbx"),
+		KG::Utill::HashString("Soldier@SprintForwardRight.fbx"),
+		KG::Utill::HashString("Soldier@Standing.fbx"),
+		KG::Utill::HashString("Soldier@WalkBackward.fbx"),
+		KG::Utill::HashString("Soldier@WalkBackwardLeft.fbx"),
+		KG::Utill::HashString("Soldier@WalkBackwardRight.fbx"),
+		KG::Utill::HashString("Soldier@WalkForward.fbx"),
+		KG::Utill::HashString("Soldier@WalkForwardLeft.fbx"),
+		KG::Utill::HashString("Soldier@WalkForwardRight.fbx"),
+		KG::Utill::HashString("Soldier@WalkLeft.fbx"),
+		KG::Utill::HashString("Soldier@WalkRight.fbx"),
+		KG::Utill::HashString("mountain.fbx"),
+		KG::Utill::HashString("crawler.fbx"),
+	};
+	this->renderer->PreloadModels(std::move(preLoads));
+
+
 	this->PostSceneFunction();
 	this->scene->InitializeRoot();
 	//¿Œ«≤

@@ -1,6 +1,17 @@
 #include "KGModel.h"
 #include "fbxImpoter.h"
 
+KG::Resource::FrameModel::FrameModel(FrameModel&& other) noexcept
+	:data(std::move(other.data))
+{
+}
+
+KG::Resource::FrameModel& KG::Resource::FrameModel::operator=(FrameModel&& other) noexcept
+{
+	this->data = std::move(other.data);
+	return *this;
+}
+
 KG::Resource::FrameModel::FrameModel( const KG::Resource::Metadata::GeometrySetData& metadata )
 {
 	CreateFromMetadata( metadata );

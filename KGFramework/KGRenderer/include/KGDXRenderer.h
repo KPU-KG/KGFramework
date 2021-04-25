@@ -80,6 +80,7 @@ namespace KG::Renderer
 		virtual void Initialize() override;
 		virtual void Render() override;
 		virtual void PreRenderUI() override;
+		virtual void PreloadModels(std::vector<KG::Utill::HashString>&& ids) override;
 		virtual void CubeCaemraRender();
 		virtual void NormalCameraRender();
 		virtual void ShadowMapRender();

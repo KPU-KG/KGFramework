@@ -2,6 +2,7 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include <future>
 #include <functional>
 #include "hash.h"
 #include "KGDXRenderer.h"
@@ -18,7 +19,11 @@ namespace KG::Resource
 	{
 	private:
 		std::map<KG::Utill::HashString, KG::Renderer::Shader> shaders;
+
+		std::map<KG::Utill::HashString, std::future<KG::Resource::FrameModel>> preloadModels;
 		std::map<KG::Utill::HashString, KG::Resource::FrameModel> models;
+
+
 		std::map<std::pair<KG::Utill::HashString, UINT>, KG::Renderer::Geometry> geometrys;
 		std::map<std::pair<D3D12_PRIMITIVE_TOPOLOGY, int>, KG::Renderer::Geometry> fakeGeometrys;
 		std::map<KG::Utill::HashString, KG::Resource::Texture> textures;
@@ -36,6 +41,7 @@ namespace KG::Resource
 
 		KG::Renderer::Shader* LoadShader(const KG::Utill::HashString& id);
 		KG::Resource::FrameModel* LoadModel( const KG::Utill::HashString& id );
+		void PreLoadModels(std::vector<KG::Utill::HashString>&& vectors);
 		KG::Renderer::Geometry* LoadGeometry( const KG::Utill::HashString& id, UINT geometryIndex = 0 );
 		KG::Renderer::Geometry* LoadRawModel( const KG::Utill::HashString& id );
 		KG::Renderer::Geometry* CreateGeometry( const KG::Utill::HashString& id, UINT geometryIndex, KG::Utill::MeshData& mesh );
