@@ -3,7 +3,7 @@
 
 void KG::System::TransformSystem::Initialize()
 {
-	this->pool.Reserve(100);
+	//this->pool.Reserve(100);
 }
 
 void KG::System::TransformSystem::OnGetNewComponent( TransformComponent* tran )

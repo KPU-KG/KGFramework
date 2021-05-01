@@ -4,6 +4,8 @@
 #include "SceneCameraComponent.h"
 #include "InputManager.h"
 
+using namespace KG::Math::Literal;
+
 void KG::Component::SceneCameraComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	IComponent::OnCreate(obj);

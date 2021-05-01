@@ -324,4 +324,40 @@
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
     </Material>
+    <Material id="crawlerLow" shaderID="PBRDefault" hash_id="1025852255" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="crawlerLow_color" hash_id="3541456263"/>
+        <Texture byte="4" comment="normalTexture" id="crawlerLow_normal" hash_id="2885800239"/>
+        <Texture byte="4" comment="metalicTexture" id="crawlerLow_metalic" hash_id="91980343"/>
+        <Texture byte="4" comment="roughTexture" id="crawlerLow_rough" hash_id="2493430877"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="crawlerModular" shaderID="PBRDefault" hash_id="2861215751" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="crawlerModular_color" hash_id="3089577039"/>
+        <Texture byte="4" comment="normalTexture" id="crawlerModular_normal" hash_id="2584108535"/>
+        <Texture byte="4" comment="metalicTexture" id="crawlerModular_metalic" hash_id="339200735"/>
+        <Texture byte="4" comment="roughTexture" id="crawlerModular_rough" hash_id="3822379797"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="crawlerLaser" shaderID="PBRDefault" hash_id="2349043180" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="crawlerLaser_color" hash_id="3901637352"/>
+        <Texture byte="4" comment="normalTexture" id="crawlerLaser_normal" hash_id="3447469566"/>
+        <Texture byte="4" comment="metalicTexture" id="crawlerLaser_metalic" hash_id="3500419400"/>
+        <Texture byte="4" comment="roughTexture" id="crawlerLaser_rough" hash_id="1844213554"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="MechMetal" shaderID="PBRDefault" hash_id="2527336259" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="one" hash_id="94880491"/>
+        <Texture byte="4" comment="normalTexture" id="one" hash_id="94880491"/>
+        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
+        <Padding byte="4"/>
+    </Material>
 </MaterialSet>

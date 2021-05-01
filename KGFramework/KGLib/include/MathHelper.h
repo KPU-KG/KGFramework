@@ -5,35 +5,6 @@
 #include <DirectXColors.h>
 #include <DirectXCollision.h>
 
-inline DirectX::XMFLOAT3 operator*( const DirectX::XMFLOAT3& vector, float scalar )
-{
-	using namespace DirectX;
-	auto vec = XMLoadFloat3( &vector );
-	auto result = XMVectorScale( vec, scalar );
-	XMFLOAT3 resultVector;
-	XMStoreFloat3( &resultVector, result );
-	return resultVector;
-}
-inline DirectX::XMFLOAT3 operator*( float scalar, const DirectX::XMFLOAT3& vector)
-{
-	return vector * scalar;
-}
-
-inline DirectX::XMFLOAT4 operator*( const DirectX::XMFLOAT4& vector, float scalar )
-{
-	using namespace DirectX;
-	auto vec = XMLoadFloat4( &vector );
-	auto result = XMVectorScale( vec, scalar );
-	XMFLOAT4 resultVector;
-	XMStoreFloat4( &resultVector, result );
-	return resultVector;
-}
-inline DirectX::XMFLOAT4 operator*( float scalar, const DirectX::XMFLOAT4& vector )
-{
-	return vector * scalar;
-}
-
-
 namespace KG::Math
 {
 	constexpr float  PI = 3.14159265358979f;

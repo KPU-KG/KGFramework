@@ -60,6 +60,12 @@
     <ClInclude Include="export\ServerPlayerControllerComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
+    <ClInclude Include="export\ServerEnemyControllerComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="include\ServerSystems.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -74,13 +80,19 @@
     <ClCompile Include="src\ServerUtill.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\ServerEnemyControllerComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
     <ClCompile Include="src\ServerBaseComponent.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Component</Filter>
     </ClCompile>
     <ClCompile Include="src\ServerGameManagerComponent.cpp">
-      <Filter>소스 파일</Filter>
+      <Filter>소스 파일\Component</Filter>
     </ClCompile>
     <ClCompile Include="src\ServerPlayerControllerComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ServerSystems.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
   </ItemGroup>

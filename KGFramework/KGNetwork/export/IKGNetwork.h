@@ -11,12 +11,18 @@
 #define DLL __declspec(dllimport)
 #endif
 
+namespace KG::Input
+{
+	class InputManager;
+}
+
 namespace KG::Component
 {
 	class CBaseComponent;
 	class CGameManagerComponent;
 	class CPlayerControllerComponent;
 	class CCharacterComponent;
+	class CEnemyControllerComponent;
 }
 
 namespace KG::Server
@@ -30,15 +36,19 @@ namespace KG::Server
 		virtual void Close() = 0;
 		virtual void SetScene(KG::Core::Scene* scene) = 0;
 		virtual void TryRecv() = 0;
+		virtual void Update(float elapsedTime) = 0;
 		virtual KG::Component::CGameManagerComponent* GetNewGameManagerComponent() = 0;
 		virtual KG::Component::CPlayerControllerComponent* GetNewPlayerControllerComponent() = 0;
 		virtual KG::Component::CCharacterComponent* GetNewCharacterComponent() = 0;
+		virtual KG::Component::CEnemyControllerComponent* GetNewEnemyControllerOomponent() = 0;
 
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 
 		virtual void DrawImGUI() = 0;
 
 		virtual bool IsConnected() const = 0;
+
+		virtual void SetInputManager(KG::Input::InputManager* manager) = 0;
 
 		bool SetGUIContext(ImGuiContext* context)
 		{

@@ -11,7 +11,8 @@
 #include "LambdaComponent.h"
 #include "SceneCameraComponent.h"
 #include "InputManager.h"
-
+#include "ServerEnemyControllerComponent.h"
+#include "ClientEnemyControllerComponent.h"
 
 KG::GameFramework::GameFramework()
 {
@@ -22,7 +23,8 @@ KG::GameFramework::~GameFramework()
 {
 	system.release();
 	renderer.release();
-	physics.release();
+	delete physics;
+	// physics->release();
 	input.release();
 	networkClient.release();
 	networkServer.release();
@@ -68,11 +70,12 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	renderSetting.isVsync = this->setting.isVsync;
 
 	// Physics
-	this->physics = std::unique_ptr<KG::Physics::IPhysicsScene>(KG::Physics::GetPhysicsScene());
+	// this->physics = std::unique_ptr<KG::Physics::IPhysicsScene>(KG::Physics::GetPhysicsScene());
+	this->physics = KG::Physics::GetPhysicsScene();
 	KG::Physics::PhysicsDesc physicsDesc;
 #ifdef _DEBUG
 	physicsDesc.connectPVD = true;
-#elif
+#else
 	physicsDesc.connectPVD = false;
 #endif
 	physicsDesc.gravity = 9.81f;
@@ -88,6 +91,28 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 
 	std::vector<KG::Utill::HashString> preLoads = 
 	{
+		KG::Utill::HashString("mountain.fbx"),
+		KG::Utill::HashString("crawler.fbx"),
+		KG::Utill::HashString("bUILDING-2-op2.FBX"),
+		KG::Utill::HashString("Building1.FBX"),
+		KG::Utill::HashString("building-4.fbx"),
+		KG::Utill::HashString("metal_fence.fbx"),
+		KG::Utill::HashString("Dumpster.fbx"),
+		KG::Utill::HashString("barrel.fbx"),
+		KG::Utill::HashString("container.FBX"),
+		KG::Utill::HashString("Crane.FBX"),
+		KG::Utill::HashString("Pallet.FBX"),
+		KG::Utill::HashString("SupportSmall.FBX"),
+		KG::Utill::HashString("SupportBig.FBX"),
+		KG::Utill::HashString("Stairs.FBX"),
+		KG::Utill::HashString("PillarSmall.FBX"),
+		KG::Utill::HashString("MetalFence.FBX"),
+		KG::Utill::HashString("MetalFence-End.FBX"),
+		KG::Utill::HashString("FloorShort.FBX"),
+		KG::Utill::HashString("FloorLong.FBX"),
+		KG::Utill::HashString("FloorHallSmall.FBX"),
+		KG::Utill::HashString("FloorHallBig.FBX"),
+		KG::Utill::HashString("FloorBase.FBX"),
 		KG::Utill::HashString("Vector.FBX"),
 		KG::Utill::HashString("Vector@Idle.FBX"),
 		KG::Utill::HashString("Vector@Reload.FBX"),
@@ -106,8 +131,6 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 		KG::Utill::HashString("Soldier@WalkForwardRight.fbx"),
 		KG::Utill::HashString("Soldier@WalkLeft.fbx"),
 		KG::Utill::HashString("Soldier@WalkRight.fbx"),
-		KG::Utill::HashString("mountain.fbx"),
-		KG::Utill::HashString("crawler.fbx"),
 	};
 	this->renderer->PreloadModels(std::move(preLoads));
 
@@ -168,6 +191,17 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
+	this->scene->AddObjectPreset("Directional Light",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* t = this->system->transformSystem.GetNewComponent();
+			auto* l = this->renderer->GetNewLightComponent();
+			l->SetDirectionalLight(DirectX::XMFLOAT3(1.2f, 1.2f, 1.2f), DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f));
+			obj.AddComponent(t);
+			obj.AddComponent(l);
+		}
+	);
+
 	this->scene->AddObjectPreset("EmptyObject",
 		[this](KG::Core::GameObject& obj)
 		{
@@ -189,6 +223,27 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddTemporalComponent(g);
 			obj.AddTemporalComponent(m);
 			obj.AddTemporalComponent(r);
+		}
+	);
+
+	this->scene->AddObjectPreset("StaticTileCube",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* t = this->system->transformSystem.GetNewComponent();
+			auto* g = this->renderer->GetNewGeomteryComponent();
+			g->AddGeometry(KG::Utill::HashString("cube"));
+			auto* m = this->renderer->GetNewMaterialComponent();
+			m->PostMaterial(KG::Utill::HashString("PBRTile"));
+			auto* r = this->renderer->GetNewRenderComponent();
+			auto* c = this->physics->GetNewStaticRigidComponent();
+			c->GetCollisionBox().scale.x = 2;
+			c->GetCollisionBox().scale.y = 2;
+			c->GetCollisionBox().scale.z = 2;
+			obj.AddComponent(t);
+			obj.AddComponent(g);
+			obj.AddComponent(m);
+			obj.AddComponent(r);
+			obj.AddComponent(c);
 		}
 	);
 
@@ -225,7 +280,7 @@ void KG::GameFramework::PostSceneFunction()
 			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Fire.FBX"_id));
 			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Fire Aim.FBX"_id));
 
-			ctrl->SetAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id),-1.0f, 1.0f);
+			ctrl->SetAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id), 0, -1.0f, 1.0f);
 			ctrl->SetDefaultAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id));
 			ctrl->SetIgnoreTranslate(false);
 			ctrl->SetIgnoreScale(true);
@@ -306,7 +361,85 @@ void KG::GameFramework::PostSceneFunction()
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}
 		);
+	
+	this->scene->AddModelPreset("EnemyCrawler",
+		[]()
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("crawlerLow");
+			a.defaultMaterial.emplace_back("crawlerLaser");
+			a.defaultMaterial.emplace_back("crawlerModular");
 
+			return std::make_pair(
+				KG::Utill::HashString("crawler.fbx"),
+				std::move(a)
+			);
+		}
+		,
+			[this](KG::Core::GameObject& obj)
+		{
+			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+			ctrl->RegisterAnimation("crawler.fbx"_id, 0);
+			ctrl->SetAnimation(KG::Utill::HashString("crawler.fbx"_id));
+
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("crawler.fbx"_id));
+			ctrl->SetIgnoreScale(false);
+			ctrl->SetIgnoreTranslate(true);
+			obj.AddComponent(ctrl);
+
+			auto* enemyController = this->networkServer->GetNewEnemyControllerComponent();
+			// enemyController->SetCenter();
+			enemyController->SetIdleInterval(2);
+			enemyController->SetRotateInterval(3);
+			enemyController->SetSpeed(3);
+			enemyController->SetWanderRange(3);
+			obj.AddTemporalComponent(enemyController);
+
+			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			obj.AddTemporalComponent(phy);
+
+			// obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+		);
+		
+	this->scene->AddModelPreset("EnemyMech",
+		[]()
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("MechMetal");
+
+			return std::make_pair(
+				KG::Utill::HashString("mech.fbx"),
+				std::move(a)
+			);
+		}
+		,
+			[this](KG::Core::GameObject& obj)
+		{
+			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::shotSmallCanon);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::walk);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::walkInPlace);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::dead);
+
+			ctrl->SetAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace);
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon);
+			ctrl->SetIgnoreScale(false);
+			ctrl->SetIgnoreTranslate(true);
+			obj.AddComponent(ctrl);
+
+			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			KG::Component::CollisionBox box;
+			box.position = { 0, 2, 0 };
+			box.scale = { 4,6,4 };
+			phy->SetCollisionBox(box);
+			// phy->GetCollisionBox().scale = DirectX::XMFLOAT3{}
+			// obj.AddComponent(phy);
+			obj.AddComponent(phy);
+
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+		);
 
 	this->scene->AddModelPreset("PlayerCharacter",
 		[]()
@@ -373,31 +506,14 @@ void KG::GameFramework::PostSceneFunction()
 
 			obj.GetTransform()->AddChild(cameraObj->GetTransform());
 
-			auto* player = this->system->playerComponentSystem.GetNewComponent();
-			obj.AddComponent(player);
+			//auto* player = this->system->playerComponentSystem.GetNewComponent();
+			//obj.AddComponent(player);
 
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 			obj.GetTransform()->SetPosition(10.0, 0.00f, 5.00f);
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
-			phy->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
-				DebugNormalMessage("Collide");
-				});
-			phy->SetUpdateCallback([this, obj, phy]() {
-				if (this->input->IsTouching(VK_LBUTTON) && this->input->GetMouseCapture())
-				{
-					auto* tran = obj.GetTransform();
-					DirectX::XMFLOAT3 start = tran->GetPosition();
-					// start = Math::Vector3::Add(start, tran->GetLook() * 2);
-					auto* other = this->physics->QueryRaycast(start, tran->GetLook(), 100, phy->GetId());
-					if (other != nullptr) {
-						if (other->IsDynamic()) {
-							other->AddForce(tran->GetLook(), 15);
-						}
-					}
-				}
-				});
-			obj.AddTemporalComponent(phy);
+			obj.AddComponent(phy);
 
 		}
 		);
@@ -434,23 +550,31 @@ void KG::GameFramework::PostSceneFunction()
 
 			ctrl->SetAnimation(KG::Utill::HashString("Soldier@Standing.fbx"_id));
 			ctrl->SetDefaultAnimation(KG::Utill::HashString("Soldier@Standing.fbx"_id));
+			ctrl->SetIgnoreTranslate(true);
 			ctrl->SetIgnoreScale(false);
 			obj.AddComponent(ctrl);
+
+			auto* rotateObj = this->scene->CreateNewTransformObject();
+			rotateObj->tag = KG::Utill::HashString("RotateHelper");
+			auto* rootNode = obj.GetTransform()->GetChild();
+			rootNode->ExtractThisNode();
+			obj.GetTransform()->AddChild(rotateObj->GetTransform());
+			rotateObj->GetTransform()->AddChild(rootNode);
+			rootNode->SetPosition(-23.3, 0, -15.8);
+
+			auto* dynCol = this->physics->GetNewDynamicRigidComponent();
+			dynCol->GetCollisionBox().position.y = 1.0f;
+			dynCol->GetCollisionBox().scale.x = 0.7;
+			dynCol->GetCollisionBox().scale.y = 2.1;
+			dynCol->GetCollisionBox().scale.z = 0.7;
+
+			dynCol->SetApply(true);
+
+			obj.AddComponent(dynCol);
 
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}
 		);
-
-	this->scene->AddObjectPreset("Directional Light",
-		[this](KG::Core::GameObject& obj)
-		{
-			auto* t = this->system->transformSystem.GetNewComponent();
-			auto* l = this->renderer->GetNewLightComponent();
-			l->SetDirectionalLight(DirectX::XMFLOAT3(1.2f, 1.2f, 1.2f), DirectX::XMFLOAT3(-1.0f, -1.0f, -1.0f));
-			obj.AddComponent(t);
-			obj.AddComponent(l);
-		}
-	);
 	this->scene->AddObjectPreset("Ambient Processor",
 		[this](KG::Core::GameObject& obj)
 		{
@@ -550,6 +674,7 @@ void KG::GameFramework::UIRender()
 				this->networkClient->SetGUIContext(this->guiContext);
 				this->networkClient->Initialize();
 				this->networkClient->SetScene(this->scene.get());
+				this->networkClient->SetInputManager(this->input.get());
 				this->networkClient->PostComponentProvider(this->componentProvider);
 
 				this->PostNetworkFunction();
@@ -563,6 +688,7 @@ void KG::GameFramework::UIRender()
 				this->networkServer->SetGUIContext(this->guiContext);
 				this->networkServer->Initialize();
 				this->networkServer->PostComponentProvider(this->componentProvider);
+				this->networkServer->SetPhysicsScene(physics);
 
 				this->PostServerFunction();
 
@@ -591,6 +717,7 @@ void KG::GameFramework::OnProcess()
 	this->UIRender();
 	this->input->ProcessInput(this->engineDesc.hWnd);
 	this->system->OnUpdate(this->timer.GetTimeElapsed());
+	this->ServerUpdate(this->timer.GetTimeElapsed());
 	if ( this->scene->isStartGame )
 	{
 		this->renderer->Update(this->timer.GetTimeElapsed());
@@ -611,6 +738,18 @@ void KG::GameFramework::ServerProcess()
 	else if ( this->networkServer && this->networkServer->isStarted() )
 	{
 		this->networkServer->LockWorld();
+	}
+}
+
+void KG::GameFramework::ServerUpdate(float elapsedTime)
+{
+	if ( this->networkClient && this->networkClient->IsConnected() )
+	{
+		this->networkClient->Update(elapsedTime);
+	}
+	if ( this->networkServer && this->networkServer->isStarted() )
+	{
+		this->networkServer->Update(elapsedTime);
 	}
 }
 

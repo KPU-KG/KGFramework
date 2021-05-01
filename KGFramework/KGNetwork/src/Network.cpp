@@ -4,6 +4,7 @@
 #include "Network.h"
 #include "NetworkUtill.h"
 #include "Scene.h"
+#include "InputManager.h"
 
 
 DLL KG::Server::INetwork* KG::Server::GetNetwork()
@@ -165,9 +166,17 @@ KG::Component::CCharacterComponent* KG::Server::Network::GetNewCharacterComponen
 	return comp;
 }
 
+KG::Component::CEnemyControllerComponent* KG::Server::Network::GetNewEnemyControllerOomponent()
+{
+	auto* comp = this->cEnemyControllerSystem.GetNewComponent();
+	comp->SetNetworkInstance(this);
+	return comp;
+}
+
 void KG::Server::Network::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->cGameManagerSystem.OnPostProvider(provider);
+	this->cEnemyControllerSystem.OnPostProvider(provider);
 }
 
 void KG::Server::Network::DrawImGUI()
@@ -197,5 +206,17 @@ bool KG::Server::Network::IsConnected() const
 void KG::Server::Network::SetScene(KG::Core::Scene* scene)
 {
 	this->scene = scene;
+}
+
+void KG::Server::Network::SetInputManager(KG::Input::InputManager* manager)
+{
+	KG::Input::InputManager::SetInputManager(manager);
+}
+
+void KG::Server::Network::Update(float elapsedTime)
+{
+	this->cGameManagerSystem.OnUpdate(elapsedTime);
+	this->cPlayerSystem.OnUpdate(elapsedTime);
+	this->cCharacterSystem.OnUpdate(elapsedTime);
 }
 

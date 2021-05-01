@@ -19,6 +19,7 @@ namespace KG::Component
 		CameraComponent* camera = nullptr;
 		TransformComponent* cameraTransform = nullptr;
 		AnimationControllerComponent* vectorAnimation = nullptr;
+		DynamicRigidComponent* physics = nullptr;
 		float speedValue = 0.75f;
 
 		constexpr static float inputRatio = 25.0f;

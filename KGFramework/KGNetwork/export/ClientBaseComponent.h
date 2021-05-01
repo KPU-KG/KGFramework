@@ -29,40 +29,40 @@ namespace KG::Component
 		void SetNetworkInstance(KG::Server::Network* network);
 		void SendPacket(void* packet);
 		bool ProcessPacket(unsigned char* packet, KG::Packet::PacketType type);
-		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type) = 0;
+		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type);
 	};
 
-	template<typename Ty>
-	class DLL CBaseComponentSystem : public KG::System::IComponentSystem<Ty>
-	{
-	protected:
-		KG::Server::Network* network;
-	public:
-		void SetNetworkInstance(KG::Server::Network* network)
-		{
-			this->network = network;
-		}
-		virtual void OnPostProvider(KG::Component::ComponentProvider& provider) override
-		{
-			provider.PostInjectionFunction(KG::Utill::HashString(KG::Component::ComponentID<Ty>::name()),
-				[this](KG::Core::GameObject* object)
-				{
-					auto* comp = this->GetNewComponent();
-					comp->SetNetworkInstance(this->network);
-					object->AddComponent<Ty>(comp);
-					return comp;
-				}
-			);
-			provider.PostGetterFunction(KG::Utill::HashString(KG::Component::ComponentID<Ty>::name()),
-				[this]()->KG::Component::IComponent*
-				{
-					auto* comp = this->GetNewComponent();
-					comp->SetNetworkInstance(this->network);
-					return static_cast<KG::Component::IComponent*>(comp);
-				}
-			);
+	//template<typename Ty>
+	//class DLL CBaseComponentSystem : public KG::System::IComponentSystem<Ty>
+	//{
+	//protected:
+	//	KG::Server::Network* network;
+	//public:
+	//	void SetNetworkInstance(KG::Server::Network* network)
+	//	{
+	//		this->network = network;
+	//	}
+	//	virtual void OnPostProvider(KG::Component::ComponentProvider& provider) override
+	//	{
+	//		provider.PostInjectionFunction(KG::Utill::HashString(KG::Component::ComponentID<Ty>::name()),
+	//			[this](KG::Core::GameObject* object)
+	//			{
+	//				auto* comp = this->GetNewComponent();
+	//				comp->SetNetworkInstance(this->network);
+	//				object->AddComponent<Ty>(comp);
+	//				return comp;
+	//			}
+	//		);
+	//		provider.PostGetterFunction(KG::Utill::HashString(KG::Component::ComponentID<Ty>::name()),
+	//			[this]()->KG::Component::IComponent*
+	//			{
+	//				auto* comp = this->GetNewComponent();
+	//				comp->SetNetworkInstance(this->network);
+	//				return static_cast<KG::Component::IComponent*>(comp);
+	//			}
+	//		);
 
-		}
-	};
+	//	}
+	//};
 
 }

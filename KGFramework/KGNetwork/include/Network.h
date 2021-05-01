@@ -8,6 +8,8 @@
 #include "ClientGameManagerComponent.h"
 #include "ClientCharacterComponent.h"
 #include "ClientPlayerControllerComponent.h"
+#include "ClientEnemyControllerComponent.h"
+#include "ClientSystems.h"
 
 namespace KG::Server
 {
@@ -25,9 +27,10 @@ namespace KG::Server
 		NetworkBuffer networkBuffer;
 
 		KG::Core::Scene* scene;
-		KG::Component::CGameManagerComponentSystem cGameManagerSystem;
-		KG::Component::CPlayerControllerComponentSystem cPlayerSystem;
-		KG::Component::CCharacterComponentSystem cCharacterSystem;
+		KG::System::CGameManagerComponentSystem cGameManagerSystem;
+		KG::System::CPlayerControllerComponentSystem cPlayerSystem;
+		KG::System::CCharacterComponentSystem cCharacterSystem;
+		KG::System::CEnemyControllerComponentSystem cEnemyControllerSystem;
 
 
 		std::unordered_map<KG::Server::NET_OBJECT_ID, KG::Component::CBaseComponent*> networkObjects;
@@ -46,6 +49,7 @@ namespace KG::Server
 		virtual KG::Component::CGameManagerComponent* GetNewGameManagerComponent() override;
 		virtual KG::Component::CPlayerControllerComponent* GetNewPlayerControllerComponent() override;
 		virtual KG::Component::CCharacterComponent* GetNewCharacterComponent() override;
+		virtual KG::Component::CEnemyControllerComponent* GetNewEnemyControllerOomponent() override;
 
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 
@@ -54,6 +58,13 @@ namespace KG::Server
 		virtual void SetScene(KG::Core::Scene* scene) override;
 
 
+
+		// INetwork을(를) 통해 상속됨
+		virtual void Update(float elapsedTime) override;
+
+
+		// INetwork을(를) 통해 상속됨
+		virtual void SetInputManager(KG::Input::InputManager* manager) override;
 
 	};
 };

@@ -3,6 +3,10 @@
 #include "CameraComponent.h"
 #include "AnimationComponent.h"
 #include "PlayerControllerComponent.h"
+#include "PhysicsComponent.h"
+#include "Protocol.h"
+
+using namespace KG::Math::Literal;
 
 static struct SoldierAnimSet
 {
@@ -87,30 +91,49 @@ void KG::Component::PlayerControllerComponent::ProcessMove(float elapsedTime)
 
 	if ( abs(this->forwardValue) >= this->inputMinimum )
 	{
-		this->characterTransform->Translate(this->characterTransform->GetLook() * speed * elapsedTime * this->forwardValue);
+		//this->characterTransform->Translate(this->characterTransform->GetLook() * speed * elapsedTime * this->forwardValue);
+		physics->AddForce(this->characterTransform->GetLook(), speed * elapsedTime * this->forwardValue);
 	}
 	if ( abs(this->rightValue) >= this->inputMinimum )
 	{
-		this->characterTransform->Translate(this->characterTransform->GetRight() * speed * elapsedTime * this->rightValue);
+		//this->characterTransform->Translate(this->characterTransform->GetRight() * speed * elapsedTime * this->rightValue);
+		physics->AddForce(this->characterTransform->GetRight(), speed * elapsedTime * this->rightValue);
 	}
 }
 
 void KG::Component::PlayerControllerComponent::ProcessMoveAnimation(float elapsedTime)
 {
+	if (physics == nullptr) {
+		this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
+	}
+
 	if ( this->forwardValue >= this->inputMinimum )
 	{
 		//¾Õ
 		if ( this->rightValue >= this->inputMinimum )
 		{
 			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_fr, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			if (physics != nullptr) {
+				physics->AddForce(this->characterTransform->GetLook(), 20);
+				physics->AddForce(this->characterTransform->GetRight(), 20);
+			}
 		}
 		else if ( this->rightValue <= -this->inputMinimum )
 		{
 			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_fl, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			if (physics != nullptr) {
+				physics->AddForce(this->characterTransform->GetLook(), 20);
+				auto l = this->characterTransform->GetRight() * -1;
+				l.y = 0;
+				physics->AddForce(l, 20);
+			}
 		}
 		else
 		{
 			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_f, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			if (physics != nullptr) {
+				physics->AddForce(this->characterTransform->GetLook(), 20);
+			}
 		}
 	}
 	else if ( this->forwardValue <= -this->inputMinimum )
@@ -119,14 +142,28 @@ void KG::Component::PlayerControllerComponent::ProcessMoveAnimation(float elapse
 		if ( this->rightValue >= this->inputMinimum )
 		{
 			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_br, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			if (physics != nullptr) {
+				physics->AddForce(this->characterTransform->GetLook() * -1, 20);
+				physics->AddForce(this->characterTransform->GetRight(), 20);
+			}
 		}
 		else if ( this->rightValue <= -this->inputMinimum )
 		{
 			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_bl, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_fl, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			if (physics != nullptr) {
+				physics->AddForce(this->characterTransform->GetLook() * -1, 20);
+				auto l = this->characterTransform->GetRight() * -1;
+				l.y = 0;
+				physics->AddForce(l, 20);
+			}
 		}
 		else
 		{
 			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_b, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			if (physics != nullptr) {
+				physics->AddForce(this->characterTransform->GetLook() * -1, 20);
+			}
 		}
 	}
 	else
@@ -134,10 +171,18 @@ void KG::Component::PlayerControllerComponent::ProcessMoveAnimation(float elapse
 		if ( this->rightValue >= this->inputMinimum )
 		{
 			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_r, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			if (physics != nullptr) {
+				physics->AddForce(this->characterTransform->GetRight(), 20);
+			}
 		}
 		else if ( this->rightValue <= -this->inputMinimum )
 		{
 			this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_l, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
+			if (physics != nullptr) {
+				auto l = this->characterTransform->GetRight() * -1;
+				l.y = 0;
+				physics->AddForce(l, 20);
+			}
 		}
 		else
 		{
@@ -164,6 +209,9 @@ void KG::Component::PlayerControllerComponent::ProcessMouse(float elapsedTime)
 		if ( delta.x )
 		{
 			this->characterTransform->RotateAxis(Math::up, delta.x * 0.3f);
+			if (physics != nullptr) {
+				physics->SetRotation(this->characterTransform->GetRotation());
+			}
 		}
 		if ( delta.y )
 		{
@@ -171,6 +219,9 @@ void KG::Component::PlayerControllerComponent::ProcessMouse(float elapsedTime)
 			if ( delta.y < 0 && euler.x > -85.0f || delta.y > 0 && euler.x < 80.0f )
 			{
 				this->cameraTransform->RotateAxis(Math::right, delta.y * 0.3f);
+				if (physics != nullptr) {
+					physics->SetRotation(this->characterTransform->GetRotation());
+				}
 			}
 		}
 	}
@@ -248,6 +299,7 @@ void KG::Component::PlayerControllerComponent::OnCreate(KG::Core::GameObject* ob
 
 	this->characterTransform = this->gameObject->GetComponent<TransformComponent>();
 	this->characterAnimation = this->gameObject->GetComponent<AnimationControllerComponent>();
+	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
 
 	auto* cameraObject = this->gameObject->FindChildObject("FPCamera"_id);
 	this->cameraTransform = cameraObject->GetTransform();

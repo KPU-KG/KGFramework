@@ -14,9 +14,10 @@
 #include <MSWSock.h>
 
 #include "Session.h"
-
 #include "ServerGameManagerComponent.h"
 #include "ServerPlayerControllerComponent.h"
+#include "ServerEnemyControllerComponent.h"
+#include "ServerSystems.h"
 
 namespace KG::Server
 {
@@ -42,9 +43,10 @@ namespace KG::Server
 		EX_OVERLAPPED acceptOver;
 
 		//Server System
-		KG::Component::SGameManagerComponentSystem sGameManagerSystem;
-		KG::Component::SPlayerComponentSystem sPlayerSystem;
-
+		KG::System::SGameManagerComponentSystem sGameManagerSystem;
+		KG::System::SPlayerComponentSystem sPlayerSystem;
+		KG::System::SEnemyControllerComponentSystem sEnemyControllerSystem;
+		KG::Physics::IPhysicsScene* physicsScene;
 
 		static void IOCPWorker(Server* server);
 
@@ -58,9 +60,19 @@ namespace KG::Server
 		void DoRecv(SESSION_ID key);
 		void ProcessPacket(SESSION_ID playerId, unsigned char* buffer);
 
+
 	public:
 		std::mutex worldLock;
+		int currentnum = 0;
+		
+		KG::Server::NET_OBJECT_ID playerObjectIds[4];
+		KG::Packet::RawFloat3 positions[4];
+		KG::Packet::CS_INPUT inputs[4];
+
 		NET_OBJECT_ID GetNewObjectId();
+		void SetSessionState(SESSION_ID session, KG::Server::PLAYER_STATE state);
+
+		//void AddPlayer();
 
 		// IServer을(를) 통해 상속됨
 		virtual void Initialize() override;
@@ -70,11 +82,17 @@ namespace KG::Server
 		virtual void UnlockWorld() override;
 		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() override;
 		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() override;
+		virtual KG::Component::SEnemyControllerComponent* GetNewEnemyControllerComponent() override;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 		virtual void DrawImGUI() override;
 		virtual bool isStarted() const override;
+		virtual void SetPhysicsScene(KG::Physics::IPhysicsScene* physicsScene) override;
+		virtual KG::Physics::IPhysicsScene* GetPhysicsScene() override;
 		virtual void SetServerObject(KG::Server::NET_OBJECT_ID id, KG::Component::SBaseComponent* obj);
 		virtual void BroadcastPacket(void* packet, SESSION_ID ignore = SERVER_ID);
 		virtual void SendPacket(SESSION_ID playerId, void* packet);
+
+		// IServer을(를) 통해 상속됨
+		virtual void Update(float elapsedTime) override;
 	};
 };

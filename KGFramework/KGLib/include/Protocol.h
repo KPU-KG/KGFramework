@@ -30,10 +30,13 @@ namespace KG::Packet
 		SC_FIRE, // 초기버전 미사용
 		SC_ADD_PLAYER,
 		SC_PLAYER_SYNC,
-
+		SC_SCENE_DATA,
+		SC_MOVE_OBJECT,
+		SC_SYNC_ANIMATION,
+		SC_PLAYER_DATA,
 		CS_REQ_LOGIN = 200, // 초기버전 미사용
 		CS_INPUT, // 사용
-		CS_FIRE // 초기버전 미사용
+		CS_FIRE
 	};
 
 	
@@ -145,6 +148,15 @@ namespace KG::Packet
 		RawFloat4 rotation;
 	};
 
+	struct SC_PLAYER_DATA // 플레이어, 적 관련 좌표만 주기적으로 송신
+	{
+		DEFAULT_PACKET_HEADER(SC_PLAYER_DATA);
+		RawFloat3 position;
+		RawFloat4 rotation;
+		float forwardValue;
+		float rightValue;
+	};
+
 	struct SC_ADD_OBJECT
 	{
 		DEFAULT_PACKET_HEADER(SC_ADD_OBJECT);
@@ -154,6 +166,22 @@ namespace KG::Packet
 		KG::Server::NET_OBJECT_ID newObjectId;
 		RawFloat3 position;
 		RawFloat4 rotation;
+	};
+
+	struct SC_MOVE_OBJECT
+	{
+		DEFAULT_PACKET_HEADER(SC_MOVE_OBJECT);
+		RawFloat3 position;
+		RawFloat4 rotation;
+		// KG::Utill::hashType parentTag;
+	};
+
+	struct SC_SYNC_ANIMATION
+	{
+		DEFAULT_PACKET_HEADER(SC_SYNC_ANIMATION);
+		KG::Utill::HashString animId;
+		UINT animIndex;
+		float timer;
 	};
 
 	struct SC_ADD_PLAYER
@@ -182,6 +210,15 @@ namespace KG::Packet
 		unsigned char stateS;
 		unsigned char stateD;
 		unsigned char stateShift;
+		RawFloat4 rotation;
+	};
+
+	struct CS_FIRE
+	{
+		DEFAULT_PACKET_HEADER(CS_FIRE);
+		RawFloat3 origin;
+		RawFloat3 direction;
+		float distance;
 	};
 
 #pragma pack(pop)

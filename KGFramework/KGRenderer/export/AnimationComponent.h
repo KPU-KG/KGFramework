@@ -52,21 +52,26 @@ namespace KG::Component
 
 	struct Animation {
 	private:
-		void MatchNode(KG::Core::GameObject* gameObject);
+		void MatchNode(KG::Core::GameObject* gameObject, UINT animIndex = 0U);
 		void SetDuration(KG::Utill::AnimationSet* anim);
 	public:
-		bool isRegistered = false;
+		// int animIndex = 0;
+		// bool isRegistered = false;
 		KG::Utill::HashString animationId;
 		std::vector<std::vector<KG::Core::GameObject*>> frameCache;
 		float timer = 0.0f;
 		float duration = 0.0f;
-		void Initialize(KG::Core::GameObject* gameObject);
+		void Initialize(KG::Core::GameObject* gameObject, UINT animIndex = 0U);
 	};
 
+	// struct AnimCommandValue {
+	// 	UINT animIndex;
+	// 	int weight;
+	// };
+
 	struct AnimationCommand {
-		// std::vector<int> index;
-		// std::vector<int> weight;
-		std::unordered_map<KG::Utill::hashType, int> index;
+		using AnimCommandValue = std::unordered_map<UINT, int>;
+		std::unordered_map<KG::Utill::hashType, AnimCommandValue> index;
 		float duration = 0.1f;
 		int repeat = -1;
 		float time = 0.0f;
@@ -102,16 +107,17 @@ namespace KG::Component
 		std::vector<DirectX::XMFLOAT4> prevFrameCache;
 
 		// std::vector<Animation> animations;
-		std::unordered_map<KG::Utill::hashType, Animation> animations;
+		using Animations = std::unordered_map<UINT, Animation>;
+		std::unordered_map<KG::Utill::hashType, Animations> animations;
 		std::unordered_map<KG::Utill::hashType, AnimationEventSet> events;
 
 		Animation* curFrame = nullptr;
 		AnimationCommand curAnimation;
 		std::vector<AnimationCommand> nextAnimations;
 
-		KG::Utill::HashString defaultAnimation;
+		std::pair<KG::Utill::HashString, UINT> defaultAnimation;
 
-		bool IsValidAnimationId(const KG::Utill::HashString& animationId);
+		bool IsValidAnimationId(const KG::Utill::HashString& animationId, UINT animIndex = 0U);
 		int GetTotalWeight(int index);
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 		virtual void OnDestroy() override;
@@ -122,20 +128,21 @@ namespace KG::Component
 		void RegisterAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U);
 		void RegisterEvent(const KG::Utill::HashString& animationId, int keyFrame, const KG::Utill::HashString& eventId);
 
-		void SetDefaultAnimation(KG::Utill::HashString defaultAnim);
-		void SetAnimation(const KG::Utill::HashString& animationId, int repeat = -1, float speed = 1.0f, bool clearNext = true, int weight = 1);
-		int ChangeAnimation(const KG::Utill::HashString& animationId, int nextState = ANIMSTATE_PLAYING, float blendingDuration = 0.1f, int repeat = 1, bool addWeight = false, float speed = 1.0f);
-		int AddNextAnimation(const KG::Utill::HashString& nextAnim, int nextState = ANIMSTATE_PLAYING, int repeat = 0.1f, float speed = 1.0f, int weight = 1);
-		void BlendingAnimation(const KG::Utill::HashString& nextAnim, float duration = -1.f, int index = -1, int weight = 1);
-		int ForceChangeAnimation(const KG::Utill::HashString& animationId, int nextState = ANIMSTATE_PLAYING, float blendingDuration = 0.1f, int repeat = 1, bool addWeight = false, float speed = 1.0f);
+		void SetDefaultAnimation(KG::Utill::HashString defaultAnim, UINT animationIndex = 0U);
+		void SetAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U, int repeat = -1, float speed = 1.0f, bool clearNext = true, int weight = 1);
+		int ChangeAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U, int nextState = ANIMSTATE_PLAYING, float blendingDuration = 0.1f, int repeat = 1, bool addWeight = false, float speed = 1.0f);
+		int AddNextAnimation(const KG::Utill::HashString& nextAnim, UINT animationIndex = 0U, int nextState = ANIMSTATE_PLAYING, int repeat = 0.1f, float speed = 1.0f, int weight = 1);
+		void BlendingAnimation(const KG::Utill::HashString& nextAnim, UINT animationIndex = 0U, float duration = -1.f, int index = -1, int weight = 1);
+		int ForceChangeAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U, int nextState = ANIMSTATE_PLAYING, float blendingDuration = 0.1f, int repeat = 1, bool addWeight = false, float speed = 1.0f);
 
-		void SetAnimationWeight(int index, const KG::Utill::HashString& anim, int weight);
+		void SetAnimationWeight(int index, const KG::Utill::HashString& anim, UINT animationIndex = 0U, int weight = 1);
 		void SetIgnoreScale(bool isUsing);
 		void SetIgnoreTranslate(bool isUsing);
 		virtual bool OnDrawGUI() override;
 
-		float GetDuration(const KG::Utill::HashString& animId);
+		float GetDuration(const KG::Utill::HashString& animId, UINT animationIndex = 0U);
 		KG::Utill::HashString GetCurrentPlayingAnimationId() const;
+		UINT GetCurrentPlayingAnimationIndex() const;
 		float GetCurrentPlayingAnimationTime() const;
 		float GetCurrentPlayingAnimationDuration() const;
 	};

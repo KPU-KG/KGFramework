@@ -22,7 +22,7 @@ void KG::Server::Server::IOCPWorker(Server* server)
 		DWORD numBytes;
 		ULONG_PTR ikey;
 		WSAOVERLAPPED* over;
-		std::cout << "GQCS : Queued\n";
+		//std::cout << "GQCS : Queued\n";
 		BOOL ret = GetQueuedCompletionStatus(server->hIocp, &numBytes, &ikey, &over, INFINITE);
 		SESSION_ID key = static_cast<SESSION_ID>(ikey);
 		if ( FALSE == ret )
@@ -87,7 +87,7 @@ void KG::Server::Server::IOCPWorker(Server* server)
 					newSession.prevSize = 0;
 					newSession.recvExOver.op = OP_RECV;
 					newSession.socket = ex_over->csocket;
-					newSession.state = PLAYER_STATE_INGAME;
+					newSession.state = PLAYER_STATE_CONNECTED;
 					server->players.insert(
 						std::make_pair(std::move(clientId), std::move(newSession))
 					);
@@ -175,14 +175,14 @@ void KG::Server::Server::LockWorld()
 {
 	worldLock.lock();
 	std::stringstream ss;
-	ss << "World Lock / ThreadId : " << std::this_thread::get_id() << "\n";
+	//ss << "World Lock / ThreadId : " << std::this_thread::get_id() << "\n";
 	std::cout << ss.str();
 }
 
 void KG::Server::Server::UnlockWorld()
 {
 	std::stringstream ss;
-	ss << "World UnLock / ThreadId : " << std::this_thread::get_id() << "\n";
+	//ss << "World UnLock / ThreadId : " << std::this_thread::get_id() << "\n";
 	std::cout << ss.str();
 	worldLock.unlock();
 }
@@ -191,6 +191,7 @@ KG::Component::SGameManagerComponent* KG::Server::Server::GetNewGameManagerCompo
 {
 	auto* comp = this->sGameManagerSystem.GetNewComponent();
 	comp->SetServerInstance(this);
+	comp->SetPhysicsScene(this->physicsScene);
 	return comp;
 }
 
@@ -201,10 +202,18 @@ KG::Component::SPlayerComponent* KG::Server::Server::GetNewPlayerComponent()
 	return comp;
 }
 
+KG::Component::SEnemyControllerComponent* KG::Server::Server::GetNewEnemyControllerComponent()
+{
+	auto* comp = this->sEnemyControllerSystem.GetNewComponent();
+	comp->SetServerInstance(this);
+	return comp;
+}
+
 void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->sGameManagerSystem.OnPostProvider(provider);
 	this->sPlayerSystem.OnPostProvider(provider);
+	this->sEnemyControllerSystem.OnPostProvider(provider);
 }
 
 void KG::Server::Server::DrawImGUI()
@@ -227,6 +236,16 @@ bool KG::Server::Server::isStarted() const
 	return this->iocpWorkers.size() != 0;
 }
 
+void KG::Server::Server::SetPhysicsScene(KG::Physics::IPhysicsScene* physicsScene)
+{
+	this->physicsScene = physicsScene;
+}
+
+KG::Physics::IPhysicsScene* KG::Server::Server::GetPhysicsScene()
+{
+	return this->physicsScene;
+}
+
 void KG::Server::Server::SetServerObject(KG::Server::NET_OBJECT_ID id, KG::Component::SBaseComponent* obj)
 {
 	this->netObjects.insert(std::make_pair(id, obj));
@@ -243,7 +262,7 @@ KG::Server::SESSION_ID KG::Server::Server::GetNewPlayerId()
 
 void KG::Server::Server::BroadcastPacket(void* packet, SESSION_ID ignore)
 {
-	std::cout << "BroadCast Packet!\n";
+	//std::cout << "BroadCast Packet!\n";
 	for ( auto& i : this->players )
 	{
 		if ( i.first != ignore )
@@ -262,8 +281,8 @@ void KG::Server::Server::SendPacket(SESSION_ID playerId, void* packet)
 	int packetSize = reinterpret_cast<unsigned char*>(packet)[0];
 	int packetType = reinterpret_cast<unsigned char*>(packet)[1];
 
-	std::cout << "To client [" << playerId << "] : ";
-	std::cout << "Packet / Type : " << packetType << " / Size : " << packetSize << "\n";
+	//std::cout << "To client [" << playerId << "] : ";
+	//std::cout << "Packet / Type : " << packetType << " / Size : " << packetSize << "\n";
 
 	auto* exOver = new EX_OVERLAPPED();
 
@@ -282,6 +301,13 @@ void KG::Server::Server::SendPacket(SESSION_ID playerId, void* packet)
 			display_error("Error in SendPacket : ", err_no);
 		}
 	}
+}
+
+void KG::Server::Server::Update(float elapsedTime)
+{
+	this->sGameManagerSystem.OnUpdate(elapsedTime);
+	this->sPlayerSystem.OnUpdate(elapsedTime);
+	this->sEnemyControllerSystem.OnUpdate(elapsedTime);
 }
 
 void KG::Server::Server::SendLoginOkPacket(SESSION_ID playerId)
@@ -369,6 +395,11 @@ void KG::Server::Server::ProcessPacket(SESSION_ID playerId, unsigned char* buffe
 	}
 }
 
+void KG::Server::Server::SetSessionState(SESSION_ID session, KG::Server::PLAYER_STATE state)
+{
+	this->players[session].state = state;
+}
+
 KG::Server::NET_OBJECT_ID KG::Server::Server::GetNewObjectId()
 {
 	std::lock_guard lg{ this->objectIdStartMutex };
@@ -377,3 +408,6 @@ KG::Server::NET_OBJECT_ID KG::Server::Server::GetNewObjectId()
 	return ret;
 }
 
+//void KG::Server::Server::AddPlayer(KG::Component::TransformComponent* trans) {
+//	
+//}

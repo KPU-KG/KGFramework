@@ -90,10 +90,10 @@ namespace KG::System
 	{
 		std::deque<Ty> componentPool;
 	public:
-		void Reserve( size_t size )
-		{
-			this->componentPool.resize( size );
-		}
+		//void Reserve( size_t size )
+		//{
+		//	this->componentPool.resize( size );
+		//}
 		Ty* GetNewComponent()
 		{
 			auto result = std::find_if(

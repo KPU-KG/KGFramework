@@ -7,8 +7,24 @@
 
 namespace KG::Component
 {
+	class TransformComponent;
+	class AnimationControllerComponent;
+	class DynamicRigidComponent;
 	class DLL CCharacterComponent : public CBaseComponent
 	{
+
+		KG::Component::TransformComponent* transform = nullptr;
+		KG::Component::TransformComponent* rotationTrasnform = nullptr;
+		KG::Component::AnimationControllerComponent* characterAnimation = nullptr;
+		KG::Component::DynamicRigidComponent* physics = nullptr;
+		constexpr static float inputRatio = 25.0f;
+		constexpr static float inputRetRatio = 5.0f;
+		constexpr static float inputMinimum = 0.1f;
+		constexpr static float walkBlendingDuration = 0.1f;
+		constexpr static float bulletRepeatTime = 0.1f;
+		float forwardValue = 0.0f;
+		float rightValue = 0.0f;
+		void ProcessMoveAnim();
 	public:
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
@@ -21,21 +37,4 @@ namespace KG::Component
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type) override;
 	};
 	REGISTER_COMPONENT_ID(CCharacterComponent);
-
-
-	class DLL CCharacterComponentSystem : public KG::Component::CBaseComponentSystem<CCharacterComponent>
-	{
-	public:
-		virtual void OnUpdate(float elapsedTime) override
-		{
-			for ( auto& com : *this )
-			{
-				com.Update(elapsedTime);
-			}
-		}
-
-		// IComponentSystem을(를) 통해 상속됨
-		virtual void OnPostUpdate(float elapsedTime) override;
-		virtual void OnPreRender() override;
-	};
 }
