@@ -32,6 +32,7 @@ namespace KG::Packet
 		SC_PLAYER_SYNC,
 		SC_SCENE_DATA,
 		SC_MOVE_OBJECT,
+		SC_CHANGE_ANIMATION,
 		SC_SYNC_ANIMATION,
 		SC_PLAYER_DATA,
 		CS_REQ_LOGIN = 200, // 초기버전 미사용
@@ -176,12 +177,20 @@ namespace KG::Packet
 		// KG::Utill::hashType parentTag;
 	};
 
-	struct SC_SYNC_ANIMATION
+	struct SC_SYNC_ANIMATION		// test
 	{
 		DEFAULT_PACKET_HEADER(SC_SYNC_ANIMATION);
+		float timer;
+	};
+
+	struct SC_CHANGE_ANIMATION
+	{
+		DEFAULT_PACKET_HEADER(SC_CHANGE_ANIMATION);
 		KG::Utill::HashString animId;
 		UINT animIndex;
-		float timer;
+		UINT nextState;
+		float blendingTime;
+		int repeat;
 	};
 
 	struct SC_ADD_PLAYER

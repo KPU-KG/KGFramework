@@ -48,8 +48,10 @@ bool KG::Component::SEnemyControllerComponent::SetGoal()
 
 bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 {
-	if (anim)
-		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING);
+	if (anim) {
+		ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING, 0.1f, -1);
+	}
+	// anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING);
 	rotateTimer += elapsedTime;
 	if (rotateInterval <= rotateTimer) {
 		return true;
@@ -67,8 +69,10 @@ bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 
 bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 {
-	if (anim)
-		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING);
+	if (anim) {
+		ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
+	}
+	// anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING);
 
 	if (rigid) {
 		rigid->SetVelocity(direction, speed);
@@ -105,8 +109,10 @@ bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 
 bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
 {
-	if (anim)
-		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING);
+	if (anim) {
+		ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING, 0.1f, -1);
+	}
+	//anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING);
 	idleTimer += elapsedTime;
 	if (idleInterval <= idleTimer)
 		return true;
@@ -116,6 +122,26 @@ bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
 KG::Component::SEnemyControllerComponent::SEnemyControllerComponent()
 {
 
+}
+
+void KG::Component::SEnemyControllerComponent::SetCenter(DirectX::XMFLOAT3 center) {
+	this->center = center;
+}
+
+void KG::Component::SEnemyControllerComponent::SetSpeed(float speed) {
+	this->speed = speed;
+}
+
+void KG::Component::SEnemyControllerComponent::SetIdleInterval(float interval) {
+	this->idleInterval = interval;
+}
+
+void KG::Component::SEnemyControllerComponent::SetRotateInterval(float interval) {
+	this->rotateInterval = interval;
+}
+
+void KG::Component::SEnemyControllerComponent::SetWanderRange(float range) {
+	this->range = range;
 }
 
 void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* obj)
@@ -134,7 +160,11 @@ void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* ob
 void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 {
 	if (hp <= 0) {
-		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::dead, ANIMSTATE_PLAYING, 0.1);
+		if (!isDead && anim->GetCurrentPlayingAnimationIndex() != KG::Component::MechAnimIndex::dead) {
+			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::dead, ANIMSTATE_STOP, 0.1, 1);
+			// anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::dead, ANIMSTATE_STOP, 0.1);
+			isDead = true;
+		}
 
 	}
 	else {
@@ -168,14 +198,6 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 	p.position = this->transform->GetPosition();
 	p.rotation = this->transform->GetRotation();
 	this->BroadcastPacket(&p);
-
-	KG::Packet::SC_SYNC_ANIMATION pa = {};
-	pa.animId = this->anim->GetCurrentPlayingAnimationId();
-	pa.animIndex = this->anim->GetCurrentPlayingAnimationIndex();
-	pa.timer = this->anim->GetCurrentPlayingAnimationTime();
-	this->BroadcastPacket(&pa);
-
-
 }
 
 bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
@@ -223,6 +245,25 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 		}
 	}
 	return false;
+}
+
+void KG::Component::SEnemyControllerComponent::SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback) {
+	this->raycastCallback = callback;
+}
+
+void KG::Component::SEnemyControllerComponent::HitBullet() {
+	this->hp -= 1;
+}
+
+inline void KG::Component::SEnemyControllerComponent::ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime, int repeat) {
+	anim->ChangeAnimation(animId, animIndex, nextState, blendingTime, repeat);
+	KG::Packet::SC_CHANGE_ANIMATION pa = {};
+	pa.animId = animId;
+	pa.animIndex = animIndex;
+	pa.blendingTime = blendingTime;
+	pa.nextState = nextState;
+	pa.repeat = repeat;
+	this->BroadcastPacket(&pa);
 }
 
 

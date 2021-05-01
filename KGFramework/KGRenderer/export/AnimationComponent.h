@@ -5,9 +5,10 @@
 #include "ISerializable.h"
 #include "SerializableProperty.h"
 
-#define ANIMSTATE_PLAYING 0
-#define ANIMSTATE_CHANGING 1
-#define ANIMSTATE_FORCE 2
+constexpr const unsigned int ANIMSTATE_PLAYING = 0;
+constexpr const unsigned int ANIMSTATE_CHANGING = 1;
+constexpr const unsigned int ANIMSTATE_FORCE = 2;
+constexpr const unsigned int ANIMSTATE_STOP = 3;
 
 #define ANIMLOOP_INF -1
 
@@ -55,19 +56,12 @@ namespace KG::Component
 		void MatchNode(KG::Core::GameObject* gameObject, UINT animIndex = 0U);
 		void SetDuration(KG::Utill::AnimationSet* anim);
 	public:
-		// int animIndex = 0;
-		// bool isRegistered = false;
 		KG::Utill::HashString animationId;
 		std::vector<std::vector<KG::Core::GameObject*>> frameCache;
 		float timer = 0.0f;
 		float duration = 0.0f;
 		void Initialize(KG::Core::GameObject* gameObject, UINT animIndex = 0U);
 	};
-
-	// struct AnimCommandValue {
-	// 	UINT animIndex;
-	// 	int weight;
-	// };
 
 	struct AnimationCommand {
 		using AnimCommandValue = std::unordered_map<UINT, int>;
@@ -98,6 +92,7 @@ namespace KG::Component
 		using AnimationEventSet = std::vector<AnimationEvent>;
 		// changing
 		// playing
+		// stop
 	protected:
 		int state = ANIMSTATE_PLAYING;
 		bool changeIntercepted = false;
@@ -139,6 +134,8 @@ namespace KG::Component
 		void SetIgnoreScale(bool isUsing);
 		void SetIgnoreTranslate(bool isUsing);
 		virtual bool OnDrawGUI() override;
+
+		void SyncAnimation(const KG::Utill::HashString& anim, UINT animationIndex, float timer);
 
 		float GetDuration(const KG::Utill::HashString& animId, UINT animationIndex = 0U);
 		KG::Utill::HashString GetCurrentPlayingAnimationId() const;

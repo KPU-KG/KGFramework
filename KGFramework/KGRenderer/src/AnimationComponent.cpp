@@ -319,26 +319,32 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 	if (curAnimation.repeat == ANIMLOOP_INF)
 		; // loop inf
 	else if (curAnimation.repeat <= 0) {
-		float animT = animations[p->first][p->second.begin()->first].timer / animations[p->first][p->second.begin()->first].duration;
-		if (nextAnimations.size() <= 0) {
-			animations[defaultAnimation.first][defaultAnimation.second].timer = animT * animations[defaultAnimation.first][defaultAnimation.second].duration;
-			state = ANIMSTATE_CHANGING;
-			ChangeAnimation(defaultAnimation.first, defaultAnimation.second, ANIMSTATE_PLAYING, 0.5f, -1);
-			changeToDefault = true;
-		}
+		if (state == ANIMSTATE_STOP)
+			;
 		else {
-			auto pn = nextAnimations[0].index.begin();
-			animations[pn->first][pn->second.begin()->first].timer = animT * animations[pn->first][pn->second.begin()->first].duration;
-			curAnimation = nextAnimations[0];
-			curAnimation.time = 0;
-			nextAnimations.erase(nextAnimations.begin());
-			state = curAnimation.next;
+			float animT = animations[p->first][p->second.begin()->first].timer / animations[p->first][p->second.begin()->first].duration;
+			if (nextAnimations.size() <= 0) {
+				animations[defaultAnimation.first][defaultAnimation.second].timer = animT * animations[defaultAnimation.first][defaultAnimation.second].duration;
+				state = ANIMSTATE_CHANGING;
+				ChangeAnimation(defaultAnimation.first, defaultAnimation.second, ANIMSTATE_PLAYING, 0.5f, -1);
+				changeToDefault = true;
+			}
+			else {
+				auto pn = nextAnimations[0].index.begin();
+				animations[pn->first][pn->second.begin()->first].timer = animT * animations[pn->first][pn->second.begin()->first].duration;
+				curAnimation = nextAnimations[0];
+				curAnimation.time = 0;
+				nextAnimations.erase(nextAnimations.begin());
+				state = curAnimation.next;
+			}
 		}
 		return;
 	}
 
 
 	float T = anim->timer / anim->duration;
+	if (state == ANIMSTATE_STOP && curAnimation.repeat <= 0)
+		T = 1;
 	curAnimation.time += elapsedTime * curAnimation.speed;
 
 	KG::Utill::AnimationSet* animSet = nullptr;
@@ -463,6 +469,8 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 			curAnimation.time = 0;
 			nextAnimations.erase(nextAnimations.begin());
 			state = curAnimation.next;
+			// if (state == ANIMSTATE_STOP)
+			// 	curAnimation.repeat;
 		}
 		return;
 	}
@@ -691,6 +699,7 @@ void KG::Component::AnimationControllerComponent::Update(float elapsedTime)
 {
 	switch (state) {
 	case ANIMSTATE_PLAYING:
+	case ANIMSTATE_STOP:
 		PlayingUpdate(elapsedTime);
 		break;
 	case ANIMSTATE_CHANGING:
@@ -801,18 +810,18 @@ int  KG::Component::AnimationControllerComponent::ChangeAnimation(const KG::Util
 	}
 	else {
 		if (nextAnimations.size() > 0) {
-			if (nextAnimations[0].index.count(animationId.value) != 0)
+			if (nextAnimations[0].index.count(animationId.value) != 0 && nextAnimations[0].index[animationId.value].count(animationIndex) != 0)
 				return ANIMINDEX_CHANGE;
 			// if (nextAnimations[0].index[animationId.value] != NULL) {
-			nextAnimations[0].time = 0;
-			nextAnimations[0].duration = GetDuration(animationId, animationIndex);
-			if (repeat == ANIMLOOP_INF)
-				nextAnimations[0].repeat = ANIMLOOP_INF;
-			else
-				nextAnimations[0].repeat = repeat;
-			curAnimation.duration = blendingDuration;
-			state = ANIMSTATE_CHANGING;
-			return ANIMINDEX_CHANGE;
+			// nextAnimations[0].time = 0;
+			// nextAnimations[0].duration = GetDuration(animationId, animationIndex);
+			// if (repeat == ANIMLOOP_INF)
+			// 	nextAnimations[0].repeat = ANIMLOOP_INF;
+			// else
+			// 	nextAnimations[0].repeat = repeat;
+			// curAnimation.duration = blendingDuration;
+			// state = ANIMSTATE_CHANGING;
+			// return ANIMINDEX_CHANGE;
 			//}
 		}
 
@@ -855,8 +864,6 @@ int KG::Component::AnimationControllerComponent::AddNextAnimation(const KG::Util
 		return -1;
 	AnimationCommand next;
 	next.index[nextAnim.value][animationIndex] = weight;
-	// next.index[nextAnim.value].animIndex = animationIndex;
-	// next.index[nextAnim.value].weight = weight;
 	next.duration = GetDuration(nextAnim, animationIndex);
 	if (repeat == ANIMLOOP_INF)
 		next.repeat = ANIMLOOP_INF;

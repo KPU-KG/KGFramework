@@ -66,6 +66,8 @@ namespace KG::Component
 		float					idleTimer = 0;
 		float					rotateInterval = 2;
 		float					rotateTimer = 0;
+
+		bool					isDead = false;
 		
 		KG::Component::RaycastCallbackFunc raycastCallback = nullptr;
 
@@ -77,23 +79,14 @@ namespace KG::Component
 		bool RotateToGoal(float elapsedTime);
 		bool MoveToGoal();
 		bool Idle(float elapsedTime);
+		void ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime = 0.1f, int repeat = 1);
 	public:
 		SEnemyControllerComponent();
-		void SetCenter(DirectX::XMFLOAT3 center) {
-			this->center = center;
-		}
-		void SetSpeed(float speed) {
-			this->speed = speed;
-		}
-		void SetIdleInterval(float interval) {
-			this->idleInterval = interval;
-		}
-		void SetRotateInterval(float interval) {
-			this->rotateInterval = interval;
-		}
-		void SetWanderRange(float range) {
-			this->range = range;
-		}
+		void SetCenter(DirectX::XMFLOAT3 center);
+		void SetSpeed(float speed);
+		void SetIdleInterval(float interval);
+		void SetRotateInterval(float interval);
+		void SetWanderRange(float range);
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override
@@ -102,12 +95,8 @@ namespace KG::Component
 		}
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender) override;
 		virtual bool OnDrawGUI();
-		void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback) {
-			this->raycastCallback = callback;
-		}
-		void HitBullet() {
-			this->hp -= 1;
-		}
+		void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback);
+		void HitBullet();
 	};
 
 	REGISTER_COMPONENT_ID(SEnemyControllerComponent);
