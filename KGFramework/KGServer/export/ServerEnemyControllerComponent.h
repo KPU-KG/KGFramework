@@ -54,26 +54,31 @@ namespace KG::Component
 		TransformComponent*							transform = nullptr;
 		AnimationControllerComponent*				anim = nullptr;
 
-		EnemyAction				action = EnemyAction::eSETGOAL;
-		EnemyState				state = EnemyState::eWANDER;
+		EnemyAction									action = EnemyAction::eSETGOAL;
+		EnemyState									state = EnemyState::eWANDER;
 
-		DirectX::XMFLOAT3		center = { 0,0,0 };			// onCreate에서 정해줌
-		float					range = 10;
-		DirectX::XMFLOAT3		direction = { 0,0,0 };		// 일단 z값은 고려하지 않을 예정이나 비행 몹에는 쓸지도..?
-		DirectX::XMFLOAT3		goal = { 0,0,0 };
-		float					speed = 3;
-		float					idleInterval = 3;
-		float					idleTimer = 0;
-		float					rotateInterval = 2;
-		float					rotateTimer = 0;
+		DirectX::XMFLOAT3							center = { 0,0,0 };			// onCreate에서 정해줌
+		float										range = 10;
+		DirectX::XMFLOAT3							direction = { 0,0,0 };		// 일단 z값은 고려하지 않을 예정이나 비행 몹에는 쓸지도..?
+		DirectX::XMFLOAT3							goal = { 0,0,0 };
+		float										speed = 3;
+		float										idleInterval = 3;
+		float										idleTimer = 0;
+		float										rotateInterval = 2;
+		float										rotateTimer = 0;
 
-		bool					isDead = false;
+		bool										isDead = false;
 		
-		KG::Component::RaycastCallbackFunc raycastCallback = nullptr;
+		KG::Component::RaycastCallbackFunc			raycastCallback = nullptr;
 
-		int						hp = 10;
+		int											hp = 10;
 
-		DirectX::XMFLOAT2		angle;
+		DirectX::XMFLOAT2							angle;
+
+		std::vector<DirectX::XMFLOAT3>				node;
+		bool										randomCircuit;
+		int											currentNode = 0;
+
 		void UpdateState();
 		bool SetGoal();
 		bool RotateToGoal(float elapsedTime);

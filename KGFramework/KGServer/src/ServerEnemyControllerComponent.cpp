@@ -11,6 +11,7 @@
 
 #include <string>
 #include <random>
+#include "Scene.h"
 
 std::random_device rd;
 std::mt19937 gen(rd());
@@ -23,10 +24,21 @@ void KG::Component::SEnemyControllerComponent::UpdateState()
 
 bool KG::Component::SEnemyControllerComponent::SetGoal()
 {
-	// 나중에는 노드 생성해서 그걸로 변경
-	goal.x = goalRange(gen) * range;
-	// goal.y = goalRange(gen) * range;
-	goal.z = goalRange(gen) * range;
+	if (this->node.size() > 0) {
+		if (randomCircuit) {
+			std::uniform_int_distribution<int> randomIndex(1, this->node.size());
+			currentNode = randomIndex(gen) - 1;
+		}
+		else {
+			currentNode = ++currentNode% this->node.size();
+		}
+		goal = this->node[currentNode];
+	}
+	else {
+		goal.x = goalRange(gen) * range;
+		// goal.y = goalRange(gen) * range;
+		goal.z = goalRange(gen) * range;
+	}
 
 	direction = Math::Vector3::Subtract(goal, transform->GetPosition());
 	direction.y = 0;
@@ -232,17 +244,60 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 			}
 			ImGui::TextDisabled("Action : %s", curAction);
 			ImGui::TextDisabled("Goal : (%f, %f, %f)", goal.x, goal.y, goal.z);
+			ImGui::TextDisabled("Goal : (%f, %f, %f)", direction.x, direction.y, direction.z);
 			auto angle = transform->GetEulerDegree();
 			ImGui::TextDisabled("rotation : (%f, %f, %f)", angle.x, angle.y, angle.z);
 			ImGui::TextDisabled("this->angle : (%f, %f)", this->angle.x, this->angle.y);
+			ImGui::TextDisabled("Cur Node : (%d)", this->currentNode);
 		}
 		else {
-			std::string cs("center");
+			std::string cs("position");
 			KG::Utill::ImguiProperty::DrawGUIProperty<DirectX::XMFLOAT3>(cs, this->center);
 
 			std::string rs("range");
 			KG::Utill::ImguiProperty::DrawGUIProperty<float>(rs, this->range);
 		}
+		std::string cs("random circuit");
+		KG::Utill::ImguiProperty::DrawGUIProperty<bool>(cs, this->randomCircuit);
+
+		ImGui::TextDisabled("Circuit Node [%d]", this->node.size());
+
+		for (int i = 0; i < node.size(); ++i) {
+			std::string ns("node [" + std::to_string(i) + "]");
+			KG::Utill::ImguiProperty::DrawGUIProperty<DirectX::XMFLOAT3>(ns, this->node[i]);
+
+			auto view = this->gameObject->GetScene()->GetMainCameraView();
+			auto proj = this->gameObject->GetScene()->GetMainCameraProj();
+			XMFLOAT4X4 mat;
+			DirectX::XMStoreFloat4x4(&mat, XMMatrixTranslation(this->node[i].x, this->node[i].y, this->node[i].z));
+
+			view = Math::Matrix4x4::Transpose(view);
+			proj = Math::Matrix4x4::Transpose(proj);
+
+			ImGuiIO& io = ImGui::GetIO();
+			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+			ImGuizmo::DrawCubes(
+				reinterpret_cast<const float*>(view.m),
+				reinterpret_cast<const float*>(proj.m),
+				reinterpret_cast<const float*>(mat.m),
+				1);
+
+			if (ImGui::Button("Delete Node"))
+			{
+				this->node.erase(this->node.begin() + i);
+				if (i < currentNode) {
+					currentNode--;
+				}
+				this->action = EnemyAction::eSETGOAL;
+				break;
+			}
+		}
+		if (ImGui::Button("Add Node"))
+		{
+			this->node.emplace_back();
+		}
+
 	}
 	return false;
 }
