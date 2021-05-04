@@ -36,7 +36,6 @@ namespace KG::Component
 	class DLL CEnemyControllerComponent : public CBaseComponent
 	{
 	private:
-		DynamicRigidComponent* rigid = nullptr;
 		TransformComponent* transform = nullptr;
 		AnimationControllerComponent* anim = nullptr;
 
