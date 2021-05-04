@@ -58,6 +58,7 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
 	this->particleGen->baseEmitCount = 1;
 	this->particleGen->baseSize.x = 0.35;
 	this->particleGen->baseSize.y = 0.35;
+	this->particleGen->color.SetByFloat(1, 0.65, 0);
 	this->particleGen->SetParticleMaterial(KG::Utill::HashString("Muzzle_06"));
 }
 
