@@ -1,4 +1,5 @@
 #include "ParticleEmitterComponent.h"
+#include "ResourceContainer.h"
 #include "KGDXRenderer.h"
 #include "Transform.h"
 
@@ -30,12 +31,6 @@ KG::Component::ParticleEmitterComponent::ParticleEmitterComponent()
 	rangeEmitCountSecondProp("rangeEmitCountSecond", rangeEmitCount),
 	particleMaterialProp("particleMaterial", particleMaterial)
 {
-
-	this->baseSize = XMFLOAT2(1,1);
-	color = XMFLOAT4(1,1,1,1);
-
-	this->baselifeTime = 10.0f;
-	this->baseEmitCount = 1;
 }
 
 void KG::Component::ParticleEmitterComponent::OnRender(ID3D12GraphicsCommandList* commadList)
@@ -48,6 +43,7 @@ void KG::Component::ParticleEmitterComponent::OnPreRender()
 
 void KG::Component::ParticleEmitterComponent::EmitParticle()
 {
+	if ( this->particleMaterial.value == 0 ) return;
 	int count = KG::Math::RandomInt(baseEmitCount - rangeEmitCount, baseEmitCount + rangeEmitCount);
 	for ( int i = 0; i < count; i++ )
 	{
@@ -60,18 +56,31 @@ void KG::Component::ParticleEmitterComponent::EmitParticle()
 		desc.lifeTime = KG::Math::RandomFloat(baselifeTime - rangelifeTime, baselifeTime + rangelifeTime);
 		desc.rotation = KG::Math::RandomFloat(baseRotation - rangeRotation, baseRotation + rangeRotation);
 		desc.rotationSpeed = KG::Math::RandomFloat(baseRotationSpeed - rangeRotationSpeed, baseRotationSpeed + rangeRotationSpeed);
+		desc.materialIndex = this->particleMaterialIndex;
 		this->EmitParticle(desc, true);
 	}
 }
 
 void KG::Component::ParticleEmitterComponent::EmitParticle(const ParticleDesc& desc, bool autoFillTime)
 {
-	KG::Renderer::KGDXRenderer::GetInstance()->EmitParticle(desc, autoFillTime);
+	if ( this->isParticleAdd )
+	{
+		KG::Renderer::KGDXRenderer::GetInstance()->EmitParticleAdd(desc, autoFillTime);
+	}
+	else 
+	{
+		KG::Renderer::KGDXRenderer::GetInstance()->EmitParticleTransparent(desc, autoFillTime);
+	}
 }
 
 UINT KG::Component::ParticleEmitterComponent::GetParticleMaterialIndex(const KG::Utill::HashString& id) const
 {
 	return KG::Renderer::KGDXRenderer::GetInstance()->QueryMaterialIndex(id);
+}
+
+bool KG::Component::ParticleEmitterComponent::GetParticleMaterialIsAdd(const KG::Utill::HashString& id) const
+{
+	return KG::Resource::ResourceContainer::GetInstance()->LoadMaterial(id).second == "ParticleAdd"_id;
 }
 
 void KG::Component::ParticleEmitterComponent::Update(float elapsedTime)
@@ -106,6 +115,8 @@ bool KG::Component::ParticleEmitterComponent::OnDrawGUI()
 		{
 			baseDeltaPositionProp.OnDrawGUI();
 			rangeDeltaPositionProp.OnDrawGUI();
+			baseSizeProp.OnDrawGUI();
+			rangeSizeProp.OnDrawGUI();
 			baseSpeedProp.OnDrawGUI();
 			rangeSpeedProp.OnDrawGUI();
 			colorProp.OnDrawGUI();
@@ -127,6 +138,13 @@ bool KG::Component::ParticleEmitterComponent::OnDrawGUI()
 				this->SetParticleMaterial(this->particleMaterial);
 			}
 		}
+		if ( ImGui::CollapsingHeader("Emit Pannel", ImGuiTreeNodeFlags_DefaultOpen) )
+		{
+			if ( ImGui::Button("Emit") )
+			{
+				this->EmitParticle();
+			}
+		}
 	}
 	return false;
 }
@@ -135,4 +153,5 @@ void KG::Component::ParticleEmitterComponent::SetParticleMaterial(const KG::Util
 {
 	this->particleMaterial = materialId;
 	this->particleMaterialIndex = this->GetParticleMaterialIndex(materialId);
+	isParticleAdd = this->GetParticleMaterialIsAdd(materialId);
 }

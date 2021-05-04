@@ -101,7 +101,8 @@ namespace KG::Renderer
 		virtual void SkyBoxRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void PassRenderEnd(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 
-		void EmitParticle(const KG::Component::ParticleDesc& particleDesc, bool autofillTime);
+		void EmitParticleAdd(const KG::Component::ParticleDesc& particleDesc, bool autofillTime);
+		void EmitParticleTransparent(const KG::Component::ParticleDesc& particleDesc, bool autofillTime);
 
 		virtual void Update(float elapsedTime) override;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) override;
@@ -118,6 +119,7 @@ namespace KG::Renderer
 		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() override;
 		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() override;
 		virtual KG::Component::AnimationControllerComponent* GetNewAnimationControllerComponent() override;
+		virtual KG::Component::ParticleEmitterComponent* GetNewParticleEmitterComponent() override;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials) override;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials) override;
 

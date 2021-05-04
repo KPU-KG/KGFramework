@@ -410,7 +410,9 @@ void KG::Renderer::KGDXRenderer::TransparentRender(ShaderGeometryType geoType, S
 
 void KG::Renderer::KGDXRenderer::ParticleRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
 {
-	this->renderEngine->Render(ShaderGroup::Particle, ShaderGeometryType::ParticleMesh, ShaderPixelType::ParticleMesh, cmdList);
+	this->particleGenerator.PreRender();
+	this->renderEngine->Render(ShaderGroup::ParticleTransparent, ShaderGeometryType::Particle, ShaderPixelType::Transparent, cmdList);
+	this->renderEngine->Render(ShaderGroup::ParticleAdd , ShaderGeometryType::Particle, ShaderPixelType::Add, cmdList);
 }
 
 void KG::Renderer::KGDXRenderer::LightPassRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
@@ -450,15 +452,21 @@ void KG::Renderer::KGDXRenderer::PassRenderEnd(ID3D12GraphicsCommandList* cmdLis
 	);
 }
 
-void KG::Renderer::KGDXRenderer::EmitParticle(const KG::Component::ParticleDesc& particleDesc, bool autofillTime)
+void KG::Renderer::KGDXRenderer::EmitParticleAdd(const KG::Component::ParticleDesc& particleDesc, bool autofillTime)
 {
-	this->particleGenerator.EmitParticle(particleDesc, autofillTime);
+	this->particleGenerator.EmitParticleAdd(particleDesc, autofillTime);
+}
+
+void KG::Renderer::KGDXRenderer::EmitParticleTransparent(const KG::Component::ParticleDesc & particleDesc, bool autofillTime)
+{
+	this->particleGenerator.EmitParticleTransparent(particleDesc, autofillTime);
 }
 
 void KG::Renderer::KGDXRenderer::Update(float elapsedTime)
 {
 	this->graphicSystems->OnUpdate(elapsedTime);
 	this->graphicSystems->OnPostUpdate(elapsedTime);
+	this->particleGenerator.Update(elapsedTime);
 }
 
 void KGDXRenderer::OnChangeSettings(const RendererSetting& prev, const RendererSetting& next)
@@ -522,6 +530,12 @@ KG::Component::AnimationControllerComponent* KG::Renderer::KGDXRenderer::GetNewA
 {
 	auto* anim = static_cast<KG::Component::AnimationControllerComponent*>(this->graphicSystems->animationControllerSystem.GetNewComponent());
 	return anim;
+}
+
+KG::Component::ParticleEmitterComponent* KG::Renderer::KGDXRenderer::GetNewParticleEmitterComponent()
+{
+	auto* particleComp = static_cast<KG::Component::ParticleEmitterComponent*>(this->graphicSystems->particleSystem.GetNewComponent());
+	return particleComp;
 }
 
 KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials)
@@ -801,7 +815,7 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 	pd3dRootParameters[RootParameterIndex::MaterialData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
 	pd3dRootParameters[RootParameterIndex::MaterialData].Descriptor.ShaderRegister = 1;
 	pd3dRootParameters[RootParameterIndex::MaterialData].Descriptor.RegisterSpace = 0;
-	pd3dRootParameters[RootParameterIndex::MaterialData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
+	pd3dRootParameters[RootParameterIndex::MaterialData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
 	// 4 : Space 0 : CBV 0 : Camera Data : 2
 	pd3dRootParameters[RootParameterIndex::CameraData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;

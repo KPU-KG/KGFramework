@@ -156,6 +156,10 @@ void KG::System::AnimationControllerSystem::OnPreRender()
 
 void KG::System::ParticleEmitterSystem::OnUpdate(float elapsedTime)
 {
+	for ( auto& com : this->pool )
+	{
+		com.Update(elapsedTime);
+	}
 }
 
 void KG::System::ParticleEmitterSystem::OnPostUpdate(float elapsedTime)

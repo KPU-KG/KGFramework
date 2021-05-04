@@ -441,6 +441,7 @@ namespace KG::Math
 
 	inline int RandomInt(int value)
 	{
+		if ( value == 0 ) return 0;
 		return RandomInt() % value;
 	}
 	inline int RandomInt(int min, int max)

@@ -272,6 +272,11 @@ void KG::GameFramework::PostSceneFunction()
 			boneVector->GetTransform()->AddChild(sight->GetTransform());
 			sight->GetTransform()->SetPosition(0.042f, -6.841, 4.2f);
 			sight->GetTransform()->SetEulerDegree(-90,-90,0);
+
+
+			auto* particle = this->scene->CallPreset("ParticleGenerator"_id);
+			boneVector->GetTransform()->AddChild(particle->GetTransform());
+			particle->GetTransform()->SetPosition(0, -27, 0);
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
 
 			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id));
@@ -590,6 +595,13 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(r);
 		}
 	);
+	this->scene->AddObjectPreset("ParticleGenerator",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* p = this->renderer->GetNewParticleEmitterComponent();
+			obj.AddComponent(p);
+		}
+	);
 	this->scene->AddModelCreator(
 		[this](const KG::Utill::HashString& modelID, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& material)
 		{
@@ -723,6 +735,7 @@ void KG::GameFramework::OnProcess()
 		this->renderer->Update(this->timer.GetTimeElapsed());
 	}
 	this->physics->Advance(this->timer.GetTimeElapsed());
+	this->renderer->SetGameTime(this->timer.GetGameTime());
 	this->renderer->Render();
 
 	this->ServerProcessEnd();

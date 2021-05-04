@@ -28,7 +28,9 @@ namespace KG::Renderer
 		AmbientLight = 3,
 		MeshVolumeLight = 4,
 		DirectionalLight = 5,
-		Particle = 6,
+		ParticleAdd = 6,
+		ParticleTransparent = 7,
+		MaxShaderCount,
 	};
 
 	// 지오메트리 타입에 따라 결정
@@ -36,7 +38,7 @@ namespace KG::Renderer
 	{
 		StaticMesh = 0,
 		SkinnedMesh = 1,
-		ParticleMesh = 2,
+		ParticleTransparent = 2,
 	};
 
 	enum class ShaderTesselation
@@ -55,7 +57,7 @@ namespace KG::Renderer
 		SkyBox = 3,
 		GSCubeShadow = 4,
 		GSCascadeShadow = 5,
-		ParticleMesh = 6,
+		Particle = 6,
 	};
 	// 최종 렌더 명령시에 결정
 	enum class ShaderPixelType
@@ -69,8 +71,32 @@ namespace KG::Renderer
 		Forward = 6,
 		Transparent = 7,
 		SkyBox = 8,
-		ParticleMesh = 9,
+		Add = 9,
 	};
+
+	constexpr const char* ConvertToMacroString( ShaderGroup target)
+	{
+		switch ( target )
+		{
+			case KG::Renderer::Opaque:
+				return "Opaque";
+			case KG::Renderer::SkyBox:
+				return "SkyBox";
+			case KG::Renderer::Transparent:
+				return "Transparent";
+			case KG::Renderer::AmbientLight:
+				return "AmbientLight";
+			case KG::Renderer::MeshVolumeLight:
+				return "MeshVolumeLight";
+			case KG::Renderer::DirectionalLight:
+				return "DirectionalLight";
+			case KG::Renderer::ParticleAdd:
+				return "ParticleAdd";
+			case KG::Renderer::ParticleTransparent:
+				return "ParticleTransparent";
+		}
+	}
+
 
 	constexpr const char* ConvertToMacroString( ShaderMeshType target )
 	{
@@ -78,7 +104,7 @@ namespace KG::Renderer
 		{
 		case KG::Renderer::ShaderMeshType::StaticMesh: return "STATIC_MESH";
 		case KG::Renderer::ShaderMeshType::SkinnedMesh: return "SKINNED_MESH";
-		case KG::Renderer::ShaderMeshType::ParticleMesh: return "PARTICLE_MESH";
+		case KG::Renderer::ShaderMeshType::ParticleTransparent: return "PARTICLE_MESH";
 		}
 	}
 
@@ -92,7 +118,7 @@ namespace KG::Renderer
 		case KG::Renderer::ShaderGeometryType::GSCascadeShadow: return "GEOMETRY_CASCADE_SHADOW";
 		case KG::Renderer::ShaderGeometryType::Light: return "GEOMETRY_LIGHT";
 		case KG::Renderer::ShaderGeometryType::SkyBox: return "GEOMETRY_SKYBOX";
-		case KG::Renderer::ShaderGeometryType::ParticleMesh: return "GEOMETRY_PARTICLE";
+		case KG::Renderer::ShaderGeometryType::Particle: return "GEOMETRY_PARTICLE";
 		}
 
 	}
@@ -110,7 +136,7 @@ namespace KG::Renderer
 		case KG::Renderer::ShaderPixelType::Forward: return "PIXEL_FORWARD";
 		case KG::Renderer::ShaderPixelType::Transparent: return "PIXEL_TRANSPARENT";
 		case KG::Renderer::ShaderPixelType::SkyBox: return "PIXEL_SKYBOX";
-		case KG::Renderer::ShaderPixelType::ParticleMesh: return "PIXEL_PARTICLE";
+		case KG::Renderer::ShaderPixelType::Add: return "PIXEL_ADD";
 		}
 	}
 

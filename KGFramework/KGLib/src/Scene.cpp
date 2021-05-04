@@ -306,7 +306,7 @@ KG::Core::GameObject* KG::Core::Scene::CallPreset(const KG::Utill::HashString& h
 			}
 			else
 			{
-				obj = this->CreateNewObject();
+				obj = this->CreateNewTransformObject();
 			}
 			objectPresetFunc[i](*obj);
 			obj->tag = KG::Utill::HashString(objectPresetName[i]);
@@ -450,6 +450,9 @@ bool KG::Core::Scene::OnDrawGUI()
 				if ( ImGui::MenuItem("Make Material From Directory") )
 					ImGuiFileDialog::Instance()->OpenDialog("MakeMaterial", " Choose a Directory", nullptr
 						, ImGui::GetCurrentShortPath("Resource\\Texture\\"), "", 1, nullptr);
+				if ( ImGui::MenuItem("Make Add Particle Texture From Directory") )
+					ImGuiFileDialog::Instance()->OpenDialog("MakeParticleTexture", " Choose a File", ".DDS{.dds,.DDS},"
+						, ImGui::GetCurrentShortPath("Resource\\Texture\\Particles"), "", 0, nullptr);
 				if ( ImGui::MenuItem("Make Geometry From File") )
 					ImGuiFileDialog::Instance()->OpenDialog("MakeGeometry", " Choose a File", ".FBX{.fbx,.FBX},"
 						, ImGui::GetCurrentShortPath("Resource\\Geometry\\"), "", 1, nullptr);
@@ -491,9 +494,7 @@ bool KG::Core::Scene::OnDrawGUI()
 			{
 				if ( ImGui::Button("Add Empty Object") )
 				{
-					auto* obj = this->CreateNewObject();
-					objectPresetFunc[0](*obj);
-					obj->tag = KG::Utill::HashString(objectPresetName[0]);
+					auto* obj = this->CallPreset(KG::Utill::HashString("EmptyObject"));
 					this->rootNode.GetTransform()->AddChild(obj->GetTransform());
 				}
 				if ( ImGui::Button("Add File Object") )
@@ -775,6 +776,7 @@ bool KG::Core::Scene::OnDrawGUI()
 		// close
 		ImGuiFileDialog::Instance()->Close();
 	}
+
 	if ( ImGuiFileDialog::Instance()->Display("MakeModel") )
 	{
 		// action if OK
@@ -807,9 +809,48 @@ bool KG::Core::Scene::OnDrawGUI()
 				}
 			}
 		}
-
 		// close
 		ImGuiFileDialog::Instance()->Close();
 	}
+
+	if ( ImGuiFileDialog::Instance()->Display("MakeParticleTexture") )
+	{
+		// action if OK
+		if ( ImGuiFileDialog::Instance()->IsOk() )
+		{
+
+			auto map = ImGuiFileDialog::Instance()->GetSelection();
+			for ( auto [fileName, getFilePathName] : map )
+			{
+				std::string filePathName = ImGui::ShortPathToLongPath(getFilePathName);
+				std::string ddsFilePath = filePathName.substr(filePathName.rfind("Resource"));
+				for ( auto& i : ddsFilePath )
+				{
+					if ( i == '\\' )
+					{
+						i = '/';
+					}
+				}
+
+				//Create Textures
+				{
+					tinyxml2::XMLDocument textureSet;
+					textureSet.LoadFile("Resource/TextureSet.xml");
+					textureSet.FirstChildElement("TextureSet")->InsertNewComment(ddsFilePath.c_str());
+
+					auto* texEle = textureSet.FirstChildElement("TextureSet")->InsertNewChildElement("Texture");
+					texEle->SetAttribute("id", fileName.c_str());
+					texEle->SetAttribute("fileDir", ddsFilePath.c_str());
+					texEle->SetAttribute("dimension", "Texture2D");
+					texEle->SetAttribute("format", "DDS");
+
+					textureSet.SaveFile("Resource/TextureSet.xml");
+				}
+			}
+		}
+		// close
+		ImGuiFileDialog::Instance()->Close();
+	}
+
 	return false;
 }

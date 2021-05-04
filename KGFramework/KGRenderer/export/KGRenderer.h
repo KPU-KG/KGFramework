@@ -67,6 +67,7 @@ namespace KG::Renderer
 		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() = 0;
 		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() = 0;
 		virtual KG::Component::AnimationControllerComponent* GetNewAnimationControllerComponent() = 0;
+		virtual KG::Component::ParticleEmitterComponent* GetNewParticleEmitterComponent() = 0;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials) = 0;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials) = 0;
 

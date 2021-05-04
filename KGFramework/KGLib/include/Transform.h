@@ -183,7 +183,7 @@ namespace KG::Component
 			this->Rotate(KG::Math::Quaternion::FromEuler(XMFLOAT3(x,y,z)));
 		}
 
-		void Update()
+		virtual void Update(float elapsedTime) override
 		{
 			this->GetGlobalWorldMatrix();
 		}

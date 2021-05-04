@@ -47,6 +47,7 @@ namespace KG::Component
 		TransformComponent* transform = nullptr;
 		KG::Utill::HashString particleMaterial;
 		UINT particleMaterialIndex = 0;
+		bool isParticleAdd = false;
 
 
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
@@ -55,35 +56,36 @@ namespace KG::Component
 		virtual void OnRender(ID3D12GraphicsCommandList* commadList) override;
 		virtual void OnPreRender() override;
 	public:
-		DirectX::XMFLOAT3 baseDeltaPosition;
-		DirectX::XMFLOAT3 rangeDeltaPosition;
+		DirectX::XMFLOAT3 baseDeltaPosition = DirectX::XMFLOAT3(0,0,0);
+		DirectX::XMFLOAT3 rangeDeltaPosition = DirectX::XMFLOAT3(0, 0, 0);
 
-		DirectX::XMFLOAT2 baseSize;
-		DirectX::XMFLOAT2 rangeSize;
+		DirectX::XMFLOAT2 baseSize = DirectX::XMFLOAT2(1, 1);
+		DirectX::XMFLOAT2 rangeSize = DirectX::XMFLOAT2(0, 0);
 
-		DirectX::XMFLOAT3 baseSpeed;
-		DirectX::XMFLOAT3 rangeSpeed;
+		DirectX::XMFLOAT3 baseSpeed = DirectX::XMFLOAT3(0, 0, 0);
+		DirectX::XMFLOAT3 rangeSpeed = DirectX::XMFLOAT3(0, 0, 0);
 
-		DirectX::XMFLOAT4 color;
+		DirectX::XMFLOAT4 color = DirectX::XMFLOAT4(1,1,1,1);
 
-		float baselifeTime;
-		float rangelifeTime;
+		float baselifeTime = 10;
+		float rangelifeTime = 0;
 
-		float baseRotation;
-		float rangeRotation;
+		float baseRotation = 0;
+		float rangeRotation = 0;
 
-		float baseRotationSpeed;
-		float rangeRotationSpeed;
+		float baseRotationSpeed = 0;
+		float rangeRotationSpeed = 0;
 
-		float emitPerSecond;
+		float emitPerSecond = 0;
 
-		float baseEmitCount;
-		float rangeEmitCount;
+		float baseEmitCount = 0;
+		float rangeEmitCount = 0;
 
 
 		void EmitParticle();
 		void EmitParticle(const ParticleDesc& desc, bool autoFillTime);
 		UINT GetParticleMaterialIndex(const KG::Utill::HashString& id) const;
+		bool GetParticleMaterialIsAdd(const KG::Utill::HashString& id) const;
 	private:
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3> baseDeltaPositionProp;
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3> rangeDeltaPositionProp;

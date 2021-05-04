@@ -44,6 +44,8 @@ namespace KG::Renderer
 		void SetVisibleSize(int count);
 		void OnVisibleAdd();
 		void OnVisibleRemove();
+		void SetObjectSize(int count);
+		void SetUpdateCount(int count);
 		int GetUpdateCount();
 		void ClearCount();
 
