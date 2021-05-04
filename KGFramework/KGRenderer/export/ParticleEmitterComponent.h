@@ -65,7 +65,7 @@ namespace KG::Component
 		DirectX::XMFLOAT3 baseSpeed = DirectX::XMFLOAT3(0, 0, 0);
 		DirectX::XMFLOAT3 rangeSpeed = DirectX::XMFLOAT3(0, 0, 0);
 
-		DirectX::XMFLOAT4 color = DirectX::XMFLOAT4(1,1,1,1);
+		KG::Utill::Color color = KG::Utill::Color();
 
 		float baselifeTime = 10;
 		float rangelifeTime = 0;
@@ -97,7 +97,7 @@ namespace KG::Component
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3> baseSpeedProp;
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3> rangeSpeedProp;
 
-		KG::Core::SerializableProperty<DirectX::XMFLOAT4> colorProp;
+		KG::Core::SerializableProperty<KG::Utill::Color> colorProp;
 
 		KG::Core::SerializableProperty<float> baselifeTimeProp;
 		KG::Core::SerializableProperty<float> rangelifeTimeProp;

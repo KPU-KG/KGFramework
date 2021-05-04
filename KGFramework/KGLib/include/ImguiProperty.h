@@ -4,6 +4,7 @@
 #include <string>
 #include "SerializableProperty.h"
 #include "hash.h"
+#include "KGColor.h"
 #include "ImguiHelper.h"
 namespace KG::Utill::ImguiProperty
 {
@@ -83,6 +84,16 @@ namespace KG::Utill::ImguiProperty
 	{
 		ImGui::PushItemWidth(elementalWidths[0]);
 		auto ret = ImGui::InputHashString(title.c_str(), &ref);
+		ImGui::PopItemWidth();
+		return ret;
+	}
+
+	template <>
+	inline bool DrawGUIProperty(std::string& title, KG::Utill::Color& ref)
+	{
+		ImGui::PushItemWidth(elementalWidths[0]);
+		float rgba[4] = { ref.r,ref.g,ref.b,ref.a };
+		auto ret = ImGui::ColorPicker4(title.c_str(), ref.m);
 		ImGui::PopItemWidth();
 		return ret;
 	}

@@ -242,6 +242,9 @@
     <ClInclude Include="include\Protocol.h">
       <Filter>헤더 파일\Network</Filter>
     </ClInclude>
+    <ClInclude Include="include\KGColor.h">
+      <Filter>헤더 파일\Utill</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="cpp.hint" />

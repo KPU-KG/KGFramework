@@ -5,6 +5,7 @@
 #include <tuple>
 #include "tinyxml2.h"
 #include "hash.h"
+#include "KGColor.h"
 namespace KG::Utill::XMLConverter
 {
 	template<typename Ty>
@@ -97,6 +98,28 @@ namespace KG::Utill::XMLConverter
 		currentElement->SetAttribute("y", ref.y);
 	}
 
+
+	// KG::Utill::Color
+	template<>
+	inline KG::Utill::Color XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
+	{
+		auto* currentElement = parentElement->FirstChildElement(title.c_str());
+		KG::Utill::Color result;
+		result.r = currentElement->FloatAttribute("r");
+		result.g = currentElement->FloatAttribute("g");
+		result.b = currentElement->FloatAttribute("b");
+		result.a = currentElement->FloatAttribute("a");
+		return result;
+	}
+	template<>
+	inline void XMLElementSave(tinyxml2::XMLElement* parentElement, const std::string& title, const KG::Utill::Color& ref)
+	{
+		auto* currentElement = parentElement->InsertNewChildElement(title.c_str());
+		currentElement->SetAttribute("r", ref.r);
+		currentElement->SetAttribute("g", ref.g);
+		currentElement->SetAttribute("b", ref.b);
+		currentElement->SetAttribute("a", ref.a);
+	}
 
 	// XMFLOAT3
 	template<>

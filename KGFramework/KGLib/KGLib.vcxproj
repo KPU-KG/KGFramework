@@ -251,6 +251,7 @@
     <ClInclude Include="include\InputManager.h" />
     <ClInclude Include="include\ISerializable.h" />
     <ClInclude Include="include\ISystem.h" />
+    <ClInclude Include="include\KGColor.h" />
     <ClInclude Include="include\LambdaComponent.h" />
     <ClInclude Include="include\MaterialMatch.h" />
     <ClInclude Include="include\MathHelper.h" />
