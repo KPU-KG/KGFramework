@@ -26,3 +26,13 @@ void KG::System::SPlayerComponentSystem::OnPostUpdate(float elapsedTime)
 void KG::System::SPlayerComponentSystem::OnPreRender()
 {
 }
+
+// void KG::System::EnemyGeneratorSystem::OnPostUpdate(float elapsedTime)
+// {
+// 
+// }
+// 
+// void KG::System::EnemyGeneratorSystem::OnPreRender()
+// {
+// 
+// }

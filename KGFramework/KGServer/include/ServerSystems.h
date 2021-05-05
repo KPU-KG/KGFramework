@@ -4,6 +4,8 @@
 #include "ServerEnemyControllerComponent.h"
 #include "ServerGameManagerComponent.h"
 #include "ServerPlayerControllerComponent.h"
+#include "EnemyGeneratorComponent.h"
+
 namespace KG::System
 {
 	template<typename Ty>
@@ -89,4 +91,18 @@ namespace KG::System
 		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;
 	};
+
+	// class EnemyGeneratorSystem : public SBaseComponentSystem<EnemyGeneratorComponent>
+	// {
+	// public:
+	// 	virtual void OnUpdate(float elapsedTime) override
+	// 	{
+	// 		for (auto& com : *this)
+	// 		{
+	// 			com.Update(elapsedTime);
+	// 		}
+	// 	}
+	// 	virtual void OnPostUpdate(float elapsedTime) override;
+	// 	virtual void OnPreRender() override;
+	// };
 }

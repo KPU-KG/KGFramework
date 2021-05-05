@@ -17,6 +17,7 @@
 #include "ServerGameManagerComponent.h"
 #include "ServerPlayerControllerComponent.h"
 #include "ServerEnemyControllerComponent.h"
+#include "EnemyGeneratorComponent.h"
 #include "ServerSystems.h"
 
 namespace KG::Server
@@ -46,6 +47,7 @@ namespace KG::Server
 		KG::System::SGameManagerComponentSystem sGameManagerSystem;
 		KG::System::SPlayerComponentSystem sPlayerSystem;
 		KG::System::SEnemyControllerComponentSystem sEnemyControllerSystem;
+		// KG::System::EnemyGeneratorSystem enemyGenerator;
 		KG::Physics::IPhysicsScene* physicsScene;
 
 		static void IOCPWorker(Server* server);
@@ -83,6 +85,7 @@ namespace KG::Server
 		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() override;
 		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() override;
 		virtual KG::Component::SEnemyControllerComponent* GetNewEnemyControllerComponent() override;
+		// virtual KG::Component::EnemyGeneratorComponent* GetNewEnemyGeneratorComponent() override;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 		virtual void DrawImGUI() override;
 		virtual bool isStarted() const override;

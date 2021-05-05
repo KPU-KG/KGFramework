@@ -40,6 +40,7 @@ namespace KG::Server
 		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() = 0;
 		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() = 0;
 		virtual KG::Component::SEnemyControllerComponent* GetNewEnemyControllerComponent() = 0;
+		// virtual KG::Component::EnemyGeneratorComponent* GetNewEnemyGeneratorComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 		virtual void DrawImGUI() = 0;
 		virtual bool isStarted() const = 0;

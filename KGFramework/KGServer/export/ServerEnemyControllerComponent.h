@@ -1,6 +1,4 @@
 #pragma once
-#include "IComponent.h"
-#include "ISystem.h"
 #include "ServerBaseComponent.h"
 #include "PhysicsComponent.h"
 #include "Debug.h"
@@ -96,6 +94,7 @@ namespace KG::Component
 		void SetIdleInterval(float interval);
 		void SetRotateInterval(float interval);
 		void SetWanderRange(float range);
+		void SetPosition(DirectX::XMFLOAT3 position);
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override
@@ -108,11 +107,17 @@ namespace KG::Component
 		virtual void OnDataSave(tinyxml2::XMLElement* objectElement) override;
 		void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback);
 		void HitBullet();
+		bool IsDead() const;
 
-		std::vector< KG::Core::SerializableProperty<DirectX::XMFLOAT3>> nodeProp;
+		// std::vector< KG::Core::SerializableProperty<DirectX::XMFLOAT3>> nodeProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3> nodeProp[MAX_NODE]{ 
+			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node0", node[0]), 
+			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node1", node[1]), 
+			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node2", node[2]), 
+			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node3", node[3]), 
+			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node4", node[4])
+		};
 	};
 
 	REGISTER_COMPONENT_ID(SEnemyControllerComponent);
-
-
 }

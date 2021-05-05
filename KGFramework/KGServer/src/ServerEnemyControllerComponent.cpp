@@ -15,7 +15,7 @@
 
 std::random_device rd;
 std::mt19937 gen(rd());
-std::uniform_real_distribution<float> goalRange(-1, 1);
+std::uniform_real_distribution<float> goalRange(-0.5, 0.5);
 
 void KG::Component::SEnemyControllerComponent::UpdateState()
 {
@@ -35,9 +35,9 @@ bool KG::Component::SEnemyControllerComponent::SetGoal()
 		goal = this->node[currentNode];
 	}
 	else {
-		goal.x = goalRange(gen) * range;
+		goal.x = goalRange(gen) * range + center.x;
 		// goal.y = goalRange(gen) * range;
-		goal.z = goalRange(gen) * range;
+		goal.z = goalRange(gen) * range + center.z;
 	}
 
 	direction = Math::Vector3::Subtract(goal, transform->GetPosition());
@@ -133,10 +133,7 @@ bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
 
 KG::Component::SEnemyControllerComponent::SEnemyControllerComponent()
 {
-	for (int i = 0; i < MAX_NODE; ++i) {
-		std::string name("Node" + std::to_string(i));
-		nodeProp.emplace_back(KG::Core::SerializableProperty<DirectX::XMFLOAT3>(name, node[i]));
-	}
+
 }
 
 void KG::Component::SEnemyControllerComponent::SetCenter(DirectX::XMFLOAT3 center) {
@@ -159,6 +156,11 @@ void KG::Component::SEnemyControllerComponent::SetWanderRange(float range) {
 	this->range = range;
 }
 
+void KG::Component::SEnemyControllerComponent::SetPosition(DirectX::XMFLOAT3 position)
+{
+	this->rigid->SetPosition(position);
+}
+
 void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	SBaseComponent::OnCreate(obj);
@@ -177,7 +179,6 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 	if (hp <= 0) {
 		if (!isDead && anim->GetCurrentPlayingAnimationIndex() != KG::Component::MechAnimIndex::dead) {
 			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::dead, ANIMSTATE_STOP, 0.1, 1);
-			// anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::dead, ANIMSTATE_STOP, 0.1);
 			isDead = true;
 		}
 
@@ -247,7 +248,7 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 			}
 			ImGui::TextDisabled("Action : %s", curAction);
 			ImGui::TextDisabled("Goal : (%f, %f, %f)", goal.x, goal.y, goal.z);
-			ImGui::TextDisabled("Goal : (%f, %f, %f)", direction.x, direction.y, direction.z);
+			ImGui::TextDisabled("Direction : (%f, %f, %f)", direction.x, direction.y, direction.z);
 			auto angle = transform->GetEulerDegree();
 			ImGui::TextDisabled("rotation : (%f, %f, %f)", angle.x, angle.y, angle.z);
 			ImGui::TextDisabled("this->angle : (%f, %f)", this->angle.x, this->angle.y);
@@ -334,6 +335,11 @@ void KG::Component::SEnemyControllerComponent::HitBullet() {
 	this->hp -= 1;
 }
 
+bool KG::Component::SEnemyControllerComponent::IsDead() const
+{
+	return isDead;
+}
+
 inline void KG::Component::SEnemyControllerComponent::ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime, int repeat) {
 	anim->ChangeAnimation(animId, animIndex, nextState, blendingTime, repeat);
 	KG::Packet::SC_CHANGE_ANIMATION pa = {};
@@ -348,58 +354,6 @@ inline void KG::Component::SEnemyControllerComponent::ChangeAnimation(const KG::
 
 bool KG::Component::SEnemyControllerComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender)
 {
-	/*
-	switch (type)
-	{
-	case KG::Packet::PacketType::None:
-	case KG::Packet::PacketType::PacketHeader:
-	case KG::Packet::PacketType::SC_LOGIN_OK:
-	case KG::Packet::PacketType::SC_PLAYER_INIT:
-	case KG::Packet::PacketType::SC_ADD_OBJECT:
-
-	case KG::Packet::PacketType::SC_REMOVE_OBJECT:
-	case KG::Packet::PacketType::SC_FIRE:
-	case KG::Packet::PacketType::SC_ADD_PLAYER:
-	case KG::Packet::PacketType::SC_PLAYER_SYNC:
-		std::cout << "Error Packet Received\n";
-		return false;
-	case KG::Packet::PacketType::CS_REQ_LOGIN:
-	{
-		// auto id = this->server->GetNewObjectId();
-		// 
-		// //플레이어 추가!
-		// this->server->LockWorld();
-		// this->server->isConnect = true;
-		// auto* playerComp = static_cast<KG::Component::SBaseComponent*>(this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id));
-		// playerComp->SetNetObjectId(id);
-		// auto* trans = playerComp->GetGameObject()->GetTransform();
-		// trans->SetPosition(id, 0, id);
-		// this->GetGameObject()->GetTransform()->AddChild(trans);
-		// this->server->UnlockWorld();
-		// //this->server->Addplayer(trans)
-		// 
-		// KG::Packet::SC_PLAYER_INIT initPacket = {};
-		// initPacket.playerObjectId = id;
-		// initPacket.position = KG::Packet::RawFloat3(id, 0, id);
-		// initPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
-		// this->SendPacket(sender, &initPacket);
-		// 
-		// KG::Packet::SC_ADD_PLAYER addPacket = {};
-		// addPacket.playerObjectId = id;
-		// addPacket.position = KG::Packet::RawFloat3(id, 0, id);
-		// addPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
-		// this->BroadcastPacket(&addPacket, sender);
-	}
-	return true;
-	case KG::Packet::PacketType::CS_INPUT: {
-		// this->server->inputs
-		// 해당 인풋을 보낸 클라이언트의 인풋 정보 변경
-	}
-										 return true;
-	case KG::Packet::PacketType::CS_FIRE:
-		std::cout << "Error Packet Received\n";
-		return false;
-	}*/
 	return false;
 }
 
