@@ -49,6 +49,7 @@ namespace KG::Component
 
 		//Scale
 		XMFLOAT3 GetScale() const;
+		void XM_CALLCONV SetScale(const FXMVECTOR& scale);
 		void SetScale(const XMFLOAT3& scale);
 		void SetScale(float x, float y, float z);
 
@@ -77,6 +78,7 @@ namespace KG::Component
 		XMFLOAT3 GetWorldLook() const;
 		XMFLOAT3 GetWorldUp() const;
 		XMFLOAT3 GetWorldRight() const;
+		virtual void OnChangeParent() override;
 	private:
 		KG::Core::SerializableProperty<XMFLOAT3> positionProp;
 		DirectX::XMFLOAT3 eulerRotation;
