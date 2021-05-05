@@ -24,13 +24,13 @@ void KG::Component::SEnemyControllerComponent::UpdateState()
 
 bool KG::Component::SEnemyControllerComponent::SetGoal()
 {
-	if (this->node.size() > 0) {
+	if (this->nodeCount > 0) {
 		if (randomCircuit) {
-			std::uniform_int_distribution<int> randomIndex(1, this->node.size());
+			std::uniform_int_distribution<int> randomIndex(1, this->nodeCount);
 			currentNode = randomIndex(gen) - 1;
 		}
 		else {
-			currentNode = ++currentNode% this->node.size();
+			currentNode = ++currentNode% this->nodeCount;
 		}
 		goal = this->node[currentNode];
 	}
@@ -133,7 +133,10 @@ bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
 
 KG::Component::SEnemyControllerComponent::SEnemyControllerComponent()
 {
-
+	for (int i = 0; i < MAX_NODE; ++i) {
+		std::string name("Node" + std::to_string(i));
+		nodeProp.emplace_back(KG::Core::SerializableProperty<DirectX::XMFLOAT3>(name, node[i]));
+	}
 }
 
 void KG::Component::SEnemyControllerComponent::SetCenter(DirectX::XMFLOAT3 center) {
@@ -260,19 +263,21 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 		std::string cs("random circuit");
 		KG::Utill::ImguiProperty::DrawGUIProperty<bool>(cs, this->randomCircuit);
 
-		ImGui::TextDisabled("Circuit Node [%d]", this->node.size());
+		ImGui::TextDisabled("Circuit Node [%d]", this->nodeCount);
 
-		for (int i = 0; i < node.size(); ++i) {
-			std::string ns("node [" + std::to_string(i) + "]");
-			KG::Utill::ImguiProperty::DrawGUIProperty<DirectX::XMFLOAT3>(ns, this->node[i]);
+		auto view = this->gameObject->GetScene()->GetMainCameraView();
+		auto proj = this->gameObject->GetScene()->GetMainCameraProj();
 
-			auto view = this->gameObject->GetScene()->GetMainCameraView();
-			auto proj = this->gameObject->GetScene()->GetMainCameraProj();
-			XMFLOAT4X4 mat;
+		view = Math::Matrix4x4::Transpose(view);
+		proj = Math::Matrix4x4::Transpose(proj);
+
+		XMFLOAT4X4 mat;
+
+		for (int i = 0; i < nodeCount; ++i) {
+			nodeProp[i].OnDrawGUI();
 			DirectX::XMStoreFloat4x4(&mat, XMMatrixTranslation(this->node[i].x, this->node[i].y, this->node[i].z));
 
-			view = Math::Matrix4x4::Transpose(view);
-			proj = Math::Matrix4x4::Transpose(proj);
+
 
 			ImGuiIO& io = ImGui::GetIO();
 			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
@@ -282,24 +287,43 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 				reinterpret_cast<const float*>(proj.m),
 				reinterpret_cast<const float*>(mat.m),
 				1);
-
-			if (ImGui::Button("Delete Node"))
+			std::string bn("Delete Node " + std::to_string(i));
+			if (ImGui::Button(bn.c_str()))
 			{
-				this->node.erase(this->node.begin() + i);
+				if (i != MAX_NODE - 1) {
+					memcpy(&this->node[i], &this->node[i + 1], sizeof(DirectX::XMFLOAT3) * (MAX_NODE - i - 1));
+				}
 				if (i < currentNode) {
 					currentNode--;
 				}
+				nodeCount--;
 				this->action = EnemyAction::eSETGOAL;
-				break;
 			}
 		}
-		if (ImGui::Button("Add Node"))
-		{
-			this->node.emplace_back();
+
+		if (nodeCount < MAX_NODE) {
+			if (ImGui::Button("Add Node"))
+			{
+				node[nodeCount++] = { 0,0,0 };
+			}
 		}
 
 	}
 	return false;
+}
+
+void KG::Component::SEnemyControllerComponent::OnDataLoad(tinyxml2::XMLElement* objectElement)
+{
+	for (int i = 0; i < MAX_NODE; ++i)
+		nodeProp[i].OnDataLoad(objectElement);
+}
+
+void KG::Component::SEnemyControllerComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
+{
+	auto* componentElement = parentElement->InsertNewChildElement("Component");
+	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::SEnemyControllerComponent);
+	for (int i = 0; i < MAX_NODE; ++i)
+		nodeProp[i].OnDataSave(parentElement);
 }
 
 void KG::Component::SEnemyControllerComponent::SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback) {

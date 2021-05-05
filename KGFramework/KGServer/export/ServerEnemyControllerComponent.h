@@ -6,6 +6,8 @@
 #include "Debug.h"
 #include <vector>
 
+constexpr const int MAX_NODE = 5;
+
 namespace KG::Component
 {
 	// 1. 주어진 위치에서 범위 설정 - 이거 GUI 필요할까?
@@ -75,7 +77,9 @@ namespace KG::Component
 
 		DirectX::XMFLOAT2							angle;
 
-		std::vector<DirectX::XMFLOAT3>				node;
+		DirectX::XMFLOAT3							node[MAX_NODE]{ DirectX::XMFLOAT3(0,0,0), };
+		// std::vector<DirectX::XMFLOAT3>				node;
+		int											nodeCount = 0;
 		bool										randomCircuit;
 		int											currentNode = 0;
 
@@ -100,8 +104,12 @@ namespace KG::Component
 		}
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender) override;
 		virtual bool OnDrawGUI();
+		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;
+		virtual void OnDataSave(tinyxml2::XMLElement* objectElement) override;
 		void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback);
 		void HitBullet();
+
+		std::vector< KG::Core::SerializableProperty<DirectX::XMFLOAT3>> nodeProp;
 	};
 
 	REGISTER_COMPONENT_ID(SEnemyControllerComponent);
