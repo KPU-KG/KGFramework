@@ -186,10 +186,10 @@ void KG::Component::LightComponent::SetShadowCascadeMatrix(const std::array<Dire
 
 void KG::Component::LightComponent::OnPreRender()
 {
+	int updateCount = this->renderJob->GetUpdateCount();
 	if ( this->isDirty || this->lightType == LightType::SpotLight )
 	{
 		this->isDirty = false;
-		int updateCount = this->renderJob->GetUpdateCount();
 		this->light.Position = this->transform->GetWorldPosition();
 		std::memcpy(&this->renderJob->objectBuffer->mappedData[updateCount].light, &this->light, sizeof(this->light));
 		if ( this->renderJob->shadowLightBuffer != nullptr )

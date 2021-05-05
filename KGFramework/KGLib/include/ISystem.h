@@ -106,6 +106,8 @@ namespace KG::System
 			}
 			else
 			{
+				memset(&*result, 0, sizeof(Ty));
+				new(&*result) Ty();
 				return &*result;
 			}
 		}

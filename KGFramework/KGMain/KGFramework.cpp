@@ -647,8 +647,7 @@ void KG::GameFramework::UIRender()
 	{
 		if ( ImGui::Button("Reset Scene") )
 		{
-			this->scene.release();
-			this->scene = std::make_unique<KG::Core::Scene>();
+			this->scene->Clear();
 		}
 	}
 	ImGui::End();
@@ -723,9 +722,11 @@ void KG::GameFramework::OnProcess()
 	this->ServerUpdate(this->timer.GetTimeElapsed());
 	if ( this->scene->isStartGame )
 	{
+		this->scene->Update(this->timer.GetTimeElapsed());
 		this->renderer->Update(this->timer.GetTimeElapsed());
 	}
 	this->physics->Advance(this->timer.GetTimeElapsed());
+	this->scene->PostUpdate(this->timer.GetTimeElapsed());
 	this->renderer->SetGameTime(this->timer.GetGameTime());
 	this->renderer->Render();
 

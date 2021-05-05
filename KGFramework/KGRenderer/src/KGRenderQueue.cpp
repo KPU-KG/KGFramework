@@ -220,7 +220,7 @@ void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelT
 		cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::LightData, shadowAddr );
 	}
 
-	this->geometry->Render( cmdList, this->visibleSize );
+	this->geometry->Render( cmdList, this->updateCount);
 }
 
 

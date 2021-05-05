@@ -58,6 +58,7 @@ void KG::Core::GameObject::InternalDestroy()
 		child->InternalDestroy();
 	if ( sib )
 		sib->InternalDestroy();
+	this->ownerScene->AddDeleteQueue(this);
 }
 
 KG::Core::GameObject::GameObject()
@@ -73,6 +74,12 @@ bool KG::Core::GameObject::IsDestroy() const
 void KG::Core::GameObject::Destroy()
 {
 	this->isDestroy = true;
+	this->DestroyAllChild();
+	this->ownerScene->AddDeleteQueue(this);
+}
+
+void KG::Core::GameObject::DestroyAllChild()
+{
 	auto* child = this->GetChild();
 	if ( child )
 		child->InternalDestroy();
@@ -380,17 +387,26 @@ bool KG::Core::GameObject::OnDrawGUI()
 
 		ImGui::BulletText("Using Components : %d", this->components.container.size());
 		ImGui::Indent();
+		static std::queue<KG::Utill::HashString> deletePool;
 		for ( auto& i : this->components.container )
 		{
 			ImGui::PushID(id++);
 			i.second->DrawGUI(this->currentGUIContext);
 			{
-				ImGui::SmallButton("Delete");
+				if ( ImGui::SmallButton("Delete") )
+				{
+					deletePool.push(i.first);
+				}
 			}
 			ImGui::PopID();
 			ImGui::Separator();
 		}
 		ImGui::Unindent();
+		while ( !deletePool.empty() )
+		{
+			this->DeleteComponent(deletePool.front());
+			deletePool.pop();
+		}
 	}
 	return false;
 }
