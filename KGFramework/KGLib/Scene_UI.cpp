@@ -107,6 +107,8 @@ bool KG::Core::Scene::OnDrawGUI()
 				if ( ImGui::MenuItem("Load") )
 					ImGuiFileDialog::Instance()->OpenDialog("ChooseSceneOpenKey", " Choose a File", ".xml",
 						ImGui::GetCurrentShortPath("Resource\\Scenes\\"), "SceneData", 1, nullptr, ImGuiFileDialogFlags_None);
+				if ( ImGui::MenuItem("Exit") )
+					exit(0);
 				ImGui::EndMenu();
 			}
 			if ( ImGui::BeginMenu("Resource") )

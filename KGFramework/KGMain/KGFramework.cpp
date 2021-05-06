@@ -64,8 +64,8 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	renderDesc.hWnd = this->engineDesc.hWnd;
 
 	KG::Renderer::RendererSetting renderSetting;
-	renderSetting.clientWidth = this->setting.clientWidth;
-	renderSetting.clientHeight = this->setting.clientHeight;
+	renderSetting.clientWidth = this->setting.GetGameResolutionWidth();
+	renderSetting.clientHeight = this->setting.GetGameResolutionHeigth();
 	DebugNormalMessage("RECT : " << renderSetting.clientWidth << " , " << renderSetting.clientHeight);
 	renderSetting.isVsync = this->setting.isVsync;
 
@@ -164,8 +164,8 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.useCubeRender = false;
 			renderTextureDesc.useDepthStencilBuffer = true;
 			renderTextureDesc.useRenderTarget = true;
-			renderTextureDesc.width = this->setting.clientWidth;
-			renderTextureDesc.height = this->setting.clientHeight;
+			renderTextureDesc.width = this->setting.GetGameResolutionWidth();
+			renderTextureDesc.height = this->setting.GetGameResolutionHeigth();
 			cam->renderTextureDesc = renderTextureDesc;
 			auto* sc = this->system->sceneCameraSystem.GetNewComponent();
 			obj.tag = KG::Utill::HashString("SceneCameraObject");
@@ -483,8 +483,8 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.useCubeRender = false;
 			renderTextureDesc.useDepthStencilBuffer = true;
 			renderTextureDesc.useRenderTarget = true;
-			renderTextureDesc.width = this->setting.clientWidth;
-			renderTextureDesc.height = this->setting.clientHeight;
+			renderTextureDesc.width = this->setting.GetGameResolutionWidth();
+			renderTextureDesc.height = this->setting.GetGameResolutionHeigth();
 			cam->renderTextureDesc = renderTextureDesc;
 			cam->SetFovY(90.0f);
 

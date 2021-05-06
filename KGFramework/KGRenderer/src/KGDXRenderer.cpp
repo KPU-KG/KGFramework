@@ -677,10 +677,10 @@ void KG::Renderer::KGDXRenderer::CreateD3DDevice()
 
 void KG::Renderer::KGDXRenderer::CreateSwapChain()
 {
-	RECT clientRect;
-	::GetClientRect(this->desc.hWnd, &clientRect);
-	this->setting.clientWidth = clientRect.right - clientRect.left;
-	this->setting.clientHeight = clientRect.bottom - clientRect.top;
+	//RECT clientRect;
+	//::GetClientRect(this->desc.hWnd, &clientRect);
+	//this->setting.clientWidth = clientRect.right - clientRect.left;
+	//this->setting.clientHeight = clientRect.bottom - clientRect.top;
 
 	DXGI_SWAP_CHAIN_DESC1 dxgiSwapChainDesc;
 	::ZeroMemory(&dxgiSwapChainDesc, sizeof(decltype(dxgiSwapChainDesc)));

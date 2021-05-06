@@ -32,6 +32,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(lpCmdLine);
 
     // TODO: 여기에 코드를 입력합니다.
+	SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -110,14 +111,25 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
+
    KG::EngineDesc engineDesc;
    KG::Setting setting = KG::Setting::Load();
-
    DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_BORDER;
    RECT rc = { 0, 0, setting.clientWidth , setting.clientHeight };
    AdjustWindowRect(&rc, dwStyle, FALSE);
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
+   HWND hWnd = 0;
+   if ( setting.fullScreen )
+   {
+	   hWnd = CreateWindowExW(WS_EX_APPWINDOW, szWindowClass, szTitle, 
+		   WS_POPUP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), nullptr, nullptr, hInstance, nullptr);
+	   setting.fullScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+	   setting.fullScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+   }
+   else 
+   {
+	   hWnd = CreateWindowW(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
+   }
 
    if (!hWnd)
    {
