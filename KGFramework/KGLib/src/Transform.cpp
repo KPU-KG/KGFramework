@@ -336,20 +336,20 @@ XMFLOAT3 KG::Component::TransformComponent::GetWorldRight() const
 
 void KG::Component::TransformComponent::OnChangeParent()
 {
-	//계산 되기 전
-	auto prevGlobalMatrix = this->globalWorldMatrix;
-	auto newParentGlobalMatrix = this->GetParent()->GetGlobalWorldMatrix();
-	auto inverseNpg = KG::Math::Matrix4x4::Inverse(newParentGlobalMatrix);
-	auto newLocalMatrix = KG::Math::Matrix4x4::Multiply(inverseNpg, prevGlobalMatrix);
-	XMVECTOR s{};
-	XMVECTOR r{};
-	XMVECTOR t{};
-	KG::Math::Matrix4x4::XMMatrixDecompose(&s, &r, &t, XMLoadFloat4x4(&newLocalMatrix));
-	this->SetScale(s);
-	this->SetRotation(r);
-	this->SetPosition(t);
-	// pG = npg * x;
-	this->TurnOnLocalDirtyFlag();
+	////계산 되기 전
+	//auto prevGlobalMatrix = this->globalWorldMatrix;
+	//auto newParentGlobalMatrix = this->GetParent()->GetGlobalWorldMatrix();
+	//auto inverseNpg = KG::Math::Matrix4x4::Inverse(newParentGlobalMatrix);
+	//auto newLocalMatrix = KG::Math::Matrix4x4::Multiply(inverseNpg, prevGlobalMatrix);
+	//XMVECTOR s{};
+	//XMVECTOR r{};
+	//XMVECTOR t{};
+	//KG::Math::Matrix4x4::XMMatrixDecompose(&s, &r, &t, XMLoadFloat4x4(&newLocalMatrix));
+	//this->SetScale(s);
+	//this->SetRotation(r);
+	//this->SetPosition(t);
+	//// pG = npg * x;
+	//this->TurnOnLocalDirtyFlag();
 }
 
 void KG::Component::TransformComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
