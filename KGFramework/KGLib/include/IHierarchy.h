@@ -35,6 +35,7 @@ namespace KG::Core
 
 		void SetParent(BaseHierarchy* parent)
 		{
+            if ( this->parent == parent ) return;
 			this->parent = parent;
 			OnChangeParent();
 		}

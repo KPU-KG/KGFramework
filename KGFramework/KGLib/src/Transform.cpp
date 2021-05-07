@@ -19,14 +19,13 @@ KG::Component::TransformComponent::TransformComponent()
 	rotationEulerProp("Rotation", this->eulerRotation),
 	rotationQautProp("Rotation_Q", this->rotation),
 	scaleProp("Scale", this->scale),
-	worldPositionProp("WPosition", this->worldPosition)
+    worldPositionProp("WPosition", this->worldPosition)
 {
-
 }
 
 XMFLOAT3 KG::Component::TransformComponent::GetPosition() const
 {
-	return this->position;
+    return this->position;
 }
 
 XMFLOAT3 KG::Component::TransformComponent::GetWorldPosition() const
@@ -336,20 +335,21 @@ XMFLOAT3 KG::Component::TransformComponent::GetWorldRight() const
 
 void KG::Component::TransformComponent::OnChangeParent()
 {
-	////계산 되기 전
-	//auto prevGlobalMatrix = this->globalWorldMatrix;
-	//auto newParentGlobalMatrix = this->GetParent()->GetGlobalWorldMatrix();
-	//auto inverseNpg = KG::Math::Matrix4x4::Inverse(newParentGlobalMatrix);
-	//auto newLocalMatrix = KG::Math::Matrix4x4::Multiply(inverseNpg, prevGlobalMatrix);
-	//XMVECTOR s{};
-	//XMVECTOR r{};
-	//XMVECTOR t{};
-	//KG::Math::Matrix4x4::XMMatrixDecompose(&s, &r, &t, XMLoadFloat4x4(&newLocalMatrix));
-	//this->SetScale(s);
-	//this->SetRotation(r);
-	//this->SetPosition(t);
-	//// pG = npg * x;
-	//this->TurnOnLocalDirtyFlag();
+	//계산 되기 전
+	auto prevGlobalMatrix = this->globalWorldMatrix;
+	auto newParentGlobalMatrix = this->GetParent()->GetGlobalWorldMatrix();
+	auto inverseNpg = KG::Math::Matrix4x4::Inverse(newParentGlobalMatrix);
+	auto newLocalMatrix = KG::Math::Matrix4x4::Multiply(inverseNpg, prevGlobalMatrix);
+	XMVECTOR s{};
+	XMVECTOR r{};
+	XMVECTOR t{};
+	KG::Math::Matrix4x4::XMMatrixDecompose(&s, &r, &t, XMLoadFloat4x4(&newLocalMatrix));
+    this->SetScale(s);
+	this->SetRotation(r);
+	this->SetPosition(t);
+
+	// pG = npg * x;											
+	this->TurnOnLocalDirtyFlag();
 }
 
 void KG::Component::TransformComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
@@ -357,6 +357,7 @@ void KG::Component::TransformComponent::OnDataLoad(tinyxml2::XMLElement* compone
 	this->positionProp.OnDataLoad(componentElement);
 	this->rotationQautProp.OnDataLoad(componentElement);
 	this->scaleProp.OnDataLoad(componentElement);
+    this->TurnOnLocalDirtyFlag();
 }
 
 void KG::Component::TransformComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
