@@ -124,6 +124,11 @@ namespace KG::Renderer
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials) override;
 
 
+        auto GetSetting() const
+        {
+            return this->setting;
+        }
+
 		auto GetD3DDevice() const
 		{
 			return this->d3dDevice;

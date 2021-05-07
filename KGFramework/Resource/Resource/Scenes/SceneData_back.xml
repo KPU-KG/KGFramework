@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene>
     <SkyBoxId hash_id="3325274414" srcString="SkyDay"/>
-    <GameObject instanceId="4294967295">
+    <GameObject instanceId="0">
         <Tag hash_id="2696201701" srcString="rootNode"/>
         <Component name="TransformComponent" hash_id="3882513520">
             <Position x="0" y="0" z="0"/>
@@ -39,7 +39,7 @@
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
                 <Position x="30.513678" y="125.59692" z="148.32608"/>
-                <Rotation_Q x="-0.057804395" y="0.93476021" z="-0.17324302" w="-0.31185931"/>
+                <Rotation_Q x="-0.088356696" y="0.90526742" z="-0.35567778" w="-0.22486818"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="CameraComponent" hash_id="2216269385">
@@ -52,6 +52,7 @@
                     <textureWidth value="1600"/>
                     <textureHeight value="900"/>
                     <arrayCount value="1"/>
+                    <useScreenSize value="true"/>
                     <useCubeRender value="false"/>
                     <useGSCubeRender value="false"/>
                     <useGSArrayRender value="false"/>

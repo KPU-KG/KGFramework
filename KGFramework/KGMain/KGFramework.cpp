@@ -166,6 +166,7 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.useRenderTarget = true;
 			renderTextureDesc.width = this->setting.GetGameResolutionWidth();
 			renderTextureDesc.height = this->setting.GetGameResolutionHeigth();
+            renderTextureDesc.useScreenSize = true;
 			cam->renderTextureDesc = renderTextureDesc;
 			auto* sc = this->system->sceneCameraSystem.GetNewComponent();
 			obj.tag = KG::Utill::HashString("SceneCameraObject");
@@ -483,6 +484,7 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.useCubeRender = false;
 			renderTextureDesc.useDepthStencilBuffer = true;
 			renderTextureDesc.useRenderTarget = true;
+            renderTextureDesc.useScreenSize = true;
 			renderTextureDesc.width = this->setting.GetGameResolutionWidth();
 			renderTextureDesc.height = this->setting.GetGameResolutionHeigth();
 			cam->renderTextureDesc = renderTextureDesc;

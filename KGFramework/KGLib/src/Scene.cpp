@@ -212,7 +212,7 @@ void KG::Core::Scene::OnDataLoad(tinyxml2::XMLElement* sceneElement)
 
 		if ( nameStr == "GameObject" )
 		{
-			this->rootNode.OnDataLoad(objectElement);
+			this->rootNode->OnDataLoad(objectElement);
 		}
 		else if ( nameStr == "Prefab" )
 		{
@@ -227,7 +227,7 @@ void KG::Core::Scene::OnDataSave(tinyxml2::XMLElement* sceneElement)
 {
 	UINT count = 0;
 	this->skyBoxIdProp.OnDataSave(sceneElement);
-	this->rootNode.OnDataSave(sceneElement);
+	this->rootNode->OnDataSave(sceneElement);
 	//for ( UINT32 i : this->frontActivePool )
 	//{
 	//	if ( i != NULL_OBJECT )
@@ -335,23 +335,25 @@ KG::Component::IComponent* KG::Core::Scene::CallNetworkCreator(const KG::Utill::
 
 void KG::Core::Scene::AddSceneComponent(const KG::Utill::HashString& hashid, KG::Component::IComponent* component)
 {
-	this->rootNode.AddComponentWithID(hashid, component);
+	this->rootNode->AddComponentWithID(hashid, component);
 }
 
 void KG::Core::Scene::Clear()
 {
-	this->rootNode.DestroyAllChild();
+	this->rootNode->DestroyAllChild();
 	this->InternalDeleteQueuing();
 	this->mainCamera = nullptr;
-	new(&this->rootNode) GameObject();
+    this->AddDeleteQueue(this->rootNode);
+    this->InternalDeleteQueuing();
+    this->rootNode = nullptr;
 	this->InitializeRoot();
 }
 
 void KG::Core::Scene::InitializeRoot()
 {
-	this->objectPresetFunc[0](this->rootNode);
-	this->rootNode.tag = KG::Utill::HashString("rootNode");
-	this->rootNode.SetOwnerScene(this);
+    this->rootNode = this->CallPreset("EmptyObject"_id);
+	this->rootNode->tag = KG::Utill::HashString("rootNode");
+	this->rootNode->SetOwnerScene(this);
 }
 
 void KG::Core::Scene::InternalDeleteQueuing()

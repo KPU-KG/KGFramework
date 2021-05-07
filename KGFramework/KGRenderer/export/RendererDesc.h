@@ -18,6 +18,7 @@ namespace KG::Renderer
 		UINT width = 1920;
 		UINT height = 1080;
 		UINT length = 1;
+        bool useScreenSize = false;
 		bool useCubeRender = false;
 		bool useGSCubeRender = false;
 		bool useGSArrayRender = false;
@@ -55,8 +56,9 @@ namespace KG::Renderer
 		KG::Core::SerializableProperty<UINT> textureWidth;
 		KG::Core::SerializableProperty<UINT> textureHeight;
 		KG::Core::SerializableProperty<UINT> arrayCount;
-		KG::Core::SerializableProperty<bool> useCubeRender;
-		KG::Core::SerializableProperty<bool> useGSCubeRender;
+        KG::Core::SerializableProperty<bool> useScreenSize;
+        KG::Core::SerializableProperty<bool> useCubeRender;
+        KG::Core::SerializableProperty<bool> useGSCubeRender;
 		KG::Core::SerializableProperty<bool> useGSArrayRender;
 		KG::Core::SerializableProperty<bool> useRenderTarget;
 		KG::Core::SerializableProperty<bool> useDeferredRender;

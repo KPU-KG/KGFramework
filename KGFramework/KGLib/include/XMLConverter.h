@@ -26,7 +26,8 @@ namespace KG::Utill::XMLConverter
 	inline UINT XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
 	{
 		auto* currentElement = parentElement->FirstChildElement(title.c_str());
-		return currentElement->IntAttribute("value");
+        if ( !currentElement ) return 0;
+        return currentElement->IntAttribute("value");
 	}
 	template<>
 	inline void XMLElementSave(tinyxml2::XMLElement* parentElement, const std::string& title, const UINT& ref)
@@ -41,7 +42,8 @@ namespace KG::Utill::XMLConverter
 	inline int XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
 	{
 		auto* currentElement = parentElement->FirstChildElement(title.c_str());
-		return currentElement->IntAttribute("value");
+        if ( !currentElement ) return 0;
+        return currentElement->IntAttribute("value");
 	}
 	template<>
 	inline void XMLElementSave(tinyxml2::XMLElement* parentElement, const std::string& title, const int& ref)
@@ -56,7 +58,8 @@ namespace KG::Utill::XMLConverter
 	inline float XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
 	{
 		auto* currentElement = parentElement->FirstChildElement(title.c_str());
-		return currentElement->FloatAttribute("value");
+        if ( !currentElement ) return 0;
+        return currentElement->FloatAttribute("value");
 	}
 	template<>
 	inline void XMLElementSave(tinyxml2::XMLElement* parentElement, const std::string& title, const float& ref)
@@ -70,7 +73,8 @@ namespace KG::Utill::XMLConverter
 	inline bool XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
 	{
 		auto* currentElement = parentElement->FirstChildElement(title.c_str());
-		return currentElement->BoolAttribute("value");
+        if ( !currentElement ) return 0;
+        return currentElement->BoolAttribute("value");
 	}
 	template<>
 	inline void XMLElementSave(tinyxml2::XMLElement* parentElement, const std::string& title, const bool& ref)
@@ -85,7 +89,8 @@ namespace KG::Utill::XMLConverter
 	inline DirectX::XMFLOAT2 XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
 	{
 		auto* currentElement = parentElement->FirstChildElement(title.c_str());
-		DirectX::XMFLOAT2 result;
+        if ( !currentElement ) return DirectX::XMFLOAT2(0, 0);
+        DirectX::XMFLOAT2 result;
 		result.x = currentElement->FloatAttribute("x");
 		result.y = currentElement->FloatAttribute("y");
 		return result;
@@ -104,7 +109,8 @@ namespace KG::Utill::XMLConverter
 	inline KG::Utill::Color XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
 	{
 		auto* currentElement = parentElement->FirstChildElement(title.c_str());
-		KG::Utill::Color result;
+        if ( !currentElement ) return KG::Utill::Color();
+        KG::Utill::Color result;
 		result.r = currentElement->FloatAttribute("r");
 		result.g = currentElement->FloatAttribute("g");
 		result.b = currentElement->FloatAttribute("b");
@@ -126,7 +132,8 @@ namespace KG::Utill::XMLConverter
 	inline DirectX::XMFLOAT3 XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
 	{
 		auto* currentElement = parentElement->FirstChildElement(title.c_str());
-		DirectX::XMFLOAT3 result;
+        if ( !currentElement ) return DirectX::XMFLOAT3(0, 0, 0);
+        DirectX::XMFLOAT3 result;
 		result.x = currentElement->FloatAttribute("x");
 		result.y = currentElement->FloatAttribute("y");
 		result.z = currentElement->FloatAttribute("z");
@@ -146,7 +153,8 @@ namespace KG::Utill::XMLConverter
 	inline DirectX::XMFLOAT4 XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
 	{
 		auto* currentElement = parentElement->FirstChildElement(title.c_str());
-		DirectX::XMFLOAT4 result;
+        if ( !currentElement ) return DirectX::XMFLOAT4(0, 0, 0, 0);
+        DirectX::XMFLOAT4 result;
 		result.x = currentElement->FloatAttribute("x");
 		result.y = currentElement->FloatAttribute("y");
 		result.z = currentElement->FloatAttribute("z");
@@ -169,7 +177,8 @@ namespace KG::Utill::XMLConverter
 	inline KG::Utill::HashString XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
 	{
 		auto* currentElement = parentElement->FirstChildElement(title.c_str());
-		KG::Utill::HashString result;
+        if ( !currentElement ) return KG::Utill::HashString();
+        KG::Utill::HashString result;
 		result = KG::Utill::HashString(currentElement->Attribute("srcString"));
 		auto value = currentElement->UnsignedAttribute("hash_id");
 		return  result.value != value ? KG::Utill::HashString(value) : result;

@@ -40,7 +40,7 @@ namespace KG::Core
 		//오브젝트 풀
 		ObjectPool objectPool;
 		ActivePool activePool; //0번부터 시작하는 런타임 생성 오브젝트
-		KG::Core::GameObject rootNode;
+		KG::Core::GameObject* rootNode;
 
 		SceneCameraCreator sceneCameraCreator;
 		SkyBoxCreator skyBoxCreator;

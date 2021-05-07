@@ -142,14 +142,14 @@ bool KG::Core::Scene::OnDrawGUI()
 				{
 					auto* obj = this->CreateNewObject();
 					sceneCameraCreator(*obj);
-					this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+					this->rootNode->GetTransform()->AddChild(obj->GetTransform());
 				}
 				if ( ImGui::Button("Add SkyBox Object") )
 				{
 					auto* obj = this->CreateNewObject();
 					skyBoxSetter(this->skyBoxId);
 					skyBoxCreator(*obj, this->skyBoxId);
-					this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+					this->rootNode->GetTransform()->AddChild(obj->GetTransform());
 				}
 				ImGui::SetNextItemWidth(160);
 				ImGui::SameLine();
@@ -161,7 +161,7 @@ bool KG::Core::Scene::OnDrawGUI()
 				if ( ImGui::Button("Add Empty Object") )
 				{
 					auto* obj = this->CallPreset(KG::Utill::HashString("EmptyObject"));
-					this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+					this->rootNode->GetTransform()->AddChild(obj->GetTransform());
 				}
 				if ( ImGui::Button("Add File Object") )
 				{
@@ -187,7 +187,7 @@ bool KG::Core::Scene::OnDrawGUI()
 					}
 					objectPresetFunc[this->currentSelectedPreset](*obj);
 					obj->tag = KG::Utill::HashString(objectPresetName[this->currentSelectedPreset]);
-					this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+					this->rootNode->GetTransform()->AddChild(obj->GetTransform());
 				}
 				ImGui::TreePop();
 			}
@@ -201,7 +201,7 @@ bool KG::Core::Scene::OnDrawGUI()
 				{
 					auto* obj = this->modelCreator(modelHash, *this, materialMatchCache);
 					obj->tag = modelHash;
-					this->rootNode.GetTransform()->AddChild(obj->GetTransform());
+					this->rootNode->GetTransform()->AddChild(obj->GetTransform());
 					modelHash.srcString = "";
 					modelHash.value = 0;
 					materialMatchCache.Clear();
@@ -226,7 +226,7 @@ bool KG::Core::Scene::OnDrawGUI()
 		}
 		if ( isHierarchyOpen )
 		{
-			DrawObjectTree(&this->rootNode, currentFocusedObject);
+			DrawObjectTree(this->rootNode, currentFocusedObject);
 		}
 	}
 	ImGui::End();
@@ -298,7 +298,7 @@ bool KG::Core::Scene::OnDrawGUI()
 			std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
 			auto* newObj = this->CreateNewTransformObject();
 			newObj->LoadToFile(filePathName);
-			this->rootNode.GetTransform()->AddChild(newObj->GetTransform());
+			this->rootNode->GetTransform()->AddChild(newObj->GetTransform());
 		}
 
 		// close
