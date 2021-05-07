@@ -73,8 +73,9 @@ bool KG::Core::GameObject::IsDestroy() const
 
 void KG::Core::GameObject::Destroy()
 {
+    this->GetTransform()->ExtractThisNode();
 	this->isDestroy = true;
-	this->DestroyAllChild();
+    this->DestroyAllChild();
 	this->ownerScene->AddDeleteQueue(this);
 }
 

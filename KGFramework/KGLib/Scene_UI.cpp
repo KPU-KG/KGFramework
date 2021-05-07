@@ -218,7 +218,6 @@ bool KG::Core::Scene::OnDrawGUI()
 				KG::Core::GameObject* dragSource = *static_cast<KG::Core::GameObject**>(payLoad->Data);
 				if ( dragSource && dragSource->GetTransform() )
 				{
-					dragSource->GetTransform()->ExtractThisNode();
 					dragSource->Destroy();
 				}
 			}
