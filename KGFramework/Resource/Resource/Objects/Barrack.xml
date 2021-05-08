@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="432">
+        <Tag hash_id="407222399" srcString="Barrack.FBX"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="5.2177291" y="0" z="-4.7870398"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="9.9999997e-05" y="9.9999997e-05" z="9.9999997e-05"/>
+        </Component>
+        <GameObject instanceId="422">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="424">
+                <Tag hash_id="2711663999" srcString="Group001"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="89360.797" y="5076.0371" z="75761.859"/>
+                    <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
+                    <Scale x="100" y="100" z="100"/>
+                </Component>
+                <GameObject instanceId="425">
+                    <Tag hash_id="1799703221" srcString="object01"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="951.11035" y="-761.6438" z="-45.811069"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="817507687" srcString="dd.FBX"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

@@ -1,0 +1,26 @@
+materials: 5
+
+mat1
+texture:
+BellevuePlace19_EdificioMat_BaseColor
+BellevuePlace19_EdificioMat_Metallic
+BellevuePlace19_EdificioMat_Normal
+
+mat2
+texture:
+none
+
+mat3
+texture:
+BellevuePlace19_MarcosMat_BaseColor
+BellevuePlace19_MarcosMat_Normal
+
+mat4
+texture:
+none
+
+mat5
+texture:
+BellevuePlace19_TejadoMat_BaseColor
+BellevuePlace19_TejadoMat_Metallic
+BellevuePlace19_TejadoMat_Normal

@@ -1,0 +1,18 @@
+materials: 3
+
+mat1
+texture:
+cactus1_cactus1_building_mat_BaseColor
+cactus1_cactus1_building_mat_Metallic
+cactus1_cactus1_building_mat_Normal
+
+mat2
+texture:
+cactus1_cactus1_metalparts_mat_BaseColor
+cactus1_cactus1_metalparts_mat_Normal
+
+
+mat3
+texture:
+cactus1_cactus1_windows_mat_BaseColor
+cactus1_cactus1_windows_mat_Metallic

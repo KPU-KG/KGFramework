@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="266">
+        <Tag hash_id="1321999110" srcString="Bellevue_Place_Lods.FBX"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="0" y="0" z="4.0581611e-08"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="1" y="1" z="1"/>
+        </Component>
+        <Component name="GeometryComponent" hash_id="36578682">
+            <GeometryDescs/>
+        </Component>
+        <Component name="MaterialComponent" hash_id="1886146475">
+            <MaterialDesc/>
+        </Component>
+        <Component name="Render3DComponent" hash_id="4070531333"/>
+        <GameObject instanceId="261">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="73.062485" y="-9.6559582" z="54.143799"/>
+                <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710677"/>
+                <Scale x="0.0020000001" y="0.0020000001" z="0.0020000001"/>
+            </Component>
+            <GameObject instanceId="264">
+                <Tag hash_id="2858297231" srcString="Bellevue_Place_LOD0"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="83762.063" y="-112273.34" z="-0.0035447842"/>
+                    <Rotation_Q x="0" y="0" z="0" w="0.99999988"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1321999110" srcString="Bellevue_Place_Lods.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="10"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="1321999110" srcString="Bellevue_Place_Lods.FBX"/>
+                            <slotIndex value="1"/>
+                            <subMeshIndex value="11"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="1321999110" srcString="Bellevue_Place_Lods.FBX"/>
+                            <slotIndex value="2"/>
+                            <subMeshIndex value="12"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="1321999110" srcString="Bellevue_Place_Lods.FBX"/>
+                            <slotIndex value="3"/>
+                            <subMeshIndex value="13"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="1321999110" srcString="Bellevue_Place_Lods.FBX"/>
+                            <slotIndex value="4"/>
+                            <subMeshIndex value="14"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="1"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="2"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="3"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="4"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

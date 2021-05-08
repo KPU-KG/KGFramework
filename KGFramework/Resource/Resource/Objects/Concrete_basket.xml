@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="404">
+        <Tag hash_id="802967115" srcString="Concrete_basket.FBX"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="45.087173" y="-1.1954137e-06" z="-73.505875"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
+        </Component>
+        <GameObject instanceId="398">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="399">
+                <Tag hash_id="609264121" srcString="Concrete_basket"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-1.2759849" y="39.723099" z="1.965004"/>
+                    <Rotation_Q x="-0.70703948" y="0.0097560966" z="0.0097560957" w="0.70703942"/>
+                    <Scale x="2.54" y="2.54" z="2.54"/>
+                </Component>
+                <GameObject instanceId="400">
+                    <Tag hash_id="1150952647" srcString="Concrete_basket_LOD0"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0.50215578" y="0.77387422" z="-15.639015"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="0.39370078" y="0.39370078" z="0.39370078"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="802967115" srcString="Concrete_basket.FBX"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="401">
+                    <Tag hash_id="1150951686" srcString="Concrete_basket_LOD1"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0.50215578" y="0.77387422" z="-15.639015"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="0.39370078" y="0.39370078" z="0.39370078"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="802967115" srcString="Concrete_basket.FBX"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="1"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="402">
+                    <Tag hash_id="1150950725" srcString="Concrete_basket_LOD2"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0.50215578" y="0.77387422" z="-15.639015"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="0.39370078" y="0.39370078" z="0.39370078"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="802967115" srcString="Concrete_basket.FBX"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="2"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="403">
+                    <Tag hash_id="1150949764" srcString="Concrete_basket_LOD3"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0.50215578" y="0.77387422" z="-15.639015"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="0.39370078" y="0.39370078" z="0.39370078"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="802967115" srcString="Concrete_basket.FBX"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="3"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

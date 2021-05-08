@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="298">
+        <Tag hash_id="1926392886" srcString="Mettress_Firm_Lods.FBX"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="86.121544" y="1.797338e-05" z="-63.574432"/>
+            <Rotation_Q x="0.70710713" y="1.498498e-06" z="1.44355e-06" w="-0.70710796"/>
+            <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+        </Component>
+        <GameObject instanceId="294">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="114112.31" y="-139535.48" z="-3426.2141"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="297">
+                <Tag hash_id="1996371831" srcString="Mettress_Firm_ST_LOD0"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-3090.2637" y="0" z="-1419.0566"/>
+                    <Rotation_Q x="2.9802322e-08" y="0" z="0" w="0.99999988"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1926392886" srcString="Mettress_Firm_Lods.FBX"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="14"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="1926392886" srcString="Mettress_Firm_Lods.FBX"/>
+                            <slotIndex value="1"/>
+                            <subMeshIndex value="15"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="1926392886" srcString="Mettress_Firm_Lods.FBX"/>
+                            <slotIndex value="2"/>
+                            <subMeshIndex value="16"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="1926392886" srcString="Mettress_Firm_Lods.FBX"/>
+                            <slotIndex value="3"/>
+                            <subMeshIndex value="17"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="1926392886" srcString="Mettress_Firm_Lods.FBX"/>
+                            <slotIndex value="4"/>
+                            <subMeshIndex value="18"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="1926392886" srcString="Mettress_Firm_Lods.FBX"/>
+                            <slotIndex value="5"/>
+                            <subMeshIndex value="19"/>
+                        </Element>
+                        <Element>
+                            <geometryID hash_id="1926392886" srcString="Mettress_Firm_Lods.FBX"/>
+                            <slotIndex value="6"/>
+                            <subMeshIndex value="20"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="1"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="2"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="3"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="4"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="5"/>
+                        </Element>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="6"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>
