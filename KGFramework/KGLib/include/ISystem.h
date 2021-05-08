@@ -146,6 +146,7 @@ namespace KG::System
 	protected:
 		ComponentPooler<Ty> pool;
 		virtual void OnGetNewComponent( Ty* ty ) {}
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<Ty>::name());
 	public:
 		virtual void OnUpdate(float elapsedTime) override
 		{
@@ -165,15 +166,15 @@ namespace KG::System
 		}
 		virtual void OnPostProvider(KG::Component::ComponentProvider& provider)
 		{
-			provider.PostInjectionFunction(KG::Utill::HashString(KG::Component::ComponentID<Ty>::name()), 
-				[this]( KG::Core::GameObject* object ) 
-				{
-					auto* comp = this->GetNewComponent();
-					object->AddComponent<Ty>(comp);
-					return comp;
-				}
-			);
-			provider.PostGetterFunction(KG::Utill::HashString(KG::Component::ComponentID<Ty>::name()),
+			provider.PostInjectionFunction(systemComponentId,
+                [this](KG::Core::GameObject* object)
+                {
+                    auto* comp = this->GetNewComponent();
+                    object->AddComponent<Ty>(comp);
+                    return comp;
+                }
+            );
+            provider.PostGetterFunction(systemComponentId,
 				[this]()->KG::Component::IComponent*
 				{
 					return static_cast<KG::Component::IComponent*>(this->GetNewComponent());

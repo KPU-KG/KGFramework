@@ -2,7 +2,7 @@
 #include <mutex>
 #include "ImguiHelper.h"
 #include "KGFramework.h"
-#include "GraphicComponent.h"
+#include "IGraphicComponent.h"
 #include "KGRenderer.h"
 #include "Systems.h"
 #include "Debug.h"
@@ -621,12 +621,12 @@ void KG::GameFramework::PostSceneFunction()
 	this->scene->AddCameraMatrixGetter(
 		[](KG::Component::IComponent* comp)
 		{
-			auto* camera = static_cast<KG::Component::CameraComponent*>(comp);
+			auto* camera = static_cast<KG::Component::ICameraComponent*>(comp);
 			return camera->GetView();
 		},
 		[](KG::Component::IComponent* comp)
 		{
-			auto* camera = static_cast<KG::Component::CameraComponent*>(comp);
+			auto* camera = static_cast<KG::Component::ICameraComponent*>(comp);
 			return camera->GetProj();
 		}
 		);

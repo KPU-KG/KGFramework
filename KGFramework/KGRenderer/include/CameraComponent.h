@@ -5,6 +5,8 @@
 #include "IRenderComponent.h"
 #include "RendererDesc.h"
 #include "SerializableProperty.h"
+#include "ICameraComponent.h"
+#include "IDXRenderComponent.h"
 
 namespace KG::Renderer
 {
@@ -38,7 +40,33 @@ namespace KG::Component
 		double gameTime;
 	};
 
-	class DLL CameraComponent : public IRenderComponent
+    static D3D12_VIEWPORT CameraViewportToDX(const CameraViewport& b)
+    {
+        D3D12_VIEWPORT a;
+        a.Height = b.Height;
+        a.MaxDepth = b.MaxDepth;
+        a.MinDepth = b.MinDepth;
+        a.TopLeftX = b.TopLeftX;
+        a.TopLeftY = b.TopLeftY;
+        a.Width = b.Width;
+        return a;
+    }
+
+
+    static CameraViewport DXToCameraViewport(const D3D12_VIEWPORT& b)
+    {
+        CameraViewport a;
+        a.Height = b.Height;
+        a.MaxDepth = b.MaxDepth;
+        a.MinDepth = b.MinDepth;
+        a.TopLeftX = b.TopLeftX;
+        a.TopLeftY = b.TopLeftY;
+        a.Width = b.Width;
+        return a;
+    }
+
+
+	class CameraComponent : public ICameraComponent, IDXRenderComponent
 	{
 		friend Render3DComponent;
 		friend ShadowCasterComponent;
@@ -79,33 +107,31 @@ namespace KG::Component
 		CameraComponent();
 
 		bool isCreateRenderTexture = true;
-		KG::Renderer::RenderTextureDesc renderTextureDesc;
 
 		void CalculateViewMatrix();
 		void CalculateProjectionMatrix();
 
-		void SetFovY( float value ) { OnProjDirty(); this->fovY = value; };
-		void SetAspectRatio( float value ) { OnProjDirty(); this->aspectRatio = value; };
-		void SetNearZ( float value ) { OnProjDirty(); this->nearZ = value; };
-		void SetFarZ( float value ) { OnProjDirty(); this->farZ = value; };
-		void SetViewport( const D3D12_VIEWPORT& viewport ) { this->viewport = viewport; };
-		void SetScissorRect( const D3D12_RECT& rect ) { this->scissorRect = rect; };
-		void SetDefaultRender();
+		virtual void SetFovY( float value ) override { OnProjDirty(); this->fovY = value; };
+		virtual void SetAspectRatio( float value ) override { OnProjDirty(); this->aspectRatio = value; };
+		virtual void SetNearZ( float value ) override { OnProjDirty(); this->nearZ = value; };
+		virtual void SetFarZ( float value ) override { OnProjDirty(); this->farZ = value; };
+		virtual void SetViewport( const CameraViewport& viewport ) override { this->viewport = CameraViewportToDX(viewport); };
+		virtual void SetScissorRect( const RECT& rect ) override { this->scissorRect = rect; };
+		virtual void SetDefaultRender();
 		void SetCubeRender( int index );
 
-		auto GetFovY() const { return this->fovY; };
-		auto GetAspectRatio() const { return this->aspectRatio; };
-		auto GetNearZ() const { return this->nearZ; };
-		auto GetFarZ() const { return this->farZ; };
-		auto GetViewport() const { return this->viewport; };
-		auto GetScissorRect() const { return this->scissorRect; };
-		auto GetCubeIndex() const { return this->cubeIndex; };
+		virtual float GetFovY() const override { return this->fovY; };
+		virtual float GetFarZ() const override { return this->farZ; };
+		virtual float GetNearZ() const override { return this->nearZ; };
+		virtual float GetAspectRatio() const override { return this->aspectRatio; };
+		virtual CameraViewport GetViewport() const override { return DXToCameraViewport( this->viewport ); };
+		virtual RECT GetScissorRect() const override { return this->scissorRect; };
 
-		DirectX::XMFLOAT4X4 GetView();
-		DirectX::XMFLOAT4X4 GetProj();
-		DirectX::XMFLOAT4X4 GetViewProj();
+		virtual DirectX::XMFLOAT4X4 GetView() override;
+		virtual DirectX::XMFLOAT4X4 GetProj() override;
+		virtual DirectX::XMFLOAT4X4 GetViewProj() override;
 
-		DirectX::BoundingFrustum GetFrustum();
+		virtual DirectX::BoundingFrustum GetFrustum() override;
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
 		virtual void OnPreRender() override;
 
@@ -121,6 +147,10 @@ namespace KG::Component
 		{
 			return *this->renderTexture;
 		}
+        auto GetCubeIndex() const
+        {
+            return this->cubeIndex;
+        }
 
 		//Serialize Part
 	private:
@@ -134,9 +164,12 @@ namespace KG::Component
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 		virtual bool OnDrawGUI();
-	};
 
-	class DLL CubeCameraComponent : public IRenderComponent
+        // ICameraComponent을(를) 통해 상속됨
+        virtual bool IsMainCamera() const override;
+    };
+
+	class CubeCameraComponent : public ICubeCameraComponent, IDXRenderComponent
 	{
 		friend Render3DComponent;
 		friend ShadowCasterComponent;
@@ -148,7 +181,6 @@ namespace KG::Component
 		virtual void OnDestroy() override;
 	public:
 		bool isVisible = true;
-		KG::Renderer::RenderTextureDesc renderTextureDesc;
 		CubeCameraComponent();
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
 		virtual void OnPreRender() override;
@@ -185,7 +217,7 @@ namespace KG::Component
 		DirectX::XMFLOAT4 look[6];
 	};
 
-	class DLL GSCubeCameraComponent : public IRenderComponent
+	class GSCubeCameraComponent : public IGSCubeCameraComponent, IDXRenderComponent
 	{
 		friend Render3DComponent;
 		friend ShadowCasterComponent;
@@ -215,8 +247,6 @@ namespace KG::Component
 		static constexpr float fovY = 90.0f;
 		static constexpr float aspectRatio = 1.0f / 1.0f;
 
-		KG::Renderer::RenderTextureDesc renderTextureDesc;
-
 		GSCubeCameraComponent();
 
 		bool isVisible = true;
@@ -228,22 +258,22 @@ namespace KG::Component
 		void CalculateViewMatrix();
 		void CalculateProjectionMatrix();
 
-		void SetNearZ( float value ) { OnProjDirty(); this->nearZ = value; };
-		void SetFarZ( float value ) { OnProjDirty(); this->farZ = value; };
-		void SetDefaultRender();
+		virtual void SetNearZ( float value ) override { OnProjDirty(); this->nearZ = value; } ;
+		virtual void SetFarZ( float value ) override { OnProjDirty(); this->farZ = value; };
+		virtual void SetDefaultRender() override;
 
-		auto GetNearZ() const { return this->nearZ; };
-		auto GetFarZ() const { return this->farZ; };
+        virtual float GetFarZ() const override { return this->farZ; };
+        virtual float GetNearZ() const override { return this->nearZ; };
 
-		void SetViewport( const D3D12_VIEWPORT& viewport ) { this->viewport = viewport; };
-		void SetScissorRect( const D3D12_RECT& rect ) { this->scissorRect = rect; };
+        virtual void SetViewport(const CameraViewport& viewport) override { this->viewport = CameraViewportToDX(viewport); };
+        virtual void SetScissorRect(const RECT& rect) override { this->scissorRect = rect; };
 
-		auto GetViewport() const { return this->viewport; };
-		auto GetScissorRect() const { return this->scissorRect; };
+        virtual CameraViewport GetViewport() const override { return DXToCameraViewport(this->viewport); };
+        virtual RECT GetScissorRect() const override { return this->scissorRect; };
 
-		DirectX::XMFLOAT4X4 GetView(size_t index);
-		DirectX::XMFLOAT4X4 GetProj();
-		DirectX::XMFLOAT4X4 GetViewProj( size_t index );
+		virtual DirectX::XMFLOAT4X4 GetView(size_t index) override;
+		virtual DirectX::XMFLOAT4X4 GetProj() override;
+		virtual DirectX::XMFLOAT4X4 GetViewProj( size_t index ) override;
 
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
 		virtual void OnPreRender() override;
@@ -279,7 +309,7 @@ namespace KG::Component
 	};
 
 	//0번 -> 전역 라이팅 / 1번 -> CSM 0번 / 2번 -> CSM 1번 / 3번 -> CSM 2번
-	class DLL GSCascadeCameraComponent : public IRenderComponent
+	class GSCascadeCameraComponent : public IGSCascadeCameraComponent, IDXRenderComponent
 	{
 		friend Render3DComponent;
 		friend ShadowCasterComponent;
@@ -323,23 +353,23 @@ namespace KG::Component
 
 		void RefreshCameraData();
 
-		void SetNearZ( float value ) { OnProjDirty(); this->nearZ = value; };
-		void SetFarZ( float value ) { OnProjDirty(); this->farZ = value; };
-		void SetDefaultRender();
+        virtual void SetNearZ(float value) override { OnProjDirty(); this->nearZ = value; };
+        virtual void SetFarZ(float value) override { OnProjDirty(); this->farZ = value; };
+        virtual void SetDefaultRender() override;
 
-		auto GetNearZ() const { return this->nearZ; };
-		auto GetFarZ() const { return this->farZ; };
+        virtual float GetFarZ() const override { return this->farZ; };
+        virtual float GetNearZ() const override { return this->nearZ; };
 
-		void SetViewport( const D3D12_VIEWPORT& viewport ) { this->viewport = viewport; };
-		void SetScissorRect( const D3D12_RECT& rect ) { this->scissorRect = rect; };
+        virtual void SetViewport(const CameraViewport& viewport) override { this->viewport = CameraViewportToDX(viewport); };
+        virtual void SetScissorRect(const RECT& rect) override { this->scissorRect = rect; };
 
-		auto GetViewport() const { return this->viewport; };
-		auto GetScissorRect() const { return this->scissorRect; };
+        virtual CameraViewport GetViewport() const override { return DXToCameraViewport(this->viewport); };
+        virtual RECT GetScissorRect() const override { return this->scissorRect; };
 
-		DirectX::XMFLOAT4X4 GetView( size_t index );
-		DirectX::XMFLOAT4X4 GetProj( size_t index );
-		std::array<DirectX::XMFLOAT4X4, 4> GetViewProj();
-		DirectX::XMFLOAT4X4 GetViewProj( size_t viewIndex, size_t projIndex );
+		virtual DirectX::XMFLOAT4X4 GetView( size_t index ) override;
+		virtual DirectX::XMFLOAT4X4 GetProj( size_t index ) override;
+		virtual std::array<DirectX::XMFLOAT4X4, 4> GetViewProj() override;
+		virtual DirectX::XMFLOAT4X4 GetViewProj( size_t viewIndex, size_t projIndex ) override;
 
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
 		virtual void OnPreRender() override;
@@ -347,8 +377,9 @@ namespace KG::Component
 		void SetCameraRender( ID3D12GraphicsCommandList* commandList );
 		void EndCameraRender( ID3D12GraphicsCommandList* commandList );
 
-		void InitalizeCascade( KG::Component::CameraComponent* directionalLightCamera, KG::Component::LightComponent* light );
-		void RefreshNormalViewProj();
+        virtual void InitalizeCascade(KG::Component::ICameraComponent* directionalLightCamera, KG::Component::ILightComponent* light) override;
+        void InitalizeCascade(KG::Component::CameraComponent* directionalLightCamera, KG::Component::LightComponent* light);
+        void RefreshNormalViewProj();
 		void RefreshCascadeViewProj();
 
 		void InitializeRenderTexture();

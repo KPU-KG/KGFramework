@@ -10,6 +10,7 @@ namespace KG::Renderer
 {
 	class KGRenderEngine;
 	class DescriptorHeapManager;
+    struct RenderTexture;
 	using std::vector;
 	class KGDXRenderer : public IKGRenderer
 	{
@@ -111,16 +112,16 @@ namespace KG::Renderer
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 
 		virtual void* GetImGUIContext();
-		virtual KG::Component::Render3DComponent* GetNewRenderComponent() override;
-		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent() override;
-		virtual KG::Component::MaterialComponent* GetNewMaterialComponent() override;
-		virtual KG::Component::CameraComponent* GetNewCameraComponent() override;
-		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() override;
-		virtual KG::Component::LightComponent* GetNewLightComponent() override;
-		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() override;
-		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() override;
-		virtual KG::Component::AnimationControllerComponent* GetNewAnimationControllerComponent() override;
-		virtual KG::Component::ParticleEmitterComponent* GetNewParticleEmitterComponent() override;
+		virtual KG::Component::IRender3DComponent* GetNewRenderComponent() override;
+		virtual KG::Component::IGeometryComponent* GetNewGeomteryComponent() override;
+		virtual KG::Component::IMaterialComponent* GetNewMaterialComponent() override;
+		virtual KG::Component::ICameraComponent* GetNewCameraComponent() override;
+		virtual KG::Component::ICubeCameraComponent* GetNewCubeCameraComponent() override;
+		virtual KG::Component::ILightComponent* GetNewLightComponent() override;
+		virtual KG::Component::IShadowCasterComponent* GetNewShadowCasterComponent() override;
+		virtual KG::Component::IBoneTransformComponent* GetNewBoneTransformComponent() override;
+		virtual KG::Component::IAnimationControllerComponent* GetNewAnimationControllerComponent() override;
+		virtual KG::Component::IParticleEmitterComponent* GetNewParticleEmitterComponent() override;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials) override;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials) override;
 
@@ -165,5 +166,5 @@ namespace KG::Renderer
         // IKGRenderer을(를) 통해 상속됨
         virtual void SetEditUIRender(bool isRender) override;
 
-};
+    };
 }

@@ -1,7 +1,8 @@
 #pragma once
 #include <DirectXMath.h>
 #include "IRenderComponent.h"
-#include "LightComponent.h"
+#include "IShadowCasterComponent.h"
+#include "IDXRenderComponent.h"
 
 namespace KG::Renderer
 {
@@ -16,7 +17,7 @@ namespace KG::Component
 	class GSCubeCameraComponent;
 	class GSCascadeCameraComponent;
 
-	class DLL ShadowCasterComponent : public IRenderComponent
+	class DLL ShadowCasterComponent : public IShadowCasterComponent, IDXRenderComponent
 	{
 		KG::Component::LightComponent* targetLight = nullptr;
 		KG::Component::GSCubeCameraComponent* pointLightCamera = nullptr;
@@ -32,9 +33,9 @@ namespace KG::Component
 		virtual void OnDestroy() override;
 	public:
 		virtual void OnPreRender() override;
-		bool isPointLightShadow() const { return this->pointLightCamera != nullptr; };
-		bool isDirectionalLightShadow() const { return this->directionalLightCamera != nullptr; };
-		bool isSpotLightShadow() const { return this->spotLightCamera != nullptr; };
+		virtual bool isPointLightShadow() const override { return this->pointLightCamera != nullptr; };
+		virtual bool isDirectionalLightShadow() const override { return this->directionalLightCamera != nullptr; };
+		virtual bool isSpotLightShadow() const override { return this->spotLightCamera != nullptr; };
 
 		KG::Renderer::RenderTexture& GetRenderTexture();
 		KG::Component::GSCubeCameraComponent* GetPointLightCamera() const;

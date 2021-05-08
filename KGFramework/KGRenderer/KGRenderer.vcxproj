@@ -259,7 +259,6 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\ParticleGenerator.cpp" />
     <ClCompile Include="src\AnimationComponent.cpp" />
     <ClCompile Include="src\CameraComponent.cpp" />
     <ClCompile Include="src\D3D12Helper.cpp" />
@@ -278,6 +277,7 @@
     <ClCompile Include="src\LightComponent.cpp" />
     <ClCompile Include="src\MaterialComponent.cpp" />
     <ClCompile Include="src\ParticleEmitterComponent.cpp" />
+    <ClCompile Include="src\ParticleGenerator.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug_PullUp|Win32'">Create</PrecompiledHeader>
@@ -293,22 +293,23 @@
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="export\AnimationComponent.h" />
-    <ClInclude Include="export\CameraComponent.h" />
-    <ClInclude Include="export\GeometryComponent.h" />
-    <ClInclude Include="export\GraphicComponent.h" />
+    <ClInclude Include="export\IAnimationComponent.h" />
+    <ClInclude Include="export\ICameraComponent.h" />
+    <ClInclude Include="export\IGeometryComponent.h" />
+    <ClInclude Include="export\IGraphicComponent.h" />
+    <ClInclude Include="export\ILightComponent.h" />
+    <ClInclude Include="export\IMaterialComponent.h" />
+    <ClInclude Include="export\IParticleEmitterComponent.h" />
+    <ClInclude Include="export\IRender3DComponent.h" />
     <ClInclude Include="export\IRenderComponent.h" />
+    <ClInclude Include="export\IShadowCasterComponent.h" />
     <ClInclude Include="export\KGRenderer.h" />
-    <ClInclude Include="export\LightComponent.h" />
-    <ClInclude Include="export\MaterialComponent.h" />
-    <ClInclude Include="export\ParticleEmitterComponent.h" />
-    <ClInclude Include="export\Render3DComponent.h" />
     <ClInclude Include="export\RendererDesc.h" />
-    <ClInclude Include="export\ResourceMetaData.h" />
-    <ClInclude Include="export\ShadowCasterComponent.h" />
     <ClInclude Include="export\Texture.h" />
+    <ClInclude Include="include\AnimationComponent.h" />
     <ClInclude Include="include\BoneData.h" />
     <ClInclude Include="include\BoneDataBufferManager.h" />
+    <ClInclude Include="include\CameraComponent.h" />
     <ClInclude Include="include\DDSTextureLoader.h" />
     <ClInclude Include="include\DynamicData.h" />
     <ClInclude Include="include\DynamicConstantBufferManager.h" />
@@ -316,7 +317,10 @@
     <ClInclude Include="include\d3dx12.h" />
     <ClInclude Include="include\DescriptorHeapManager.h" />
     <ClInclude Include="include\framework.h" />
+    <ClInclude Include="include\GeometryComponent.h" />
+    <ClInclude Include="include\GraphicComponent.h" />
     <ClInclude Include="include\GraphicSystem.h" />
+    <ClInclude Include="include\IDXRenderComponent.h" />
     <ClInclude Include="include\IndexAllocator.h" />
     <ClInclude Include="include\KGDXRenderer.h" />
     <ClInclude Include="include\KGGeometry.h" />
@@ -325,12 +329,19 @@
     <ClInclude Include="include\KGRenderQueue.h" />
     <ClInclude Include="include\KGResourceLoader.h" />
     <ClInclude Include="include\KGShader.h" />
+    <ClInclude Include="include\LightComponent.h" />
+    <ClInclude Include="include\MaterialComponent.h" />
+    <ClInclude Include="include\ParticleEmitterComponent.h" />
     <ClInclude Include="include\ParticleGenerator.h" />
+    <ClInclude Include="include\Render3DComponent.h" />
     <ClInclude Include="include\RenderTexture.h" />
+    <ClInclude Include="include\ResourceMetaData.h" />
     <ClInclude Include="include\RootParameterIndex.h" />
     <ClInclude Include="include\ShaderData.h" />
     <ClInclude Include="include\pch.h" />
     <ClInclude Include="include\ResourceContainer.h" />
+    <ClInclude Include="include\ShadowCasterComponent.h" />
+    <ClInclude Include="include\Texture.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KGLib\KGLib.vcxproj">

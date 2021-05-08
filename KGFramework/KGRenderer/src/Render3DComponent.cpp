@@ -4,6 +4,9 @@
 #include "KGRenderQueue.h"
 #include "ResourceContainer.h"
 #include "AnimationComponent.h"
+#include "CameraComponent.h"
+#include "GeometryComponent.h"
+#include "MaterialComponent.h"
 
 void KG::Component::Render3DComponent::OnRender(ID3D12GraphicsCommandList* commadList)
 {
@@ -144,6 +147,15 @@ bool KG::Component::Render3DComponent::OnDrawGUI()
 		}
 	}
 	return false;
+}
+
+bool KG::Component::Render3DComponent::GetVisible() const
+{
+    return this->isVisible;
+}
+
+void KG::Component::Render3DComponent::SetReflectionProbe(ICubeCameraComponent* probe)
+{
 }
 
 void KG::Component::Render3DComponent::AddRenderJob(KG::Renderer::KGRenderJob* renderJob, UINT materialIndex)

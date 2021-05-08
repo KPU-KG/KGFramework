@@ -40,6 +40,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         DebugNormalMessage("Setting File Dir = " << KG::Setting::fileDir.c_str());
     }
 
+    KG::Setting setting = KG::Setting::Load();
+
     // TODO: 여기에 코드를 입력합니다.
 	SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
 
@@ -49,7 +51,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MyRegisterClass(hInstance);
 
     // 애플리케이션 초기화를 수행합니다:
-    if (!InitInstance (hInstance, nCmdShow))
+    if (!InitInstance (hInstance, nCmdShow) && !setting.isConsoleMode)
     {
         return FALSE;
     }

@@ -1,6 +1,8 @@
 #pragma once
 #include <vector>
 #include "IRenderComponent.h"
+#include "IRender3DComponent.h"
+#include "IDXRenderComponent.h"
 
 namespace KG::Renderer
 {
@@ -15,7 +17,7 @@ namespace KG::Component
 	class BoneTransformComponent;
 	class CubeCameraComponent;
 
-	class DLL Render3DComponent : public IRenderComponent
+	class Render3DComponent : public IRender3DComponent, IDXRenderComponent
 	{
 		TransformComponent* transform = nullptr;
 		GeometryComponent* geometry = nullptr;
@@ -34,15 +36,19 @@ namespace KG::Component
 		bool isVisible = true;
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;
 		virtual void OnPreRender() override;
-		void SetVisible( bool visible );
+		virtual void SetVisible( bool visible ) override;
 		void SetReflectionProbe( CubeCameraComponent* probe );
 		void RemoveJobs();
-		void ReloadRender();
+		virtual void ReloadRender() override;
 		//Serialize Part
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 		virtual bool OnDrawGUI();
-	};
+
+        // IRender3DComponent을(를) 통해 상속됨
+        virtual bool GetVisible() const override;
+        virtual void SetReflectionProbe(ICubeCameraComponent* probe) override;
+    };
 	REGISTER_COMPONENT_ID( Render3DComponent );
 };

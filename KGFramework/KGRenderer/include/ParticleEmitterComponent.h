@@ -1,9 +1,11 @@
 #pragma once
 #include <vector>
+#include <DirectXCollision.h>
 #include "IRenderComponent.h"
 #include "ISerializable.h"
 #include "SerializableProperty.h"
-#include <DirectXCollision.h>
+#include "IParticleEmitterComponent.h"
+#include "IDXRenderComponent.h"
 
 namespace KG::Renderer
 {
@@ -26,22 +28,8 @@ namespace KG::Component
 	
 
 	class TransformComponent;
-	struct ParticleDesc
-	{
-		DirectX::XMFLOAT3 position;
-		float rotation;
-		DirectX::XMFLOAT3 speed;
-		float rotationSpeed;
-		DirectX::XMFLOAT2 size;
-		UINT materialIndex;
-		float pad1;
-		DirectX::XMFLOAT4 color;
-		double startTime;
-		float lifeTime;
-		float pad0;
-	};
 
-	class DLL ParticleEmitterComponent : public IRenderComponent
+	class DLL ParticleEmitterComponent : public IParticleEmitterComponent, IDXRenderComponent
 	{
 		float emitTimer = 0.0f;
 		TransformComponent* transform = nullptr;
@@ -56,34 +44,8 @@ namespace KG::Component
 		virtual void OnRender(ID3D12GraphicsCommandList* commadList) override;
 		virtual void OnPreRender() override;
 	public:
-		DirectX::XMFLOAT3 baseDeltaPosition = DirectX::XMFLOAT3(0,0,0);
-		DirectX::XMFLOAT3 rangeDeltaPosition = DirectX::XMFLOAT3(0, 0, 0);
-
-		DirectX::XMFLOAT2 baseSize = DirectX::XMFLOAT2(1, 1);
-		DirectX::XMFLOAT2 rangeSize = DirectX::XMFLOAT2(0, 0);
-
-		DirectX::XMFLOAT3 baseSpeed = DirectX::XMFLOAT3(0, 0, 0);
-		DirectX::XMFLOAT3 rangeSpeed = DirectX::XMFLOAT3(0, 0, 0);
-
-		KG::Utill::Color color = KG::Utill::Color();
-
-		float baselifeTime = 10;
-		float rangelifeTime = 0;
-
-		float baseRotation = 0;
-		float rangeRotation = 0;
-
-		float baseRotationSpeed = 0;
-		float rangeRotationSpeed = 0;
-
-		float emitPerSecond = 0;
-
-		float baseEmitCount = 0;
-		float rangeEmitCount = 0;
-
-
-		void EmitParticle();
-		void EmitParticle(const ParticleDesc& desc, bool autoFillTime);
+		virtual void EmitParticle() override;
+		virtual void EmitParticle(const ParticleDesc& desc, bool autoFillTime) override;
 		UINT GetParticleMaterialIndex(const KG::Utill::HashString& id) const;
 		bool GetParticleMaterialIsAdd(const KG::Utill::HashString& id) const;
 	private:
@@ -117,10 +79,11 @@ namespace KG::Component
 
 	public:
 		virtual void Update(float elapsedTime) override;
+		virtual void SetParticleMaterial(const KG::Utill::HashString& materialId) override;
+    public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 		virtual bool OnDrawGUI();
-		void SetParticleMaterial(const KG::Utill::HashString& materialId);
 	};
 	REGISTER_COMPONENT_ID(ParticleEmitterComponent);
 };

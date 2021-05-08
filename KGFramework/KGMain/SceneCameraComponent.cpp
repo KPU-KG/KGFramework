@@ -1,6 +1,6 @@
 #include "pch.h"
 #include "Transform.h"
-#include "CameraComponent.h"
+#include "ICameraComponent.h"
 #include "SceneCameraComponent.h"
 #include "InputManager.h"
 
@@ -10,7 +10,7 @@ void KG::Component::SceneCameraComponent::OnCreate(KG::Core::GameObject* obj)
 {
     IComponent::OnCreate(obj);
     this->transform = gameObject->GetComponent<KG::Component::TransformComponent>();
-    this->camera = gameObject->GetComponent<KG::Component::CameraComponent>();
+    this->camera = gameObject->GetComponent<KG::Component::ICameraComponent>();
 }
 
 void KG::Component::SceneCameraComponent::Update(float elapsedTime)
@@ -19,7 +19,7 @@ void KG::Component::SceneCameraComponent::Update(float elapsedTime)
     auto input = InputManager::GetInputManager();
     float speed = input->IsTouching(VK_LSHIFT) ? 6.0f : 2.0f;
     speed *= speedValue;
-    if ( ImGui::IsAnyItemFocused() || !this->camera->isMainCamera )
+    if ( ImGui::IsAnyItemFocused() || !this->camera->IsMainCamera() )
     {
         return;
     }

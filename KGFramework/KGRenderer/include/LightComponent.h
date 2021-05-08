@@ -4,6 +4,8 @@
 #include "IRenderComponent.h"
 #include "ISerializable.h"
 #include "SerializableProperty.h"
+#include "ILightComponent.h"
+#include "IDXRenderComponent.h"
 
 namespace KG::Renderer
 {
@@ -21,64 +23,8 @@ namespace KG::Component
 		UINT shadowMapIndex[4];
 		DirectX::XMFLOAT4X4 shadowMatrix[4];
 	};
-	struct LightData
-	{
-		DirectX::XMFLOAT3 Strength;
-		float lightPower = 1.0f;
-		DirectX::XMFLOAT3 Direction;
-		float pad0;
-		DirectX::XMFLOAT3 Position;
-		float pad1;
-		float FalloffStart;
-		float FalloffEnd;
-		float Phi;
-		float Theta;
-		DirectX::XMFLOAT3 Up;
-		float pad2;
-	};
 
-	struct PointLightRef
-	{
-		DirectX::XMFLOAT3& Strength;
-		float& FalloffStart;
-		float& FalloffEnd;
-		PointLightRef( LightData& light )
-			: Strength( light.Strength ), FalloffStart( light.FalloffStart ), FalloffEnd( light.FalloffEnd )
-		{
-		};
-	};
-
-	struct DirectionalLightRef
-	{
-		DirectX::XMFLOAT3& Strength;
-		DirectX::XMFLOAT3& Direction;
-		DirectionalLightRef( LightData& light )
-			: Strength( light.Strength ), Direction( light.Direction )
-		{
-		};
-	};
-
-	struct SpotLightRef
-	{
-		DirectX::XMFLOAT3& Strength;
-		float& Theta;
-		float& Phi;
-		float& depth;
-		float& falloff;
-		SpotLightRef( LightData& light )
-			: Strength( light.Strength ), falloff( light.FalloffEnd ), Phi( light.Phi ), Theta( light.Theta ), depth( light.FalloffStart )
-		{
-		};
-	};
-
-	enum class LightType
-	{
-		DirectionalLight,
-		PointLight,
-		SpotLight
-	};
-
-	class DLL LightComponent : public IRenderComponent
+	class LightComponent : public ILightComponent, IDXRenderComponent
 	{
 		KG::Renderer::KGRenderJob* renderJob = nullptr;
 		TransformComponent* transform = nullptr;
@@ -105,13 +51,13 @@ namespace KG::Component
 		void InitializeSpotLight();
 	public:
 		LightComponent();
-		void SetLightPower( float lightPower );
-		void SetDirectionalLight( const DirectX::XMFLOAT3& strength, const DirectX::XMFLOAT3& direction );
-		void SetPointLight( const DirectX::XMFLOAT3& strength, float fallOffStart, float fallOffEnd );
-		void SetSpotLight( const DirectX::XMFLOAT3& strength, float depth, float Phi, float Theta, float fallOff );
-		DirectionalLightRef GetDirectionalLightRef();
-		PointLightRef GetPointLightRef();
-		SpotLightRef GetSpotLightRef();
+		virtual void SetLightPower( float lightPower ) override;
+		virtual void SetDirectionalLight( const DirectX::XMFLOAT3& strength, const DirectX::XMFLOAT3& direction ) override;
+		virtual void SetPointLight( const DirectX::XMFLOAT3& strength, float fallOffStart, float fallOffEnd ) override;
+		virtual void SetSpotLight( const DirectX::XMFLOAT3& strength, float depth, float Phi, float Theta, float fallOff ) override;
+		virtual DirectionalLightRef GetDirectionalLightRef() override;
+		virtual PointLightRef GetPointLightRef() override;
+		virtual SpotLightRef GetSpotLightRef() override;
 
 		void UpdateChanged();
 
@@ -122,8 +68,8 @@ namespace KG::Component
 		bool isVisible = true;
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;
 		virtual void OnPreRender() override;
-		auto GetLightType() const { return this->lightType; }
-		void SetVisible( bool visible );
+        virtual LightType GetLightType() const override { return this->lightType; }
+		virtual void SetVisible( bool visible ) override;
 	private:
 		KG::Core::SerializableEnumProperty<KG::Component::LightType> lightTypeProp;
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3> strengthProp;
@@ -135,9 +81,9 @@ namespace KG::Component
 		KG::Core::SerializableProperty<float> thetaProp;
 		KG::Core::SerializableProperty<float> fallOffProp;
 	public:
-		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
-		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
-		virtual bool OnDrawGUI();
+		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement) override;
+		virtual void OnDataSave(tinyxml2::XMLElement* parentElement) override;
+		virtual bool OnDrawGUI() override;
 	};
 
 	REGISTER_COMPONENT_ID( LightComponent );

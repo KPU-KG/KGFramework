@@ -4,6 +4,8 @@
 #include "IRenderComponent.h"
 #include "ISerializable.h"
 #include "SerializableProperty.h"
+#include "IGeometryComponent.h"
+#include "IDXRenderComponent.h"
 
 namespace KG::Renderer
 {
@@ -18,7 +20,7 @@ namespace KG::Component
 	struct GeometryDesc;
 	struct GeometryDescs;
 
-	struct DLL GeometryDesc
+	struct GeometryDesc
 	{
 		friend KG::Component::GeometryComponent;
 		friend KG::Component::GeometryDescs;
@@ -39,7 +41,7 @@ namespace KG::Component
 
 	};
 
-	struct DLL GeometryDescs : public KG::Core::ISerializable	
+	struct GeometryDescs : public KG::Core::ISerializable	
 	{
 		std::vector<GeometryDesc> materialDescs;
 		// ISerializable을(를) 통해 상속됨
@@ -60,7 +62,7 @@ namespace KG::Component
 		}
 	};
 
-	class DLL GeometryComponent : public IRenderComponent
+	class GeometryComponent : public IGeometryComponent, IDXRenderComponent
 	{
 		friend Render3DComponent;
 		friend BoneTransformComponent;
@@ -70,10 +72,10 @@ namespace KG::Component
 		GeometryDescs geometryDescs;
 		GeometryComponent();
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
-		bool HasBone() const;
+		virtual bool HasBone() const override;
 		//Serialize Part
 	public:
-		void AddGeometry(const KG::Utill::HashString& geometryID, UINT subMeshIndex = 0, UINT slotIndex = 0);
+		virtual void AddGeometry(const KG::Utill::HashString& geometryID, UINT subMeshIndex = 0, UINT slotIndex = 0) override;
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 		virtual bool OnDrawGUI();

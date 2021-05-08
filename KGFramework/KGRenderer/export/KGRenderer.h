@@ -2,7 +2,7 @@
 #define NOMINMAX
 #include <Windows.h>
 #include "ISystem.h"
-#include "GraphicComponent.h"
+#include "IGraphicComponent.h"
 #include "ObjectContainer.h"
 #include "RendererDesc.h"
 #include "MaterialMatch.h"
@@ -58,16 +58,16 @@ namespace KG::Renderer
 
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 
-		virtual KG::Component::Render3DComponent* GetNewRenderComponent() = 0;
-		virtual KG::Component::GeometryComponent* GetNewGeomteryComponent() = 0;
-		virtual KG::Component::MaterialComponent* GetNewMaterialComponent() = 0;
-		virtual KG::Component::CameraComponent* GetNewCameraComponent() = 0;
-		virtual KG::Component::CubeCameraComponent* GetNewCubeCameraComponent() = 0;
-		virtual KG::Component::LightComponent* GetNewLightComponent() = 0;
-		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() = 0;
-		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() = 0;
-		virtual KG::Component::AnimationControllerComponent* GetNewAnimationControllerComponent() = 0;
-		virtual KG::Component::ParticleEmitterComponent* GetNewParticleEmitterComponent() = 0;
+		virtual KG::Component::IRender3DComponent* GetNewRenderComponent() = 0;
+		virtual KG::Component::IGeometryComponent* GetNewGeomteryComponent() = 0;
+		virtual KG::Component::IMaterialComponent* GetNewMaterialComponent() = 0;
+		virtual KG::Component::ICameraComponent* GetNewCameraComponent() = 0;
+		virtual KG::Component::ICubeCameraComponent* GetNewCubeCameraComponent() = 0;
+		virtual KG::Component::ILightComponent* GetNewLightComponent() = 0;
+		virtual KG::Component::IBoneTransformComponent* GetNewBoneTransformComponent() = 0;
+		virtual KG::Component::IShadowCasterComponent* GetNewShadowCasterComponent() = 0;
+		virtual KG::Component::IAnimationControllerComponent* GetNewAnimationControllerComponent() = 0;
+		virtual KG::Component::IParticleEmitterComponent* GetNewParticleEmitterComponent() = 0;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials) = 0;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials) = 0;
 
