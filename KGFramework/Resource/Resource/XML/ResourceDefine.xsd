@@ -23,6 +23,8 @@
                   <xs:enumeration value="AmbientLight"/>
                   <xs:enumeration value="MeshVolumeLight"/>
                   <xs:enumeration value="DirectionalLight"/>
+                  <xs:enumeration value="ParticleAdd"/>
+                  <xs:enumeration value="ParticleTransparent"/>
                 </xs:restriction>
               </xs:simpleType>
             </xs:attribute>

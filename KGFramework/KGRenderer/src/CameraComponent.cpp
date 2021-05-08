@@ -25,6 +25,8 @@ void KG::Component::CameraComponent::RefreshCameraData()
 
 	this->cameraData->viewProjection = KG::Math::Matrix4x4::Multiply(this->cameraData->projection, this->cameraData->view);
 	this->cameraData->inverseViewProjection = KG::Math::Matrix4x4::Multiply(this->cameraData->inverseProjection, this->cameraData->inverseView);
+
+	this->cameraData->gameTime = KG::Renderer::KGDXRenderer::GetInstance()->GetGameTime();
 }
 
 static constexpr XMFLOAT3 cubeLook[6] =

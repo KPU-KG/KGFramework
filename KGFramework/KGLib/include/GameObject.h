@@ -60,8 +60,14 @@ namespace KG::Core
 			this->components.DeleteComponent(component);
 		}
 
+		void DeleteAllComponent()
+		{
+			this->components.DeleteAll();
+		}
+
 		bool IsDestroy() const;
 		void Destroy();
+		void DestroyAllChild();
 
 		void SetOwnerScene(KG::Core::Scene* ownerScene);
 		void SetInstanceID(UINT32 instanceID);

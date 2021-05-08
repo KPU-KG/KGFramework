@@ -86,5 +86,17 @@ namespace KG::Component
 			it->second->InternalDestroy();
 			this->container.erase(it);
 		}
+
+		void DeleteAll()
+		{
+			for ( auto[hash, comp] : this->container)
+			{
+				comp->InternalDestroy();
+			}
+#ifdef _DEBUG
+			this->checker.clear();
+#endif
+			this->container.clear();
+		}
 	};
 };

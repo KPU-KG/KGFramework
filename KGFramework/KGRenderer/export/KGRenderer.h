@@ -39,8 +39,13 @@ namespace KG::Renderer
 		virtual void PreRenderUI() = 0;
 		virtual void* GetImGUIContext() = 0;
 		virtual void Update(float elaspedTime) = 0;
+		virtual void SetGameTime(double gameTime) = 0;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) = 0;
 		virtual void PreloadModels(std::vector<KG::Utill::HashString>&& ids) = 0;
+
+		virtual UINT QueryMaterialIndex(const KG::Utill::HashString& materialId) const = 0;
+
+		virtual double GetGameTime() const = 0;
 
 		virtual void SetSkymapTextureId(const KG::Utill::HashString& id)
 		{
@@ -62,6 +67,7 @@ namespace KG::Renderer
 		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() = 0;
 		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() = 0;
 		virtual KG::Component::AnimationControllerComponent* GetNewAnimationControllerComponent() = 0;
+		virtual KG::Component::ParticleEmitterComponent* GetNewParticleEmitterComponent() = 0;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials) = 0;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials) = 0;
 

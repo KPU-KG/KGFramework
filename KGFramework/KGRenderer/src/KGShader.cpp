@@ -89,7 +89,7 @@ D3D12_BLEND_DESC KG::Renderer::Shader::CreateBlendState( ShaderMeshType meshType
 			d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
 		}
 	}
-	else if ( pixType == ShaderPixelType::Light )
+	else if ( pixType == ShaderPixelType::Light || pixType == ShaderPixelType::Add )
 	{
 		d3dBlendDesc.AlphaToCoverageEnable = false;
 		d3dBlendDesc.IndependentBlendEnable = false;
@@ -97,6 +97,21 @@ D3D12_BLEND_DESC KG::Renderer::Shader::CreateBlendState( ShaderMeshType meshType
 		d3dBlendDesc.RenderTarget[0].LogicOpEnable = false;
 		d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_ONE;
 		d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_ONE;
+		d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
+		d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
+		d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
+		d3dBlendDesc.RenderTarget[0].BlendOpAlpha = D3D12_BLEND_OP_ADD;
+		d3dBlendDesc.RenderTarget[0].LogicOp = D3D12_LOGIC_OP_NOOP;
+		d3dBlendDesc.RenderTarget[0].RenderTargetWriteMask = D3D12_COLOR_WRITE_ENABLE_ALL;
+	}
+	else if ( pixType == ShaderPixelType::Transparent )
+	{
+		d3dBlendDesc.AlphaToCoverageEnable = false;
+		d3dBlendDesc.IndependentBlendEnable = false;
+		d3dBlendDesc.RenderTarget[0].BlendEnable = true;
+		d3dBlendDesc.RenderTarget[0].LogicOpEnable = false;
+		d3dBlendDesc.RenderTarget[0].SrcBlend = D3D12_BLEND_SRC_ALPHA;
+		d3dBlendDesc.RenderTarget[0].DestBlend = D3D12_BLEND_INV_SRC_ALPHA;
 		d3dBlendDesc.RenderTarget[0].BlendOp = D3D12_BLEND_OP_ADD;
 		d3dBlendDesc.RenderTarget[0].SrcBlendAlpha = D3D12_BLEND_ONE;
 		d3dBlendDesc.RenderTarget[0].DestBlendAlpha = D3D12_BLEND_ZERO;
@@ -187,8 +202,26 @@ D3D12_DEPTH_STENCIL_DESC KG::Renderer::Shader::CreateDepthStencilState( ShaderMe
 		d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
 	}
 	break;
-	case ShaderPixelType::Forward:
 	case ShaderPixelType::Transparent:
+	case ShaderPixelType::Add:
+	{
+		d3dDepthStencilDesc.DepthEnable = true;
+		d3dDepthStencilDesc.DepthWriteMask = D3D12_DEPTH_WRITE_MASK_ZERO;
+		d3dDepthStencilDesc.DepthFunc = D3D12_COMPARISON_FUNC_LESS;
+		d3dDepthStencilDesc.StencilEnable = false;
+		d3dDepthStencilDesc.StencilReadMask = 0x00;
+		d3dDepthStencilDesc.StencilWriteMask = 0x00;
+		d3dDepthStencilDesc.FrontFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+		d3dDepthStencilDesc.FrontFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+		d3dDepthStencilDesc.FrontFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+		d3dDepthStencilDesc.FrontFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+		d3dDepthStencilDesc.BackFace.StencilFailOp = D3D12_STENCIL_OP_KEEP;
+		d3dDepthStencilDesc.BackFace.StencilDepthFailOp = D3D12_STENCIL_OP_KEEP;
+		d3dDepthStencilDesc.BackFace.StencilPassOp = D3D12_STENCIL_OP_KEEP;
+		d3dDepthStencilDesc.BackFace.StencilFunc = D3D12_COMPARISON_FUNC_NEVER;
+	}
+	break;
+	case ShaderPixelType::Forward:
 	default:
 		DebugAssertion( false, L"깊이 스텐실 처리방법이  정의되지 않은 타입을 사용 중 입니다." );
 		break;
@@ -352,7 +385,11 @@ ID3D12PipelineState* KG::Renderer::Shader::CreatePSO( ShaderMeshType meshType, S
 	}
 
 	//GS
-	if ( geoType == ShaderGeometryType::GeometryCubeMap || geoType == ShaderGeometryType::GSCubeShadow || geoType == ShaderGeometryType::GSCascadeShadow || tessel == ShaderTesselation::TesselationMesh )
+	if ( geoType == ShaderGeometryType::GeometryCubeMap ||
+		geoType == ShaderGeometryType::GSCubeShadow ||
+		geoType == ShaderGeometryType::GSCascadeShadow ||
+		geoType == ShaderGeometryType::Particle||
+		tessel == ShaderTesselation::TesselationMesh )
 	{
 		geometryShader = CompileShaderFromMetadata( ShaderTarget::GS_5_1, meshType, pixType, geoType );
 		D3D12_SHADER_BYTECODE byteCode;
@@ -390,6 +427,10 @@ ID3D12PipelineState* KG::Renderer::Shader::CreatePSO( ShaderMeshType meshType, S
 	if ( tessel != ShaderTesselation::NormalMesh )
 	{
 		d3dPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_PATCH;
+	}
+	else if ( geoType == ShaderGeometryType::Particle )
+	{
+		d3dPipelineStateDesc.PrimitiveTopologyType = D3D12_PRIMITIVE_TOPOLOGY_TYPE_POINT;
 	}
 	else 
 	{

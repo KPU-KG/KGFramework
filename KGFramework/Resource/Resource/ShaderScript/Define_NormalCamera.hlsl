@@ -15,6 +15,7 @@ cbuffer CameraData : register(b0)
     float1 pad0;
     float3 look;
     float1 pad1;
+    double gameTime;
 };
 
 #endif

@@ -106,6 +106,8 @@ namespace KG::System
 			}
 			else
 			{
+				memset(&*result, 0, sizeof(Ty));
+				new(&*result) Ty();
 				return &*result;
 			}
 		}
@@ -145,6 +147,16 @@ namespace KG::System
 		ComponentPooler<Ty> pool;
 		virtual void OnGetNewComponent( Ty* ty ) {}
 	public:
+		virtual void OnUpdate(float elapsedTime) override
+		{
+			for ( auto& com : this->pool )
+			{
+				com.Update(elapsedTime);
+			}
+		}
+		virtual void OnPostUpdate(float elapsedTime) override
+		{
+		}
 		virtual Ty* GetNewComponent()
 		{
 			auto* target = this->pool.GetNewComponent();

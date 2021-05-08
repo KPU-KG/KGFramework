@@ -341,6 +341,11 @@ KG::Resource::Texture* KG::Renderer::RenderTexture::PostDepthStencilTexture()
 void KG::Renderer::RenderTexture::Initialize(const RenderTextureDesc& desc)
 {
 	this->desc = desc;
+    if ( this->desc.useScreenSize )
+    {
+        this->desc.width = KG::Renderer::KGDXRenderer::GetInstance()->GetSetting().clientWidth;
+        this->desc.height = KG::Renderer::KGDXRenderer::GetInstance()->GetSetting().clientHeight;
+    }
 	if ( this->desc.useCubeRender )
 	{
 		this->desc.length = 6;
@@ -460,8 +465,9 @@ KG::Renderer::RenderTextureProperty::RenderTextureProperty(KG::Renderer::RenderT
 	CONST_KG_PROPERTY(textureWidth, ref.width),
 	CONST_KG_PROPERTY(textureHeight, ref.height),
 	CONST_KG_PROPERTY(arrayCount, ref.length),
-	CONST_KG_PROPERTY(useCubeRender, ref.useCubeRender),
-	CONST_KG_PROPERTY(useGSCubeRender, ref.useGSCubeRender),
+    CONST_KG_PROPERTY(useScreenSize, ref.useScreenSize),
+    CONST_KG_PROPERTY(useCubeRender, ref.useCubeRender),
+    CONST_KG_PROPERTY(useGSCubeRender, ref.useGSCubeRender),
 	CONST_KG_PROPERTY(useGSArrayRender, ref.useGSArrayRender),
 	CONST_KG_PROPERTY(useRenderTarget, ref.useRenderTarget),
 	CONST_KG_PROPERTY(useDeferredRender, ref.useDeferredRender),
@@ -479,8 +485,9 @@ void KG::Renderer::RenderTextureProperty::OnDataLoad(tinyxml2::XMLElement* objec
 	textureWidth.OnDataLoad(renderTextureDesc);
 	textureHeight.OnDataLoad(renderTextureDesc);
 	arrayCount.OnDataLoad(renderTextureDesc);
-	useCubeRender.OnDataLoad(renderTextureDesc);
-	useGSCubeRender.OnDataLoad(renderTextureDesc);
+    useScreenSize.OnDataLoad(renderTextureDesc);
+    useCubeRender.OnDataLoad(renderTextureDesc);
+    useGSCubeRender.OnDataLoad(renderTextureDesc);
 	useGSArrayRender.OnDataLoad(renderTextureDesc);
 	useRenderTarget.OnDataLoad(renderTextureDesc);
 	useDeferredRender.OnDataLoad(renderTextureDesc);
@@ -502,7 +509,8 @@ void KG::Renderer::RenderTextureProperty::OnDataSave(tinyxml2::XMLElement* objec
 	textureWidth.OnDataSave(renderTextureDesc);
 	textureHeight.OnDataSave(renderTextureDesc);
 	arrayCount.OnDataSave(renderTextureDesc);
-	useCubeRender.OnDataSave(renderTextureDesc);
+    useScreenSize.OnDataSave(renderTextureDesc);
+    useCubeRender.OnDataSave(renderTextureDesc);
 	useGSCubeRender.OnDataSave(renderTextureDesc);
 	useGSArrayRender.OnDataSave(renderTextureDesc);
 	useRenderTarget.OnDataSave(renderTextureDesc);
@@ -523,8 +531,9 @@ bool KG::Renderer::RenderTextureProperty::OnDrawGUI()
 		flag |= textureWidth.OnDrawGUI();
 		flag |= textureHeight.OnDrawGUI();
 		flag |= arrayCount.OnDrawGUI();
-		flag |= useCubeRender.OnDrawGUI();
-		flag |= useGSCubeRender.OnDrawGUI();
+        flag |= useScreenSize.OnDrawGUI();
+        flag |= useCubeRender.OnDrawGUI();
+        flag |= useGSCubeRender.OnDrawGUI();
 		flag |= useGSArrayRender.OnDrawGUI();
 		flag |= useRenderTarget.OnDrawGUI();
 		flag |= useDeferredRender.OnDrawGUI();

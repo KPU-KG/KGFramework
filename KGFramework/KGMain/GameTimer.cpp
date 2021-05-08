@@ -16,6 +16,7 @@ void GameTimer::Tick(float fLockFPS)
 	float fTimeElapsed;
 	::QueryPerformanceCounter((LARGE_INTEGER*)&currentPerformanceCounter);
 	fTimeElapsed = float((currentPerformanceCounter - lastPerformanceCounter) * timeScale);
+	currentGameTime = float((currentPerformanceCounter - basePerformanceCounter) * timeScale);
 	int cnt = 0;
 	if (fLockFPS > 0.0f)
 	{
@@ -68,6 +69,11 @@ unsigned long GameTimer::GetFrameRate()
 float GameTimer::GetTimeElapsed()
 {
 	return this->timeElapsed;
+}
+
+double KG::GameTimer::GetGameTime() const
+{
+    return this->currentGameTime;
 }
 
 void GameTimer::Reset()

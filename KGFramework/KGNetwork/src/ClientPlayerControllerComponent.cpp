@@ -3,6 +3,7 @@
 #include "Transform.h"
 #include "CameraComponent.h"
 #include "AnimationComponent.h"
+#include "ParticleEmitterComponent.h"
 #include "PhysicsComponent.h"
 
 using namespace KG::Math::Literal;
@@ -50,6 +51,15 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
 
 	auto* vectorObject = this->gameObject->FindChildObject("Vector"_id);
 	this->vectorAnimation = vectorObject->GetComponent<AnimationControllerComponent>();
+
+	auto* particleObject = this->gameObject->FindChildObject("ParticleGenerator"_id);
+	this->particleGen = particleObject->GetComponent<ParticleEmitterComponent>();
+	this->particleGen->baselifeTime = 0.025f;
+	this->particleGen->baseEmitCount = 1;
+	this->particleGen->baseSize.x = 0.35;
+	this->particleGen->baseSize.y = 0.35;
+	this->particleGen->color.SetByFloat(1, 0.65, 0);
+	this->particleGen->SetParticleMaterial(KG::Utill::HashString("Muzzle_06"));
 }
 
 void KG::Component::CPlayerControllerComponent::Update(float elapsedTime)
@@ -343,6 +353,7 @@ void KG::Component::CPlayerControllerComponent::TryShoot(float elapsedTime)
 	if ( this->vectorAnimation->GetCurrentPlayingAnimationId() != VectorAnimSet::fire )
 	{
 		DebugNormalMessage("Current Vector Anim Not Fire");
+		this->particleGen->EmitParticle();
 		this->vectorAnimation->SetAnimation(VectorAnimSet::fire, 0, 1, 1.5f);
 		this->bulletCount -= 1;
 		Packet::CS_FIRE p = { };
@@ -354,6 +365,7 @@ void KG::Component::CPlayerControllerComponent::TryShoot(float elapsedTime)
 	else if ( this->vectorAnimation->GetCurrentPlayingAnimationTime() > this->bulletRepeatTime )
 	{
 		DebugNormalMessage("Current Vector Anim is Fire But 0.25Sec later");
+		this->particleGen->EmitParticle();
 		this->vectorAnimation->SetAnimation(VectorAnimSet::fire, 0, 1, 1.5f);
 		this->bulletCount -= 1;
 		Packet::CS_FIRE p = { };

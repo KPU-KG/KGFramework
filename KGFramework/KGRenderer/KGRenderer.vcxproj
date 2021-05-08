@@ -175,6 +175,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\ParticleGenerator.cpp" />
     <ClCompile Include="src\AnimationComponent.cpp" />
     <ClCompile Include="src\CameraComponent.cpp" />
     <ClCompile Include="src\D3D12Helper.cpp" />
@@ -192,6 +193,7 @@
     <ClCompile Include="src\KGShader.cpp" />
     <ClCompile Include="src\LightComponent.cpp" />
     <ClCompile Include="src\MaterialComponent.cpp" />
+    <ClCompile Include="src\ParticleEmitterComponent.cpp" />
     <ClCompile Include="src\pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
@@ -213,6 +215,7 @@
     <ClInclude Include="export\KGRenderer.h" />
     <ClInclude Include="export\LightComponent.h" />
     <ClInclude Include="export\MaterialComponent.h" />
+    <ClInclude Include="export\ParticleEmitterComponent.h" />
     <ClInclude Include="export\Render3DComponent.h" />
     <ClInclude Include="export\RendererDesc.h" />
     <ClInclude Include="export\ResourceMetaData.h" />
@@ -236,6 +239,7 @@
     <ClInclude Include="include\KGRenderQueue.h" />
     <ClInclude Include="include\KGResourceLoader.h" />
     <ClInclude Include="include\KGShader.h" />
+    <ClInclude Include="include\ParticleGenerator.h" />
     <ClInclude Include="include\RenderTexture.h" />
     <ClInclude Include="include\RootParameterIndex.h" />
     <ClInclude Include="include\ShaderData.h" />

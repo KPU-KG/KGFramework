@@ -35,6 +35,7 @@ namespace KG::Component
 		float pad0;
 		DirectX::XMFLOAT3 look;
 		float pad1;
+		double gameTime;
 	};
 
 	class DLL CameraComponent : public IRenderComponent

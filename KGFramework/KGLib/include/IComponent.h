@@ -30,9 +30,8 @@ namespace KG::Component
 	protected:
 		KG::Core::GameObject* gameObject = nullptr;
 		bool isActive = false;
-	public:
 		SystemInformation systemInfo;
-
+	public:
 		IComponent();
 		IComponent(const IComponent& other) = delete;
 		void SetActive(bool isActive);

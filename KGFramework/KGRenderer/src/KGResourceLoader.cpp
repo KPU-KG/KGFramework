@@ -19,19 +19,23 @@ using namespace std::string_literals;
 
 static int ReadShaderGroup( const std::string& attribute )
 {
-	if ( attribute == "Opaque"s )
-		return 0;
-	if ( attribute == "SkyBox"s )
-		return 1;
-	if ( attribute == "Transparent"s )
-		return 2;
-	if ( attribute == "AmbientLight"s )
-		return 3;
-	if ( attribute == "MeshVolumeLight"s )
-		return 4;
-	if ( attribute == "DirectionalLight"s )
-		return 5;
-	return -1;
+	if ( attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::Opaque))
+		return KG::Renderer::ShaderGroup::Opaque;
+	else if(attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::SkyBox))
+		return KG::Renderer::ShaderGroup::SkyBox;
+	else if(attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::Transparent))
+		return KG::Renderer::ShaderGroup::Transparent;
+	else if(attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::AmbientLight))
+		return KG::Renderer::ShaderGroup::AmbientLight;
+	else if(attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::MeshVolumeLight))
+		return KG::Renderer::ShaderGroup::MeshVolumeLight;
+	else if ( attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::DirectionalLight) )
+		return KG::Renderer::ShaderGroup::DirectionalLight;
+	else if ( attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::ParticleAdd) )
+		return KG::Renderer::ShaderGroup::ParticleAdd;
+	else if ( attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::ParticleTransparent) )
+		return KG::Renderer::ShaderGroup::ParticleTransparent;
+	else return -1;
 }
 
 KG::Resource::Metadata::ShaderSetData KG::Resource::ResourceLoader::LoadShaderSetFromFile( const std::string& xmlDir, const KG::Utill::HashString& targetID )

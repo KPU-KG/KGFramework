@@ -12,8 +12,10 @@ namespace KG
 		void Tick(float fLockFPS = 0.0f);
 		unsigned long GetFrameRate();
 		float GetTimeElapsed();
+		double GetGameTime() const;
 		void Reset();
 	private:
+		double currentGameTime;
 		double timeScale;
 		float timeElapsed;
 

@@ -59,6 +59,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ETC", "ETC", "{CC3BB28C-12D
 		Resource\Resource\ShaderScript\Light_Directional.hlsl = Resource\Resource\ShaderScript\Light_Directional.hlsl
 		Resource\Resource\ShaderScript\Light_Point.hlsl = Resource\Resource\ShaderScript\Light_Point.hlsl
 		Resource\Resource\ShaderScript\Light_Spot.hlsl = Resource\Resource\ShaderScript\Light_Spot.hlsl
+		Resource\Resource\ShaderScript\Particle_Default.hlsl = Resource\Resource\ShaderScript\Particle_Default.hlsl
 		Resource\Resource\ShaderScript\SkyBox_Default.hlsl = Resource\Resource\ShaderScript\SkyBox_Default.hlsl
 		Resource\Resource\ShaderScript\Utill_LIghtCustom.hlsl = Resource\Resource\ShaderScript\Utill_LIghtCustom.hlsl
 		Resource\Resource\ShaderScript\Utill_ShaderSelector.hlsl = Resource\Resource\ShaderScript\Utill_ShaderSelector.hlsl

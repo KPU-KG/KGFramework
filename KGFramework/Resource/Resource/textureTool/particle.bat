@@ -1,0 +1,1 @@
+"%~dp0texconv.exe" -f DXT1 -pow2 %1

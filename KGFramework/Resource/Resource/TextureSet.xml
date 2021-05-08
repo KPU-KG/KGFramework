@@ -175,4 +175,18 @@
     <Texture id="crawlerLaser_rough" fileDir="Resource/Geometry/crawler/Texture/crawlerLaser/rough.dds" dimension="Texture2D" format="DDS" hash_id="1844213554"/>
     <Texture id="crawlerLaser_metalic" fileDir="Resource/Geometry/crawler/Texture/crawlerLaser/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3500419400"/>
     <!--MechMetal-->
+    <!--Resource/Texture/Particles/Muzzle_05.DDS-->
+    <Texture id="Muzzle_05.DDS" fileDir="Resource/Texture/Particles/Muzzle_05.DDS" dimension="Texture2D" format="DDS" hash_id="813023201"/>
+    <!--Resource/Texture/Particles/FlashParticle.DDS-->
+    <Texture id="FlashParticle.DDS" fileDir="Resource/Texture/Particles/FlashParticle.DDS" dimension="Texture2D" format="DDS" hash_id="2707404970"/>
+    <!--Resource/Texture/Particles/Muzzle_02.DDS-->
+    <Texture id="Muzzle_02.DDS" fileDir="Resource/Texture/Particles/Muzzle_02.DDS" dimension="Texture2D" format="DDS" hash_id="2272670938"/>
+    <!--Resource/Texture/Particles/Muzzle_03.DDS-->
+    <Texture id="Muzzle_03.DDS" fileDir="Resource/Texture/Particles/Muzzle_03.DDS" dimension="Texture2D" format="DDS" hash_id="3091593815"/>
+    <!--Resource/Texture/Particles/Muzzle_04.DDS-->
+    <Texture id="Muzzle_04.DDS" fileDir="Resource/Texture/Particles/Muzzle_04.DDS" dimension="Texture2D" format="DDS" hash_id="887622748"/>
+    <!--Resource/Texture/Particles/Muzzle_05.DDS-->
+    <Texture id="Muzzle_05.DDS" fileDir="Resource/Texture/Particles/Muzzle_05.DDS" dimension="Texture2D" format="DDS" hash_id="813023201"/>
+    <!--Resource/Texture/Particles/Muzzle_06.DDS-->
+    <Texture id="Muzzle_06.DDS" fileDir="Resource/Texture/Particles/Muzzle_06.DDS" dimension="Texture2D" format="DDS" hash_id="2780963806"/>
 </TextureSet>

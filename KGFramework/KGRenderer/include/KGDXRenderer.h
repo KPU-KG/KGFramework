@@ -5,6 +5,7 @@
 #include <functional>
 #include "KGRenderer.h"
 #include "KGShader.h"
+#include "ParticleGenerator.h"
 namespace KG::Renderer
 {
 	class KGRenderEngine;
@@ -41,12 +42,18 @@ namespace KG::Renderer
 		
 		size_t imguiFontDescIndex = 0;
 
+		double gameTime = 0.0f;
+
 
 		struct GraphicSystems;
 		std::unique_ptr<GraphicSystems> graphicSystems = nullptr;
 		std::unique_ptr<KGRenderEngine> renderEngine = nullptr;
 		std::unique_ptr<DescriptorHeapManager> descriptorHeapManager = nullptr;
 		static inline KGDXRenderer* instance = nullptr;
+
+		//ParticleBuffer
+		ParticleGenerator particleGenerator;
+
 	private:
 		void QueryHardwareFeature();
 
@@ -78,6 +85,7 @@ namespace KG::Renderer
 
 
 		virtual void Initialize() override;
+		virtual void SetGameTime(double gameTime) override;
 		virtual void Render() override;
 		virtual void PreRenderUI() override;
 		virtual void PreloadModels(std::vector<KG::Utill::HashString>&& ids) override;
@@ -88,9 +96,13 @@ namespace KG::Renderer
 		virtual void UIRender();
 		virtual void OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void TransparentRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+		virtual void ParticleRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void LightPassRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void SkyBoxRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void PassRenderEnd(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+
+		void EmitParticleAdd(const KG::Component::ParticleDesc& particleDesc, bool autofillTime);
+		void EmitParticleTransparent(const KG::Component::ParticleDesc& particleDesc, bool autofillTime);
 
 		virtual void Update(float elapsedTime) override;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) override;
@@ -107,9 +119,15 @@ namespace KG::Renderer
 		virtual KG::Component::ShadowCasterComponent* GetNewShadowCasterComponent() override;
 		virtual KG::Component::BoneTransformComponent* GetNewBoneTransformComponent() override;
 		virtual KG::Component::AnimationControllerComponent* GetNewAnimationControllerComponent() override;
+		virtual KG::Component::ParticleEmitterComponent* GetNewParticleEmitterComponent() override;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials) override;
 		virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials) override;
 
+
+        auto GetSetting() const
+        {
+            return this->setting;
+        }
 
 		auto GetD3DDevice() const
 		{
@@ -137,5 +155,13 @@ namespace KG::Renderer
 			return this->dsvDescriptoSize;
 		};
 
-	};
+
+		// IKGRenderer을(를) 통해 상속됨
+		virtual double GetGameTime() const override;
+
+
+		// IKGRenderer을(를) 통해 상속됨
+		virtual UINT QueryMaterialIndex(const KG::Utill::HashString& materialId) const override;
+
+};
 }

@@ -35,7 +35,9 @@ namespace KG::Core
 
 		void SetParent(BaseHierarchy* parent)
 		{
+            if ( this->parent == parent ) return;
 			this->parent = parent;
+			OnChangeParent();
 		}
 
 		BaseHierarchy* GetParent() const
@@ -109,6 +111,9 @@ namespace KG::Core
 				csr->parent = this;
 				csr = csr->nextSibling;
 			}
+		}
+		virtual void OnChangeParent()
+		{
 		}
 
 	public:

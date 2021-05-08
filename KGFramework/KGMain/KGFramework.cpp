@@ -64,8 +64,8 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	renderDesc.hWnd = this->engineDesc.hWnd;
 
 	KG::Renderer::RendererSetting renderSetting;
-	renderSetting.clientWidth = this->setting.clientWidth;
-	renderSetting.clientHeight = this->setting.clientHeight;
+	renderSetting.clientWidth = this->setting.GetGameResolutionWidth();
+	renderSetting.clientHeight = this->setting.GetGameResolutionHeigth();
 	DebugNormalMessage("RECT : " << renderSetting.clientWidth << " , " << renderSetting.clientHeight);
 	renderSetting.isVsync = this->setting.isVsync;
 
@@ -164,8 +164,9 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.useCubeRender = false;
 			renderTextureDesc.useDepthStencilBuffer = true;
 			renderTextureDesc.useRenderTarget = true;
-			renderTextureDesc.width = this->setting.clientWidth;
-			renderTextureDesc.height = this->setting.clientHeight;
+			renderTextureDesc.width = this->setting.GetGameResolutionWidth();
+			renderTextureDesc.height = this->setting.GetGameResolutionHeigth();
+            renderTextureDesc.useScreenSize = true;
 			cam->renderTextureDesc = renderTextureDesc;
 			auto* sc = this->system->sceneCameraSystem.GetNewComponent();
 			obj.tag = KG::Utill::HashString("SceneCameraObject");
@@ -272,6 +273,11 @@ void KG::GameFramework::PostSceneFunction()
 			boneVector->GetTransform()->AddChild(sight->GetTransform());
 			sight->GetTransform()->SetPosition(0.042f, -6.841, 4.2f);
 			sight->GetTransform()->SetEulerDegree(-90,-90,0);
+
+
+			auto* particle = this->scene->CallPreset("ParticleGenerator"_id);
+			boneVector->GetTransform()->AddChild(particle->GetTransform());
+			particle->GetTransform()->SetPosition(0, -27, 0);
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
 
 			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id));
@@ -478,8 +484,9 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.useCubeRender = false;
 			renderTextureDesc.useDepthStencilBuffer = true;
 			renderTextureDesc.useRenderTarget = true;
-			renderTextureDesc.width = this->setting.clientWidth;
-			renderTextureDesc.height = this->setting.clientHeight;
+            renderTextureDesc.useScreenSize = true;
+			renderTextureDesc.width = this->setting.GetGameResolutionWidth();
+			renderTextureDesc.height = this->setting.GetGameResolutionHeigth();
 			cam->renderTextureDesc = renderTextureDesc;
 			cam->SetFovY(90.0f);
 
@@ -581,6 +588,13 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(r);
 		}
 	);
+	this->scene->AddObjectPreset("ParticleGenerator",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* p = this->renderer->GetNewParticleEmitterComponent();
+			obj.AddComponent(p);
+		}
+	);
 	this->scene->AddModelCreator(
 		[this](const KG::Utill::HashString& modelID, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& material)
 		{
@@ -635,8 +649,7 @@ void KG::GameFramework::UIRender()
 	{
 		if ( ImGui::Button("Reset Scene") )
 		{
-			this->scene.release();
-			this->scene = std::make_unique<KG::Core::Scene>();
+			this->scene->Clear();
 		}
 	}
 	ImGui::End();
@@ -711,9 +724,12 @@ void KG::GameFramework::OnProcess()
 	this->ServerUpdate(this->timer.GetTimeElapsed());
 	if ( this->scene->isStartGame )
 	{
+		this->scene->Update(this->timer.GetTimeElapsed());
 		this->renderer->Update(this->timer.GetTimeElapsed());
 	}
 	this->physics->Advance(this->timer.GetTimeElapsed());
+	this->scene->PostUpdate(this->timer.GetTimeElapsed());
+	this->renderer->SetGameTime(this->timer.GetGameTime());
 	this->renderer->Render();
 
 	this->ServerProcessEnd();
