@@ -80,5 +80,5 @@ namespace KG::Component
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 		virtual bool OnDrawGUI();
 	};
-	REGISTER_COMPONENT_ID( GeometryComponent );
+    REGISTER_COMPONENT_ID_REPLACE( GeometryComponent, IGeometryComponent);
 };

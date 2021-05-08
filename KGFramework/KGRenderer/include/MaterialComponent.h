@@ -83,5 +83,5 @@ namespace KG::Component
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement) override;
 		virtual bool OnDrawGUI() override;
 	};
-	REGISTER_COMPONENT_ID( MaterialComponent );
+	REGISTER_COMPONENT_ID_REPLACE( MaterialComponent, IMaterialComponent);
 };

@@ -50,5 +50,6 @@ namespace KG::Component
         virtual bool GetVisible() const override;
         virtual void SetReflectionProbe(ICubeCameraComponent* probe) override;
     };
-	REGISTER_COMPONENT_ID( Render3DComponent );
+	//REGISTER_COMPONENT_ID( Render3DComponent );
+    REGISTER_COMPONENT_ID_REPLACE(Render3DComponent, IRender3DComponent);
 };

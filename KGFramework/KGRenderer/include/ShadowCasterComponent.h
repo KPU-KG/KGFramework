@@ -48,5 +48,5 @@ namespace KG::Component
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 	};
-	REGISTER_COMPONENT_ID( ShadowCasterComponent );
+    REGISTER_COMPONENT_ID_REPLACE( ShadowCasterComponent, IShadowCasterComponent);
 };

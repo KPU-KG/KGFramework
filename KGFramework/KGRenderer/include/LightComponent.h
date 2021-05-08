@@ -86,5 +86,5 @@ namespace KG::Component
 		virtual bool OnDrawGUI() override;
 	};
 
-	REGISTER_COMPONENT_ID( LightComponent );
+    REGISTER_COMPONENT_ID_REPLACE( LightComponent, ILightComponent);
 };

@@ -399,9 +399,9 @@ namespace KG::Component
 	};
 
 
-	REGISTER_COMPONENT_ID( CameraComponent );
-	REGISTER_COMPONENT_ID( CubeCameraComponent );
-	REGISTER_COMPONENT_ID( GSCubeCameraComponent );
-	REGISTER_COMPONENT_ID( GSCascadeCameraComponent );
+	REGISTER_COMPONENT_ID_REPLACE( CameraComponent, ICameraComponent);
+	REGISTER_COMPONENT_ID_REPLACE( CubeCameraComponent, ICubeCameraComponent);
+	REGISTER_COMPONENT_ID_REPLACE( GSCubeCameraComponent, IGSCubeCameraComponent);
+	REGISTER_COMPONENT_ID_REPLACE( GSCascadeCameraComponent, IGSCascadeCameraComponent);
 
 };

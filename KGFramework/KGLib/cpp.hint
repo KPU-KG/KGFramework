@@ -12,3 +12,6 @@
 #define FileLogNormalMessage(X)
 #define FileLogErrorMessage(X)
 #define FileLogAssertion(P, X)
+
+#define REGISTER_COMPONENT_ID(X)
+#define REGISTER_COMPONENT_ID_REPLACE(X, Y)

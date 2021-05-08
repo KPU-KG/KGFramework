@@ -96,6 +96,6 @@ namespace KG::Component
 		virtual float GetCurrentPlayingAnimationDuration() const;
 	};
 
-	REGISTER_COMPONENT_ID( BoneTransformComponent );
-	REGISTER_COMPONENT_ID(AnimationControllerComponent);
+    REGISTER_COMPONENT_ID_REPLACE(BoneTransformComponent, IBoneTransformComponent);
+    REGISTER_COMPONENT_ID_REPLACE(AnimationControllerComponent, IAnimationControllerComponent);
 };
