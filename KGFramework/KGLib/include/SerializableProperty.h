@@ -10,6 +10,7 @@
 
 #define CONST_KG_PROPERTY(name,ref) name(#name, ref, true)
 #define KG_PROPERTY(name,ref) name(#name, ref)
+#define KG_PROP(name) name##Prop(#name, name)
 
 namespace KG::Core
 {

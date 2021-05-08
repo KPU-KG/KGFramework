@@ -54,6 +54,7 @@ namespace KG
 		void ServerProcess();
 		void ServerUpdate(float elapsedTime);
 		void ServerProcessEnd();
+        void SetEditorUIRender(bool isRender);
 		void OnClose();
 	private:
 		std::wstring windowText = L"KG Framework : FPS : ##########";

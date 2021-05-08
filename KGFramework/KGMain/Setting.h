@@ -2,6 +2,8 @@
 #include <iostream>
 #include <string>
 #include <string_view>
+#include "ISerializable.h"
+#include "SerializableProperty.h"
 namespace KG
 {
 	struct Setting
@@ -12,16 +14,29 @@ namespace KG
 		int fullScreenHeight = 0;
 		bool fullScreen = false;
 		bool isVsync = false;
-		int GetGameResolutionWidth()
+        bool isEditMode = false;
+        bool isConsoleMode = false;
+
+        KG::Core::SerializableProperty<int> clientWidthProp;
+        KG::Core::SerializableProperty<int> clientHeightProp;
+        KG::Core::SerializableProperty<int> fullScreenWidthProp;
+        KG::Core::SerializableProperty<int> fullScreenHeightProp;
+        KG::Core::SerializableProperty<bool> fullScreenProp;
+        KG::Core::SerializableProperty<bool> isVsyncProp;
+        KG::Core::SerializableProperty<bool> isEditModeProp;
+        KG::Core::SerializableProperty<bool> isConsoleModeProp;
+		int GetGameResolutionWidth() const
 		{
 			return fullScreen ? fullScreenWidth : clientWidth;
 		};
-		int GetGameResolutionHeigth()
+		int GetGameResolutionHeigth() const
 		{
 			return fullScreen ? fullScreenHeight : clientHeight;
 		};
-		static constexpr std::string_view fileDir = "setting.xml";
+        Setting();
+        Setting(const Setting& other);
+		static inline std::string fileDir = "setting.xml";
 		static Setting Load();
-		static void Save(const Setting& data);
+		static void Save(Setting& data);
 	};
 };

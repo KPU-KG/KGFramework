@@ -180,7 +180,7 @@ void KGDXRenderer::Render()
 	this->CubeCaemraRender();
 	this->NormalCameraRender();
 	this->CopyMainCamera();
-	this->UIRender();
+	this->EditorUIRender();
 
 	hResult = this->mainCommandList->Close();
 
@@ -201,9 +201,10 @@ void KGDXRenderer::Render()
 	this->MoveToNextFrame();
 }
 
-void KG::Renderer::KGDXRenderer::PreRenderUI()
+void KG::Renderer::KGDXRenderer::PreRenderEditorUI()
 {
-	// Start the Dear ImGui frame
+    if ( !this->isRenderEditUI ) return;
+    // Start the Dear ImGui frame
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
@@ -327,8 +328,9 @@ void KG::Renderer::KGDXRenderer::ShadowMapRender()
 	PIXEndEvent(mainCommandList);
 }
 
-void KG::Renderer::KGDXRenderer::UIRender()
+void KG::Renderer::KGDXRenderer::EditorUIRender()
 {
+    if ( !this->isRenderEditUI ) return;
 	ImGui::PopStyleColor(1);
 	PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(0), "ImGui UI Render");
 	auto rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart()).Offset(this->swapChainBufferIndex, this->rtvDescriptorSize);
@@ -576,6 +578,11 @@ double KG::Renderer::KGDXRenderer::GetGameTime() const
 UINT KG::Renderer::KGDXRenderer::QueryMaterialIndex(const KG::Utill::HashString& materialId) const
 {
 	return KG::Resource::ResourceContainer::GetInstance()->LoadMaterial(materialId).first;
+}
+
+void KG::Renderer::KGDXRenderer::SetEditUIRender(bool isRender)
+{
+    this->isRenderEditUI = isRender;
 }
 
 void KG::Renderer::KGDXRenderer::SetGameTime(double gameTime)

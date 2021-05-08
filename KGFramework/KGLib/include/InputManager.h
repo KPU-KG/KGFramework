@@ -32,12 +32,13 @@ namespace KG::Input
 
 		bool startProcessing = false;
 		bool startMouseCapture = false;
+        bool isUsingImgui = false;
 
 		InputManager() = default;
 		void GetVKState(int keyId);
 	public:
 		void SetUIContext(void* context);
-
+        void SetUsingImgui(bool isUsingImgui);
 
 		LRESULT HandlingInputProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam);
 
@@ -49,17 +50,24 @@ namespace KG::Input
 		void SetMouseCapture(bool startMouseCapture);
 		bool GetMouseCapture() const;
 
+        //UINT CharToKey(char key)
+        //{
+        //    return VkKeyScan(key);
+        //}
+
 		/// @brief 해당 키의 현재 상태를 가져옵니다.
 		/// 사용되는 ID는 윈도우API와 동일하게 VK로 시작하는 특수키와 char로 기능합니다.
+        /// CHAR의 경우 대문자를 사용하십시오.
 		/// @param keyId 구할 키의 ID입니다. 
 		/// @return 지정한 키의 상태입니다.
 		KeyState GetKeyState( UINT keyId ) const
 		{
-			return this->keyStates[toupper(keyId)];
+			return this->keyStates[keyId];
 		}
 
 		/// @brief 해당 키가 현재 눌려져 있는지 확인합니다.
 		/// 사용되는 ID는 윈도우API와 동일하게 VK로 시작하는 특수키와 char로 기능합니다.
+        /// CHAR의 경우 대문자를 사용하십시오.
 		/// Down 상태와 Pressing 상태일때 True입니다.
 		/// @param keyId 구할 키의 ID입니다. 
 		/// @return 지정한 키의 눌림 여부 입니다.

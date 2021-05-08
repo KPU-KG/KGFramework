@@ -21,6 +21,11 @@ void KG::Input::InputManager::SetUIContext(void* context)
 	ImGui::SetCurrentContext(reinterpret_cast<ImGuiContext*>(context));
 }
 
+void KG::Input::InputManager::SetUsingImgui(bool isUsingImgui)
+{
+    this->isUsingImgui = isUsingImgui;
+}
+
 LRESULT KG::Input::InputManager::HandlingInputProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
 	int key = static_cast<int>(wParam);
@@ -55,7 +60,7 @@ LRESULT KG::Input::InputManager::HandlingInputProc(HWND hWnd, UINT message, WPAR
 void KG::Input::InputManager::ProcessInput(HWND hWnd)
 {
 
-	if ( hWnd != GetFocus() || (ImGui::IsAnyItemActive() && !this->startMouseCapture) )
+	if ( hWnd != GetFocus() || (this->isUsingImgui && ImGui::IsAnyItemActive() && !this->startMouseCapture) )
 	{
 		for ( auto& i : this->keyStates )
 		{
@@ -65,8 +70,8 @@ void KG::Input::InputManager::ProcessInput(HWND hWnd)
 	}
 
 	//Æ¯¼öÅ°
-	this->GetVKState(VK_LSHIFT);
-	this->GetVKState(VK_RSHIFT);
+    this->GetVKState(VK_LSHIFT);
+    this->GetVKState(VK_RSHIFT);
 	this->GetVKState(VK_SPACE);
 
 

@@ -31,6 +31,15 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
+    if ( __argc > 1 )
+    {
+        wchar_t** argv = NULL;
+        argv = __wargv;
+        std::wstring buffer(argv[1]);
+        KG::Setting::fileDir.assign(buffer.begin(), buffer.end());
+        DebugNormalMessage("Setting File Dir = " << KG::Setting::fileDir.c_str());
+    }
+
     // TODO: 여기에 코드를 입력합니다.
 	SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
 

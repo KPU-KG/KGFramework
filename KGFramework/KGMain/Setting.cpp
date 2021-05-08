@@ -6,6 +6,34 @@
 #include <Windows.h>
 
 using namespace KG;
+
+KG::Setting::Setting()
+    :
+    KG_PROP(clientWidth),
+    KG_PROP(clientHeight),
+    KG_PROP(fullScreenWidth),
+    KG_PROP(fullScreenHeight),
+    KG_PROP(fullScreen),
+    KG_PROP(isVsync),
+    KG_PROP(isEditMode),
+    KG_PROP(isConsoleMode)
+{
+
+}
+
+KG::Setting::Setting(const Setting& other)
+    : Setting()
+{
+    clientWidth = other.clientWidth;
+    clientHeight = other.clientHeight;
+    fullScreenWidth = other.fullScreenWidth;
+    fullScreenHeight = other.fullScreenHeight;
+    fullScreen = other.fullScreen;
+    isVsync = other.isVsync;
+    isEditMode = other.isEditMode;
+    isConsoleMode = other.isConsoleMode;
+}
+
 Setting KG::Setting::Load()
 {
 	Setting data;
@@ -14,48 +42,32 @@ Setting KG::Setting::Load()
 		tinyxml2::XMLDocument doc;
 		doc.LoadFile(Setting::fileDir.data());
 		auto element = doc.FirstChildElement("Settings");
-
-		{
-			auto resolution = element->FirstChildElement("ScreenResolution");
-			data.clientWidth = resolution->IntAttribute("width");
-			data.clientHeight = resolution->IntAttribute("height");
-		}
-
-		{
-			auto fullscreen = element->FirstChildElement("FullScreen");
-			data.fullScreen = fullscreen->BoolAttribute("use");
-		}
-
-		{
-			auto fullscreen = element->FirstChildElement("VSync");
-			data.isVsync = fullscreen->BoolAttribute("use");
-		}
-
+        data.clientWidthProp.OnDataLoad(element); 
+        data.clientHeightProp.OnDataLoad(element);
+        data.fullScreenWidthProp.OnDataLoad(element);
+        data.fullScreenHeightProp.OnDataLoad(element);
+        data.fullScreenProp.OnDataLoad(element);
+        data.isVsyncProp.OnDataLoad(element);
+        data.isEditModeProp.OnDataLoad(element);
+        data.isConsoleModeProp.OnDataLoad(element);
 	}
 	return data;
 }
 
-void KG::Setting::Save(const Setting& data)
+void KG::Setting::Save(Setting& data)
 {
 	tinyxml2::XMLDocument doc;
 	tinyxml2::XMLDeclaration* dec1 = doc.NewDeclaration();
 	auto element = doc.NewElement("Settings");
 
-	{
-		auto resolution = element->InsertNewChildElement("ScreenResolution");
-		resolution->SetAttribute("width", data.clientWidth);
-		resolution->SetAttribute("height", data.clientHeight);
-	}
-
-	{
-		auto fullscreen = element->InsertNewChildElement("FullScreen");
-		fullscreen->SetAttribute("use", data.fullScreen);
-	}
-
-	{
-		auto fullscreen = element->InsertNewChildElement("VSync");
-		fullscreen->SetAttribute("use", data.isVsync);
-	}
+    data.clientWidthProp.OnDataSave(element);
+    data.clientHeightProp.OnDataSave(element);
+    data.fullScreenWidthProp.OnDataSave(element);
+    data.fullScreenHeightProp.OnDataSave(element);
+    data.fullScreenProp.OnDataSave(element);
+    data.isVsyncProp.OnDataSave(element);
+    data.isEditModeProp.OnDataSave(element);
+    data.isConsoleModeProp.OnDataSave(element);
 
 	doc.LinkEndChild(dec1);
 	doc.LinkEndChild(element);

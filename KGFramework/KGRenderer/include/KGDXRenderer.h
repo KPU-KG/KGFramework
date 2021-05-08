@@ -39,7 +39,8 @@ namespace KG::Renderer
 		HANDLE hFenceEvent = 0;
 
 		bool isWireFrame = false;
-		
+        bool isRenderEditUI = false;
+
 		size_t imguiFontDescIndex = 0;
 
 		double gameTime = 0.0f;
@@ -87,13 +88,13 @@ namespace KG::Renderer
 		virtual void Initialize() override;
 		virtual void SetGameTime(double gameTime) override;
 		virtual void Render() override;
-		virtual void PreRenderUI() override;
+		virtual void PreRenderEditorUI() override;
 		virtual void PreloadModels(std::vector<KG::Utill::HashString>&& ids) override;
 		virtual void CubeCaemraRender();
 		virtual void NormalCameraRender();
 		virtual void ShadowMapRender();
 		virtual void CopyMainCamera();
-		virtual void UIRender();
+		virtual void EditorUIRender();
 		virtual void OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void TransparentRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void ParticleRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
@@ -155,13 +156,14 @@ namespace KG::Renderer
 			return this->dsvDescriptoSize;
 		};
 
-
 		// IKGRenderer을(를) 통해 상속됨
 		virtual double GetGameTime() const override;
 
-
 		// IKGRenderer을(를) 통해 상속됨
 		virtual UINT QueryMaterialIndex(const KG::Utill::HashString& materialId) const override;
+
+        // IKGRenderer을(를) 통해 상속됨
+        virtual void SetEditUIRender(bool isRender) override;
 
 };
 }

@@ -36,13 +36,13 @@ namespace KG::Renderer
 		}
 		virtual void Initialize() = 0;
 		virtual void Render() = 0;
-		virtual void PreRenderUI() = 0;
+		virtual void PreRenderEditorUI() = 0;
 		virtual void* GetImGUIContext() = 0;
 		virtual void Update(float elaspedTime) = 0;
 		virtual void SetGameTime(double gameTime) = 0;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) = 0;
 		virtual void PreloadModels(std::vector<KG::Utill::HashString>&& ids) = 0;
-
+        virtual void SetEditUIRender(bool isRender) = 0;
 		virtual UINT QueryMaterialIndex(const KG::Utill::HashString& materialId) const = 0;
 
 		virtual double GetGameTime() const = 0;

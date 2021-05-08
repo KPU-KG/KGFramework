@@ -54,10 +54,11 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	DebugNormalMessage("Initialize");
 	//Desc류 세팅
 	this->engineDesc = engineDesc;
-	this->setting = setting;
+	new(&this->setting) Setting(setting);
 
 	//Renderer
 	this->renderer = std::unique_ptr<KG::Renderer::IKGRenderer>(KG::Renderer::GetD3D12Renderer());
+	this->input = std::unique_ptr<KG::Input::InputManager>(KG::Input::InputManager::GetInputManager());
 
 	KG::Renderer::RendererDesc renderDesc;
 	renderDesc.hInst = this->engineDesc.hInst;
@@ -81,6 +82,8 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	physicsDesc.gravity = 9.81f;
 
 	this->renderer->Initialize(renderDesc, renderSetting);
+    this->renderer->SetEditUIRender(setting.isEditMode);
+    this->input->SetUsingImgui(setting.isEditMode);
 	this->renderer->PostComponentProvider(this->componentProvider);
 	this->physics->Initialize(physicsDesc);
 	this->physics->AddFloor(-10);
@@ -138,7 +141,6 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	this->PostSceneFunction();
 	this->scene->InitializeRoot();
 	//인풋
-	this->input = std::unique_ptr<KG::Input::InputManager>(KG::Input::InputManager::GetInputManager());
 
 	//자원 미리 할당
 	this->windowText.reserve(100);
@@ -627,7 +629,8 @@ int KG::GameFramework::WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LP
 
 void KG::GameFramework::UIPreRender()
 {
-	this->renderer->PreRenderUI();
+    if ( !this->setting.isEditMode ) return;
+    this->renderer->PreRenderEditorUI();
 	guiContext = (ImGuiContext*)this->renderer->GetImGUIContext();
 	ImGui::SetCurrentContext(guiContext);
 	this->input->SetUIContext(guiContext);
@@ -637,6 +640,7 @@ void KG::GameFramework::UIPreRender()
 
 void KG::GameFramework::UIRender()
 {
+    if ( !this->setting.isEditMode ) return;
 	this->scene->DrawGUI(guiContext);
 
 	static constexpr int sceneInfoSize = 250;
@@ -714,12 +718,12 @@ void KG::GameFramework::OnProcess()
 {
 	this->timer.Tick();
 	this->UpdateWindowText();
-
 	this->ServerProcess();
-
 	this->UIPreRender();
-	this->UIRender();
+
 	this->input->ProcessInput(this->engineDesc.hWnd);
+
+	this->UIRender();
 	this->system->OnUpdate(this->timer.GetTimeElapsed());
 	this->ServerUpdate(this->timer.GetTimeElapsed());
 	if ( this->scene->isStartGame )
@@ -733,6 +737,12 @@ void KG::GameFramework::OnProcess()
 	this->renderer->Render();
 
 	this->ServerProcessEnd();
+
+    if ( this->input->GetKeyState(VK_F6) == KG::Input::KeyState::Up )
+    {
+        this->SetEditorUIRender(!this->setting.isEditMode);
+    }
+
 	this->input->PostProcessInput();
 }
 
@@ -766,6 +776,13 @@ void KG::GameFramework::ServerProcessEnd()
 	{
 		this->networkServer->UnlockWorld();
 	}
+}
+
+void KG::GameFramework::SetEditorUIRender(bool isRender)
+{
+    this->setting.isEditMode = isRender;
+    this->input->SetUsingImgui(this->setting.isEditMode);
+    this->renderer->SetEditUIRender(this->setting.isEditMode);
 }
 
 void KG::GameFramework::OnClose()

@@ -4,7 +4,7 @@
     <clientHeight value="900"/>
     <fullScreenWidth value="1920"/>
     <fullScreenHeight value="1080"/>
-    <fullScreen value="false"/>
+    <fullScreen value="true"/>
     <isVsync value="false"/>
     <isEditMode value="false"/>
     <isConsoleMode value="false"/>
