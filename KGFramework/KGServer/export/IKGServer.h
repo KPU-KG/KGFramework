@@ -29,7 +29,7 @@ namespace KG::Server
 	public:
 		virtual void Initialize() = 0;
 
-		virtual void Start() = 0;
+		virtual void Start(bool lock) = 0;
 		virtual void Close() = 0;
 
 		virtual void LockWorld() = 0;

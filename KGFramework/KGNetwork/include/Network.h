@@ -39,10 +39,13 @@ namespace KG::Server
 	public:
 		virtual void Initialize() override;
 		virtual void SetAddress(DWORD address) override;
+        virtual void SetAddress(const std::string& address) override;
 		virtual void Connect() override;
+        virtual bool TryConnect() override;
 		virtual void Close() override;
 		virtual void TryRecv() override;
 		virtual void SendPacket(void* data);
+        virtual void Login() override;
 
 		virtual void SetNetworkObject(KG::Server::NET_OBJECT_ID id, KG::Component::CBaseComponent* obj);
 
@@ -66,5 +69,9 @@ namespace KG::Server
 		// INetwork을(를) 통해 상속됨
 		virtual void SetInputManager(KG::Input::InputManager* manager) override;
 
-	};
+
+
+
+
+    };
 };

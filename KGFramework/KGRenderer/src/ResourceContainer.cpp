@@ -358,16 +358,16 @@ KG::Core::GameObject* KG::Resource::ResourceContainer::CreateObjectFromModel(con
 		{
 			auto* childObject = scene.CreateNewTransformObject();
 			auto* childNode = node->child;
-			this->ConvertNodeToObject(id, childObject, childNode, materials, rootObject);
 			transform->AddChild(childObject->GetComponent<KG::Component::TransformComponent>());
+			this->ConvertNodeToObject(id, childObject, childNode, materials, rootObject);
 			modelStack.push(std::make_pair(childObject, childNode));
 		}
 		else if ( node->sibling != nullptr && !transform->hasNextSibiling() )
 		{
 			auto* siblingObject = scene.CreateNewTransformObject();
 			auto* siblingNode = node->sibling;
-			this->ConvertNodeToObject(id, siblingObject, siblingNode, materials, rootObject);
 			transform->AddSibiling(siblingObject->GetComponent<KG::Component::TransformComponent>());
+			this->ConvertNodeToObject(id, siblingObject, siblingNode, materials, rootObject);
 			modelStack.push(std::make_pair(siblingObject, siblingNode));
 			auto* siblingObj = object->GetSibling();
 			auto* child = siblingObj->GetChild();

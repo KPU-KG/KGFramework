@@ -17,6 +17,10 @@ KG::Setting::Setting()
     KG_PROP(isVsync),
     KG_PROP(isEditMode),
     KG_PROP(isConsoleMode),
+    KG_PROP(isStartServer),
+    KG_PROP(isStartClient),
+    KG_PROP(isStartLogin),
+    KG_PROP(ipAddress),
     KG_PROP(startScenePath)
 {
 
@@ -33,7 +37,28 @@ KG::Setting::Setting(const Setting& other)
     isVsync = other.isVsync;
     isEditMode = other.isEditMode;
     isConsoleMode = other.isConsoleMode;
+    isStartServer = other.isStartServer;
+    isStartClient = other.isStartClient;
+    isStartLogin = other.isStartLogin;
+    ipAddress = other.ipAddress;
     startScenePath = other.startScenePath;
+}
+
+void KG::Setting::DrawGui()
+{
+    clientWidthProp.OnDrawGUI();
+    clientHeightProp.OnDrawGUI();
+    fullScreenWidthProp.OnDrawGUI();
+    fullScreenHeightProp.OnDrawGUI();
+    fullScreenProp.OnDrawGUI();
+    isVsyncProp.OnDrawGUI();
+    isEditModeProp.OnDrawGUI();
+    isConsoleModeProp.OnDrawGUI();
+    isStartClientProp.OnDrawGUI();
+    isStartServerProp.OnDrawGUI();
+    isStartLoginProp.OnDrawGUI();
+    ipAddressProp.OnDrawGUI();
+    startScenePathProp.OnDrawGUI();
 }
 
 Setting KG::Setting::Load()
@@ -52,6 +77,10 @@ Setting KG::Setting::Load()
         data.isVsyncProp.OnDataLoad(element);
         data.isEditModeProp.OnDataLoad(element);
         data.isConsoleModeProp.OnDataLoad(element);
+        data.isStartClientProp.OnDataLoad(element);
+        data.isStartServerProp.OnDataLoad(element);
+        data.isStartLoginProp.OnDataLoad(element);
+        data.ipAddressProp.OnDataLoad(element);
         data.startScenePathProp.OnDataLoad(element);
     }
 	return data;
@@ -71,6 +100,10 @@ void KG::Setting::Save(Setting& data)
     data.isVsyncProp.OnDataSave(element);
     data.isEditModeProp.OnDataSave(element);
     data.isConsoleModeProp.OnDataSave(element);
+    data.isStartClientProp.OnDataSave(element);
+    data.isStartServerProp.OnDataSave(element);
+    data.isStartLoginProp.OnDataSave(element);
+    data.ipAddressProp.OnDataSave(element);
     data.startScenePathProp.OnDataSave(element);
 
 	doc.LinkEndChild(dec1);

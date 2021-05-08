@@ -141,11 +141,20 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	this->PostSceneFunction();
 	this->scene->InitializeRoot();
 
-    if ( this->setting.startScenePath != "none")
+    if ( this->setting.startScenePath != "none" && this->setting.startScenePath != "")
     {
         this->scene->LoadScene(this->setting.startScenePath);
+        this->scene->isStartGame = true;
     }
-	//인풋
+    
+    if ( this->setting.isStartServer )
+    {
+        this->StartServer(false);
+    }
+    else if ( this->setting.isStartClient )
+    {
+        this->StartClient();
+    }
 
 	//자원 미리 할당
 	this->windowText.reserve(100);
@@ -507,8 +516,8 @@ void KG::GameFramework::PostSceneFunction()
 			arms->GetTransform()->GetChild()->SetPosition(0.0, 0.0, 0.0f);
 			arms->GetTransform()->GetChild()->SetEulerDegree(0, 90.0f, 0);
 
-			cameraObj->GetTransform()->AddChild(arms->GetTransform());
 
+			cameraObj->GetTransform()->AddChild(arms->GetTransform());
 			obj.GetTransform()->AddChild(cameraObj->GetTransform());
 
 			//auto* player = this->system->playerComponentSystem.GetNewComponent();
@@ -640,6 +649,8 @@ void KG::GameFramework::UIPreRender()
 	ImGui::SetCurrentContext(guiContext);
 	this->input->SetUIContext(guiContext);
 	this->physics->SetGUIContext(guiContext);
+    if ( this->networkClient ) this->networkClient->SetGUIContext(guiContext);
+    if ( this->networkServer ) this->networkServer->SetGUIContext(guiContext);
 	// this->physics->
 }
 
@@ -656,64 +667,48 @@ void KG::GameFramework::UIRender()
 	ImGui::SetNextWindowBgAlpha(0.8f);
 	if ( ImGui::Begin("GameFramework") )
 	{
-		if ( ImGui::Button("Reset Scene") )
-		{
-			this->scene->Clear();
-		}
-	}
-	ImGui::End();
+        if ( ImGui::CollapsingHeader("Current Setting", ImGuiTreeNodeFlags_DefaultOpen) )
+        {
+            this->setting.DrawGui();
+        }
+        if ( ImGui::CollapsingHeader("Common Function", ImGuiTreeNodeFlags_DefaultOpen) )
+        {
+		    if ( ImGui::Button("Reset Scene") )
+		    {
+		    	this->scene->Clear();
+		    }
 
-	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowBgAlpha(0.8f);
-	if ( ImGui::Begin("Network") )
-	{
-		if ( ImGui::Button("Open Console") )
-		{
-			if ( !AllocConsole() )
-				MessageBox(NULL, L"The console window was not created", NULL, MB_ICONEXCLAMATION);
-			FILE* console;
-			freopen_s(&console, "CONIN$", "r", stdin);
-			freopen_s(&console, "CONOUT$", "w", stderr);
-			freopen_s(&console, "CONOUT$", "w", stdout);
-			printf("DEBUG CONSOLE OPEN\n");
-			std::cout.clear();
-		}
-		if ( this->networkClient == nullptr && this->networkServer == nullptr )
-		{
-			if ( ImGui::Button("Start Network Client") )
-			{
-				this->networkClient = std::unique_ptr<KG::Server::INetwork>(KG::Server::GetNetwork());
-				this->networkClient->SetGUIContext(this->guiContext);
-				this->networkClient->Initialize();
-				this->networkClient->SetScene(this->scene.get());
-				this->networkClient->SetInputManager(this->input.get());
-				this->networkClient->PostComponentProvider(this->componentProvider);
-
-				this->PostNetworkFunction();
-
-				//Hard Code
-				this->scene->AddSceneComponent("CGameManagerComponent"_id, this->componentProvider.GetComponent("CGameManagerComponent"_id));
-			}
-			if ( ImGui::Button("Start Network Server") )
-			{
-				this->networkServer = std::unique_ptr<KG::Server::IServer>(KG::Server::GetServer());
-				this->networkServer->SetGUIContext(this->guiContext);
-				this->networkServer->Initialize();
-				this->networkServer->PostComponentProvider(this->componentProvider);
-				this->networkServer->SetPhysicsScene(physics);
-
-				this->PostServerFunction();
-
-				//Hard Code
-				this->scene->AddSceneComponent("SGameManagerComponent"_id, this->componentProvider.GetComponent("SGameManagerComponent"_id));
-			}
-		}
-		else
-		{
-			if ( this->networkClient ) this->networkClient->DrawImGUI();
-			if ( this->networkServer ) this->networkServer->DrawImGUI();
-		}
+		    if ( ImGui::Button("Open Console") )
+		    {
+		    	if ( !AllocConsole() )
+		    		MessageBox(NULL, L"The console window was not created", NULL, MB_ICONEXCLAMATION);
+		    	FILE* console;
+		    	freopen_s(&console, "CONIN$", "r", stdin);
+		    	freopen_s(&console, "CONOUT$", "w", stderr);
+		    	freopen_s(&console, "CONOUT$", "w", stdout);
+		    	printf("DEBUG CONSOLE OPEN\n");
+		    	std::cout.clear();
+		    }
+        }
+        if ( ImGui::CollapsingHeader("Network and Server", ImGuiTreeNodeFlags_DefaultOpen) )
+        {
+	    	if ( this->networkClient == nullptr && this->networkServer == nullptr )
+	    	{
+	    		if ( ImGui::Button("Start Network Client") )
+	    		{
+                    this->StartClient();
+	    		}
+	    		if ( ImGui::Button("Start Network Server") )
+	    		{
+                    this->StartServer(true);
+	    		}
+	    	}
+	    	else
+	    	{
+	    		if ( this->networkClient ) this->networkClient->DrawImGUI();
+	    		if ( this->networkServer ) this->networkServer->DrawImGUI();
+	    	}
+        }
 
 	}
 	ImGui::End();
@@ -788,6 +783,42 @@ void KG::GameFramework::SetEditorUIRender(bool isRender)
     this->setting.isEditMode = isRender;
     this->input->SetUsingImgui(this->setting.isEditMode);
     this->renderer->SetEditUIRender(this->setting.isEditMode);
+}
+
+void KG::GameFramework::StartServer(bool lock)
+{
+    this->networkServer = std::unique_ptr<KG::Server::IServer>(KG::Server::GetServer());
+    this->networkServer->SetGUIContext(this->guiContext);
+    this->networkServer->Initialize();
+    this->networkServer->PostComponentProvider(this->componentProvider);
+    this->networkServer->SetPhysicsScene(physics);
+
+    this->PostServerFunction();
+
+    //Hard Code
+    this->scene->AddSceneComponent("SGameManagerComponent"_id, this->componentProvider.GetComponent("SGameManagerComponent"_id));
+    this->networkServer->Start(lock);
+}
+
+void KG::GameFramework::StartClient()
+{
+    this->networkClient = std::unique_ptr<KG::Server::INetwork>(KG::Server::GetNetwork());
+    this->networkClient->SetGUIContext(this->guiContext);
+    this->networkClient->Initialize();
+    this->networkClient->SetScene(this->scene.get());
+    this->networkClient->SetInputManager(this->input.get());
+    this->networkClient->PostComponentProvider(this->componentProvider);
+
+    this->PostNetworkFunction();
+
+    //Hard Code
+    this->scene->AddSceneComponent("CGameManagerComponent"_id, this->componentProvider.GetComponent("CGameManagerComponent"_id));
+
+
+    this->networkClient->SetAddress(this->setting.ipAddress);
+    this->networkClient->Connect();
+    if ( this->setting.isStartLogin ) this->networkClient->Login();
+
 }
 
 void KG::GameFramework::OnClose()

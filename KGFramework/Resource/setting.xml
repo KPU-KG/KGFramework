@@ -8,5 +8,9 @@
     <isVsync value="false"/>
     <isEditMode value="true"/>
     <isConsoleMode value="false"/>
-    <startScenePath value="Resource/Scenes/col_test_walls.xml"/>
+    <isStartClient value="false"/>
+    <isStartServer value="false"/>
+    <isStartLogin value="false"/>
+    <ipAddress value="127.0.0.1"/>
+    <startScenePath value=""/>
 </Settings>

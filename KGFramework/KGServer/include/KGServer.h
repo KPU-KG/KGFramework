@@ -76,7 +76,7 @@ namespace KG::Server
 
 		// IServer을(를) 통해 상속됨
 		virtual void Initialize() override;
-		virtual void Start() override;
+		virtual void Start(bool lock) override;
 		virtual void Close() override;
 		virtual void LockWorld() override;
 		virtual void UnlockWorld() override;

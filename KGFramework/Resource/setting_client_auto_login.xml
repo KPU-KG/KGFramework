@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Settings>
+    <clientWidth value="1600"/>
+    <clientHeight value="900"/>
+    <fullScreenWidth value="1920"/>
+    <fullScreenHeight value="1080"/>
+    <fullScreen value="false"/>
+    <isVsync value="false"/>
+    <isEditMode value="true"/>
+    <isConsoleMode value="false"/>
+    <isStartClient value="true"/>
+    <isStartServer value="false"/>
+    <isStartLogin value="true"/>
+    <ipAddress value="127.0.0.1"/>
+    <startScenePath value="Resource/Scenes/col_test_walls.xml"/>
+</Settings>

@@ -26,6 +26,13 @@ void KG::Server::Network::SetAddress(DWORD address)
 	this->serverAddr.sin_port = htons(SERVER_PORT);
 }
 
+void KG::Server::Network::SetAddress(const std::string& address)
+{
+    DWORD ipWord;
+    inet_pton(AF_INET, address.c_str(), &ipWord);
+    this->SetAddress(ipWord);
+}
+
 void KG::Server::Network::Connect()
 {
 	clientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
@@ -181,21 +188,12 @@ void KG::Server::Network::PostComponentProvider(KG::Component::ComponentProvider
 
 void KG::Server::Network::DrawImGUI()
 {
-	static char ipBuffer[256] = "127.0.0.1";
-	if ( ImGui::CollapsingHeader("Network Client", ImGuiTreeNodeFlags_DefaultOpen) )
-	{
-		if ( !this->IsConnected() )
-		{
-			ImGui::InputText("ipaddress", ipBuffer, 256);
-			if ( ImGui::Button("Connect") )
-			{
-				DWORD ipWord;
-				inet_pton(AF_INET, ipBuffer, &ipWord);
-				this->SetAddress(ipWord);
-				this->Connect();
-			}
-		}
-	}
+    static char ipBuffer[256];
+
+    ImGui::BulletText("Is Processing Client");
+    inet_ntop(AF_INET, &this->serverAddr.sin_addr, ipBuffer, 256);
+    ImGui::Text("%s:%d", ipBuffer, ntohs(this->serverAddr.sin_port));
+    
 }
 
 bool KG::Server::Network::IsConnected() const
@@ -211,6 +209,17 @@ void KG::Server::Network::SetScene(KG::Core::Scene* scene)
 void KG::Server::Network::SetInputManager(KG::Input::InputManager* manager)
 {
 	KG::Input::InputManager::SetInputManager(manager);
+}
+
+bool KG::Server::Network::TryConnect()
+{
+    return false;
+}
+
+void KG::Server::Network::Login()
+{
+    auto* ptr = static_cast<KG::Component::CGameManagerComponent*>(this->networkObjects[0]);
+    ptr->SendLoginPacket();
 }
 
 void KG::Server::Network::Update(float elapsedTime)
