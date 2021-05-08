@@ -1,0 +1,19 @@
+materials: 5
+
+mat1:
+plamno_Cine_Mark1_Bricks_mat_BaseColor
+
+mat2:
+plamno_Cine_Mark1_Concrete_mat_BaseColor
+plamno_Cine_Mark1_Concrete_mat_Normal
+
+mat3:
+Cine_Mark_Cine_Mark1_DetailParts_mat_BaseColor
+Cine_Mark_Cine_Mark1_DetailParts_mat_Metallic
+
+mat4:
+none
+
+mat4:
+plamno_Cine_Mark1_Windows_mat_BaseColor
+plamno_Cine_Mark1_Windows_mat_Metallic

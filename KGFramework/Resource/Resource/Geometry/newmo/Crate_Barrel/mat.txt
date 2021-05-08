@@ -1,0 +1,17 @@
+materials: 4
+
+mat1:
+Crate_Barrel_building_mat_BaseColor
+Crate_Barrel_building_mat_Normal
+
+mat2:
+none
+
+mat3:
+Crate_Barrel_glasses_mat_BaseColor
+Crate_Barrel_glasses_mat_Metallic
+
+mat4:
+Crate_Barrel_roof_mat_BaseColor
+Crate_Barrel_roof_mat_Metallic
+Crate_Barrel_roof_mat_Normal

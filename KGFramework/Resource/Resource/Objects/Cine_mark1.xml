@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="286">
+        <Tag hash_id="3001937105" srcString="Cine_mark1.fbx"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="59.964058" y="0" z="0"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+        </Component>
+        <Component name="GeometryComponent" hash_id="36578682">
+            <GeometryDescs/>
+        </Component>
+        <Component name="MaterialComponent" hash_id="1886146475">
+            <MaterialDesc/>
+        </Component>
+        <Component name="Render3DComponent" hash_id="4070531333"/>
+        <GameObject instanceId="273">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="235196.42" y="-9392.5449" z="255128.44"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="274">
+                <Tag hash_id="2998468590" srcString="Cine_Mark"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-115787.97" y="4680.79" z="-124563.86"/>
+                    <Rotation_Q x="0" y="0" z="0" w="0.99999988"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="280">
+                    <Tag hash_id="1648300172" srcString="Cine_Mark1_Building_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0.265625" y="0" z="-6056.0703"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <GameObject instanceId="281">
+                        <Tag hash_id="1960958277" srcString="Cine_Mark1_MetalParts_geo"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <Component name="GeometryComponent" hash_id="36578682">
+                            <GeometryDescs>
+                                <Element>
+                                    <geometryID hash_id="3001937105" srcString="Cine_mark1.fbx"/>
+                                    <slotIndex value="0"/>
+                                    <subMeshIndex value="6"/>
+                                </Element>
+                            </GeometryDescs>
+                        </Component>
+                        <Component name="MaterialComponent" hash_id="1886146475">
+                            <MaterialDesc>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="0"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="1"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="2"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="3"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="4"/>
+                                </Element>
+                            </MaterialDesc>
+                        </Component>
+                        <Component name="Render3DComponent" hash_id="4070531333"/>
+                    </GameObject>
+                    <GameObject instanceId="282">
+                        <Tag hash_id="376459409" srcString="Cine_Mark1_Concrete_geo"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <Component name="GeometryComponent" hash_id="36578682">
+                            <GeometryDescs>
+                                <Element>
+                                    <geometryID hash_id="3001937105" srcString="Cine_mark1.fbx"/>
+                                    <slotIndex value="0"/>
+                                    <subMeshIndex value="7"/>
+                                </Element>
+                            </GeometryDescs>
+                        </Component>
+                        <Component name="MaterialComponent" hash_id="1886146475">
+                            <MaterialDesc>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="0"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="1"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="2"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="3"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="4"/>
+                                </Element>
+                            </MaterialDesc>
+                        </Component>
+                        <Component name="Render3DComponent" hash_id="4070531333"/>
+                    </GameObject>
+                    <GameObject instanceId="283">
+                        <Tag hash_id="1131874290" srcString="Cine_Mark1_Bricks_geo"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <Component name="GeometryComponent" hash_id="36578682">
+                            <GeometryDescs>
+                                <Element>
+                                    <geometryID hash_id="3001937105" srcString="Cine_mark1.fbx"/>
+                                    <slotIndex value="0"/>
+                                    <subMeshIndex value="8"/>
+                                </Element>
+                            </GeometryDescs>
+                        </Component>
+                        <Component name="MaterialComponent" hash_id="1886146475">
+                            <MaterialDesc>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="0"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="1"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="2"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="3"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="4"/>
+                                </Element>
+                            </MaterialDesc>
+                        </Component>
+                        <Component name="Render3DComponent" hash_id="4070531333"/>
+                    </GameObject>
+                    <GameObject instanceId="284">
+                        <Tag hash_id="2564802538" srcString="Cine_Mark1_Details_geo"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <Component name="GeometryComponent" hash_id="36578682">
+                            <GeometryDescs>
+                                <Element>
+                                    <geometryID hash_id="3001937105" srcString="Cine_mark1.fbx"/>
+                                    <slotIndex value="0"/>
+                                    <subMeshIndex value="9"/>
+                                </Element>
+                            </GeometryDescs>
+                        </Component>
+                        <Component name="MaterialComponent" hash_id="1886146475">
+                            <MaterialDesc>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="0"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="1"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="2"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="3"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="4"/>
+                                </Element>
+                            </MaterialDesc>
+                        </Component>
+                        <Component name="Render3DComponent" hash_id="4070531333"/>
+                    </GameObject>
+                    <GameObject instanceId="285">
+                        <Tag hash_id="177927523" srcString="Cine_Mark1_Windows_geo"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <Component name="GeometryComponent" hash_id="36578682">
+                            <GeometryDescs>
+                                <Element>
+                                    <geometryID hash_id="3001937105" srcString="Cine_mark1.fbx"/>
+                                    <slotIndex value="0"/>
+                                    <subMeshIndex value="10"/>
+                                </Element>
+                            </GeometryDescs>
+                        </Component>
+                        <Component name="MaterialComponent" hash_id="1886146475">
+                            <MaterialDesc>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="0"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="1"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="2"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="3"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="4"/>
+                                </Element>
+                            </MaterialDesc>
+                        </Component>
+                        <Component name="Render3DComponent" hash_id="4070531333"/>
+                    </GameObject>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

@@ -18,7 +18,7 @@ void KG::Component::SceneCameraComponent::Update(float elapsedTime)
 	using namespace KG::Input;
 	auto input = InputManager::GetInputManager();
 	float speed = input->IsTouching(VK_LSHIFT) ? 6.0f : 2.0f;
-	speed *= speedValue;
+	speed *= speedValue * 5;
 	if ( ImGui::IsAnyItemFocused() || !this->camera->isMainCamera )
 	{
 		return;

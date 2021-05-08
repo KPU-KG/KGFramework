@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="340">
+        <Tag hash_id="2416718797" srcString="Container Games.fbx"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="8.6968679" y="0" z="16.953375"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="0.015" y="0.015" z="0.015"/>
+        </Component>
+        <GameObject instanceId="338">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="339">
+                <Tag hash_id="1947254758" srcString="Container"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="32.809555" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <Component name="GeometryComponent" hash_id="36578682">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="2416718797" srcString="Container Games.fbx"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="MaterialComponent" hash_id="1886146475">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="Render3DComponent" hash_id="4070531333"/>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>
