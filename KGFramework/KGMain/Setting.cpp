@@ -16,7 +16,8 @@ KG::Setting::Setting()
     KG_PROP(fullScreen),
     KG_PROP(isVsync),
     KG_PROP(isEditMode),
-    KG_PROP(isConsoleMode)
+    KG_PROP(isConsoleMode),
+    KG_PROP(startScenePath)
 {
 
 }
@@ -32,6 +33,7 @@ KG::Setting::Setting(const Setting& other)
     isVsync = other.isVsync;
     isEditMode = other.isEditMode;
     isConsoleMode = other.isConsoleMode;
+    startScenePath = other.startScenePath;
 }
 
 Setting KG::Setting::Load()
@@ -50,7 +52,8 @@ Setting KG::Setting::Load()
         data.isVsyncProp.OnDataLoad(element);
         data.isEditModeProp.OnDataLoad(element);
         data.isConsoleModeProp.OnDataLoad(element);
-	}
+        data.startScenePathProp.OnDataLoad(element);
+    }
 	return data;
 }
 
@@ -68,6 +71,7 @@ void KG::Setting::Save(Setting& data)
     data.isVsyncProp.OnDataSave(element);
     data.isEditModeProp.OnDataSave(element);
     data.isConsoleModeProp.OnDataSave(element);
+    data.startScenePathProp.OnDataSave(element);
 
 	doc.LinkEndChild(dec1);
 	doc.LinkEndChild(element);

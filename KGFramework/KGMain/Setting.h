@@ -16,6 +16,7 @@ namespace KG
 		bool isVsync = false;
         bool isEditMode = false;
         bool isConsoleMode = false;
+        std::string startScenePath = "none";
 
         KG::Core::SerializableProperty<int> clientWidthProp;
         KG::Core::SerializableProperty<int> clientHeightProp;
@@ -25,7 +26,8 @@ namespace KG
         KG::Core::SerializableProperty<bool> isVsyncProp;
         KG::Core::SerializableProperty<bool> isEditModeProp;
         KG::Core::SerializableProperty<bool> isConsoleModeProp;
-		int GetGameResolutionWidth() const
+        KG::Core::SerializableProperty<std::string> startScenePathProp;
+        int GetGameResolutionWidth() const
 		{
 			return fullScreen ? fullScreenWidth : clientWidth;
 		};

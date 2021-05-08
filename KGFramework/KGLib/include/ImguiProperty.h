@@ -79,6 +79,16 @@ namespace KG::Utill::ImguiProperty
 		return ret;
 	}
 
+    template <>
+    inline bool DrawGUIProperty(std::string& title, std::string& ref)
+    {
+        ImGui::PushItemWidth(elementalWidths[0]);
+        auto ret = ImGui::InputHashString(title.c_str(), &ref);
+        ImGui::PopItemWidth();
+        return ret;
+    }
+
+
 	template <>
 	inline bool DrawGUIProperty(std::string& title, KG::Utill::HashString& ref)
 	{

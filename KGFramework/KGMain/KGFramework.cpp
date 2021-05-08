@@ -140,6 +140,11 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 
 	this->PostSceneFunction();
 	this->scene->InitializeRoot();
+
+    if ( this->setting.startScenePath != "none")
+    {
+        this->scene->LoadScene(this->setting.startScenePath);
+    }
 	//인풋
 
 	//자원 미리 할당
