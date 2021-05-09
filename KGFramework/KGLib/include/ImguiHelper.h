@@ -20,6 +20,18 @@ namespace ImGui
         return 0;
     }
 
+    static int MyStdStringCallback(ImGuiInputTextCallbackData* data)
+    {
+        std::string* my_Hash = (std::string*)data->UserData;
+        if ( data->EventFlag == ImGuiInputTextFlags_CallbackResize )
+        {
+            IM_ASSERT(my_Hash->data() == data->Buf);
+            my_Hash->resize(data->BufSize + 1); // NB: On resizing calls, generally data->BufSize == data->BufTextLen + 1
+            data->Buf = my_Hash->data();
+        }
+        return 0;
+    }
+
     inline void HelpMarker(const char* desc)
     {
         ImGui::TextDisabled("(?)");
@@ -45,6 +57,15 @@ namespace ImGui
             ImGui::EndTooltip();
         }
     }
+
+    inline bool InputHashString(const char* label, std::string* myString, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0)
+    {
+        IM_ASSERT((flags & (ImGuiInputTextFlags_CallbackResize | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackEdit)) == 0);
+        bool ret = ImGui::InputText(label, myString->data(), (size_t)myString->length() + 1,
+            flags | ImGuiInputTextFlags_CallbackResize | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackEdit, MyStdStringCallback, (void*)myString);
+        return ret;
+    }
+
     inline bool InputHashString(const char* label, KG::Utill::HashString* my_Hash, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0)
     {
         IM_ASSERT((flags & (ImGuiInputTextFlags_CallbackResize | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackEdit)) == 0);

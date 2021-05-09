@@ -192,5 +192,23 @@ namespace KG::Utill::XMLConverter
 		currentElement->SetAttribute("srcString", ref.srcString.c_str());
 	}
 
+    //HashString
+    template<>
+    inline std::string XMLElementLoad(tinyxml2::XMLElement* parentElement, const std::string& title)
+    {
+        auto* currentElement = parentElement->FirstChildElement(title.c_str());
+        if ( !currentElement ) return std::string();
+        auto text = currentElement->Attribute("value");
+        std::string result = std::string(text);
+        return  result;
+    }
+
+    template<>
+    inline void XMLElementSave(tinyxml2::XMLElement* parentElement, const std::string& title, const std::string& ref)
+    {
+        auto* currentElement = parentElement->InsertNewChildElement(title.c_str());
+        currentElement->SetAttribute("value", ref.c_str());
+    }
+
 #pragma endregion
 }

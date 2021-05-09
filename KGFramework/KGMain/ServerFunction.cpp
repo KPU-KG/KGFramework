@@ -1,7 +1,7 @@
 #include <string>
 #include "ImguiHelper.h"
 #include "KGFramework.h"
-#include "GraphicComponent.h"
+#include "IGraphicComponent.h"
 #include "KGRenderer.h"
 #include "Systems.h"
 #include "Debug.h"

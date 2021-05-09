@@ -120,4 +120,46 @@
     <Geometry id="crawler.fbx" fileDir="Resource/Geometry/crawler/crawler.fbx" rawMesh="false" hash_id="2883921385"/>
     <!--mech.fbx-->
     <Geometry id="mech.fbx" fileDir="Resource/Geometry/mech/mech.fbx" rawMesh="false" hash_id="1381674436"/>
+    <!--cone.fbx-->
+    <Geometry id="cone.fbx" fileDir="Resource/Geometry/cone.fbx" rawMesh="false" hash_id="3215446006"/>
+    <!--Bellevue_Place_Lods.FBX-->
+    <Geometry id="Bellevue_Place_Lods.FBX" fileDir="Resource/Geometry/newmo/Bellevue_Place/Bellevue_Place_Lods.FBX" rawMesh="false" hash_id="1321999110"/>
+    <!--cactus1.fbx-->
+    <Geometry id="cactus1.fbx" fileDir="Resource/Geometry/newmo/Cactus1/cactus1.fbx" rawMesh="false" hash_id="2671506371"/>
+    <!--Cine_mark1.fbx-->
+    <Geometry id="Cine_mark1.fbx" fileDir="Resource/Geometry/newmo/Cine_Mark1/Cine_mark1.fbx" rawMesh="false" hash_id="3001937105"/>
+    <!--FillerBuilding01_Lods_LOD0.fbx-->
+    <Geometry id="FillerBuilding01_Lods_LOD0.fbx" fileDir="Resource/Geometry/newmo/FillerBuildings/FillerBuilding01_Lods_LOD0.fbx" rawMesh="false" hash_id="1333025849"/>
+    <!--FillerBuilding03_LOD0.fbx-->
+    <Geometry id="FillerBuilding03_LOD0.fbx" fileDir="Resource/Geometry/newmo/FillerBuildings/FillerBuilding03_LOD0.fbx" rawMesh="false" hash_id="1739910506"/>
+    <!--Mettress_Firm_Lods.FBX-->
+    <Geometry id="Mettress_Firm_Lods.FBX" fileDir="Resource/Geometry/newmo/Mattres_Firm/Mettress_Firm_Lods.FBX" rawMesh="false" hash_id="1926392886"/>
+    <!--streetLightc1.fbx-->
+    <Geometry id="streetLightc1.fbx" fileDir="Resource/Geometry/newmo/Props/Pole/streetLightc1/streetLightc1.fbx" rawMesh="true" hash_id="1263226358"/>
+    <!--trashbin.fbx-->
+    <Geometry id="trashbin.fbx" fileDir="Resource/Geometry/newmo/TrashBin_FBX/trashbin.fbx" rawMesh="true" hash_id="503378834"/>
+    <!--Pump_a_01.fbx-->
+    <Geometry id="Pump_a_01.fbx" fileDir="Resource/Geometry/newmo/pump/Pump_a_01.fbx" rawMesh="true" hash_id="491095325"/>
+    <!--Container Games.fbx-->
+    <Geometry id="Container Games.fbx" fileDir="Resource/Geometry/newmo/Container_fbx/Container Games.fbx" rawMesh="true" hash_id="2416718797"/>
+    <!--ArmyBoxComplete.fbx-->
+    <Geometry id="ArmyBoxComplete.fbx" fileDir="Resource/Geometry/newmo/FBX ArmyBox/ArmyBoxComplete.fbx" rawMesh="true" hash_id="2818039298"/>
+    <!--barrier1.fbx-->
+    <Geometry id="barrier1.fbx" fileDir="Resource/Geometry/newmo/barrier1/barrier1.fbx" rawMesh="true" hash_id="1193735393"/>
+    <!--barrier2.fbx-->
+    <Geometry id="barrier2.fbx" fileDir="Resource/Geometry/newmo/barrier1/barrier2.fbx" rawMesh="true" hash_id="1060049722"/>
+    <!--RoadBlockade_01.fbx-->
+    <Geometry id="RoadBlockade_01.fbx" fileDir="Resource/Geometry/newmo/roadblock/RoadBlockade_01.fbx" rawMesh="true" hash_id="2761546278"/>
+    <!--RoadBlockade_02.fbx-->
+    <Geometry id="RoadBlockade_02.fbx" fileDir="Resource/Geometry/newmo/roadblock/RoadBlockade_02.fbx" rawMesh="true" hash_id="3197765533"/>
+    <!--Concrete_basket.FBX-->
+    <Geometry id="Concrete_basket.FBX" fileDir="Resource/Geometry/newmo/Models/Concrete_basket.FBX" rawMesh="true" hash_id="802967115"/>
+    <!--Traffic easel.fbx-->
+    <Geometry id="Traffic easel.fbx" fileDir="Resource/Geometry/newmo/Traffic Easel/Traffic easel.fbx" rawMesh="true" hash_id="735422160"/>
+    <!--Cliff_5x14_V01.FBX-->
+    <Geometry id="Cliff_5x14_V01.FBX" fileDir="Resource/Geometry/newmo/Cliffs/Cliff_5x14_V01.FBX" rawMesh="true" hash_id="1796494296"/>
+    <!--tank_trexhwm.fbx-->
+    <Geometry id="tank_trexhwm.fbx" fileDir="Resource/Geometry/newmo/tank_trexhwm_fbx/tank_trexhwm.fbx" rawMesh="true" hash_id="2305885141"/>
+    <!--dd.FBX-->
+    <Geometry id="dd.FBX" fileDir="Resource/Geometry/newmo/Model_C0811058/dd.FBX" rawMesh="true" hash_id="817507687"/>
 </GeometrySet>

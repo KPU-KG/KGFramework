@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="387">
+        <Tag hash_id="1193735393" srcString="barrier1.fbx"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="17.592943" y="0" z="-28.712872"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
+        </Component>
+        <GameObject instanceId="382">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="383">
+                <Tag hash_id="1851555844" srcString="MGS_Barrier"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="384">
+                    <Tag hash_id="2083526360" srcString="Concrete"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1193735393" srcString="barrier1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1193735393" srcString="barrier1.fbx"/>
+                                <slotIndex value="1"/>
+                                <subMeshIndex value="1"/>
+                            </Element>
+                            <Element>
+                                <geometryID hash_id="1193735393" srcString="barrier1.fbx"/>
+                                <slotIndex value="2"/>
+                                <subMeshIndex value="2"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="385">
+                    <Tag hash_id="1948518128" srcString="Bracket1"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1193735393" srcString="barrier1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="3"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="386">
+                    <Tag hash_id="1948521011" srcString="Bracket2"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1193735393" srcString="barrier1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="4"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

@@ -180,7 +180,7 @@ void KGDXRenderer::Render()
 	this->CubeCaemraRender();
 	this->NormalCameraRender();
 	this->CopyMainCamera();
-	this->UIRender();
+	this->EditorUIRender();
 
 	hResult = this->mainCommandList->Close();
 
@@ -201,9 +201,10 @@ void KGDXRenderer::Render()
 	this->MoveToNextFrame();
 }
 
-void KG::Renderer::KGDXRenderer::PreRenderUI()
+void KG::Renderer::KGDXRenderer::PreRenderEditorUI()
 {
-	// Start the Dear ImGui frame
+    if ( !this->isRenderEditUI ) return;
+    // Start the Dear ImGui frame
 	ImGui_ImplDX12_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
@@ -327,8 +328,9 @@ void KG::Renderer::KGDXRenderer::ShadowMapRender()
 	PIXEndEvent(mainCommandList);
 }
 
-void KG::Renderer::KGDXRenderer::UIRender()
+void KG::Renderer::KGDXRenderer::EditorUIRender()
 {
+    if ( !this->isRenderEditUI ) return;
 	ImGui::PopStyleColor(1);
 	PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(0), "ImGui UI Render");
 	auto rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart()).Offset(this->swapChainBufferIndex, this->rtvDescriptorSize);
@@ -484,57 +486,55 @@ void* KG::Renderer::KGDXRenderer::GetImGUIContext()
 	return ImGui::GetCurrentContext();
 }
 
-KG::Component::Render3DComponent* KG::Renderer::KGDXRenderer::GetNewRenderComponent()
+KG::Component::IRender3DComponent* KG::Renderer::KGDXRenderer::GetNewRenderComponent()
 {
-	return static_cast<KG::Component::Render3DComponent*>(this->graphicSystems->render3DSystem.GetNewComponent());
+	return static_cast<KG::Component::IRender3DComponent*>(this->graphicSystems->render3DSystem.GetNewComponent());
 }
 
-KG::Component::GeometryComponent* KG::Renderer::KGDXRenderer::GetNewGeomteryComponent()
+KG::Component::IGeometryComponent* KG::Renderer::KGDXRenderer::GetNewGeomteryComponent()
 {
-	auto* geo = static_cast<KG::Component::GeometryComponent*>(this->graphicSystems->geometrySystem.GetNewComponent());
-	return geo;
+	return static_cast<KG::Component::IGeometryComponent*>(this->graphicSystems->geometrySystem.GetNewComponent());
 }
 
-KG::Component::MaterialComponent* KG::Renderer::KGDXRenderer::GetNewMaterialComponent()
+KG::Component::IMaterialComponent* KG::Renderer::KGDXRenderer::GetNewMaterialComponent()
 {
-	auto* mat = static_cast<KG::Component::MaterialComponent*>(this->graphicSystems->materialSystem.GetNewComponent());
-	return mat;
+	return static_cast<KG::Component::IMaterialComponent*>(this->graphicSystems->materialSystem.GetNewComponent());
 }
 
-KG::Component::CameraComponent* KG::Renderer::KGDXRenderer::GetNewCameraComponent()
+KG::Component::ICameraComponent* KG::Renderer::KGDXRenderer::GetNewCameraComponent()
 {
-	return static_cast<KG::Component::CameraComponent*>(this->graphicSystems->cameraSystem.GetNewComponent());
+	return static_cast<KG::Component::ICameraComponent*>(this->graphicSystems->cameraSystem.GetNewComponent());
 }
 
-KG::Component::CubeCameraComponent* KG::Renderer::KGDXRenderer::GetNewCubeCameraComponent()
+KG::Component::ICubeCameraComponent* KG::Renderer::KGDXRenderer::GetNewCubeCameraComponent()
 {
-	return static_cast<KG::Component::CubeCameraComponent*>(this->graphicSystems->cubeCameraSystem.GetNewComponent());
+	return static_cast<KG::Component::ICubeCameraComponent*>(this->graphicSystems->cubeCameraSystem.GetNewComponent());
 }
 
-KG::Component::LightComponent* KG::Renderer::KGDXRenderer::GetNewLightComponent()
+KG::Component::ILightComponent* KG::Renderer::KGDXRenderer::GetNewLightComponent()
 {
-	return static_cast<KG::Component::LightComponent*>(this->graphicSystems->lightSystem.GetNewComponent());
+	return static_cast<KG::Component::ILightComponent*>(this->graphicSystems->lightSystem.GetNewComponent());
 }
 
-KG::Component::ShadowCasterComponent* KG::Renderer::KGDXRenderer::GetNewShadowCasterComponent()
+KG::Component::IShadowCasterComponent* KG::Renderer::KGDXRenderer::GetNewShadowCasterComponent()
 {
-	return static_cast<KG::Component::ShadowCasterComponent*>(this->graphicSystems->shadowSystem.GetNewComponent());
+	return static_cast<KG::Component::IShadowCasterComponent*>(this->graphicSystems->shadowSystem.GetNewComponent());
 }
 
-KG::Component::BoneTransformComponent* KG::Renderer::KGDXRenderer::GetNewBoneTransformComponent()
+KG::Component::IBoneTransformComponent* KG::Renderer::KGDXRenderer::GetNewBoneTransformComponent()
 {
-	return static_cast<KG::Component::BoneTransformComponent*>(this->graphicSystems->avatarSystem.GetNewComponent());
+	return static_cast<KG::Component::IBoneTransformComponent*>(this->graphicSystems->avatarSystem.GetNewComponent());
 }
 
-KG::Component::AnimationControllerComponent* KG::Renderer::KGDXRenderer::GetNewAnimationControllerComponent()
+KG::Component::IAnimationControllerComponent* KG::Renderer::KGDXRenderer::GetNewAnimationControllerComponent()
 {
-	auto* anim = static_cast<KG::Component::AnimationControllerComponent*>(this->graphicSystems->animationControllerSystem.GetNewComponent());
+	auto* anim = static_cast<KG::Component::IAnimationControllerComponent*>(this->graphicSystems->animationControllerSystem.GetNewComponent());
 	return anim;
 }
 
-KG::Component::ParticleEmitterComponent* KG::Renderer::KGDXRenderer::GetNewParticleEmitterComponent()
+KG::Component::IParticleEmitterComponent* KG::Renderer::KGDXRenderer::GetNewParticleEmitterComponent()
 {
-	auto* particleComp = static_cast<KG::Component::ParticleEmitterComponent*>(this->graphicSystems->particleSystem.GetNewComponent());
+	auto* particleComp = static_cast<KG::Component::IParticleEmitterComponent*>(this->graphicSystems->particleSystem.GetNewComponent());
 	return particleComp;
 }
 
@@ -576,6 +576,11 @@ double KG::Renderer::KGDXRenderer::GetGameTime() const
 UINT KG::Renderer::KGDXRenderer::QueryMaterialIndex(const KG::Utill::HashString& materialId) const
 {
 	return KG::Resource::ResourceContainer::GetInstance()->LoadMaterial(materialId).first;
+}
+
+void KG::Renderer::KGDXRenderer::SetEditUIRender(bool isRender)
+{
+    this->isRenderEditUI = isRender;
 }
 
 void KG::Renderer::KGDXRenderer::SetGameTime(double gameTime)

@@ -6,7 +6,8 @@ namespace KG::System
 	using namespace KG::Component;
 	struct GeometrySystem : public IComponentSystem<GeometryComponent>
 	{
-		// IComponentSystem을(를) 통해 상속됨
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<IGeometryComponent>::name());
+        // IComponentSystem을(를) 통해 상속됨
 		virtual void OnUpdate( float elapsedTime ) override;
 		virtual void OnPostUpdate( float elapsedTime ) override;
 		virtual void OnPreRender() override;
@@ -14,7 +15,8 @@ namespace KG::System
 
 	struct Render3DSystem : public IComponentSystem<Render3DComponent>
 	{
-		// IComponentSystem을(를) 통해 상속됨
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<IRender3DComponent>::name());
+        // IComponentSystem을(를) 통해 상속됨
 		virtual void OnUpdate(float elapsedTime) override;
 		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;
@@ -22,7 +24,8 @@ namespace KG::System
 
 	struct MaterialSystem : public IComponentSystem<MaterialComponent>
 	{
-	protected:
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<IMaterialComponent>::name());
+    protected:
 		virtual void OnGetNewComponent(MaterialComponent* target) override;
 	public:
 		virtual void OnUpdate(float elapsedTime) override;
@@ -31,7 +34,8 @@ namespace KG::System
 	};
 	struct CameraSystem : public IComponentSystem<CameraComponent>
 	{
-	protected:
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<ICameraComponent>::name());
+    protected:
 		virtual void OnGetNewComponent( CameraComponent* target ) override;
 	public:
 		virtual void OnUpdate( float elapsedTime ) override;
@@ -41,7 +45,8 @@ namespace KG::System
 
 	struct CubeCameraSystem : public IComponentSystem<CubeCameraComponent>
 	{
-	protected:
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<ICubeCameraComponent>::name());
+    protected:
 		virtual void OnGetNewComponent( CubeCameraComponent* target ) override;
 	public:
 		virtual void OnUpdate( float elapsedTime ) override;
@@ -52,7 +57,8 @@ namespace KG::System
 
 	struct LightSystem : public IComponentSystem<LightComponent>
 	{
-	protected:
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<ILightComponent>::name());
+    protected:
 		virtual void OnGetNewComponent( LightComponent* target ) override;
 	public:
 		virtual void OnUpdate( float elapsedTime ) override;
@@ -61,7 +67,8 @@ namespace KG::System
 	};
 	struct AvatarSystem : public IComponentSystem<BoneTransformComponent>
 	{
-	public:
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<IBoneTransformComponent>::name());
+    public:
 		virtual void OnUpdate( float elapsedTime ) override;
 		virtual void OnPostUpdate( float elapsedTime ) override;
 		virtual void OnPreRender() override;
@@ -69,7 +76,8 @@ namespace KG::System
 
 	struct AnimationControllerSystem : public IComponentSystem<AnimationControllerComponent>
 	{
-	public:
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<IAnimationControllerComponent>::name());
+    public:
 		virtual void OnUpdate(float elapsedTime) override;
 		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;
@@ -77,7 +85,8 @@ namespace KG::System
 
 	struct ShadowCasterSystem : public IComponentSystem<ShadowCasterComponent>
 	{
-	public:
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<IShadowCasterComponent>::name());
+    public:
 		virtual void OnUpdate( float elapsedTime ) override;
 		virtual void OnPostUpdate( float elapsedTime ) override;
 		virtual void OnPreRender() override;
@@ -85,7 +94,8 @@ namespace KG::System
 
 	struct ParticleEmitterSystem : public IComponentSystem<ParticleEmitterComponent>
 	{
-	public:
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<IParticleEmitterComponent>::name());
+    public:
 		virtual void OnUpdate(float elapsedTime) override;
 		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;

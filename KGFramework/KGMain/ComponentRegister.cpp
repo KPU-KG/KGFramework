@@ -1,3 +1,3 @@
-#include "GraphicComponent.h"
+#include "IGraphicComponent.h"
 #include "Transform.h"
 

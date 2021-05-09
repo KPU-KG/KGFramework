@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="391">
+        <Tag hash_id="1060049722" srcString="barrier2.fbx"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="22.440229" y="0" z="-28.869175"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
+        </Component>
+        <GameObject instanceId="388">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="389">
+                <Tag hash_id="1563606344" srcString="MGS_Barrier4"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="390">
+                    <Tag hash_id="2083526360" srcString="Concrete"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1060049722" srcString="barrier2.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

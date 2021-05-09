@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="272">
+        <Tag hash_id="2671506371" srcString="cactus1.fbx"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="36.946007" y="1.0082417" z="-147.4068"/>
+            <Rotation_Q x="0" y="0.4226183" z="0" w="0.90630776"/>
+            <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+        </Component>
+        <Component name="GeometryComponent" hash_id="36578682">
+            <GeometryDescs/>
+        </Component>
+        <Component name="MaterialComponent" hash_id="1886146475">
+            <MaterialDesc/>
+        </Component>
+        <Component name="Render3DComponent" hash_id="4070531333"/>
+        <GameObject instanceId="267">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="226458.59" y="-10417.535" z="258538.61"/>
+                <Rotation_Q x="0" y="0" z="0" w="0.99999988"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="268">
+                <Tag hash_id="2155767153" srcString="Cactus1"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-113136.5" y="4921.1499" z="-128763.75"/>
+                    <Rotation_Q x="0" y="0" z="0" w="0.99999988"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="269">
+                    <Tag hash_id="1689109541" srcString="cactus1_windows_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-963.03125" y="672.30957" z="-501.32031"/>
+                        <Rotation_Q x="1.7763568e-15" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="2671506371" srcString="cactus1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="1"/>
+                            </Element>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="2"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="270">
+                    <Tag hash_id="4124968975" srcString="cactus1_metalparts_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-958.54688" y="687.5918" z="-501.39844"/>
+                        <Rotation_Q x="1.7763568e-15" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="2671506371" srcString="cactus1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="1"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="1"/>
+                            </Element>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="2"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+                <GameObject instanceId="271">
+                    <Tag hash_id="3277882242" srcString="cactus1_building_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-1010.375" y="706.67725" z="-501.71875"/>
+                        <Rotation_Q x="1.7763568e-15" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="GeometryComponent" hash_id="36578682">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="2671506371" srcString="cactus1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="2"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="MaterialComponent" hash_id="1886146475">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="1"/>
+                            </Element>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="2"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

@@ -26,7 +26,7 @@ void KG::Core::Scene::DrawObjectTree(KG::Core::GameObject* node, KG::Core::GameO
 				if ( dragSource && dragSource != node && dragSource->GetTransform() && node->GetTransform() )
 				{
 					dragSource->GetTransform()->ExtractThisNode();
-					node->GetTransform()->AddChild(dragSource->GetTransform());
+					node->GetTransform()->AddChild(dragSource->GetTransform(), true);
 				}
 			}
 			ImGui::EndDragDropTarget();

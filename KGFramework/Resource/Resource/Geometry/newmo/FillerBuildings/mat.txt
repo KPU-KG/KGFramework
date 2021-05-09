@@ -1,0 +1,25 @@
+01
+materials: 2
+
+mat1: 
+T_filler_building_01_A
+T_filler_building_01_MT_AO_H_SM
+T_filler_building_01_N
+
+mat2:
+T_filler_building_02_windows_A
+T_filler_building_02_windows_MT_AO_SM
+T_filler_building_02_windows_N
+
+03
+materials: 2
+
+mat1: 
+T_filler_building_02_windows_A
+T_filler_building_02_windows_MT_AO_SM
+T_filler_building_02_windows_N
+
+mat2:
+T_filler_building_03_A
+T_filler_building_03_MT_AO_H_SM
+T_filler_building_03_N

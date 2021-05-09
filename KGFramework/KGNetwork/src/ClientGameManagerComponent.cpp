@@ -23,8 +23,7 @@ bool KG::Component::CGameManagerComponent::OnDrawGUI()
 	{
 		if (ImGui::Button("REQ_LOGIN"))
 		{
-			KG::Packet::CS_REQ_LOGIN login = {};
-			this->SendPacket(&login);
+            this->SendLoginPacket();
 		}
 	}
 	return false;
@@ -92,4 +91,10 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 	*/
 	}
 	return false;
+}
+
+void KG::Component::CGameManagerComponent::SendLoginPacket()
+{
+    KG::Packet::CS_REQ_LOGIN login = {};
+    this->SendPacket(&login);
 }

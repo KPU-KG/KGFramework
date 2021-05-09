@@ -396,3 +396,6 @@ MigrationBackup/
 # End of https://www.toptal.com/developers/gitignore/api/visualstudio,c++
 
 KGFramework/Resource/Resource/ShaderScript/ShaderDebugCache/*.hlsl
+KGFramework/Resource/KGNetwork.dll
+KGFramework/Resource/KGPhysics.dll
+KGFramework/Resource/KGServer.dll
