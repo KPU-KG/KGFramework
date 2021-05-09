@@ -129,6 +129,9 @@
     <ClCompile Include="src\InputManager.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="Scene_UI.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\MathHelper.h">
@@ -241,6 +244,9 @@
     </ClInclude>
     <ClInclude Include="include\Protocol.h">
       <Filter>헤더 파일\Network</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KGColor.h">
+      <Filter>헤더 파일\Utill</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -2,7 +2,7 @@
 #include <mutex>
 #include "ImguiHelper.h"
 #include "KGFramework.h"
-#include "GraphicComponent.h"
+#include "IGraphicComponent.h"
 #include "KGRenderer.h"
 #include "Systems.h"
 #include "Debug.h"
@@ -55,18 +55,21 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	DebugNormalMessage("Initialize");
 	//Desc류 세팅
 	this->engineDesc = engineDesc;
-	this->setting = setting;
+	new(&this->setting) Setting(setting);
 
 	//Renderer
-	this->renderer = std::unique_ptr<KG::Renderer::IKGRenderer>(KG::Renderer::GetD3D12Renderer());
+	this->renderer = std::unique_ptr<KG::Renderer::IKGRenderer>(
+        setting.isConsoleMode ? KG::Renderer::GetFakeRenderer() : KG::Renderer::GetD3D12Renderer()
+        );
+	this->input = std::unique_ptr<KG::Input::InputManager>(KG::Input::InputManager::GetInputManager());
 
 	KG::Renderer::RendererDesc renderDesc;
 	renderDesc.hInst = this->engineDesc.hInst;
 	renderDesc.hWnd = this->engineDesc.hWnd;
 
 	KG::Renderer::RendererSetting renderSetting;
-	renderSetting.clientWidth = this->setting.clientWidth;
-	renderSetting.clientHeight = this->setting.clientHeight;
+	renderSetting.clientWidth = this->setting.GetGameResolutionWidth();
+	renderSetting.clientHeight = this->setting.GetGameResolutionHeigth();
 	DebugNormalMessage("RECT : " << renderSetting.clientWidth << " , " << renderSetting.clientHeight);
 	renderSetting.isVsync = this->setting.isVsync;
 
@@ -82,6 +85,8 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	physicsDesc.gravity = 9.81f;
 
 	this->renderer->Initialize(renderDesc, renderSetting);
+    this->renderer->SetEditUIRender(setting.isEditMode);
+    this->input->SetUsingImgui(setting.isEditMode);
 	this->renderer->PostComponentProvider(this->componentProvider);
 	this->physics->Initialize(physicsDesc);
 	this->physics->AddFloor(-10);
@@ -138,8 +143,21 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 
 	this->PostSceneFunction();
 	this->scene->InitializeRoot();
-	//인풋
-	this->input = std::unique_ptr<KG::Input::InputManager>(KG::Input::InputManager::GetInputManager());
+
+    if ( this->setting.startScenePath != "none" && this->setting.startScenePath != "")
+    {
+        this->scene->LoadScene(this->setting.startScenePath);
+        this->scene->isStartGame = true;
+    }
+    
+    if ( this->setting.isStartServer )
+    {
+        this->StartServer(false);
+    }
+    else if ( this->setting.isStartClient )
+    {
+        this->StartClient();
+    }
 
 	//자원 미리 할당
 	this->windowText.reserve(100);
@@ -165,8 +183,9 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.useCubeRender = false;
 			renderTextureDesc.useDepthStencilBuffer = true;
 			renderTextureDesc.useRenderTarget = true;
-			renderTextureDesc.width = this->setting.clientWidth;
-			renderTextureDesc.height = this->setting.clientHeight;
+			renderTextureDesc.width = this->setting.GetGameResolutionWidth();
+			renderTextureDesc.height = this->setting.GetGameResolutionHeigth();
+            renderTextureDesc.useScreenSize = true;
 			cam->renderTextureDesc = renderTextureDesc;
 			auto* sc = this->system->sceneCameraSystem.GetNewComponent();
 			obj.tag = KG::Utill::HashString("SceneCameraObject");
@@ -273,6 +292,11 @@ void KG::GameFramework::PostSceneFunction()
 			boneVector->GetTransform()->AddChild(sight->GetTransform());
 			sight->GetTransform()->SetPosition(0.042f, -6.841, 4.2f);
 			sight->GetTransform()->SetEulerDegree(-90,-90,0);
+
+
+			auto* particle = this->scene->CallPreset("ParticleGenerator"_id);
+			boneVector->GetTransform()->AddChild(particle->GetTransform());
+			particle->GetTransform()->SetPosition(0, -27, 0);
 			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
 
 			ctrl->RegisterAnimation(KG::Utill::HashString("Vector@Idle.FBX"_id));
@@ -479,8 +503,9 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.useCubeRender = false;
 			renderTextureDesc.useDepthStencilBuffer = true;
 			renderTextureDesc.useRenderTarget = true;
-			renderTextureDesc.width = this->setting.clientWidth;
-			renderTextureDesc.height = this->setting.clientHeight;
+            renderTextureDesc.useScreenSize = true;
+			renderTextureDesc.width = this->setting.GetGameResolutionWidth();
+			renderTextureDesc.height = this->setting.GetGameResolutionHeigth();
 			cam->renderTextureDesc = renderTextureDesc;
 			cam->SetFovY(90.0f);
 
@@ -494,8 +519,8 @@ void KG::GameFramework::PostSceneFunction()
 			arms->GetTransform()->GetChild()->SetPosition(0.0, 0.0, 0.0f);
 			arms->GetTransform()->GetChild()->SetEulerDegree(0, 90.0f, 0);
 
-			cameraObj->GetTransform()->AddChild(arms->GetTransform());
 
+			cameraObj->GetTransform()->AddChild(arms->GetTransform());
 			obj.GetTransform()->AddChild(cameraObj->GetTransform());
 
 			//auto* player = this->system->playerComponentSystem.GetNewComponent();
@@ -582,6 +607,13 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(r);
 		}
 	);
+	this->scene->AddObjectPreset("ParticleGenerator",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* p = this->renderer->GetNewParticleEmitterComponent();
+			obj.AddComponent(p);
+		}
+	);
 	this->scene->AddModelCreator(
 		[this](const KG::Utill::HashString& modelID, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& material)
 		{
@@ -592,12 +624,12 @@ void KG::GameFramework::PostSceneFunction()
 	this->scene->AddCameraMatrixGetter(
 		[](KG::Component::IComponent* comp)
 		{
-			auto* camera = static_cast<KG::Component::CameraComponent*>(comp);
+			auto* camera = static_cast<KG::Component::ICameraComponent*>(comp);
 			return camera->GetView();
 		},
 		[](KG::Component::IComponent* comp)
 		{
-			auto* camera = static_cast<KG::Component::CameraComponent*>(comp);
+			auto* camera = static_cast<KG::Component::ICameraComponent*>(comp);
 			return camera->GetProj();
 		}
 		);
@@ -614,16 +646,20 @@ int KG::GameFramework::WinProcHandler(HWND hWnd, UINT message, WPARAM wParam, LP
 
 void KG::GameFramework::UIPreRender()
 {
-	this->renderer->PreRenderUI();
+    if ( !this->setting.isEditMode ) return;
+    this->renderer->PreRenderEditorUI();
 	guiContext = (ImGuiContext*)this->renderer->GetImGUIContext();
 	ImGui::SetCurrentContext(guiContext);
 	this->input->SetUIContext(guiContext);
 	this->physics->SetGUIContext(guiContext);
+    if ( this->networkClient ) this->networkClient->SetGUIContext(guiContext);
+    if ( this->networkServer ) this->networkServer->SetGUIContext(guiContext);
 	// this->physics->
 }
 
 void KG::GameFramework::UIRender()
 {
+    if ( !this->setting.isEditMode ) return;
 	this->scene->DrawGUI(guiContext);
 
 	static constexpr int sceneInfoSize = 250;
@@ -634,65 +670,48 @@ void KG::GameFramework::UIRender()
 	ImGui::SetNextWindowBgAlpha(0.8f);
 	if ( ImGui::Begin("GameFramework") )
 	{
-		if ( ImGui::Button("Reset Scene") )
-		{
-			this->scene.release();
-			this->scene = std::make_unique<KG::Core::Scene>();
-		}
-	}
-	ImGui::End();
+        if ( ImGui::CollapsingHeader("Current Setting", ImGuiTreeNodeFlags_DefaultOpen) )
+        {
+            this->setting.DrawGui();
+        }
+        if ( ImGui::CollapsingHeader("Common Function", ImGuiTreeNodeFlags_DefaultOpen) )
+        {
+		    if ( ImGui::Button("Reset Scene") )
+		    {
+		    	this->scene->Clear();
+		    }
 
-	ImGui::SetNextWindowSize(ImVec2(sceneInfoSize, viewportSize.y), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowBgAlpha(0.8f);
-	if ( ImGui::Begin("Network") )
-	{
-		if ( ImGui::Button("Open Console") )
-		{
-			if ( !AllocConsole() )
-				MessageBox(NULL, L"The console window was not created", NULL, MB_ICONEXCLAMATION);
-			FILE* console;
-			freopen_s(&console, "CONIN$", "r", stdin);
-			freopen_s(&console, "CONOUT$", "w", stderr);
-			freopen_s(&console, "CONOUT$", "w", stdout);
-			printf("DEBUG CONSOLE OPEN\n");
-			std::cout.clear();
-		}
-		if ( this->networkClient == nullptr && this->networkServer == nullptr )
-		{
-			if ( ImGui::Button("Start Network Client") )
-			{
-				this->networkClient = std::unique_ptr<KG::Server::INetwork>(KG::Server::GetNetwork());
-				this->networkClient->SetGUIContext(this->guiContext);
-				this->networkClient->Initialize();
-				this->networkClient->SetScene(this->scene.get());
-				this->networkClient->SetInputManager(this->input.get());
-				this->networkClient->PostComponentProvider(this->componentProvider);
-
-				this->PostNetworkFunction();
-
-				//Hard Code
-				this->scene->AddSceneComponent("CGameManagerComponent"_id, this->componentProvider.GetComponent("CGameManagerComponent"_id));
-			}
-			if ( ImGui::Button("Start Network Server") )
-			{
-				this->networkServer = std::unique_ptr<KG::Server::IServer>(KG::Server::GetServer());
-				this->networkServer->SetGUIContext(this->guiContext);
-				this->networkServer->Initialize();
-				this->networkServer->PostComponentProvider(this->componentProvider);
-				this->networkServer->SetPhysicsScene(physics);
-
-				this->PostServerFunction();
-
-				//Hard Code
-				this->scene->AddSceneComponent("SGameManagerComponent"_id, this->componentProvider.GetComponent("SGameManagerComponent"_id));
-			}
-		}
-		else
-		{
-			if ( this->networkClient ) this->networkClient->DrawImGUI();
-			if ( this->networkServer ) this->networkServer->DrawImGUI();
-		}
+		    if ( ImGui::Button("Open Console") )
+		    {
+		    	if ( !AllocConsole() )
+		    		MessageBox(NULL, L"The console window was not created", NULL, MB_ICONEXCLAMATION);
+		    	FILE* console;
+		    	freopen_s(&console, "CONIN$", "r", stdin);
+		    	freopen_s(&console, "CONOUT$", "w", stderr);
+		    	freopen_s(&console, "CONOUT$", "w", stdout);
+		    	printf("DEBUG CONSOLE OPEN\n");
+		    	std::cout.clear();
+		    }
+        }
+        if ( ImGui::CollapsingHeader("Network and Server", ImGuiTreeNodeFlags_DefaultOpen) )
+        {
+	    	if ( this->networkClient == nullptr && this->networkServer == nullptr )
+	    	{
+	    		if ( ImGui::Button("Start Network Client") )
+	    		{
+                    this->StartClient();
+	    		}
+	    		if ( ImGui::Button("Start Network Server") )
+	    		{
+                    this->StartServer(true);
+	    		}
+	    	}
+	    	else
+	    	{
+	    		if ( this->networkClient ) this->networkClient->DrawImGUI();
+	    		if ( this->networkServer ) this->networkServer->DrawImGUI();
+	    	}
+        }
 
 	}
 	ImGui::End();
@@ -702,22 +721,31 @@ void KG::GameFramework::OnProcess()
 {
 	this->timer.Tick();
 	this->UpdateWindowText();
-
 	this->ServerProcess();
-
 	this->UIPreRender();
-	this->UIRender();
+
 	this->input->ProcessInput(this->engineDesc.hWnd);
+
+	this->UIRender();
 	this->system->OnUpdate(this->timer.GetTimeElapsed());
 	this->ServerUpdate(this->timer.GetTimeElapsed());
 	if ( this->scene->isStartGame )
 	{
+		this->scene->Update(this->timer.GetTimeElapsed());
 		this->renderer->Update(this->timer.GetTimeElapsed());
 	}
 	this->physics->Advance(this->timer.GetTimeElapsed());
+	this->scene->PostUpdate(this->timer.GetTimeElapsed());
+	this->renderer->SetGameTime(this->timer.GetGameTime());
 	this->renderer->Render();
 
 	this->ServerProcessEnd();
+
+    if ( this->input->GetKeyState(VK_F6) == KG::Input::KeyState::Up )
+    {
+        this->SetEditorUIRender(!this->setting.isEditMode);
+    }
+
 	this->input->PostProcessInput();
 }
 
@@ -751,6 +779,49 @@ void KG::GameFramework::ServerProcessEnd()
 	{
 		this->networkServer->UnlockWorld();
 	}
+}
+
+void KG::GameFramework::SetEditorUIRender(bool isRender)
+{
+    this->setting.isEditMode = isRender;
+    this->input->SetUsingImgui(this->setting.isEditMode);
+    this->renderer->SetEditUIRender(this->setting.isEditMode);
+}
+
+void KG::GameFramework::StartServer(bool lock)
+{
+    this->networkServer = std::unique_ptr<KG::Server::IServer>(KG::Server::GetServer());
+    this->networkServer->SetGUIContext(this->guiContext);
+    this->networkServer->Initialize();
+    this->networkServer->PostComponentProvider(this->componentProvider);
+    this->networkServer->SetPhysicsScene(physics);
+
+    this->PostServerFunction();
+
+    //Hard Code
+    this->scene->AddSceneComponent("SGameManagerComponent"_id, this->componentProvider.GetComponent("SGameManagerComponent"_id));
+    this->networkServer->Start(lock);
+}
+
+void KG::GameFramework::StartClient()
+{
+    this->networkClient = std::unique_ptr<KG::Server::INetwork>(KG::Server::GetNetwork());
+    this->networkClient->SetGUIContext(this->guiContext);
+    this->networkClient->Initialize();
+    this->networkClient->SetScene(this->scene.get());
+    this->networkClient->SetInputManager(this->input.get());
+    this->networkClient->PostComponentProvider(this->componentProvider);
+
+    this->PostNetworkFunction();
+
+    //Hard Code
+    this->scene->AddSceneComponent("CGameManagerComponent"_id, this->componentProvider.GetComponent("CGameManagerComponent"_id));
+
+
+    this->networkClient->SetAddress(this->setting.ipAddress);
+    this->networkClient->Connect();
+    if ( this->setting.isStartLogin ) this->networkClient->Login();
+
 }
 
 void KG::GameFramework::OnClose()

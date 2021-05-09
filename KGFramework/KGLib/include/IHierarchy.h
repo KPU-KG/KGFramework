@@ -33,9 +33,11 @@ namespace KG::Core
 			func(static_cast<Ty*>(this));
 		}
 
-		void SetParent(BaseHierarchy* parent)
+		void SetParent(BaseHierarchy* parent, bool onChangeParent)
 		{
+            if ( this->parent == parent ) return;
 			this->parent = parent;
+			if( onChangeParent ) OnChangeParent();
 		}
 
 		BaseHierarchy* GetParent() const
@@ -56,21 +58,21 @@ namespace KG::Core
 		{
 			return this->child;
 		}
-		void AddChild(BaseHierarchy* obj)
+		void AddChild(BaseHierarchy* obj, bool onChangeParent)
 		{
-			obj->SetParent(this);
+			obj->SetParent(this, onChangeParent);
 			if ( this->hasChild() )
 			{
-				this->child->AddSibiling(obj);
+				this->child->AddSibiling(obj, onChangeParent);
 			}
 			else
 			{
 				this->child = obj;
 			}
 		}
-		void AddSibiling(BaseHierarchy* obj)
+		void AddSibiling(BaseHierarchy* obj, bool onChangeParent)
 		{
-			obj->SetParent(this->parent);
+			obj->SetParent(this->parent, onChangeParent);
 			BaseHierarchy* csr = this;
 			while ( true )
 			{
@@ -109,6 +111,9 @@ namespace KG::Core
 				csr->parent = this;
 				csr = csr->nextSibling;
 			}
+		}
+		virtual void OnChangeParent()
+		{
 		}
 
 	public:
@@ -159,9 +164,9 @@ namespace KG::Core
 			BaseHierarchy::FunctionSibiling<ChildTy>(func);
 		}
 
-		void SetParent(ChildTy* parent)
+		void SetParent(ChildTy* parent, bool onChangeParent = false)
 		{
-			BaseHierarchy::SetParent(static_cast<BaseHierarchy*>(parent));
+			BaseHierarchy::SetParent(static_cast<BaseHierarchy*>(parent), onChangeParent);
 		}
 
 		ChildTy* GetParent() const
@@ -182,13 +187,13 @@ namespace KG::Core
 		{
 			return static_cast<ChildTy*>(BaseHierarchy::GetChild());
 		}
-		void AddChild(ChildTy* obj)
+		void AddChild(ChildTy* obj, bool onChangeParent = false)
 		{
-			BaseHierarchy::AddChild(static_cast<BaseHierarchy*>(obj));
+			BaseHierarchy::AddChild(static_cast<BaseHierarchy*>(obj), onChangeParent);
 		}
-		void AddSibiling(ChildTy* obj)
+		void AddSibiling(ChildTy* obj, bool onChangeParent = false)
 		{
-			BaseHierarchy::AddSibiling(static_cast<BaseHierarchy*>(obj));
+			BaseHierarchy::AddSibiling(static_cast<BaseHierarchy*>(obj), onChangeParent);
 		}
 
 		void SetPrevSibiling(ChildTy* obj)

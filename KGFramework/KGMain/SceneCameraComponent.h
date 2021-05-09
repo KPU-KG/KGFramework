@@ -5,7 +5,7 @@
 #include <functional>
 namespace KG::Component
 {
-	class CameraComponent;
+	class ICameraComponent;
 	class SceneCameraComponent : public IComponent
 	{
 	private:
@@ -14,7 +14,7 @@ namespace KG::Component
 		float speedValue = 1.0f;
 
 		TransformComponent* transform;
-		CameraComponent* camera;
+		ICameraComponent* camera;
 
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 	public:

@@ -31,8 +31,11 @@ namespace KG::Server
 	{
 	public:
 		virtual void Initialize() = 0;
-		virtual void SetAddress(DWORD address) = 0;
-		virtual void Connect() = 0;
+        virtual void SetAddress(DWORD address) = 0;
+        virtual void SetAddress(const std::string& address) = 0;
+        virtual void Connect() = 0;
+        virtual bool TryConnect() = 0;
+        virtual void Login() = 0;
 		virtual void Close() = 0;
 		virtual void SetScene(KG::Core::Scene* scene) = 0;
 		virtual void TryRecv() = 0;

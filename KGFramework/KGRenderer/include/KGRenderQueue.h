@@ -41,8 +41,11 @@ namespace KG::Renderer
 		//static 할때 처리 추가 필요 // 매 프레임 업로드할 필요가 없다.
 		void OnObjectAdd( bool isVisible );
 		void OnObjectRemove( bool isVisible );
+		void SetVisibleSize(int count);
 		void OnVisibleAdd();
 		void OnVisibleRemove();
+		void SetObjectSize(int count);
+		void SetUpdateCount(int count);
 		int GetUpdateCount();
 		void ClearCount();
 

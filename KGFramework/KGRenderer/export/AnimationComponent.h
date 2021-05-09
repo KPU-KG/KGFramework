@@ -4,16 +4,8 @@
 #include "IRenderComponent.h"
 #include "ISerializable.h"
 #include "SerializableProperty.h"
-
-constexpr const unsigned int ANIMSTATE_PLAYING = 0;
-constexpr const unsigned int ANIMSTATE_CHANGING = 1;
-constexpr const unsigned int ANIMSTATE_FORCE = 2;
-constexpr const unsigned int ANIMSTATE_STOP = 3;
-
-#define ANIMLOOP_INF -1
-
-#define ANIMINDEX_CURRENT -1
-#define ANIMINDEX_CHANGE 0
+#include "IAnimationComponent.h"
+#include "IDXRenderComponent.h"
 
 namespace KG::Core
 {
@@ -30,7 +22,7 @@ namespace KG::Component
 	class Render3DComponent;
 	class GeometryComponent;
 
-	class DLL BoneTransformComponent : public IRenderComponent
+	class BoneTransformComponent : public IBoneTransformComponent, IDXRenderComponent
 	{
 		friend Render3DComponent;
 		using FrameCacheVector = std::vector<KG::Core::GameObject*>;
@@ -51,43 +43,7 @@ namespace KG::Component
 		virtual bool OnDrawGUI();
 	};
 
-	struct Animation {
-	private:
-		void MatchNode(KG::Core::GameObject* gameObject, UINT animIndex = 0U);
-		void SetDuration(KG::Utill::AnimationSet* anim);
-	public:
-		KG::Utill::HashString animationId;
-		std::vector<std::vector<KG::Core::GameObject*>> frameCache;
-		float timer = 0.0f;
-		float duration = 0.0f;
-		void Initialize(KG::Core::GameObject* gameObject, UINT animIndex = 0U);
-	};
-
-	struct AnimationCommand {
-		using AnimCommandValue = std::unordered_map<UINT, int>;
-		std::unordered_map<KG::Utill::hashType, AnimCommandValue> index;
-		float duration = 0.1f;
-		int repeat = -1;
-		float time = 0.0f;
-		float speed = 1.0f;
-		int next = ANIMSTATE_PLAYING;
-		bool applyTransform = true;
-		bool applyRotation = true;
-		bool applyScale = true;
-	};
-
-	struct AnimationEvent {
-	private:
-	public:
-		AnimationEvent(const KG::Utill::HashString& eventId, float time) : eventId(eventId), time(time) { }
-		// KG::Utill::HashString animationId;
-		// int keyFrame;
-		float time; // 이벤트 등록할 때 키 프레임으로 받아서 타이밍을 계산한 뒤 저장
-		KG::Utill::HashString eventId;		// 현재는 사운드만 생각하고 해쉬 스트링 형태로 저장
-		bool activated = false;
-	};
-
-	class DLL AnimationControllerComponent : public IRenderComponent
+	class AnimationControllerComponent : public IAnimationControllerComponent, IDXRenderComponent
 	{
 		using AnimationEventSet = std::vector<AnimationEvent>;
 		// changing
@@ -120,30 +76,31 @@ namespace KG::Component
 		void ChangingUpdate(float elapsedTime);
 	public:
 		virtual void Update(float timeElapsed) override;
-		void RegisterAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U);
-		void RegisterEvent(const KG::Utill::HashString& animationId, int keyFrame, const KG::Utill::HashString& eventId);
+		virtual void RegisterAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U) override;
+		virtual void RegisterEvent(const KG::Utill::HashString& animationId, int keyFrame, const KG::Utill::HashString& eventId) override;
 
-		void SetDefaultAnimation(KG::Utill::HashString defaultAnim, UINT animationIndex = 0U);
-		void SetAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U, int repeat = -1, float speed = 1.0f, bool clearNext = true, int weight = 1);
-		int ChangeAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U, int nextState = ANIMSTATE_PLAYING, float blendingDuration = 0.1f, int repeat = 1, bool addWeight = false, float speed = 1.0f);
-		int AddNextAnimation(const KG::Utill::HashString& nextAnim, UINT animationIndex = 0U, int nextState = ANIMSTATE_PLAYING, int repeat = 0.1f, float speed = 1.0f, int weight = 1);
-		void BlendingAnimation(const KG::Utill::HashString& nextAnim, UINT animationIndex = 0U, float duration = -1.f, int index = -1, int weight = 1);
-		int ForceChangeAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U, int nextState = ANIMSTATE_PLAYING, float blendingDuration = 0.1f, int repeat = 1, bool addWeight = false, float speed = 1.0f);
+		virtual void SetDefaultAnimation(KG::Utill::HashString defaultAnim, UINT animationIndex = 0U) override;
+		virtual void SetAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U, int repeat = -1, float speed = 1.0f, bool clearNext = true, int weight = 1) override;
+		virtual int ChangeAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U, int nextState = ANIMSTATE_PLAYING, float blendingDuration = 0.1f, int repeat = 1, bool addWeight = false, float speed = 1.0f) override;
+		virtual int AddNextAnimation(const KG::Utill::HashString& nextAnim, UINT animationIndex = 0U, int nextState = ANIMSTATE_PLAYING, int repeat = 0.1f, float speed = 1.0f, int weight = 1) override;
+		virtual void BlendingAnimation(const KG::Utill::HashString& nextAnim, UINT animationIndex = 0U, float duration = -1.f, int index = -1, int weight = 1) override;
+		virtual int ForceChangeAnimation(const KG::Utill::HashString& animationId, UINT animationIndex = 0U, int nextState = ANIMSTATE_PLAYING, float blendingDuration = 0.1f, int repeat = 1, bool addWeight = false, float speed = 1.0f) override;
 
-		void SetAnimationWeight(int index, const KG::Utill::HashString& anim, UINT animationIndex = 0U, int weight = 1);
-		void SetIgnoreScale(bool isUsing);
-		void SetIgnoreTranslate(bool isUsing);
+		virtual void SetAnimationWeight(int index, const KG::Utill::HashString& anim, UINT animationIndex = 0U, int weight = 1) override;
+		virtual void SetIgnoreScale(bool isUsing) override;
+		virtual void SetIgnoreTranslate(bool isUsing) override;
 		virtual bool OnDrawGUI() override;
 
-		void SyncAnimation(const KG::Utill::HashString& anim, UINT animationIndex, float timer);
+		virtual float GetDuration(const KG::Utill::HashString& animId, UINT animationIndex = 0U) override;
+		virtual KG::Utill::HashString GetCurrentPlayingAnimationId() const override;
+		virtual UINT GetCurrentPlayingAnimationIndex() const override;
+		virtual float GetCurrentPlayingAnimationTime() const override;
+		virtual float GetCurrentPlayingAnimationDuration() const override;
 
-		float GetDuration(const KG::Utill::HashString& animId, UINT animationIndex = 0U);
-		KG::Utill::HashString GetCurrentPlayingAnimationId() const;
-		UINT GetCurrentPlayingAnimationIndex() const;
-		float GetCurrentPlayingAnimationTime() const;
-		float GetCurrentPlayingAnimationDuration() const;
-	};
+        // IAnimationControllerComponent을(를) 통해 상속됨
+        //virtual void SyncAnimation(const KG::Utill::HashString& anim, UINT animationIndex, float timer) override;
+    };
 
-	REGISTER_COMPONENT_ID( BoneTransformComponent );
-	REGISTER_COMPONENT_ID(AnimationControllerComponent);
+    REGISTER_COMPONENT_ID_REPLACE(BoneTransformComponent, IBoneTransformComponent);
+    REGISTER_COMPONENT_ID_REPLACE(AnimationControllerComponent, IAnimationControllerComponent);
 };

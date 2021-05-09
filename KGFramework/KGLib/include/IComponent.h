@@ -14,6 +14,12 @@ namespace KG::Component
 #define REGISTER_COMPONENT_ID(X) template <> struct KG::Component::ComponentID<X> \
 		{ inline static constexpr KG::Utill::_ID id() {return #X##_id;}\
 		  inline static constexpr const char* name() {return #X;} }
+
+#define REGISTER_COMPONENT_ID_REPLACE(X, Y) template <> struct KG::Component::ComponentID<X> \
+		{ inline static constexpr KG::Utill::_ID id() {return #Y##_id;}\
+		  inline static constexpr const char* name() {return #Y;} }
+
+
 #define ADD_COMPONENT_ID_TO_ELEMENT(element, Ty) {\
 	element->SetAttribute("name", KG::Component::ComponentID<Ty>::name());\
 	element->SetAttribute("hash_id", KG::Component::ComponentID<Ty>::id());\
@@ -30,9 +36,8 @@ namespace KG::Component
 	protected:
 		KG::Core::GameObject* gameObject = nullptr;
 		bool isActive = false;
-	public:
 		SystemInformation systemInfo;
-
+	public:
 		IComponent();
 		IComponent(const IComponent& other) = delete;
 		void SetActive(bool isActive);

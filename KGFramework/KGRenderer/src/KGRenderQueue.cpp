@@ -25,7 +25,7 @@ KG::Renderer::KGRenderEngine::KGRenderEngine( ID3D12Device* device )
 	animationBufferPool( device, BufferPool<KG::Resource::AnimationData>::defaultFixedSize, BufferPool<KG::Resource::AnimationData>::defaultReservedSize ),
 	shadowLightBufferPool( device, BufferPool<ShadowLightData>::defaultFixedSize, BufferPool<ShadowLightData>::defaultReservedSize )
 {
-	this->group.resize( 6 );
+	this->group.resize(ShaderGroup::MaxShaderCount);
 }
 
 KGRenderJob* KG::Renderer::KGRenderEngine::GetRenderJob( Shader* shader, Geometry* geometry )
@@ -49,7 +49,11 @@ KGRenderJob* KG::Renderer::KGRenderEngine::GetRenderJob( Shader* shader, Geometr
 	{
 		resultJob = *result;
 	}
-
+	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleAdd
+		|| shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleTransparent )
+	{
+		resultJob->objectSize = 100000;
+	}
 	//KGRenderJob* resultJob = result != end ? &*result : &CreateRenderJob( target );
 	return resultJob;
 }
@@ -94,6 +98,12 @@ bool KG::Renderer::KGRenderJob::CheckBufferFull() const
 
 void KG::Renderer::KGRenderJob::GetNewBuffer()
 {
+	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleAdd
+		|| shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleTransparent )
+	{
+		this->objectSize = 100000;
+	}
+
 	if ( this->objectBuffer )
 		this->objectBuffer->isUsing = false;
 	this->objectBuffer = this->objectBufferPool->GetNewBuffer( this->objectSize );
@@ -119,14 +129,30 @@ void KG::Renderer::KGRenderJob::GetNewBuffer()
 void KG::Renderer::KGRenderJob::OnObjectAdd( bool isVisible )
 {
 	this->objectSize += 1;
-
 	if ( isVisible ) OnVisibleAdd();
+	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleAdd
+		|| shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleTransparent )
+	{
+		this->objectSize = 100000;
+		this->visibleSize = 100000;
+	}
 }
 
-void KG::Renderer::KGRenderJob::OnObjectRemove( bool isVisible )
+void KG::Renderer::KGRenderJob::OnObjectRemove(bool isVisible)
 {
 	this->objectSize -= 1;
 	if ( isVisible ) OnVisibleRemove();
+	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleAdd
+		|| shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleTransparent )
+	{
+		this->objectSize = 100000;
+		this->visibleSize = 100000;
+	}
+}
+
+void KG::Renderer::KGRenderJob::SetVisibleSize(int count)
+{
+	this->visibleSize = count;
 }
 
 void KG::Renderer::KGRenderJob::OnVisibleAdd()
@@ -137,6 +163,17 @@ void KG::Renderer::KGRenderJob::OnVisibleAdd()
 void KG::Renderer::KGRenderJob::OnVisibleRemove()
 {
 	this->visibleSize -= 1;
+}
+
+void KG::Renderer::KGRenderJob::SetObjectSize(int count)
+{
+	this->objectSize = count;
+}
+
+void KG::Renderer::KGRenderJob::SetUpdateCount(int count)
+{
+	if ( CheckBufferFull() ) GetNewBuffer();
+	this->updateCount = count;
 }
 
 int KG::Renderer::KGRenderJob::GetUpdateCount()
@@ -183,7 +220,7 @@ void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelT
 		cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::LightData, shadowAddr );
 	}
 
-	this->geometry->Render( cmdList, this->visibleSize );
+	this->geometry->Render( cmdList, this->updateCount);
 }
 
 

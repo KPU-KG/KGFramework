@@ -72,6 +72,7 @@
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
     </Material>
+    <!--SKYBOX-->
     <Material id="SkySunset" shaderID="SkyBox" hash_id="2071956174" shaderHashID="3327424171">
         <Texture byte="4" comment="skymacTexture" id="SkySunset" hash_id="2071956174"/>
     </Material>
@@ -359,5 +360,62 @@
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
+    </Material>
+    <!--Particle-->
+    <!--<Material id="ParticleTest" shaderID="ParticleAdd">
+        <Texture byte="4" comment="ParticleTest" id="particle_muzzle_01"/>
+        <FLOAT2 byte="8" x="1" y="1" comment="애니메이션 가로 세로 인덱스"/>
+        <FLOAT1 byte="4" comment="재생 속도 / FPS" x="1"/>
+        <FLOAT3 byte="12" comment="글로벌 가속도" x="0" y="-9.8" z="0"/>
+        <FLOAT1 byte="4" comment="반복재생 여부 &gt;0.5f" x="0"/>
+    </Material>-->
+    <Material id="Muzzle_05" shaderID="ParticleAdd" hash_id="2929972256" shaderHashID="3487980688">
+        <Texture byte="4" comment="ParticleTest" id="Muzzle_05.DDS" hash_id="813023201"/>
+        <FLOAT2 byte="8" x="1" y="1" comment="애니메이션 가로 세로 인덱스"/>
+        <FLOAT1 byte="4" comment="재생 속도 / FPS" x="1"/>
+        <FLOAT3 byte="12" comment="글로벌 가속도" x="0" y="0" z="0"/>
+        <FLOAT1 byte="4" comment="반복재생 여부 &gt;0.5f" x="0"/>
+    </Material>
+    <Material id="FlashParticle" shaderID="ParticleAdd" hash_id="1783593623" shaderHashID="3487980688">
+        <Texture byte="4" comment="ParticleTest" id="FlashParticle.DDS" hash_id="2707404970"/>
+        <FLOAT2 byte="8" x="1" y="1" comment="애니메이션 가로 세로 인덱스"/>
+        <FLOAT1 byte="4" comment="재생 속도 / FPS" x="1"/>
+        <FLOAT3 byte="12" comment="글로벌 가속도" x="0" y="0" z="0"/>
+        <FLOAT1 byte="4" comment="반복재생 여부 &gt;0.5f" x="0"/>
+    </Material>
+    <Material id="Muzzle_02" shaderID="ParticleAdd" hash_id="2929978983" shaderHashID="3487980688">
+        <Texture byte="4" comment="ParticleTest" id="Muzzle_02.DDS" hash_id="2272670938"/>
+        <FLOAT2 byte="8" x="1" y="1" comment="애니메이션 가로 세로 인덱스"/>
+        <FLOAT1 byte="4" comment="재생 속도 / FPS" x="1"/>
+        <FLOAT3 byte="12" comment="글로벌 가속도" x="0" y="0" z="0"/>
+        <FLOAT1 byte="4" comment="반복재생 여부 &gt;0.5f" x="0"/>
+    </Material>
+    <Material id="Muzzle_03" shaderID="ParticleAdd" hash_id="2929978022" shaderHashID="3487980688">
+        <Texture byte="4" comment="ParticleTest" id="Muzzle_03.DDS" hash_id="3091593815"/>
+        <FLOAT2 byte="8" x="1" y="1" comment="애니메이션 가로 세로 인덱스"/>
+        <FLOAT1 byte="4" comment="재생 속도 / FPS" x="1"/>
+        <FLOAT3 byte="12" comment="글로벌 가속도" x="0" y="0" z="0"/>
+        <FLOAT1 byte="4" comment="반복재생 여부 &gt;0.5f" x="0"/>
+    </Material>
+    <Material id="Muzzle_04" shaderID="ParticleAdd" hash_id="2929973217" shaderHashID="3487980688">
+        <Texture byte="4" comment="ParticleTest" id="Muzzle_04.DDS" hash_id="887622748"/>
+        <FLOAT2 byte="8" x="1" y="1" comment="애니메이션 가로 세로 인덱스"/>
+        <FLOAT1 byte="4" comment="재생 속도 / FPS" x="1"/>
+        <FLOAT3 byte="12" comment="글로벌 가속도" x="0" y="0" z="0"/>
+        <FLOAT1 byte="4" comment="반복재생 여부 &gt;0.5f" x="0"/>
+    </Material>
+    <Material id="Muzzle_05" shaderID="ParticleAdd" hash_id="2929972256" shaderHashID="3487980688">
+        <Texture byte="4" comment="ParticleTest" id="Muzzle_05.DDS"/>
+        <FLOAT2 byte="8" x="1" y="1" comment="애니메이션 가로 세로 인덱스"/>
+        <FLOAT1 byte="4" comment="재생 속도 / FPS" x="1"/>
+        <FLOAT3 byte="12" comment="글로벌 가속도" x="0" y="0" z="0"/>
+        <FLOAT1 byte="4" comment="반복재생 여부 &gt;0.5f" x="0"/>
+    </Material>
+    <Material id="Muzzle_06" shaderID="ParticleAdd" hash_id="2929975139" shaderHashID="3487980688">
+        <Texture byte="4" comment="ParticleTest" id="Muzzle_06.DDS" hash_id="2780963806"/>
+        <FLOAT2 byte="8" x="1" y="1" comment="애니메이션 가로 세로 인덱스"/>
+        <FLOAT1 byte="4" comment="재생 속도 / FPS" x="1"/>
+        <FLOAT3 byte="12" comment="글로벌 가속도" x="0" y="0" z="0"/>
+        <FLOAT1 byte="4" comment="반복재생 여부 &gt;0.5f" x="0"/>
     </Material>
 </MaterialSet>

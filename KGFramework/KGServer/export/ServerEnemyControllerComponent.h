@@ -44,7 +44,7 @@ namespace KG::Component
 	};
 
 	class DynamicRigidComponent;
-	class AnimationControllerComponent;
+	class IAnimationControllerComponent;
 
 
 	class DLL SEnemyControllerComponent : public SBaseComponent
@@ -52,7 +52,7 @@ namespace KG::Component
 	private:
 		DynamicRigidComponent*						rigid = nullptr;
 		TransformComponent*							transform = nullptr;
-		AnimationControllerComponent*				anim = nullptr;
+		IAnimationControllerComponent*				anim = nullptr;
 
 		EnemyAction									action = EnemyAction::eSETGOAL;
 		EnemyState									state = EnemyState::eWANDER;

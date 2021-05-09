@@ -19,5 +19,6 @@ namespace KG::Renderer
 		inline static constexpr size_t DepthStencilBuffer = 12;
 		inline static constexpr size_t GBufferHeap = 8;
 
+
 	};
 }

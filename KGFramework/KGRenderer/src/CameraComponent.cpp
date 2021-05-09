@@ -8,6 +8,7 @@
 #include "RootParameterIndex.h"
 #include "RenderTexture.h"
 #include "CameraComponent.h"
+#include "LightComponent.h"
 
 #include "pix3.h"
 
@@ -25,6 +26,8 @@ void KG::Component::CameraComponent::RefreshCameraData()
 
 	this->cameraData->viewProjection = KG::Math::Matrix4x4::Multiply(this->cameraData->projection, this->cameraData->view);
 	this->cameraData->inverseViewProjection = KG::Math::Matrix4x4::Multiply(this->cameraData->inverseProjection, this->cameraData->inverseView);
+
+	this->cameraData->gameTime = KG::Renderer::KGDXRenderer::GetInstance()->GetGameTime();
 }
 
 static constexpr XMFLOAT3 cubeLook[6] =
@@ -87,7 +90,7 @@ void KG::Component::CameraComponent::CalculateProjectionMatrix()
 
 void KG::Component::CameraComponent::SetDefaultRender()
 {
-	D3D12_VIEWPORT viewport;
+	CameraViewport viewport;
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
 	viewport.Width = this->renderTexture->desc.width;
@@ -289,6 +292,11 @@ bool KG::Component::CameraComponent::OnDrawGUI()
 	return false;
 }
 
+bool KG::Component::CameraComponent::IsMainCamera() const
+{
+    return isMainCamera;
+}
+
 #pragma endregion
 
 #pragma region CubeCameraComponent
@@ -442,7 +450,7 @@ void KG::Component::GSCubeCameraComponent::CalculateProjectionMatrix()
 
 void KG::Component::GSCubeCameraComponent::SetDefaultRender()
 {
-	D3D12_VIEWPORT viewport;
+	CameraViewport viewport;
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
 	viewport.Width = this->renderTexture->desc.width;
@@ -599,7 +607,7 @@ void KG::Component::GSCascadeCameraComponent::RefreshCameraData()
 
 void KG::Component::GSCascadeCameraComponent::SetDefaultRender()
 {
-	D3D12_VIEWPORT viewport;
+	CameraViewport viewport;
 	viewport.TopLeftX = 0;
 	viewport.TopLeftY = 0;
 	viewport.Width = this->renderTexture->desc.width;
@@ -686,6 +694,11 @@ void KG::Component::GSCascadeCameraComponent::EndCameraRender(ID3D12GraphicsComm
 			D3D12_RESOURCE_STATE_COMMON
 		)
 	);
+}
+
+void KG::Component::GSCascadeCameraComponent::InitalizeCascade(KG::Component::ICameraComponent* directionalLightCamera, KG::Component::ILightComponent* light)
+{
+    this->InitalizeCascade(static_cast<KG::Component::CameraComponent*>(directionalLightCamera), static_cast<KG::Component::LightComponent*>(light));
 }
 
 void KG::Component::GSCascadeCameraComponent::InitalizeCascade(KG::Component::CameraComponent* directionalLightCamera, KG::Component::LightComponent* light)

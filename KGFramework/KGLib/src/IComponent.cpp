@@ -27,7 +27,7 @@ void IComponent::SetActive(bool isActive)
 
 void KG::Component::IComponent::OnDestroy() 
 {
-	this->systemInfo.isUsing = true;
+	//this->systemInfo.isUsing = true;???
 }
 
 void KG::Component::IComponent::Create(KG::Core::GameObject* gameObject)

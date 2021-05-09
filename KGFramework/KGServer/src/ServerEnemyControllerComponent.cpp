@@ -4,7 +4,7 @@
 #include "Transform.h"
 
 #include "PhysicsComponent.h"
-#include "AnimationComponent.h"
+#include "IAnimationComponent.h"
 
 #include "imgui/imgui.h"
 #include "MathHelper.h"
@@ -171,7 +171,7 @@ void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* ob
 	this->rigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
 	if (this->rigid)
 		this->rigid->SetRaycastCallback(raycastCallback);
-	this->anim = this->gameObject->GetComponent<AnimationControllerComponent>();
+	this->anim = this->gameObject->GetComponent<IAnimationControllerComponent>();
 }
 
 void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)

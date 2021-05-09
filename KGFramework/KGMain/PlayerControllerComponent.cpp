@@ -1,7 +1,7 @@
 #include "InputManager.h"
 #include "Transform.h"
-#include "CameraComponent.h"
-#include "AnimationComponent.h"
+#include "ICameraComponent.h"
+#include "IAnimationComponent.h"
 #include "PlayerControllerComponent.h"
 #include "PhysicsComponent.h"
 #include "Protocol.h"
@@ -298,15 +298,15 @@ void KG::Component::PlayerControllerComponent::OnCreate(KG::Core::GameObject* ob
 	spine->GetTransform()->SetScale(0, 0, 0);
 
 	this->characterTransform = this->gameObject->GetComponent<TransformComponent>();
-	this->characterAnimation = this->gameObject->GetComponent<AnimationControllerComponent>();
+	this->characterAnimation = this->gameObject->GetComponent<IAnimationControllerComponent>();
 	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
 
 	auto* cameraObject = this->gameObject->FindChildObject("FPCamera"_id);
 	this->cameraTransform = cameraObject->GetTransform();
-	this->camera = cameraObject->GetComponent<CameraComponent>();
+	this->camera = cameraObject->GetComponent<ICameraComponent>();
 
 	auto* vectorObject = this->gameObject->FindChildObject("Vector"_id);
-	this->vectorAnimation = vectorObject->GetComponent<AnimationControllerComponent>();
+	this->vectorAnimation = vectorObject->GetComponent<IAnimationControllerComponent>();
 	//this->camera = this->gameObject->
 }
 

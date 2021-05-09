@@ -30,6 +30,20 @@ namespace KG::Renderer
 				XMFLOAT3 Up;
 				float pad2;
 			} light;
+			struct particle
+			{
+				DirectX::XMFLOAT3 position;
+				float rotation;
+				DirectX::XMFLOAT3 speed;
+				float rotationSpeed;
+				DirectX::XMFLOAT2 size;
+				UINT materialIndex;
+				float pad1;
+				DirectX::XMFLOAT4 color;
+				double startTime;
+				float lifeTime;
+				float pad0;
+			}particle;
 		};
 	};
 

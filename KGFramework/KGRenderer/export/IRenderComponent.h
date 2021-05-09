@@ -15,6 +15,5 @@ namespace KG::Component
 	{
 	public:
 		virtual void OnPreRender() {};
-		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) {};
 	};
 };

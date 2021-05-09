@@ -12,6 +12,7 @@ namespace KG::Component
 	class CameraComponent;
 	class AnimationControllerComponent;
 	class DynamicRigidComponent;
+	class ParticleEmitterComponent;
 
 	class DLL CPlayerControllerComponent : public CBaseComponent
 	{
@@ -22,6 +23,8 @@ namespace KG::Component
 		TransformComponent* cameraTransform = nullptr;
 		AnimationControllerComponent* vectorAnimation = nullptr;
 		DynamicRigidComponent* physics = nullptr;
+		ParticleEmitterComponent* particleGen = nullptr;
+
 		float speedValue = 0.75f;
 
 		constexpr static float inputRatio = 25.0f;

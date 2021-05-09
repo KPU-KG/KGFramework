@@ -977,6 +977,10 @@ float KG::Component::AnimationControllerComponent::GetCurrentPlayingAnimationDur
 	return curAnimation.duration;
 }
 
+//void KG::Component::AnimationControllerComponent::SyncAnimation(const KG::Utill::HashString& anim, UINT animationIndex, float timer)
+//{
+//}
+
 int KG::Component::AnimationControllerComponent::ForceChangeAnimation(const KG::Utill::HashString& animationId, UINT animationIndex, int nextState, float blendingDuration, int repeat, bool addWeight, float speed) {
 	if (blendingDuration <= 0) {
 		SetAnimation(animationId, animationIndex, repeat, speed);

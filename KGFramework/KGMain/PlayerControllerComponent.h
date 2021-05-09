@@ -14,11 +14,11 @@ namespace KG::Component
 	{
 	private:
 		TransformComponent* characterTransform = nullptr;
-		AnimationControllerComponent* characterAnimation = nullptr;
+		IAnimationControllerComponent* characterAnimation = nullptr;
 
-		CameraComponent* camera = nullptr;
+		ICameraComponent* camera = nullptr;
 		TransformComponent* cameraTransform = nullptr;
-		AnimationControllerComponent* vectorAnimation = nullptr;
+		IAnimationControllerComponent* vectorAnimation = nullptr;
 		DynamicRigidComponent* physics = nullptr;
 		float speedValue = 0.75f;
 

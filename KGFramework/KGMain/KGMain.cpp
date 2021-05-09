@@ -31,7 +31,19 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
+    if ( __argc > 1 )
+    {
+        wchar_t** argv = NULL;
+        argv = __wargv;
+        std::wstring buffer(argv[1]);
+        KG::Setting::fileDir.assign(buffer.begin(), buffer.end());
+        DebugNormalMessage("Setting File Dir = " << KG::Setting::fileDir.c_str());
+    }
+
+    KG::Setting setting = KG::Setting::Load();
+
     // TODO: 여기에 코드를 입력합니다.
+	SetProcessDpiAwarenessContext(DPI_AWARENESS_CONTEXT_PER_MONITOR_AWARE);
 
     // 전역 문자열을 초기화합니다.
     LoadStringW(hInstance, IDS_APP_TITLE, szTitle, MAX_LOADSTRING);
@@ -39,33 +51,59 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MyRegisterClass(hInstance);
 
     // 애플리케이션 초기화를 수행합니다:
-    if (!InitInstance (hInstance, nCmdShow))
+    if ( setting.isConsoleMode )
+    {
+        KG::EngineDesc engineDesc;
+        engineDesc.hInst = hInstance;
+        engineDesc.hWnd = 0;
+        gameFramework.Initialize(engineDesc, setting);
+    }
+    else if (  !InitInstance (hInstance, nCmdShow))
     {
         return FALSE;
     }
 
-
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_KGMAIN));
-
-    MSG msg{};
-
-    while (msg.message != WM_QUIT)
+    if ( setting.isConsoleMode )
     {
-        if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-        {
-            if (!::TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-            {
-                ::TranslateMessage(&msg);
-                ::DispatchMessage(&msg);
-            }
-        }
-        //else
+        if ( !AllocConsole() )
+            MessageBox(NULL, L"The console window was not created", NULL, MB_ICONEXCLAMATION);
+        FILE* console;
+        freopen_s(&console, "CONIN$", "r", stdin);
+        freopen_s(&console, "CONOUT$", "w", stderr);
+        freopen_s(&console, "CONOUT$", "w", stdout);
+        printf("CONSOLE MODE : DEBUG CONSOLE OPEN\n");
+        std::cout.clear();
+        while ( true )
         {
             gameFramework.OnProcess();
         }
+        gameFramework.OnClose();
+        return 0;
     }
-    gameFramework.OnClose();
-    return (int) msg.wParam;
+    else 
+    {
+        HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_KGMAIN));
+
+        MSG msg{};
+
+        while (msg.message != WM_QUIT)
+        {
+            if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+            {
+                if (!::TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+                {
+                    ::TranslateMessage(&msg);
+                    ::DispatchMessage(&msg);
+                }
+            }
+            //else
+            {
+                gameFramework.OnProcess();
+            }
+        }
+        gameFramework.OnClose();
+        return (int) msg.wParam;
+    }
 }
 
 
@@ -110,14 +148,25 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
    hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
 
+
    KG::EngineDesc engineDesc;
    KG::Setting setting = KG::Setting::Load();
-
    DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_BORDER;
    RECT rc = { 0, 0, setting.clientWidth , setting.clientHeight };
    AdjustWindowRect(&rc, dwStyle, FALSE);
 
-   HWND hWnd = CreateWindowW(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
+   HWND hWnd = 0;
+   if ( setting.fullScreen )
+   {
+	   hWnd = CreateWindowExW(WS_EX_APPWINDOW, szWindowClass, szTitle, 
+		   WS_POPUP, 0, 0, GetSystemMetrics(SM_CXSCREEN), GetSystemMetrics(SM_CYSCREEN), nullptr, nullptr, hInstance, nullptr);
+	   setting.fullScreenWidth = GetSystemMetrics(SM_CXSCREEN);
+	   setting.fullScreenHeight = GetSystemMetrics(SM_CYSCREEN);
+   }
+   else 
+   {
+	   hWnd = CreateWindowW(szWindowClass, szTitle, dwStyle, CW_USEDEFAULT, CW_USEDEFAULT, rc.right - rc.left, rc.bottom - rc.top, nullptr, nullptr, hInstance, nullptr);
+   }
 
    if (!hWnd)
    {

@@ -126,10 +126,10 @@ void KG::Server::Server::Initialize()
 	this->sGameManagerSystem.SetServerInstance(this);
 }
 
-void KG::Server::Server::Start()
+void KG::Server::Server::Start(bool lock)
 {
 	std::cout << "Start Server Process\n";
-	this->LockWorld();
+	if(lock) this->LockWorld();
 	SOCKADDR_IN serverAddr;
 	memset(&serverAddr, 0, sizeof(SOCKADDR_IN));
 	serverAddr.sin_family = AF_INET;
@@ -226,17 +226,7 @@ void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider&
 
 void KG::Server::Server::DrawImGUI()
 {
-	static char ipBuffer[256] = "127.0.0.1";
-	if ( ImGui::CollapsingHeader("Network Server", ImGuiTreeNodeFlags_DefaultOpen) )
-	{
-		if ( !this->isStarted() )
-		{
-			if ( ImGui::Button("Start") )
-			{
-				this->Start();
-			}
-		}
-	}
+    ImGui::BulletText("Is Processing Server");
 }
 
 bool KG::Server::Server::isStarted() const
