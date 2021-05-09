@@ -210,10 +210,12 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 		}
 	}
 
-	KG::Packet::SC_MOVE_OBJECT p = {};
-	p.position = this->transform->GetPosition();
-	p.rotation = this->transform->GetRotation();
-	this->BroadcastPacket(&p);
+	if (this->server) {
+		KG::Packet::SC_MOVE_OBJECT p = {};
+		p.position = this->transform->GetPosition();
+		p.rotation = this->transform->GetRotation();
+		this->BroadcastPacket(&p);
+	}
 }
 
 bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
@@ -315,16 +317,16 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 
 void KG::Component::SEnemyControllerComponent::OnDataLoad(tinyxml2::XMLElement* objectElement)
 {
-	for (int i = 0; i < MAX_NODE; ++i)
-		nodeProp[i].OnDataLoad(objectElement);
+	// for (int i = 0; i < MAX_NODE; ++i)
+	// 	nodeProp[i].OnDataLoad(objectElement);
 }
 
 void KG::Component::SEnemyControllerComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
 {
-	auto* componentElement = parentElement->InsertNewChildElement("Component");
-	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::SEnemyControllerComponent);
-	for (int i = 0; i < MAX_NODE; ++i)
-		nodeProp[i].OnDataSave(parentElement);
+	// auto* componentElement = parentElement->InsertNewChildElement("Component");
+	// ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::SEnemyControllerComponent);
+	// for (int i = 0; i < MAX_NODE; ++i)
+	// 	nodeProp[i].OnDataSave(parentElement);
 }
 
 void KG::Component::SEnemyControllerComponent::SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback) {

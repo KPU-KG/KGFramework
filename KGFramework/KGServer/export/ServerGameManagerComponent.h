@@ -5,47 +5,70 @@
 #include "Debug.h"
 #include <functional>
 #include <concurrent_unordered_map.h>
+#include "SerializableProperty.h"
+#include "ISerializable.h"
 
 namespace KG::Physics
 {
 	class IPhysicsScene;
 }
 
-constexpr const int MAX_REGION = 4;
-constexpr const int MAX_ENEMY = 3;
-
 namespace KG::Component
 {
 	class SEnemyControllerComponent;
-	struct Region {
-		DirectX::XMFLOAT3 position{ 0,0,0 };
-		float range{ 5 };
-	};
+	class EnemyGeneratorComponent;
+	class SGameManagerComponent;
 
 	// 나중에 파일 분리할 것
+	struct Region {
+		friend KG::Component::EnemyGeneratorComponent;
+		friend KG::Component::SGameManagerComponent;
 
-	class EnemyGenerator {
+		DirectX::XMFLOAT3 position{ 0,0,0 };
+		float range{ 5 };
+		Region();
+		Region(DirectX::XMFLOAT3 position, float range);
+		Region(const KG::Component::Region& other);
+		Region(KG::Component::Region&& other);
+		KG::Component::Region& operator=(const KG::Component::Region& other);
+		KG::Component::Region& operator=(KG::Component::Region&& other);
+	private:
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3> positionProp;
+		KG::Core::SerializableProperty<float> rangeProp;
+	};
+
+	class DLL EnemyGeneratorComponent : public SBaseComponent {
 	protected:
 		std::vector<SEnemyControllerComponent*> enemies;
-		KG::Component::Region region[MAX_REGION];
+		std::vector<KG::Component::Region> region;
 		int currentRegion = 0;
+		bool generateEnemy = false;
 	public:
-		bool OnDrawGUI(KG::Core::GameObject* gameObject);
+		EnemyGeneratorComponent();
+		virtual void OnCreate(KG::Core::GameObject* obj) override;
+		virtual void Update(float elapsedTime) override;
+
 		bool IsGeneratable() const;
+		void GenerateEnemy(KG::Server::NET_OBJECT_ID id);
 		KG::Component::Region GetNextRegion();
 		void AddEnemyControllerCompoenent(SEnemyControllerComponent* comp);
 		int GetCurrentRegionIndex() const;
 		KG::Component::Region GetCurrentRegion();
+
+
+	public:
+		void OnDataLoad(tinyxml2::XMLElement* componentElement);
+		void OnDataSave(tinyxml2::XMLElement* parentElement);
+		virtual bool OnDrawGUI() override;
+		bool isChangedProp = false;						// property 구조가 바뀌었을때 true로 바꾸고 scene 저장 -> 다시 false로 바꾸고 하면 로드 가능
 	};
 
 	class SPlayerComponent;
-	class EnemyGeneratorComponent;
 	class DLL SGameManagerComponent : public SBaseComponent
 	{
 		KG::Physics::IPhysicsScene* physicsScene;
-		EnemyGenerator enemyGenerator;
-		bool generateEnemy = false;
-		void GenerateEnemy();
+		EnemyGeneratorComponent* enemyGenerator;
+		// bool generateEnemy = false;
 	public:
 		float updatetimer = 0;
 		concurrency::concurrent_unordered_map<KG::Server::NET_OBJECT_ID, KG::Component::SPlayerComponent*> playerObjects;
@@ -60,9 +83,11 @@ namespace KG::Component
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
 		virtual void SetPhysicsScene(KG::Physics::IPhysicsScene* physicsScene) { this->physicsScene = physicsScene; }
 		virtual KG::Physics::IPhysicsScene* GetPhysicsScene() { return this->physicsScene; }
+
+	public:
+		// void OnDataLoad(tinyxml2::XMLElement* componentElement);
+		// void OnDataSave(tinyxml2::XMLElement* parentElement);
 	};
 	REGISTER_COMPONENT_ID(SGameManagerComponent);
-
-	
-
+	REGISTER_COMPONENT_ID(EnemyGeneratorComponent);
 }

@@ -9,34 +9,83 @@
 
 std::random_device rdRegion;
 std::mt19937 genRegion(rdRegion());
-std::uniform_int_distribution<int> randomRegion(0, MAX_REGION - 1);
 
-bool KG::Component::EnemyGenerator::OnDrawGUI(KG::Core::GameObject* gameObject)
+KG::Component::Region::Region()
+	:
+	positionProp("RegionPosition", position),
+	rangeProp("RegionRange", range)
 {
-	if (ImGui::ComponentHeader<KG::Component::SEnemyControllerComponent>()) {
-		ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 
-		ImGuiIO& io = ImGui::GetIO();
-		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+}
 
+KG::Component::Region::Region(DirectX::XMFLOAT3 position, float range) : Region() 
+{
+	this->position = position;
+	this->range = range;
+}
+KG::Component::Region::Region(const KG::Component::Region& other) : Region()
+{
+	this->position = other.position;
+	this->range = other.range;
+}
+KG::Component::Region::Region(KG::Component::Region&& other) : Region()
+{
+	this->position = other.position;
+	this->range = other.range;
+}
+
+KG::Component::Region& KG::Component::Region::operator=(const KG::Component::Region& other) {
+	this->position = other.position;
+	this->range = other.range;
+	return *this;
+}
+
+KG::Component::Region& KG::Component::Region::operator=(KG::Component::Region&& other) {
+	this->position = other.position;
+	this->range = other.range;
+	return *this;
+}
+
+bool KG::Component::EnemyGeneratorComponent::OnDrawGUI()
+{
+	ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
+
+	ImGuiIO& io = ImGui::GetIO();
+	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+	for (int i = 0; i < this->region.size(); ++i) {
+		std::string s("REGION" + std::to_string(i));
+		ImGui::TextDisabled(s.c_str());
+		std::string ps(s + " Center");
+		KG::Utill::ImguiProperty::DrawGUIProperty<DirectX::XMFLOAT3>(ps, this->region[i].position);
+		std::string rs(s + " Range");
+		KG::Utill::ImguiProperty::DrawGUIProperty<float>(rs, this->region[i].range);
+		std::string bn("Delete Region " + std::to_string(i));
+
+		if (ImGui::Button(bn.c_str()))
+		{
+			this->region.erase(this->region.begin() + i);
+			return false;
+		}
+	}
+
+	if (ImGui::Button("Add Region"))
+	{
+		this->region.emplace_back();
+	}
+
+	if (gameObject != nullptr && gameObject->GetScene()->GetMainCamera() != nullptr) {
 		auto view = gameObject->GetScene()->GetMainCameraView();
 		auto proj = gameObject->GetScene()->GetMainCameraProj();
 
 		view = Math::Matrix4x4::Transpose(view);
 		proj = Math::Matrix4x4::Transpose(proj);
 
-		for (int i = 0; i < MAX_REGION; ++i) {
-			std::string s("REGION" + std::to_string(i));
-			ImGui::TextDisabled(s.c_str());
-			std::string ps(s + " Center");
-			KG::Utill::ImguiProperty::DrawGUIProperty<DirectX::XMFLOAT3>(ps, this->region[i].position);
-			std::string rs(s + " Range");
-			KG::Utill::ImguiProperty::DrawGUIProperty<float>(rs, this->region[i].range);
-
+		for (auto& r : this->region) {
 			DirectX::XMFLOAT4X4 mat;
 			DirectX::XMStoreFloat4x4(&mat,
-				DirectX::XMMatrixScaling(this->region[i].range * 2, 0.1, this->region[i].range * 2) *
-				DirectX::XMMatrixTranslation(this->region[i].position.x, this->region[i].position.y, this->region[i].position.z)
+				DirectX::XMMatrixScaling(r.range * 2, 0.1, r.range * 2) *
+				DirectX::XMMatrixTranslation(r.position.x, r.position.y, r.position.z)
 			);
 
 			ImGuizmo::DrawCubes(
@@ -45,11 +94,40 @@ bool KG::Component::EnemyGenerator::OnDrawGUI(KG::Core::GameObject* gameObject)
 				reinterpret_cast<const float*>(mat.m),
 				1);
 		}
+
+		std::string s{ "Generate Enemy" };
+		KG::Utill::ImguiProperty::DrawGUIProperty<bool>(s, this->generateEnemy);
 	}
 	return false;
 }
 
-bool KG::Component::EnemyGenerator::IsGeneratable() const
+void KG::Component::EnemyGeneratorComponent::OnCreate(KG::Core::GameObject* obj)
+{
+	SBaseComponent::OnCreate(obj);
+	// this->SetNetObjectId(this->server->GetNewObjectId());
+
+	// this->transform = this->gameObject->GetTransform();
+	// this->center = this->transform->GetWorldPosition();
+   	// this->SetNetObjectId(KG::Server::SCENE_CONTROLLER_ID);
+	// this->server->SetServerObject(this->networkObjectId, this);
+	// this->physicsScene = this->server->GetPhysicsScene();
+}
+
+void KG::Component::EnemyGeneratorComponent::Update(float elapsedTime)
+{
+	// if (IsGeneratable()) {
+	// 	if (generateEnemy) {
+	// 		GenerateEnemy();
+	// 	}
+	// }
+}
+
+KG::Component::EnemyGeneratorComponent::EnemyGeneratorComponent()
+{
+
+}
+
+bool KG::Component::EnemyGeneratorComponent::IsGeneratable() const
 {
 	bool allDead = true;
 	for (auto& enemy : enemies) {
@@ -61,30 +139,73 @@ bool KG::Component::EnemyGenerator::IsGeneratable() const
 	return allDead;
 }
 
-KG::Component::Region KG::Component::EnemyGenerator::GetNextRegion()
+KG::Component::Region KG::Component::EnemyGeneratorComponent::GetNextRegion()
 {
+	std::uniform_int_distribution<int> randomRegion(0, this->region.size() - 1);
 	currentRegion = randomRegion(genRegion);
 	return region[currentRegion];
 }
 
-void KG::Component::EnemyGenerator::AddEnemyControllerCompoenent(KG::Component::SEnemyControllerComponent* comp)
+void KG::Component::EnemyGeneratorComponent::AddEnemyControllerCompoenent(KG::Component::SEnemyControllerComponent* comp)
 {
 	enemies.emplace_back(comp);
 }
 
-int KG::Component::EnemyGenerator::GetCurrentRegionIndex() const
+int KG::Component::EnemyGeneratorComponent::GetCurrentRegionIndex() const
 {
 	return currentRegion;
 }
 
-KG::Component::Region KG::Component::EnemyGenerator::GetCurrentRegion()
+KG::Component::Region KG::Component::EnemyGeneratorComponent::GetCurrentRegion()
 {
 	return this->region[currentRegion];
 }
 
-void KG::Component::SGameManagerComponent::GenerateEnemy()
+void KG::Component::EnemyGeneratorComponent::OnDataLoad(tinyxml2::XMLElement* objectElement) {
+	this->region.clear();
+	// auto* obj = objectElement->FirstChildElement("Region");
+	auto* nextElement = objectElement->FirstChildElement("Region");
+	while (nextElement != nullptr)
+	{
+		Region r;
+		r.positionProp.OnDataLoad(nextElement);
+		r.rangeProp.OnDataLoad(nextElement);
+		this->region.emplace_back(r);
+		nextElement = nextElement->NextSiblingElement("Region");
+	}
+}
+
+void KG::Component::EnemyGeneratorComponent::OnDataSave(tinyxml2::XMLElement* objectElement) {
+	auto* componentElement = objectElement->InsertNewChildElement("Component");
+ 	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::EnemyGeneratorComponent);
+	// auto* regionDesc = componentElement->InsertNewChildElement("Region");
+	for (auto& i : this->region)
+	{
+		auto* element = componentElement->InsertNewChildElement("Region");
+		i.positionProp.OnDataSave(element);
+		i.rangeProp.OnDataSave(element);
+	}
+}
+
+// void KG::Component::SGameManagerComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
+// {
+// 	this->enemyGenerator.OnDataLoad(componentElement);
+// }
+// 
+// void KG::Component::SGameManagerComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
+// {
+// 	auto* componentElement = parentElement->InsertNewChildElement("Component");
+// 	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::SGameManagerComponent);
+// 	this->enemyGenerator.OnDataSave(componentElement);
+// }
+
+void KG::Component::EnemyGeneratorComponent::GenerateEnemy(KG::Server::NET_OBJECT_ID id)
 {
-	auto region = enemyGenerator.GetNextRegion();
+	if (this->region.size() == 0)
+		return;
+	if (!this->generateEnemy)
+		return;
+	auto region = GetNextRegion();
 
 	std::uniform_real_distribution<float> randomPos(-region.range, region.range);
 	auto presetName = "EnemyMech";
@@ -106,7 +227,7 @@ void KG::Component::SGameManagerComponent::GenerateEnemy()
 	addObjectPacket.presetId = tag;
 	addObjectPacket.position = genPos;
 
-	auto id = this->server->GetNewObjectId();
+	// auto id = this->server->GetNewObjectId();
 	addObjectPacket.newObjectId = id;
 	comp->SetNetObjectId(id);
 	this->server->SetServerObject(id, comp);
@@ -116,7 +237,7 @@ void KG::Component::SGameManagerComponent::GenerateEnemy()
 	enemyCtrl->SetWanderRange(region.range);
 	enemyCtrl->SetPosition(genPos);
 
-	enemyGenerator.AddEnemyControllerCompoenent(enemyCtrl);
+	AddEnemyControllerCompoenent(enemyCtrl);
 
 	this->GetGameObject()->GetTransform()->AddChild(comp->GetGameObject()->GetTransform());
 	this->BroadcastPacket(&addObjectPacket);
@@ -131,10 +252,19 @@ void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 
 void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 {
-	if (enemyGenerator.IsGeneratable()) {
-		if (generateEnemy)
-			GenerateEnemy();
+	if (enemyGenerator == nullptr) {
+		enemyGenerator = this->gameObject->GetComponent<EnemyGeneratorComponent>();
+		if (enemyGenerator)
+			enemyGenerator->SetServerInstance(this->server);
 	}
+
+	if (enemyGenerator) {
+		if (enemyGenerator->IsGeneratable()) {
+			enemyGenerator->GenerateEnemy(this->networkObjectId);
+			// GenerateEnemy();
+		}
+	}
+	
 }
 
 bool KG::Component::SGameManagerComponent::OnDrawGUI()
@@ -175,9 +305,6 @@ bool KG::Component::SGameManagerComponent::OnDrawGUI()
 
 			this->BroadcastPacket(&addObjectPacket);
 		}
-		enemyGenerator.OnDrawGUI(this->gameObject);
-		std::string s{"Generate Enemy"};
-		KG::Utill::ImguiProperty::DrawGUIProperty<bool>(s, this->generateEnemy);
 	}
 	return false;
 }
