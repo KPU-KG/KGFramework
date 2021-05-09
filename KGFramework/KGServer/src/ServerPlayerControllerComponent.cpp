@@ -50,7 +50,7 @@ void KG::Component::SPlayerComponent::SendSyncPacket()
 	syncPacket.rotation = this->rotationTrasnform->GetRotation();
 	syncPacket.forwardValue = this->forwardValue;
 	syncPacket.rightValue = this->rightValue;
-	std::cout << "SendSyncPacket f : " << forwardValue << " / r :" << rightValue << "\n";
+	//std::cout << "SendSyncPacket f : " << forwardValue << " / r :" << rightValue << "\n";
 	this->BroadcastPacket(&syncPacket);
 }
 
@@ -111,19 +111,19 @@ void KG::Component::SPlayerComponent::ProcessMove(float elapsedTime)
 	XMFLOAT3 forwardVelo = XMFLOAT3(0, 0, 0);
 	if ( abs(this->forwardValue) >= this->inputMinimum )
 	{
-		rightVelo = Math::Vector3::Normalize(this->rotationTrasnform->GetWorldLook()) * (500 * speed * elapsedTime * this->forwardValue);
+		rightVelo = Math::Vector3::Normalize(this->rotationTrasnform->GetWorldLook()) * (speed * this->forwardValue);
 		//physics->AddForce(vec, 500 * speed * elapsedTime * this->forwardValue);
 		//physics->SetVelocity(vec, 500 * speed * elapsedTime * this->forwardValue);
 	}
 	if ( abs(this->rightValue) >= this->inputMinimum )
 	{
 
-		forwardVelo = Math::Vector3::Normalize(this->rotationTrasnform->GetWorldRight()) * (500 * speed * elapsedTime * this->rightValue);
+		forwardVelo = Math::Vector3::Normalize(this->rotationTrasnform->GetWorldRight()) * (speed * this->rightValue);
 		//physics->SetVelocity(vec, 500 * speed * elapsedTime * this->rightValue);
 		//physics->AddForce(vec, 500 * speed * elapsedTime * this->rightValue);
 	}
 	auto resultVector = rightVelo + forwardVelo;
-	this->physics->SetVelocity(Math::Vector3::Normalize(resultVector), Math::Vector3::Length(resultVector));
+	this->physics->Move(Math::Vector3::Normalize(resultVector), Math::Vector3::Length(resultVector));
 }
 
 bool KG::Component::SPlayerComponent::OnDrawGUI()

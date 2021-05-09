@@ -72,7 +72,8 @@ void KG::Component::DynamicRigidComponent::Update(float timeElapsed)
 }
 
 void KG::Component::DynamicRigidComponent::Move(DirectX::XMFLOAT3 direction, float speed) {
-	actor->setLinearVelocity(physx::PxVec3(direction.x, direction.y, direction.z) * speed * 100);
+    auto vec = actor->getLinearVelocity();
+	actor->setLinearVelocity(physx::PxVec3(direction.x * speed, vec.y, direction.z * speed) );
 }
 
 void KG::Component::DynamicRigidComponent::SetActor(physx::PxRigidDynamic* actor)
@@ -482,4 +483,14 @@ KG::Component::IRigidComponent::IRigidComponent()
 			{FilterGroup::ePLAYER, "Player"}
 		}, false)
 {
+}
+
+DirectX::XMFLOAT4X4 KG::Component::CollisionBox::GetMatrix() const
+{
+    DirectX::XMFLOAT4X4 result;
+    auto quat = KG::Math::Quaternion::FromEuler(rotation);
+    XMStoreFloat4x4(&result,
+        XMMatrixAffineTransformation(XMLoadFloat3(&this->scale), XMVectorZero(), XMLoadFloat4(&quat), XMLoadFloat3(&this->position))
+    );
+    return result;
 }

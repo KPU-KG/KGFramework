@@ -2,6 +2,7 @@
 #include "IPhysicsComponent.h"
 #include "ISerializable.h"
 #include "SerializableProperty.h"
+#include "MathHelper.h"
 #include <functional>
 
 namespace KG::Core
@@ -54,6 +55,7 @@ namespace KG::Component
 			rotation = { 0,0,0 };
 			scale = { 1,1,1 };
 		}
+        DirectX::XMFLOAT4X4 GetMatrix() const;
 	};
 
 	class DLL IRigidComponent : public IPhysicsComponent {
