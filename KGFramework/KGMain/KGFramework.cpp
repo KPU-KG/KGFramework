@@ -77,11 +77,7 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	// this->physics = std::unique_ptr<KG::Physics::IPhysicsScene>(KG::Physics::GetPhysicsScene());
 	this->physics = KG::Physics::GetPhysicsScene();
 	KG::Physics::PhysicsDesc physicsDesc;
-#ifdef _DEBUG
-	physicsDesc.connectPVD = true;
-#else
-	physicsDesc.connectPVD = false;
-#endif
+	physicsDesc.connectPVD = this->setting.isPxDebugger;
 	physicsDesc.gravity = 9.81f;
 
 	this->renderer->Initialize(renderDesc, renderSetting);
@@ -97,28 +93,28 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 
 	std::vector<KG::Utill::HashString> preLoads = 
 	{
-		KG::Utill::HashString("mountain.fbx"),
-		KG::Utill::HashString("crawler.fbx"),
-		KG::Utill::HashString("bUILDING-2-op2.FBX"),
-		KG::Utill::HashString("Building1.FBX"),
-		KG::Utill::HashString("building-4.fbx"),
-		KG::Utill::HashString("metal_fence.fbx"),
-		KG::Utill::HashString("Dumpster.fbx"),
-		KG::Utill::HashString("barrel.fbx"),
-		KG::Utill::HashString("container.FBX"),
-		KG::Utill::HashString("Crane.FBX"),
-		KG::Utill::HashString("Pallet.FBX"),
-		KG::Utill::HashString("SupportSmall.FBX"),
-		KG::Utill::HashString("SupportBig.FBX"),
-		KG::Utill::HashString("Stairs.FBX"),
-		KG::Utill::HashString("PillarSmall.FBX"),
-		KG::Utill::HashString("MetalFence.FBX"),
-		KG::Utill::HashString("MetalFence-End.FBX"),
-		KG::Utill::HashString("FloorShort.FBX"),
-		KG::Utill::HashString("FloorLong.FBX"),
-		KG::Utill::HashString("FloorHallSmall.FBX"),
-		KG::Utill::HashString("FloorHallBig.FBX"),
-		KG::Utill::HashString("FloorBase.FBX"),
+		//KG::Utill::HashString("mountain.fbx"),
+		//KG::Utill::HashString("crawler.fbx"),
+		//KG::Utill::HashString("bUILDING-2-op2.FBX"),
+		//KG::Utill::HashString("Building1.FBX"),
+		//KG::Utill::HashString("building-4.fbx"),
+		//KG::Utill::HashString("metal_fence.fbx"),
+		//KG::Utill::HashString("Dumpster.fbx"),
+		//KG::Utill::HashString("barrel.fbx"),
+		//KG::Utill::HashString("container.FBX"),
+		//KG::Utill::HashString("Crane.FBX"),
+		//KG::Utill::HashString("Pallet.FBX"),
+		//KG::Utill::HashString("SupportSmall.FBX"),
+		//KG::Utill::HashString("SupportBig.FBX"),
+		//KG::Utill::HashString("Stairs.FBX"),
+		//KG::Utill::HashString("PillarSmall.FBX"),
+		//KG::Utill::HashString("MetalFence.FBX"),
+		//KG::Utill::HashString("MetalFence-End.FBX"),
+		//KG::Utill::HashString("FloorShort.FBX"),
+		//KG::Utill::HashString("FloorLong.FBX"),
+		//KG::Utill::HashString("FloorHallSmall.FBX"),
+		//KG::Utill::HashString("FloorHallBig.FBX"),
+		//KG::Utill::HashString("FloorBase.FBX"),
 		KG::Utill::HashString("Vector.FBX"),
 		KG::Utill::HashString("Vector@Idle.FBX"),
 		KG::Utill::HashString("Vector@Reload.FBX"),

@@ -14,6 +14,7 @@ namespace KG
 		int fullScreenHeight = 0;
 		bool fullScreen = false;
 		bool isVsync = false;
+        bool isPxDebugger = false;
         bool isEditMode = false;
         bool isConsoleMode = false;
         bool isStartServer = false;
@@ -28,6 +29,7 @@ namespace KG
         KG::Core::SerializableProperty<int> fullScreenHeightProp;
         KG::Core::SerializableProperty<bool> fullScreenProp;
         KG::Core::SerializableProperty<bool> isVsyncProp;
+        KG::Core::SerializableProperty<bool> isPxDebuggerProp;
         KG::Core::SerializableProperty<bool> isEditModeProp;
         KG::Core::SerializableProperty<bool> isConsoleModeProp;
         KG::Core::SerializableProperty<bool> isStartServerProp;

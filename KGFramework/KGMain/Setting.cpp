@@ -15,6 +15,7 @@ KG::Setting::Setting()
     KG_PROP(fullScreenHeight),
     KG_PROP(fullScreen),
     KG_PROP(isVsync),
+    KG_PROP(isPxDebugger),
     KG_PROP(isEditMode),
     KG_PROP(isConsoleMode),
     KG_PROP(isStartServer),
@@ -35,6 +36,7 @@ KG::Setting::Setting(const Setting& other)
     fullScreenHeight = other.fullScreenHeight;
     fullScreen = other.fullScreen;
     isVsync = other.isVsync;
+    isPxDebugger = other.isPxDebugger;
     isEditMode = other.isEditMode;
     isConsoleMode = other.isConsoleMode;
     isStartServer = other.isStartServer;
@@ -52,6 +54,7 @@ void KG::Setting::DrawGui()
     fullScreenHeightProp.OnDrawGUI();
     fullScreenProp.OnDrawGUI();
     isVsyncProp.OnDrawGUI();
+    isPxDebuggerProp.OnDrawGUI();
     isEditModeProp.OnDrawGUI();
     isConsoleModeProp.OnDrawGUI();
     isStartClientProp.OnDrawGUI();
@@ -75,6 +78,7 @@ Setting KG::Setting::Load()
         data.fullScreenHeightProp.OnDataLoad(element);
         data.fullScreenProp.OnDataLoad(element);
         data.isVsyncProp.OnDataLoad(element);
+        data.isPxDebuggerProp.OnDataLoad(element);
         data.isEditModeProp.OnDataLoad(element);
         data.isConsoleModeProp.OnDataLoad(element);
         data.isStartClientProp.OnDataLoad(element);
@@ -98,6 +102,7 @@ void KG::Setting::Save(Setting& data)
     data.fullScreenHeightProp.OnDataSave(element);
     data.fullScreenProp.OnDataSave(element);
     data.isVsyncProp.OnDataSave(element);
+    data.isPxDebuggerProp.OnDataSave(element);
     data.isEditModeProp.OnDataSave(element);
     data.isConsoleModeProp.OnDataSave(element);
     data.isStartClientProp.OnDataSave(element);
