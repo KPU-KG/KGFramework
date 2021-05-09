@@ -358,7 +358,8 @@ void KG::Component::CPlayerControllerComponent::TryShoot(float elapsedTime)
 		this->bulletCount -= 1;
 		Packet::CS_FIRE p = { };
 		p.origin = this->cameraTransform->GetWorldPosition();
-		p.direction = this->characterTransform->GetWorldLook();
+		p.direction = this->cameraTransform->GetWorldLook();
+		// p.direction = this->characterTransform->GetWorldLook();
 		p.distance = 100;
 		this->SendPacket(&p);
 	}
@@ -370,7 +371,8 @@ void KG::Component::CPlayerControllerComponent::TryShoot(float elapsedTime)
 		this->bulletCount -= 1;
 		Packet::CS_FIRE p = { };
 		p.origin = this->cameraTransform->GetWorldPosition();
-		p.direction = this->characterTransform->GetWorldLook();
+		p.direction = this->cameraTransform->GetWorldLook();
+		// p.direction = this->characterTransform->GetWorldLook();
 		p.distance = 100;
 		this->SendPacket(&p);
 	}

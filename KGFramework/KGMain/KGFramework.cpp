@@ -13,6 +13,7 @@
 #include "InputManager.h"
 #include "ServerEnemyControllerComponent.h"
 #include "ClientEnemyControllerComponent.h"
+#include "EnemyGeneratorComponent.h"
 
 KG::GameFramework::GameFramework()
 {

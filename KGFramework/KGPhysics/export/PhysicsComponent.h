@@ -71,7 +71,7 @@ namespace KG::Component
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 		virtual void SetupFiltering(uint32_t filterGroup, uint32_t filterMask);
 	public:
-		IRigidComponent();;
+		IRigidComponent();
 		virtual void PostUpdate(float timeElapsed) override {};
 		virtual void Update(float timeElapsed) override {};
 		CollisionBox& GetCollisionBox() { return collisionBox; }

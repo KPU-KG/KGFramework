@@ -1,7 +1,6 @@
 #include "pch.h"
 #include "fbxImpoter.h"
 #include "GameObject.h"
-#include "KGGeometry.h"
 #include "MathHelper.h"
 #include "ResourceContainer.h"
 
@@ -193,48 +192,6 @@ static XMFLOAT3 GetAnimationScale(const KG::Utill::NodeAnimation& anim, float cu
     return s;
 }
 
-//void KG::Component::Animation::MatchNode(KG::Core::GameObject* gameObject, UINT animIndex)
-//{
-//    auto* inst = KG::Resource::ResourceContainer::GetInstance();
-//    KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, animIndex);
-//    for ( auto& layer : anim->layers )
-//    {
-//        auto& cache = this->frameCache.emplace_back();
-//        std::vector<KG::Utill::HashString> ids;
-//        cache.resize(layer.nodeAnimations.size());
-//        for ( auto& n : layer.nodeAnimations )
-//        {
-//            ids.push_back(n.nodeId);
-//        }
-//        gameObject->MatchBoneToObject(ids, cache);
-//    }
-//
-//}
-//
-//void KG::Component::Animation::SetDuration(KG::Utill::AnimationSet* anim)
-//{
-//    for ( auto& a : anim->layers[0].nodeAnimations )
-//    {
-//        if ( !a.translation.x.empty() ) this->duration = std::max(this->duration, a.translation.x.back().keyTime);
-//        if ( !a.translation.y.empty() ) this->duration = std::max(this->duration, a.translation.y.back().keyTime);
-//        if ( !a.translation.z.empty() ) this->duration = std::max(this->duration, a.translation.z.back().keyTime);
-//        if ( !a.rotation.x.empty() ) this->duration = std::max(this->duration, a.rotation.x.back().keyTime);
-//        if ( !a.rotation.y.empty() ) this->duration = std::max(this->duration, a.rotation.y.back().keyTime);
-//        if ( !a.rotation.z.empty() ) this->duration = std::max(this->duration, a.rotation.z.back().keyTime);
-//        if ( !a.scale.x.empty() ) this->duration = std::max(this->duration, a.scale.x.back().keyTime);
-//        if ( !a.scale.y.empty() ) this->duration = std::max(this->duration, a.scale.y.back().keyTime);
-//        if ( !a.scale.z.empty() ) this->duration = std::max(this->duration, a.scale.z.back().keyTime);
-//    }
-//}
-//
-//void KG::Component::Animation::Initialize(KG::Core::GameObject* gameObject, UINT animIndex)
-//{
-//    MatchNode(gameObject, animIndex);
-//    auto* inst = KG::Resource::ResourceContainer::GetInstance();
-//    KG::Utill::AnimationSet* anim = inst->LoadAnimation(animationId, animIndex);
-//    SetDuration(anim);
-//}
-
 int KG::Component::FakeAnimationControllerComponent::GetTotalWeight(int index)
 {
     if ( index == -1 )
@@ -331,28 +288,35 @@ void KG::Component::FakeAnimationControllerComponent::PlayingUpdate(float elapse
         ; // loop inf
     else if ( curAnimation.repeat <= 0 )
     {
-        float animT = animations[p->first][p->second.begin()->first].timer / animations[p->first][p->second.begin()->first].duration;
-        if ( nextAnimations.size() <= 0 )
-        {
-            animations[defaultAnimation.first][defaultAnimation.second].timer = animT * animations[defaultAnimation.first][defaultAnimation.second].duration;
-            state = ANIMSTATE_CHANGING;
-            ChangeAnimation(defaultAnimation.first, defaultAnimation.second, ANIMSTATE_PLAYING, 0.5f, -1);
-            changeToDefault = true;
-        }
+        if ( state == ANIMSTATE_STOP )
+            ;
         else
         {
-            auto pn = nextAnimations[0].index.begin();
-            animations[pn->first][pn->second.begin()->first].timer = animT * animations[pn->first][pn->second.begin()->first].duration;
-            curAnimation = nextAnimations[0];
-            curAnimation.time = 0;
-            nextAnimations.erase(nextAnimations.begin());
-            state = curAnimation.next;
+            float animT = animations[p->first][p->second.begin()->first].timer / animations[p->first][p->second.begin()->first].duration;
+            if ( nextAnimations.size() <= 0 )
+            {
+                animations[defaultAnimation.first][defaultAnimation.second].timer = animT * animations[defaultAnimation.first][defaultAnimation.second].duration;
+                state = ANIMSTATE_CHANGING;
+                ChangeAnimation(defaultAnimation.first, defaultAnimation.second, ANIMSTATE_PLAYING, 0.5f, -1);
+                changeToDefault = true;
+            }
+            else
+            {
+                auto pn = nextAnimations[0].index.begin();
+                animations[pn->first][pn->second.begin()->first].timer = animT * animations[pn->first][pn->second.begin()->first].duration;
+                curAnimation = nextAnimations[0];
+                curAnimation.time = 0;
+                nextAnimations.erase(nextAnimations.begin());
+                state = curAnimation.next;
+            }
         }
         return;
     }
 
 
     float T = anim->timer / anim->duration;
+    if ( state == ANIMSTATE_STOP && curAnimation.repeat <= 0 )
+        T = 1;
     curAnimation.time += elapsedTime * curAnimation.speed;
 
     KG::Utill::AnimationSet* animSet = nullptr;
@@ -485,6 +449,8 @@ void KG::Component::FakeAnimationControllerComponent::ChangingUpdate(float elaps
             curAnimation.time = 0;
             nextAnimations.erase(nextAnimations.begin());
             state = curAnimation.next;
+            // if (state == ANIMSTATE_STOP)
+            // 	curAnimation.repeat;
         }
         return;
     }
@@ -732,6 +698,7 @@ void KG::Component::FakeAnimationControllerComponent::Update(float elapsedTime)
     switch ( state )
     {
         case ANIMSTATE_PLAYING:
+        case ANIMSTATE_STOP:
             PlayingUpdate(elapsedTime);
             break;
         case ANIMSTATE_CHANGING:
@@ -848,18 +815,18 @@ int  KG::Component::FakeAnimationControllerComponent::ChangeAnimation(const KG::
     {
         if ( nextAnimations.size() > 0 )
         {
-            if ( nextAnimations[0].index.count(animationId.value) != 0 )
+            if ( nextAnimations[0].index.count(animationId.value) != 0 && nextAnimations[0].index[animationId.value].count(animationIndex) != 0 )
                 return ANIMINDEX_CHANGE;
             // if (nextAnimations[0].index[animationId.value] != NULL) {
-            nextAnimations[0].time = 0;
-            nextAnimations[0].duration = GetDuration(animationId, animationIndex);
-            if ( repeat == ANIMLOOP_INF )
-                nextAnimations[0].repeat = ANIMLOOP_INF;
-            else
-                nextAnimations[0].repeat = repeat;
-            curAnimation.duration = blendingDuration;
-            state = ANIMSTATE_CHANGING;
-            return ANIMINDEX_CHANGE;
+            // nextAnimations[0].time = 0;
+            // nextAnimations[0].duration = GetDuration(animationId, animationIndex);
+            // if (repeat == ANIMLOOP_INF)
+            // 	nextAnimations[0].repeat = ANIMLOOP_INF;
+            // else
+            // 	nextAnimations[0].repeat = repeat;
+            // curAnimation.duration = blendingDuration;
+            // state = ANIMSTATE_CHANGING;
+            // return ANIMINDEX_CHANGE;
             //}
         }
 
@@ -906,8 +873,6 @@ int KG::Component::FakeAnimationControllerComponent::AddNextAnimation(const KG::
         return -1;
     AnimationCommand next;
     next.index[nextAnim.value][animationIndex] = weight;
-    // next.index[nextAnim.value].animIndex = animationIndex;
-    // next.index[nextAnim.value].weight = weight;
     next.duration = GetDuration(nextAnim, animationIndex);
     if ( repeat == ANIMLOOP_INF )
         next.repeat = ANIMLOOP_INF;
@@ -1035,6 +1000,10 @@ float KG::Component::FakeAnimationControllerComponent::GetCurrentPlayingAnimatio
 {
     return curAnimation.duration;
 }
+
+//void KG::Component::FakeAnimationControllerComponent::SyncAnimation(const KG::Utill::HashString& anim, UINT animationIndex, float timer)
+//{
+//}
 
 int KG::Component::FakeAnimationControllerComponent::ForceChangeAnimation(const KG::Utill::HashString& animationId, UINT animationIndex, int nextState, float blendingDuration, int repeat, bool addWeight, float speed)
 {

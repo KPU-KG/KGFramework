@@ -209,11 +209,19 @@ KG::Component::SEnemyControllerComponent* KG::Server::Server::GetNewEnemyControl
 	return comp;
 }
 
+KG::Component::EnemyGeneratorComponent* KG::Server::Server::GetNewEnemyGeneratorComponent()
+{
+	auto* comp = this->enemyGeneratorSystem.GetNewComponent();
+	comp->SetServerInstance(this);
+	return comp;
+}
+
 void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->sGameManagerSystem.OnPostProvider(provider);
 	this->sPlayerSystem.OnPostProvider(provider);
 	this->sEnemyControllerSystem.OnPostProvider(provider);
+	this->enemyGeneratorSystem.OnPostProvider(provider);
 }
 
 void KG::Server::Server::DrawImGUI()
@@ -298,6 +306,7 @@ void KG::Server::Server::Update(float elapsedTime)
 	this->sGameManagerSystem.OnUpdate(elapsedTime);
 	this->sPlayerSystem.OnUpdate(elapsedTime);
 	this->sEnemyControllerSystem.OnUpdate(elapsedTime);
+	this->enemyGeneratorSystem.OnUpdate(elapsedTime);
 }
 
 void KG::Server::Server::SendLoginOkPacket(SESSION_ID playerId)

@@ -33,10 +33,10 @@ bool KG::Component::CEnemyControllerComponent::OnProcessPacket(unsigned char* pa
 		this->transform->SetRotation(p->rotation);
 		return true;
 	}
-	case KG::Packet::PacketType::SC_SYNC_ANIMATION:
+	case KG::Packet::PacketType::SC_CHANGE_ANIMATION:
 	{
-		auto* p = KG::Packet::PacketCast<KG::Packet::SC_SYNC_ANIMATION>(packet);
-		this->anim->ChangeAnimation(p->animId, p->animIndex);
+		auto* p = KG::Packet::PacketCast<KG::Packet::SC_CHANGE_ANIMATION>(packet);
+		this->anim->ChangeAnimation(p->animId, p->animIndex, p->nextState, p->blendingTime, p->repeat);
 		return true;
 	}
 	}

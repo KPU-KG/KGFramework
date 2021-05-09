@@ -5,9 +5,10 @@
 #include "ISerializable.h"
 #include "SerializableProperty.h"
 
-#define ANIMSTATE_PLAYING 0
-#define ANIMSTATE_CHANGING 1
-#define ANIMSTATE_FORCE 2
+constexpr const unsigned int ANIMSTATE_PLAYING = 0;
+constexpr const unsigned int ANIMSTATE_CHANGING = 1;
+constexpr const unsigned int ANIMSTATE_FORCE = 2;
+constexpr const unsigned int ANIMSTATE_STOP = 3;
 
 #define ANIMLOOP_INF -1
 
@@ -39,37 +40,32 @@ namespace KG::Component
 		virtual bool OnDrawGUI() = 0;
 	};
 
-	struct Animation {
-	private:
-		void MatchNode(KG::Core::GameObject* gameObject, UINT animIndex = 0U);
-		void SetDuration(KG::Utill::AnimationSet* anim);
-	public:
-		// int animIndex = 0;
-		// bool isRegistered = false;
-		KG::Utill::HashString animationId;
-		std::vector<std::vector<KG::Core::GameObject*>> frameCache;
-		float timer = 0.0f;
-		float duration = 0.0f;
-		void Initialize(KG::Core::GameObject* gameObject, UINT animIndex = 0U);
-	};
+    struct Animation
+    {
+    private:
+        void MatchNode(KG::Core::GameObject* gameObject, UINT animIndex = 0U);
+        void SetDuration(KG::Utill::AnimationSet* anim);
+    public:
+        KG::Utill::HashString animationId;
+        std::vector<std::vector<KG::Core::GameObject*>> frameCache;
+        float timer = 0.0f;
+        float duration = 0.0f;
+        void Initialize(KG::Core::GameObject* gameObject, UINT animIndex = 0U);
+    };
 
-	// struct AnimCommandValue {
-	// 	UINT animIndex;
-	// 	int weight;
-	// };
-
-	struct AnimationCommand {
-		using AnimCommandValue = std::unordered_map<UINT, int>;
-		std::unordered_map<KG::Utill::hashType, AnimCommandValue> index;
-		float duration = 0.1f;
-		int repeat = -1;
-		float time = 0.0f;
-		float speed = 1.0f;
-		int next = ANIMSTATE_PLAYING;
-		bool applyTransform = true;
-		bool applyRotation = true;
-		bool applyScale = true;
-	};
+    struct AnimationCommand
+    {
+        using AnimCommandValue = std::unordered_map<UINT, int>;
+        std::unordered_map<KG::Utill::hashType, AnimCommandValue> index;
+        float duration = 0.1f;
+        int repeat = -1;
+        float time = 0.0f;
+        float speed = 1.0f;
+        int next = ANIMSTATE_PLAYING;
+        bool applyTransform = true;
+        bool applyRotation = true;
+        bool applyScale = true;
+    };
 
 	struct AnimationEvent {
 	private:
@@ -106,6 +102,8 @@ namespace KG::Component
 		virtual UINT GetCurrentPlayingAnimationIndex() const = 0;
 		virtual float GetCurrentPlayingAnimationTime() const = 0;
 		virtual float GetCurrentPlayingAnimationDuration() const = 0;
+
+        //virtual void SyncAnimation(const KG::Utill::HashString& anim, UINT animationIndex, float timer) = 0;
 	};
 
 	REGISTER_COMPONENT_ID(IBoneTransformComponent );

@@ -11,10 +11,11 @@
 
 #include <string>
 #include <random>
+#include "Scene.h"
 
 std::random_device rd;
 std::mt19937 gen(rd());
-std::uniform_real_distribution<float> goalRange(-1, 1);
+std::uniform_real_distribution<float> goalRange(-0.5, 0.5);
 
 void KG::Component::SEnemyControllerComponent::UpdateState()
 {
@@ -23,10 +24,21 @@ void KG::Component::SEnemyControllerComponent::UpdateState()
 
 bool KG::Component::SEnemyControllerComponent::SetGoal()
 {
-	// 나중에는 노드 생성해서 그걸로 변경
-	goal.x = goalRange(gen) * range;
-	// goal.y = goalRange(gen) * range;
-	goal.z = goalRange(gen) * range;
+	if (this->nodeCount > 0) {
+		if (randomCircuit) {
+			std::uniform_int_distribution<int> randomIndex(1, this->nodeCount);
+			currentNode = randomIndex(gen) - 1;
+		}
+		else {
+			currentNode = ++currentNode% this->nodeCount;
+		}
+		goal = this->node[currentNode];
+	}
+	else {
+		goal.x = goalRange(gen) * range + center.x;
+		// goal.y = goalRange(gen) * range;
+		goal.z = goalRange(gen) * range + center.z;
+	}
 
 	direction = Math::Vector3::Subtract(goal, transform->GetPosition());
 	direction.y = 0;
@@ -48,8 +60,10 @@ bool KG::Component::SEnemyControllerComponent::SetGoal()
 
 bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 {
-	if (anim)
-		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING);
+	if (anim) {
+		ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING, 0.1f, -1);
+	}
+	// anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING);
 	rotateTimer += elapsedTime;
 	if (rotateInterval <= rotateTimer) {
 		return true;
@@ -67,8 +81,10 @@ bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 
 bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 {
-	if (anim)
-		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING);
+	if (anim) {
+		ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
+	}
+	// anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING);
 
 	if (rigid) {
 		rigid->SetVelocity(direction, speed);
@@ -105,8 +121,10 @@ bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 
 bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
 {
-	if (anim)
-		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING);
+	if (anim) {
+		ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING, 0.1f, -1);
+	}
+	//anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING);
 	idleTimer += elapsedTime;
 	if (idleInterval <= idleTimer)
 		return true;
@@ -116,6 +134,31 @@ bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
 KG::Component::SEnemyControllerComponent::SEnemyControllerComponent()
 {
 
+}
+
+void KG::Component::SEnemyControllerComponent::SetCenter(DirectX::XMFLOAT3 center) {
+	this->center = center;
+}
+
+void KG::Component::SEnemyControllerComponent::SetSpeed(float speed) {
+	this->speed = speed;
+}
+
+void KG::Component::SEnemyControllerComponent::SetIdleInterval(float interval) {
+	this->idleInterval = interval;
+}
+
+void KG::Component::SEnemyControllerComponent::SetRotateInterval(float interval) {
+	this->rotateInterval = interval;
+}
+
+void KG::Component::SEnemyControllerComponent::SetWanderRange(float range) {
+	this->range = range;
+}
+
+void KG::Component::SEnemyControllerComponent::SetPosition(DirectX::XMFLOAT3 position)
+{
+	this->rigid->SetPosition(position);
 }
 
 void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* obj)
@@ -134,7 +177,10 @@ void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* ob
 void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 {
 	if (hp <= 0) {
-		anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::dead, ANIMSTATE_PLAYING, 0.1);
+		if (!isDead && anim->GetCurrentPlayingAnimationIndex() != KG::Component::MechAnimIndex::dead) {
+			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::dead, ANIMSTATE_STOP, 0.1, 1);
+			isDead = true;
+		}
 
 	}
 	else {
@@ -164,18 +210,12 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 		}
 	}
 
-	KG::Packet::SC_MOVE_OBJECT p = {};
-	p.position = this->transform->GetPosition();
-	p.rotation = this->transform->GetRotation();
-	this->BroadcastPacket(&p);
-
-	KG::Packet::SC_SYNC_ANIMATION pa = {};
-	pa.animId = this->anim->GetCurrentPlayingAnimationId();
-	pa.animIndex = this->anim->GetCurrentPlayingAnimationIndex();
-	pa.timer = this->anim->GetCurrentPlayingAnimationTime();
-	this->BroadcastPacket(&pa);
-
-
+	if (this->server) {
+		KG::Packet::SC_MOVE_OBJECT p = {};
+		p.position = this->transform->GetPosition();
+		p.rotation = this->transform->GetRotation();
+		this->BroadcastPacket(&p);
+	}
 }
 
 bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
@@ -210,76 +250,112 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 			}
 			ImGui::TextDisabled("Action : %s", curAction);
 			ImGui::TextDisabled("Goal : (%f, %f, %f)", goal.x, goal.y, goal.z);
+			ImGui::TextDisabled("Direction : (%f, %f, %f)", direction.x, direction.y, direction.z);
 			auto angle = transform->GetEulerDegree();
 			ImGui::TextDisabled("rotation : (%f, %f, %f)", angle.x, angle.y, angle.z);
 			ImGui::TextDisabled("this->angle : (%f, %f)", this->angle.x, this->angle.y);
+			ImGui::TextDisabled("Cur Node : (%d)", this->currentNode);
 		}
 		else {
-			std::string cs("center");
+			std::string cs("position");
 			KG::Utill::ImguiProperty::DrawGUIProperty<DirectX::XMFLOAT3>(cs, this->center);
 
 			std::string rs("range");
 			KG::Utill::ImguiProperty::DrawGUIProperty<float>(rs, this->range);
 		}
+		std::string cs("random circuit");
+		KG::Utill::ImguiProperty::DrawGUIProperty<bool>(cs, this->randomCircuit);
+
+		ImGui::TextDisabled("Circuit Node [%d]", this->nodeCount);
+
+		auto view = this->gameObject->GetScene()->GetMainCameraView();
+		auto proj = this->gameObject->GetScene()->GetMainCameraProj();
+
+		view = Math::Matrix4x4::Transpose(view);
+		proj = Math::Matrix4x4::Transpose(proj);
+
+		XMFLOAT4X4 mat;
+
+		for (int i = 0; i < nodeCount; ++i) {
+			nodeProp[i].OnDrawGUI();
+			DirectX::XMStoreFloat4x4(&mat, XMMatrixTranslation(this->node[i].x, this->node[i].y, this->node[i].z));
+
+
+
+			ImGuiIO& io = ImGui::GetIO();
+			ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+
+			ImGuizmo::DrawCubes(
+				reinterpret_cast<const float*>(view.m),
+				reinterpret_cast<const float*>(proj.m),
+				reinterpret_cast<const float*>(mat.m),
+				1);
+			std::string bn("Delete Node " + std::to_string(i));
+			if (ImGui::Button(bn.c_str()))
+			{
+				if (i != MAX_NODE - 1) {
+					memcpy(&this->node[i], &this->node[i + 1], sizeof(DirectX::XMFLOAT3) * (MAX_NODE - i - 1));
+				}
+				if (i < currentNode) {
+					currentNode--;
+				}
+				nodeCount--;
+				this->action = EnemyAction::eSETGOAL;
+			}
+		}
+
+		if (nodeCount < MAX_NODE) {
+			if (ImGui::Button("Add Node"))
+			{
+				node[nodeCount++] = { 0,0,0 };
+			}
+		}
+
 	}
 	return false;
+}
+
+void KG::Component::SEnemyControllerComponent::OnDataLoad(tinyxml2::XMLElement* objectElement)
+{
+	// for (int i = 0; i < MAX_NODE; ++i)
+	// 	nodeProp[i].OnDataLoad(objectElement);
+}
+
+void KG::Component::SEnemyControllerComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
+{
+	// auto* componentElement = parentElement->InsertNewChildElement("Component");
+	// ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::SEnemyControllerComponent);
+	// for (int i = 0; i < MAX_NODE; ++i)
+	// 	nodeProp[i].OnDataSave(parentElement);
+}
+
+void KG::Component::SEnemyControllerComponent::SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback) {
+	this->raycastCallback = callback;
+}
+
+void KG::Component::SEnemyControllerComponent::HitBullet() {
+	this->hp -= 1;
+}
+
+bool KG::Component::SEnemyControllerComponent::IsDead() const
+{
+	return isDead;
+}
+
+inline void KG::Component::SEnemyControllerComponent::ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime, int repeat) {
+	anim->ChangeAnimation(animId, animIndex, nextState, blendingTime, repeat);
+	KG::Packet::SC_CHANGE_ANIMATION pa = {};
+	pa.animId = animId;
+	pa.animIndex = animIndex;
+	pa.blendingTime = blendingTime;
+	pa.nextState = nextState;
+	pa.repeat = repeat;
+	this->BroadcastPacket(&pa);
 }
 
 
 bool KG::Component::SEnemyControllerComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender)
 {
-	/*
-	switch (type)
-	{
-	case KG::Packet::PacketType::None:
-	case KG::Packet::PacketType::PacketHeader:
-	case KG::Packet::PacketType::SC_LOGIN_OK:
-	case KG::Packet::PacketType::SC_PLAYER_INIT:
-	case KG::Packet::PacketType::SC_ADD_OBJECT:
-
-	case KG::Packet::PacketType::SC_REMOVE_OBJECT:
-	case KG::Packet::PacketType::SC_FIRE:
-	case KG::Packet::PacketType::SC_ADD_PLAYER:
-	case KG::Packet::PacketType::SC_PLAYER_SYNC:
-		std::cout << "Error Packet Received\n";
-		return false;
-	case KG::Packet::PacketType::CS_REQ_LOGIN:
-	{
-		// auto id = this->server->GetNewObjectId();
-		// 
-		// //플레이어 추가!
-		// this->server->LockWorld();
-		// this->server->isConnect = true;
-		// auto* playerComp = static_cast<KG::Component::SBaseComponent*>(this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id));
-		// playerComp->SetNetObjectId(id);
-		// auto* trans = playerComp->GetGameObject()->GetTransform();
-		// trans->SetPosition(id, 0, id);
-		// this->GetGameObject()->GetTransform()->AddChild(trans);
-		// this->server->UnlockWorld();
-		// //this->server->Addplayer(trans)
-		// 
-		// KG::Packet::SC_PLAYER_INIT initPacket = {};
-		// initPacket.playerObjectId = id;
-		// initPacket.position = KG::Packet::RawFloat3(id, 0, id);
-		// initPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
-		// this->SendPacket(sender, &initPacket);
-		// 
-		// KG::Packet::SC_ADD_PLAYER addPacket = {};
-		// addPacket.playerObjectId = id;
-		// addPacket.position = KG::Packet::RawFloat3(id, 0, id);
-		// addPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
-		// this->BroadcastPacket(&addPacket, sender);
-	}
-	return true;
-	case KG::Packet::PacketType::CS_INPUT: {
-		// this->server->inputs
-		// 해당 인풋을 보낸 클라이언트의 인풋 정보 변경
-	}
-										 return true;
-	case KG::Packet::PacketType::CS_FIRE:
-		std::cout << "Error Packet Received\n";
-		return false;
-	}*/
 	return false;
 }
 

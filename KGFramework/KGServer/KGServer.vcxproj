@@ -179,6 +179,7 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="export\EnemyGeneratorComponent.h" />
     <ClInclude Include="export\IKGServer.h" />
     <ClInclude Include="export\ServerBaseComponent.h" />
     <ClInclude Include="export\ServerEnemyControllerComponent.h" />
@@ -193,6 +194,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\EnemyGeneratorComponent.cpp" />
     <ClCompile Include="src\KGServer.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\ServerBaseComponent.cpp" />

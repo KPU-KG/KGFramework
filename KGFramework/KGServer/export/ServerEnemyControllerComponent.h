@@ -1,10 +1,10 @@
 #pragma once
-#include "IComponent.h"
-#include "ISystem.h"
 #include "ServerBaseComponent.h"
 #include "PhysicsComponent.h"
 #include "Debug.h"
 #include <vector>
+
+constexpr const int MAX_NODE = 5;
 
 namespace KG::Component
 {
@@ -54,46 +54,47 @@ namespace KG::Component
 		TransformComponent*							transform = nullptr;
 		IAnimationControllerComponent*				anim = nullptr;
 
-		EnemyAction				action = EnemyAction::eSETGOAL;
-		EnemyState				state = EnemyState::eWANDER;
+		EnemyAction									action = EnemyAction::eSETGOAL;
+		EnemyState									state = EnemyState::eWANDER;
 
-		DirectX::XMFLOAT3		center = { 0,0,0 };			// onCreate에서 정해줌
-		float					range = 10;
-		DirectX::XMFLOAT3		direction = { 0,0,0 };		// 일단 z값은 고려하지 않을 예정이나 비행 몹에는 쓸지도..?
-		DirectX::XMFLOAT3		goal = { 0,0,0 };
-		float					speed = 3;
-		float					idleInterval = 3;
-		float					idleTimer = 0;
-		float					rotateInterval = 2;
-		float					rotateTimer = 0;
+		DirectX::XMFLOAT3							center = { 0,0,0 };			// onCreate에서 정해줌
+		float										range = 10;
+		DirectX::XMFLOAT3							direction = { 0,0,0 };		// 일단 z값은 고려하지 않을 예정이나 비행 몹에는 쓸지도..?
+		DirectX::XMFLOAT3							goal = { 0,0,0 };
+		float										speed = 3;
+		float										idleInterval = 3;
+		float										idleTimer = 0;
+		float										rotateInterval = 2;
+		float										rotateTimer = 0;
+
+		bool										isDead = false;
 		
-		KG::Component::RaycastCallbackFunc raycastCallback = nullptr;
+		KG::Component::RaycastCallbackFunc			raycastCallback = nullptr;
 
-		int						hp = 10;
+		int											hp = 10;
 
-		DirectX::XMFLOAT2		angle;
+		DirectX::XMFLOAT2							angle;
+
+		DirectX::XMFLOAT3							node[MAX_NODE]{ DirectX::XMFLOAT3(0,0,0), };
+		// std::vector<DirectX::XMFLOAT3>				node;
+		int											nodeCount = 0;
+		bool										randomCircuit;
+		int											currentNode = 0;
+
 		void UpdateState();
 		bool SetGoal();
 		bool RotateToGoal(float elapsedTime);
 		bool MoveToGoal();
 		bool Idle(float elapsedTime);
+		void ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime = 0.1f, int repeat = 1);
 	public:
 		SEnemyControllerComponent();
-		void SetCenter(DirectX::XMFLOAT3 center) {
-			this->center = center;
-		}
-		void SetSpeed(float speed) {
-			this->speed = speed;
-		}
-		void SetIdleInterval(float interval) {
-			this->idleInterval = interval;
-		}
-		void SetRotateInterval(float interval) {
-			this->rotateInterval = interval;
-		}
-		void SetWanderRange(float range) {
-			this->range = range;
-		}
+		void SetCenter(DirectX::XMFLOAT3 center);
+		void SetSpeed(float speed);
+		void SetIdleInterval(float interval);
+		void SetRotateInterval(float interval);
+		void SetWanderRange(float range);
+		void SetPosition(DirectX::XMFLOAT3 position);
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override
@@ -102,15 +103,21 @@ namespace KG::Component
 		}
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender) override;
 		virtual bool OnDrawGUI();
-		void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback) {
-			this->raycastCallback = callback;
-		}
-		void HitBullet() {
-			this->hp -= 1;
-		}
+		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;
+		virtual void OnDataSave(tinyxml2::XMLElement* objectElement) override;
+		void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback);
+		void HitBullet();
+		bool IsDead() const;
+
+		// std::vector< KG::Core::SerializableProperty<DirectX::XMFLOAT3>> nodeProp;
+		KG::Core::SerializableProperty<DirectX::XMFLOAT3> nodeProp[MAX_NODE]{ 
+			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node0", node[0]), 
+			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node1", node[1]), 
+			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node2", node[2]), 
+			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node3", node[3]), 
+			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node4", node[4])
+		};
 	};
 
 	REGISTER_COMPONENT_ID(SEnemyControllerComponent);
-
-
 }

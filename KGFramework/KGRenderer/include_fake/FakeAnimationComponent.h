@@ -94,7 +94,10 @@ namespace KG::Component
 		virtual UINT GetCurrentPlayingAnimationIndex() const;
 		virtual float GetCurrentPlayingAnimationTime() const;
 		virtual float GetCurrentPlayingAnimationDuration() const;
-	};
+
+        // IAnimationControllerComponent을(를) 통해 상속됨
+        //virtual void SyncAnimation(const KG::Utill::HashString& anim, UINT animationIndex, float timer) override;
+    };
 
     REGISTER_COMPONENT_ID_REPLACE(FakeBoneTransformComponent, IBoneTransformComponent);
     REGISTER_COMPONENT_ID_REPLACE(FakeAnimationControllerComponent, IAnimationControllerComponent);
