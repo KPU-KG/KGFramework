@@ -399,3 +399,4 @@ KGFramework/Resource/Resource/ShaderScript/ShaderDebugCache/*.hlsl
 KGFramework/Resource/KGNetwork.dll
 KGFramework/Resource/KGPhysics.dll
 KGFramework/Resource/KGServer.dll
+KGFramework/Resource/KGRenderer.dll

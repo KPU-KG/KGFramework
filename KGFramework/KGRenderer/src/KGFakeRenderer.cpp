@@ -59,6 +59,7 @@ double KG::Renderer::KGFakeRenderer::GetGameTime() const
 
 void KG::Renderer::KGFakeRenderer::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
+    this->graphicSystems->PostComponentProvider(provider);
 }
 
 KG::Component::IRender3DComponent* KG::Renderer::KGFakeRenderer::GetNewRenderComponent()
