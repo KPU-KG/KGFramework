@@ -29,7 +29,7 @@ namespace KG::Component
 
 	class TransformComponent;
 
-	class DLL ParticleEmitterComponent : public IParticleEmitterComponent, IDXRenderComponent
+	class ParticleEmitterComponent : public IParticleEmitterComponent, IDXRenderComponent
 	{
 		float emitTimer = 0.0f;
 		TransformComponent* transform = nullptr;

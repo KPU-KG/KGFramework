@@ -51,33 +51,59 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     MyRegisterClass(hInstance);
 
     // 애플리케이션 초기화를 수행합니다:
-    if (!InitInstance (hInstance, nCmdShow) && !setting.isConsoleMode)
+    if ( setting.isConsoleMode )
+    {
+        KG::EngineDesc engineDesc;
+        engineDesc.hInst = hInstance;
+        engineDesc.hWnd = 0;
+        gameFramework.Initialize(engineDesc, setting);
+    }
+    else if (  !InitInstance (hInstance, nCmdShow))
     {
         return FALSE;
     }
 
-
-    HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_KGMAIN));
-
-    MSG msg{};
-
-    while (msg.message != WM_QUIT)
+    if ( setting.isConsoleMode )
     {
-        if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
-        {
-            if (!::TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
-            {
-                ::TranslateMessage(&msg);
-                ::DispatchMessage(&msg);
-            }
-        }
-        //else
+        if ( !AllocConsole() )
+            MessageBox(NULL, L"The console window was not created", NULL, MB_ICONEXCLAMATION);
+        FILE* console;
+        freopen_s(&console, "CONIN$", "r", stdin);
+        freopen_s(&console, "CONOUT$", "w", stderr);
+        freopen_s(&console, "CONOUT$", "w", stdout);
+        printf("CONSOLE MODE : DEBUG CONSOLE OPEN\n");
+        std::cout.clear();
+        while ( true )
         {
             gameFramework.OnProcess();
         }
+        gameFramework.OnClose();
+        return 0;
     }
-    gameFramework.OnClose();
-    return (int) msg.wParam;
+    else 
+    {
+        HACCEL hAccelTable = LoadAccelerators(hInstance, MAKEINTRESOURCE(IDC_KGMAIN));
+
+        MSG msg{};
+
+        while (msg.message != WM_QUIT)
+        {
+            if (::PeekMessage(&msg, NULL, 0, 0, PM_REMOVE))
+            {
+                if (!::TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+                {
+                    ::TranslateMessage(&msg);
+                    ::DispatchMessage(&msg);
+                }
+            }
+            //else
+            {
+                gameFramework.OnProcess();
+            }
+        }
+        gameFramework.OnClose();
+        return (int) msg.wParam;
+    }
 }
 
 

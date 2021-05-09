@@ -17,7 +17,7 @@ namespace KG::Component
 	class GSCubeCameraComponent;
 	class GSCascadeCameraComponent;
 
-	class DLL ShadowCasterComponent : public IShadowCasterComponent, IDXRenderComponent
+	class ShadowCasterComponent : public IShadowCasterComponent, IDXRenderComponent
 	{
 		KG::Component::LightComponent* targetLight = nullptr;
 		KG::Component::GSCubeCameraComponent* pointLightCamera = nullptr;

@@ -57,7 +57,9 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	new(&this->setting) Setting(setting);
 
 	//Renderer
-	this->renderer = std::unique_ptr<KG::Renderer::IKGRenderer>(KG::Renderer::GetD3D12Renderer());
+	this->renderer = std::unique_ptr<KG::Renderer::IKGRenderer>(
+        setting.isConsoleMode ? KG::Renderer::GetFakeRenderer() : KG::Renderer::GetD3D12Renderer()
+        );
 	this->input = std::unique_ptr<KG::Input::InputManager>(KG::Input::InputManager::GetInputManager());
 
 	KG::Renderer::RendererDesc renderDesc;

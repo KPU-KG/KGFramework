@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "KGRenderer.h"
 #include "KGDXRenderer.h"
+#include "KGFakeRenderer.h"
 using namespace KG::Renderer;
 
 void IKGRenderer::SetDesc(const RendererDesc& desc)
@@ -18,4 +19,9 @@ void IKGRenderer::SetSetting(const RendererSetting& setting)
 DLL KG::Renderer::IKGRenderer* KG::Renderer::GetD3D12Renderer()
 {
 	return new KGDXRenderer();
+}
+
+DLL KG::Renderer::IKGRenderer* KG::Renderer::GetFakeRenderer()
+{
+    return new KGFakeRenderer();
 }

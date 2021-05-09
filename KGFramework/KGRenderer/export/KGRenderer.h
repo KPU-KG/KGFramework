@@ -73,5 +73,6 @@ namespace KG::Renderer
 
 	};
 	DLL KG::Renderer::IKGRenderer* GetD3D12Renderer();
+    DLL KG::Renderer::IKGRenderer* GetFakeRenderer();
 }
 
