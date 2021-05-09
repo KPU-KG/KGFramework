@@ -114,22 +114,10 @@ bool KG::Component::EnemyGeneratorComponent::OnDrawGUI()
 void KG::Component::EnemyGeneratorComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	SBaseComponent::OnCreate(obj);
-	// this->SetNetObjectId(this->server->GetNewObjectId());
-
-	// this->transform = this->gameObject->GetTransform();
-	// this->center = this->transform->GetWorldPosition();
-   	// this->SetNetObjectId(KG::Server::SCENE_CONTROLLER_ID);
-	// this->server->SetServerObject(this->networkObjectId, this);
-	// this->physicsScene = this->server->GetPhysicsScene();
 }
 
 void KG::Component::EnemyGeneratorComponent::Update(float elapsedTime)
 {
-	// if (IsGeneratable()) {
-	// 	if (generateEnemy) {
-	// 		GenerateEnemy();
-	// 	}
-	// }
 }
 
 KG::Component::EnemyGeneratorComponent::EnemyGeneratorComponent()
