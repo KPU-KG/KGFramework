@@ -13,21 +13,11 @@
             <Strength x="1.2" y="1.2" z="1.2"/>
             <Direction x="-0.57735026" y="-0.57735026" z="-0.57735026"/>
         </Component>
-        <Component name="EnemyGeneratorComponent" hash_id="1480576243">
-            <Region>
-                <RegionPosition x="-20" y="0" z="0"/>
-                <RegionRange value="5"/>
-            </Region>
-            <Region>
-                <RegionPosition x="0" y="0" z="0"/>
-                <RegionRange value="5"/>
-            </Region>
-        </Component>
         <GameObject instanceId="0">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="6.5347404" y="7.9465327" z="-6.7038536"/>
-                <Rotation_Q x="0.31462398" y="-0.34865206" z="0.12552235" w="0.87390244"/>
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="CameraComponent" hash_id="2216269385">

@@ -26,8 +26,9 @@ namespace KG::Component
 
 		DirectX::XMFLOAT3 position{ 0,0,0 };
 		float range{ 5 };
+		float heightOffset{ 3 };
 		Region();
-		Region(DirectX::XMFLOAT3 position, float range);
+		Region(DirectX::XMFLOAT3 position, float range, float heightOffset);
 		Region(const KG::Component::Region& other);
 		Region(KG::Component::Region&& other);
 		KG::Component::Region& operator=(const KG::Component::Region& other);
@@ -35,6 +36,7 @@ namespace KG::Component
 	private:
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3> positionProp;
 		KG::Core::SerializableProperty<float> rangeProp;
+		KG::Core::SerializableProperty<float> heightOffsetProp;
 	};
 
 	class DLL EnemyGeneratorComponent : public SBaseComponent {
@@ -49,12 +51,11 @@ namespace KG::Component
 		virtual void Update(float elapsedTime) override;
 
 		bool IsGeneratable() const;
-		void GenerateEnemy(KG::Server::NET_OBJECT_ID id);
+		void GenerateEnemy();
 		KG::Component::Region GetNextRegion();
 		void AddEnemyControllerCompoenent(SEnemyControllerComponent* comp);
 		int GetCurrentRegionIndex() const;
 		KG::Component::Region GetCurrentRegion();
-
 
 	public:
 		void OnDataLoad(tinyxml2::XMLElement* componentElement);
@@ -68,7 +69,6 @@ namespace KG::Component
 	{
 		KG::Physics::IPhysicsScene* physicsScene;
 		EnemyGeneratorComponent* enemyGenerator;
-		// bool generateEnemy = false;
 	public:
 		float updatetimer = 0;
 		concurrency::concurrent_unordered_map<KG::Server::NET_OBJECT_ID, KG::Component::SPlayerComponent*> playerObjects;
