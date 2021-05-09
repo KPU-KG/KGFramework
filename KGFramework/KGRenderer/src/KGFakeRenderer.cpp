@@ -41,6 +41,7 @@ void KG::Renderer::KGFakeRenderer::OnChangeSettings(const RendererSetting& prev,
 
 void KG::Renderer::KGFakeRenderer::PreloadModels(std::vector<KG::Utill::HashString>&& ids)
 {
+    KG::Resource::FakeResourceContainer::GetInstance()->PreLoadModels(std::move(ids));
 }
 
 void KG::Renderer::KGFakeRenderer::SetEditUIRender(bool isRender)
