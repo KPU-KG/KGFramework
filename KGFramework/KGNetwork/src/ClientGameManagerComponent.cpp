@@ -81,8 +81,13 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 			//	playerTransform->SetPosition(ScenePacket->position);
 			//}
 		}
-		return true;
 		
+		return true;
+		case KG::Packet::PacketType::SC_REMOVE_OBJECT:
+		{
+			int i = 0;
+		}
+		return true;
 	/*	클라
 		------
 		플레이어 정보 받고 플레이어 + 팀 정보로 처리

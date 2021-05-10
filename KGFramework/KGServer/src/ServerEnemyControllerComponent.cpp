@@ -371,6 +371,9 @@ void KG::Component::SEnemyControllerComponent::Destroy()
 {
 	if (rigid)
 		rigid->ReleaseActor();
+	KG::Packet::SC_REMOVE_OBJECT removeObjectPacket = {};
+	// removeObjectPacket.objectId = enemies[i]->GetNetId();
+	this->BroadcastPacket((void*)&removeObjectPacket);
 	gameObject->Destroy();
 }
 

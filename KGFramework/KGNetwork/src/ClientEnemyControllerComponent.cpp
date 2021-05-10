@@ -39,6 +39,10 @@ bool KG::Component::CEnemyControllerComponent::OnProcessPacket(unsigned char* pa
 		this->anim->ChangeAnimation(p->animId, p->animIndex, p->nextState, p->blendingTime, p->repeat);
 		return true;
 	}
+	case KG::Packet::PacketType::SC_REMOVE_OBJECT:
+	{
+		this->gameObject->Destroy();
+	}
 	}
 	return false;
 }

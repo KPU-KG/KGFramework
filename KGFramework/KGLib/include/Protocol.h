@@ -26,7 +26,7 @@ namespace KG::Packet
 		SC_LOGIN_OK = 100, // 초기버전 미사용
 		SC_PLAYER_INIT,
 		SC_ADD_OBJECT,
-		SC_REMOVE_OBJECT, // 초기버전 미사용
+		SC_REMOVE_OBJECT,
 		SC_FIRE, // 초기버전 미사용
 		SC_ADD_PLAYER,
 		SC_PLAYER_SYNC,
@@ -167,6 +167,12 @@ namespace KG::Packet
 		KG::Server::NET_OBJECT_ID newObjectId;
 		RawFloat3 position;
 		RawFloat4 rotation;
+	};
+
+	struct SC_REMOVE_OBJECT
+	{
+		DEFAULT_PACKET_HEADER(SC_REMOVE_OBJECT);
+		KG::Server::NET_OBJECT_ID objectId;
 	};
 
 	struct SC_MOVE_OBJECT
