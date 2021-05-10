@@ -56,7 +56,7 @@ namespace KG::Component
 		void AddEnemyControllerCompoenent(SEnemyControllerComponent* comp);
 		int GetCurrentRegionIndex() const;
 		KG::Component::Region GetCurrentRegion();
-
+		void SendAddEnemyPacket(KG::Server::SESSION_ID player);
 	public:
 		void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		void OnDataSave(tinyxml2::XMLElement* parentElement);

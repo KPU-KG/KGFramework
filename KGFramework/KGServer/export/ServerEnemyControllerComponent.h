@@ -108,6 +108,7 @@ namespace KG::Component
 		void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback);
 		void HitBullet();
 		bool IsDead() const;
+		KG::Server::NET_OBJECT_ID GetNetId() const { return this->networkObjectId; }
 
 		// std::vector< KG::Core::SerializableProperty<DirectX::XMFLOAT3>> nodeProp;
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3> nodeProp[MAX_NODE]{ 

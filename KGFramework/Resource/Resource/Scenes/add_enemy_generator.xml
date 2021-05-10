@@ -1,0 +1,262 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Scene>
+    <SkyBoxId hash_id="4111474821" srcString="SkySnow"/>
+    <GameObject instanceId="0">
+        <Tag hash_id="2696201701" srcString="rootNode"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="0" y="0" z="0"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="1" y="1" z="1"/>
+        </Component>
+        <Component name="EnemyGeneratorComponent" hash_id="1480576243">
+            <Region>
+                <RegionPosition x="1" y="0" z="0"/>
+                <RegionRange value="8"/>
+            </Region>
+            <Region>
+                <RegionPosition x="-13" y="0" z="-10"/>
+                <RegionRange value="5"/>
+            </Region>
+        </Component>
+        <GameObject instanceId="2">
+            <Tag hash_id="133944175" srcString="SceneCameraObject"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="-18.975464" y="21.689543" z="-8.8598061"/>
+                <Rotation_Q x="0.33665124" y="0.47236729" z="-0.2014816" w="0.78926796"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <Component name="ICameraComponent" hash_id="1509592448">
+                <IsMainCamera value="true"/>
+                <FovY value="90"/>
+                <AspectRatio value="1.7777778"/>
+                <Near-Z value="0.0099999998"/>
+                <Far-Z value="100"/>
+                <RenderTextureDesc>
+                    <textureWidth value="1600"/>
+                    <textureHeight value="900"/>
+                    <arrayCount value="1"/>
+                    <useScreenSize value="false"/>
+                    <useCubeRender value="false"/>
+                    <useGSCubeRender value="false"/>
+                    <useGSArrayRender value="false"/>
+                    <useRenderTarget value="true"/>
+                    <useDeferredRender value="true"/>
+                    <useDepthStencilBuffer value="true"/>
+                    <uploadSRVRenderTarget value="false"/>
+                    <uploadSRVDepthBuffer value="false"/>
+                    <renderTargetTextureId hash_id="0" srcString=""/>
+                    <depthBufferTextureId hash_id="0" srcString=""/>
+                </RenderTextureDesc>
+            </Component>
+            <Component name="SceneCameraComponent" hash_id="2404609291"/>
+        </GameObject>
+        <GameObject instanceId="3">
+            <Tag hash_id="1517008099" srcString="Directional Light"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <Component name="ILightComponent" hash_id="2391118483">
+                <LightType value="0"/>
+                <Strength x="1.2" y="1.2" z="1.2"/>
+                <Direction x="-0.57735026" y="-0.57735026" z="-0.57735026"/>
+            </Component>
+        </GameObject>
+        <GameObject instanceId="1">
+            <Tag hash_id="1077372698" srcString="SkyBoxObject"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <Component name="IMaterialComponent" hash_id="308235170">
+                <MaterialDesc>
+                    <Element>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="4111474821" srcString="SkySnow"/>
+                        <slotIndex value="0"/>
+                    </Element>
+                </MaterialDesc>
+            </Component>
+            <Component name="IGeometryComponent" hash_id="1162546763">
+                <GeometryDescs>
+                    <Element>
+                        <geometryID hash_id="3056789162" srcString="cube"/>
+                        <slotIndex value="0"/>
+                        <subMeshIndex value="0"/>
+                    </Element>
+                </GeometryDescs>
+            </Component>
+            <Component name="IRender3DComponent" hash_id="1184141904"/>
+        </GameObject>
+        <GameObject instanceId="4">
+            <Tag hash_id="1323863224" srcString="TestWalls"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="-6.2404637" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="4">
+                <Tag hash_id="3684114284" srcString="StaticTileCube"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="-2.0430589" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="20" y="0.5" z="20"/>
+                </Component>
+                <Component name="IGeometryComponent" hash_id="1162546763">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="IMaterialComponent" hash_id="308235170">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
+                <Component name="StaticRigidComponent" hash_id="591825997">
+                    <Position x="0" y="0" z="0"/>
+                    <Scale x="2" y="2" z="2"/>
+                    <Show value="1"/>
+                </Component>
+            </GameObject>
+            <GameObject instanceId="5">
+                <Tag hash_id="998678751" srcString="StaticWall"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0.36288071" z="-20"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="20" y="2" z="1"/>
+                </Component>
+                <Component name="IGeometryComponent" hash_id="1162546763">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="IMaterialComponent" hash_id="308235170">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
+                <Component name="StaticRigidComponent" hash_id="591825997">
+                    <Position x="0" y="0" z="0"/>
+                    <Scale x="2" y="2" z="2"/>
+                    <Show value="1"/>
+                </Component>
+            </GameObject>
+            <GameObject instanceId="6">
+                <Tag hash_id="998678751" srcString="StaticWall"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-20" y="0.36288071" z="0"/>
+                    <Rotation_Q x="0" y="0.70710677" z="0" w="0.70710677"/>
+                    <Scale x="20" y="2" z="1"/>
+                </Component>
+                <Component name="IGeometryComponent" hash_id="1162546763">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="IMaterialComponent" hash_id="308235170">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
+                <Component name="StaticRigidComponent" hash_id="591825997">
+                    <Position x="0" y="0" z="0"/>
+                    <Scale x="2" y="2" z="2"/>
+                    <Show value="1"/>
+                </Component>
+            </GameObject>
+            <GameObject instanceId="7">
+                <Tag hash_id="998678751" srcString="StaticWall"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0.36288071" z="18.825502"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="20" y="2" z="1"/>
+                </Component>
+                <Component name="IGeometryComponent" hash_id="1162546763">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="IMaterialComponent" hash_id="308235170">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
+                <Component name="StaticRigidComponent" hash_id="591825997">
+                    <Position x="0" y="0" z="0"/>
+                    <Scale x="2" y="2" z="2"/>
+                    <Show value="1"/>
+                </Component>
+            </GameObject>
+            <GameObject instanceId="8">
+                <Tag hash_id="998678751" srcString="StaticWall"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="20" y="0.36300001" z="-1.5537582e-06"/>
+                    <Rotation_Q x="0" y="0.70710683" z="0" w="0.70710671"/>
+                    <Scale x="20" y="2" z="1"/>
+                </Component>
+                <Component name="IGeometryComponent" hash_id="1162546763">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3056789162" srcString="cube"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="IMaterialComponent" hash_id="308235170">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
+                <Component name="StaticRigidComponent" hash_id="591825997">
+                    <Position x="0" y="0" z="0"/>
+                    <Scale x="2" y="2" z="2"/>
+                    <Show value="1"/>
+                </Component>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</Scene>

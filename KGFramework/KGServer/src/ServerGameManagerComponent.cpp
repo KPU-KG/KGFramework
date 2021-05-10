@@ -159,6 +159,28 @@ KG::Component::Region KG::Component::EnemyGeneratorComponent::GetCurrentRegion()
 	return this->region[currentRegion];
 }
 
+void  KG::Component::EnemyGeneratorComponent::SendAddEnemyPacket(KG::Server::SESSION_ID player) {
+	for (auto& e : this->enemies) {
+		auto presetName = "EnemyMech";						// 적 종류 추가되면 enemy에서 불러올 것
+		auto presetId = KG::Utill::HashString(presetName);
+
+		auto* scene = this->gameObject->GetScene();
+
+		auto t = e->GetGameObject()->GetTransform();
+
+		KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
+		auto tag = KG::Utill::HashString(presetName);
+		addObjectPacket.objectTag = tag;
+		addObjectPacket.parentTag = 0;
+		addObjectPacket.presetId = tag;
+		addObjectPacket.position = t->GetPosition();
+
+		auto id = e->GetNetId();
+		addObjectPacket.newObjectId = id;
+		this->SendPacket(player, (void*)&addObjectPacket);
+	}
+}
+
 void KG::Component::EnemyGeneratorComponent::OnDataLoad(tinyxml2::XMLElement* objectElement) {
 	this->region.clear();
 	auto* nextElement = objectElement->FirstChildElement("Region");
@@ -357,6 +379,10 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 			addPacket.rotation = ptr->GetGameObject()->GetTransform()->GetRotation();
 			this->SendPacket(sender, &addPacket);
 		}
+
+		// 이미 생성되어있는 적 추가
+		if (this->enemyGenerator)
+			this->enemyGenerator->SendAddEnemyPacket(sender);
 	}
 	return true;
 	}
