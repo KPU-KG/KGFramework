@@ -45,17 +45,16 @@ namespace KG::Component
 		std::vector<KG::Component::Region> region;
 		int currentRegion = 0;
 		bool generateEnemy = false;
+		KG::Component::Region GetNextRegion();
+		int GetCurrentRegionIndex() const;
+		KG::Component::Region GetCurrentRegion();
 	public:
 		EnemyGeneratorComponent();
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
-
 		bool IsGeneratable() const;
 		void GenerateEnemy();
-		KG::Component::Region GetNextRegion();
 		void AddEnemyControllerCompoenent(SEnemyControllerComponent* comp);
-		int GetCurrentRegionIndex() const;
-		KG::Component::Region GetCurrentRegion();
 		void SendAddEnemyPacket(KG::Server::SESSION_ID player);
 	public:
 		void OnDataLoad(tinyxml2::XMLElement* componentElement);
@@ -85,8 +84,6 @@ namespace KG::Component
 		virtual KG::Physics::IPhysicsScene* GetPhysicsScene() { return this->physicsScene; }
 
 	public:
-		// void OnDataLoad(tinyxml2::XMLElement* componentElement);
-		// void OnDataSave(tinyxml2::XMLElement* parentElement);
 	};
 	REGISTER_COMPONENT_ID(SGameManagerComponent);
 	REGISTER_COMPONENT_ID(EnemyGeneratorComponent);

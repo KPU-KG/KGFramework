@@ -24,6 +24,7 @@ void KG::Component::SEnemyControllerComponent::UpdateState()
 
 bool KG::Component::SEnemyControllerComponent::SetGoal()
 {
+	// this->gameObject->Destroy();
 	if (this->nodeCount > 0) {
 		if (randomCircuit) {
 			std::uniform_int_distribution<int> randomIndex(1, this->nodeCount);
@@ -39,6 +40,11 @@ bool KG::Component::SEnemyControllerComponent::SetGoal()
 		// goal.y = goalRange(gen) * range;
 		goal.z = goalRange(gen) * range + center.z;
 	}
+
+	auto pos = transform->GetPosition();
+	distance = std::sqrt(std::pow((goal.x - pos.x), 2) + std::pow((goal.y - pos.y), 2));
+	arriveTime = distance / speed;
+	moveTime = 0;
 
 	direction = Math::Vector3::Subtract(goal, transform->GetPosition());
 	direction.y = 0;
@@ -89,6 +95,10 @@ bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 	if (rigid) {
 		rigid->SetVelocity(direction, speed);
 	}
+
+	if (moveTime / arriveTime > 1)
+		return true;
+
 	// 진행 방향
 	bool flag_x = false;
 	// bool flag_y = false;
@@ -116,6 +126,7 @@ bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 		return true;
 	}
 
+
 	return false;
 }
 
@@ -124,7 +135,6 @@ bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
 	if (anim) {
 		ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING, 0.1f, -1);
 	}
-	//anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING);
 	idleTimer += elapsedTime;
 	if (idleInterval <= idleTimer)
 		return true;
@@ -181,7 +191,13 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::dead, ANIMSTATE_STOP, 0.1, 1);
 			isDead = true;
 		}
-
+		destroyTimer += elapsedTime;
+		if (destroyInterval >= destroyTimer) {
+			if (rigid) {
+				rigid->ReleaseActor();
+				rigid = nullptr;
+			}
+		}
 	}
 	else {
 		switch (this->action) {
@@ -202,6 +218,8 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 				action = EnemyAction::eIDLE;
 				idleTimer = 0;
 			}
+			else
+				moveTime += elapsedTime;
 			break;
 		case EnemyAction::eATTACK:
 			break;
@@ -222,7 +240,6 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 {
 	if (ImGui::ComponentHeader<KG::Component::SEnemyControllerComponent>()) {
 		ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
-
 
 		if (this->isUsing()) {
 			ImGui::TextDisabled("Center : (%f, %f, %f)", center.x, center.y, center.z);
@@ -251,6 +268,9 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 			ImGui::TextDisabled("Action : %s", curAction);
 			ImGui::TextDisabled("Goal : (%f, %f, %f)", goal.x, goal.y, goal.z);
 			ImGui::TextDisabled("Direction : (%f, %f, %f)", direction.x, direction.y, direction.z);
+			ImGui::TextDisabled("Distance : %f", distance);
+			ImGui::TextDisabled("MoveTime : %f", moveTime);
+			ImGui::TextDisabled("ArriveTime : %f", arriveTime);
 			auto angle = transform->GetEulerDegree();
 			ImGui::TextDisabled("rotation : (%f, %f, %f)", angle.x, angle.y, angle.z);
 			ImGui::TextDisabled("this->angle : (%f, %f)", this->angle.x, this->angle.y);
@@ -277,7 +297,7 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 		XMFLOAT4X4 mat;
 
 		for (int i = 0; i < nodeCount; ++i) {
-			nodeProp[i].OnDrawGUI();
+			// nodeProp[i].OnDrawGUI();
 			DirectX::XMStoreFloat4x4(&mat, XMMatrixTranslation(this->node[i].x, this->node[i].y, this->node[i].z));
 
 
@@ -340,6 +360,18 @@ void KG::Component::SEnemyControllerComponent::HitBullet() {
 bool KG::Component::SEnemyControllerComponent::IsDead() const
 {
 	return isDead;
+}
+
+bool KG::Component::SEnemyControllerComponent::IsDelete() const
+{
+	return destroyInterval <= destroyTimer;
+}
+
+void KG::Component::SEnemyControllerComponent::Destroy()
+{
+	if (rigid)
+		rigid->ReleaseActor();
+	gameObject->Destroy();
 }
 
 inline void KG::Component::SEnemyControllerComponent::ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime, int repeat) {

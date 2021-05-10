@@ -72,7 +72,7 @@ namespace KG::Physics
 		virtual KG::Component::DynamicRigidComponent* GetNewDynamicRigidComponent() override final;
 		virtual KG::Component::StaticRigidComponent* GetNewStaticRigidComponent() override final;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override final;
-
+		virtual void ReleaseActor(KG::Component::IRigidComponent* comp) override final;
 		virtual KG::Component::IRigidComponent* QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) override final;
 
 		static PhysicsScene* GetInstance() { return instance; }

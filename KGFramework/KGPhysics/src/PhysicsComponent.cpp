@@ -109,6 +109,11 @@ void KG::Component::DynamicRigidComponent::SetPosition(DirectX::XMFLOAT3 pos)
 	actor->setGlobalPose(pose);
 }
 
+void KG::Component::DynamicRigidComponent::ReleaseActor()
+{
+	KG::Physics::PhysicsScene::GetInstance()->ReleaseActor(this);
+}
+
 
 void KG::Component::DynamicRigidComponent::SetupFiltering(unsigned int filterGroup, unsigned int filterMask)
 {
@@ -319,6 +324,11 @@ void KG::Component::StaticRigidComponent::Update(float timeElapsed)
 void KG::Component::StaticRigidComponent::SetActor(physx::PxRigidStatic* actor)
 {
 	this->actor = actor;
+}
+
+void KG::Component::StaticRigidComponent::ReleaseActor()
+{
+	KG::Physics::PhysicsScene::GetInstance()->ReleaseActor(this);
 }
 
 void KG::Component::StaticRigidComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)

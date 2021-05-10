@@ -36,3 +36,10 @@ void KG::System::EnemyGeneratorSystem::OnPreRender()
 {
 
 }
+
+void KG::System::EnemyGeneratorSystem::DestroyGameObject()
+{
+	for (auto& com : *this) {
+		com.Destroy();
+	}
+}

@@ -104,5 +104,6 @@ namespace KG::System
 		}
 		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;
+		void DestroyGameObject();
 	};
 }

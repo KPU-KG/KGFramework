@@ -38,6 +38,7 @@ namespace KG::Physics
 		virtual KG::Component::DynamicRigidComponent* GetNewDynamicRigidComponent() = 0;
 		virtual KG::Component::StaticRigidComponent* GetNewStaticRigidComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
+		virtual void ReleaseActor(KG::Component::IRigidComponent* comp) = 0;
 		bool SetGUIContext(ImGuiContext* context)
 		{
 			ImGui::SetCurrentContext(context);

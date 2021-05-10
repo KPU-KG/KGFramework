@@ -54,12 +54,12 @@ namespace KG::Component
 		TransformComponent*							transform = nullptr;
 		IAnimationControllerComponent*				anim = nullptr;
 
-		EnemyAction									action = EnemyAction::eSETGOAL;
+		EnemyAction									action = EnemyAction::eIDLE;
 		EnemyState									state = EnemyState::eWANDER;
 
 		DirectX::XMFLOAT3							center = { 0,0,0 };			// onCreate에서 정해줌
 		float										range = 10;
-		DirectX::XMFLOAT3							direction = { 0,0,0 };		// 일단 z값은 고려하지 않을 예정이나 비행 몹에는 쓸지도..?
+		DirectX::XMFLOAT3							direction = { 0,0,0 };		// 일단 y값은 고려하지 않을 예정이나 비행 몹에는 쓸지도..?
 		DirectX::XMFLOAT3							goal = { 0,0,0 };
 		float										speed = 3;
 		float										idleInterval = 3;
@@ -67,8 +67,15 @@ namespace KG::Component
 		float										rotateInterval = 2;
 		float										rotateTimer = 0;
 
+		float										distance = 0;
+		float										arriveTime = 0;
+		float										moveTime = 0;
+
 		bool										isDead = false;
-		
+		float										destroyInterval = 3.f;
+		float										destroyTimer = 0.f;
+
+
 		KG::Component::RaycastCallbackFunc			raycastCallback = nullptr;
 
 		int											hp = 10;
@@ -76,7 +83,6 @@ namespace KG::Component
 		DirectX::XMFLOAT2							angle;
 
 		DirectX::XMFLOAT3							node[MAX_NODE]{ DirectX::XMFLOAT3(0,0,0), };
-		// std::vector<DirectX::XMFLOAT3>				node;
 		int											nodeCount = 0;
 		bool										randomCircuit;
 		int											currentNode = 0;
@@ -108,16 +114,9 @@ namespace KG::Component
 		void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback);
 		void HitBullet();
 		bool IsDead() const;
+		bool IsDelete() const;
 		KG::Server::NET_OBJECT_ID GetNetId() const { return this->networkObjectId; }
-
-		// std::vector< KG::Core::SerializableProperty<DirectX::XMFLOAT3>> nodeProp;
-		KG::Core::SerializableProperty<DirectX::XMFLOAT3> nodeProp[MAX_NODE]{ 
-			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node0", node[0]), 
-			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node1", node[1]), 
-			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node2", node[2]), 
-			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node3", node[3]), 
-			KG::Core::SerializableProperty<DirectX::XMFLOAT3>("Node4", node[4])
-		};
+		virtual void Destroy() override;
 	};
 
 	REGISTER_COMPONENT_ID(SEnemyControllerComponent);

@@ -334,7 +334,6 @@ void KG::Physics::PhysicsScene::AddDynamicActor(KG::Component::DynamicRigidCompo
             break;
         }
     }
-
 }
 
 void KG::Physics::PhysicsScene::AddStaticActor(KG::Component::StaticRigidComponent* rigid)
@@ -438,6 +437,16 @@ KG::Component::StaticRigidComponent* KG::Physics::PhysicsScene::GetNewStaticRigi
 void KG::Physics::PhysicsScene::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
     physicsSystems->PostComponentProvider(provider);
+}
+
+void KG::Physics::PhysicsScene::ReleaseActor(KG::Component::IRigidComponent* comp)
+{
+    auto* actor = comp->GetActor();
+    if (CollisionCallback.count(actor) != 0)
+        CollisionCallback.erase(actor);
+    if (compIndex.count(comp->GetId()) != 0)
+        compIndex.erase(comp->GetId());
+    this->scene->removeActor(*actor);
 }
 
 KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId)

@@ -118,6 +118,18 @@ void KG::Component::EnemyGeneratorComponent::OnCreate(KG::Core::GameObject* obj)
 
 void KG::Component::EnemyGeneratorComponent::Update(float elapsedTime)
 {
+	bool destroyFlag = false;
+	while (!destroyFlag) {
+		destroyFlag = true;
+		for (int i = 0; i < enemies.size(); ++i) {
+			if (enemies[i]->IsDelete()) {
+				enemies[i]->Destroy();
+				enemies.erase(enemies.begin() + i);
+				destroyFlag = false;
+				break;
+			}
+		}
+	}
 }
 
 KG::Component::EnemyGeneratorComponent::EnemyGeneratorComponent()

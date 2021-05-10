@@ -97,6 +97,7 @@ namespace KG::Component
 		physx::PxFilterData* GetFilterData() { return filterData; }
 		virtual void SetPosition(DirectX::XMFLOAT3 pos) {};
 		virtual void SetApply(bool apply) {};
+		virtual void ReleaseActor() = 0;
 	public:
 		// property
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		positionProp;
@@ -135,6 +136,7 @@ namespace KG::Component
 		virtual void SetRotation(DirectX::XMFLOAT4 quat) override;
 		virtual void SetPosition(DirectX::XMFLOAT3 pos) override;
 		virtual void SetApply(bool apply) override { this->apply = apply; }
+		virtual void ReleaseActor() override;
 		// raycast Å×½ºÆ®
 
 	private:
@@ -159,6 +161,8 @@ namespace KG::Component
 		CollisionBox& GetCollisionBox() { return collisionBox; }
 		void SetActor(physx::PxRigidStatic* actor);
 		virtual physx::PxActor* GetActor() override final { return reinterpret_cast<physx::PxActor*>(actor); };
+		virtual void ReleaseActor() override;
+
 	private:
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
