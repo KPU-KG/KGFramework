@@ -263,6 +263,22 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
+    this->scene->AddObjectPreset("VectorDrop",
+        [this](KG::Core::GameObject& obj)
+        {
+            auto* t = this->system->transformSystem.GetNewComponent();
+            auto* g = this->renderer->GetNewGeomteryComponent();
+            g->AddGeometry(KG::Utill::HashString("VectorDropModel.fbx"));
+            auto* m = this->renderer->GetNewMaterialComponent();
+            m->PostMaterial(KG::Utill::HashString("vectorNormal"));
+            auto* r = this->renderer->GetNewRenderComponent();
+            obj.AddComponent(t);
+            obj.AddComponent(g);
+            obj.AddComponent(m);
+            obj.AddComponent(r);
+        }
+    );
+
 	this->scene->AddModelPreset("Vector",
 		[]()
 		{
@@ -566,6 +582,12 @@ void KG::GameFramework::PostSceneFunction()
 			ctrl->SetIgnoreTranslate(true);
 			ctrl->SetIgnoreScale(false);
 			obj.AddComponent(ctrl);
+
+            auto* vectorDrop = this->scene->CallPreset("VectorDrop");
+            auto* handObj = obj.FindChildObject("RArmHand"_id);
+            handObj->GetTransform()->AddChild(vectorDrop->GetTransform());
+            vectorDrop->GetTransform()->SetPosition(-24.8, 1.809, 0.889);
+            vectorDrop->GetTransform()->SetScale(1.75, 1.75, 1.75);
 
 			auto* rotateObj = this->scene->CreateNewTransformObject();
 			rotateObj->tag = KG::Utill::HashString("RotateHelper");
