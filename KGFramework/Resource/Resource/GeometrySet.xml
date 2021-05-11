@@ -162,4 +162,6 @@
     <Geometry id="tank_trexhwm.fbx" fileDir="Resource/Geometry/newmo/tank_trexhwm_fbx/tank_trexhwm.fbx" rawMesh="true" hash_id="2305885141"/>
     <!--dd.FBX-->
     <Geometry id="dd.FBX" fileDir="Resource/Geometry/newmo/Model_C0811058/dd.FBX" rawMesh="true" hash_id="817507687"/>
+    <!--VectorDropModel.fbx-->
+    <Geometry id="VectorDropModel.fbx" fileDir="Resource/Geometry/vector/VectorDropModel.fbx" rawMesh="true" hash_id="3538754280"/>
 </GeometrySet>
