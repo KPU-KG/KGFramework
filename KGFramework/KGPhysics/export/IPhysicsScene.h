@@ -13,6 +13,17 @@
 
 namespace KG::Physics
 {
+    /* ±èÅÂÇü Ãß°¡ */
+    struct DLL RaycastResult
+    {
+        KG::Component::IRigidComponent* targetRigid = nullptr;
+        DirectX::XMFLOAT3 hitPosition = DirectX::XMFLOAT3(0, 0, 0);
+        DirectX::XMFLOAT3 normal = DirectX::XMFLOAT3(0, 0, 0);
+        DirectX::XMFLOAT2 uv = DirectX::XMFLOAT2(0, 0);
+        float distance = 0;
+    };
+
+
 	class DLL IPhysicsScene {
 	protected:
 		PhysicsDesc desc;
@@ -45,6 +56,7 @@ namespace KG::Physics
 			return true;
 		}
 		virtual KG::Component::IRigidComponent* QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) = 0;
+        virtual RaycastResult QueryRaycastResult(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) = 0;
 		void SetStepSize(float stepSize) {
 			this->stepSize = stepSize;
 		}

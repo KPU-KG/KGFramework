@@ -7,11 +7,11 @@
     <fullScreen value="false"/>
     <isVsync value="false"/>
     <isPxDebugger value="false"/>
-    <isEditMode value="true"/>
-    <isConsoleMode value="false"/>
-    <isStartClient value="true"/>
-    <isStartServer value="false"/>
-    <isStartLogin value="true"/>
+    <isEditMode value="false"/>
+    <isConsoleMode value="true"/>
+    <isStartClient value="false"/>
+    <isStartServer value="true"/>
+    <isStartLogin value="false"/>
     <ipAddress value="127.0.0.1"/>
     <startScenePath value="Resource/Scenes/col_test_walls.xml"/>
 </Settings>

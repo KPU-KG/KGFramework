@@ -470,3 +470,36 @@ KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX:
     }
     return nullptr;
 }
+
+
+RaycastResult KG::Physics::PhysicsScene::QueryRaycastResult(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId)
+{
+    PxVec3 org{ origin.x, origin.y, origin.z };
+    PxVec3 dir{ direction.x, direction.y, direction.z };
+    PxReal dst = maxDistance;
+    PxRaycastHit hit[2];
+    PxRaycastBuffer buf(hit, 2);
+    RaycastResult result{};
+    if ( scene->raycast(org, dir, dst, buf) )
+    {
+        for ( int i = 0; i < buf.getNbTouches(); ++i )
+        {
+            PxU32 hitId = hit[i].shape->getSimulationFilterData().word2;
+            if ( myId != hitId )
+            {
+                if ( compIndex.count(hitId) != 0 )
+                {
+                    auto& curHit = hit[i];
+                    result.targetRigid = compIndex[hitId];
+                    result.hitPosition = DirectX::XMFLOAT3(curHit.position.x, curHit.position.y, curHit.position.z);
+                    result.normal = DirectX::XMFLOAT3(curHit.normal.x, curHit.normal.y, curHit.normal.z);
+                    result.uv = DirectX::XMFLOAT2(curHit.u, curHit.v);
+                    result.distance = curHit.distance;
+
+                    return result;
+                }
+            }
+        }
+    }
+    return result;
+}

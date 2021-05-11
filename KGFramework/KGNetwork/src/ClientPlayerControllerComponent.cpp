@@ -1,9 +1,10 @@
 #include "pch.h"
 #include "ClientPlayerControllerComponent.h"
 #include "Transform.h"
-#include "CameraComponent.h"
-#include "AnimationComponent.h"
-#include "ParticleEmitterComponent.h"
+#include "ICameraComponent.h"
+#include "IAnimationComponent.h"
+#include "IParticleEmitterComponent.h"
+#include "IPhysicsScene.h"
 #include "PhysicsComponent.h"
 
 using namespace KG::Math::Literal;
@@ -42,24 +43,45 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
 	spine->GetTransform()->SetScale(0, 0, 0);
 
 	this->characterTransform = this->gameObject->GetComponent<TransformComponent>();
-	this->characterAnimation = this->gameObject->GetComponent<AnimationControllerComponent>();
+	this->characterAnimation = this->gameObject->GetComponent<IAnimationControllerComponent>();
 	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
 
 	auto* cameraObject = this->gameObject->FindChildObject("FPCamera"_id);
 	this->cameraTransform = cameraObject->GetTransform();
-	this->camera = cameraObject->GetComponent<CameraComponent>();
+	this->camera = cameraObject->GetComponent<ICameraComponent>();
 
 	auto* vectorObject = this->gameObject->FindChildObject("Vector"_id);
-	this->vectorAnimation = vectorObject->GetComponent<AnimationControllerComponent>();
+	this->vectorAnimation = vectorObject->GetComponent<IAnimationControllerComponent>();
 
 	auto* particleObject = this->gameObject->FindChildObject("ParticleGenerator"_id);
-	this->particleGen = particleObject->GetComponent<ParticleEmitterComponent>();
-	this->particleGen->baselifeTime = 0.025f;
-	this->particleGen->baseEmitCount = 1;
-	this->particleGen->baseSize.x = 0.35;
-	this->particleGen->baseSize.y = 0.35;
-	this->particleGen->color.SetByFloat(1, 0.65, 0);
-	this->particleGen->SetParticleMaterial(KG::Utill::HashString("Muzzle_06"));
+	this->particleGen = particleObject->GetComponent<IParticleEmitterComponent>();
+
+    KG::Component::ParticleDesc muzzleDesc;
+	muzzleDesc.baselifeTime = 0.055f;
+	muzzleDesc.baseEmitCount = 1;
+	muzzleDesc.baseSize.x = 0.35;
+	muzzleDesc.baseSize.y = 0.35;
+    muzzleDesc.type = ParticleType::Add;
+	muzzleDesc.color.SetByFloat(1, 0.65, 0);
+    muzzleDesc.materialId = KG::Utill::HashString("Muzzle_06");
+
+    this->particleGen->AddParticleDesc(KG::Utill::HashString("Muzzle"), muzzleDesc);
+
+    KG::Component::ParticleDesc sparkDesc;
+    sparkDesc.baselifeTime = 3.0f;
+    sparkDesc.baseEmitCount = 20;
+    sparkDesc.rangeEmitCount = 20;
+    sparkDesc.baseSize.x = 0.075;
+    sparkDesc.baseSize.y = 0.075;
+    sparkDesc.rangeSpeed.x = 5;
+    sparkDesc.rangeSpeed.y = 5;
+    sparkDesc.rangeSpeed.z = 5;
+    sparkDesc.type = ParticleType::Add;
+    sparkDesc.color.SetByFloat(1, 1, 0);
+    sparkDesc.materialId = KG::Utill::HashString("SparkParticle");
+
+    this->particleGen->AddParticleDesc(KG::Utill::HashString("Spark"), sparkDesc);
+
 }
 
 void KG::Component::CPlayerControllerComponent::Update(float elapsedTime)
@@ -350,31 +372,24 @@ void KG::Component::CPlayerControllerComponent::TryShoot(float elapsedTime)
 		this->TryReload(elapsedTime);
 		return;
 	}
-	if ( this->vectorAnimation->GetCurrentPlayingAnimationId() != VectorAnimSet::fire )
+	if ( this->vectorAnimation->GetCurrentPlayingAnimationId() != VectorAnimSet::fire || this->vectorAnimation->GetCurrentPlayingAnimationTime() > this->bulletRepeatTime )
 	{
 		DebugNormalMessage("Current Vector Anim Not Fire");
-		this->particleGen->EmitParticle();
+		this->particleGen->EmitParticle(KG::Utill::HashString("Muzzle"_id));
 		this->vectorAnimation->SetAnimation(VectorAnimSet::fire, 0, 1, 1.5f);
 		this->bulletCount -= 1;
 		Packet::CS_FIRE p = { };
 		p.origin = this->cameraTransform->GetWorldPosition();
 		p.direction = this->cameraTransform->GetWorldLook();
 		// p.direction = this->characterTransform->GetWorldLook();
-		p.distance = 100;
+		p.distance = 1000;
 		this->SendPacket(&p);
-	}
-	else if ( this->vectorAnimation->GetCurrentPlayingAnimationTime() > this->bulletRepeatTime )
-	{
-		DebugNormalMessage("Current Vector Anim is Fire But 0.25Sec later");
-		this->particleGen->EmitParticle();
-		this->vectorAnimation->SetAnimation(VectorAnimSet::fire, 0, 1, 1.5f);
-		this->bulletCount -= 1;
-		Packet::CS_FIRE p = { };
-		p.origin = this->cameraTransform->GetWorldPosition();
-		p.direction = this->cameraTransform->GetWorldLook();
-		// p.direction = this->characterTransform->GetWorldLook();
-		p.distance = 100;
-		this->SendPacket(&p);
+
+        auto comp = this->physics->GetScene()->QueryRaycastResult(p.origin, p.direction, p.distance);
+        if ( comp.targetRigid )
+        {
+            this->particleGen->EmitParticle(KG::Utill::HashString("Spark"_id), comp.hitPosition, comp.normal * 2);
+        }
 	}
 }
 

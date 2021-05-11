@@ -9,6 +9,10 @@ namespace KG::Core
 {
 	class GameObject;
 };
+namespace KG::Physics
+{
+    class IPhysicsScene;
+}
 
 namespace physx
 {
@@ -67,6 +71,7 @@ namespace KG::Component
 		KG::Component::CollisionCallbackFunc					collisionCallback = nullptr;
 		RaycastCallbackFunc										raycastCallback = nullptr;
 		physx::PxFilterData*									filterData = nullptr;
+        KG::Physics::IPhysicsScene* scene = nullptr;
 		bool kinetic = false;														
 		bool dynamic = false;
 		unsigned int id = 0;
@@ -87,6 +92,7 @@ namespace KG::Component
 		virtual void SetRaycastCallback(KG::Component::RaycastCallbackFunc& raycastCallback) { this->raycastCallback = raycastCallback; }
 		virtual KG::Component::RaycastCallbackFunc GetRaycastCallback() const { return this->raycastCallback; }
 
+        virtual KG::Physics::IPhysicsScene* GetScene() const { return this->scene; }
 		virtual physx::PxActor* GetActor() { return nullptr; };
 		virtual void AddForce(DirectX::XMFLOAT3 dir, float distance = 1.0f) {};
 		virtual void SetVelocity(DirectX::XMFLOAT3 dir, float distance = 1.0f) {};

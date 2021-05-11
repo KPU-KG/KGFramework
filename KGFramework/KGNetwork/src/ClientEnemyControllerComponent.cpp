@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ClientEnemyControllerComponent.h"
 #include "PhysicsComponent.h"
-#include "AnimationComponent.h"
+#include "IAnimationComponent.h"
 #include "imgui/imgui.h"
 #include "Transform.h"
 
@@ -15,7 +15,7 @@ void KG::Component::CEnemyControllerComponent::OnCreate(KG::Core::GameObject* ob
 	CBaseComponent::OnCreate(obj);
 
 	this->transform = this->gameObject->GetTransform();
-	this->anim = this->gameObject->GetComponent<AnimationControllerComponent>();
+	this->anim = this->gameObject->GetComponent<IAnimationControllerComponent>();
 }
 
 void KG::Component::CEnemyControllerComponent::Update(float elapsedTime)

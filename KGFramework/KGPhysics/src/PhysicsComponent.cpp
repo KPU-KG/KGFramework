@@ -493,6 +493,7 @@ KG::Component::IRigidComponent::IRigidComponent()
 			{FilterGroup::ePLAYER, "Player"}
 		}, false)
 {
+    this->scene = static_cast<KG::Physics::IPhysicsScene*>(KG::Physics::PhysicsScene::GetInstance());
 }
 
 DirectX::XMFLOAT4X4 KG::Component::CollisionBox::GetMatrix() const

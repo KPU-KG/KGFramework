@@ -53,8 +53,37 @@ void KG::Renderer::ParticleGenerator::Initialize()
 	memset(this->transparentParticles.data(), 0, sizeof(this->transparentParticles[0]) * this->transparentParticles.size());
 }
 
-void KG::Renderer::ParticleGenerator::EmitParticle(const KG::Component::ParticleDesc& desc, bool autoFillTime, bool isAdd)
+void KG::Renderer::ParticleGenerator::EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3& position)
 {
+    auto it = this->particleDescs.find(id);
+    if ( it == this->particleDescs.end() ) return;
+
+    auto type = it->second.type;
+    auto count = it->second.GetCount();
+    for ( int i = 0; i < count; i++ )
+    {
+        auto data = it->second.GetData(position);
+        this->EmitParticle(data, true, type);
+    }
+}
+
+void KG::Renderer::ParticleGenerator::EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& baseSpeed)
+{
+    auto it = this->particleDescs.find(id);
+    if ( it == this->particleDescs.end() ) return;
+
+    auto type = it->second.type;
+    auto count = it->second.GetCount();
+    for ( int i = 0; i < count; i++ )
+    {
+        auto data = it->second.GetData(position, baseSpeed);
+        this->EmitParticle(data, true, type);
+    }
+}
+
+void KG::Renderer::ParticleGenerator::EmitParticle(const KG::Component::ParticleData& desc, bool autoFillTime, KG::Component::ParticleType type)
+{
+    bool isAdd = type == KG::Component::ParticleType::Add;
 	auto& currentParticleCount = isAdd ? this->currentAddParticleCount : this->currentTransparentParticleCount;
 	auto& particles = isAdd ? this->addParticles : this->transparentParticles;
 	auto index = isAdd ? this->GetEmptyIndexFromAddParticles() : this->GetEmptyIndexFromTransparentParticles();
@@ -65,17 +94,6 @@ void KG::Renderer::ParticleGenerator::EmitParticle(const KG::Component::Particle
 	{
 		particles[index].startTime = KGDXRenderer::GetInstance()->GetGameTime();
 	}
-}
-
-
-void KG::Renderer::ParticleGenerator::EmitParticleAdd(const KG::Component::ParticleDesc& desc, bool autoFillTime)
-{
-	this->EmitParticle(desc, autoFillTime, true);
-}
-
-void KG::Renderer::ParticleGenerator::EmitParticleTransparent(const KG::Component::ParticleDesc& desc, bool autoFillTime)
-{
-	this->EmitParticle(desc, autoFillTime, false);
 }
 
 void KG::Renderer::ParticleGenerator::PreRender()
@@ -107,7 +125,13 @@ void KG::Renderer::ParticleGenerator::Update(float elapsedTime)
 	//}
 }
 
-bool KG::Renderer::ParticleGenerator::isExpired(const KG::Component::ParticleDesc& desc)
+void KG::Renderer::ParticleGenerator::AddParticleDesc(const KG::Utill::HashString& id, KG::Component::ParticleDesc desc)
+{
+    desc.materialIndex = KGDXRenderer::GetInstance()->QueryMaterialIndex(desc.materialId);
+    this->particleDescs.emplace(std::make_pair(id, desc));
+}
+
+bool KG::Renderer::ParticleGenerator::isExpired(const KG::Component::ParticleData& desc)
 {
 	return KGDXRenderer::GetInstance()->GetGameTime() > (desc.startTime + desc.lifeTime);
 }

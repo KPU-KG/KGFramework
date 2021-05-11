@@ -1,7 +1,7 @@
 #include "pch.h"
 #include "ClientCharacterComponent.h"
 #include "Transform.h"
-#include "AnimationComponent.h"
+#include "IAnimationComponent.h"
 #include "PhysicsComponent.h"
 #include "PhysicsScene.h"
 
@@ -88,7 +88,7 @@ void KG::Component::CCharacterComponent::ProcessMoveAnim()
 void KG::Component::CCharacterComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	this->transform = this->GetGameObject()->GetComponent<TransformComponent>();
-	this->characterAnimation = this->GetGameObject()->GetComponent<AnimationControllerComponent>();
+	this->characterAnimation = this->GetGameObject()->GetComponent<IAnimationControllerComponent>();
 	this->rotationTrasnform = this->GetGameObject()->GetChild()->GetTransform();
 	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
 	this->physics->SetApply(false);

@@ -8,14 +8,14 @@
 namespace KG::Component
 {
 	class TransformComponent;
-	class AnimationControllerComponent;
+	class IAnimationControllerComponent;
 	class DynamicRigidComponent;
 	class DLL CCharacterComponent : public CBaseComponent
 	{
 
 		KG::Component::TransformComponent* transform = nullptr;
 		KG::Component::TransformComponent* rotationTrasnform = nullptr;
-		KG::Component::AnimationControllerComponent* characterAnimation = nullptr;
+		KG::Component::IAnimationControllerComponent* characterAnimation = nullptr;
 		KG::Component::DynamicRigidComponent* physics = nullptr;
 		constexpr static float inputRatio = 25.0f;
 		constexpr static float inputRetRatio = 5.0f;

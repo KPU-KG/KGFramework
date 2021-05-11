@@ -1,6 +1,7 @@
 #pragma once
 //#include <vector>
 #include <array>
+#include <map>
 #include "ParticleEmitterComponent.h"
 #include "KGGraphicBuffer.h"
 #include "KGShader.h"
@@ -14,12 +15,14 @@ namespace KG::Renderer
 
 		KG::Renderer::Geometry* particleGeometry = nullptr;
 
-		std::array<KG::Component::ParticleDesc, MAX_PARTICLE_COUNT> transparentParticles;
+        std::map<KG::Utill::HashString, KG::Component::ParticleDesc> particleDescs;
+
+		std::array<KG::Component::ParticleData, MAX_PARTICLE_COUNT> transparentParticles;
 		KG::Renderer::Shader* transparentParticleShader = nullptr;
 		KG::Renderer::KGRenderJob* transparentRenderJob = nullptr;
 		size_t currentTransparentParticleCount = 0;
 
-		std::array<KG::Component::ParticleDesc, MAX_PARTICLE_COUNT> addParticles;
+		std::array<KG::Component::ParticleData, MAX_PARTICLE_COUNT> addParticles;
 		KG::Renderer::Shader* addParticleShader = nullptr;
 		KG::Renderer::KGRenderJob* addRenderJob = nullptr;
 		size_t currentAddParticleCount = 0;
@@ -28,13 +31,14 @@ namespace KG::Renderer
 		size_t GetEmptyIndexFromAddParticles() const;
 		size_t GetEmptyIndexFromTransparentParticles() const;
 		void DestroyExpired();
-		void EmitParticle(const KG::Component::ParticleDesc& desc, bool autoFillTime, bool isAdd);
 	public:
 		void PreRender();
 		void Initialize();
-		void EmitParticleAdd(const KG::Component::ParticleDesc& desc, bool autoFillTime);
-		void EmitParticleTransparent(const KG::Component::ParticleDesc& desc, bool autoFillTime);
+        void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3& position);
+        void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& baseSpeed);
+		void EmitParticle(const KG::Component::ParticleData& desc, bool autoFillTime, KG::Component::ParticleType type); 
 		void Update(float elapsedTime);
-		static bool isExpired(const KG::Component::ParticleDesc& desc);
+        void AddParticleDesc(const KG::Utill::HashString& id, KG::Component::ParticleDesc desc);
+		static bool isExpired(const KG::Component::ParticleData& desc);
 	};
 };

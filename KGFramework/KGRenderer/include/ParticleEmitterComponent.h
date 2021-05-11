@@ -9,7 +9,8 @@
 
 namespace KG::Renderer
 {
-	struct KGRenderJob;
+    class ParticleGenerator;
+    struct KGRenderJob;
 };
 
 namespace KG::Component
@@ -28,15 +29,12 @@ namespace KG::Component
 	
 
 	class TransformComponent;
-
+   
 	class ParticleEmitterComponent : public IParticleEmitterComponent, IDXRenderComponent
 	{
 		float emitTimer = 0.0f;
 		TransformComponent* transform = nullptr;
-		KG::Utill::HashString particleMaterial;
-		UINT particleMaterialIndex = 0;
-		bool isParticleAdd = false;
-
+        KG::Renderer::ParticleGenerator* particleGenerator = nullptr;
 
 		virtual void OnCreate(KG::Core::GameObject* gameObject) override;
 	public:
@@ -44,11 +42,14 @@ namespace KG::Component
 		virtual void OnRender(ID3D12GraphicsCommandList* commadList) override;
 		virtual void OnPreRender() override;
 	public:
-		virtual void EmitParticle() override;
-		virtual void EmitParticle(const ParticleDesc& desc, bool autoFillTime) override;
+        virtual void AddParticleDesc(const KG::Utill::HashString& id, const ParticleDesc& desc) override;
+        virtual void EmitParticle(const KG::Utill::HashString& id) override;
+		virtual void EmitParticle(const ParticleData& desc, bool autoFillTime, ParticleType type) override;
 		UINT GetParticleMaterialIndex(const KG::Utill::HashString& id) const;
 		bool GetParticleMaterialIsAdd(const KG::Utill::HashString& id) const;
 	private:
+        ParticleDesc previewParticle;
+        /* preview */
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3> baseDeltaPositionProp;
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3> rangeDeltaPositionProp;
 
@@ -70,20 +71,21 @@ namespace KG::Component
 		KG::Core::SerializableProperty<float> baseRotationSpeedProp;
 		KG::Core::SerializableProperty<float> ramgeRotationSpeedProp;
 
-		KG::Core::SerializableProperty<float> emitPerSecondProp;
-
 		KG::Core::SerializableProperty<float> baseEmitCountSecondProp;
-		KG::Core::SerializableProperty<float> rangeEmitCountSecondProp;
+        KG::Core::SerializableProperty<float> rangeEmitCountSecondProp;
+        KG::Core::SerializableProperty<KG::Utill::HashString> materialIdProp;
 
-		KG::Core::SerializableProperty<KG::Utill::HashString> particleMaterialProp;
-
+		//KG::Core::SerializableProperty<float> emitPerSecondProp; // 나중에 주기적 생성 시 쓸 놈
 	public:
 		virtual void Update(float elapsedTime) override;
-		virtual void SetParticleMaterial(const KG::Utill::HashString& materialId) override;
     public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
 		virtual bool OnDrawGUI();
-	};
+
+        virtual void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position) override;
+        virtual void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position, const DirectX::XMFLOAT3 direction) override;
+
+    };
 	REGISTER_COMPONENT_ID_REPLACE(ParticleEmitterComponent, IParticleEmitterComponent);
 };

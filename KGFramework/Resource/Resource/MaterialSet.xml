@@ -418,4 +418,11 @@
         <FLOAT3 byte="12" comment="글로벌 가속도" x="0" y="0" z="0"/>
         <FLOAT1 byte="4" comment="반복재생 여부 &gt;0.5f" x="0"/>
     </Material>
+    <Material id="SparkParticle" shaderID="ParticleAdd" hash_id="1167449082" shaderHashID="3487980688">
+        <Texture byte="4" comment="ParticleTest" id="SparkParticle.DDS" hash_id="3436367923"/>
+        <FLOAT2 byte="8" x="1" y="1" comment="애니메이션 가로 세로 인덱스"/>
+        <FLOAT1 byte="4" comment="재생 속도 / FPS" x="1"/>
+        <FLOAT3 byte="12" comment="글로벌 가속도" x="0" y="-9.8" z="0"/>
+        <FLOAT1 byte="4" comment="반복재생 여부 &gt;0.5f" x="0"/>
+    </Material>
 </MaterialSet>
