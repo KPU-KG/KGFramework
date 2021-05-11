@@ -454,14 +454,9 @@ void KG::Renderer::KGDXRenderer::PassRenderEnd(ID3D12GraphicsCommandList* cmdLis
 	);
 }
 
-void KG::Renderer::KGDXRenderer::EmitParticleAdd(const KG::Component::ParticleDesc& particleDesc, bool autofillTime)
+KG::Renderer::ParticleGenerator* KG::Renderer::KGDXRenderer::GetParticleGenerator()
 {
-	this->particleGenerator.EmitParticleAdd(particleDesc, autofillTime);
-}
-
-void KG::Renderer::KGDXRenderer::EmitParticleTransparent(const KG::Component::ParticleDesc & particleDesc, bool autofillTime)
-{
-	this->particleGenerator.EmitParticleTransparent(particleDesc, autofillTime);
+    return &this->particleGenerator;
 }
 
 void KG::Renderer::KGDXRenderer::Update(float elapsedTime)

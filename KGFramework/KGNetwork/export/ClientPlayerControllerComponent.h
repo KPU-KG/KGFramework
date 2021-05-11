@@ -9,21 +9,21 @@
 namespace KG::Component
 {
 	class TransformComponent;
-	class CameraComponent;
-	class AnimationControllerComponent;
+	class ICameraComponent;
+	class IAnimationControllerComponent;
 	class DynamicRigidComponent;
-	class ParticleEmitterComponent;
+	class IParticleEmitterComponent;
 
 	class DLL CPlayerControllerComponent : public CBaseComponent
 	{
 	private:
 		TransformComponent* characterTransform = nullptr;
-		AnimationControllerComponent* characterAnimation = nullptr;
-		CameraComponent* camera = nullptr;
+		IAnimationControllerComponent* characterAnimation = nullptr;
+		ICameraComponent* camera = nullptr;
 		TransformComponent* cameraTransform = nullptr;
-		AnimationControllerComponent* vectorAnimation = nullptr;
+		IAnimationControllerComponent* vectorAnimation = nullptr;
 		DynamicRigidComponent* physics = nullptr;
-		ParticleEmitterComponent* particleGen = nullptr;
+		IParticleEmitterComponent* particleGen = nullptr;
 
 		float speedValue = 0.75f;
 

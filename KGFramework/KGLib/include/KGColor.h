@@ -49,13 +49,23 @@ namespace KG::Utill
 			this->b = ((hex) & 0xFF) / 255.0; // Extract the BB byte
 			this->a = a;
 		}
+
+        DirectX::XMFLOAT3 ToFloat3() const
+        {
+            return DirectX::XMFLOAT3(r, g, b);
+        };
+        DirectX::XMFLOAT4 ToFloat4() const
+        {
+            return DirectX::XMFLOAT4(r, g, b, a);
+        };
+
 		operator DirectX::XMFLOAT3()
 		{
-			return DirectX::XMFLOAT3(r, g, b);
-		}
+            return ToFloat3();
+        }
 		operator DirectX::XMFLOAT4()
 		{
-			return DirectX::XMFLOAT4(r, g, b, a);
-		}
+            return ToFloat4();
+        }
 	};
 }

@@ -2,6 +2,7 @@
 #include "ResourceContainer.h"
 #include "KGDXRenderer.h"
 #include "Transform.h"
+#include "ParticleGenerator.h"
 
 using namespace DirectX;
 using namespace KG::Math::Literal;
@@ -9,27 +10,27 @@ using namespace KG::Math::Literal;
 void KG::Component::ParticleEmitterComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
 	this->transform = gameObject->GetComponent<TransformComponent>();
+    this->particleGenerator = KG::Renderer::KGDXRenderer::GetInstance()->GetParticleGenerator();
 }
 
 KG::Component::ParticleEmitterComponent::ParticleEmitterComponent()
 	:
-	baseDeltaPositionProp("baseDeltaPosition", baseDeltaPosition),
-	rangeDeltaPositionProp("rangeDeltaPosition", rangeDeltaPosition),
-	baseSizeProp("baseSize", baseSize),
-	rangeSizeProp("rangeSize", rangeSize),
-	baseSpeedProp("baseSpeed", baseSpeed),
-	rangeSpeedProp("rangeSpeed", rangeSpeed),
-	colorProp("color", color),
-	baselifeTimeProp("baselifeTime", baselifeTime),
-	rangelifeTimeProp("rangelifeTime", rangelifeTime),
-	baseRotationProp("baseRotation", baseRotation),
-	rangeRotationProp("rangeRotation", rangeRotation),
-	baseRotationSpeedProp("baseRotationSpeed", baseRotationSpeed),
-	ramgeRotationSpeedProp("ramgeRotationSpeed", rangeRotationSpeed),
-	emitPerSecondProp("emitPerSecond", emitPerSecond),
-	baseEmitCountSecondProp("baseEmitCountSecond", baseEmitCount),
-	rangeEmitCountSecondProp("rangeEmitCountSecond", rangeEmitCount),
-	particleMaterialProp("particleMaterial", particleMaterial)
+	baseDeltaPositionProp("baseDeltaPosition", previewParticle.baseDeltaPosition),
+	rangeDeltaPositionProp("rangeDeltaPosition", previewParticle.rangeDeltaPosition),
+	baseSizeProp("baseSize", previewParticle.baseSize),
+	rangeSizeProp("rangeSize", previewParticle.rangeSize),
+	baseSpeedProp("baseSpeed", previewParticle.baseSpeed),
+	rangeSpeedProp("rangeSpeed", previewParticle.rangeSpeed),
+	colorProp("color", previewParticle.color),
+	baselifeTimeProp("baselifeTime", previewParticle.baselifeTime),
+	rangelifeTimeProp("rangelifeTime", previewParticle.rangelifeTime),
+	baseRotationProp("baseRotation", previewParticle.baseRotation),
+	rangeRotationProp("rangeRotation", previewParticle.rangeRotation),
+	baseRotationSpeedProp("baseRotationSpeed", previewParticle.baseRotationSpeed),
+	ramgeRotationSpeedProp("ramgeRotationSpeed", previewParticle.rangeRotationSpeed),
+	baseEmitCountSecondProp("baseEmitCountSecond", previewParticle.baseEmitCount),
+	rangeEmitCountSecondProp("rangeEmitCountSecond", previewParticle.rangeEmitCount),
+    materialIdProp("materialId", previewParticle.materialId)
 {
 }
 
@@ -41,41 +42,34 @@ void KG::Component::ParticleEmitterComponent::OnPreRender()
 {
 }
 
-void KG::Component::ParticleEmitterComponent::EmitParticle()
+void KG::Component::ParticleEmitterComponent::EmitParticle(const KG::Utill::HashString& id)
 {
-	if ( this->particleMaterial.value == 0 ) return;
-	int count = KG::Math::RandomInt(baseEmitCount - rangeEmitCount, baseEmitCount + rangeEmitCount);
-	for ( int i = 0; i < count; i++ )
-	{
-		ParticleDesc desc;
-		XMFLOAT3 deltaPosition = KG::Math::RandomVector3(baseDeltaPosition - rangeDeltaPosition, baseDeltaPosition + rangeDeltaPosition);
-		desc.position = this->transform->GetWorldPosition() + deltaPosition;
-		desc.size = KG::Math::RandomVector2(baseSize - rangeSize, baseSize + rangeSize);
-		desc.speed = KG::Math::RandomVector3(baseSpeed - rangeSpeed, baseSpeed + rangeSpeed);
-		desc.color = color;
-		desc.lifeTime = KG::Math::RandomFloat(baselifeTime - rangelifeTime, baselifeTime + rangelifeTime);
-		desc.rotation = KG::Math::RandomFloat(baseRotation - rangeRotation, baseRotation + rangeRotation);
-		desc.rotationSpeed = KG::Math::RandomFloat(baseRotationSpeed - rangeRotationSpeed, baseRotationSpeed + rangeRotationSpeed);
-		desc.materialIndex = this->particleMaterialIndex;
-		this->EmitParticle(desc, true);
-	}
+    this->particleGenerator->EmitParticle(id, this->gameObject->GetTransform()->GetWorldPosition());
+}
+void KG::Component::ParticleEmitterComponent::EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position)
+{
+    this->particleGenerator->EmitParticle(id, position);
 }
 
-void KG::Component::ParticleEmitterComponent::EmitParticle(const ParticleDesc& desc, bool autoFillTime)
+void KG::Component::ParticleEmitterComponent::EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position, const DirectX::XMFLOAT3 baseSpeed)
 {
-	if ( this->isParticleAdd )
-	{
-		KG::Renderer::KGDXRenderer::GetInstance()->EmitParticleAdd(desc, autoFillTime);
-	}
-	else 
-	{
-		KG::Renderer::KGDXRenderer::GetInstance()->EmitParticleTransparent(desc, autoFillTime);
-	}
+    this->particleGenerator->EmitParticle(id, position, baseSpeed);
 }
+
+void KG::Component::ParticleEmitterComponent::EmitParticle(const ParticleData& desc, bool autoFillTime, ParticleType type)
+{
+    this->particleGenerator->EmitParticle(desc, autoFillTime, type);
+}
+
+void KG::Component::ParticleEmitterComponent::AddParticleDesc(const KG::Utill::HashString& id, const ParticleDesc& desc)
+{
+    this->particleGenerator->AddParticleDesc(id, desc);
+}
+
 
 UINT KG::Component::ParticleEmitterComponent::GetParticleMaterialIndex(const KG::Utill::HashString& id) const
 {
-	return KG::Renderer::KGDXRenderer::GetInstance()->QueryMaterialIndex(id);
+    return KG::Renderer::KGDXRenderer::GetInstance()->QueryMaterialIndex(id);
 }
 
 bool KG::Component::ParticleEmitterComponent::GetParticleMaterialIsAdd(const KG::Utill::HashString& id) const
@@ -85,15 +79,15 @@ bool KG::Component::ParticleEmitterComponent::GetParticleMaterialIsAdd(const KG:
 
 void KG::Component::ParticleEmitterComponent::Update(float elapsedTime)
 {
-	if ( this->emitPerSecond )
-	{
-		emitTimer += elapsedTime;
-		while ( emitTimer < 1.0f / this->emitPerSecond )
-		{
-			this->EmitParticle();
-			emitTimer -= 1.0f / this->emitPerSecond;
-		}
-	}
+	//if ( this->emitPerSecond )
+	//{
+	//	emitTimer += elapsedTime;
+	//	while ( emitTimer < 1.0f / this->emitPerSecond )
+	//	{
+	//		this->EmitParticle();
+	//		emitTimer -= 1.0f / this->emitPerSecond;
+	//	}
+	//}
 }
 
 void KG::Component::ParticleEmitterComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
@@ -106,7 +100,7 @@ void KG::Component::ParticleEmitterComponent::OnDataSave(tinyxml2::XMLElement* p
 
 bool KG::Component::ParticleEmitterComponent::OnDrawGUI()
 {
-	static ParticleDesc desc;
+	static ParticleData desc;
 	static DirectX::XMFLOAT3 minSpeed;
 	static DirectX::XMFLOAT3 maxSpeed;
 	if ( ImGui::ComponentHeader<ParticleEmitterComponent>() )
@@ -126,32 +120,28 @@ bool KG::Component::ParticleEmitterComponent::OnDrawGUI()
 			rangeRotationProp.OnDrawGUI();
 			baseRotationSpeedProp.OnDrawGUI();
 			ramgeRotationSpeedProp.OnDrawGUI();
-			emitPerSecondProp.OnDrawGUI();
+			//emitPerSecondProp.OnDrawGUI();
 			baseEmitCountSecondProp.OnDrawGUI();
 			rangeEmitCountSecondProp.OnDrawGUI();
+			materialIdProp.OnDrawGUI();
 		}
-		if ( ImGui::CollapsingHeader("ParticleMaterial", ImGuiTreeNodeFlags_DefaultOpen) )
-		{
-			particleMaterialProp.OnDrawGUI();
-			if ( ImGui::SmallButton("Set") )
-			{
-				this->SetParticleMaterial(this->particleMaterial);
-			}
-		}
-		if ( ImGui::CollapsingHeader("Emit Pannel", ImGuiTreeNodeFlags_DefaultOpen) )
-		{
-			if ( ImGui::Button("Emit") )
-			{
-				this->EmitParticle();
-			}
-		}
+        bool emit = false;
+        if ( ImGui::Button("EmitAdd"))
+        {
+            emit = true;
+            previewParticle.type = ParticleType::Add;
+        }
+        if ( ImGui::Button("EmitTrans") )
+        {
+            emit = true;
+            previewParticle.type = ParticleType::Transparent;
+        }
+        if( emit )
+        {
+            this->previewParticle.materialIndex = KG::Renderer::KGDXRenderer::GetInstance()->QueryMaterialIndex(previewParticle.materialId);
+            this->EmitParticle(this->previewParticle.GetData(this->gameObject->GetTransform()->GetWorldPosition()), true, previewParticle.type);
+        }
 	}
 	return false;
 }
 
-void KG::Component::ParticleEmitterComponent::SetParticleMaterial(const KG::Utill::HashString& materialId)
-{
-	this->particleMaterial = materialId;
-	this->particleMaterialIndex = this->GetParticleMaterialIndex(materialId);
-	isParticleAdd = this->GetParticleMaterialIsAdd(materialId);
-}

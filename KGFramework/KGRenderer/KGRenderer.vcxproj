@@ -200,6 +200,7 @@
     <ClCompile Include="src\FakeSystems.cpp" />
     <ClCompile Include="src\GeometryComponent.cpp" />
     <ClCompile Include="src\GraphicSystem.cpp" />
+    <ClCompile Include="src\IParticleEmitterComponent.cpp" />
     <ClCompile Include="src\KGDXRenderer.cpp" />
     <ClCompile Include="src\KGFakeRenderer.cpp" />
     <ClCompile Include="src\KGGeometry.cpp" />

@@ -31,13 +31,13 @@ namespace KG::Component
 	// };
 
 	class DynamicRigidComponent;
-	class AnimationControllerComponent;
+	class IAnimationControllerComponent;
 
 	class DLL CEnemyControllerComponent : public CBaseComponent
 	{
 	private:
 		TransformComponent* transform = nullptr;
-		AnimationControllerComponent* anim = nullptr;
+		IAnimationControllerComponent* anim = nullptr;
 
 	public:
 		CEnemyControllerComponent();

@@ -195,6 +195,9 @@
     <ClCompile Include="src\FakeResourceContainer.cpp">
       <Filter>소스 파일\KGFakeRenderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\IParticleEmitterComponent.cpp">
+      <Filter>소스 파일\KGDXRenderer\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">

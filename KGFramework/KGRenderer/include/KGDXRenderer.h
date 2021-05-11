@@ -103,8 +103,7 @@ namespace KG::Renderer
 		virtual void SkyBoxRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void PassRenderEnd(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 
-		void EmitParticleAdd(const KG::Component::ParticleDesc& particleDesc, bool autofillTime);
-		void EmitParticleTransparent(const KG::Component::ParticleDesc& particleDesc, bool autofillTime);
+        ParticleGenerator* GetParticleGenerator();
 
 		virtual void Update(float elapsedTime) override;
 		virtual void OnChangeSettings(const RendererSetting& prev, const RendererSetting& next) override;

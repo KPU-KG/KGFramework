@@ -78,13 +78,13 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\export\;$(SolutionDir)KGRenderer\export\;$(ProjectDir)export;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
-    <SourcePath>$(VC_SourcePath);</SourcePath>
+    <IncludePath>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\export\;$(SolutionDir)KGRenderer\export\;$(IncludePath);$(IncludePath)</IncludePath>
+    <SourcePath>$(ProjectDir)src;$(VC_SourcePath);</SourcePath>
     <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\export\;$(SolutionDir)KGRenderer\export\;$(IncludePath);$(VC_IncludePath);$(WindowsSDK_IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\export\;$(SolutionDir)KGRenderer\export\;;$(IncludePath)</IncludePath>
     <SourcePath>$(ProjectDir)src;$(VC_SourcePath);</SourcePath>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -130,7 +130,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)include;$(ProjectDir)export;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\include\;$(SolutionDir)KGRenderer\include\</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\export\;$(SolutionDir)KGRenderer\export\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -152,7 +152,7 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\include\;$(SolutionDir)KGRenderer\include\;</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\;$(SolutionDir)KGPhysics\export\;$(SolutionDir)KGRenderer\export\</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
