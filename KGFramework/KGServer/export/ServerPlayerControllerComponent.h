@@ -52,6 +52,7 @@ namespace KG::Component
 		std::shared_mutex playerInfoLock;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
+		virtual void Destroy() override;
 		virtual void OnDestroy() override
 		{
 			IComponent::OnDestroy();

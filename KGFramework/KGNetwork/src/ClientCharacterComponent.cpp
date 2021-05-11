@@ -123,6 +123,15 @@ bool KG::Component::CCharacterComponent::OnProcessPacket(unsigned char* packet, 
 			this->forwardValue = ScenePacket->forwardValue;
 			return true;
 		}
+
+		case KG::Packet::PacketType::SC_REMOVE_PLAYER:
+		{
+			if (this->physics)
+				this->physics->ReleaseActor();
+			this->gameObject->Destroy();
+			return true;
+		}
+
 	}
 	return false;
 }

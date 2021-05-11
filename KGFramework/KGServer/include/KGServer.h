@@ -66,10 +66,6 @@ namespace KG::Server
 	public:
 		std::mutex worldLock;
 		int currentnum = 0;
-		
-		KG::Server::NET_OBJECT_ID playerObjectIds[4];
-		KG::Packet::RawFloat3 positions[4];
-		KG::Packet::CS_INPUT inputs[4];
 
 		NET_OBJECT_ID GetNewObjectId();
 		void SetSessionState(SESSION_ID session, KG::Server::PLAYER_STATE state);

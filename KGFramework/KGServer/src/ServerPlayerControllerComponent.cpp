@@ -43,6 +43,13 @@ void KG::Component::SPlayerComponent::Update(float elapsedTime)
 	}
 }
 
+void KG::Component::SPlayerComponent::Destroy()
+{
+	if (this->physics)
+		this->physics->ReleaseActor();
+	this->gameObject->Destroy();
+}
+
 void KG::Component::SPlayerComponent::SendSyncPacket()
 {
 	KG::Packet::SC_PLAYER_DATA syncPacket;

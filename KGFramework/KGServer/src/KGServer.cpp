@@ -319,6 +319,11 @@ void KG::Server::Server::SendWorldState(SESSION_ID playerId)
 
 void KG::Server::Server::SendRemovePlayer(SESSION_ID playerId, SESSION_ID targetId)
 {
+	Packet::SC_REMOVE_PLAYER packet = {};
+	auto it = this->netObjects.find(playerId);
+	if (it != this->netObjects.end())
+		it->second->SendPacket(targetId, (void*)&packet);
+
 	//packet_s2c_remove_player p;
 	//p.id = playerId;
 	//p.type = SC_REMOVE_PLAYER;
@@ -343,6 +348,11 @@ void KG::Server::Server::Disconnect(SESSION_ID playerId)
 	std::cout << "Disconnected Client[" << playerId << "]\n";
 	{
 		std::lock_guard<std::shared_mutex> lg{ players[playerId].sessionLock };
+		auto it = this->netObjects.find(players[playerId].id);
+		
+		if (it != this->netObjects.end())
+			it->second->Destroy();
+
 		players[playerId].state = PLAYER_STATE_FREE;
 		closesocket(players[playerId].socket);
 	}
@@ -355,7 +365,6 @@ void KG::Server::Server::Disconnect(SESSION_ID playerId)
 			SendRemovePlayer(playerId, pl.id);
 		}
 	}
-
 }
 
 void KG::Server::Server::DoRecv(SESSION_ID key)

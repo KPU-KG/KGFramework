@@ -28,7 +28,7 @@ namespace KG::Packet
 		SC_ADD_OBJECT,
 		SC_REMOVE_OBJECT,
 		// SC_REMOVE_TEAM_CHARACTOR, 따로 있을 필요가 있을까?? 11일에 생각해봅시다..
-		// SC_REMOVE_PLAYER,
+		SC_REMOVE_PLAYER,
 		SC_FIRE, 
 		SC_ADD_PLAYER,
 		SC_PLAYER_SYNC,
@@ -174,6 +174,14 @@ namespace KG::Packet
 	struct SC_REMOVE_OBJECT
 	{
 		DEFAULT_PACKET_HEADER(SC_REMOVE_OBJECT);
+	};
+
+	// 1. 팀 캐릭터 지우라고 명령 (서버에서 지우면서 패킷 전송)
+	// 2. 플레이어 캐릭터 지우라고 명령 (서버에서 팀 캐릭터 지울때 같이 전송)
+
+	struct SC_REMOVE_PLAYER
+	{
+		DEFAULT_PACKET_HEADER(SC_REMOVE_PLAYER);
 	};
 
 	struct SC_MOVE_OBJECT
