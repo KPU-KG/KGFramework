@@ -81,12 +81,6 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 			//	playerTransform->SetPosition(ScenePacket->position);
 			//}
 		}
-		
-		return true;
-		case KG::Packet::PacketType::SC_REMOVE_OBJECT:
-		{
-			int i = 0;
-		}
 		return true;
 	/*	Å¬¶ó
 		------

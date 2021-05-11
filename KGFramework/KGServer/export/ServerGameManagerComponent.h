@@ -45,6 +45,7 @@ namespace KG::Component
 		std::vector<KG::Component::Region> region;
 		int currentRegion = 0;
 		bool generateEnemy = false;
+		unsigned int score = 0;
 		KG::Component::Region GetNextRegion();
 		int GetCurrentRegionIndex() const;
 		KG::Component::Region GetCurrentRegion();
@@ -56,6 +57,7 @@ namespace KG::Component
 		void GenerateEnemy();
 		void AddEnemyControllerCompoenent(SEnemyControllerComponent* comp);
 		void SendAddEnemyPacket(KG::Server::SESSION_ID player);
+		unsigned int GetScore() const;
 	public:
 		void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		void OnDataSave(tinyxml2::XMLElement* parentElement);

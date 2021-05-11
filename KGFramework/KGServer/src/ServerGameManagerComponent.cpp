@@ -126,6 +126,8 @@ void KG::Component::EnemyGeneratorComponent::Update(float elapsedTime)
 				enemies[i]->Destroy();
 				enemies.erase(enemies.begin() + i);
 				destroyFlag = false;
+				// 적 종류에 따라 점수 증가
+				score += 10;
 				break;
 			}
 		}
@@ -191,6 +193,10 @@ void  KG::Component::EnemyGeneratorComponent::SendAddEnemyPacket(KG::Server::SES
 		addObjectPacket.newObjectId = id;
 		this->SendPacket(player, (void*)&addObjectPacket);
 	}
+}
+
+unsigned int KG::Component::EnemyGeneratorComponent::GetScore() const {
+	return this->score;
 }
 
 void KG::Component::EnemyGeneratorComponent::OnDataLoad(tinyxml2::XMLElement* objectElement) {

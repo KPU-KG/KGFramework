@@ -27,7 +27,9 @@ namespace KG::Packet
 		SC_PLAYER_INIT,
 		SC_ADD_OBJECT,
 		SC_REMOVE_OBJECT,
-		SC_FIRE, // 초기버전 미사용
+		// SC_REMOVE_TEAM_CHARACTOR, 따로 있을 필요가 있을까?? 11일에 생각해봅시다..
+		// SC_REMOVE_PLAYER,
+		SC_FIRE, 
 		SC_ADD_PLAYER,
 		SC_PLAYER_SYNC,
 		SC_SCENE_DATA,
@@ -172,7 +174,6 @@ namespace KG::Packet
 	struct SC_REMOVE_OBJECT
 	{
 		DEFAULT_PACKET_HEADER(SC_REMOVE_OBJECT);
-		KG::Server::NET_OBJECT_ID objectId;
 	};
 
 	struct SC_MOVE_OBJECT
