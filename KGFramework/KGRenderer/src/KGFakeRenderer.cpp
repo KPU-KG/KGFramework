@@ -74,6 +74,11 @@ KG::Component::IRender2DComponent* KG::Renderer::KGFakeRenderer::GetNewRender2DC
     return static_cast<KG::Component::IRender2DComponent*>(this->graphicSystems->render2DSystem.GetNewComponent());
 }
 
+KG::Component::IRenderSpriteComponent* KG::Renderer::KGFakeRenderer::GetNewRenderSpriteComponent()
+{
+    return static_cast<KG::Component::IRenderSpriteComponent*>(this->graphicSystems->renderSpriteSystem.GetNewComponent());
+}
+
 KG::Component::IGeometryComponent* KG::Renderer::KGFakeRenderer::GetNewGeomteryComponent()
 {
     return static_cast<KG::Component::IGeometryComponent*>(this->graphicSystems->geometrySystem.GetNewComponent());
