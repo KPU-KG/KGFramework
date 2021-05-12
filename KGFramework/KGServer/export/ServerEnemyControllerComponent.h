@@ -78,7 +78,8 @@ namespace KG::Component
 
 		KG::Component::RaycastCallbackFunc			raycastCallback = nullptr;
 
-		int											hp = 10;
+        static constexpr int maxHp = 10;
+        int											hp = maxHp;
 
 		DirectX::XMFLOAT2							angle;
 

@@ -355,6 +355,10 @@ void KG::Component::SEnemyControllerComponent::SetRaycastCallback(KG::Component:
 
 void KG::Component::SEnemyControllerComponent::HitBullet() {
 	this->hp -= 1;
+
+    KG::Packet::SC_ENEMY_HP hp;
+    hp.percentage = float(this->hp) / float(maxHp);
+    this->BroadcastPacket(&hp);
 }
 
 bool KG::Component::SEnemyControllerComponent::IsDead() const

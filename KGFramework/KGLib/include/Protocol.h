@@ -37,6 +37,7 @@ namespace KG::Packet
 		SC_CHANGE_ANIMATION,
 		SC_SYNC_ANIMATION,
 		SC_PLAYER_DATA,
+        SC_ENEMY_HP,
 		CS_REQ_LOGIN = 200, // 초기버전 미사용
 		CS_INPUT, // 사용
 		CS_FIRE
@@ -220,6 +221,12 @@ namespace KG::Packet
 		DEFAULT_PACKET_HEADER(SC_PLAYER_SYNC);
 		RawFloat4 rotation;
 	};
+
+    struct SC_ENEMY_HP
+    {
+        DEFAULT_PACKET_HEADER(SC_ENEMY_HP);
+        float percentage;
+    };
 
 	struct CS_REQ_LOGIN
 	{

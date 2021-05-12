@@ -2,6 +2,7 @@
 #include "ClientEnemyControllerComponent.h"
 #include "PhysicsComponent.h"
 #include "IAnimationComponent.h"
+#include "IRender2DComponent.h"
 #include "imgui/imgui.h"
 #include "Transform.h"
 
@@ -16,6 +17,7 @@ void KG::Component::CEnemyControllerComponent::OnCreate(KG::Core::GameObject* ob
 
 	this->transform = this->gameObject->GetTransform();
 	this->anim = this->gameObject->GetComponent<IAnimationControllerComponent>();
+    this->hpBar = this->gameObject->FindChildObject("HPBAR"_id)->GetComponent<KG::Component::IRenderSpriteComponent>();
 }
 
 void KG::Component::CEnemyControllerComponent::Update(float elapsedTime)
@@ -42,7 +44,14 @@ bool KG::Component::CEnemyControllerComponent::OnProcessPacket(unsigned char* pa
 	case KG::Packet::PacketType::SC_REMOVE_OBJECT:
 	{
 		this->gameObject->Destroy();
+        return true;
 	}
+    case KG::Packet::PacketType::SC_ENEMY_HP:
+    {
+        auto* p = KG::Packet::PacketCast<KG::Packet::SC_ENEMY_HP>(packet);
+        this->hpBar->progress.value = p->percentage;
+        return true;
+    }
 	}
 	return false;
 }
