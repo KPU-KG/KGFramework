@@ -64,7 +64,7 @@ void KG::Server::Network::TryRecv()
 	DWORD dataBytes = 0;
 
 	networkBuffer.wsaBuffer.buf = reinterpret_cast<CHAR*>(networkBuffer.buffer + this->prevRecvSize);
-	networkBuffer.wsaBuffer.len = MAX_BUFFER - this->prevRecvSize;
+	networkBuffer.wsaBuffer.len = networkBuffer.NETWORK_MAX_BUFFER - this->prevRecvSize;
 
 	int ret = WSARecv(this->clientSocket, &this->networkBuffer.wsaBuffer, 1, &dataBytes, &recvFlag, nullptr, nullptr);
 	if ( ret == SOCKET_ERROR )

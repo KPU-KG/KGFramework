@@ -156,6 +156,11 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
         this->scene->isStartGame = true;
     }
 
+    if ( this->setting.isStartLogin )
+    {
+        this->networkClient->Login();
+    }
+
 	//자원 미리 할당
 	this->windowText.reserve(100);
 
@@ -860,8 +865,6 @@ void KG::GameFramework::StartClient()
 
     this->networkClient->SetAddress(this->setting.ipAddress);
     this->networkClient->Connect();
-    if ( this->setting.isStartLogin ) this->networkClient->Login();
-
 }
 
 void KG::GameFramework::OnClose()
