@@ -15,8 +15,9 @@ namespace KG::Server
 {
 	struct NetworkBuffer
 	{
+        static constexpr UINT NETWORK_MAX_BUFFER = MAX_BUFFER * MAX_BUFFER * 2;
 		WSABUF wsaBuffer;
-		unsigned char buffer[MAX_BUFFER];
+		unsigned char buffer[NETWORK_MAX_BUFFER];
 	};
 
 	class Network : public INetwork
