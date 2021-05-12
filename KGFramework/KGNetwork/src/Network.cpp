@@ -36,6 +36,12 @@ void KG::Server::Network::SetAddress(const std::string& address)
 void KG::Server::Network::Connect()
 {
 	clientSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, 0);
+	// int option = TRUE;    //TRUE : Nagle Off, FALSE : Nagle On
+	// setsockopt(clientSocket,        //家南    
+	// 	IPPROTO_TCP,    //家南 饭骇
+	// 	TCP_NODELAY,    //家南 可记
+	// 	(const char*)&option, //可记蔼狼 林家蔼
+	// 	sizeof(option));      //可记蔼狼 
 	int ret = connect(clientSocket, (struct sockaddr*)&serverAddr, sizeof(serverAddr));
 	std::cout << "Try Connect\n";
 	if ( SOCKET_ERROR == ret )
