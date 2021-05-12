@@ -162,4 +162,10 @@
     <Geometry id="tank_trexhwm.fbx" fileDir="Resource/Geometry/newmo/tank_trexhwm_fbx/tank_trexhwm.fbx" rawMesh="true" hash_id="2305885141"/>
     <!--dd.FBX-->
     <Geometry id="dd.FBX" fileDir="Resource/Geometry/newmo/Model_C0811058/dd.FBX" rawMesh="true" hash_id="817507687"/>
+    <!--Cliff_5x14_V02.FBX-->
+    <Geometry id="Cliff_5x14_V02.FBX" fileDir="Resource/Geometry/newmo/Cliffs/Cliff_5x14_V02.FBX" rawMesh="true" hash_id="2733956523"/>
+    <!--Cliff_5x14_V03.FBX-->
+    <Geometry id="Cliff_5x14_V03.FBX" fileDir="Resource/Geometry/newmo/Cliffs/Cliff_5x14_V03.FBX" rawMesh="true" hash_id="4202006818"/>
+    <!--Cliff_5x14_V04.FBX-->
+    <Geometry id="Cliff_5x14_V04.FBX" fileDir="Resource/Geometry/newmo/Cliffs/Cliff_5x14_V04.FBX" rawMesh="true" hash_id="4114949293"/>
 </GeometrySet>
