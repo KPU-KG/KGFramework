@@ -241,11 +241,11 @@ void KG::Component::CPlayerControllerComponent::ProcessMove(float elapsedTime)
 
     if ( abs(this->forwardValue) >= this->inputMinimum )
     {
-        this->characterTransform->Translate(this->characterTransform->GetLook() * speed * elapsedTime * this->forwardValue);
+        // this->characterTransform->Translate(this->characterTransform->GetLook() * speed * elapsedTime * this->forwardValue);
     }
     if ( abs(this->rightValue) >= this->inputMinimum )
     {
-        this->characterTransform->Translate(this->characterTransform->GetRight() * speed * elapsedTime * this->rightValue);
+        // this->characterTransform->Translate(this->characterTransform->GetRight() * speed * elapsedTime * this->rightValue);
     }
 }
 
@@ -264,8 +264,8 @@ void KG::Component::CPlayerControllerComponent::ProcessMoveAnimation(float elaps
             this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_fr, 0, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
             if ( physics != nullptr )
             {
-                physics->AddForce(this->characterTransform->GetLook(), 20);
-                physics->AddForce(this->characterTransform->GetRight(), 20);
+                // physics->AddForce(this->characterTransform->GetLook(), 20);
+                // physics->AddForce(this->characterTransform->GetRight(), 20);
             }
         }
         else if ( this->rightValue <= -this->inputMinimum )
@@ -273,10 +273,10 @@ void KG::Component::CPlayerControllerComponent::ProcessMoveAnimation(float elaps
             this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_fl, 0, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
             if ( physics != nullptr )
             {
-                physics->AddForce(this->characterTransform->GetLook(), 20);
-                auto l = this->characterTransform->GetRight() * -1;
-                l.y = 0;
-                physics->AddForce(l, 20);
+                // physics->AddForce(this->characterTransform->GetLook(), 20);
+                // auto l = this->characterTransform->GetRight() * -1;
+                // l.y = 0;
+                // physics->AddForce(l, 20);
             }
         }
         else
@@ -284,7 +284,7 @@ void KG::Component::CPlayerControllerComponent::ProcessMoveAnimation(float elaps
             this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_f, 0, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
             if ( physics != nullptr )
             {
-                physics->AddForce(this->characterTransform->GetLook(), 20);
+                // physics->AddForce(this->characterTransform->GetLook(), 20);
             }
         }
     }
@@ -296,8 +296,8 @@ void KG::Component::CPlayerControllerComponent::ProcessMoveAnimation(float elaps
             this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_br, 0, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
             if ( physics != nullptr )
             {
-                physics->AddForce(this->characterTransform->GetLook() * -1, 20);
-                physics->AddForce(this->characterTransform->GetRight(), 20);
+                // physics->AddForce(this->characterTransform->GetLook() * -1, 20);
+                // physics->AddForce(this->characterTransform->GetRight(), 20);
             }
         }
         else if ( this->rightValue <= -this->inputMinimum )
@@ -306,10 +306,10 @@ void KG::Component::CPlayerControllerComponent::ProcessMoveAnimation(float elaps
             this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_fl, 0, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
             if ( physics != nullptr )
             {
-                physics->AddForce(this->characterTransform->GetLook() * -1, 20);
-                auto l = this->characterTransform->GetRight() * -1;
-                l.y = 0;
-                physics->AddForce(l, 20);
+                // physics->AddForce(this->characterTransform->GetLook() * -1, 20);
+                // auto l = this->characterTransform->GetRight() * -1;
+                // l.y = 0;
+                // physics->AddForce(l, 20);
             }
         }
         else
@@ -317,7 +317,7 @@ void KG::Component::CPlayerControllerComponent::ProcessMoveAnimation(float elaps
             this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_b, 0, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
             if ( physics != nullptr )
             {
-                physics->AddForce(this->characterTransform->GetLook() * -1, 20);
+                // physics->AddForce(this->characterTransform->GetLook() * -1, 20);
             }
         }
     }
@@ -328,7 +328,7 @@ void KG::Component::CPlayerControllerComponent::ProcessMoveAnimation(float elaps
             this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_r, 0, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
             if ( physics != nullptr )
             {
-                physics->AddForce(this->characterTransform->GetRight(), 20);
+                // physics->AddForce(this->characterTransform->GetRight(), 20);
             }
         }
         else if ( this->rightValue <= -this->inputMinimum )
@@ -336,9 +336,9 @@ void KG::Component::CPlayerControllerComponent::ProcessMoveAnimation(float elaps
             this->characterAnimation->ForceChangeAnimation(SoldierAnimSet::walk_l, 0, ANIMSTATE_PLAYING, walkBlendingDuration, ANIMLOOP_INF);
             if ( physics != nullptr )
             {
-                auto l = this->characterTransform->GetRight() * -1;
-                l.y = 0;
-                physics->AddForce(l, 20);
+                // auto l = this->characterTransform->GetRight() * -1;
+                // l.y = 0;
+                // physics->AddForce(l, 20);
             }
         }
         else
