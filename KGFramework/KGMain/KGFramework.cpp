@@ -140,11 +140,6 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	this->PostSceneFunction();
 	this->scene->InitializeRoot();
 
-    if ( this->setting.startScenePath != "none" && this->setting.startScenePath != "")
-    {
-        this->scene->LoadScene(this->setting.startScenePath);
-        this->scene->isStartGame = true;
-    }
     
     if ( this->setting.isStartServer )
     {
@@ -153,6 +148,12 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
     else if ( this->setting.isStartClient )
     {
         this->StartClient();
+    }
+
+    if ( this->setting.startScenePath != "none" && this->setting.startScenePath != "")
+    {
+        this->scene->LoadScene(this->setting.startScenePath);
+        this->scene->isStartGame = true;
     }
 
 	//자원 미리 할당
