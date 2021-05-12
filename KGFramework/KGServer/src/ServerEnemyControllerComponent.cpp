@@ -24,7 +24,6 @@ void KG::Component::SEnemyControllerComponent::UpdateState()
 
 bool KG::Component::SEnemyControllerComponent::SetGoal()
 {
-	// this->gameObject->Destroy();
 	if (this->nodeCount > 0) {
 		if (randomCircuit) {
 			std::uniform_int_distribution<int> randomIndex(1, this->nodeCount);
@@ -70,7 +69,6 @@ bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 		if (!changedAnimation)
 			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING, 0.1f, -1);
 	}
-	// anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING);
 	rotateTimer += elapsedTime;
 	if (rotateInterval <= rotateTimer) {
 		return true;
@@ -91,10 +89,7 @@ bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 	if (anim) {
 		if (!changedAnimation)
 			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
-		// if (sendTimer >= sendInterval) {
-		// }
 	}
-	// anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING);
 
 	if (rigid) {
 		rigid->SetVelocity(direction, speed);
@@ -140,7 +135,6 @@ bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
 		if (!changedAnimation) {
 			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING, 0.1f, -1);
 		}
-		// if (sendTimer >= sendInterval)
 	}
 	idleTimer += elapsedTime;
 	if (idleInterval <= idleTimer)
@@ -196,6 +190,8 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 	if (hp <= 0) {
 		if (!isDead && anim->GetCurrentPlayingAnimationIndex() != KG::Component::MechAnimIndex::dead) {
 			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::dead, ANIMSTATE_STOP, 0.1, 1);
+			auto& cb = this->rigid->GetCollisionBox();
+			cb.position.y += 1;
 			isDead = true;
 		}
 		destroyTimer += elapsedTime;

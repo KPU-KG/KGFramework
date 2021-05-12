@@ -43,7 +43,7 @@ void KG::GameFramework::PostServerFunction()
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			KG::Component::CollisionBox box;
-			box.position = { 0, 2, 0 };
+			box.position = { 0, 3, 0 };
 			box.scale = { 4,6,4 };
 			phy->SetCollisionBox(box);
 			phy->SetApply(true);
