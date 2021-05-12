@@ -30,8 +30,9 @@ namespace KG::Renderer
 		DirectionalLight = 5,
 		ParticleAdd = 6,
 		ParticleTransparent = 7,
-        UI = 8,
-		MaxShaderCount,
+        Sprite = 8,
+        UI = 9,
+        MaxShaderCount,
 	};
 
 	// 지오메트리 타입에 따라 결정
@@ -95,6 +96,8 @@ namespace KG::Renderer
 				return "ParticleAdd";
 			case KG::Renderer::ParticleTransparent:
 				return "ParticleTransparent";
+            case KG::Renderer::Sprite:
+                return "Sprite";
             case KG::Renderer::UI:
                 return "UI";
 		}

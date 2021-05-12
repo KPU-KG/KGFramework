@@ -424,6 +424,11 @@ void KG::Renderer::KGDXRenderer::ParticleRender(ID3D12GraphicsCommandList* cmdLi
 	this->renderEngine->Render(ShaderGroup::ParticleAdd , ShaderGeometryType::Particle, ShaderPixelType::Add, cmdList);
 }
 
+void KG::Renderer::KGDXRenderer::SpriteRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
+{
+    this->renderEngine->Render(ShaderGroup::Sprite, ShaderGeometryType::Particle, ShaderPixelType::Transparent, cmdList);
+}
+
 void KG::Renderer::KGDXRenderer::InGameUIRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
 {
     TryResourceBarrier(cmdList,
