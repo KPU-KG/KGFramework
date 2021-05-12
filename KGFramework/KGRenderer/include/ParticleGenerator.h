@@ -13,7 +13,7 @@ namespace KG::Renderer
 		static constexpr size_t MAX_PARTICLE_COUNT = 10'0000;
 		static constexpr float CLEAN_CYCLE_TIME = 2.5f;
 
-		KG::Renderer::Geometry* particleGeometry = nullptr;
+        KG::Renderer::Geometry* particleGeometry = nullptr;
 
         std::map<KG::Utill::HashString, KG::Component::ParticleDesc> particleDescs;
 

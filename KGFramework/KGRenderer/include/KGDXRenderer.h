@@ -98,8 +98,9 @@ namespace KG::Renderer
 		virtual void EditorUIRender();
 		virtual void OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void TransparentRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
-		virtual void ParticleRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
-		virtual void LightPassRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+        virtual void ParticleRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+        virtual void InGameUIRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+        virtual void LightPassRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void SkyBoxRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 		virtual void PassRenderEnd(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 
@@ -111,8 +112,9 @@ namespace KG::Renderer
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 
 		virtual void* GetImGUIContext();
-		virtual KG::Component::IRender3DComponent* GetNewRenderComponent() override;
-		virtual KG::Component::IGeometryComponent* GetNewGeomteryComponent() override;
+        virtual KG::Component::IRender3DComponent* GetNewRenderComponent() override;
+        virtual KG::Component::IRender2DComponent* GetNewRender2DComponent() override;
+        virtual KG::Component::IGeometryComponent* GetNewGeomteryComponent() override;
 		virtual KG::Component::IMaterialComponent* GetNewMaterialComponent() override;
 		virtual KG::Component::ICameraComponent* GetNewCameraComponent() override;
 		virtual KG::Component::ICubeCameraComponent* GetNewCubeCameraComponent() override;

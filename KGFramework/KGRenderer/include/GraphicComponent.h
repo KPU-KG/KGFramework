@@ -8,6 +8,7 @@
 #include "IRenderComponent.h"
 #include "CameraComponent.h"
 #include "LightComponent.h"
+#include "Render2DComponent.h"
 #include "Render3DComponent.h"
 #include "GeometryComponent.h"
 #include "MaterialComponent.h"

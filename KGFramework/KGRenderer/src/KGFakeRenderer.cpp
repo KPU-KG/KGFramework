@@ -2,6 +2,7 @@
 #include "FakeGraphicComponent.h"
 #include "FakeSystems.h"
 #include "ResourceContainer.h"
+#include "..\include_fake\KGFakeRenderer.h"
 
 KG::Renderer::KGFakeRenderer* KG::Renderer::KGFakeRenderer::GetInstance()
 {
@@ -66,6 +67,11 @@ void KG::Renderer::KGFakeRenderer::PostComponentProvider(KG::Component::Componen
 KG::Component::IRender3DComponent* KG::Renderer::KGFakeRenderer::GetNewRenderComponent()
 {
     return static_cast<KG::Component::IRender3DComponent*>(this->graphicSystems->render3DSystem.GetNewComponent());
+}
+
+KG::Component::IRender2DComponent* KG::Renderer::KGFakeRenderer::GetNewRender2DComponent()
+{
+    return static_cast<KG::Component::IRender2DComponent*>(this->graphicSystems->render2DSystem.GetNewComponent());
 }
 
 KG::Component::IGeometryComponent* KG::Renderer::KGFakeRenderer::GetNewGeomteryComponent()

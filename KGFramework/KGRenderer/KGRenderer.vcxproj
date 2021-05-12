@@ -194,6 +194,7 @@
     <ClCompile Include="src\FakeLightComponent.cpp" />
     <ClCompile Include="src\FakeMaterialComponent.cpp" />
     <ClCompile Include="src\FakeParticleEmitterComponent.cpp" />
+    <ClCompile Include="src\FakeRender2DComponent.cpp" />
     <ClCompile Include="src\FakeRender3DComponent.cpp" />
     <ClCompile Include="src\FakeResourceContainer.cpp" />
     <ClCompile Include="src\FakeShadowCasterComponent.cpp" />
@@ -219,6 +220,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Render2DComponent.cpp" />
     <ClCompile Include="src\Render3DComponent.cpp" />
     <ClCompile Include="src\RenderTexture.cpp" />
     <ClCompile Include="src\ResourceContainer.cpp" />
@@ -233,6 +235,7 @@
     <ClInclude Include="export\ILightComponent.h" />
     <ClInclude Include="export\IMaterialComponent.h" />
     <ClInclude Include="export\IParticleEmitterComponent.h" />
+    <ClInclude Include="export\IRender2DComponent.h" />
     <ClInclude Include="export\IRender3DComponent.h" />
     <ClInclude Include="export\IRenderComponent.h" />
     <ClInclude Include="export\IShadowCasterComponent.h" />
@@ -266,6 +269,7 @@
     <ClInclude Include="include\MaterialComponent.h" />
     <ClInclude Include="include\ParticleEmitterComponent.h" />
     <ClInclude Include="include\ParticleGenerator.h" />
+    <ClInclude Include="include\Render2DComponent.h" />
     <ClInclude Include="include\Render3DComponent.h" />
     <ClInclude Include="include\RenderTexture.h" />
     <ClInclude Include="include\ResourceMetaData.h" />
@@ -282,6 +286,7 @@
     <ClInclude Include="include_fake\FakeLightComponent.h" />
     <ClInclude Include="include_fake\FakeMaterialComponent.h" />
     <ClInclude Include="include_fake\FakeParticleEmitterComponent.h" />
+    <ClInclude Include="include_fake\FakeRender2DComponent.h" />
     <ClInclude Include="include_fake\FakeRender3DComponent.h" />
     <ClInclude Include="include_fake\FakeResourceContainer.h" />
     <ClInclude Include="include_fake\FakeShadowCasterComponent.h" />

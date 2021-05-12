@@ -79,3 +79,11 @@ void KG::System::FakeParticleEmitterSystem::OnPreRender()
         i.OnPreRender();
     }
 }
+
+void KG::System::FakeRender2DSystem::OnPreRender()
+{
+    for ( auto& i : this->pool )
+    {
+        i.OnPreRender();
+    }
+}

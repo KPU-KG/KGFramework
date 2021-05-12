@@ -263,6 +263,16 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
+    this->scene->AddObjectPreset("2DUI",
+        [this](KG::Core::GameObject& obj)
+        {
+            auto* t = this->system->transformSystem.GetNewComponent();
+            auto* r = this->renderer->GetNewRender2DComponent();
+            obj.AddComponent(t);
+            obj.AddComponent(r);
+        }
+    );
+
     this->scene->AddObjectPreset("VectorDrop",
         [this](KG::Core::GameObject& obj)
         {

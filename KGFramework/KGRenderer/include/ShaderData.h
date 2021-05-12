@@ -44,6 +44,22 @@ namespace KG::Renderer
 				float lifeTime;
 				float pad0;
 			}particle;
+            struct object2d
+            {
+                DirectX::XMFLOAT2 position;
+                DirectX::XMFLOAT2 size;
+                DirectX::XMFLOAT2 leftTopUV;
+                DirectX::XMFLOAT2 rightBottomUV;
+                DirectX::XMFLOAT4 color;
+                float rotationAngle;
+                float progressValue;
+                float depth;
+                float pad0;
+                UINT parentPivot;
+                UINT localPivot;
+                UINT progressShape;
+                UINT materialIndex;
+            } object2d;
 		};
 	};
 

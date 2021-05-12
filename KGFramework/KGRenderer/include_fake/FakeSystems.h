@@ -54,4 +54,9 @@ namespace KG::System
         // IComponentSystem을(를) 통해 상속됨
         virtual void OnPreRender() override;
     };
+    struct FakeRender2DSystem : public IComponentSystem<FakeRender2DComponent>
+    {
+        // IComponentSystem을(를) 통해 상속됨
+        virtual void OnPreRender() override;
+    };
 }

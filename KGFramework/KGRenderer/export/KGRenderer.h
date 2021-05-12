@@ -58,8 +58,9 @@ namespace KG::Renderer
 
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 
-		virtual KG::Component::IRender3DComponent* GetNewRenderComponent() = 0;
-		virtual KG::Component::IGeometryComponent* GetNewGeomteryComponent() = 0;
+        virtual KG::Component::IRender3DComponent* GetNewRenderComponent() = 0;
+        virtual KG::Component::IRender2DComponent* GetNewRender2DComponent() = 0;
+        virtual KG::Component::IGeometryComponent* GetNewGeomteryComponent() = 0;
 		virtual KG::Component::IMaterialComponent* GetNewMaterialComponent() = 0;
 		virtual KG::Component::ICameraComponent* GetNewCameraComponent() = 0;
 		virtual KG::Component::ICubeCameraComponent* GetNewCubeCameraComponent() = 0;

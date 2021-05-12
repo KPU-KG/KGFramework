@@ -9,4 +9,5 @@
     <SurfaceShaderSet id="AmbientLight" fileDir="Resource/ShaderScript/Light_Ambient.hlsl" group="AmbientLight" enableBackfaceCulling="false" enableDepthCliping="false" materialParameterSize="0" hash_id="1669293293"/>
     <SurfaceShaderSet id="ParticleAdd" fileDir="Resource/ShaderScript/Particle_Default.hlsl" group="ParticleAdd" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="32" hash_id="3487980688"/>
     <SurfaceShaderSet id="ParticleTransparent" fileDir="Resource/ShaderScript/Particle_Default.hlsl" group="ParticleTransparent" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="32" hash_id="786424407"/>
+    <SurfaceShaderSet id="UIDefault" fileDir="Resource/ShaderScript/UI_Default.hlsl" group="UI" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="4" hash_id="888949730"/>
 </ShaderSet>

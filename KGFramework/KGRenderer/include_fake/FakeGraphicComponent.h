@@ -8,6 +8,7 @@
 #include "IRenderComponent.h"
 #include "FakeCameraComponent.h"
 #include "FakeLightComponent.h"
+#include "FakeRender2DComponent.h"
 #include "FakeRender3DComponent.h"
 #include "FakeGeometryComponent.h"
 #include "FakeMaterialComponent.h"

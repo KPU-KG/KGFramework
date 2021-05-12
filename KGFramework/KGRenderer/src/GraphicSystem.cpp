@@ -1,6 +1,23 @@
 #include "pch.h"
 #include "GraphicSystem.h"
 
+void KG::System::Render2DSystem::OnUpdate(float elapsedTime)
+{
+}
+
+void KG::System::Render2DSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::Render2DSystem::OnPreRender()
+{
+    for ( auto& com : this->pool )
+    {
+        com.OnPreRender();
+    }
+}
+
+
 void KG::System::Render3DSystem::OnUpdate(float elapsedTime)
 {
 }
@@ -169,3 +186,4 @@ void KG::System::ParticleEmitterSystem::OnPostUpdate(float elapsedTime)
 void KG::System::ParticleEmitterSystem::OnPreRender()
 {
 }
+

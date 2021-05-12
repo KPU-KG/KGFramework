@@ -190,4 +190,24 @@
     <!--Resource/Texture/Particles/Muzzle_06.DDS-->
     <Texture id="Muzzle_06.DDS" fileDir="Resource/Texture/Particles/Muzzle_06.DDS" dimension="Texture2D" format="DDS" hash_id="2780963806"/>
     <Texture id="SparkParticle.DDS" fileDir="Resource/Texture/Particles/SparkParticle.DDS" dimension="Texture2D" format="DDS" hash_id="3436367923"/>
+    <!--Resource/Texture/digit/digit_0.DDS-->
+    <Texture id="digit_0.DDS" fileDir="Resource/Texture/digit/digit_0.DDS" dimension="Texture2D" format="DDS" hash_id="927507336"/>
+    <!--Resource/Texture/digit/digit_1.DDS-->
+    <Texture id="digit_1.DDS" fileDir="Resource/Texture/digit/digit_1.DDS" dimension="Texture2D" format="DDS" hash_id="1746437901"/>
+    <!--Resource/Texture/digit/digit_2.DDS-->
+    <Texture id="digit_2.DDS" fileDir="Resource/Texture/digit/digit_2.DDS" dimension="Texture2D" format="DDS" hash_id="2813221898"/>
+    <!--Resource/Texture/digit/digit_3.DDS-->
+    <Texture id="digit_3.DDS" fileDir="Resource/Texture/digit/digit_3.DDS" dimension="Texture2D" format="DDS" hash_id="3640017287"/>
+    <!--Resource/Texture/digit/digit_4.DDS-->
+    <Texture id="digit_4.DDS" fileDir="Resource/Texture/digit/digit_4.DDS" dimension="Texture2D" format="DDS" hash_id="1435800204"/>
+    <!--Resource/Texture/digit/digit_5.DDS-->
+    <Texture id="digit_5.DDS" fileDir="Resource/Texture/digit/digit_5.DDS" dimension="Texture2D" format="DDS" hash_id="3186147345"/>
+    <!--Resource/Texture/digit/digit_6.DDS-->
+    <Texture id="digit_6.DDS" fileDir="Resource/Texture/digit/digit_6.DDS" dimension="Texture2D" format="DDS" hash_id="3321514766"/>
+    <!--Resource/Texture/digit/digit_7.DDS-->
+    <Texture id="digit_7.DDS" fileDir="Resource/Texture/digit/digit_7.DDS" dimension="Texture2D" format="DDS" hash_id="4163117243"/>
+    <!--Resource/Texture/digit/digit_8.DDS-->
+    <Texture id="digit_8.DDS" fileDir="Resource/Texture/digit/digit_8.DDS" dimension="Texture2D" format="DDS" hash_id="4190635904"/>
+    <!--Resource/Texture/digit/digit_9.DDS-->
+    <Texture id="digit_9.DDS" fileDir="Resource/Texture/digit/digit_9.DDS" dimension="Texture2D" format="DDS" hash_id="714599173"/>
 </TextureSet>
