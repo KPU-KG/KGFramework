@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SavedGameObject>
-    <GameObject instanceId="48">
+    <GameObject instanceId="491">
         <Tag hash_id="1185853764" srcString="building-4.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="-82.35347" y="8.4372277e-06" z="-110.34005"/>
+            <Position x="58.729866" y="18" z="-265.80911"/>
             <Rotation_Q x="0" y="0" z="0" w="1"/>
             <Scale x="0.80000001" y="0.80000001" z="0.80000001"/>
         </Component>
@@ -21,7 +21,7 @@
                     <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
                     <Scale x="1" y="1.0000002" z="1.0000002"/>
                 </Component>
-                <Component name="GeometryComponent" hash_id="36578682">
+                <Component name="IGeometryComponent" hash_id="1162546763">
                     <GeometryDescs>
                         <Element>
                             <geometryID hash_id="1185853764" srcString="building-4.fbx"/>
@@ -50,7 +50,7 @@
                         </Element>
                     </GeometryDescs>
                 </Component>
-                <Component name="MaterialComponent" hash_id="1886146475">
+                <Component name="IMaterialComponent" hash_id="308235170">
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
@@ -79,7 +79,7 @@
                         </Element>
                     </MaterialDesc>
                 </Component>
-                <Component name="Render3DComponent" hash_id="4070531333"/>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
             </GameObject>
         </GameObject>
     </GameObject>

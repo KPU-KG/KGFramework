@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SavedGameObject>
-    <GameObject instanceId="466">
-        <Tag hash_id="2268926598" srcString="TileBlock_stone"/>
+    <GameObject instanceId="23">
+        <Tag hash_id="2489862556" srcString="TileBlock"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="143.88483" y="-0.2999945" z="-72.063889"/>
+            <Position x="72" y="0" z="-72"/>
             <Rotation_Q x="0" y="0" z="0" w="1"/>
             <Scale x="30" y="0.1" z="30"/>
         </Component>

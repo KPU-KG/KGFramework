@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SavedGameObject>
-    <GameObject instanceId="20">
-        <Tag hash_id="795656798" srcString="RoadConatiner"/>
+    <GameObject instanceId="663">
+        <Tag hash_id="1450053316" srcString="Tiles"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="228.82968" y="2.6524067e-06" z="-65.003365"/>
-            <Rotation_Q x="0" y="0.70710677" z="0" w="0.70710671"/>
+            <Position x="144" y="-0.30000001" z="0"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
             <Scale x="1" y="1" z="1"/>
         </Component>
-        <GameObject instanceId="6">
-            <Tag hash_id="791473260" srcString="Road_Line"/>
+        <GameObject instanceId="659">
+            <Tag hash_id="2489862556" srcString="TileBlock"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="-36" y="0" z="36"/>
-                <Rotation_Q x="0.49999964" y="0.5000003" z="-0.4999997" w="0.50000024"/>
-                <Scale x="6" y="30" z="1"/>
+                <Position x="6" y="0" z="-72"/>
+                <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+                <Scale x="36" y="0.1" z="30"/>
             </Component>
             <Component name="IGeometryComponent" hash_id="1162546763">
                 <GeometryDescs>
                     <Element>
-                        <geometryID hash_id="3536424569" srcString="plane"/>
+                        <geometryID hash_id="3056789162" srcString="cube"/>
                         <slotIndex value="0"/>
                         <subMeshIndex value="0"/>
                     </Element>
@@ -27,24 +27,24 @@
                 <MaterialDesc>
                     <Element>
                         <isRawShader value="false"/>
-                        <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                        <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
                         <slotIndex value="0"/>
                     </Element>
                 </MaterialDesc>
             </Component>
             <Component name="IRender3DComponent" hash_id="1184141904"/>
         </GameObject>
-        <GameObject instanceId="8">
-            <Tag hash_id="791473260" srcString="Road_Line"/>
+        <GameObject instanceId="660">
+            <Tag hash_id="2489862556" srcString="TileBlock"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="-72" y="0" z="0"/>
-                <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
-                <Scale x="6" y="30" z="1"/>
+                <Position x="72" y="0" z="-72"/>
+                <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+                <Scale x="30" y="0.1" z="30"/>
             </Component>
             <Component name="IGeometryComponent" hash_id="1162546763">
                 <GeometryDescs>
                     <Element>
-                        <geometryID hash_id="3536424569" srcString="plane"/>
+                        <geometryID hash_id="3056789162" srcString="cube"/>
                         <slotIndex value="0"/>
                         <subMeshIndex value="0"/>
                     </Element>
@@ -54,24 +54,24 @@
                 <MaterialDesc>
                     <Element>
                         <isRawShader value="false"/>
-                        <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                        <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
                         <slotIndex value="0"/>
                     </Element>
                 </MaterialDesc>
             </Component>
             <Component name="IRender3DComponent" hash_id="1184141904"/>
         </GameObject>
-        <GameObject instanceId="9">
-            <Tag hash_id="3982677921" srcString="Road_Center"/>
+        <GameObject instanceId="661">
+            <Tag hash_id="2489862556" srcString="TileBlock"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="-72" y="0" z="36"/>
-                <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
-                <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                <Position x="6" y="0" z="-138"/>
+                <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+                <Scale x="36" y="0.1" z="36"/>
             </Component>
             <Component name="IGeometryComponent" hash_id="1162546763">
                 <GeometryDescs>
                     <Element>
-                        <geometryID hash_id="3536424569" srcString="plane"/>
+                        <geometryID hash_id="3056789162" srcString="cube"/>
                         <slotIndex value="0"/>
                         <subMeshIndex value="0"/>
                     </Element>
@@ -81,24 +81,24 @@
                 <MaterialDesc>
                     <Element>
                         <isRawShader value="false"/>
-                        <materialID hash_id="792664218" srcString="asphalt"/>
+                        <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
                         <slotIndex value="0"/>
                     </Element>
                 </MaterialDesc>
             </Component>
             <Component name="IRender3DComponent" hash_id="1184141904"/>
         </GameObject>
-        <GameObject instanceId="10">
-            <Tag hash_id="3982677921" srcString="Road_Center"/>
+        <GameObject instanceId="662">
+            <Tag hash_id="2489862556" srcString="TileBlock"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="-72" y="0" z="-36"/>
-                <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
-                <Scale x="6.0050001" y="6.0050001" z="6.0050001"/>
+                <Position x="72" y="0" z="-138"/>
+                <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+                <Scale x="30" y="0.1" z="36"/>
             </Component>
             <Component name="IGeometryComponent" hash_id="1162546763">
                 <GeometryDescs>
                     <Element>
-                        <geometryID hash_id="3536424569" srcString="plane"/>
+                        <geometryID hash_id="3056789162" srcString="cube"/>
                         <slotIndex value="0"/>
                         <subMeshIndex value="0"/>
                     </Element>
@@ -108,7 +108,7 @@
                 <MaterialDesc>
                     <Element>
                         <isRawShader value="false"/>
-                        <materialID hash_id="792664218" srcString="asphalt"/>
+                        <materialID hash_id="2716079554" srcString="cc0_stone_4"/>
                         <slotIndex value="0"/>
                     </Element>
                 </MaterialDesc>
