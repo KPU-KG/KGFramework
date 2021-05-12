@@ -3,17 +3,17 @@
     <GameObject instanceId="286">
         <Tag hash_id="3001937105" srcString="Cine_mark1.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="59.964058" y="0" z="0"/>
-            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Position x="128.65849" y="-2.9702846e-06" z="-112.9129"/>
+            <Rotation_Q x="-6.5739196e-09" y="0.99999982" z="4.5675868e-09" w="-5.9604645e-08"/>
             <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
         </Component>
-        <Component name="GeometryComponent" hash_id="36578682">
+        <Component name="IGeometryComponent" hash_id="1162546763">
             <GeometryDescs/>
         </Component>
-        <Component name="MaterialComponent" hash_id="1886146475">
+        <Component name="IMaterialComponent" hash_id="308235170">
             <MaterialDesc/>
         </Component>
-        <Component name="Render3DComponent" hash_id="4070531333"/>
+        <Component name="IRender3DComponent" hash_id="1184141904"/>
         <GameObject instanceId="273">
             <Tag hash_id="4257772165" srcString="RootNode"/>
             <Component name="TransformComponent" hash_id="3882513520">
@@ -42,7 +42,7 @@
                             <Rotation_Q x="0" y="0" z="0" w="1"/>
                             <Scale x="1" y="1" z="1"/>
                         </Component>
-                        <Component name="GeometryComponent" hash_id="36578682">
+                        <Component name="IGeometryComponent" hash_id="1162546763">
                             <GeometryDescs>
                                 <Element>
                                     <geometryID hash_id="3001937105" srcString="Cine_mark1.fbx"/>
@@ -51,7 +51,7 @@
                                 </Element>
                             </GeometryDescs>
                         </Component>
-                        <Component name="MaterialComponent" hash_id="1886146475">
+                        <Component name="IMaterialComponent" hash_id="308235170">
                             <MaterialDesc>
                                 <Element>
                                     <isRawShader value="false"/>
@@ -80,7 +80,7 @@
                                 </Element>
                             </MaterialDesc>
                         </Component>
-                        <Component name="Render3DComponent" hash_id="4070531333"/>
+                        <Component name="IRender3DComponent" hash_id="1184141904"/>
                     </GameObject>
                     <GameObject instanceId="282">
                         <Tag hash_id="376459409" srcString="Cine_Mark1_Concrete_geo"/>
@@ -89,7 +89,7 @@
                             <Rotation_Q x="0" y="0" z="0" w="1"/>
                             <Scale x="1" y="1" z="1"/>
                         </Component>
-                        <Component name="GeometryComponent" hash_id="36578682">
+                        <Component name="IGeometryComponent" hash_id="1162546763">
                             <GeometryDescs>
                                 <Element>
                                     <geometryID hash_id="3001937105" srcString="Cine_mark1.fbx"/>
@@ -98,7 +98,7 @@
                                 </Element>
                             </GeometryDescs>
                         </Component>
-                        <Component name="MaterialComponent" hash_id="1886146475">
+                        <Component name="IMaterialComponent" hash_id="308235170">
                             <MaterialDesc>
                                 <Element>
                                     <isRawShader value="false"/>
@@ -127,7 +127,7 @@
                                 </Element>
                             </MaterialDesc>
                         </Component>
-                        <Component name="Render3DComponent" hash_id="4070531333"/>
+                        <Component name="IRender3DComponent" hash_id="1184141904"/>
                     </GameObject>
                     <GameObject instanceId="283">
                         <Tag hash_id="1131874290" srcString="Cine_Mark1_Bricks_geo"/>
@@ -136,7 +136,7 @@
                             <Rotation_Q x="0" y="0" z="0" w="1"/>
                             <Scale x="1" y="1" z="1"/>
                         </Component>
-                        <Component name="GeometryComponent" hash_id="36578682">
+                        <Component name="IGeometryComponent" hash_id="1162546763">
                             <GeometryDescs>
                                 <Element>
                                     <geometryID hash_id="3001937105" srcString="Cine_mark1.fbx"/>
@@ -145,7 +145,7 @@
                                 </Element>
                             </GeometryDescs>
                         </Component>
-                        <Component name="MaterialComponent" hash_id="1886146475">
+                        <Component name="IMaterialComponent" hash_id="308235170">
                             <MaterialDesc>
                                 <Element>
                                     <isRawShader value="false"/>
@@ -174,7 +174,7 @@
                                 </Element>
                             </MaterialDesc>
                         </Component>
-                        <Component name="Render3DComponent" hash_id="4070531333"/>
+                        <Component name="IRender3DComponent" hash_id="1184141904"/>
                     </GameObject>
                     <GameObject instanceId="284">
                         <Tag hash_id="2564802538" srcString="Cine_Mark1_Details_geo"/>
@@ -183,7 +183,7 @@
                             <Rotation_Q x="0" y="0" z="0" w="1"/>
                             <Scale x="1" y="1" z="1"/>
                         </Component>
-                        <Component name="GeometryComponent" hash_id="36578682">
+                        <Component name="IGeometryComponent" hash_id="1162546763">
                             <GeometryDescs>
                                 <Element>
                                     <geometryID hash_id="3001937105" srcString="Cine_mark1.fbx"/>
@@ -192,7 +192,7 @@
                                 </Element>
                             </GeometryDescs>
                         </Component>
-                        <Component name="MaterialComponent" hash_id="1886146475">
+                        <Component name="IMaterialComponent" hash_id="308235170">
                             <MaterialDesc>
                                 <Element>
                                     <isRawShader value="false"/>
@@ -221,7 +221,7 @@
                                 </Element>
                             </MaterialDesc>
                         </Component>
-                        <Component name="Render3DComponent" hash_id="4070531333"/>
+                        <Component name="IRender3DComponent" hash_id="1184141904"/>
                     </GameObject>
                     <GameObject instanceId="285">
                         <Tag hash_id="177927523" srcString="Cine_Mark1_Windows_geo"/>
@@ -230,7 +230,7 @@
                             <Rotation_Q x="0" y="0" z="0" w="1"/>
                             <Scale x="1" y="1" z="1"/>
                         </Component>
-                        <Component name="GeometryComponent" hash_id="36578682">
+                        <Component name="IGeometryComponent" hash_id="1162546763">
                             <GeometryDescs>
                                 <Element>
                                     <geometryID hash_id="3001937105" srcString="Cine_mark1.fbx"/>
@@ -239,7 +239,7 @@
                                 </Element>
                             </GeometryDescs>
                         </Component>
-                        <Component name="MaterialComponent" hash_id="1886146475">
+                        <Component name="IMaterialComponent" hash_id="308235170">
                             <MaterialDesc>
                                 <Element>
                                     <isRawShader value="false"/>
@@ -268,7 +268,7 @@
                                 </Element>
                             </MaterialDesc>
                         </Component>
-                        <Component name="Render3DComponent" hash_id="4070531333"/>
+                        <Component name="IRender3DComponent" hash_id="1184141904"/>
                     </GameObject>
                 </GameObject>
             </GameObject>

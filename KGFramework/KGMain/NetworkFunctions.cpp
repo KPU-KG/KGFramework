@@ -57,6 +57,17 @@ void KG::GameFramework::PostNetworkFunction()
                 r2d->ReloadRender();
                 obj.GetTransform()->AddChild(uiObj->GetTransform());
             }
+            {
+                auto* uiObj = this->scene->CallPreset("2DUI"_id);
+                uiObj->tag = KG::Utill::HashString("CrossHair");
+                auto* r2d = uiObj->GetComponent<KG::Component::IRender2DComponent>();
+                r2d->material2D.materialId = "crosshair"_id;
+                r2d->transform2D.size = DirectX::XMFLOAT2(0.075, 0.075);
+                r2d->transform2D.parentPivot = KG::Component::RectPivot::CENTER;
+                r2d->transform2D.localPivot = KG::Component::RectPivot::CENTER;
+                r2d->ReloadRender();
+                obj.GetTransform()->AddChild(uiObj->GetTransform());
+            }
 			auto* comp = this->networkClient->GetNewPlayerControllerComponent();
 			obj.AddComponent(comp);
 			return comp;

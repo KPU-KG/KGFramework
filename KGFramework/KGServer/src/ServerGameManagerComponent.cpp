@@ -9,7 +9,7 @@
 
 std::random_device rdRegion;
 std::mt19937 genRegion(rdRegion());
-std::uniform_int_distribution<int> randomSpawn(1, 2);
+std::uniform_int_distribution<int> randomSpawn(3, 4);
 
 KG::Component::Region::Region()
 	:
@@ -135,6 +135,8 @@ void KG::Component::EnemyGeneratorComponent::Update(float elapsedTime)
 }
 
 KG::Component::EnemyGeneratorComponent::EnemyGeneratorComponent()
+	:
+	generateProp("GenerateEnemy", generateEnemy)
 {
 
 }
@@ -201,6 +203,7 @@ unsigned int KG::Component::EnemyGeneratorComponent::GetScore() const {
 
 void KG::Component::EnemyGeneratorComponent::OnDataLoad(tinyxml2::XMLElement* objectElement) {
 	this->region.clear();
+	generateProp.OnDataLoad(objectElement);
 	auto* nextElement = objectElement->FirstChildElement("Region");
 	while (nextElement != nullptr)
 	{
@@ -215,6 +218,7 @@ void KG::Component::EnemyGeneratorComponent::OnDataLoad(tinyxml2::XMLElement* ob
 void KG::Component::EnemyGeneratorComponent::OnDataSave(tinyxml2::XMLElement* objectElement) {
 	auto* componentElement = objectElement->InsertNewChildElement("Component");
  	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::EnemyGeneratorComponent);
+	generateProp.OnDataSave(componentElement);
 	for (auto& i : this->region)
 	{
 		auto* element = componentElement->InsertNewChildElement("Region");

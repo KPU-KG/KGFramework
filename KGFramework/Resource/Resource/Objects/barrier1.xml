@@ -3,9 +3,9 @@
     <GameObject instanceId="387">
         <Tag hash_id="1193735393" srcString="barrier1.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="17.592943" y="0" z="-28.712872"/>
+            <Position x="3" y="0" z="-29"/>
             <Rotation_Q x="0" y="0" z="0" w="1"/>
-            <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
+            <Scale x="0.02" y="0.02" z="0.02"/>
         </Component>
         <GameObject instanceId="382">
             <Tag hash_id="4257772165" srcString="RootNode"/>
@@ -28,7 +28,7 @@
                         <Rotation_Q x="0" y="0" z="0" w="1"/>
                         <Scale x="1" y="1" z="1"/>
                     </Component>
-                    <Component name="GeometryComponent" hash_id="36578682">
+                    <Component name="IGeometryComponent" hash_id="1162546763">
                         <GeometryDescs>
                             <Element>
                                 <geometryID hash_id="1193735393" srcString="barrier1.fbx"/>
@@ -47,7 +47,7 @@
                             </Element>
                         </GeometryDescs>
                     </Component>
-                    <Component name="MaterialComponent" hash_id="1886146475">
+                    <Component name="IMaterialComponent" hash_id="308235170">
                         <MaterialDesc>
                             <Element>
                                 <isRawShader value="false"/>
@@ -56,7 +56,7 @@
                             </Element>
                         </MaterialDesc>
                     </Component>
-                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
                 </GameObject>
                 <GameObject instanceId="385">
                     <Tag hash_id="1948518128" srcString="Bracket1"/>
@@ -65,7 +65,7 @@
                         <Rotation_Q x="0" y="0" z="0" w="1"/>
                         <Scale x="1" y="1" z="1"/>
                     </Component>
-                    <Component name="GeometryComponent" hash_id="36578682">
+                    <Component name="IGeometryComponent" hash_id="1162546763">
                         <GeometryDescs>
                             <Element>
                                 <geometryID hash_id="1193735393" srcString="barrier1.fbx"/>
@@ -74,7 +74,7 @@
                             </Element>
                         </GeometryDescs>
                     </Component>
-                    <Component name="MaterialComponent" hash_id="1886146475">
+                    <Component name="IMaterialComponent" hash_id="308235170">
                         <MaterialDesc>
                             <Element>
                                 <isRawShader value="false"/>
@@ -83,7 +83,7 @@
                             </Element>
                         </MaterialDesc>
                     </Component>
-                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
                 </GameObject>
                 <GameObject instanceId="386">
                     <Tag hash_id="1948521011" srcString="Bracket2"/>
@@ -92,7 +92,7 @@
                         <Rotation_Q x="0" y="0" z="0" w="1"/>
                         <Scale x="1" y="1" z="1"/>
                     </Component>
-                    <Component name="GeometryComponent" hash_id="36578682">
+                    <Component name="IGeometryComponent" hash_id="1162546763">
                         <GeometryDescs>
                             <Element>
                                 <geometryID hash_id="1193735393" srcString="barrier1.fbx"/>
@@ -101,7 +101,7 @@
                             </Element>
                         </GeometryDescs>
                     </Component>
-                    <Component name="MaterialComponent" hash_id="1886146475">
+                    <Component name="IMaterialComponent" hash_id="308235170">
                         <MaterialDesc>
                             <Element>
                                 <isRawShader value="false"/>
@@ -110,7 +110,7 @@
                             </Element>
                         </MaterialDesc>
                     </Component>
-                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
                 </GameObject>
             </GameObject>
         </GameObject>

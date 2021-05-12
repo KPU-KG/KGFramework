@@ -210,4 +210,6 @@
     <Texture id="digit_8.DDS" fileDir="Resource/Texture/digit/digit_8.DDS" dimension="Texture2D" format="DDS" hash_id="4190635904"/>
     <!--Resource/Texture/digit/digit_9.DDS-->
     <Texture id="digit_9.DDS" fileDir="Resource/Texture/digit/digit_9.DDS" dimension="Texture2D" format="DDS" hash_id="714599173"/>
+    <!--Resource/Texture/crosshair/crosshair_0.DDS-->
+    <Texture id="crosshair_0.DDS" fileDir="Resource/Texture/crosshair/crosshair_0.DDS" dimension="Texture2D" format="DDS" hash_id="1326835659"/>
 </TextureSet>

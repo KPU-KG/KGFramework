@@ -1,0 +1,441 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="717">
+        <Tag hash_id="3740945507" srcString="streetlights"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="1" y="-7.6293945e-06" z="-75"/>
+            <Rotation_Q x="0" y="0.70710683" z="0" w="0.70710671"/>
+            <Scale x="0.99999994" y="1" z="0.99999994"/>
+        </Component>
+        <GameObject instanceId="299">
+            <Tag hash_id="1263226358" srcString="streetLightc1.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="-26" y="2.120488e-06" z="-45"/>
+                <Rotation_Q x="0" y="-0.70710683" z="0" w="0.70710677"/>
+                <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+            </Component>
+            <GameObject instanceId="329">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="330">
+                    <Tag hash_id="3468890110" srcString="streetLight_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1263226358" srcString="streetLightc1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="435">
+            <Tag hash_id="1263226358" srcString="streetLightc1.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="-13" y="1.9396202e-06" z="-28"/>
+                <Rotation_Q x="0" y="0.70710683" z="0" w="0.70710671"/>
+                <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+            </Component>
+            <GameObject instanceId="329">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="330">
+                    <Tag hash_id="3468890110" srcString="streetLight_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1263226358" srcString="streetLightc1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="436">
+            <Tag hash_id="1263226358" srcString="streetLightc1.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="1.8156802e-06" z="-45"/>
+                <Rotation_Q x="0" y="-0.70710677" z="0" w="0.70710677"/>
+                <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+            </Component>
+            <GameObject instanceId="329">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="330">
+                    <Tag hash_id="3468890110" srcString="streetLight_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1263226358" srcString="streetLightc1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="437">
+            <Tag hash_id="1263226358" srcString="streetLightc1.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="13" y="1.9728127e-06" z="-28"/>
+                <Rotation_Q x="0" y="0.70710683" z="0" w="0.70710671"/>
+                <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+            </Component>
+            <GameObject instanceId="329">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="330">
+                    <Tag hash_id="3468890110" srcString="streetLight_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1263226358" srcString="streetLightc1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="438">
+            <Tag hash_id="1263226358" srcString="streetLightc1.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="26" y="1.9882582e-06" z="-45"/>
+                <Rotation_Q x="0" y="-0.70710677" z="0" w="0.70710677"/>
+                <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+            </Component>
+            <GameObject instanceId="329">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="330">
+                    <Tag hash_id="3468890110" srcString="streetLight_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1263226358" srcString="streetLightc1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="439">
+            <Tag hash_id="1263226358" srcString="streetLightc1.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="39" y="2.2473296e-06" z="-28"/>
+                <Rotation_Q x="0" y="0.70710683" z="0" w="0.70710671"/>
+                <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+            </Component>
+            <GameObject instanceId="329">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="330">
+                    <Tag hash_id="3468890110" srcString="streetLight_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1263226358" srcString="streetLightc1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="486">
+            <Tag hash_id="1263226358" srcString="streetLightc1.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="52" y="2.0485377e-06" z="-45"/>
+                <Rotation_Q x="0" y="-0.70710677" z="0" w="0.70710677"/>
+                <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+            </Component>
+            <GameObject instanceId="329">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="330">
+                    <Tag hash_id="3468890110" srcString="streetLight_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1263226358" srcString="streetLightc1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="488">
+            <Tag hash_id="1263226358" srcString="streetLightc1.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="65" y="1.7941197e-06" z="-28"/>
+                <Rotation_Q x="0" y="0.70710677" z="0" w="0.70710677"/>
+                <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+            </Component>
+            <GameObject instanceId="329">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="330">
+                    <Tag hash_id="3468890110" srcString="streetLight_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1263226358" srcString="streetLightc1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="487">
+            <Tag hash_id="1263226358" srcString="streetLightc1.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="91" y="2.0264154e-06" z="-28"/>
+                <Rotation_Q x="0" y="0.70710683" z="0" w="0.70710677"/>
+                <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+            </Component>
+            <GameObject instanceId="329">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="330">
+                    <Tag hash_id="3468890110" srcString="streetLight_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1263226358" srcString="streetLightc1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="656">
+            <Tag hash_id="1263226358" srcString="streetLightc1.fbx"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="78" y="2.0264154e-06" z="-45"/>
+                <Rotation_Q x="-0" y="-0.70710671" z="-0" w="0.70710683"/>
+                <Scale x="0.0069999998" y="0.0070000002" z="0.0069999998"/>
+            </Component>
+            <GameObject instanceId="329">
+                <Tag hash_id="4257772165" srcString="RootNode"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="330">
+                    <Tag hash_id="3468890110" srcString="streetLight_geo"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="1263226358" srcString="streetLightc1.fbx"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

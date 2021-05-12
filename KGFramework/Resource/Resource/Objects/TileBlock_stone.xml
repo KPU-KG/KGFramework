@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SavedGameObject>
-    <GameObject instanceId="446">
+    <GameObject instanceId="466">
         <Tag hash_id="2268926598" srcString="TileBlock_stone"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="59.844749" y="-0.30000001" z="-215.95447"/>
+            <Position x="143.88483" y="-0.2999945" z="-72.063889"/>
             <Rotation_Q x="0" y="0" z="0" w="1"/>
             <Scale x="30" y="0.1" z="30"/>
         </Component>
-        <Component name="GeometryComponent" hash_id="36578682">
+        <Component name="IGeometryComponent" hash_id="1162546763">
             <GeometryDescs>
                 <Element>
                     <geometryID hash_id="3056789162" srcString="cube"/>
@@ -16,7 +16,7 @@
                 </Element>
             </GeometryDescs>
         </Component>
-        <Component name="MaterialComponent" hash_id="1886146475">
+        <Component name="IMaterialComponent" hash_id="308235170">
             <MaterialDesc>
                 <Element>
                     <isRawShader value="false"/>
@@ -25,6 +25,6 @@
                 </Element>
             </MaterialDesc>
         </Component>
-        <Component name="Render3DComponent" hash_id="4070531333"/>
+        <Component name="IRender3DComponent" hash_id="1184141904"/>
     </GameObject>
 </SavedGameObject>
