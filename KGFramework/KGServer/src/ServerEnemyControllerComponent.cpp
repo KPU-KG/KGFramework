@@ -67,7 +67,8 @@ bool KG::Component::SEnemyControllerComponent::SetGoal()
 bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 {
 	if (anim) {
-		ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING, 0.1f, -1);
+		if (!changedAnimation)
+			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING, 0.1f, -1);
 	}
 	// anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING);
 	rotateTimer += elapsedTime;
@@ -88,9 +89,10 @@ bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 {
 	if (anim) {
-		if (sendTimer >= sendInterval) {
+		if (!changedAnimation)
 			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
-		}
+		// if (sendTimer >= sendInterval) {
+		// }
 	}
 	// anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING);
 
@@ -135,8 +137,10 @@ bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
 {
 	if (anim) {
-		if (sendTimer >= sendInterval)
+		if (!changedAnimation) {
 			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING, 0.1f, -1);
+		}
+		// if (sendTimer >= sendInterval)
 	}
 	idleTimer += elapsedTime;
 	if (idleInterval <= idleTimer)
@@ -205,19 +209,24 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 	else {
 		switch (this->action) {
 		case EnemyAction::eIDLE:
-			if (Idle(elapsedTime))
+			if (Idle(elapsedTime)) {
+				changedAnimation = false;
 				action = EnemyAction::eSETGOAL;
+			}
 			break;
 		case EnemyAction::eSETGOAL:
 			SetGoal();
 			action = EnemyAction::eROTATE;
 			break;
 		case EnemyAction::eROTATE:
-			if (RotateToGoal(elapsedTime))
+			if (RotateToGoal(elapsedTime)) {
+				changedAnimation = false;
 				action = EnemyAction::eMOVE;
+			}
 			break;
 		case EnemyAction::eMOVE:
 			if (MoveToGoal()) {
+				changedAnimation = false;
 				action = EnemyAction::eIDLE;
 				idleTimer = 0;
 			}
@@ -397,6 +406,7 @@ inline void KG::Component::SEnemyControllerComponent::ChangeAnimation(const KG::
 	pa.nextState = nextState;
 	pa.repeat = repeat;
 	this->BroadcastPacket(&pa);
+	changedAnimation = true;
 }
 
 

@@ -14,7 +14,7 @@
             <Direction x="-0.57735026" y="-0.57735026" z="-0.57735026"/>
         </Component>
         <Component name="EnemyGeneratorComponent" hash_id="1480576243">
-            <GenerateEnemy value="false"/>
+            <GenerateEnemy value="true"/>
             <Region>
                 <RegionPosition x="60" y="0" z="0"/>
                 <RegionRange value="25"/>

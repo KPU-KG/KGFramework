@@ -78,6 +78,8 @@ namespace KG::Component
 		float										sendTimer = 0.0f;
 		float										sendInterval = 1.f / 60.f;
 
+		bool										changedAnimation = false;
+
 		KG::Component::RaycastCallbackFunc			raycastCallback = nullptr;
 
         static constexpr int maxHp = 10;
