@@ -115,6 +115,7 @@ namespace KG::Renderer
 		virtual void* GetImGUIContext();
         virtual KG::Component::IRender3DComponent* GetNewRenderComponent() override;
         virtual KG::Component::IRender2DComponent* GetNewRender2DComponent() override;
+        virtual KG::Component::IRenderSpriteComponent* GetNewRenderSpriteComponent() override;
         virtual KG::Component::IGeometryComponent* GetNewGeomteryComponent() override;
 		virtual KG::Component::IMaterialComponent* GetNewMaterialComponent() override;
 		virtual KG::Component::ICameraComponent* GetNewCameraComponent() override;

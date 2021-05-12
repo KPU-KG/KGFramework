@@ -86,7 +86,7 @@ void GeometryShaderFunction(point ParticleVertexOutput input[1], inout TriangleS
 {
     float3 up = float3(0.0f, 1.0f, 0.0f);
     float3 right = cross(up, look);
-    //up = cross(look, right);
+    up = cross(look, right);
     
     UIData data = uiInfo[input[0].InstanceID];
     MaterialData mat = materialData[data.materialIndex];
@@ -119,6 +119,7 @@ float4 PixelShaderFunction(ParticleGSOutput input) : SV_Target0
 {
     UIData data = uiInfo[input.InstanceID];
     MaterialData mat = materialData[data.materialIndex];
+    clip(1 - input.uv.r - (1 - data.progressValue));
     return shaderTexture[mat.ColorTextureIndex].Sample(gsamAnisotoropicClamp, input.uv) * data.color;
 }
 
