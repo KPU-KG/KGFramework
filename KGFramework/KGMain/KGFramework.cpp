@@ -547,6 +547,7 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.height = this->setting.GetGameResolutionHeigth();
 			cam->renderTextureDesc = renderTextureDesc;
 			cam->SetFovY(90.0f);
+            cam->SetFarZ(350.0);
 
 			cameraObj->AddComponent(cam);
 			cameraObj->GetTransform()->SetPosition(0.230, 1.45, 0.496);
