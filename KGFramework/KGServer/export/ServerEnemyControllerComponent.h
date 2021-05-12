@@ -75,6 +75,8 @@ namespace KG::Component
 		float										destroyInterval = 3.f;
 		float										destroyTimer = 0.f;
 
+		float										sendTimer = 0.0f;
+		float										sendInterval = 1.f / 60.f;
 
 		KG::Component::RaycastCallbackFunc			raycastCallback = nullptr;
 

@@ -88,7 +88,9 @@ bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 {
 	if (anim) {
-		ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
+		if (sendTimer >= sendInterval) {
+			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
+		}
 	}
 	// anim->ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING);
 
@@ -133,7 +135,8 @@ bool KG::Component::SEnemyControllerComponent::MoveToGoal()
 bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
 {
 	if (anim) {
-		ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING, 0.1f, -1);
+		if (sendTimer >= sendInterval)
+			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING, 0.1f, -1);
 	}
 	idleTimer += elapsedTime;
 	if (idleInterval <= idleTimer)
@@ -227,12 +230,16 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 			break;
 		}
 	}
-
-	if (this->server) {
-		KG::Packet::SC_MOVE_OBJECT p = {};
-		p.position = this->transform->GetPosition();
-		p.rotation = this->transform->GetRotation();
-		this->BroadcastPacket(&p);
+	
+	sendTimer += elapsedTime;
+	if (sendTimer >= sendInterval) {
+		if (this->server) {
+			KG::Packet::SC_MOVE_OBJECT p = {};
+			p.position = this->transform->GetPosition();
+			p.rotation = this->transform->GetRotation();
+			this->BroadcastPacket(&p);
+		}
+		sendTimer = 0;
 	}
 }
 

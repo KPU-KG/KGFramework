@@ -241,11 +241,11 @@ void KG::Component::CPlayerControllerComponent::ProcessMove(float elapsedTime)
 
     if ( abs(this->forwardValue) >= this->inputMinimum )
     {
-        // this->characterTransform->Translate(this->characterTransform->GetLook() * speed * elapsedTime * this->forwardValue);
+        this->characterTransform->Translate(this->characterTransform->GetLook() * speed * elapsedTime * this->forwardValue);
     }
     if ( abs(this->rightValue) >= this->inputMinimum )
     {
-        // this->characterTransform->Translate(this->characterTransform->GetRight() * speed * elapsedTime * this->rightValue);
+        this->characterTransform->Translate(this->characterTransform->GetRight() * speed * elapsedTime * this->rightValue);
     }
 }
 
