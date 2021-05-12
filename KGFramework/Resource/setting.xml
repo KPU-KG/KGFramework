@@ -9,9 +9,9 @@
     <isPxDebugger value="false"/>
     <isEditMode value="true"/>
     <isConsoleMode value="false"/>
-    <isStartClient value="true"/>
+    <isStartClient value="false"/>
     <isStartServer value="false"/>
-    <isStartLogin value="true"/>
+    <isStartLogin value="false"/>
     <ipAddress value="127.0.0.1"/>
     <startScenePath value="Resource/Scenes/col_test_walls.xml"/>
 </Settings>

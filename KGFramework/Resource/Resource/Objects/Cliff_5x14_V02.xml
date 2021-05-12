@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SavedGameObject>
-    <GameObject instanceId="415">
-        <Tag hash_id="1796494296" srcString="Cliff_5x14_V01.FBX"/>
+    <GameObject instanceId="643">
+        <Tag hash_id="2733956523" srcString="Cliff_5x14_V02.FBX"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="19.709541" y="3.2500793e-09" z="47.309975"/>
-            <Rotation_Q x="0" y="0" z="0" w="1"/>
-            <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
+            <Position x="77.844498" y="0" z="-133.80644"/>
+            <Rotation_Q x="4.2944177e-09" y="-0.57357657" z="9.2094261e-09" w="0.81915134"/>
+            <Scale x="0.015" y="0.015" z="0.015"/>
         </Component>
-        <GameObject instanceId="412">
+        <GameObject instanceId="640">
             <Tag hash_id="4257772165" srcString="RootNode"/>
             <Component name="TransformComponent" hash_id="3882513520">
                 <Position x="0" y="0" z="0"/>
                 <Rotation_Q x="0" y="0" z="0" w="1"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
-            <GameObject instanceId="413">
-                <Tag hash_id="122255439" srcString="Cliff_5x14_V01_LOD1"/>
+            <GameObject instanceId="641">
+                <Tag hash_id="539291430" srcString="Cliff_5x14_V02_LOD1"/>
                 <Component name="TransformComponent" hash_id="3882513520">
                     <Position x="0" y="0" z="0"/>
                     <Rotation_Q x="0" y="0" z="0" w="1"/>
@@ -24,7 +24,7 @@
                 <Component name="IGeometryComponent" hash_id="1162546763">
                     <GeometryDescs>
                         <Element>
-                            <geometryID hash_id="1796494296" srcString="Cliff_5x14_V01.FBX"/>
+                            <geometryID hash_id="2733956523" srcString="Cliff_5x14_V02.FBX"/>
                             <slotIndex value="0"/>
                             <subMeshIndex value="0"/>
                         </Element>
@@ -41,8 +41,8 @@
                 </Component>
                 <Component name="IRender3DComponent" hash_id="1184141904"/>
             </GameObject>
-            <GameObject instanceId="414">
-                <Tag hash_id="122254478" srcString="Cliff_5x14_V01_LOD0"/>
+            <GameObject instanceId="642">
+                <Tag hash_id="539292391" srcString="Cliff_5x14_V02_LOD0"/>
                 <Component name="TransformComponent" hash_id="3882513520">
                     <Position x="0" y="0" z="0"/>
                     <Rotation_Q x="0" y="0" z="0" w="1"/>
@@ -51,7 +51,7 @@
                 <Component name="IGeometryComponent" hash_id="1162546763">
                     <GeometryDescs>
                         <Element>
-                            <geometryID hash_id="1796494296" srcString="Cliff_5x14_V01.FBX"/>
+                            <geometryID hash_id="2733956523" srcString="Cliff_5x14_V02.FBX"/>
                             <slotIndex value="0"/>
                             <subMeshIndex value="1"/>
                         </Element>
