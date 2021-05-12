@@ -35,6 +35,8 @@ static int ReadShaderGroup( const std::string& attribute )
 		return KG::Renderer::ShaderGroup::ParticleAdd;
 	else if ( attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::ParticleTransparent) )
 		return KG::Renderer::ShaderGroup::ParticleTransparent;
+    else if ( attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::UI) )
+        return KG::Renderer::ShaderGroup::UI;
 	else return -1;
 }
 

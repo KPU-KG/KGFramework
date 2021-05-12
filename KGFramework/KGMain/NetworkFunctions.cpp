@@ -33,6 +33,30 @@ void KG::GameFramework::PostNetworkFunction()
 		KG::Utill::HashString("PlayerCharacter"),
 		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent*
 		{
+            {
+                auto* uiObj = this->scene->CallPreset("2DUI"_id);
+                uiObj->tag = KG::Utill::HashString("DIGIT_0");
+                auto* r2d = uiObj->GetComponent<KG::Component::IRender2DComponent>();
+                r2d->material2D.materialId = "digit_0"_id;
+                r2d->transform2D.position = DirectX::XMFLOAT2(0, 0);
+                r2d->transform2D.size = DirectX::XMFLOAT2(0.2, 0.2);
+                r2d->transform2D.parentPivot = KG::Component::RectPivot::RIGHT_BOTTOM;
+                r2d->transform2D.localPivot = KG::Component::RectPivot::RIGHT_BOTTOM;
+                r2d->ReloadRender();
+                obj.GetTransform()->AddChild(uiObj->GetTransform());
+            }
+            {
+                auto* uiObj = this->scene->CallPreset("2DUI"_id);
+                uiObj->tag = KG::Utill::HashString("DIGIT_1");
+                auto* r2d = uiObj->GetComponent<KG::Component::IRender2DComponent>();
+                r2d->material2D.materialId = "digit_0"_id;
+                r2d->transform2D.position = DirectX::XMFLOAT2(-0.04, 0);
+                r2d->transform2D.size = DirectX::XMFLOAT2(0.2, 0.2);
+                r2d->transform2D.parentPivot = KG::Component::RectPivot::RIGHT_BOTTOM;
+                r2d->transform2D.localPivot = KG::Component::RectPivot::RIGHT_BOTTOM;
+                r2d->ReloadRender();
+                obj.GetTransform()->AddChild(uiObj->GetTransform());
+            }
 			auto* comp = this->networkClient->GetNewPlayerControllerComponent();
 			obj.AddComponent(comp);
 			return comp;

@@ -198,6 +198,12 @@
     <ClCompile Include="src\IParticleEmitterComponent.cpp">
       <Filter>소스 파일\KGDXRenderer\Component</Filter>
     </ClCompile>
+    <ClCompile Include="src\FakeRender2DComponent.cpp">
+      <Filter>소스 파일\KGFakeRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Render2DComponent.cpp">
+      <Filter>소스 파일\KGDXRenderer\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">
@@ -382,6 +388,15 @@
     </ClInclude>
     <ClInclude Include="include_fake\FakeResourceContainer.h">
       <Filter>헤더 파일\Fake</Filter>
+    </ClInclude>
+    <ClInclude Include="export\IRender2DComponent.h">
+      <Filter>헤더 파일\Interface</Filter>
+    </ClInclude>
+    <ClInclude Include="include_fake\FakeRender2DComponent.h">
+      <Filter>헤더 파일\Fake\FakeComponent</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Render2DComponent.h">
+      <Filter>헤더 파일\KGDXRenderer\Component</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

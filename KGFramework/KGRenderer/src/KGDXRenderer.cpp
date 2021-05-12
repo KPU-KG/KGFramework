@@ -20,7 +20,8 @@ std::array<const CD3DX12_STATIC_SAMPLER_DESC, 8> GetStaticSamplers();
 
 struct KG::Renderer::KGDXRenderer::GraphicSystems
 {
-	KG::System::Render3DSystem render3DSystem;
+    KG::System::Render2DSystem render2DSystem;
+    KG::System::Render3DSystem render3DSystem;
 	KG::System::GeometrySystem geometrySystem;
 	KG::System::MaterialSystem materialSystem;
 	KG::System::CameraSystem cameraSystem;
@@ -35,7 +36,8 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 	{
 		this->geometrySystem.OnPreRender();
 		this->materialSystem.OnPreRender();
-		this->render3DSystem.OnPreRender();
+        this->render2DSystem.OnPreRender();
+        this->render3DSystem.OnPreRender();
 		this->cameraSystem.OnPreRender();
 		this->cubeCameraSystem.OnPreRender();
 		this->shadowSystem.OnPreRender();
@@ -49,7 +51,8 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 	{
 		this->geometrySystem.OnUpdate(elapsedTime);
 		this->materialSystem.OnUpdate(elapsedTime);
-		this->render3DSystem.OnUpdate(elapsedTime);
+        this->render2DSystem.OnUpdate(elapsedTime);
+        this->render3DSystem.OnUpdate(elapsedTime);
 		this->cameraSystem.OnUpdate(elapsedTime);
 		this->cubeCameraSystem.OnUpdate(elapsedTime);
 		this->lightSystem.OnUpdate(elapsedTime);
@@ -62,7 +65,8 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 	{
 		this->geometrySystem.OnPostUpdate(elapsedTime);
 		this->materialSystem.OnPostUpdate(elapsedTime);
-		this->render3DSystem.OnPostUpdate(elapsedTime);
+        this->render2DSystem.OnPostUpdate(elapsedTime);
+        this->render3DSystem.OnPostUpdate(elapsedTime);
 		this->cameraSystem.OnPostUpdate(elapsedTime);
 		this->cubeCameraSystem.OnPostUpdate(elapsedTime);
 		this->lightSystem.OnPostUpdate(elapsedTime);
@@ -76,7 +80,8 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 	{
 		this->geometrySystem.OnPostProvider(provider);
 		this->materialSystem.OnPostProvider(provider);
-		this->render3DSystem.OnPostProvider(provider);
+        this->render2DSystem.OnPostProvider(provider);
+        this->render3DSystem.OnPostProvider(provider);
 		this->cameraSystem.OnPostProvider(provider);
 		this->cubeCameraSystem.OnPostProvider(provider);
 		this->lightSystem.OnPostProvider(provider);
@@ -90,7 +95,8 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 	{
 		this->geometrySystem.Clear();
 		this->materialSystem.Clear();
-		this->render3DSystem.Clear();
+        this->render2DSystem.Clear();
+        this->render3DSystem.Clear();
 		this->cameraSystem.Clear();
 		this->cubeCameraSystem.Clear();
 		this->lightSystem.Clear();
@@ -269,6 +275,7 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
 		this->LightPassRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
 		this->SkyBoxRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
 		this->ParticleRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+        this->InGameUIRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
 		this->PassRenderEnd(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
 
 		normalCamera.EndCameraRender(this->mainCommandList);
@@ -417,6 +424,26 @@ void KG::Renderer::KGDXRenderer::ParticleRender(ID3D12GraphicsCommandList* cmdLi
 	this->renderEngine->Render(ShaderGroup::ParticleAdd , ShaderGeometryType::Particle, ShaderPixelType::Add, cmdList);
 }
 
+void KG::Renderer::KGDXRenderer::InGameUIRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
+{
+    TryResourceBarrier(cmdList,
+        rt.BarrierTransition(
+            D3D12_RESOURCE_STATE_RENDER_TARGET,
+            D3D12_RESOURCE_STATE_RENDER_TARGET,
+            D3D12_RESOURCE_STATE_DEPTH_WRITE
+        )
+    );
+    cmdList->ClearDepthStencilView(rt.dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+    this->renderEngine->Render(ShaderGroup::UI, ShaderGeometryType::Particle, ShaderPixelType::Transparent, cmdList);
+    TryResourceBarrier(cmdList,
+        rt.BarrierTransition(
+            D3D12_RESOURCE_STATE_RENDER_TARGET,
+            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+            D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
+        )
+    );
+}
+
 void KG::Renderer::KGDXRenderer::LightPassRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
 {
 	PIXSetMarker(cmdList, PIX_COLOR(255, 0, 0), "Light Pass Render");
@@ -484,6 +511,11 @@ void* KG::Renderer::KGDXRenderer::GetImGUIContext()
 KG::Component::IRender3DComponent* KG::Renderer::KGDXRenderer::GetNewRenderComponent()
 {
 	return static_cast<KG::Component::IRender3DComponent*>(this->graphicSystems->render3DSystem.GetNewComponent());
+}
+
+KG::Component::IRender2DComponent* KG::Renderer::KGDXRenderer::GetNewRender2DComponent()
+{
+    return static_cast<KG::Component::IRender2DComponent*>(this->graphicSystems->render2DSystem.GetNewComponent());
 }
 
 KG::Component::IGeometryComponent* KG::Renderer::KGDXRenderer::GetNewGeomteryComponent()

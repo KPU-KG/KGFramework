@@ -425,4 +425,38 @@
         <FLOAT3 byte="12" comment="글로벌 가속도" x="0" y="-9.8" z="0"/>
         <FLOAT1 byte="4" comment="반복재생 여부 &gt;0.5f" x="0"/>
     </Material>
+    <Material id="UIWhite" shaderID="UIDefault" hash_id="749303410" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="one" hash_id="94880491"/>
+    </Material>
+    <!--Digit-->
+    <Material id="digit_0" shaderID="UIDefault" hash_id="2633285045" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="digit_0.DDS" hash_id="927507336"/>
+    </Material>
+    <Material id="digit_1" shaderID="UIDefault" hash_id="2633284084" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="digit_1.DDS" hash_id="1746437901"/>
+    </Material>
+    <Material id="digit_2" shaderID="UIDefault" hash_id="2633286967" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="digit_2.DDS" hash_id="2813221898"/>
+    </Material>
+    <Material id="digit_3" shaderID="UIDefault" hash_id="2633286006" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="digit_3.DDS" hash_id="3640017287"/>
+    </Material>
+    <Material id="digit_4" shaderID="UIDefault" hash_id="2633281201" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="digit_4.DDS" hash_id="1435800204"/>
+    </Material>
+    <Material id="digit_5" shaderID="UIDefault" hash_id="2633280240" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="digit_5.DDS" hash_id="3186147345"/>
+    </Material>
+    <Material id="digit_6" shaderID="UIDefault" hash_id="2633283123" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="digit_6.DDS" hash_id="3321514766"/>
+    </Material>
+    <Material id="digit_7" shaderID="UIDefault" hash_id="2633282162" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="digit_7.DDS" hash_id="4163117243"/>
+    </Material>
+    <Material id="digit_8" shaderID="UIDefault" hash_id="2633292733" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="digit_8.DDS" hash_id="4190635904"/>
+    </Material>
+    <Material id="digit_9" shaderID="UIDefault" hash_id="2633291772" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="digit_9.DDS" hash_id="714599173"/>
+    </Material>
 </MaterialSet>

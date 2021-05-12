@@ -30,6 +30,7 @@ namespace KG::Renderer
 		DirectionalLight = 5,
 		ParticleAdd = 6,
 		ParticleTransparent = 7,
+        UI = 8,
 		MaxShaderCount,
 	};
 
@@ -94,6 +95,8 @@ namespace KG::Renderer
 				return "ParticleAdd";
 			case KG::Renderer::ParticleTransparent:
 				return "ParticleTransparent";
+            case KG::Renderer::UI:
+                return "UI";
 		}
 	}
 

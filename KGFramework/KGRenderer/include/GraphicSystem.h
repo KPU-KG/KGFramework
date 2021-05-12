@@ -13,6 +13,15 @@ namespace KG::System
 		virtual void OnPreRender() override;
 	};
 
+    struct Render2DSystem : public IComponentSystem<Render2DComponent>
+    {
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<IRender2DComponent>::name());
+        // IComponentSystem을(를) 통해 상속됨
+        virtual void OnUpdate(float elapsedTime) override;
+        virtual void OnPostUpdate(float elapsedTime) override;
+        virtual void OnPreRender() override;
+    };
+
 	struct Render3DSystem : public IComponentSystem<Render3DComponent>
 	{
         KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<IRender3DComponent>::name());

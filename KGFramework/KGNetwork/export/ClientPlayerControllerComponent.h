@@ -12,7 +12,8 @@ namespace KG::Component
 	class ICameraComponent;
 	class IAnimationControllerComponent;
 	class DynamicRigidComponent;
-	class IParticleEmitterComponent;
+    class IParticleEmitterComponent;
+    class IRender2DComponent;
 
 	class DLL CPlayerControllerComponent : public CBaseComponent
 	{
@@ -24,6 +25,8 @@ namespace KG::Component
 		IAnimationControllerComponent* vectorAnimation = nullptr;
 		DynamicRigidComponent* physics = nullptr;
 		IParticleEmitterComponent* particleGen = nullptr;
+        IRender2DComponent* digit_0 = nullptr;
+        IRender2DComponent* digit_1 = nullptr;
 
 		float speedValue = 0.75f;
 
@@ -51,6 +54,8 @@ namespace KG::Component
 		bool CheckReloading();
 		void InternalUpdate(float elapsedTime);
 		void SendUpdate(float elapsedTime);
+
+        void OnChangeBulletCount(int count);
 	public:
 		KG::Input::InputManager* input;
 		static constexpr float sendPacketTimeInterval = 1 / 20.0f;

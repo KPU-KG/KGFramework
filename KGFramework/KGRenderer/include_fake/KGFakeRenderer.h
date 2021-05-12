@@ -11,6 +11,7 @@ namespace KG::Renderer
     struct FakeGraphicSystems
     {
         KG::System::FakeRender3DSystem render3DSystem;
+        KG::System::FakeRender2DSystem render2DSystem;
         KG::System::FakeGeometrySystem geometrySystem;
         KG::System::FakeMaterialSystem materialSystem;
         KG::System::FakeCameraSystem cameraSystem;
@@ -25,6 +26,7 @@ namespace KG::Renderer
         {
             this->geometrySystem.OnPreRender();
             this->materialSystem.OnPreRender();
+            this->render2DSystem.OnPreRender();
             this->render3DSystem.OnPreRender();
             this->cameraSystem.OnPreRender();
             this->cubeCameraSystem.OnPreRender();
@@ -39,6 +41,7 @@ namespace KG::Renderer
         {
             this->geometrySystem.OnUpdate(elapsedTime);
             this->materialSystem.OnUpdate(elapsedTime);
+            this->render2DSystem.OnUpdate(elapsedTime);
             this->render3DSystem.OnUpdate(elapsedTime);
             this->cameraSystem.OnUpdate(elapsedTime);
             this->cubeCameraSystem.OnUpdate(elapsedTime);
@@ -52,6 +55,7 @@ namespace KG::Renderer
         {
             this->geometrySystem.OnPostUpdate(elapsedTime);
             this->materialSystem.OnPostUpdate(elapsedTime);
+            this->render2DSystem.OnPostUpdate(elapsedTime);
             this->render3DSystem.OnPostUpdate(elapsedTime);
             this->cameraSystem.OnPostUpdate(elapsedTime);
             this->cubeCameraSystem.OnPostUpdate(elapsedTime);
@@ -66,6 +70,7 @@ namespace KG::Renderer
         {
             this->geometrySystem.OnPostProvider(provider);
             this->materialSystem.OnPostProvider(provider);
+            this->render2DSystem.OnPostProvider(provider);
             this->render3DSystem.OnPostProvider(provider);
             this->cameraSystem.OnPostProvider(provider);
             this->cubeCameraSystem.OnPostProvider(provider);
@@ -80,6 +85,7 @@ namespace KG::Renderer
         {
             this->geometrySystem.Clear();
             this->materialSystem.Clear();
+            this->render2DSystem.Clear();
             this->render3DSystem.Clear();
             this->cameraSystem.Clear();
             this->cubeCameraSystem.Clear();
@@ -115,6 +121,7 @@ namespace KG::Renderer
         virtual double GetGameTime() const override;
         virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
         virtual KG::Component::IRender3DComponent* GetNewRenderComponent() override;
+        virtual KG::Component::IRender2DComponent* GetNewRender2DComponent() override;
         virtual KG::Component::IGeometryComponent* GetNewGeomteryComponent() override;
         virtual KG::Component::IMaterialComponent* GetNewMaterialComponent() override;
         virtual KG::Component::ICameraComponent* GetNewCameraComponent() override;

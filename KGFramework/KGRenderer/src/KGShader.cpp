@@ -48,7 +48,7 @@ D3D12_RASTERIZER_DESC KG::Renderer::Shader::CreateRasterizerState( ShaderMeshTyp
 		d3dRasterizerDesc.CullMode = this->shaderSetData.enableCullBackface ? D3D12_CULL_MODE_BACK : D3D12_CULL_MODE_NONE;
 		d3dRasterizerDesc.DepthClipEnable = this->shaderSetData.enableDepthCliping;
 	}
-	if ( pixType == ShaderPixelType::GSCubeShadow || pixType == ShaderPixelType::Shadow  )
+	if ( pixType == ShaderPixelType::GSCubeShadow || pixType == ShaderPixelType::Shadow || pixType == ShaderPixelType::Transparent || pixType == ShaderPixelType::Add )
 	{
 		d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
 		//d3dRasterizerDesc.DepthBias = 1000000;
