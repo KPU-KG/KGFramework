@@ -82,7 +82,7 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 
 	this->sound = std::make_unique<KG::Sound::SoundManager>();
 	this->sound->Initialize();
-	this->sound->RegisterSound("Resource/Sound/Shot.mp3", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_SHOT);
+	this->sound->RegisterSound("Resource/Sound/shot.wav", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_SHOT);
 
 	this->renderer->Initialize(renderDesc, renderSetting);
     this->renderer->SetEditUIRender(setting.isEditMode);
