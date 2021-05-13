@@ -25,6 +25,7 @@
                   <xs:enumeration value="DirectionalLight"/>
                   <xs:enumeration value="ParticleAdd"/>
                   <xs:enumeration value="ParticleTransparent"/>
+                  <xs:enumeration value="Sprite"/>
                   <xs:enumeration value="UI"/>
                 </xs:restriction>
               </xs:simpleType>

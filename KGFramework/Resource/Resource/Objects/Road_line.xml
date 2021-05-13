@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SavedGameObject>
-    <GameObject instanceId="3">
+    <GameObject instanceId="8">
         <Tag hash_id="791473260" srcString="Road_Line"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="0" y="0" z="0"/>
-            <Rotation_Q x="0.70710677" y="0" z="0" w="0.70710671"/>
-            <Scale x="6" y="30" z="1"/>
+            <Position x="192.65651" y="-0.40000001" z="-35.785759"/>
+            <Rotation_Q x="0.50000006" y="-0.5" z="0.5" w="0.50000006"/>
+            <Scale x="5.999999" y="29.999992" z="0.99999988"/>
         </Component>
-        <Component name="GeometryComponent" hash_id="36578682">
+        <Component name="IGeometryComponent" hash_id="1162546763">
             <GeometryDescs>
                 <Element>
                     <geometryID hash_id="3536424569" srcString="plane"/>
@@ -16,7 +16,7 @@
                 </Element>
             </GeometryDescs>
         </Component>
-        <Component name="MaterialComponent" hash_id="1886146475">
+        <Component name="IMaterialComponent" hash_id="308235170">
             <MaterialDesc>
                 <Element>
                     <isRawShader value="false"/>
@@ -25,6 +25,6 @@
                 </Element>
             </MaterialDesc>
         </Component>
-        <Component name="Render3DComponent" hash_id="4070531333"/>
+        <Component name="IRender3DComponent" hash_id="1184141904"/>
     </GameObject>
 </SavedGameObject>

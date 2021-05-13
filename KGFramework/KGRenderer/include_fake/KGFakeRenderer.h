@@ -12,6 +12,7 @@ namespace KG::Renderer
     {
         KG::System::FakeRender3DSystem render3DSystem;
         KG::System::FakeRender2DSystem render2DSystem;
+        KG::System::FakeRenderSpriteSystem renderSpriteSystem;
         KG::System::FakeGeometrySystem geometrySystem;
         KG::System::FakeMaterialSystem materialSystem;
         KG::System::FakeCameraSystem cameraSystem;
@@ -28,6 +29,7 @@ namespace KG::Renderer
             this->materialSystem.OnPreRender();
             this->render2DSystem.OnPreRender();
             this->render3DSystem.OnPreRender();
+            this->renderSpriteSystem.OnPreRender();
             this->cameraSystem.OnPreRender();
             this->cubeCameraSystem.OnPreRender();
             this->shadowSystem.OnPreRender();
@@ -43,6 +45,7 @@ namespace KG::Renderer
             this->materialSystem.OnUpdate(elapsedTime);
             this->render2DSystem.OnUpdate(elapsedTime);
             this->render3DSystem.OnUpdate(elapsedTime);
+            this->renderSpriteSystem.OnUpdate(elapsedTime);
             this->cameraSystem.OnUpdate(elapsedTime);
             this->cubeCameraSystem.OnUpdate(elapsedTime);
             this->lightSystem.OnUpdate(elapsedTime);
@@ -57,6 +60,7 @@ namespace KG::Renderer
             this->materialSystem.OnPostUpdate(elapsedTime);
             this->render2DSystem.OnPostUpdate(elapsedTime);
             this->render3DSystem.OnPostUpdate(elapsedTime);
+            this->renderSpriteSystem.OnPostUpdate(elapsedTime);
             this->cameraSystem.OnPostUpdate(elapsedTime);
             this->cubeCameraSystem.OnPostUpdate(elapsedTime);
             this->lightSystem.OnPostUpdate(elapsedTime);
@@ -72,6 +76,7 @@ namespace KG::Renderer
             this->materialSystem.OnPostProvider(provider);
             this->render2DSystem.OnPostProvider(provider);
             this->render3DSystem.OnPostProvider(provider);
+            this->renderSpriteSystem.OnPostProvider(provider);
             this->cameraSystem.OnPostProvider(provider);
             this->cubeCameraSystem.OnPostProvider(provider);
             this->lightSystem.OnPostProvider(provider);
@@ -87,6 +92,7 @@ namespace KG::Renderer
             this->materialSystem.Clear();
             this->render2DSystem.Clear();
             this->render3DSystem.Clear();
+            this->renderSpriteSystem.Clear();
             this->cameraSystem.Clear();
             this->cubeCameraSystem.Clear();
             this->lightSystem.Clear();
@@ -122,6 +128,7 @@ namespace KG::Renderer
         virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
         virtual KG::Component::IRender3DComponent* GetNewRenderComponent() override;
         virtual KG::Component::IRender2DComponent* GetNewRender2DComponent() override;
+        virtual KG::Component::IRenderSpriteComponent* GetNewRenderSpriteComponent() override;
         virtual KG::Component::IGeometryComponent* GetNewGeomteryComponent() override;
         virtual KG::Component::IMaterialComponent* GetNewMaterialComponent() override;
         virtual KG::Component::ICameraComponent* GetNewCameraComponent() override;

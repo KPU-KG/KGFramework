@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="672">
+        <Tag hash_id="225247813" srcString="roads_v"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="0" y="0" z="0"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="1" y="1" z="1"/>
+        </Component>
+        <GameObject instanceId="55">
+            <Tag hash_id="791473260" srcString="Road_Line"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="108" y="-0.40000001" z="-216"/>
+                <Rotation_Q x="0.70710593" y="4.7730754e-14" z="-4.2146809e-08" w="0.70710754"/>
+                <Scale x="5.9999986" y="29.99999" z="0.99999982"/>
+            </Component>
+            <Component name="IGeometryComponent" hash_id="1162546763">
+                <GeometryDescs>
+                    <Element>
+                        <geometryID hash_id="3536424569" srcString="plane"/>
+                        <slotIndex value="0"/>
+                        <subMeshIndex value="0"/>
+                    </Element>
+                </GeometryDescs>
+            </Component>
+            <Component name="IMaterialComponent" hash_id="308235170">
+                <MaterialDesc>
+                    <Element>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                        <slotIndex value="0"/>
+                    </Element>
+                </MaterialDesc>
+            </Component>
+            <Component name="IRender3DComponent" hash_id="1184141904"/>
+        </GameObject>
+        <GameObject instanceId="56">
+            <Tag hash_id="791473260" srcString="Road_Line"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="108" y="-0.40001208" z="-282"/>
+                <Rotation_Q x="0.70710635" y="-2.1073387e-08" z="-6.3220249e-08" w="0.70710725"/>
+                <Scale x="6" y="36" z="1"/>
+            </Component>
+            <Component name="IGeometryComponent" hash_id="1162546763">
+                <GeometryDescs>
+                    <Element>
+                        <geometryID hash_id="3536424569" srcString="plane"/>
+                        <slotIndex value="0"/>
+                        <subMeshIndex value="0"/>
+                    </Element>
+                </GeometryDescs>
+            </Component>
+            <Component name="IMaterialComponent" hash_id="308235170">
+                <MaterialDesc>
+                    <Element>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="4041468971" srcString="line_asphalt"/>
+                        <slotIndex value="0"/>
+                    </Element>
+                </MaterialDesc>
+            </Component>
+            <Component name="IRender3DComponent" hash_id="1184141904"/>
+        </GameObject>
+        <GameObject instanceId="60">
+            <Tag hash_id="3982677921" srcString="Road_Center"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="108" y="-0.39999929" z="-324"/>
+                <Rotation_Q x="0.50000006" y="-0.49999994" z="0.49999994" w="0.5"/>
+                <Scale x="6.0050001" y="6.0049992" z="6.0050001"/>
+            </Component>
+            <Component name="IGeometryComponent" hash_id="1162546763">
+                <GeometryDescs>
+                    <Element>
+                        <geometryID hash_id="3536424569" srcString="plane"/>
+                        <slotIndex value="0"/>
+                        <subMeshIndex value="0"/>
+                    </Element>
+                </GeometryDescs>
+            </Component>
+            <Component name="IMaterialComponent" hash_id="308235170">
+                <MaterialDesc>
+                    <Element>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="792664218" srcString="asphalt"/>
+                        <slotIndex value="0"/>
+                    </Element>
+                </MaterialDesc>
+            </Component>
+            <Component name="IRender3DComponent" hash_id="1184141904"/>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

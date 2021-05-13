@@ -53,6 +53,24 @@ namespace KG::Component
         float value = 1.0f;
     };
 
+    class DLL IRenderSpriteComponent : public IRenderComponent
+    {
+        virtual void OnCreate(KG::Core::GameObject* gameObject) override = 0;
+    public:
+        Transform2D transform2D;
+        Material2D material2D;
+        Progress progress;
+        virtual void OnPreRender() override = 0;
+        virtual void SetVisible(bool visible) = 0;
+        virtual bool GetVisible() const = 0;
+        virtual void ReloadRender() = 0;
+    public:
+        virtual void OnDataLoad(tinyxml2::XMLElement* componentElement) = 0;
+        virtual void OnDataSave(tinyxml2::XMLElement* parentElement) = 0;
+        virtual bool OnDrawGUI() = 0;
+    };
+    REGISTER_COMPONENT_ID(IRenderSpriteComponent);
+
     class DLL IRender2DComponent : public IRenderComponent
     {
         virtual void OnCreate(KG::Core::GameObject* gameObject) override = 0;

@@ -60,6 +60,7 @@ namespace KG::Renderer
 
         virtual KG::Component::IRender3DComponent* GetNewRenderComponent() = 0;
         virtual KG::Component::IRender2DComponent* GetNewRender2DComponent() = 0;
+        virtual KG::Component::IRenderSpriteComponent* GetNewRenderSpriteComponent() = 0;
         virtual KG::Component::IGeometryComponent* GetNewGeomteryComponent() = 0;
 		virtual KG::Component::IMaterialComponent* GetNewMaterialComponent() = 0;
 		virtual KG::Component::ICameraComponent* GetNewCameraComponent() = 0;

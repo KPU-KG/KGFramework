@@ -187,3 +187,18 @@ void KG::System::ParticleEmitterSystem::OnPreRender()
 {
 }
 
+void KG::System::RenderSpriteSystem::OnUpdate(float elapsedTime)
+{
+}
+
+void KG::System::RenderSpriteSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::RenderSpriteSystem::OnPreRender()
+{
+    for ( auto& com : this->pool )
+    {
+        com.OnPreRender();
+    }
+}

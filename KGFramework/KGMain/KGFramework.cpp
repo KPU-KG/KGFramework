@@ -140,11 +140,6 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	this->PostSceneFunction();
 	this->scene->InitializeRoot();
 
-    if ( this->setting.startScenePath != "none" && this->setting.startScenePath != "")
-    {
-        this->scene->LoadScene(this->setting.startScenePath);
-        this->scene->isStartGame = true;
-    }
     
     if ( this->setting.isStartServer )
     {
@@ -153,6 +148,17 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
     else if ( this->setting.isStartClient )
     {
         this->StartClient();
+    }
+
+    if ( this->setting.startScenePath != "none" && this->setting.startScenePath != "")
+    {
+        this->scene->LoadScene(this->setting.startScenePath);
+        this->scene->isStartGame = true;
+    }
+
+    if ( this->setting.isStartLogin )
+    {
+        this->networkClient->Login();
     }
 
 	//자원 미리 할당
@@ -272,6 +278,17 @@ void KG::GameFramework::PostSceneFunction()
             obj.AddComponent(r);
         }
     );
+
+    this->scene->AddObjectPreset("SPRITEUI",
+        [this](KG::Core::GameObject& obj)
+        {
+            auto* t = this->system->transformSystem.GetNewComponent();
+            auto* r = this->renderer->GetNewRenderSpriteComponent();
+            obj.AddComponent(t);
+            obj.AddComponent(r);
+        }
+    );
+
 
     this->scene->AddObjectPreset("VectorDrop",
         [this](KG::Core::GameObject& obj)
@@ -530,6 +547,7 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.height = this->setting.GetGameResolutionHeigth();
 			cam->renderTextureDesc = renderTextureDesc;
 			cam->SetFovY(90.0f);
+            cam->SetFarZ(350.0);
 
 			cameraObj->AddComponent(cam);
 			cameraObj->GetTransform()->SetPosition(0.230, 1.45, 0.496);
@@ -848,8 +866,6 @@ void KG::GameFramework::StartClient()
 
     this->networkClient->SetAddress(this->setting.ipAddress);
     this->networkClient->Connect();
-    if ( this->setting.isStartLogin ) this->networkClient->Login();
-
 }
 
 void KG::GameFramework::OnClose()

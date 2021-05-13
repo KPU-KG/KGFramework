@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="487">
+        <Tag hash_id="1263226358" srcString="streetLightc1.fbx"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="78" y="2.0264154e-06" z="-45"/>
+            <Rotation_Q x="0" y="-0.70710677" z="0" w="0.70710677"/>
+            <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+        </Component>
+        <GameObject instanceId="329">
+            <Tag hash_id="4257772165" srcString="RootNode"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="330">
+                <Tag hash_id="3468890110" srcString="streetLight_geo"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <Component name="IGeometryComponent" hash_id="1162546763">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="1263226358" srcString="streetLightc1.fbx"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="IMaterialComponent" hash_id="308235170">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
+            </GameObject>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

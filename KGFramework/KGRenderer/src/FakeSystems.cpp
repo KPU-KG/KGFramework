@@ -1,4 +1,5 @@
 #include "FakeSystems.h"
+#include "..\include_fake\FakeSystems.h"
 
 void KG::System::FakeGeometrySystem::OnPreRender()
 {
@@ -81,6 +82,14 @@ void KG::System::FakeParticleEmitterSystem::OnPreRender()
 }
 
 void KG::System::FakeRender2DSystem::OnPreRender()
+{
+    for ( auto& i : this->pool )
+    {
+        i.OnPreRender();
+    }
+}
+
+void KG::System::FakeRenderSpriteSystem::OnPreRender()
 {
     for ( auto& i : this->pool )
     {

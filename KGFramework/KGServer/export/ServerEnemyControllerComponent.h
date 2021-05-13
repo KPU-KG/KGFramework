@@ -75,10 +75,15 @@ namespace KG::Component
 		float										destroyInterval = 3.f;
 		float										destroyTimer = 0.f;
 
+		float										sendTimer = 0.0f;
+		float										sendInterval = 1.f / 60.f;
+
+		bool										changedAnimation = false;
 
 		KG::Component::RaycastCallbackFunc			raycastCallback = nullptr;
 
-		int											hp = 10;
+        static constexpr int maxHp = 10;
+        int											hp = maxHp;
 
 		DirectX::XMFLOAT2							angle;
 

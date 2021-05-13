@@ -3,7 +3,7 @@
     <GameObject instanceId="415">
         <Tag hash_id="1796494296" srcString="Cliff_5x14_V01.FBX"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="134.94963" y="0" z="-45.099804"/>
+            <Position x="19.709541" y="3.2500793e-09" z="47.309975"/>
             <Rotation_Q x="0" y="0" z="0" w="1"/>
             <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
         </Component>
@@ -21,7 +21,7 @@
                     <Rotation_Q x="0" y="0" z="0" w="1"/>
                     <Scale x="1" y="1" z="1"/>
                 </Component>
-                <Component name="GeometryComponent" hash_id="36578682">
+                <Component name="IGeometryComponent" hash_id="1162546763">
                     <GeometryDescs>
                         <Element>
                             <geometryID hash_id="1796494296" srcString="Cliff_5x14_V01.FBX"/>
@@ -30,7 +30,7 @@
                         </Element>
                     </GeometryDescs>
                 </Component>
-                <Component name="MaterialComponent" hash_id="1886146475">
+                <Component name="IMaterialComponent" hash_id="308235170">
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
@@ -39,7 +39,7 @@
                         </Element>
                     </MaterialDesc>
                 </Component>
-                <Component name="Render3DComponent" hash_id="4070531333"/>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
             </GameObject>
             <GameObject instanceId="414">
                 <Tag hash_id="122254478" srcString="Cliff_5x14_V01_LOD0"/>
@@ -48,7 +48,7 @@
                     <Rotation_Q x="0" y="0" z="0" w="1"/>
                     <Scale x="1" y="1" z="1"/>
                 </Component>
-                <Component name="GeometryComponent" hash_id="36578682">
+                <Component name="IGeometryComponent" hash_id="1162546763">
                     <GeometryDescs>
                         <Element>
                             <geometryID hash_id="1796494296" srcString="Cliff_5x14_V01.FBX"/>
@@ -57,7 +57,7 @@
                         </Element>
                     </GeometryDescs>
                 </Component>
-                <Component name="MaterialComponent" hash_id="1886146475">
+                <Component name="IMaterialComponent" hash_id="308235170">
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
@@ -66,7 +66,7 @@
                         </Element>
                     </MaterialDesc>
                 </Component>
-                <Component name="Render3DComponent" hash_id="4070531333"/>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
             </GameObject>
         </GameObject>
     </GameObject>

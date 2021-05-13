@@ -22,7 +22,8 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 {
     KG::System::Render2DSystem render2DSystem;
     KG::System::Render3DSystem render3DSystem;
-	KG::System::GeometrySystem geometrySystem;
+    KG::System::RenderSpriteSystem renderSpriteSystem;
+    KG::System::GeometrySystem geometrySystem;
 	KG::System::MaterialSystem materialSystem;
 	KG::System::CameraSystem cameraSystem;
 	KG::System::CubeCameraSystem cubeCameraSystem;
@@ -38,6 +39,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->materialSystem.OnPreRender();
         this->render2DSystem.OnPreRender();
         this->render3DSystem.OnPreRender();
+        this->renderSpriteSystem.OnPreRender();
 		this->cameraSystem.OnPreRender();
 		this->cubeCameraSystem.OnPreRender();
 		this->shadowSystem.OnPreRender();
@@ -53,6 +55,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->materialSystem.OnUpdate(elapsedTime);
         this->render2DSystem.OnUpdate(elapsedTime);
         this->render3DSystem.OnUpdate(elapsedTime);
+        this->renderSpriteSystem.OnUpdate(elapsedTime);
 		this->cameraSystem.OnUpdate(elapsedTime);
 		this->cubeCameraSystem.OnUpdate(elapsedTime);
 		this->lightSystem.OnUpdate(elapsedTime);
@@ -67,6 +70,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->materialSystem.OnPostUpdate(elapsedTime);
         this->render2DSystem.OnPostUpdate(elapsedTime);
         this->render3DSystem.OnPostUpdate(elapsedTime);
+        this->renderSpriteSystem.OnPostUpdate(elapsedTime);
 		this->cameraSystem.OnPostUpdate(elapsedTime);
 		this->cubeCameraSystem.OnPostUpdate(elapsedTime);
 		this->lightSystem.OnPostUpdate(elapsedTime);
@@ -82,6 +86,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->materialSystem.OnPostProvider(provider);
         this->render2DSystem.OnPostProvider(provider);
         this->render3DSystem.OnPostProvider(provider);
+        this->renderSpriteSystem.OnPostProvider(provider);
 		this->cameraSystem.OnPostProvider(provider);
 		this->cubeCameraSystem.OnPostProvider(provider);
 		this->lightSystem.OnPostProvider(provider);
@@ -97,6 +102,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
 		this->materialSystem.Clear();
         this->render2DSystem.Clear();
         this->render3DSystem.Clear();
+        this->renderSpriteSystem.Clear();
 		this->cameraSystem.Clear();
 		this->cubeCameraSystem.Clear();
 		this->lightSystem.Clear();
@@ -274,7 +280,8 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
 		this->TransparentRender(ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
 		this->LightPassRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
 		this->SkyBoxRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
-		this->ParticleRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+        this->ParticleRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+        this->SpriteRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
         this->InGameUIRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
 		this->PassRenderEnd(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
 
@@ -424,6 +431,11 @@ void KG::Renderer::KGDXRenderer::ParticleRender(ID3D12GraphicsCommandList* cmdLi
 	this->renderEngine->Render(ShaderGroup::ParticleAdd , ShaderGeometryType::Particle, ShaderPixelType::Add, cmdList);
 }
 
+void KG::Renderer::KGDXRenderer::SpriteRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
+{
+    this->renderEngine->Render(ShaderGroup::Sprite, ShaderGeometryType::Particle, ShaderPixelType::Transparent, cmdList);
+}
+
 void KG::Renderer::KGDXRenderer::InGameUIRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
 {
     TryResourceBarrier(cmdList,
@@ -516,6 +528,11 @@ KG::Component::IRender3DComponent* KG::Renderer::KGDXRenderer::GetNewRenderCompo
 KG::Component::IRender2DComponent* KG::Renderer::KGDXRenderer::GetNewRender2DComponent()
 {
     return static_cast<KG::Component::IRender2DComponent*>(this->graphicSystems->render2DSystem.GetNewComponent());
+}
+
+KG::Component::IRenderSpriteComponent* KG::Renderer::KGDXRenderer::GetNewRenderSpriteComponent()
+{
+    return static_cast<KG::Component::IRenderSpriteComponent*>(this->graphicSystems->renderSpriteSystem.GetNewComponent());
 }
 
 KG::Component::IGeometryComponent* KG::Renderer::KGDXRenderer::GetNewGeomteryComponent()

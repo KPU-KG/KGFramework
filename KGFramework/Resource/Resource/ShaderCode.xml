@@ -10,4 +10,5 @@
     <SurfaceShaderSet id="ParticleAdd" fileDir="Resource/ShaderScript/Particle_Default.hlsl" group="ParticleAdd" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="32" hash_id="3487980688"/>
     <SurfaceShaderSet id="ParticleTransparent" fileDir="Resource/ShaderScript/Particle_Default.hlsl" group="ParticleTransparent" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="32" hash_id="786424407"/>
     <SurfaceShaderSet id="UIDefault" fileDir="Resource/ShaderScript/UI_Default.hlsl" group="UI" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="4" hash_id="888949730"/>
+    <SurfaceShaderSet id="SpriteDefault" fileDir="Resource/ShaderScript/Sprite_Default.hlsl" group="Sprite" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="4" hash_id="3480911269"/>
 </ShaderSet>

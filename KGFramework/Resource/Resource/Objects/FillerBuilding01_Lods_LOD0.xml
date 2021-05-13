@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SavedGameObject>
-    <GameObject instanceId="290">
+    <GameObject instanceId="287">
         <Tag hash_id="1333025849" srcString="FillerBuilding01_Lods_LOD0.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="45.294651" y="0" z="-122.57529"/>
-            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Position x="34.750961" y="-7.0883075e-06" z="-148.40242"/>
+            <Rotation_Q x="0" y="0.68835467" z="0" w="-0.72537184"/>
             <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
         </Component>
         <GameObject instanceId="287">
@@ -21,7 +21,7 @@
                     <Rotation_Q x="0" y="0" z="0" w="1"/>
                     <Scale x="1" y="1" z="1"/>
                 </Component>
-                <Component name="GeometryComponent" hash_id="36578682">
+                <Component name="IGeometryComponent" hash_id="1162546763">
                     <GeometryDescs>
                         <Element>
                             <geometryID hash_id="1333025849" srcString="FillerBuilding01_Lods_LOD0.fbx"/>
@@ -30,7 +30,7 @@
                         </Element>
                     </GeometryDescs>
                 </Component>
-                <Component name="MaterialComponent" hash_id="1886146475">
+                <Component name="IMaterialComponent" hash_id="308235170">
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
@@ -44,7 +44,7 @@
                         </Element>
                     </MaterialDesc>
                 </Component>
-                <Component name="Render3DComponent" hash_id="4070531333"/>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
             </GameObject>
             <GameObject instanceId="289">
                 <Tag hash_id="2626740875" srcString="FillerBuilding01_building_geo"/>
@@ -53,7 +53,7 @@
                     <Rotation_Q x="0" y="0" z="0" w="1"/>
                     <Scale x="1" y="1" z="1"/>
                 </Component>
-                <Component name="GeometryComponent" hash_id="36578682">
+                <Component name="IGeometryComponent" hash_id="1162546763">
                     <GeometryDescs>
                         <Element>
                             <geometryID hash_id="1333025849" srcString="FillerBuilding01_Lods_LOD0.fbx"/>
@@ -62,7 +62,7 @@
                         </Element>
                     </GeometryDescs>
                 </Component>
-                <Component name="MaterialComponent" hash_id="1886146475">
+                <Component name="IMaterialComponent" hash_id="308235170">
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
@@ -76,7 +76,7 @@
                         </Element>
                     </MaterialDesc>
                 </Component>
-                <Component name="Render3DComponent" hash_id="4070531333"/>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
             </GameObject>
         </GameObject>
     </GameObject>

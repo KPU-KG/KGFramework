@@ -122,6 +122,13 @@ void KG::Server::Server::Initialize()
 	listenSocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
 	CreateIoCompletionPort(reinterpret_cast<HANDLE>(listenSocket), hIocp, SERVER_ID, 0);
 
+	int option = TRUE;    //TRUE : Nagle Off, FALSE : Nagle On
+	setsockopt(listenSocket,        //家南    
+		IPPROTO_TCP,    //家南 饭骇
+		TCP_NODELAY,    //家南 可记
+		(const char*)&option, //可记蔼狼 林家蔼
+		sizeof(option));      //可记蔼狼 
+
 	//Init Systems
 	this->sGameManagerSystem.SetServerInstance(this);
 }
@@ -140,7 +147,14 @@ void KG::Server::Server::Start(bool lock)
 
 	memset(&acceptOver.over, 0, sizeof(acceptOver.over));
 	acceptOver.op = OP_ACCEPT;
-	acceptOver.csocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);;
+	acceptOver.csocket = WSASocket(AF_INET, SOCK_STREAM, 0, NULL, 0, WSA_FLAG_OVERLAPPED);
+	// int option = TRUE;    //TRUE : Nagle Off, FALSE : Nagle On
+	// setsockopt(acceptOver.csocket,        //家南    
+	// 	IPPROTO_TCP,    //家南 饭骇
+	// 	TCP_NODELAY,    //家南 可记
+	// 	(const char*)&option, //可记蔼狼 林家蔼
+	// 	sizeof(option));      //可记蔼狼 
+
 	int ret = AcceptEx(listenSocket, acceptOver.csocket, acceptOver.packetBuffer, 0, 32, 32, 0, &acceptOver.over);
 	if ( ret == false )
 	{
