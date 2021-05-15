@@ -396,7 +396,10 @@ namespace KG::Component
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
-	};
+
+        // IGSCascadeCameraComponent을(를) 통해 상속됨
+        virtual void SetMainCamera(ICameraComponent* camera) override;
+    };
 
 
 	REGISTER_COMPONENT_ID_REPLACE( CameraComponent, ICameraComponent);

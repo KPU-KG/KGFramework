@@ -727,7 +727,7 @@ void KG::Component::GSCascadeCameraComponent::RefreshNormalViewProj()
 
 void KG::Component::GSCascadeCameraComponent::RefreshCascadeViewProj()
 {
-	static constexpr float cascadePoint[] = { 0.0f, 0.07f, 0.4f, 1.0f };
+	static constexpr float cascadePoint[] = { 0.0f, 0.035f, 0.3f, 1.0f };
 
 	using namespace Math::Literal;
 
@@ -786,7 +786,7 @@ void KG::Component::GSCascadeCameraComponent::RefreshCascadeViewProj()
 
 
 		//auto proj = DirectX::XMMatrixOrthographicLH( radius, radius, 0.01f, radius * 2 );
-		auto proj = DirectX::XMMatrixOrthographicOffCenterLH(minX, maxX, minY, maxY, 0.01f, radius * 2);
+		auto proj = DirectX::XMMatrixOrthographicOffCenterLH(minX, maxX, minY, maxY, 0.01f, radius * 1.5);
 		XMStoreFloat4(&this->cameraData->cameraWorldPosition[cascade + 1], eyePos);
 		XMStoreFloat4x4(&this->cameraData->view[cascade + 1], XMMatrixTranspose(view));
 		XMStoreFloat4x4(&this->cameraData->projection[cascade + 1], XMMatrixTranspose(proj));
@@ -813,6 +813,11 @@ void KG::Component::GSCascadeCameraComponent::OnDataSave(tinyxml2::XMLElement* p
 	this->renderTextureProperty.OnDataLoad(componentElement);
 	this->nearZProp.OnDataLoad(componentElement);
 	this->farZProp.OnDataLoad(componentElement);
+}
+
+void KG::Component::GSCascadeCameraComponent::SetMainCamera(ICameraComponent* camera)
+{
+    this->mainCamera = static_cast<CameraComponent*>(camera);
 }
 
 #pragma endregion

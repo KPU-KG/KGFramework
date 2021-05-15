@@ -109,6 +109,7 @@ namespace KG::Component
 	public:
 		KG::Renderer::RenderTextureDesc renderTextureDesc;
 
+        virtual void SetMainCamera(ICameraComponent* camera) = 0;
         virtual void SetNearZ(float value) = 0;
         virtual void SetFarZ(float value) = 0;
         virtual void SetDefaultRender() = 0;

@@ -48,17 +48,23 @@ D3D12_RASTERIZER_DESC KG::Renderer::Shader::CreateRasterizerState( ShaderMeshTyp
 		d3dRasterizerDesc.CullMode = this->shaderSetData.enableCullBackface ? D3D12_CULL_MODE_BACK : D3D12_CULL_MODE_NONE;
 		d3dRasterizerDesc.DepthClipEnable = this->shaderSetData.enableDepthCliping;
 	}
-	if ( pixType == ShaderPixelType::GSCubeShadow || pixType == ShaderPixelType::Shadow || pixType == ShaderPixelType::Transparent || pixType == ShaderPixelType::Add )
+    if ( pixType == ShaderPixelType::GSCubeShadow || pixType == ShaderPixelType::Shadow || pixType == ShaderPixelType::Transparent || pixType == ShaderPixelType::Add )
+    {
+        d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
+    }
+	if ( pixType == ShaderPixelType::GSCubeShadow || pixType == ShaderPixelType::Shadow)
 	{
-		d3dRasterizerDesc.CullMode = D3D12_CULL_MODE_NONE;
-		//d3dRasterizerDesc.DepthBias = 1000000;
-		//d3dRasterizerDesc.DepthBiasClamp = 0.0f;
-		//d3dRasterizerDesc.SlopeScaledDepthBias = 10.5f;
+		d3dRasterizerDesc.DepthBias = 10000;
+		d3dRasterizerDesc.DepthBiasClamp = 0.1f;
+		d3dRasterizerDesc.SlopeScaledDepthBias = 1.5f;
 	}
+    else 
+    {
+	    d3dRasterizerDesc.DepthBias = 0;
+	    d3dRasterizerDesc.DepthBiasClamp = 0.0f;
+	    d3dRasterizerDesc.SlopeScaledDepthBias = 0.0f;
+    }
 	d3dRasterizerDesc.FrontCounterClockwise = false;
-	d3dRasterizerDesc.DepthBias = 0;
-	d3dRasterizerDesc.DepthBiasClamp = 0.0f;
-	d3dRasterizerDesc.SlopeScaledDepthBias = 0.0f;
 	d3dRasterizerDesc.MultisampleEnable = false;
 	d3dRasterizerDesc.AntialiasedLineEnable = false;
 	d3dRasterizerDesc.ForcedSampleCount = 0;

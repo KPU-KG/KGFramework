@@ -85,8 +85,8 @@ static float2 parentPivotUv[9] ={
 void GeometryShaderFunction(point ParticleVertexOutput input[1], inout TriangleStream<ParticleGSOutput> outStream)
 {
     float3 up = float3(0.0f, 1.0f, 0.0f);
-    float3 right = cross(up, look);
-    up = cross(look, right);
+    float3 right = normalize(cross(up, look));
+    up = normalize(cross(look, right));
     
     UIData data = uiInfo[input[0].InstanceID];
     MaterialData mat = materialData[data.materialIndex];

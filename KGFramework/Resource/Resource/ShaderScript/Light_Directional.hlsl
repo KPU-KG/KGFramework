@@ -14,7 +14,7 @@ Texture2DArray<float> shadowArray[] : register(t0, space1);
 
 bool isInPosition(float3 position)
 {
-    return (abs(position.x) <= 1.0f) && (abs(position.y) <= 1.0f) && (abs(position.z) <= 1.0f);
+    return (abs(position.x) < 1.0f) && (abs(position.y) < 1.0f) && (abs(position.z) < 1.0f);
 }
 
 float DirectionalShadowCascadePCF(float3 worldPosition, LightData lightData, ShadowData shadowData, out uint id)
