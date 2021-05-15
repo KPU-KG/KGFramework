@@ -59,8 +59,8 @@ KG::Component::LightComponent::LightComponent()
 	fallOffStartProp("FallOffStart", this->light.FalloffStart),
 	fallOffEndProp("FallOffEnd", this->light.FalloffEnd),
 	depthProp("Depth", this->light.FalloffStart),
-	phiProp("Phi", this->light.Phi),
-	thetaProp("Theta", this->light.Theta),
+	phiProp("Phi_Rad", this->light.Phi),
+	thetaProp("Theta_Rad", this->light.Theta),
 	fallOffProp("FallOff", this->light.FalloffEnd)
 {
 }
@@ -187,10 +187,10 @@ void KG::Component::LightComponent::SetShadowCascadeMatrix(const std::array<Dire
 void KG::Component::LightComponent::OnPreRender()
 {
 	int updateCount = this->renderJob->GetUpdateCount();
-	if ( this->isDirty || this->lightType == LightType::SpotLight )
+	if ( this->isDirty || this->lightType == LightType::SpotLight || this->lightType == LightType::PointLight )
 	{
+	    this->light.Position = this->transform->GetWorldPosition();
 		this->isDirty = false;
-		this->light.Position = this->transform->GetWorldPosition();
 		std::memcpy(&this->renderJob->objectBuffer->mappedData[updateCount].light, &this->light, sizeof(this->light));
 		if ( this->renderJob->shadowLightBuffer != nullptr )
 			std::memcpy(&this->renderJob->shadowLightBuffer->mappedData[updateCount].shadow, &this->shadow, sizeof(this->shadow));

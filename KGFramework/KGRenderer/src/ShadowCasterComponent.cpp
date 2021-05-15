@@ -23,6 +23,7 @@ void KG::Component::ShadowCasterComponent::InitializeAsPointLightShadow()
 	desc.width = 1024;
 	desc.height = 1024;
 	this->pointLightCamera->renderTextureDesc = desc;
+    this->pointLightCamera->InitializeRenderTexture();
 	this->pointLightCamera->SetDefaultRender();
 	this->pointLightCamera->SetNearZ( 0.01f );
 	this->pointLightCamera->SetFarZ( this->targetLight->GetPointLightRef().FalloffEnd );
@@ -76,6 +77,8 @@ void KG::Component::ShadowCasterComponent::InitializeAsSpotLightShadow()
 	desc.height = 4096;
 	desc.length = 1;
 	this->spotLightCamera->renderTextureDesc = desc;
+    this->spotLightCamera->isMainCamera = false;
+    this->spotLightCamera->InitializeRenderTexture();
 	this->spotLightCamera->SetNearZ( 0.01f );
 	this->spotLightCamera->SetFarZ( this->targetLight->GetSpotLightRef().depth );
 	this->spotLightCamera->SetFovY( DirectX::XMConvertToDegrees( this->targetLight->GetSpotLightRef().Phi ) );
