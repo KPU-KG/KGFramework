@@ -1,6 +1,7 @@
 #pragma once
 #include "IKGServer.h"
 #include <vector>
+#include <stack>
 #include <ppl.h>
 #include <concurrent_unordered_map.h>
 
@@ -50,6 +51,8 @@ namespace KG::Server
 		KG::System::EnemyGeneratorSystem enemyGeneratorSystem;
 		KG::Physics::IPhysicsScene* physicsScene;
 
+		std::stack<KG::Server::NET_OBJECT_ID> disconnectedPlayerId;
+
 		static void IOCPWorker(Server* server);
 
 		//Worker Thread
@@ -69,7 +72,7 @@ namespace KG::Server
 
 		NET_OBJECT_ID GetNewObjectId();
 		void SetSessionState(SESSION_ID session, KG::Server::PLAYER_STATE state);
-
+		void SetSessionId(SESSION_ID session, KG::Server::NET_OBJECT_ID id);
 		//void AddPlayer();
 
 		// IServer을(를) 통해 상속됨
@@ -90,6 +93,10 @@ namespace KG::Server
 		virtual void SetServerObject(KG::Server::NET_OBJECT_ID id, KG::Component::SBaseComponent* obj);
 		virtual void BroadcastPacket(void* packet, SESSION_ID ignore = SERVER_ID);
 		virtual void SendPacket(SESSION_ID playerId, void* packet);
+		virtual KG::Component::SBaseComponent* FindNetObject(NET_OBJECT_ID id);
+
+		std::stack<KG::Server::NET_OBJECT_ID>& GetDisconnectedPlayerId();
+
 
 		// IServer을(를) 통해 상속됨
 		virtual void Update(float elapsedTime) override;

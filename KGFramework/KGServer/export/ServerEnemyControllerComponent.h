@@ -3,6 +3,7 @@
 #include "PhysicsComponent.h"
 #include "Debug.h"
 #include <vector>
+#include <unordered_set>
 
 constexpr const int MAX_NODE = 5;
 
@@ -26,8 +27,7 @@ namespace KG::Component
 		eSETGOAL,
 		eROTATE,
 		eMOVE,
-		eATTACK,
-		eATTACKED
+		eATTACK
 	};
 
 	enum class EnemyState {
@@ -50,6 +50,9 @@ namespace KG::Component
 	class DLL SEnemyControllerComponent : public SBaseComponent
 	{
 	private:
+		std::unordered_set<KG::Server::NET_OBJECT_ID> playerId;
+		KG::Component::SBaseComponent* target = nullptr;
+
 		DynamicRigidComponent*						rigid = nullptr;
 		TransformComponent*							transform = nullptr;
 		IAnimationControllerComponent*				anim = nullptr;
@@ -62,10 +65,13 @@ namespace KG::Component
 		DirectX::XMFLOAT3							direction = { 0,0,0 };		// 일단 y값은 고려하지 않을 예정이나 비행 몹에는 쓸지도..?
 		DirectX::XMFLOAT3							goal = { 0,0,0 };
 		float										speed = 3;
+
 		float										idleInterval = 3;
 		float										idleTimer = 0;
+
 		float										rotateInterval = 2;
 		float										rotateTimer = 0;
+		float										rotateAttackInterval = 0.5;
 
 		float										distance = 0;
 		float										arriveTime = 0;
@@ -92,12 +98,20 @@ namespace KG::Component
 		bool										randomCircuit;
 		int											currentNode = 0;
 
+		float traceRange = 20;				// 일단은 길찾기는 빼고 범위 내로 들어오면 타겟 플레이어를 향해 회전, 가능하면 공격까지
+
+
 		void UpdateState();
 		bool SetGoal();
 		bool RotateToGoal(float elapsedTime);
 		bool MoveToGoal();
 		bool Idle(float elapsedTime);
 		void ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime = 0.1f, int repeat = 1);
+		float GetDistance2FromEnemy(DirectX::XMFLOAT3 pos) const;
+		bool IsInTraceRange(const DirectX::XMFLOAT3 pos) const;
+		bool IsInTraceRange(const float distance) const;
+		bool AttackTarget();
+		// 공격 패킷을 어떻게 보내야 할까
 	public:
 		SEnemyControllerComponent();
 		void SetCenter(DirectX::XMFLOAT3 center);
@@ -120,6 +134,10 @@ namespace KG::Component
 		void HitBullet();
 		bool IsDead() const;
 		bool IsDelete() const;
+		bool SetTarget();
+		bool IsTargetInRange() const;
+		void RegisterPlayerId(KG::Server::NET_OBJECT_ID id);
+		void DeregisterPlayerId(KG::Server::NET_OBJECT_ID id);
 		KG::Server::NET_OBJECT_ID GetNetId() const { return this->networkObjectId; }
 		virtual void Destroy() override;
 	};

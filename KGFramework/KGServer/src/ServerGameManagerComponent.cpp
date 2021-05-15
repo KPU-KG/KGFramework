@@ -227,6 +227,20 @@ void KG::Component::EnemyGeneratorComponent::OnDataSave(tinyxml2::XMLElement* ob
 	}
 }
 
+void KG::Component::EnemyGeneratorComponent::RegisterPlayerToEnemy(KG::Server::NET_OBJECT_ID id)
+{
+	for (auto& e : this->enemies) {
+		e->RegisterPlayerId(id);
+	}
+}
+
+void KG::Component::EnemyGeneratorComponent::DeregisterPlayerToEnemy(KG::Server::NET_OBJECT_ID id)
+{
+	for (auto& e : this->enemies) {
+		e->DeregisterPlayerId(id);
+	}
+}
+
 void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 {
 	if (this->region.size() == 0)
@@ -275,6 +289,24 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 	}
 }
 
+void  KG::Component::SGameManagerComponent::RegisterPlayersToEnemy() {
+	for (auto& id : playerObjects) {
+		enemyGenerator->RegisterPlayerToEnemy(id.first);
+	}
+}
+
+void KG::Component::SGameManagerComponent::UpdatePlayerSession() {
+	auto& pid = this->server->GetDisconnectedPlayerId();
+	while (!pid.empty()) {
+		auto id = pid.top();
+		if (playerObjects.count(id)) {
+			playerObjects.unsafe_erase(id);
+			enemyGenerator->DeregisterPlayerToEnemy(id);
+		}
+		pid.pop();
+	}
+}
+
 void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	this->SetNetObjectId(KG::Server::SCENE_CONTROLLER_ID);
@@ -284,6 +316,8 @@ void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 
 void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 {
+	// if (playerObjects.size() != this->server->)
+	this->UpdatePlayerSession();
 	if (enemyGenerator == nullptr) {
 		enemyGenerator = this->gameObject->GetComponent<EnemyGeneratorComponent>();
 		if (enemyGenerator) {
@@ -295,9 +329,11 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 	if (enemyGenerator) {
 		if (enemyGenerator->IsGeneratable()) {
 			enemyGenerator->GenerateEnemy();
+			for (auto& p : playerObjects) {
+				enemyGenerator->RegisterPlayerToEnemy(p.first);
+			}
 		}
 	}
-	
 }
 
 bool KG::Component::SGameManagerComponent::OnDrawGUI()
@@ -342,6 +378,10 @@ bool KG::Component::SGameManagerComponent::OnDrawGUI()
 	return false;
 }
 
+// 플레이어 등록해줘야 할 곳
+// 1. 플레이어 req 시점
+// 2. enemy 추가 시점
+
 bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender)
 {
 	switch (type)
@@ -366,6 +406,7 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 		//플레이어 추가!
 		this->server->LockWorld();
 		this->server->SetSessionState(sender, KG::Server::PLAYER_STATE::PLAYER_STATE_INGAME);
+		this->server->SetSessionId(sender, newPlayerId);
 		auto* playerComp = static_cast<KG::Component::SPlayerComponent*>(this->gameObject->GetScene()->CallNetworkCreator("TeamCharacter"_id));
 		auto* dyn = playerComp->GetGameObject()->GetComponent<DynamicRigidComponent>();
 		playerComp->SetNetObjectId(newPlayerId);
@@ -390,6 +431,10 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 		addPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
 		this->BroadcastPacket(&addPacket, sender);
 
+		// if (enemyGenerator) {
+		// 	enemyGenerator->RegisterPlayerToEnemy(newPlayerId);
+		// }
+
 		for ( auto& [id, ptr] : this->playerObjects )
 		{
 			if ( id == newPlayerId ) continue;
@@ -401,6 +446,8 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 			addPacket.rotation = ptr->GetGameObject()->GetTransform()->GetRotation();
 			this->SendPacket(sender, &addPacket);
 		}
+
+		RegisterPlayersToEnemy();
 
 		// 이미 생성되어있는 적 추가
 		if (this->enemyGenerator)

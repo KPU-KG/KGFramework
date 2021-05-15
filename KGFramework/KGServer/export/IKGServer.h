@@ -17,6 +17,7 @@ namespace KG::Component
 	class SPlayerComponent;
 	class SEnemyControllerComponent;
 	class EnemyGeneratorComponent;
+	class SBaseComponent;
 };
 
 namespace KG::Physics {
@@ -52,6 +53,8 @@ namespace KG::Server
 		};
 		virtual void SetPhysicsScene(KG::Physics::IPhysicsScene* physicsScene) = 0;
 		virtual KG::Physics::IPhysicsScene* GetPhysicsScene() = 0;
+		virtual KG::Component::SBaseComponent* FindNetObject(NET_OBJECT_ID id) = 0;
+		// virtual 
 	};
 
 	DLL IServer* GetServer();

@@ -279,7 +279,7 @@ void KG::Server::Server::BroadcastPacket(void* packet, SESSION_ID ignore)
 	{
 		if ( i.first != ignore )
 		{
-			std::shared_lock<std::shared_mutex> lg{ i.second.sessionLock };
+			// std::shared_lock<std::shared_mutex> lg{ i.second.sessionLock };
 			if ( i.second.state == PLAYER_STATE_INGAME )
 			{
 				this->SendPacket(i.first, packet);
@@ -313,6 +313,21 @@ void KG::Server::Server::SendPacket(SESSION_ID playerId, void* packet)
 			display_error("Error in SendPacket : ", err_no);
 		}
 	}
+}
+
+KG::Component::SBaseComponent* KG::Server::Server::FindNetObject(NET_OBJECT_ID id)
+{
+	auto it = this->netObjects.find(id);
+	if (it == this->netObjects.end())
+		return nullptr;
+	else
+		return it->second;
+}
+
+std::stack<KG::Server::NET_OBJECT_ID>& KG::Server::Server::GetDisconnectedPlayerId()
+{
+	return this->disconnectedPlayerId;
+	// TODO: 여기에 return 문을 삽입합니다.
 }
 
 void KG::Server::Server::Update(float elapsedTime)
@@ -359,16 +374,19 @@ void KG::Server::Server::SendAddPlayer(SESSION_ID playerId, SESSION_ID targetId)
 
 void KG::Server::Server::Disconnect(SESSION_ID playerId)
 {
+	int playerCompId;
 	std::cout << "Disconnected Client[" << playerId << "]\n";
 	{
 		std::lock_guard<std::shared_mutex> lg{ players[playerId].sessionLock };
-		auto it = this->netObjects.find(players[playerId].id);
-		
+		playerCompId = players[playerId].netId;
+
+		auto it = this->netObjects.find(playerCompId);
 		if (it != this->netObjects.end())
 			it->second->Destroy();
 
 		players[playerId].state = PLAYER_STATE_FREE;
 		closesocket(players[playerId].socket);
+		disconnectedPlayerId.push(playerCompId);
 	}
 
 	for ( auto& [id , pl] : players )
@@ -376,7 +394,7 @@ void KG::Server::Server::Disconnect(SESSION_ID playerId)
 		std::shared_lock<std::shared_mutex> lg2{ pl.sessionLock };
 		if ( pl.state == PLAYER_STATE_INGAME )
 		{
-			SendRemovePlayer(playerId, pl.id);
+			SendRemovePlayer(playerCompId, pl.id);
 		}
 	}
 }
@@ -420,6 +438,11 @@ void KG::Server::Server::ProcessPacket(SESSION_ID playerId, unsigned char* buffe
 void KG::Server::Server::SetSessionState(SESSION_ID session, KG::Server::PLAYER_STATE state)
 {
 	this->players[session].state = state;
+}
+
+void KG::Server::Server::SetSessionId(SESSION_ID session, KG::Server::NET_OBJECT_ID id)
+{
+	this->players[session].netId = id;
 }
 
 KG::Server::NET_OBJECT_ID KG::Server::Server::GetNewObjectId()

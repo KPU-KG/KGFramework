@@ -24,43 +24,78 @@ void KG::Component::SEnemyControllerComponent::UpdateState()
 
 bool KG::Component::SEnemyControllerComponent::SetGoal()
 {
-	if (this->nodeCount > 0) {
-		if (randomCircuit) {
-			std::uniform_int_distribution<int> randomIndex(1, this->nodeCount);
-			currentNode = randomIndex(gen) - 1;
+	switch (state) {
+	case EnemyState::eWANDER:
+	{
+		if (this->nodeCount > 0) {
+			if (randomCircuit) {
+				std::uniform_int_distribution<int> randomIndex(1, this->nodeCount);
+				currentNode = randomIndex(gen) - 1;
+			}
+			else {
+				currentNode = ++currentNode % this->nodeCount;
+			}
+			goal = this->node[currentNode];
 		}
 		else {
-			currentNode = ++currentNode% this->nodeCount;
+			goal.x = goalRange(gen) * range + center.x;
+			// goal.y = goalRange(gen) * range;
+			goal.z = goalRange(gen) * range + center.z;
 		}
-		goal = this->node[currentNode];
+
+		auto pos = transform->GetWorldPosition();
+		distance = std::sqrt(std::pow((goal.x - pos.x), 2) + std::pow((goal.y - pos.y), 2));
+		arriveTime = distance / speed;
+		moveTime = 0;
+
+		direction = Math::Vector3::Subtract(goal, transform->GetWorldPosition());
+		direction.y = 0;
+		XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&direction)));
+
+		auto dir = DirectX::XMFLOAT2{ direction.x, direction.z };
+
+		auto look = DirectX::XMFLOAT2{ transform->GetLook().x, transform->GetLook().z };
+		rotateTimer = 0;
+		// 나중에는 이동 불가능한 위치 선택시 false 리턴
+
+		XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
+		XMFLOAT2 crs;
+		XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
+		if (crs.x >= 0)
+			angle.x *= -1;
+		return true;
 	}
-	else {
-		goal.x = goalRange(gen) * range + center.x;
-		// goal.y = goalRange(gen) * range;
-		goal.z = goalRange(gen) * range + center.z;
+		break;
+
+	case EnemyState::eTRACE:
+	{
+		if (target == nullptr) {
+			DebugNormalMessage("Enemy Controller : target is null");
+			return false;
+		}
+		this->goal = target->GetGameObject()->GetTransform()->GetWorldPosition();
+		goal.y = 0;
+
+		direction = Math::Vector3::Subtract(goal, transform->GetWorldPosition());
+		direction.y = 0;
+		XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&direction)));
+
+		auto dir = DirectX::XMFLOAT2{ direction.x, direction.z };
+
+		auto look = DirectX::XMFLOAT2{ transform->GetWorldLook().x, transform->GetWorldLook().z };
+		rotateTimer = 0;
+
+		XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
+		XMFLOAT2 crs;
+		XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
+		if (crs.x >= 0)
+			angle.x *= -1;
+		return true;
 	}
-
-	auto pos = transform->GetPosition();
-	distance = std::sqrt(std::pow((goal.x - pos.x), 2) + std::pow((goal.y - pos.y), 2));
-	arriveTime = distance / speed;
-	moveTime = 0;
-
-	direction = Math::Vector3::Subtract(goal, transform->GetPosition());
-	direction.y = 0;
-	XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&direction)));
-
-	auto dir = DirectX::XMFLOAT2{ direction.x, direction.z };
-	
-	auto look = DirectX::XMFLOAT2{ transform->GetLook().x, transform->GetLook().z };
-	rotateTimer = 0;
-	// 나중에는 이동 불가능한 위치 선택시 false 리턴
-
-	XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-	XMFLOAT2 crs;
-	XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-	if (crs.x >= 0)
-		angle.x *= -1;
-	return true;
+		break;
+	}
+	DebugNormalMessage("Enemy Controller : Set Goal() - Invalid Value")
+	return false;
 }
 
 bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
@@ -70,6 +105,9 @@ bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace, ANIMSTATE_PLAYING, 0.1f, -1);
 	}
 	rotateTimer += elapsedTime;
+	float rotateInterval = this->rotateInterval;
+	if (state == EnemyState::eTRACE)
+		rotateInterval = this->rotateAttackInterval;
 	if (rotateInterval <= rotateTimer) {
 		return true;
 	}
@@ -203,39 +241,73 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 		}
 	}
 	else {
-		switch (this->action) {
-		case EnemyAction::eIDLE:
-			if (Idle(elapsedTime)) {
+		switch (this->state) {
+		case EnemyState::eWANDER:
+			if (SetTarget()) {
+				state = EnemyState::eTRACE;
 				changedAnimation = false;
+				this->action = EnemyAction::eSETGOAL;
+				break;
+			}
+			switch (this->action) {
+			case EnemyAction::eIDLE:
+				if (Idle(elapsedTime)) {
+					changedAnimation = false;
+					action = EnemyAction::eSETGOAL;
+				}
+				break;
+			case EnemyAction::eSETGOAL:
+				SetGoal();
+				action = EnemyAction::eROTATE;
+				break;
+			case EnemyAction::eROTATE:
+				if (RotateToGoal(elapsedTime)) {
+					changedAnimation = false;
+					action = EnemyAction::eMOVE;
+				}
+				break;
+			case EnemyAction::eMOVE:
+				if (MoveToGoal()) {
+					changedAnimation = false;
+					action = EnemyAction::eIDLE;
+					idleTimer = 0;
+				}
+				else
+					moveTime += elapsedTime;
+				break;
+			default:
+				DebugNormalMessage("Enemy State [Wander] : Invalid Enemy Action");
+				break;
+			}
+			break;
+		case EnemyState::eTRACE:
+			if (!SetTarget()) {
+				state = EnemyState::eWANDER;
 				action = EnemyAction::eSETGOAL;
+				break;
 			}
-			break;
-		case EnemyAction::eSETGOAL:
-			SetGoal();
-			action = EnemyAction::eROTATE;
-			break;
-		case EnemyAction::eROTATE:
-			if (RotateToGoal(elapsedTime)) {
-				changedAnimation = false;
-				action = EnemyAction::eMOVE;
+			switch (this->action) {
+			case EnemyAction::eSETGOAL:
+				SetGoal();
+				action = EnemyAction::eROTATE;
+				break;
+			case EnemyAction::eROTATE:
+				if (RotateToGoal(elapsedTime)) {
+					changedAnimation = false;
+					action = EnemyAction::eATTACK;
+				}
+				break;
+			case EnemyAction::eATTACK:
+				if (AttackTarget()) {
+					changedAnimation = false;
+					action = EnemyAction::eSETGOAL;
+				}
+				break;
 			}
-			break;
-		case EnemyAction::eMOVE:
-			if (MoveToGoal()) {
-				changedAnimation = false;
-				action = EnemyAction::eIDLE;
-				idleTimer = 0;
-			}
-			else
-				moveTime += elapsedTime;
-			break;
-		case EnemyAction::eATTACK:
-			break;
-		case EnemyAction::eATTACKED:
 			break;
 		}
 	}
-	
+
 	sendTimer += elapsedTime;
 	if (sendTimer >= sendInterval) {
 		if (this->server) {
@@ -272,9 +344,6 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 				break;
 			case EnemyAction::eATTACK:
 				curAction = "Attack";
-				break;
-			case EnemyAction::eATTACKED:
-				curAction = "Attacked";
 				break;
 			}
 			ImGui::TextDisabled("Action : %s", curAction);
@@ -383,6 +452,52 @@ bool KG::Component::SEnemyControllerComponent::IsDelete() const
 	return destroyInterval <= destroyTimer;
 }
 
+bool KG::Component::SEnemyControllerComponent::SetTarget()
+{
+	if (this->target) {
+		if (IsTargetInRange()) {
+			return true;
+		}
+		else
+			this->target = nullptr;
+	}
+
+	float minVal = FLT_MAX;
+	KG::Server::NET_OBJECT_ID minId = -1;
+	for (auto& id : playerId) {
+		auto* comp = this->server->FindNetObject(id);
+		auto pos = comp->GetGameObject()->GetTransform()->GetWorldPosition();
+		float d = GetDistance2FromEnemy(pos);
+		if (d < minVal) {
+			minVal = d;
+			minId = id;
+		}
+	}
+	if (IsInTraceRange(minVal)) {
+		auto comp = this->server->FindNetObject(minId);
+		if (comp == nullptr) {
+			playerId.erase(minId);
+			target = nullptr;
+			return false;
+		}
+		target = comp;
+		return true;
+	}
+	return false;
+}
+
+void KG::Component::SEnemyControllerComponent::RegisterPlayerId(KG::Server::NET_OBJECT_ID id)
+{
+	if (playerId.count(id) == 0)
+		playerId.insert(id);
+}
+
+void KG::Component::SEnemyControllerComponent::DeregisterPlayerId(KG::Server::NET_OBJECT_ID id)
+{
+	if (playerId.count(id) > 0)
+		playerId.erase(id);
+}
+
 void KG::Component::SEnemyControllerComponent::Destroy()
 {
 	if (rigid)
@@ -391,6 +506,15 @@ void KG::Component::SEnemyControllerComponent::Destroy()
 	// removeObjectPacket.objectId = enemies[i]->GetNetId();
 	this->BroadcastPacket((void*)&removeObjectPacket);
 	gameObject->Destroy();
+}
+
+bool KG::Component::SEnemyControllerComponent::IsTargetInRange() const
+{
+	if (target) {
+		auto pos = target->GetGameObject()->GetTransform()->GetWorldPosition();
+		return IsInTraceRange(pos);
+	}
+	return false;
 }
 
 inline void KG::Component::SEnemyControllerComponent::ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime, int repeat) {
@@ -403,6 +527,34 @@ inline void KG::Component::SEnemyControllerComponent::ChangeAnimation(const KG::
 	pa.repeat = repeat;
 	this->BroadcastPacket(&pa);
 	changedAnimation = true;
+}
+
+float KG::Component::SEnemyControllerComponent::GetDistance2FromEnemy(DirectX::XMFLOAT3 pos) const
+{
+	auto myPos = this->transform->GetWorldPosition();
+	float distance = (pos.x - myPos.x) * (pos.x - myPos.x) + (pos.y - myPos.y) * (pos.y - myPos.y);
+	return distance;
+}
+
+bool KG::Component::SEnemyControllerComponent::IsInTraceRange(const DirectX::XMFLOAT3 pos) const
+{
+	float rr = range * range;
+	float distance2 = GetDistance2FromEnemy(pos);
+	if (rr > distance2)
+		return true;
+	else
+		return false;
+}
+
+bool KG::Component::SEnemyControllerComponent::IsInTraceRange(const float distance) const
+{
+	float rr = range * range;
+	return rr > distance;
+}
+
+bool KG::Component::SEnemyControllerComponent::AttackTarget()
+{
+	return true;
 }
 
 
