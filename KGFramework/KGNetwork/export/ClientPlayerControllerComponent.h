@@ -14,6 +14,7 @@ namespace KG::Component
 	class DynamicRigidComponent;
     class IParticleEmitterComponent;
     class IRender2DComponent;
+	class ISoundComponent;
 
 	class DLL CPlayerControllerComponent : public CBaseComponent
 	{
@@ -25,6 +26,8 @@ namespace KG::Component
 		IAnimationControllerComponent* vectorAnimation = nullptr;
 		DynamicRigidComponent* physics = nullptr;
 		IParticleEmitterComponent* particleGen = nullptr;
+		ISoundComponent* sound = nullptr;
+
         IRender2DComponent* digit_0 = nullptr;
         IRender2DComponent* digit_1 = nullptr;
 

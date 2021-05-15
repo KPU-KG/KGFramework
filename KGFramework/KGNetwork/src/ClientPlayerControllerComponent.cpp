@@ -7,6 +7,7 @@
 #include "IParticleEmitterComponent.h"
 #include "IPhysicsScene.h"
 #include "PhysicsComponent.h"
+#include "ISoundComponent.h"
 
 using namespace KG::Math::Literal;
 
@@ -46,6 +47,7 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
     this->characterTransform = this->gameObject->GetComponent<TransformComponent>();
     this->characterAnimation = this->gameObject->GetComponent<IAnimationControllerComponent>();
     this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
+    this->sound = this->gameObject->GetComponent<ISoundComponent>();
 
     auto* cameraObject = this->gameObject->FindChildObject("FPCamera"_id);
     this->cameraTransform = cameraObject->GetTransform();
@@ -400,6 +402,8 @@ void KG::Component::CPlayerControllerComponent::TryShoot(float elapsedTime)
         this->vectorAnimation->SetAnimation(VectorAnimSet::fire, 0, 1, 1.5f);
         this->bulletCount -= 1;
         OnChangeBulletCount(this->bulletCount);
+        if (this->sound)
+            this->sound->PlayEffectiveSound(SOUND_EFF_SHOT);
         Packet::CS_FIRE p = { };
         p.origin = this->cameraTransform->GetWorldPosition();
         p.direction = this->cameraTransform->GetWorldLook();
@@ -426,11 +430,15 @@ void KG::Component::CPlayerControllerComponent::TryReload(float elapsedTime)
         {
             this->reloadFlag = true;
             this->vectorAnimation->SetAnimation(VectorAnimSet::reload, 0, 1, 1.0f);
+            if (this->sound)
+                this->sound->PlayEffectiveSound(SOUND_EFF_RELOAD);
         }
         else
         {
             this->reloadFlag = true;
             this->vectorAnimation->SetAnimation(VectorAnimSet::reload_e, 0, 1, 1.0f);
+            if (this->sound)
+                this->sound->PlayEffectiveSound(SOUND_EFF_RELOAD);
         }
     }
 }

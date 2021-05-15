@@ -6,6 +6,7 @@
 #include "KGRenderer.h"
 #include "IPhysicsScene.h"
 #include "InputManager.h"
+#include "SoundManager.h"
 #include "IKGServer.h"
 #include "IKGNetwork.h"
 #include "ComponentProvider.h"
@@ -33,6 +34,7 @@ namespace KG
 		std::unique_ptr<KG::Server::INetwork> networkClient;
 		std::unique_ptr<KG::Server::IServer> networkServer;
 		std::unique_ptr<KG::Core::Scene> scene;
+		std::unique_ptr<KG::Sound::SoundManager> sound;
 		KG::Component::ComponentProvider componentProvider;
 		ImGuiContext* guiContext = nullptr;
 	public:

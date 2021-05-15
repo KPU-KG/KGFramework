@@ -84,14 +84,14 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>$(ProjectDir)include\imgui;$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)fmod;$(ProjectDir)include\imgui;$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Debug_LIB\;$(LibraryPath)</LibraryPath>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <PublicIncludeDirectories>$(ProjectDir)include\imgui;$(ProjectDir)include;$(PublicIncludeDirectories)</PublicIncludeDirectories>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>$(ProjectDir)include\imgui;$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
+    <IncludePath>$(ProjectDir)fmod;$(ProjectDir)include\imgui;$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Release_LIB\;$(LibraryPath)</LibraryPath>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
   </PropertyGroup>
@@ -161,7 +161,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>libfbxsdk.lib;</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk.lib;fmod_vc.lib</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBMCT</IgnoreSpecificDefaultLibraries>
     </Lib>
     <ProjectReference>
@@ -181,7 +181,7 @@
       <PreprocessorDefinitions>PROJECT_NAME="$(ProjectName)";FBXSDK_SHARED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(ProjectDir)include\imgui;$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)fmod;$(ProjectDir)include\imgui;$(ProjectDir)include;$(ProjectDir)include_in;$(SolutionDir)lib\include;$(IncludePath)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>
@@ -191,7 +191,7 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
     <Lib>
-      <AdditionalDependencies>libfbxsdk.lib;</AdditionalDependencies>
+      <AdditionalDependencies>libfbxsdk.lib;fmod_vc.lib</AdditionalDependencies>
       <IgnoreSpecificDefaultLibraries>LIBMCT</IgnoreSpecificDefaultLibraries>
     </Lib>
   </ItemDefinitionGroup>
@@ -225,6 +225,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\Scene.cpp" />
+    <ClCompile Include="src\SoundComponent.cpp" />
+    <ClCompile Include="src\SoundManager.cpp" />
     <ClCompile Include="src\tinyxml2.cpp" />
     <ClCompile Include="src\Transform.cpp" />
     <ClCompile Include="src\TransformSystem.cpp" />
@@ -253,6 +255,8 @@
     <ClInclude Include="include\imgui\imstb_truetype.h" />
     <ClInclude Include="include\InputManager.h" />
     <ClInclude Include="include\ISerializable.h" />
+    <ClInclude Include="include\ISoundComponent.h" />
+    <ClInclude Include="include\ISoundManager.h" />
     <ClInclude Include="include\ISystem.h" />
     <ClInclude Include="include\KGColor.h" />
     <ClInclude Include="include\LambdaComponent.h" />
@@ -262,6 +266,9 @@
     <ClInclude Include="include\Protocol.h" />
     <ClInclude Include="include\Scene.h" />
     <ClInclude Include="include\SerializableProperty.h" />
+    <ClInclude Include="include\SoundComponent.h" />
+    <ClInclude Include="include\SoundManager.h" />
+    <ClInclude Include="include\SoundSystem.h" />
     <ClInclude Include="include\tinyxml2.h" />
     <ClInclude Include="include\Transform.h" />
     <ClInclude Include="include\TransformSystem.h" />

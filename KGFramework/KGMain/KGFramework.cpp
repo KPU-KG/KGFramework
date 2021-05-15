@@ -80,6 +80,11 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	physicsDesc.connectPVD = this->setting.isPxDebugger;
 	physicsDesc.gravity = 9.81f;
 
+	this->sound = std::make_unique<KG::Sound::SoundManager>();
+	this->sound->Initialize();
+	this->sound->RegisterSound("Resource/Sound/shot.wav", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_SHOT);
+	this->sound->RegisterSound("Resource/Sound/reload.wav", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_RELOAD);
+
 	this->renderer->Initialize(renderDesc, renderSetting);
     this->renderer->SetEditUIRender(setting.isEditMode);
     this->input->SetUsingImgui(setting.isEditMode);
@@ -88,8 +93,8 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	this->physics->AddFloor(-10);
 	this->physics->PostComponentProvider(this->componentProvider);
 	this->system->PostComponentProvider(this->componentProvider);
+	this->sound->PostComponentProvider(this->componentProvider);
 	this->scene->SetComponentProvider(&this->componentProvider);
-
 
 	std::vector<KG::Utill::HashString> preLoads = 
 	{
@@ -572,6 +577,11 @@ void KG::GameFramework::PostSceneFunction()
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			obj.AddComponent(phy);
 
+			auto* snd = this->sound->GetNewSoundComponent();
+			snd->LinkSystem(this->sound->GetFmodSystem(), this->sound->GetChannel());
+			snd->RegisterSound(this->sound->GetSound(SOUND_EFF_SHOT), SOUND_EFF_SHOT);
+			snd->RegisterSound(this->sound->GetSound(SOUND_EFF_RELOAD), SOUND_EFF_RELOAD);
+			obj.AddComponent(snd);
 		}
 		);
 
@@ -781,6 +791,7 @@ void KG::GameFramework::OnProcess()
 		this->renderer->Update(this->timer.GetTimeElapsed());
 	}
 	this->physics->Advance(this->timer.GetTimeElapsed());
+	this->sound->Update(this->timer.GetTimeElapsed());
 	this->scene->PostUpdate(this->timer.GetTimeElapsed());
 	this->renderer->SetGameTime(this->timer.GetGameTime());
 	this->renderer->Render();
