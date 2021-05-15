@@ -1,6 +1,7 @@
 #pragma once
 #include <string_view>
 #include <sstream>
+#include <fstream>
 #include <Windows.h>
 #include <vector>
 #include <deque>
@@ -39,6 +40,9 @@ namespace KG::Utill
 		std::vector<std::vector<VertexBoneData>> vertexBone;
 
 		std::vector<BoneData> bones;
+
+        void SaveToKGG(std::ofstream& out);
+        void LoadToKGG(std::ifstream& in);
 	};
 
 	struct ModelNode
@@ -56,6 +60,9 @@ namespace KG::Utill
 
 		void AddChild( ModelNode* node );
 		void AddSibling( ModelNode* node );
+
+        void SaveToKGG(std::ofstream& out, const std::deque<ModelNode>& nodes);
+        void LoadToKGG(std::ifstream& in, std::deque<ModelNode>& nodes);
 	};
 
 	struct KeyData
@@ -73,6 +80,9 @@ namespace KG::Utill
 		std::vector<KeyData> x;
 		std::vector<KeyData> y;
 		std::vector<KeyData> z;
+
+        void SaveToKGG(std::ofstream& out);
+        void LoadToKGG(std::ifstream& in);
 	};
 
 	struct NodeAnimation
@@ -83,17 +93,23 @@ namespace KG::Utill
 		Vector3Data translation;
 		Vector3Data rotation;
 		Vector3Data scale;
+        void SaveToKGG(std::ofstream& out);
+        void LoadToKGG(std::ifstream& in);
 	};
 
 	struct AnimationLayer
 	{
 		std::vector<NodeAnimation> nodeAnimations;
+        void SaveToKGG(std::ofstream& out);
+        void LoadToKGG(std::ifstream& in);
 	};
 
 	struct AnimationSet
 	{
 		KG::Utill::HashString animationId;
 		std::vector<AnimationLayer> layers;
+        void SaveToKGG(std::ofstream& out);
+        void LoadToKGG(std::ifstream& in);
 	};
 
 	struct ImportData
@@ -111,6 +127,8 @@ namespace KG::Utill
 		std::vector<AnimationSet> animations;
 		ModelNode* root = nullptr;
 		void LoadFromPathFBX( const std::string& path );
+        bool LoadToKGG(const std::string& path);
+        void SaveToKGG(const std::string& path);
 	};
 	extern DirectX::XMFLOAT4 ChangeEulerToDxQuat( float x, float y, float z );
 }

@@ -49,7 +49,6 @@ void KG::Utill::ModelNode::AddSibling(ModelNode* node)
 	}
 }
 
-
 FbxScene* pFbxScene;
 
 static FbxAMatrix GetGeometricOffsetTransform(FbxNode* pfbxNode)
@@ -787,6 +786,7 @@ std::mutex fbxSdkMutex;
 
 void KG::Utill::ImportData::LoadFromPathFBX(const std::string& path)
 {
+    if ( this->LoadToKGG(path) ) return;
 	std::string prePath = (path.substr(0, path.size() - 4) + "_pre.fbx");
 	bool isPreProcessed = exists(prePath);
 	std::string currentPath = isPreProcessed ? prePath : path;
@@ -869,12 +869,14 @@ void KG::Utill::ImportData::LoadFromPathFBX(const std::string& path)
 
 	for ( size_t i = 0; i < meshes.size(); i++ )
 	{
-		DebugNormalMessage(meshes[i]->GetName() << " : Load Mesh");
-		this->meshs.push_back(ConvertMesh(meshes[i]));
+        DebugNormalMessage(meshes[i]->GetName() << " : Load Mesh");
+        this->meshs.push_back(ConvertMesh(meshes[i]));
 	}
 	//pFbxManager->Destroy();
+    this->SaveToKGG(path);
 
 }
+
 
 DirectX::XMFLOAT4 KG::Utill::ChangeEulerToDxQuat(float x, float y, float z)
 {
@@ -902,4 +904,305 @@ KG::Utill::ImportData& KG::Utill::ImportData::operator=(ImportData&& other) noex
 	this->animations = std::move(other.animations);
 	this->root = &this->nodes[otherRootIndex];
 	return *this;
+}
+
+//KGG FILE
+
+static void WriteStreamStringValue(std::ofstream& out, std::string& ref)
+{
+    int length = ref.size();
+    out.write((const char*)&length, sizeof(int));
+    out.write(ref.c_str(), sizeof(char) * length);
+}
+
+static void ReadStreamStringValue(std::ifstream& in, std::string& ref)
+{
+    int length = 0;
+    in.read((char*)&length, sizeof(int));
+    ref.resize(length);
+    in.read(ref.data(), sizeof(char) * length);
+}
+
+static void WriteStreamHashValue(std::ofstream& out, KG::Utill::HashString& ref)
+{
+    out.write((const char*)&ref.value, sizeof(KG::Utill::hashType));
+    WriteStreamStringValue(out, ref.srcString);
+}
+
+static void ReadStreamHashValue(std::ifstream& in, KG::Utill::HashString& ref)
+{
+    in.read((char*)&ref.value, sizeof(KG::Utill::hashType));
+    ReadStreamStringValue(in, ref.srcString);
+}
+
+template<typename Ty>
+static void WriteStreamValue(std::ofstream& out, Ty& ref)
+{
+    out.write((const char*)&ref, sizeof(Ty));
+}
+
+template<typename Ty>
+static void ReadStreamValue(std::ifstream& in, Ty& ref)
+{
+    in.read((char*)&ref, sizeof(Ty));
+}
+
+template<typename Ty>
+static void WriteStreamVector(std::ofstream& out, std::vector<Ty>& vectors)
+{
+    int size = vectors.size();
+    out.write((const char*)&size, sizeof(int));
+    out.write((const char*)vectors.data(), sizeof(Ty) * size);
+}
+
+template<typename Ty>
+static void ReadStreamVector(std::ifstream& in, std::vector<Ty>& vectors)
+{
+    int size = 0;
+    in.read((char*)&size, sizeof(int));
+    vectors.resize(size);
+    in.read((char*)vectors.data(), sizeof(Ty) * size);
+}
+
+template<typename Ty>
+static void WriteStreamKGGVector(std::ofstream& out, std::vector<Ty>& vectors)
+{
+    int size = vectors.size();
+    out.write((const char*)&size, sizeof(int));
+    for ( size_t i = 0; i < size; i++ )
+    {
+        vectors[i].SaveToKGG(out);
+    }
+}
+
+template<typename Ty>
+static void ReadStreamKGGVector(std::ifstream& in, std::vector<Ty>& vectors)
+{
+    int size = 0;
+    in.read((char*)&size, sizeof(int));
+    vectors.resize(size);
+    for ( size_t i = 0; i < size; i++ )
+    {
+        vectors[i].LoadToKGG(in);
+    }
+}
+
+
+
+template<typename Ty>
+static void WriteStreamDoubleVector(std::ofstream& out, std::vector<std::vector<Ty>>& vvectors)
+{
+    int vsize = vvectors.size();
+    out.write((const char*)&vsize, sizeof(int));
+    for ( int i = 0; i < vsize; i++ )
+    {
+        WriteStreamVector<Ty>(out, vvectors[i]);
+    }
+}
+
+template<typename Ty>
+static void ReadStreamDoubleVector(std::ifstream& in, std::vector<std::vector<Ty>>& vvectors)
+{
+    int vsize = 0;
+    in.read((char*)&vsize, sizeof(int));
+    vvectors.resize(vsize);
+
+    for ( int i = 0; i < vsize; i++ )
+    {
+        ReadStreamVector<Ty>(in, vvectors[i]);
+    }
+}
+
+void KG::Utill::ImportData::SaveToKGG(const std::string& path)
+{
+    auto newString = path;
+    newString = path.substr(0, path.size() - 3);
+    newString += "KGG";
+
+    std::ofstream out(newString, std::ios::binary);
+    WriteStreamKGGVector(out, meshs);
+    int nodeCount = this->nodes.size();
+    WriteStreamValue(out, nodeCount);
+    for ( size_t i = 0; i < nodeCount; i++ )
+    {
+        nodes[i].SaveToKGG(out, nodes);
+    }
+    WriteStreamKGGVector(out, animations);
+    int rootIndex = 0;
+    for ( size_t i = 0; i < nodes.size(); i++ )
+    {
+        if ( &nodes[i] == root )
+        {
+            rootIndex = i;
+        }
+    }
+    WriteStreamValue(out, rootIndex);
+}
+bool KG::Utill::ImportData::LoadToKGG(const std::string& path)
+{
+    auto newString = path;
+    newString = path.substr(0, path.size() - 3);
+    newString += "KGG";
+    if ( !exists(newString) )
+        return false;
+
+    std::ifstream in(newString, std::ios::binary);
+    ReadStreamKGGVector(in, meshs);
+    int nodeCount = 0;
+    ReadStreamValue(in, nodeCount);
+    nodes.resize(nodeCount);
+    for ( size_t i = 0; i < nodeCount; i++ )
+    {
+        nodes[i].LoadToKGG(in, nodes);
+    }
+    ReadStreamKGGVector(in, animations);
+    int rootIndex = 0;
+    ReadStreamValue(in, rootIndex);
+    this->root = &nodes[rootIndex];
+    DebugNormalMessage("KGG Load" << path.c_str());
+    return true;
+}
+
+void KG::Utill::MeshData::SaveToKGG(std::ofstream& out)
+{
+    WriteStreamVector(out, indices);
+    WriteStreamVector(out, positions);
+    WriteStreamVector(out, normals);
+    WriteStreamVector(out, tangent);
+    WriteStreamVector(out, biTangent);
+    WriteStreamDoubleVector(out, uvs);
+    WriteStreamDoubleVector(out, vertexBone);
+
+    int count = bones.size();
+    WriteStreamValue(out, count);
+    for ( size_t i = 0; i < count; i++ )
+    {
+        WriteStreamHashValue(out, bones[i].nodeId);
+        WriteStreamValue(out, bones[i].offsetMatrix);
+    }
+}
+
+void KG::Utill::MeshData::LoadToKGG(std::ifstream& in)
+{
+    ReadStreamVector(in, indices);
+    ReadStreamVector(in, positions);
+    ReadStreamVector(in, normals);
+    ReadStreamVector(in, tangent);
+    ReadStreamVector(in, biTangent);
+    ReadStreamDoubleVector(in, uvs);
+    ReadStreamDoubleVector(in, vertexBone);
+
+    int count = bones.size();
+    ReadStreamValue(in, count);
+    bones.resize(count);
+    for ( size_t i = 0; i < count; i++ )
+    {
+        ReadStreamHashValue(in, bones[i].nodeId);
+        ReadStreamValue(in, bones[i].offsetMatrix);
+    }
+}
+
+void KG::Utill::Vector3Data::SaveToKGG(std::ofstream& out)
+{
+    WriteStreamVector(out, x);
+    WriteStreamVector(out, y);
+    WriteStreamVector(out, z);
+}
+
+void KG::Utill::Vector3Data::LoadToKGG(std::ifstream& in)
+{
+    ReadStreamVector(in, x);
+    ReadStreamVector(in, y);
+    ReadStreamVector(in, z);
+}
+
+void KG::Utill::NodeAnimation::SaveToKGG(std::ofstream& out)
+{
+    WriteStreamHashValue(out, nodeId);
+    WriteStreamValue(out, preRotation);
+    protation.SaveToKGG(out);
+    translation.SaveToKGG(out);
+    rotation.SaveToKGG(out);
+    scale.SaveToKGG(out);
+}
+
+void KG::Utill::NodeAnimation::LoadToKGG(std::ifstream& in)
+{
+    ReadStreamHashValue(in, nodeId);
+    ReadStreamValue(in, preRotation);
+    protation.LoadToKGG(in);
+    translation.LoadToKGG(in);
+    rotation.LoadToKGG(in);
+    scale.LoadToKGG(in);
+}
+
+void KG::Utill::AnimationLayer::SaveToKGG(std::ofstream& out)
+{
+    WriteStreamKGGVector(out, nodeAnimations);
+}
+
+void KG::Utill::AnimationLayer::LoadToKGG(std::ifstream& in)
+{
+    ReadStreamKGGVector(in, nodeAnimations);
+}
+
+void KG::Utill::AnimationSet::SaveToKGG(std::ofstream& out)
+{
+    WriteStreamHashValue(out, animationId);
+    WriteStreamKGGVector(out, layers);
+}
+
+void KG::Utill::AnimationSet::LoadToKGG(std::ifstream& in)
+{
+    ReadStreamHashValue(in, animationId);
+    ReadStreamKGGVector(in, layers);
+}
+
+void KG::Utill::ModelNode::SaveToKGG(std::ofstream& out, const std::deque<ModelNode>& nodes)
+{
+    WriteStreamHashValue(out, nodeId);
+    WriteStreamStringValue(out, name);
+    int childIndex = -1;
+    int siblingIndex = -1;
+    bool childFind = child == nullptr;
+    bool siblingFind = sibling == nullptr;
+    for ( size_t i = 0; i < nodes.size(); i++ )
+    {
+        if ( &nodes[i] == child )
+        {
+            childIndex = i;
+            childFind = true;
+        }
+        else if ( &nodes[i] == sibling )
+        {
+            siblingIndex = i;
+            siblingFind = true;
+        }
+        if ( siblingFind && childFind )
+        {
+            break;
+        }
+    }
+    WriteStreamValue(out, childIndex);
+    WriteStreamValue(out, siblingIndex);
+    WriteStreamValue(out, position);
+    WriteStreamValue(out, rotation);
+    WriteStreamValue(out, scale);
+    WriteStreamVector(out, meshs);
+}
+
+void KG::Utill::ModelNode::LoadToKGG(std::ifstream& in, std::deque<ModelNode>& nodes)
+{
+    ReadStreamHashValue(in, nodeId);
+    ReadStreamStringValue(in, name);
+    int childIndex = 0;
+    int siblingIndex = 0;
+    ReadStreamValue(in, childIndex);
+    ReadStreamValue(in, siblingIndex);
+    this->child = childIndex == -1 ? nullptr : &nodes[childIndex];
+    this->sibling = siblingIndex == -1 ? nullptr : &nodes[siblingIndex];
+    ReadStreamValue(in, position);
+    ReadStreamValue(in, rotation);
+    ReadStreamValue(in, scale);
+    ReadStreamVector(in, meshs);
 }
