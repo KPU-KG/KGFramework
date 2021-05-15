@@ -430,11 +430,15 @@ void KG::Component::CPlayerControllerComponent::TryReload(float elapsedTime)
         {
             this->reloadFlag = true;
             this->vectorAnimation->SetAnimation(VectorAnimSet::reload, 0, 1, 1.0f);
+            if (this->sound)
+                this->sound->PlayEffectiveSound(SOUND_EFF_RELOAD);
         }
         else
         {
             this->reloadFlag = true;
             this->vectorAnimation->SetAnimation(VectorAnimSet::reload_e, 0, 1, 1.0f);
+            if (this->sound)
+                this->sound->PlayEffectiveSound(SOUND_EFF_RELOAD);
         }
     }
 }

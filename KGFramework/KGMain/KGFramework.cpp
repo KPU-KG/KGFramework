@@ -83,6 +83,7 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	this->sound = std::make_unique<KG::Sound::SoundManager>();
 	this->sound->Initialize();
 	this->sound->RegisterSound("Resource/Sound/shot.wav", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_SHOT);
+	this->sound->RegisterSound("Resource/Sound/reload.wav", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_RELOAD);
 
 	this->renderer->Initialize(renderDesc, renderSetting);
     this->renderer->SetEditUIRender(setting.isEditMode);
@@ -579,6 +580,7 @@ void KG::GameFramework::PostSceneFunction()
 			auto* snd = this->sound->GetNewSoundComponent();
 			snd->LinkSystem(this->sound->GetFmodSystem(), this->sound->GetChannel());
 			snd->RegisterSound(this->sound->GetSound(SOUND_EFF_SHOT), SOUND_EFF_SHOT);
+			snd->RegisterSound(this->sound->GetSound(SOUND_EFF_RELOAD), SOUND_EFF_RELOAD);
 			obj.AddComponent(snd);
 		}
 		);

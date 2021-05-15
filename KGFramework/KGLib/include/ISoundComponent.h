@@ -4,6 +4,7 @@
 #include "IComponent.h"
 
 constexpr const unsigned int SOUND_EFF_SHOT = 0;
+constexpr const unsigned int SOUND_EFF_RELOAD = 1;
 
 namespace FMOD
 {
