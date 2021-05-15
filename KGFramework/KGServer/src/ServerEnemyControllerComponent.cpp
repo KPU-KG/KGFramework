@@ -396,7 +396,7 @@ void KG::Component::SEnemyControllerComponent::Destroy()
 inline void KG::Component::SEnemyControllerComponent::ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime, int repeat) {
 	anim->ChangeAnimation(animId, animIndex, nextState, blendingTime, repeat);
 	KG::Packet::SC_CHANGE_ANIMATION pa = {};
-	pa.animId = animId;
+	pa.animId = animId.value;
 	pa.animIndex = animIndex;
 	pa.blendingTime = blendingTime;
 	pa.nextState = nextState;

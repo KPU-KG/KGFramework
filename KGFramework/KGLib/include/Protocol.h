@@ -202,7 +202,7 @@ namespace KG::Packet
 	struct SC_CHANGE_ANIMATION
 	{
 		DEFAULT_PACKET_HEADER(SC_CHANGE_ANIMATION);
-		KG::Utill::HashString animId;
+		KG::Utill::hashType animId;
 		UINT animIndex;
 		UINT nextState;
 		float blendingTime;
