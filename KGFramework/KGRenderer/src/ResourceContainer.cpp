@@ -76,12 +76,16 @@ KG::Resource::FrameModel* KG::Resource::ResourceContainer::LoadModel(const KG::U
 //없으면 그냥 로딩
 // 있으면 get으로 받아옴 
 
-static void AsyncLoadFrameModel(std::vector<KG::Utill::HashString>&& vectors, std::vector<std::promise<KG::Resource::FrameModel>>&& promises)
+static void AsyncLoadKGGModel(KG::Resource::Metadata::GeometrySetData&& data, std::promise<KG::Resource::FrameModel>&& promise)
+{
+    promise.set_value(KG::Resource::FrameModel(data));
+}
+
+static void AsyncLoadFBXModel(std::vector<KG::Resource::Metadata::GeometrySetData>&& vectors, std::vector<std::promise<KG::Resource::FrameModel>>&& promises)
 {
 	for ( size_t i = 0; i < vectors.size(); i++ )
 	{
-		auto metaData = KG::Resource::ResourceLoader::LoadGeometrySetFromFile("Resource/GeometrySet.xml", vectors[i]);
-		promises[i].set_value(KG::Resource::FrameModel(metaData));
+        promises[i].set_value(KG::Resource::FrameModel(vectors[i]));
 	}
 }
 
@@ -89,12 +93,27 @@ void KG::Resource::ResourceContainer::PreLoadModels(std::vector<KG::Utill::HashS
 {
 	DebugNormalMessage("Preload Models Start");
 	std::vector<std::promise<KG::Resource::FrameModel>> promises;
-	promises.resize(vectors.size());
+    std::vector<KG::Resource::Metadata::GeometrySetData> fbxList;
+	promises.reserve(vectors.size());
+    fbxList.reserve(vectors.size());
 	for ( size_t i = 0; i < vectors.size(); i++ )
 	{
-		this->preloadModels.emplace(vectors[i], promises[i].get_future());
+        auto metaData = KG::Resource::ResourceLoader::LoadGeometrySetFromFile("Resource/GeometrySet.xml", vectors[i]);
+        if ( KG::Resource::FrameModel::CheckKGGLoad(metaData) )
+        {
+            std::promise<KG::Resource::FrameModel> kggPromise;
+            this->preloadModels.emplace(vectors[i], kggPromise.get_future());
+            std::thread preloadThread{ AsyncLoadKGGModel, std::move(metaData), std::move(kggPromise) };
+            preloadThread.detach();
+        }
+        else 
+        {
+            fbxList.emplace_back(std::move(metaData));
+            this->preloadModels.emplace(vectors[i], promises.emplace_back().get_future());
+        }
 	}
-	std::thread preloadThread{ AsyncLoadFrameModel , std::move(vectors), std::move(promises) };
+
+	std::thread preloadThread{ AsyncLoadFBXModel , std::move(fbxList), std::move(promises) };
 	preloadThread.detach();
 	//std::async(std::launch::async, AsyncLoadFrameModel, std::move(vectors), std::move(promises));
 	DebugNormalMessage("Preload Models Req End");

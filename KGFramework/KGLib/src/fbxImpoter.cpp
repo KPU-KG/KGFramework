@@ -1015,9 +1015,7 @@ static void ReadStreamDoubleVector(std::ifstream& in, std::vector<std::vector<Ty
 
 void KG::Utill::ImportData::SaveToKGG(const std::string& path)
 {
-    auto newString = path;
-    newString = path.substr(0, path.size() - 3);
-    newString += "KGG";
+    auto newString = ToKGGFilePath(path);
 
     std::ofstream out(newString, std::ios::binary);
     WriteStreamKGGVector(out, meshs);
@@ -1040,9 +1038,7 @@ void KG::Utill::ImportData::SaveToKGG(const std::string& path)
 }
 bool KG::Utill::ImportData::LoadToKGG(const std::string& path)
 {
-    auto newString = path;
-    newString = path.substr(0, path.size() - 3);
-    newString += "KGG";
+    auto newString = ToKGGFilePath(path);
     if ( !exists(newString) )
         return false;
 
@@ -1205,4 +1201,17 @@ void KG::Utill::ModelNode::LoadToKGG(std::ifstream& in, std::deque<ModelNode>& n
     ReadStreamValue(in, rotation);
     ReadStreamValue(in, scale);
     ReadStreamVector(in, meshs);
+}
+
+bool KG::Utill::ImportData::IsKGGFileExist(const std::string& path)
+{
+    return exists(ToKGGFilePath(path));
+}
+
+std::string KG::Utill::ImportData::ToKGGFilePath(const std::string& path)
+{
+    auto newString = path;
+    newString = path.substr(0, path.size() - 3);
+    newString += "KGG";
+    return newString;
 }

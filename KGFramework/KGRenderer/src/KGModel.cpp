@@ -17,6 +17,16 @@ KG::Resource::FrameModel::FrameModel( const KG::Resource::Metadata::GeometrySetD
 	CreateFromMetadata( metadata );
 }
 
+bool KG::Resource::FrameModel::CheckKGGLoad(const std::string& fileDir)
+{
+    return KG::Utill::ImportData::IsKGGFileExist(fileDir);
+}
+
+bool KG::Resource::FrameModel::CheckKGGLoad(const KG::Resource::Metadata::GeometrySetData& metadata)
+{
+    return KG::Utill::ImportData::IsKGGFileExist(metadata.fileDir);
+}
+
 void KG::Resource::FrameModel::CreateFromFBX( const std::string& fileDir )
 {
 	this->data.LoadFromPathFBX( fileDir );
