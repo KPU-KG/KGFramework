@@ -590,13 +590,11 @@ void KG::Component::SEnemyControllerComponent::Attack(SGameManagerComponent* gam
 	auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
 
 	auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-	targetPos.y += this->target->GetGameObject()->GetComponent<DynamicRigidComponent>()->GetCollisionBox().scale.y + this->target->GetGameObject()->GetComponent<DynamicRigidComponent>()->GetCollisionBox().position.y;
-	auto direction = Math::Vector3::Normalize(this->transform->GetWorldLook());
-	// XMFLOAT3 origin;
-	// XMStoreFloat3(&origin, Math::Vector3::XMVectorScale(XMLoadFloat3(&direction), 10));
-	// origin = Math::Vector3::Add(this->transform->GetWorldPosition(), origin);
+	targetPos.y += 3;
 	auto origin = this->transform->GetPosition();
-	// direction.y += 6;
+	origin.y += 3;
+	auto direction = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, origin));
+
 	
 	KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
 	auto tag = KG::Utill::HashString(presetName);
