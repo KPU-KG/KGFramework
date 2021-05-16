@@ -65,6 +65,7 @@ namespace KG::Component
 		}
 		virtual bool OnDrawGUI();
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
+		void HitBullet(int damage);
 	};
 	REGISTER_COMPONENT_ID(SPlayerComponent);
 

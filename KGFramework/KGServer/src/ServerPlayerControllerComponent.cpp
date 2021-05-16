@@ -26,6 +26,15 @@ void KG::Component::SPlayerComponent::OnCreate(KG::Core::GameObject* obj)
 	this->trasnform = this->GetGameObject()->GetComponent<TransformComponent>();
 	this->rotationTrasnform = this->GetGameObject()->GetChild()->GetTransform();
 	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
+	this->physics->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
+		DebugNormalMessage("Player object collide");
+		auto filterMy = my->GetFilterMask();
+		auto filterOther = other->GetFilterGroup();
+		if (filterOther & static_cast<uint32_t>(FilterGroup::eBULLET)) {
+			this->HitBullet(1);
+		}
+		}
+	);
 	this->physicsScene = this->server->GetPhysicsScene();
 }
 
@@ -168,5 +177,12 @@ bool KG::Component::SPlayerComponent::OnProcessPacket(unsigned char* packet, KG:
 	return true;
 	}
 	return false;
+}
+
+void KG::Component::SPlayerComponent::HitBullet(int damage)
+{
+	hpPoint -= damage;
+	if (hpPoint < 0)
+		hpPoint = 0;
 }
 

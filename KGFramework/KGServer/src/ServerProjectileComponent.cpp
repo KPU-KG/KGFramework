@@ -19,8 +19,12 @@ void KG::Component::SProjectileComponent::Initialize(DirectX::XMFLOAT3 origin, D
 		DebugNormalMessage("Projectile object collide");
 		auto filterMy = my->GetFilterMask();
 		auto filterOther = other->GetFilterGroup();
-		if (!(filterMy & filterOther))
+		if (!(filterMy & filterOther)) {
+			auto col = other->GetCollisionCallback();
+			if (col != nullptr)
+				col(other, my);
 			this->GetGameObject()->Destroy();
+		}
 		});
 	this->direction = direction;
 	this->speed = speed;

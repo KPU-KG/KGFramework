@@ -676,6 +676,7 @@ void KG::GameFramework::PostSceneFunction()
 			dynCol->GetCollisionBox().scale.z = 0.7;
 
 			dynCol->SetApply(true);
+			dynCol->AddFilterGroup(KG::Component::FilterGroup::ePLAYER, KG::Component::FilterGroup::eNONE);
 
 			obj.AddComponent(dynCol);
 

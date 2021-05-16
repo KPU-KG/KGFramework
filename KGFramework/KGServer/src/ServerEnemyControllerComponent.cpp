@@ -590,7 +590,7 @@ void KG::Component::SEnemyControllerComponent::Attack(SGameManagerComponent* gam
 	auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
 
 	auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-	targetPos.y += 3;
+	targetPos.y += 1;
 	auto origin = this->transform->GetPosition();
 	origin.y += 3;
 	auto direction = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, origin));
