@@ -4,7 +4,7 @@
         <Tag hash_id="2818039298" srcString="ArmyBoxComplete.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
             <Position x="11.578867" y="2.1120958e-07" z="20.685059"/>
-            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Rotation_Q x="-0" y="0" z="-0" w="1"/>
             <Scale x="0.0024999999" y="0.0024999999" z="0.0024999999"/>
         </Component>
         <GameObject instanceId="341">
@@ -14,46 +14,6 @@
                 <Rotation_Q x="0" y="0" z="0" w="1"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
-            <GameObject instanceId="342">
-                <Tag hash_id="3396248247" srcString="Sun.004"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="-32.921219" y="569.00165" z="64.152863"/>
-                    <Rotation_Q x="-0.17369291" y="0.0071293712" z="-0.91679925" w="0.35952616"/>
-                    <Scale x="100.00001" y="100" z="100"/>
-                </Component>
-            </GameObject>
-            <GameObject instanceId="343">
-                <Tag hash_id="3396241520" srcString="Sun.003"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="-484.87695" y="59.99955" z="64.152863"/>
-                    <Rotation_Q x="-0.17369291" y="0.0071293712" z="-0.91679925" w="0.35952616"/>
-                    <Scale x="100.00001" y="100" z="100"/>
-                </Component>
-            </GameObject>
-            <GameObject instanceId="344">
-                <Tag hash_id="3396242481" srcString="Sun.002"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="593.76581" y="32.110531" z="6.7366004"/>
-                    <Rotation_Q x="-0.058854945" y="-0.14968975" z="0.70619726" w="0.68950307"/>
-                    <Scale x="100" y="100" z="100"/>
-                </Component>
-            </GameObject>
-            <GameObject instanceId="345">
-                <Tag hash_id="3396243442" srcString="Sun.001"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="54.44442" y="40.877106" z="-475.16855"/>
-                    <Rotation_Q x="0.37437457" y="0.35933536" z="0.61238015" w="0.59641623"/>
-                    <Scale x="100" y="100" z="100"/>
-                </Component>
-            </GameObject>
-            <GameObject instanceId="346">
-                <Tag hash_id="82827629" srcString="Sun"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="54.44442" y="12.449069" z="563.38342"/>
-                    <Rotation_Q x="-0.61299145" y="0.51289761" z="-0.45869371" w="0.38830093"/>
-                    <Scale x="100" y="100" z="100.00001"/>
-                </Component>
-            </GameObject>
             <GameObject instanceId="347">
                 <Tag hash_id="2364717594" srcString="fullbody"/>
                 <Component name="TransformComponent" hash_id="3882513520">
@@ -74,7 +34,7 @@
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
-                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <materialID hash_id="2709933745" srcString="armybox"/>
                             <slotIndex value="0"/>
                         </Element>
                     </MaterialDesc>
