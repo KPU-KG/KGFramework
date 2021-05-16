@@ -157,6 +157,7 @@ namespace KG::Packet
 		DEFAULT_PACKET_HEADER(SC_PLAYER_DATA);
 		RawFloat3 position;
 		RawFloat4 rotation;
+        float playerHp;
 		float forwardValue;
 		float rightValue;
 	};

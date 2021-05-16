@@ -61,8 +61,10 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
 
     auto* digit_0_Obj = this->gameObject->FindChildObject("DIGIT_0"_id);
     auto* digit_1_Obj = this->gameObject->FindChildObject("DIGIT_1"_id);
+    auto* hpBar_Obj = this->gameObject->FindChildObject("HPUI"_id);
     digit_0 = digit_0_Obj->GetComponent<IRender2DComponent>();
     digit_1 = digit_1_Obj->GetComponent<IRender2DComponent>();
+    hpbar = hpBar_Obj->GetComponent<IRender2DComponent>();
     this->OnChangeBulletCount(this->bulletCount);
 
     KG::Component::ParticleDesc muzzleDesc;
@@ -124,6 +126,7 @@ bool KG::Component::CPlayerControllerComponent::OnProcessPacket(unsigned char* p
         {
             auto* ScenePacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_DATA>(packet);
             this->characterTransform->SetPosition(ScenePacket->position);
+            hpbar->progress.value = ScenePacket->playerHp;
             //회전 정보 무시 = 에임 랙걸림
             return true;
         }

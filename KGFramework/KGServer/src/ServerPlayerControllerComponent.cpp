@@ -57,6 +57,7 @@ void KG::Component::SPlayerComponent::SendSyncPacket()
 	syncPacket.rotation = this->rotationTrasnform->GetRotation();
 	syncPacket.forwardValue = this->forwardValue;
 	syncPacket.rightValue = this->rightValue;
+    syncPacket.playerHp = static_cast<float>(this->hpPoint) / static_cast<float>(this->MAX_HP);
 	//std::cout << "SendSyncPacket f : " << forwardValue << " / r :" << rightValue << "\n";
 	this->BroadcastPacket(&syncPacket);
 }
@@ -135,6 +136,7 @@ void KG::Component::SPlayerComponent::ProcessMove(float elapsedTime)
 
 bool KG::Component::SPlayerComponent::OnDrawGUI()
 {
+    ImGui::InputInt("HP", &this->hpPoint);
 	return false;
 }
 

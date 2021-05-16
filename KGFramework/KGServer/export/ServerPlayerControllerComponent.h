@@ -43,6 +43,8 @@ namespace KG::Component
 
 		// Bullet
 		int bulletCount = 30;
+        static constexpr int MAX_HP = 30;
+        int hpPoint = MAX_HP;
 
 		bool reloadFlag = false;
 

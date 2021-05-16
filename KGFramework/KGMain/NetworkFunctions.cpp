@@ -68,6 +68,20 @@ void KG::GameFramework::PostNetworkFunction()
                 r2d->ReloadRender();
                 obj.GetTransform()->AddChild(uiObj->GetTransform());
             }
+
+            {
+                auto* uiObj = this->scene->CallPreset("2DUI"_id);
+                uiObj->tag = KG::Utill::HashString("HPUI");
+                auto* r2d = uiObj->GetComponent<KG::Component::IRender2DComponent>();
+                r2d->material2D.materialId = "UIWhite"_id;
+                r2d->transform2D.position = DirectX::XMFLOAT2(0.1f, 0.1f);
+                r2d->transform2D.size = DirectX::XMFLOAT2(0.7, 0.075);
+                r2d->transform2D.parentPivot = KG::Component::RectPivot::LEFT_BOTTOM;
+                r2d->transform2D.localPivot = KG::Component::RectPivot::LEFT_BOTTOM;
+                r2d->material2D.color = KG::Utill::Color(1, 0, 0);
+                r2d->ReloadRender();
+                obj.GetTransform()->AddChild(uiObj->GetTransform());
+            }
 			auto* comp = this->networkClient->GetNewPlayerControllerComponent();
 			obj.AddComponent(comp);
 			return comp;
