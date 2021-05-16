@@ -51,6 +51,7 @@ namespace KG::Physics
 		physx::PxDefaultCpuDispatcher*	cpuDispatcher;
 		physx::PxPvd*					pvd;
 		physx::PxScene*					scene;
+		// physx::PxErrorCallback*			physicsErrorCallback;
 		PhysicsEventCallback*			physicsEventCallback;
 
 		float							accumulator = 0.0f;
@@ -75,10 +76,6 @@ namespace KG::Physics
 		virtual void ReleaseActor(KG::Component::IRigidComponent* comp) override final;
         virtual KG::Component::IRigidComponent* QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) override final;
         virtual RaycastResult QueryRaycastResult(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) override final;
-		virtual void LockRead();
-		virtual void LockWrite();
-		virtual void UnlockRead();
-		virtual void UnlockWrite();
 		static PhysicsScene* GetInstance() { return instance; }
 	};
 }

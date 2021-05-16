@@ -22,6 +22,9 @@ namespace KG::Component
 		float damage;
 
 		bool isDelete = false;
+
+		float sendInterval = 1.f / 60.f;
+		float sendTimer = 0.f;
 		// ProjectileType type;
 
 
@@ -36,12 +39,9 @@ namespace KG::Component
 		void Initialize(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float speed, float damage = 1);
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
-		virtual void OnDestroy() override
-		{
-			IComponent::OnDestroy();
-		}
+		virtual void OnDestroy() override;
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender) override;
-		virtual void Destroy() override;
+		// virtual void Destroy() override;
 		bool IsDelete() const;
 	};
 

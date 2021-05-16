@@ -101,7 +101,7 @@ namespace KG::Component
 		int											currentNode = 0;
 
 		// 일단은 길찾기는 빼고 범위 내로 들어오면 타겟 플레이어를 향해 회전, 가능하면 공격까지
-		float										traceRange = 20;				
+		float										traceRange = 10;				
 
 		float										attackInterval = 2;
 		float										attackTimer = 0;

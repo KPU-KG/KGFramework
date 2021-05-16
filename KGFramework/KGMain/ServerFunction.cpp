@@ -42,15 +42,17 @@ void KG::GameFramework::PostServerFunction()
 		KG::Utill::HashString("Projectile"),
 		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent*
 		{
-			auto* trans = this->system->transformSystem.GetNewComponent();
-			trans->SetScale(0.1, 0.1, 0.1);
-			obj.AddComponent(trans);
+			// auto* trans = this->system->transformSystem.GetNewComponent();
+			// trans->SetScale(0.001, 0.001, 0.001);
+			// obj.AddComponent(trans);
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			auto& box = phy->GetCollisionBox();
 			box.position = { 0, 0, 0 };
-			box.scale = { 2,2,2 };
+			box.scale = { 1,1,1 };
 			phy->SetApply(true);
+			phy->AddFilterGroup(KG::Component::FilterGroup::eBULLET, KG::Component::FilterGroup::eENEMY);
+			phy->AddFilterGroup(KG::Component::FilterGroup::eNONE, KG::Component::FilterGroup::eBULLET);
 			obj.AddComponent(phy);
 
 			auto* comp = this->networkServer->GetNewProjectileComponent();
@@ -70,6 +72,7 @@ void KG::GameFramework::PostServerFunction()
 			box.scale = { 4,6,4 };
 			phy->SetCollisionBox(box);
 			phy->SetApply(true);
+			phy->AddFilterGroup(KG::Component::FilterGroup::eENEMY, KG::Component::FilterGroup::eNONE);
 			obj.AddComponent(phy);
 
 			auto* comp = this->networkServer->GetNewEnemyControllerComponent();

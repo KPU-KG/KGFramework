@@ -266,6 +266,8 @@ void KG::GameFramework::PostSceneFunction()
 		[this](KG::Core::GameObject& obj)
 		{
 			auto* t = this->system->transformSystem.GetNewComponent();
+			t->SetScale(0.001, 0.001, 0.001);
+
 			auto* g = this->renderer->GetNewGeomteryComponent();
 			g->AddGeometry(KG::Utill::HashString("cube"));
 			auto* m = this->renderer->GetNewMaterialComponent();

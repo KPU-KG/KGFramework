@@ -10,7 +10,7 @@ void KG::Component::CProjectileComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	CBaseComponent::OnCreate(obj);
 	this->transform = this->gameObject->GetTransform();
-	this->transform->SetScale(0.1, 0.1, 0.1);
+	// this->transform->SetScale(0.001, 0.001, 0.001);
 }
 
 void KG::Component::CProjectileComponent::Update(float elapsedTime)

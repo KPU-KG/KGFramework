@@ -43,11 +43,13 @@ namespace KG::Component
 	};
 
 	enum class FilterGroup {
+		eNONE = 0,
 		eFLOOR = (1 << 0),
 		eBUILDING = (1 << 1),
 		eBOX = (1 << 2),
 		eENEMY = (1 << 3),
-		ePLAYER = (1 << 4)
+		ePLAYER = (1 << 4),
+		eBULLET = (1 << 5)
 	};
 
 	struct CollisionBox {
@@ -67,7 +69,12 @@ namespace KG::Component
 		CollisionBox											collisionBox;
 		TransformComponent*										transform = nullptr;
 		COLLISION_SHAPE											show = COLLISION_SHAPE::BOX;
-		FilterGroup												filter = FilterGroup::eBOX;										
+		FilterGroup												filter = FilterGroup::eBOX;
+		FilterGroup												mask = FilterGroup::eNONE;
+
+		uint32_t												filterGroup = 0;
+		uint32_t												maskGroup = 0;
+
 		KG::Component::CollisionCallbackFunc					collisionCallback = nullptr;
 		RaycastCallbackFunc										raycastCallback = nullptr;
 		physx::PxFilterData*									filterData = nullptr;
@@ -82,15 +89,13 @@ namespace KG::Component
 		virtual void PostUpdate(float timeElapsed) override {};
 		virtual void Update(float timeElapsed) override {};
 		CollisionBox& GetCollisionBox() { return collisionBox; }
-		void SetCollisionBox(CollisionBox& box) {
-			this->collisionBox = box;
-		}
+		void SetCollisionBox(CollisionBox& box);
 
-		virtual void SetCollisionCallback(KG::Component::CollisionCallbackFunc&& collisionCallback) { this->collisionCallback = collisionCallback; };
-		KG::Component::CollisionCallbackFunc GetCollisionCallback() { return collisionCallback; }
+		virtual void SetCollisionCallback(KG::Component::CollisionCallbackFunc&& collisionCallback);;
+		KG::Component::CollisionCallbackFunc GetCollisionCallback();
 
-		virtual void SetRaycastCallback(KG::Component::RaycastCallbackFunc& raycastCallback) { this->raycastCallback = raycastCallback; }
-		virtual KG::Component::RaycastCallbackFunc GetRaycastCallback() const { return this->raycastCallback; }
+		virtual void SetRaycastCallback(KG::Component::RaycastCallbackFunc& raycastCallback);
+		virtual KG::Component::RaycastCallbackFunc GetRaycastCallback() const;
 
         virtual KG::Physics::IPhysicsScene* GetScene() const { return this->scene; }
 		virtual physx::PxActor* GetActor() { return nullptr; };
@@ -101,9 +106,13 @@ namespace KG::Component
 		void SetId(unsigned int id) { this->id = id; }
 		unsigned int GetId() const { return this->id; }
 		physx::PxFilterData* GetFilterData() { return filterData; }
+		uint32_t GetFilterGroup() { return filterGroup; }
+		uint32_t GetFilterMask() { return maskGroup; }
 		virtual void SetPosition(DirectX::XMFLOAT3 pos) {};
 		virtual void SetApply(bool apply) {};
 		virtual void ReleaseActor() = 0;
+		void AddFilterGroup(FilterGroup filterGroup, FilterGroup filterMask);
+
 	public:
 		// property
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3>		positionProp;
@@ -114,11 +123,11 @@ namespace KG::Component
 
 
 	protected:
-		std::function<void()> updateLambda = nullptr;
+		// std::function<void()> updateLambda = nullptr;
 	public:
 		// 임시 업데이트 람다함수
 		// 후에 AI 컴포넌트로 뺄것
-		virtual void SetUpdateCallback(std::function<void()>&& lam) { this->updateLambda = lam; };
+		// virtual void SetUpdateCallback(std::function<void()>&& lam) { this->updateLambda = lam; };
 		virtual bool IsDynamic() const { return dynamic; }
 	};
 

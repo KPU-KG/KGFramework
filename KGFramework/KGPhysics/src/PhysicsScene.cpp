@@ -92,7 +92,7 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
         return physx::PxFilterFlag::eDEFAULT;
     }
 
-    pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
+    // pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
 
     if ( !(filterData0.word0 & filterData1.word1) && !(filterData0.word1 & filterData1.word0) )
     {
@@ -135,6 +135,9 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
                 CollisionCallback[comp2->GetActor()] = cp;
             }
         }
+        return physx::PxFilterFlag::eDEFAULT;
+    }
+    else {
         return physx::PxFilterFlag::eDEFAULT;
     }
 
@@ -206,7 +209,7 @@ void KG::Physics::PhysicsScene::Initialize()
     const char* strTransport = "127.0.0.1";
 
     allocator = new PxDefaultAllocator();
-    //errorCallback = new PxDefaultErrorCallback();
+    // errorCallback = new PxDefaultErrorCallback();
     errorCallback = new ErrorCallback();
     // errorCallback->reportError()
 
@@ -272,12 +275,7 @@ bool KG::Physics::PhysicsScene::Advance(float timeElapsed)
     while ( accumulator >= stepSize )
     {
         accumulator -= stepSize;
-        this->LockWrite();
-        this->LockRead();
         scene->simulate(stepSize);
-        this->UnlockRead();
-        this->UnlockWrite();
-
         scene->collide(stepSize);
         scene->fetchCollision(true);
         scene->fetchResults(true);
@@ -452,12 +450,7 @@ void KG::Physics::PhysicsScene::ReleaseActor(KG::Component::IRigidComponent* com
         CollisionCallback.erase(actor);
     if (compIndex.count(comp->GetId()) != 0)
         compIndex.erase(comp->GetId());
-
-    this->LockWrite();
-    this->LockRead();
     this->scene->removeActor(*actor);
-    this->UnlockRead();
-    this->UnlockWrite();
 }
 
 KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId)
@@ -513,24 +506,4 @@ RaycastResult KG::Physics::PhysicsScene::QueryRaycastResult(DirectX::XMFLOAT3 or
         }
     }
     return result;
-}
-
-void KG::Physics::PhysicsScene::LockRead()
-{
-    this->scene->lockRead();
-}
-
-void KG::Physics::PhysicsScene::LockWrite()
-{
-    this->scene->lockWrite();
-}
-
-void KG::Physics::PhysicsScene::UnlockRead()
-{
-    this->scene->unlockRead();
-}
-
-void KG::Physics::PhysicsScene::UnlockWrite()
-{
-    this->scene->unlockWrite();
 }

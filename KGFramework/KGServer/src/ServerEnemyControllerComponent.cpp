@@ -503,7 +503,6 @@ void KG::Component::SEnemyControllerComponent::Destroy()
 	if (rigid)
 		rigid->ReleaseActor();
 	KG::Packet::SC_REMOVE_OBJECT removeObjectPacket = {};
-	// removeObjectPacket.objectId = enemies[i]->GetNetId();
 	this->BroadcastPacket((void*)&removeObjectPacket);
 	gameObject->Destroy();
 }
@@ -538,7 +537,7 @@ float KG::Component::SEnemyControllerComponent::GetDistance2FromEnemy(DirectX::X
 
 bool KG::Component::SEnemyControllerComponent::IsInTraceRange(const DirectX::XMFLOAT3 pos) const
 {
-	float rr = range * range;
+	float rr = traceRange * traceRange;
 	float distance2 = GetDistance2FromEnemy(pos);
 	if (rr > distance2)
 		return true;
@@ -591,13 +590,13 @@ void KG::Component::SEnemyControllerComponent::Attack(SGameManagerComponent* gam
 	auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
 
 	auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-	// this->transform->GetWorldLook()
+	targetPos.y += this->target->GetGameObject()->GetComponent<DynamicRigidComponent>()->GetCollisionBox().scale.y + this->target->GetGameObject()->GetComponent<DynamicRigidComponent>()->GetCollisionBox().position.y;
 	auto direction = Math::Vector3::Normalize(this->transform->GetWorldLook());
-	XMFLOAT3 origin;
-	XMStoreFloat3(&origin, Math::Vector3::XMVectorScale(XMLoadFloat3(&direction), 6));
-	origin = Math::Vector3::Add(this->transform->GetWorldPosition(), origin);
-
-	direction.y += 6;
+	// XMFLOAT3 origin;
+	// XMStoreFloat3(&origin, Math::Vector3::XMVectorScale(XMLoadFloat3(&direction), 10));
+	// origin = Math::Vector3::Add(this->transform->GetWorldPosition(), origin);
+	auto origin = this->transform->GetPosition();
+	// direction.y += 6;
 	
 	KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
 	auto tag = KG::Utill::HashString(presetName);
@@ -611,17 +610,16 @@ void KG::Component::SEnemyControllerComponent::Attack(SGameManagerComponent* gam
 	comp->SetNetObjectId(id);
 	this->server->SetServerObject(id, comp);
 
-	comp->GetGameObject()->GetTransform()->SetScale(0.1, 0.1, 0.1);
+	// comp->GetGameObject()->GetTransform()->SetScale(0.1, 0.1, 0.1);
 
 	auto projectile = comp->GetGameObject()->GetComponent<SProjectileComponent>();
 	
 	
-	projectile->Initialize(origin, direction, 10, 1);
-
+	projectile->Initialize(origin, direction, 20, 1);
 	this->server->SetServerObject(id, projectile);
-
 	gameManager->BroadcastPacket(&addObjectPacket);
-
+	this->GetGameObject()->GetTransform()->GetParent()->AddChild(comp->GetGameObject()->GetTransform());
+	// this->GetGameObject()->GetTransform()->AddChild(comp->GetGameObject()->GetTransform());
 	DebugNormalMessage("Enemy Controller : Shot Projectile");
 }
 

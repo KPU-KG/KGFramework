@@ -13,7 +13,7 @@ void KG::Component::DynamicRigidComponent::OnCreate(KG::Core::GameObject* gameOb
 	IRigidComponent::OnCreate(gameObject);
 	KG::Physics::PhysicsScene::GetInstance()->AddDynamicActor(this);
 	dynamic = true;
-	SetupFiltering(static_cast<unsigned int>(filter), 0);
+	SetupFiltering(filterGroup, maskGroup);
 }
 
 KG::Component::DynamicRigidComponent::DynamicRigidComponent()
@@ -67,8 +67,7 @@ void KG::Component::DynamicRigidComponent::PostUpdate(float timeElapsed)
 
 void KG::Component::DynamicRigidComponent::Update(float timeElapsed)
 {
-	if (updateLambda != nullptr)
-		updateLambda();
+
 }
 
 void KG::Component::DynamicRigidComponent::Move(DirectX::XMFLOAT3 direction, float speed) {
@@ -282,7 +281,7 @@ void KG::Component::StaticRigidComponent::OnCreate(KG::Core::GameObject* gameObj
 	IRigidComponent::OnCreate(gameObject);
 	KG::Physics::PhysicsScene::GetInstance()->AddStaticActor(this);
 	dynamic = false;
-	SetupFiltering(static_cast<unsigned int>(filter), 0);
+	SetupFiltering(this->filterGroup, this->maskGroup);
 }
 
 
@@ -487,14 +486,34 @@ KG::Component::IRigidComponent::IRigidComponent()
 	filterProp(
 		"CollisionFilter", this->filter,
 		{
+			{FilterGroup::eNONE, "None"},
+			{FilterGroup::eFLOOR, "Floor"},
 			{FilterGroup::eBOX, "Box"},
 			{FilterGroup::eBUILDING, "Building"},
 			{FilterGroup::eENEMY, "Enemy"},
-			{FilterGroup::eFLOOR, "Floor"},
-			{FilterGroup::ePLAYER, "Player"}
+			{FilterGroup::ePLAYER, "Player"},
+			{FilterGroup::eBULLET, "Bullet"}
 		}, false)
 {
     this->scene = static_cast<KG::Physics::IPhysicsScene*>(KG::Physics::PhysicsScene::GetInstance());
+}
+
+void KG::Component::IRigidComponent::SetCollisionBox(CollisionBox& box) {
+	this->collisionBox = box;
+}
+
+void KG::Component::IRigidComponent::SetCollisionCallback(KG::Component::CollisionCallbackFunc&& collisionCallback) { this->collisionCallback = collisionCallback; }
+
+KG::Component::CollisionCallbackFunc KG::Component::IRigidComponent::GetCollisionCallback() { return collisionCallback; }
+
+void KG::Component::IRigidComponent::SetRaycastCallback(KG::Component::RaycastCallbackFunc& raycastCallback) { this->raycastCallback = raycastCallback; }
+
+KG::Component::RaycastCallbackFunc KG::Component::IRigidComponent::GetRaycastCallback() const { return this->raycastCallback; }
+
+void KG::Component::IRigidComponent::AddFilterGroup(FilterGroup filterGroup, FilterGroup filterMask)
+{
+	this->filterGroup |= static_cast<uint32_t>(filterGroup);
+	this->maskGroup |= static_cast<uint32_t>(filterMask);
 }
 
 DirectX::XMFLOAT4X4 KG::Component::CollisionBox::GetMatrix() const
