@@ -118,6 +118,7 @@ float4 PixelShaderFunction(ParticleGSOutput input) : SV_Target0
 {
     UIData data = uiInfo[input.InstanceID];
     MaterialData mat = materialData[data.materialIndex];
+    clip(1 - input.uv.r - (1 - data.progressValue));
     return shaderTexture[mat.ColorTextureIndex].Sample(gsamAnisotoropicClamp, input.uv) * data.color;
 }
 

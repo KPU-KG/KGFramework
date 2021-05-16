@@ -30,6 +30,7 @@ namespace KG::Component
 
         IRender2DComponent* digit_0 = nullptr;
         IRender2DComponent* digit_1 = nullptr;
+        IRender2DComponent* hpbar = nullptr;
 
 		float speedValue = 0.75f;
 

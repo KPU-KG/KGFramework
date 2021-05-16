@@ -86,6 +86,10 @@ namespace KG::Component
         virtual void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position) override;
         virtual void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position, const DirectX::XMFLOAT3 direction) override;
 
+
+        // IParticleEmitterComponent을(를) 통해 상속됨
+        virtual void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position, const DirectX::XMFLOAT3 baseSpeed, float lifeTime) override;
+
     };
 	REGISTER_COMPONENT_ID_REPLACE(ParticleEmitterComponent, IParticleEmitterComponent);
 };

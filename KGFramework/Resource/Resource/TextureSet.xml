@@ -329,9 +329,22 @@
     <Texture id="cactus_building_normal" fileDir="Resource/Geometry/newmo/Cactus1/Textures/cactus_building/normal.dds" dimension="Texture2D" format="DDS" hash_id="203878291"/>
     <Texture id="cactus_building_metalic" fileDir="Resource/Geometry/newmo/Cactus1/Textures/cactus_building/metalic.dds" dimension="Texture2D" format="DDS" hash_id="957806387"/>
     <!--cliff_v01-->
-    <Texture id="cliff_v01_color" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v01/color.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="cliff_v01_normal" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v01/normal.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="cliff_v01_color" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v01/color.dds" dimension="Texture2D" format="DDS" hash_id="2214511347"/>
+    <Texture id="cliff_v01_normal" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v01/normal.dds" dimension="Texture2D" format="DDS" hash_id="2341435163"/>
     <!--cliff_v02-->
-    <Texture id="cliff_v02_color" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v02/color.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="cliff_v02_normal" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v02/normal.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="cliff_v02_color" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v02/color.dds" dimension="Texture2D" format="DDS" hash_id="840092196"/>
+    <Texture id="cliff_v02_normal" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v02/normal.dds" dimension="Texture2D" format="DDS" hash_id="1459025594"/>
+    <!--armybox-->
+    <!--armybox-->
+    <Texture id="armybox_color" fileDir="Resource/Geometry/newmo/FBX ArmyBox/armybox/color.dds" dimension="Texture2D" format="DDS" hash_id="3184195757"/>
+    <Texture id="armybox_normal" fileDir="Resource/Geometry/newmo/FBX ArmyBox/armybox/normal.dds" dimension="Texture2D" format="DDS" hash_id="1565542557"/>
+    <Texture id="armybox_rough" fileDir="Resource/Geometry/newmo/FBX ArmyBox/armybox/rough.dds" dimension="Texture2D" format="DDS" hash_id="2663510903"/>
+    <!--Container Games-->
+    <Texture id="Container Games_color" fileDir="Resource/Geometry/newmo/Container_fbx/Textures_png/Container Games/color.dds" dimension="Texture2D" format="DDS" hash_id="3650272199"/>
+    <Texture id="Container Games_normal" fileDir="Resource/Geometry/newmo/Container_fbx/Textures_png/Container Games/normal.dds" dimension="Texture2D" format="DDS" hash_id="3664826735"/>
+    <Texture id="Container Games_metalic" fileDir="Resource/Geometry/newmo/Container_fbx/Textures_png/Container Games/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3791292791"/>
+    <!--concorete-->
+    <Texture id="concorete_color" fileDir="Resource/Texture/concorete/color.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="concorete_normal" fileDir="Resource/Texture/concorete/normal.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="concorete_rough" fileDir="Resource/Texture/concorete/rough.dds" dimension="Texture2D" format="DDS"/>
 </TextureSet>

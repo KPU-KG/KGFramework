@@ -61,8 +61,10 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
 
     auto* digit_0_Obj = this->gameObject->FindChildObject("DIGIT_0"_id);
     auto* digit_1_Obj = this->gameObject->FindChildObject("DIGIT_1"_id);
+    auto* hpBar_Obj = this->gameObject->FindChildObject("HPUI"_id);
     digit_0 = digit_0_Obj->GetComponent<IRender2DComponent>();
     digit_1 = digit_1_Obj->GetComponent<IRender2DComponent>();
+    hpbar = hpBar_Obj->GetComponent<IRender2DComponent>();
     this->OnChangeBulletCount(this->bulletCount);
 
     KG::Component::ParticleDesc muzzleDesc;
@@ -91,6 +93,18 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
 
     this->particleGen->AddParticleDesc(KG::Utill::HashString("Spark"), sparkDesc);
 
+    KG::Component::ParticleDesc bulletLine;
+    bulletLine.baselifeTime = 3.0f;
+    bulletLine.baseEmitCount = 1;
+    bulletLine.rangeEmitCount = 0;
+    bulletLine.baseSize.x = 0.25;
+    bulletLine.baseSize.y = 0.25;
+    bulletLine.type = ParticleType::Add;
+    bulletLine.color.SetByFloat(1, 1, 0);
+    bulletLine.materialId = KG::Utill::HashString("SparkParticle");
+
+    this->particleGen->AddParticleDesc(KG::Utill::HashString("BulletLine"), bulletLine);
+
 }
 
 void KG::Component::CPlayerControllerComponent::Update(float elapsedTime)
@@ -112,6 +126,7 @@ bool KG::Component::CPlayerControllerComponent::OnProcessPacket(unsigned char* p
         {
             auto* ScenePacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_DATA>(packet);
             this->characterTransform->SetPosition(ScenePacket->position);
+            hpbar->progress.value = ScenePacket->playerHp;
             //회전 정보 무시 = 에임 랙걸림
             return true;
         }
@@ -418,6 +433,21 @@ void KG::Component::CPlayerControllerComponent::TryShoot(float elapsedTime)
         if ( comp.targetRigid )
         {
             this->particleGen->EmitParticle(KG::Utill::HashString("Spark"_id), comp.hitPosition, comp.normal * 2);
+            {
+                auto start = this->particleGen->GetGameObject()->GetTransform()->GetWorldPosition();
+                auto end = comp.hitPosition;
+                float speed = 50.0f;
+                auto direction = KG::Math::Vector3::Normalize(end - start) * speed;
+                float lifeTime = comp.distance / speed;
+                this->particleGen->EmitParticle(KG::Utill::HashString("BulletLine"_id), start, direction, lifeTime);
+            }
+        }
+        else 
+        {
+            auto start = this->particleGen->GetGameObject()->GetTransform()->GetWorldPosition();
+            float speed = 50.0f;
+            auto direction = this->cameraTransform->GetWorldLook() * speed;
+            this->particleGen->EmitParticle(KG::Utill::HashString("BulletLine"_id), start, direction, 10.0f);
         }
     }
 }

@@ -36,7 +36,8 @@ namespace KG::Renderer
 		void Initialize();
         void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3& position);
         void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& baseSpeed);
-		void EmitParticle(const KG::Component::ParticleData& desc, bool autoFillTime, KG::Component::ParticleType type); 
+        void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& baseSpeed, float lifeTime);
+        void EmitParticle(const KG::Component::ParticleData& desc, bool autoFillTime, KG::Component::ParticleType type);
 		void Update(float elapsedTime);
         void AddParticleDesc(const KG::Utill::HashString& id, KG::Component::ParticleDesc desc);
 		static bool isExpired(const KG::Component::ParticleData& desc);
