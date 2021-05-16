@@ -1,4 +1,5 @@
 #include "FakeParticleEmitterComponent.h"
+#include "..\include_fake\FakeParticleEmitterComponent.h"
 
 void KG::Component::FakeParticleEmitterComponent::Update(float elapsedTime)
 {
@@ -15,6 +16,10 @@ void KG::Component::FakeParticleEmitterComponent::OnDataSave(tinyxml2::XMLElemen
 bool KG::Component::FakeParticleEmitterComponent::OnDrawGUI()
 {
     return false;
+}
+
+void KG::Component::FakeParticleEmitterComponent::EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position, const DirectX::XMFLOAT3 baseSpeed, float lifeTime)
+{
 }
 
 void KG::Component::FakeParticleEmitterComponent::EmitParticle(const KG::Utill::HashString& id)

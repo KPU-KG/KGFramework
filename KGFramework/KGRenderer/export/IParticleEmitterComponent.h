@@ -76,6 +76,7 @@ namespace KG::Component
         virtual void EmitParticle(const KG::Utill::HashString& id) = 0;
         virtual void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position) = 0;
         virtual void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position, const DirectX::XMFLOAT3 baseSpeed) = 0;
+        virtual void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position, const DirectX::XMFLOAT3 baseSpeed, float lifeTime) = 0;
         virtual void EmitParticle(const ParticleData& desc, bool autoFillTime, ParticleType type) = 0;
 	public:
 		virtual void Update(float elapsedTime) override = 0;

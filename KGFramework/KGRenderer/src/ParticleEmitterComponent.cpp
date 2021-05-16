@@ -56,6 +56,11 @@ void KG::Component::ParticleEmitterComponent::EmitParticle(const KG::Utill::Hash
     this->particleGenerator->EmitParticle(id, position, baseSpeed);
 }
 
+void KG::Component::ParticleEmitterComponent::EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position, const DirectX::XMFLOAT3 baseSpeed, float lifeTime)
+{
+    this->particleGenerator->EmitParticle(id, position, baseSpeed, lifeTime);
+}
+
 void KG::Component::ParticleEmitterComponent::EmitParticle(const ParticleData& desc, bool autoFillTime, ParticleType type)
 {
     this->particleGenerator->EmitParticle(desc, autoFillTime, type);

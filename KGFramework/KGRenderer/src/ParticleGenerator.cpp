@@ -81,6 +81,21 @@ void KG::Renderer::ParticleGenerator::EmitParticle(const KG::Utill::HashString& 
     }
 }
 
+void KG::Renderer::ParticleGenerator::EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& baseSpeed, float lifeTime)
+{
+    auto it = this->particleDescs.find(id);
+    if ( it == this->particleDescs.end() ) return;
+
+    auto type = it->second.type;
+    auto count = it->second.GetCount();
+    for ( int i = 0; i < count; i++ )
+    {
+        auto data = it->second.GetData(position, baseSpeed);
+        data.lifeTime = lifeTime;
+        this->EmitParticle(data, true, type);
+    }
+}
+
 void KG::Renderer::ParticleGenerator::EmitParticle(const KG::Component::ParticleData& desc, bool autoFillTime, KG::Component::ParticleType type)
 {
     bool isAdd = type == KG::Component::ParticleType::Add;
