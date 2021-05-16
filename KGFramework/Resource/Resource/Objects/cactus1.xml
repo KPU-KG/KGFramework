@@ -3,17 +3,10 @@
     <GameObject instanceId="272">
         <Tag hash_id="2671506371" srcString="cactus1.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="36.946007" y="1.0082417" z="-147.4068"/>
-            <Rotation_Q x="0" y="0.4226183" z="0" w="0.90630776"/>
+            <Position x="132.04338" y="1.0082397" z="-153.76686"/>
+            <Rotation_Q x="-0" y="0" z="-0" w="1"/>
             <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
         </Component>
-        <Component name="GeometryComponent" hash_id="36578682">
-            <GeometryDescs/>
-        </Component>
-        <Component name="MaterialComponent" hash_id="1886146475">
-            <MaterialDesc/>
-        </Component>
-        <Component name="Render3DComponent" hash_id="4070531333"/>
         <GameObject instanceId="267">
             <Tag hash_id="4257772165" srcString="RootNode"/>
             <Component name="TransformComponent" hash_id="3882513520">
@@ -35,7 +28,7 @@
                         <Rotation_Q x="1.7763568e-15" y="0" z="0" w="1"/>
                         <Scale x="1" y="1" z="1"/>
                     </Component>
-                    <Component name="GeometryComponent" hash_id="36578682">
+                    <Component name="IGeometryComponent" hash_id="1162546763">
                         <GeometryDescs>
                             <Element>
                                 <geometryID hash_id="2671506371" srcString="cactus1.fbx"/>
@@ -44,11 +37,11 @@
                             </Element>
                         </GeometryDescs>
                     </Component>
-                    <Component name="MaterialComponent" hash_id="1886146475">
+                    <Component name="IMaterialComponent" hash_id="308235170">
                         <MaterialDesc>
                             <Element>
                                 <isRawShader value="false"/>
-                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <materialID hash_id="40299571" srcString="facade"/>
                                 <slotIndex value="0"/>
                             </Element>
                             <Element>
@@ -63,7 +56,7 @@
                             </Element>
                         </MaterialDesc>
                     </Component>
-                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
                 </GameObject>
                 <GameObject instanceId="270">
                     <Tag hash_id="4124968975" srcString="cactus1_metalparts_geo"/>
@@ -72,7 +65,7 @@
                         <Rotation_Q x="1.7763568e-15" y="0" z="0" w="1"/>
                         <Scale x="1" y="1" z="1"/>
                     </Component>
-                    <Component name="GeometryComponent" hash_id="36578682">
+                    <Component name="IGeometryComponent" hash_id="1162546763">
                         <GeometryDescs>
                             <Element>
                                 <geometryID hash_id="2671506371" srcString="cactus1.fbx"/>
@@ -81,11 +74,11 @@
                             </Element>
                         </GeometryDescs>
                     </Component>
-                    <Component name="MaterialComponent" hash_id="1886146475">
+                    <Component name="IMaterialComponent" hash_id="308235170">
                         <MaterialDesc>
                             <Element>
                                 <isRawShader value="false"/>
-                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <materialID hash_id="2545834378" srcString="cactus_metalparts"/>
                                 <slotIndex value="0"/>
                             </Element>
                             <Element>
@@ -100,7 +93,7 @@
                             </Element>
                         </MaterialDesc>
                     </Component>
-                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
                 </GameObject>
                 <GameObject instanceId="271">
                     <Tag hash_id="3277882242" srcString="cactus1_building_geo"/>
@@ -109,7 +102,7 @@
                         <Rotation_Q x="1.7763568e-15" y="0" z="0" w="1"/>
                         <Scale x="1" y="1" z="1"/>
                     </Component>
-                    <Component name="GeometryComponent" hash_id="36578682">
+                    <Component name="IGeometryComponent" hash_id="1162546763">
                         <GeometryDescs>
                             <Element>
                                 <geometryID hash_id="2671506371" srcString="cactus1.fbx"/>
@@ -118,11 +111,11 @@
                             </Element>
                         </GeometryDescs>
                     </Component>
-                    <Component name="MaterialComponent" hash_id="1886146475">
+                    <Component name="IMaterialComponent" hash_id="308235170">
                         <MaterialDesc>
                             <Element>
                                 <isRawShader value="false"/>
-                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <materialID hash_id="2557868611" srcString="cactus_building"/>
                                 <slotIndex value="0"/>
                             </Element>
                             <Element>
@@ -137,7 +130,7 @@
                             </Element>
                         </MaterialDesc>
                     </Component>
-                    <Component name="Render3DComponent" hash_id="4070531333"/>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
                 </GameObject>
             </GameObject>
         </GameObject>

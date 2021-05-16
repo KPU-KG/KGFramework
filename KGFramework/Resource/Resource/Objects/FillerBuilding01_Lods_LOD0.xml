@@ -3,9 +3,9 @@
     <GameObject instanceId="287">
         <Tag hash_id="1333025849" srcString="FillerBuilding01_Lods_LOD0.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="34.750961" y="-7.0883075e-06" z="-148.40242"/>
-            <Rotation_Q x="0" y="0.68835467" z="0" w="-0.72537184"/>
-            <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+            <Position x="218.2392" y="-6.2748127e-06" z="-62.534519"/>
+            <Rotation_Q x="0" y="0.73727733" z="0" w="0.67559016"/>
+            <Scale x="0.0069999662" y="0.0070000002" z="0.0069999662"/>
         </Component>
         <GameObject instanceId="287">
             <Tag hash_id="4257772165" srcString="RootNode"/>
@@ -34,7 +34,7 @@
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
-                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <materialID hash_id="40299571" srcString="facade"/>
                             <slotIndex value="0"/>
                         </Element>
                         <Element>
@@ -66,7 +66,7 @@
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
-                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <materialID hash_id="4283025636" srcString="filler_building_01"/>
                             <slotIndex value="0"/>
                         </Element>
                         <Element>

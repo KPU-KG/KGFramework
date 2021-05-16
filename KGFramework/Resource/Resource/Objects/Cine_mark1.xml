@@ -3,17 +3,10 @@
     <GameObject instanceId="286">
         <Tag hash_id="3001937105" srcString="Cine_mark1.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="128.65849" y="-2.9702846e-06" z="-112.9129"/>
-            <Rotation_Q x="-6.5739196e-09" y="0.99999982" z="4.5675868e-09" w="-5.9604645e-08"/>
-            <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
+            <Position x="160.26483" y="-1.9521949e-06" z="-55.087025"/>
+            <Rotation_Q x="-7.8782332e-09" y="0.70710683" z="-1.4186899e-09" w="-0.70710671"/>
+            <Scale x="0.006999997" y="0.0070000002" z="0.006999997"/>
         </Component>
-        <Component name="IGeometryComponent" hash_id="1162546763">
-            <GeometryDescs/>
-        </Component>
-        <Component name="IMaterialComponent" hash_id="308235170">
-            <MaterialDesc/>
-        </Component>
-        <Component name="IRender3DComponent" hash_id="1184141904"/>
         <GameObject instanceId="273">
             <Tag hash_id="4257772165" srcString="RootNode"/>
             <Component name="TransformComponent" hash_id="3882513520">
@@ -55,27 +48,27 @@
                             <MaterialDesc>
                                 <Element>
                                     <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <materialID hash_id="1858199364" srcString="PBRMetal"/>
                                     <slotIndex value="0"/>
                                 </Element>
                                 <Element>
                                     <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <materialID hash_id="1942474724" srcString="Cine_Mark1_bricks"/>
                                     <slotIndex value="1"/>
                                 </Element>
                                 <Element>
                                     <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <materialID hash_id="1942474724" srcString="Cine_Mark1_bricks"/>
                                     <slotIndex value="2"/>
                                 </Element>
                                 <Element>
                                     <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <materialID hash_id="1942474724" srcString="Cine_Mark1_bricks"/>
                                     <slotIndex value="3"/>
                                 </Element>
                                 <Element>
                                     <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <materialID hash_id="1942474724" srcString="Cine_Mark1_bricks"/>
                                     <slotIndex value="4"/>
                                 </Element>
                             </MaterialDesc>
@@ -102,54 +95,7 @@
                             <MaterialDesc>
                                 <Element>
                                     <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
-                                    <slotIndex value="0"/>
-                                </Element>
-                                <Element>
-                                    <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
-                                    <slotIndex value="1"/>
-                                </Element>
-                                <Element>
-                                    <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
-                                    <slotIndex value="2"/>
-                                </Element>
-                                <Element>
-                                    <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
-                                    <slotIndex value="3"/>
-                                </Element>
-                                <Element>
-                                    <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
-                                    <slotIndex value="4"/>
-                                </Element>
-                            </MaterialDesc>
-                        </Component>
-                        <Component name="IRender3DComponent" hash_id="1184141904"/>
-                    </GameObject>
-                    <GameObject instanceId="283">
-                        <Tag hash_id="1131874290" srcString="Cine_Mark1_Bricks_geo"/>
-                        <Component name="TransformComponent" hash_id="3882513520">
-                            <Position x="0" y="0" z="0"/>
-                            <Rotation_Q x="0" y="0" z="0" w="1"/>
-                            <Scale x="1" y="1" z="1"/>
-                        </Component>
-                        <Component name="IGeometryComponent" hash_id="1162546763">
-                            <GeometryDescs>
-                                <Element>
-                                    <geometryID hash_id="3001937105" srcString="Cine_mark1.fbx"/>
-                                    <slotIndex value="0"/>
-                                    <subMeshIndex value="8"/>
-                                </Element>
-                            </GeometryDescs>
-                        </Component>
-                        <Component name="IMaterialComponent" hash_id="308235170">
-                            <MaterialDesc>
-                                <Element>
-                                    <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <materialID hash_id="1936601827" srcString="Cine_Mark1_Concrete"/>
                                     <slotIndex value="0"/>
                                 </Element>
                                 <Element>
@@ -196,7 +142,7 @@
                             <MaterialDesc>
                                 <Element>
                                     <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <materialID hash_id="2785123637" srcString="Cine_Mark1_DetailParts"/>
                                     <slotIndex value="0"/>
                                 </Element>
                                 <Element>
@@ -243,7 +189,54 @@
                             <MaterialDesc>
                                 <Element>
                                     <isRawShader value="false"/>
+                                    <materialID hash_id="40299571" srcString="facade"/>
+                                    <slotIndex value="0"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
                                     <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="1"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="2"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="3"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="441810431" srcString="PBRTile"/>
+                                    <slotIndex value="4"/>
+                                </Element>
+                            </MaterialDesc>
+                        </Component>
+                        <Component name="IRender3DComponent" hash_id="1184141904"/>
+                    </GameObject>
+                    <GameObject instanceId="283">
+                        <Tag hash_id="1131874290" srcString="Cine_Mark1_Bricks_geo"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="-6.1035156e-05" y="5.0403887e-06" z="6.1035156e-05"/>
+                            <Rotation_Q x="2.2204439e-16" y="1.0658143e-14" z="2.2204429e-16" w="1"/>
+                            <Scale x="0.99999988" y="1.0000002" z="0.99999988"/>
+                        </Component>
+                        <Component name="IGeometryComponent" hash_id="1162546763">
+                            <GeometryDescs>
+                                <Element>
+                                    <geometryID hash_id="3001937105" srcString="Cine_mark1.fbx"/>
+                                    <slotIndex value="0"/>
+                                    <subMeshIndex value="8"/>
+                                </Element>
+                            </GeometryDescs>
+                        </Component>
+                        <Component name="IMaterialComponent" hash_id="308235170">
+                            <MaterialDesc>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="1942474724" srcString="Cine_Mark1_bricks"/>
                                     <slotIndex value="0"/>
                                 </Element>
                                 <Element>

@@ -212,4 +212,126 @@
     <Texture id="digit_9.DDS" fileDir="Resource/Texture/digit/digit_9.DDS" dimension="Texture2D" format="DDS" hash_id="714599173"/>
     <!--Resource/Texture/crosshair/crosshair_0.DDS-->
     <Texture id="crosshair_0.DDS" fileDir="Resource/Texture/crosshair/crosshair_0.DDS" dimension="Texture2D" format="DDS" hash_id="1326835659"/>
+    <!--barrier-->
+    <Texture id="barrier_color" fileDir="Resource/Geometry/newmo/barrier1/barrier/color.dds" dimension="Texture2D" format="DDS" hash_id="1486026182"/>
+    <Texture id="barrier_normal" fileDir="Resource/Geometry/newmo/barrier1/barrier/normal.dds" dimension="Texture2D" format="DDS" hash_id="1477444132"/>
+    <Texture id="barrier_rough" fileDir="Resource/Geometry/newmo/barrier1/barrier/rough.dds" dimension="Texture2D" format="DDS" hash_id="2715759900"/>
+    <!--barrier2-->
+    <Texture id="barrier2_color" fileDir="Resource/Geometry/newmo/barrier1/barrier2/color.dds" dimension="Texture2D" format="DDS" hash_id="3878442476"/>
+    <Texture id="barrier2_normal" fileDir="Resource/Geometry/newmo/barrier1/barrier2/normal.dds" dimension="Texture2D" format="DDS" hash_id="1003688258"/>
+    <!--streetlight-->
+    <Texture id="streetlight_color" fileDir="Resource/Geometry/newmo/Props/Pole/streetLightc1/Textures/streetlight/color.dds" dimension="Texture2D" format="DDS" hash_id="3488498860"/>
+    <Texture id="streetlight_normal" fileDir="Resource/Geometry/newmo/Props/Pole/streetLightc1/Textures/streetlight/normal.dds" dimension="Texture2D" format="DDS" hash_id="3068713474"/>
+    <Texture id="streetlight_rough" fileDir="Resource/Geometry/newmo/Props/Pole/streetLightc1/Textures/streetlight/rough.dds" dimension="Texture2D" format="DDS" hash_id="1187273206"/>
+    <Texture id="streetlight_metalic" fileDir="Resource/Geometry/newmo/Props/Pole/streetLightc1/Textures/streetlight/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2463398644"/>
+    <!--cliff_v01-->
+    <Texture id="cliff_v01_color" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v01/color.dds" dimension="Texture2D" format="DDS" hash_id="2214511347"/>
+    <Texture id="cliff_v01_normal" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v01/normal.dds" dimension="Texture2D" format="DDS" hash_id="2341435163"/>
+    <Texture id="cliff_v01_rough" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v01/rough.dds" dimension="Texture2D" format="DDS" hash_id="1929998009"/>
+    <!--cliff_v02-->
+    <Texture id="cliff_v02_color" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v02/color.dds" dimension="Texture2D" format="DDS" hash_id="840092196"/>
+    <Texture id="cliff_v02_normal" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v02/normal.dds" dimension="Texture2D" format="DDS" hash_id="1459025594"/>
+    <Texture id="cliff_v02_rough" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v02/rough.dds" dimension="Texture2D" format="DDS" hash_id="2818596222"/>
+    <!--bellevue_edificio-->
+    <Texture id="bellevue_edificio_color" fileDir="Resource/Geometry/newmo/Bellevue_Place/Textures/bellevue_edificio/color.dds" dimension="Texture2D" format="DDS" hash_id="2655492710"/>
+    <Texture id="bellevue_edificio_normal" fileDir="Resource/Geometry/newmo/Bellevue_Place/Textures/bellevue_edificio/normal.dds" dimension="Texture2D" format="DDS" hash_id="2110357700"/>
+    <Texture id="bellevue_edificio_metalic" fileDir="Resource/Geometry/newmo/Bellevue_Place/Textures/bellevue_edificio/metalic.dds" dimension="Texture2D" format="DDS" hash_id="178304762"/>
+    <!--BellevuePlace19_Marcos-->
+    <!--Textures-->
+    <!--BellevuePlace19_tejado-->
+    <!--Cine_Mark1_bricks-->
+    <Texture id="Cine_Mark1_bricks_color" fileDir="Resource/Geometry/newmo/Cine_Mark1/Textures/Cine_Mark1_bricks/color.dds" dimension="Texture2D" format="DDS" hash_id="1066050784"/>
+    <!--Cine_Mark1_Windows-->
+    <Texture id="Cine_Mark1_Windows_color" fileDir="Resource/Geometry/newmo/Cine_Mark1/Textures/Cine_Mark1_Windows/color.dds" dimension="Texture2D" format="DDS" hash_id="121142357"/>
+    <Texture id="Cine_Mark1_Windows_metalic" fileDir="Resource/Geometry/newmo/Cine_Mark1/Textures/Cine_Mark1_Windows/metalic.dds" dimension="Texture2D" format="DDS" hash_id="1949193201"/>
+    <!--Cine_Mark1_Concrete-->
+    <Texture id="Cine_Mark1_Concrete_color" fileDir="Resource/Geometry/newmo/Cine_Mark1/Textures/Cine_Mark1_Concrete/color.dds" dimension="Texture2D" format="DDS" hash_id="550649963"/>
+    <Texture id="Cine_Mark1_Concrete_normal" fileDir="Resource/Geometry/newmo/Cine_Mark1/Textures/Cine_Mark1_Concrete/normal.dds" dimension="Texture2D" format="DDS" hash_id="643214451"/>
+    <!--Cine_Mark1_DetailParts-->
+    <Texture id="Cine_Mark1_DetailParts_color" fileDir="Resource/Geometry/newmo/Cine_Mark1/Textures/Cine_Mark1_DetailParts/color.dds" dimension="Texture2D" format="DDS" hash_id="270901041"/>
+    <Texture id="Cine_Mark1_DetailParts_metalic" fileDir="Resource/Geometry/newmo/Cine_Mark1/Textures/Cine_Mark1_DetailParts/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2054169813"/>
+    <!--Mattres_Firm_wall-->
+    <!--Mattres_Firm_signs-->
+    <!--Mattres_Firm_wall-->
+    <Texture id="Mattres_Firm_wall_color" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_wall/color.dds" dimension="Texture2D" format="DDS" hash_id="2800223525"/>
+    <Texture id="Mattres_Firm_wall_normal" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_wall/normal.dds" dimension="Texture2D" format="DDS" hash_id="1638715157"/>
+    <!--Mattres_Firm_signs-->
+    <Texture id="Mattres_Firm_signs_color" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_signs/color.dds" dimension="Texture2D" format="DDS" hash_id="2418178057"/>
+    <Texture id="Mattres_Firm_signs_metalic" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_signs/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3469961645"/>
+    <!--Mattres_Firm_roof-->
+    <Texture id="Mattres_Firm_roof_color" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_roof/color.dds" dimension="Texture2D" format="DDS" hash_id="3713369899"/>
+    <Texture id="Mattres_Firm_roof_normal" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_roof/normal.dds" dimension="Texture2D" format="DDS" hash_id="920231731"/>
+    <!--Mattres_Firm_galss-->
+    <Texture id="Mattres_Firm_galss_color" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_galss/color.dds" dimension="Texture2D" format="DDS" hash_id="19014373"/>
+    <Texture id="Mattres_Firm_galss_metalic" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_galss/metalic.dds" dimension="Texture2D" format="DDS" hash_id="1327729281"/>
+    <!--Mattres_Firm_frames-->
+    <Texture id="Mattres_Firm_frames_color" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_frames/color.dds" dimension="Texture2D" format="DDS" hash_id="1290905099"/>
+    <Texture id="Mattres_Firm_frames_normal" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_frames/normal.dds" dimension="Texture2D" format="DDS" hash_id="1879927315"/>
+    <Texture id="Mattres_Firm_frames_metalic" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_frames/metalic.dds" dimension="Texture2D" format="DDS" hash_id="1375718579"/>
+    <!--Mattres_Firm_extras-->
+    <Texture id="Mattres_Firm_extras_color" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_extras/color.dds" dimension="Texture2D" format="DDS" hash_id="1053657680"/>
+    <Texture id="Mattres_Firm_extras_normal" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_extras/normal.dds" dimension="Texture2D" format="DDS" hash_id="1894521158"/>
+    <Texture id="Mattres_Firm_extras_metalic" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_extras/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3728517008"/>
+    <!--barrier-->
+    <Texture id="barrier_color" fileDir="Resource/Geometry/newmo/barrier1/barrier/color.dds" dimension="Texture2D" format="DDS" hash_id="1486026182"/>
+    <Texture id="barrier_normal" fileDir="Resource/Geometry/newmo/barrier1/barrier/normal.dds" dimension="Texture2D" format="DDS" hash_id="1477444132"/>
+    <!--BellevuePlace19_Marcos-->
+    <Texture id="BellevuePlace19_Marcos_color" fileDir="Resource/Geometry/newmo/Bellevue_Place/Textures/BellevuePlace19_Marcos/color.dds" dimension="Texture2D" format="DDS" hash_id="3071798262"/>
+    <Texture id="BellevuePlace19_Marcos_normal" fileDir="Resource/Geometry/newmo/Bellevue_Place/Textures/BellevuePlace19_Marcos/normal.dds" dimension="Texture2D" format="DDS" hash_id="2649809204"/>
+    <!--BellevuePlace19_tejado-->
+    <Texture id="BellevuePlace19_tejado_color" fileDir="Resource/Geometry/newmo/Bellevue_Place/Textures/BellevuePlace19_tejado/color.dds" dimension="Texture2D" format="DDS" hash_id="3616477338"/>
+    <Texture id="BellevuePlace19_tejado_normal" fileDir="Resource/Geometry/newmo/Bellevue_Place/Textures/BellevuePlace19_tejado/normal.dds" dimension="Texture2D" format="DDS" hash_id="2202885208"/>
+    <Texture id="BellevuePlace19_tejado_metalic" fileDir="Resource/Geometry/newmo/Bellevue_Place/Textures/BellevuePlace19_tejado/metalic.dds" dimension="Texture2D" format="DDS" hash_id="943539702"/>
+    <!--bellevue_edificio-->
+    <Texture id="bellevue_edificio_color" fileDir="Resource/Geometry/newmo/Bellevue_Place/Textures/bellevue_edificio/color.dds" dimension="Texture2D" format="DDS" hash_id="2655492710"/>
+    <Texture id="bellevue_edificio_normal" fileDir="Resource/Geometry/newmo/Bellevue_Place/Textures/bellevue_edificio/normal.dds" dimension="Texture2D" format="DDS" hash_id="2110357700"/>
+    <Texture id="bellevue_edificio_metalic" fileDir="Resource/Geometry/newmo/Bellevue_Place/Textures/bellevue_edificio/metalic.dds" dimension="Texture2D" format="DDS" hash_id="178304762"/>
+    <!--Cine_Mark1_bricks-->
+    <Texture id="Cine_Mark1_bricks_color" fileDir="Resource/Geometry/newmo/Cine_Mark1/Textures/Cine_Mark1_bricks/color.dds" dimension="Texture2D" format="DDS" hash_id="1066050784"/>
+    <!--Cine_Mark1_Concrete-->
+    <Texture id="Cine_Mark1_Concrete_color" fileDir="Resource/Geometry/newmo/Cine_Mark1/Textures/Cine_Mark1_Concrete/color.dds" dimension="Texture2D" format="DDS" hash_id="550649963"/>
+    <Texture id="Cine_Mark1_Concrete_normal" fileDir="Resource/Geometry/newmo/Cine_Mark1/Textures/Cine_Mark1_Concrete/normal.dds" dimension="Texture2D" format="DDS" hash_id="643214451"/>
+    <!--Cine_Mark1_DetailParts-->
+    <Texture id="Cine_Mark1_DetailParts_color" fileDir="Resource/Geometry/newmo/Cine_Mark1/Textures/Cine_Mark1_DetailParts/color.dds" dimension="Texture2D" format="DDS" hash_id="270901041"/>
+    <Texture id="Cine_Mark1_DetailParts_metalic" fileDir="Resource/Geometry/newmo/Cine_Mark1/Textures/Cine_Mark1_DetailParts/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2054169813"/>
+    <!--filler_building_01-->
+    <Texture id="filler_building_01_color" fileDir="Resource/Geometry/newmo/FillerBuildings/Textures/filler_building_01/color.dds" dimension="Texture2D" format="DDS" hash_id="1441652192"/>
+    <Texture id="filler_building_01_normal" fileDir="Resource/Geometry/newmo/FillerBuildings/Textures/filler_building_01/normal.dds" dimension="Texture2D" format="DDS" hash_id="3588750838"/>
+    <!--filler_building_03-->
+    <!--filler_building_03-->
+    <Texture id="filler_building_03_color" fileDir="Resource/Geometry/newmo/FillerBuildings/Textures/filler_building_03/color.dds" dimension="Texture2D" format="DDS" hash_id="521005550"/>
+    <Texture id="filler_building_03_normal" fileDir="Resource/Geometry/newmo/FillerBuildings/Textures/filler_building_03/normal.dds" dimension="Texture2D" format="DDS" hash_id="3552978444"/>
+    <!--T_filler_building_windows-->
+    <Texture id="T_filler_building_windows_color" fileDir="Resource/Geometry/newmo/FillerBuildings/Textures/T_filler_building_windows/color.dds" dimension="Texture2D" format="DDS" hash_id="2615855829"/>
+    <Texture id="T_filler_building_windows_normal" fileDir="Resource/Geometry/newmo/FillerBuildings/Textures/T_filler_building_windows/normal.dds" dimension="Texture2D" format="DDS" hash_id="904730021"/>
+    <!--Mattres_Firm_extras-->
+    <Texture id="Mattres_Firm_extras_color" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_extras/color.dds" dimension="Texture2D" format="DDS" hash_id="1053657680"/>
+    <Texture id="Mattres_Firm_extras_normal" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_extras/normal.dds" dimension="Texture2D" format="DDS" hash_id="1894521158"/>
+    <Texture id="Mattres_Firm_extras_metalic" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_extras/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3728517008"/>
+    <!--Mattres_Firm_frames-->
+    <Texture id="Mattres_Firm_frames_color" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_frames/color.dds" dimension="Texture2D" format="DDS" hash_id="1290905099"/>
+    <Texture id="Mattres_Firm_frames_normal" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_frames/normal.dds" dimension="Texture2D" format="DDS" hash_id="1879927315"/>
+    <Texture id="Mattres_Firm_frames_metalic" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_frames/metalic.dds" dimension="Texture2D" format="DDS" hash_id="1375718579"/>
+    <!--Mattres_Firm_roof-->
+    <Texture id="Mattres_Firm_roof_color" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_roof/color.dds" dimension="Texture2D" format="DDS" hash_id="3713369899"/>
+    <Texture id="Mattres_Firm_roof_normal" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_roof/normal.dds" dimension="Texture2D" format="DDS" hash_id="920231731"/>
+    <!--Mattres_Firm_signs-->
+    <Texture id="Mattres_Firm_signs_color" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_signs/color.dds" dimension="Texture2D" format="DDS" hash_id="2418178057"/>
+    <Texture id="Mattres_Firm_signs_metalic" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_signs/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3469961645"/>
+    <!--Mattres_Firm_wall-->
+    <Texture id="Mattres_Firm_wall_color" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_wall/color.dds" dimension="Texture2D" format="DDS" hash_id="2800223525"/>
+    <Texture id="Mattres_Firm_wall_normal" fileDir="Resource/Geometry/newmo/Mattres_Firm/Textures/Mattres_Firm_wall/normal.dds" dimension="Texture2D" format="DDS" hash_id="1638715157"/>
+    <!--cactus_metalparts-->
+    <Texture id="cactus_metalparts_color" fileDir="Resource/Geometry/newmo/Cactus1/Textures/cactus_metalparts/color.dds" dimension="Texture2D" format="DDS" hash_id="3150635826"/>
+    <Texture id="cactus_metalparts_normal" fileDir="Resource/Geometry/newmo/Cactus1/Textures/cactus_metalparts/normal.dds" dimension="Texture2D" format="DDS" hash_id="3272165648"/>
+    <!--cactus_building-->
+    <Texture id="cactus_building_color" fileDir="Resource/Geometry/newmo/Cactus1/Textures/cactus_building/color.dds" dimension="Texture2D" format="DDS" hash_id="2899406987"/>
+    <Texture id="cactus_building_normal" fileDir="Resource/Geometry/newmo/Cactus1/Textures/cactus_building/normal.dds" dimension="Texture2D" format="DDS" hash_id="203878291"/>
+    <Texture id="cactus_building_metalic" fileDir="Resource/Geometry/newmo/Cactus1/Textures/cactus_building/metalic.dds" dimension="Texture2D" format="DDS" hash_id="957806387"/>
+    <!--cliff_v01-->
+    <Texture id="cliff_v01_color" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v01/color.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="cliff_v01_normal" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v01/normal.dds" dimension="Texture2D" format="DDS"/>
+    <!--cliff_v02-->
+    <Texture id="cliff_v02_color" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v02/color.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="cliff_v02_normal" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v02/normal.dds" dimension="Texture2D" format="DDS"/>
 </TextureSet>
