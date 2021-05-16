@@ -502,7 +502,7 @@ void KG::GameFramework::PostSceneFunction()
 		[]()
 		{
 			KG::Resource::MaterialMatch a;
-			a.defaultMaterial.emplace_back("MechMetal");
+			a.defaultMaterial.emplace_back("mechCyan");
 
 			return std::make_pair(
 				KG::Utill::HashString("mech.fbx"),

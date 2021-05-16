@@ -344,7 +344,12 @@
     <Texture id="Container Games_normal" fileDir="Resource/Geometry/newmo/Container_fbx/Textures_png/Container Games/normal.dds" dimension="Texture2D" format="DDS" hash_id="3664826735"/>
     <Texture id="Container Games_metalic" fileDir="Resource/Geometry/newmo/Container_fbx/Textures_png/Container Games/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3791292791"/>
     <!--concorete-->
-    <Texture id="concorete_color" fileDir="Resource/Texture/concorete/color.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="concorete_normal" fileDir="Resource/Texture/concorete/normal.dds" dimension="Texture2D" format="DDS"/>
-    <Texture id="concorete_rough" fileDir="Resource/Texture/concorete/rough.dds" dimension="Texture2D" format="DDS"/>
+    <Texture id="concorete_color" fileDir="Resource/Texture/concorete/color.dds" dimension="Texture2D" format="DDS" hash_id="3397583831"/>
+    <Texture id="concorete_normal" fileDir="Resource/Texture/concorete/normal.dds" dimension="Texture2D" format="DDS" hash_id="670383263"/>
+    <Texture id="concorete_rough" fileDir="Resource/Texture/concorete/rough.dds" dimension="Texture2D" format="DDS" hash_id="1908560781"/>
+    <!--mechCyan-->
+    <Texture id="mechCyan_color" fileDir="Resource/Geometry/mech/Texture/mechCyan/color.dds" dimension="Texture2D" format="DDS" hash_id="2169118699"/>
+    <Texture id="mechCyan_normal" fileDir="Resource/Geometry/mech/Texture/mechCyan/normal.dds" dimension="Texture2D" format="DDS" hash_id="3571105011"/>
+    <Texture id="mechCyan_rough" fileDir="Resource/Geometry/mech/Texture/mechCyan/rough.dds" dimension="Texture2D" format="DDS" hash_id="1870321057"/>
+    <Texture id="mechCyan_metalic" fileDir="Resource/Geometry/mech/Texture/mechCyan/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3523430035"/>
 </TextureSet>
