@@ -12,6 +12,7 @@
 #include "IKGServer.h"
 #include "ServerPlayerControllerComponent.h"
 #include "ServerEnemyControllerComponent.h"
+#include "ServerProjectileComponent.h"
 #include "InputManager.h"
 
 void KG::GameFramework::PostServerFunction()
@@ -33,6 +34,28 @@ void KG::GameFramework::PostServerFunction()
 		{
 			auto* comp = this->networkServer->GetNewPlayerComponent();
 			obj.AddComponent(comp);
+			return comp;
+		}
+	);
+
+	this->scene->AddNetworkCreator(
+		KG::Utill::HashString("Projectile"),
+		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent*
+		{
+			auto* trans = this->system->transformSystem.GetNewComponent();
+			trans->SetScale(0.1, 0.1, 0.1);
+			obj.AddComponent(trans);
+
+			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			auto& box = phy->GetCollisionBox();
+			box.position = { 0, 0, 0 };
+			box.scale = { 2,2,2 };
+			phy->SetApply(true);
+			obj.AddComponent(phy);
+
+			auto* comp = this->networkServer->GetNewProjectileComponent();
+			obj.AddComponent(comp);
+			// projectile->Initialize(obj.GetTransform()->GetWorldPosition())
 			return comp;
 		}
 	);

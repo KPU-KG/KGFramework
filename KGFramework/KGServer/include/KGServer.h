@@ -19,6 +19,7 @@
 #include "ServerPlayerControllerComponent.h"
 #include "ServerEnemyControllerComponent.h"
 #include "EnemyGeneratorComponent.h"
+#include "ServerProjectileComponent.h"
 #include "ServerSystems.h"
 
 namespace KG::Server
@@ -49,6 +50,7 @@ namespace KG::Server
 		KG::System::SPlayerComponentSystem sPlayerSystem;
 		KG::System::SEnemyControllerComponentSystem sEnemyControllerSystem;
 		KG::System::EnemyGeneratorSystem enemyGeneratorSystem;
+		KG::System::SProjectileComponentSystem sProjectileSystem;
 		KG::Physics::IPhysicsScene* physicsScene;
 
 		std::stack<KG::Server::NET_OBJECT_ID> disconnectedPlayerId;
@@ -85,6 +87,7 @@ namespace KG::Server
 		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() override;
 		virtual KG::Component::SEnemyControllerComponent* GetNewEnemyControllerComponent() override;
 		virtual KG::Component::EnemyGeneratorComponent* GetNewEnemyGeneratorComponent() override;
+		virtual KG::Component::SProjectileComponent* GetNewProjectileComponent() override;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 		virtual void DrawImGUI() override;
 		virtual bool isStarted() const override;

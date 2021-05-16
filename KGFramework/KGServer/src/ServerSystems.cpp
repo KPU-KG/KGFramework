@@ -43,3 +43,11 @@ void KG::System::EnemyGeneratorSystem::DestroyGameObject()
 		com.Destroy();
 	}
 }
+
+void KG::System::SProjectileComponentSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::SProjectileComponentSystem::OnPreRender()
+{
+}

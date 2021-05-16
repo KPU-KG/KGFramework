@@ -50,6 +50,7 @@ namespace KG::Component
 		int GetCurrentRegionIndex() const;
 		KG::Component::Region GetCurrentRegion();
 	public:
+		bool isAttackable = false;
 		EnemyGeneratorComponent();
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
@@ -58,13 +59,14 @@ namespace KG::Component
 		void AddEnemyControllerCompoenent(SEnemyControllerComponent* comp);
 		void SendAddEnemyPacket(KG::Server::SESSION_ID player);
 		unsigned int GetScore() const;
+		void RegisterPlayerToEnemy(KG::Server::NET_OBJECT_ID id);
+		void DeregisterPlayerToEnemy(KG::Server::NET_OBJECT_ID id);
+		void SendAttackPacket(SGameManagerComponent* gameManager);
 	public:
 		void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		void OnDataSave(tinyxml2::XMLElement* parentElement);
 		virtual bool OnDrawGUI() override;
-		void RegisterPlayerToEnemy(KG::Server::NET_OBJECT_ID id);
-		void DeregisterPlayerToEnemy(KG::Server::NET_OBJECT_ID id);
-		bool isChangedProp = false;						// property 구조가 바뀌었을때 true로 바꾸고 scene 저장 -> 다시 false로 바꾸고 하면 로드 가능
+		bool isChangedProp = false;						
 		KG::Core::SerializableProperty<bool> generateProp;
 	};
 

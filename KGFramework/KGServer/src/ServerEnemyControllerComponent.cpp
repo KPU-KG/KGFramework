@@ -298,7 +298,7 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 				}
 				break;
 			case EnemyAction::eATTACK:
-				if (AttackTarget()) {
+				if (AttackTarget(elapsedTime)) {
 					changedAnimation = false;
 					action = EnemyAction::eSETGOAL;
 				}
@@ -552,9 +552,77 @@ bool KG::Component::SEnemyControllerComponent::IsInTraceRange(const float distan
 	return rr > distance;
 }
 
-bool KG::Component::SEnemyControllerComponent::AttackTarget()
+bool KG::Component::SEnemyControllerComponent::AttackTarget(float elapsedTime)
 {
-	return true;
+	if (attackTimer == 0 && !isInAttackDelay) {
+		if (this->anim)
+			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_STOP, 0.1, 1);
+		isAttackable = true;
+		isInAttackDelay = true;
+	}
+
+	if (isInAttackDelay) {
+		attackTimer += elapsedTime;
+		if (attackTimer >= attackInterval) {
+			isInAttackDelay = false;
+			attackTimer = 0;
+			return true;
+		}
+	}
+	return false;
+}
+
+bool KG::Component::SEnemyControllerComponent::IsAttackable() const
+{
+	return isAttackable;
+}
+
+void KG::Component::SEnemyControllerComponent::PostAttack()
+{
+	isAttackable = false;
+}
+
+void KG::Component::SEnemyControllerComponent::Attack(SGameManagerComponent* gameManager)
+{
+	auto presetName = "Projectile";
+	auto presetId = KG::Utill::HashString(presetName);
+
+	auto* scene = this->gameObject->GetScene();
+	auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
+
+	auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
+	// this->transform->GetWorldLook()
+	auto direction = Math::Vector3::Normalize(this->transform->GetWorldLook());
+	XMFLOAT3 origin;
+	XMStoreFloat3(&origin, Math::Vector3::XMVectorScale(XMLoadFloat3(&direction), 6));
+	origin = Math::Vector3::Add(this->transform->GetWorldPosition(), origin);
+
+	direction.y += 6;
+	
+	KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
+	auto tag = KG::Utill::HashString(presetName);
+	addObjectPacket.objectTag = tag;
+	addObjectPacket.parentTag = 0;
+	addObjectPacket.presetId = tag;
+	addObjectPacket.position = origin;
+
+	auto id = this->server->GetNewObjectId();
+	addObjectPacket.newObjectId = id;
+	comp->SetNetObjectId(id);
+	this->server->SetServerObject(id, comp);
+
+	comp->GetGameObject()->GetTransform()->SetScale(0.1, 0.1, 0.1);
+
+	auto projectile = comp->GetGameObject()->GetComponent<SProjectileComponent>();
+	
+	
+	projectile->Initialize(origin, direction, 10, 1);
+
+	this->server->SetServerObject(id, projectile);
+
+	gameManager->BroadcastPacket(&addObjectPacket);
+
+	DebugNormalMessage("Enemy Controller : Shot Projectile");
 }
 
 

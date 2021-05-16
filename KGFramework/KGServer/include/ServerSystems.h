@@ -5,6 +5,7 @@
 #include "ServerGameManagerComponent.h"
 #include "ServerPlayerControllerComponent.h"
 #include "EnemyGeneratorComponent.h"
+#include "ServerProjectileComponent.h"
 
 namespace KG::System
 {
@@ -105,5 +106,22 @@ namespace KG::System
 		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;
 		void DestroyGameObject();
+	};
+
+	class SProjectileComponentSystem : public SBaseComponentSystem<SProjectileComponent>
+	{
+	public:
+		virtual void OnUpdate(float elapsedTime) override
+		{
+			for (auto& com : *this)
+			{
+				com.Update(elapsedTime);
+				if (com.IsDelete()) {
+					com.Destroy();
+				}
+			}
+		}
+		virtual void OnPostUpdate(float elapsedTime) override;
+		virtual void OnPreRender() override;
 	};
 }

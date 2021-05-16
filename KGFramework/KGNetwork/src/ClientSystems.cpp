@@ -31,3 +31,11 @@ void KG::System::CCharacterComponentSystem::OnPostUpdate(float elapsedTime)
 void KG::System::CCharacterComponentSystem::OnPreRender()
 {
 }
+
+void KG::System::CProjectileComponentSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::CProjectileComponentSystem::OnPreRender()
+{
+}

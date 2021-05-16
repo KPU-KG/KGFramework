@@ -253,6 +253,22 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
+	this->scene->AddObjectPreset("Projectile",
+		[this](KG::Core::GameObject& obj)
+		{
+			auto* t = this->system->transformSystem.GetNewComponent();
+			auto* g = this->renderer->GetNewGeomteryComponent();
+			g->AddGeometry(KG::Utill::HashString("cube"));
+			auto* m = this->renderer->GetNewMaterialComponent();
+			m->PostMaterial(KG::Utill::HashString("PBRTile"));
+			auto* r = this->renderer->GetNewRenderComponent();
+			obj.AddComponent(t);
+			obj.AddComponent(g);
+			obj.AddComponent(m);
+			obj.AddComponent(r);
+		}
+	);
+
 	this->scene->AddObjectPreset("StaticTileCube",
 		[this](KG::Core::GameObject& obj)
 		{

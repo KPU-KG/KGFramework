@@ -6,6 +6,7 @@
 #include "ClientCharacterComponent.h"
 #include "ClientEnemyControllerComponent.h"
 #include "ClientPlayerControllerComponent.h"
+#include "ClientProjectileComponent.h"
 
 namespace KG::System
 {
@@ -54,6 +55,31 @@ namespace KG::System
 			}
 		}
 	
+		// IComponentSystem을(를) 통해 상속됨
+		virtual void OnPostUpdate(float elapsedTime) override;
+		virtual void OnPreRender() override;
+	};
+
+	class CProjectileComponentSystem : public KG::System::IComponentSystem<CProjectileComponent>
+	{
+		KG::Server::Network* network = nullptr;
+		virtual void OnGetNewComponent(CEnemyControllerComponent* comp)
+		{
+			comp->SetNetworkInstance(network);
+		}
+	public:
+		void SetNetworkInstance(KG::Server::Network* network)
+		{
+			this->network = network;
+		}
+		virtual void OnUpdate(float elapsedTime) override
+		{
+			for (auto& com : *this)
+			{
+				com.Update(elapsedTime);
+			}
+		}
+
 		// IComponentSystem을(를) 통해 상속됨
 		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;

@@ -185,6 +185,7 @@
     <ClInclude Include="export\ServerEnemyControllerComponent.h" />
     <ClInclude Include="export\ServerGameManagerComponent.h" />
     <ClInclude Include="export\ServerPlayerControllerComponent.h" />
+    <ClInclude Include="export\ServerProjectileComponent.h" />
     <ClInclude Include="include\framework.h" />
     <ClInclude Include="include\KGServer.h" />
     <ClInclude Include="include\pch.h" />
@@ -203,6 +204,7 @@
     </ClCompile>
     <ClCompile Include="src\ServerGameManagerComponent.cpp" />
     <ClCompile Include="src\ServerPlayerControllerComponent.cpp" />
+    <ClCompile Include="src\ServerProjectileComponent.cpp" />
     <ClCompile Include="src\ServerSystems.cpp" />
     <ClCompile Include="src\ServerUtill.cpp" />
   </ItemGroup>

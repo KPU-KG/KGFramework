@@ -10,7 +10,7 @@
 using namespace physx;
 using namespace KG::Physics;
 
-constexpr const int MAX_COMPONENT = 10000;
+constexpr int MAX_COMPONENT = 10000;
 
 
 static PxMat44 DxMatToPxMat(const DirectX::XMFLOAT4X4& rMatrix)
@@ -272,10 +272,16 @@ bool KG::Physics::PhysicsScene::Advance(float timeElapsed)
     while ( accumulator >= stepSize )
     {
         accumulator -= stepSize;
+        this->LockWrite();
+        this->LockRead();
         scene->simulate(stepSize);
+        this->UnlockRead();
+        this->UnlockWrite();
+
         scene->collide(stepSize);
         scene->fetchCollision(true);
         scene->fetchResults(true);
+        
     }
     this->physicsSystems->OnPostUpdate(timeElapsed);
     return true;
@@ -446,7 +452,12 @@ void KG::Physics::PhysicsScene::ReleaseActor(KG::Component::IRigidComponent* com
         CollisionCallback.erase(actor);
     if (compIndex.count(comp->GetId()) != 0)
         compIndex.erase(comp->GetId());
+
+    this->LockWrite();
+    this->LockRead();
     this->scene->removeActor(*actor);
+    this->UnlockRead();
+    this->UnlockWrite();
 }
 
 KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId)
@@ -502,4 +513,24 @@ RaycastResult KG::Physics::PhysicsScene::QueryRaycastResult(DirectX::XMFLOAT3 or
         }
     }
     return result;
+}
+
+void KG::Physics::PhysicsScene::LockRead()
+{
+    this->scene->lockRead();
+}
+
+void KG::Physics::PhysicsScene::LockWrite()
+{
+    this->scene->lockWrite();
+}
+
+void KG::Physics::PhysicsScene::UnlockRead()
+{
+    this->scene->unlockRead();
+}
+
+void KG::Physics::PhysicsScene::UnlockWrite()
+{
+    this->scene->unlockWrite();
 }

@@ -9,6 +9,7 @@
 #include "ClientCharacterComponent.h"
 #include "ClientPlayerControllerComponent.h"
 #include "ClientEnemyControllerComponent.h"
+#include "ClientProjectileComponent.h"
 #include "ClientSystems.h"
 
 namespace KG::Server
@@ -32,6 +33,7 @@ namespace KG::Server
 		KG::System::CPlayerControllerComponentSystem cPlayerSystem;
 		KG::System::CCharacterComponentSystem cCharacterSystem;
 		KG::System::CEnemyControllerComponentSystem cEnemyControllerSystem;
+		KG::System::CProjectileComponentSystem cProjectileSystem;
 
 
 		std::unordered_map<KG::Server::NET_OBJECT_ID, KG::Component::CBaseComponent*> networkObjects;
@@ -54,6 +56,7 @@ namespace KG::Server
 		virtual KG::Component::CPlayerControllerComponent* GetNewPlayerControllerComponent() override;
 		virtual KG::Component::CCharacterComponent* GetNewCharacterComponent() override;
 		virtual KG::Component::CEnemyControllerComponent* GetNewEnemyControllerOomponent() override;
+		virtual KG::Component::CProjectileComponent* GetNewProjectileComponent() override;
 
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 

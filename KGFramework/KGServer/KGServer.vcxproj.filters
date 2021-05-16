@@ -69,6 +69,9 @@
     <ClInclude Include="export\EnemyGeneratorComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
+    <ClInclude Include="export\ServerProjectileComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -99,6 +102,9 @@
       <Filter>소스 파일</Filter>
     </ClCompile>
     <ClCompile Include="src\EnemyGeneratorComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ServerProjectileComponent.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
   </ItemGroup>

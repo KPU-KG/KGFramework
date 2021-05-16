@@ -60,6 +60,9 @@
     <ClCompile Include="src\ClientSystems.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
+    <ClCompile Include="src\ClientProjectileComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">
@@ -94,6 +97,9 @@
     </ClInclude>
     <ClInclude Include="include\ClientSystems.h">
       <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="export\ClientProjectileComponent.h">
+      <Filter>헤더 파일\Component</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

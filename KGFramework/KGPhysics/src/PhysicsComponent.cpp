@@ -111,7 +111,8 @@ void KG::Component::DynamicRigidComponent::SetPosition(DirectX::XMFLOAT3 pos)
 
 void KG::Component::DynamicRigidComponent::ReleaseActor()
 {
-	KG::Physics::PhysicsScene::GetInstance()->ReleaseActor(this);
+	auto* inst = KG::Physics::PhysicsScene::GetInstance();
+	inst->ReleaseActor(this);
 }
 
 

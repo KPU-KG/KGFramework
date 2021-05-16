@@ -186,10 +186,18 @@ KG::Component::CEnemyControllerComponent* KG::Server::Network::GetNewEnemyContro
 	return comp;
 }
 
+KG::Component::CProjectileComponent* KG::Server::Network::GetNewProjectileComponent()
+{
+	auto* comp = this->cProjectileSystem.GetNewComponent();
+	comp->SetNetworkInstance(this);
+	return comp;
+}
+
 void KG::Server::Network::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->cGameManagerSystem.OnPostProvider(provider);
 	this->cEnemyControllerSystem.OnPostProvider(provider);
+	// this->cProjectileSystem.OnPostProvider(provider);
 }
 
 void KG::Server::Network::DrawImGUI()
@@ -233,5 +241,6 @@ void KG::Server::Network::Update(float elapsedTime)
 	this->cGameManagerSystem.OnUpdate(elapsedTime);
 	this->cPlayerSystem.OnUpdate(elapsedTime);
 	this->cCharacterSystem.OnUpdate(elapsedTime);
+	// this->cProjectileSystem.OnUpdate(elapsedTime);
 }
 

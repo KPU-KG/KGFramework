@@ -5,7 +5,7 @@
 #include <vector>
 #include <unordered_set>
 
-constexpr const int MAX_NODE = 5;
+constexpr int MAX_NODE = 5;
 
 namespace KG::Component
 {
@@ -38,6 +38,7 @@ namespace KG::Component
 
 	static struct MechAnimIndex {
 		const static UINT dead = 1U;
+		const static UINT shotBigCannon = 6U;
 		const static UINT shotSmallCanon = 8U;
 		const static UINT walk = 11U;
 		const static UINT walkInPlace = 12U;
@@ -45,6 +46,7 @@ namespace KG::Component
 
 	class DynamicRigidComponent;
 	class IAnimationControllerComponent;
+	class SGameManagerComponent;
 
 
 	class DLL SEnemyControllerComponent : public SBaseComponent
@@ -98,8 +100,13 @@ namespace KG::Component
 		bool										randomCircuit;
 		int											currentNode = 0;
 
-		float traceRange = 20;				// 일단은 길찾기는 빼고 범위 내로 들어오면 타겟 플레이어를 향해 회전, 가능하면 공격까지
+		// 일단은 길찾기는 빼고 범위 내로 들어오면 타겟 플레이어를 향해 회전, 가능하면 공격까지
+		float										traceRange = 20;				
 
+		float										attackInterval = 2;
+		float										attackTimer = 0;
+		bool										isInAttackDelay = false;
+		bool										isAttackable = false;
 
 		void UpdateState();
 		bool SetGoal();
@@ -110,9 +117,12 @@ namespace KG::Component
 		float GetDistance2FromEnemy(DirectX::XMFLOAT3 pos) const;
 		bool IsInTraceRange(const DirectX::XMFLOAT3 pos) const;
 		bool IsInTraceRange(const float distance) const;
-		bool AttackTarget();
+		bool AttackTarget(float elapsedTime);
 		// 공격 패킷을 어떻게 보내야 할까
 	public:
+		bool IsAttackable() const;
+		void PostAttack();
+		void Attack(SGameManagerComponent* gameManager);
 		SEnemyControllerComponent();
 		void SetCenter(DirectX::XMFLOAT3 center);
 		void SetSpeed(float speed);

@@ -132,6 +132,13 @@ void KG::Component::EnemyGeneratorComponent::Update(float elapsedTime)
 			}
 		}
 	}
+
+	for (auto& e : this->enemies) {
+		if (e->IsAttackable()) {
+			this->isAttackable = true;
+			break;
+		}
+	}
 }
 
 KG::Component::EnemyGeneratorComponent::EnemyGeneratorComponent()
@@ -241,6 +248,16 @@ void KG::Component::EnemyGeneratorComponent::DeregisterPlayerToEnemy(KG::Server:
 	}
 }
 
+void KG::Component::EnemyGeneratorComponent::SendAttackPacket(SGameManagerComponent* gameManager)
+{
+	for (auto& e : this->enemies) {
+		if (e->IsAttackable()) {
+			e->Attack(gameManager);
+			e->PostAttack();
+		}
+	}
+}
+
 void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 {
 	if (this->region.size() == 0)
@@ -332,6 +349,9 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 			for (auto& p : playerObjects) {
 				enemyGenerator->RegisterPlayerToEnemy(p.first);
 			}
+		}
+		if (enemyGenerator->isAttackable) {
+			enemyGenerator->SendAttackPacket(this);
 		}
 	}
 }

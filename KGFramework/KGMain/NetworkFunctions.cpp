@@ -13,6 +13,7 @@
 #include "ClientCharacterComponent.h"
 #include "ClientPlayerControllerComponent.h"
 #include "ClientEnemyControllerComponent.h"
+#include "ClientProjectileComponent.h"
 #include "InputManager.h"
 
 
@@ -73,6 +74,17 @@ void KG::GameFramework::PostNetworkFunction()
 			return comp;
 		}
 	);
+
+    this->scene->AddNetworkCreator(
+        KG::Utill::HashString("Projectile"),
+        [this](KG::Core::GameObject& obj) -> KG::Component::IComponent*
+        {
+            auto* comp = this->networkClient->GetNewProjectileComponent();
+            obj.AddComponent(comp);
+
+            return comp;
+        }
+    );
 
 	this->scene->AddNetworkCreator(
 		KG::Utill::HashString("EnemyMech"),
