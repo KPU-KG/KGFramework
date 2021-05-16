@@ -269,9 +269,9 @@ void KG::GameFramework::PostSceneFunction()
 			t->SetScale(0.001, 0.001, 0.001);
 
 			auto* g = this->renderer->GetNewGeomteryComponent();
-			g->AddGeometry(KG::Utill::HashString("cube"));
+			g->AddGeometry(KG::Utill::HashString("sphere"));
 			auto* m = this->renderer->GetNewMaterialComponent();
-			m->PostMaterial(KG::Utill::HashString("PBRTile"));
+			m->PostMaterial(KG::Utill::HashString("PBRMetal"));
 			auto* r = this->renderer->GetNewRenderComponent();
 			obj.AddComponent(t);
 			obj.AddComponent(g);
