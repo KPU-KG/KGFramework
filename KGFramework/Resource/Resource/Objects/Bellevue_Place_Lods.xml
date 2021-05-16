@@ -3,23 +3,16 @@
     <GameObject instanceId="266">
         <Tag hash_id="1321999110" srcString="Bellevue_Place_Lods.FBX"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="0" y="0" z="4.0581611e-08"/>
-            <Rotation_Q x="0" y="0" z="0" w="1"/>
-            <Scale x="1" y="1" z="1"/>
+            <Position x="142.90295" y="0" z="-71.35067"/>
+            <Rotation_Q x="0" y="0.70710683" z="0" w="-0.70710671"/>
+            <Scale x="0.99999893" y="1" z="0.99999893"/>
         </Component>
-        <Component name="GeometryComponent" hash_id="36578682">
-            <GeometryDescs/>
-        </Component>
-        <Component name="MaterialComponent" hash_id="1886146475">
-            <MaterialDesc/>
-        </Component>
-        <Component name="Render3DComponent" hash_id="4070531333"/>
         <GameObject instanceId="261">
             <Tag hash_id="4257772165" srcString="RootNode"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="73.062485" y="-9.6559582" z="54.143799"/>
+                <Position x="259.88397" y="-37.336212" z="191.09023"/>
                 <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710677"/>
-                <Scale x="0.0020000001" y="0.0020000001" z="0.0020000001"/>
+                <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
             </Component>
             <GameObject instanceId="264">
                 <Tag hash_id="2858297231" srcString="Bellevue_Place_LOD0"/>
@@ -28,7 +21,7 @@
                     <Rotation_Q x="0" y="0" z="0" w="0.99999988"/>
                     <Scale x="1" y="1" z="1"/>
                 </Component>
-                <Component name="GeometryComponent" hash_id="36578682">
+                <Component name="IGeometryComponent" hash_id="1162546763">
                     <GeometryDescs>
                         <Element>
                             <geometryID hash_id="1321999110" srcString="Bellevue_Place_Lods.FBX"/>
@@ -57,11 +50,11 @@
                         </Element>
                     </GeometryDescs>
                 </Component>
-                <Component name="MaterialComponent" hash_id="1886146475">
+                <Component name="IMaterialComponent" hash_id="308235170">
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
-                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <materialID hash_id="2740185710" srcString="BellevuePlace19_Marcos"/>
                             <slotIndex value="0"/>
                         </Element>
                         <Element>
@@ -71,22 +64,22 @@
                         </Element>
                         <Element>
                             <isRawShader value="false"/>
-                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <materialID hash_id="40299571" srcString="facade"/>
                             <slotIndex value="2"/>
                         </Element>
                         <Element>
                             <isRawShader value="false"/>
-                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <materialID hash_id="1877329618" srcString="BellevuePlace19_tejado"/>
                             <slotIndex value="3"/>
                         </Element>
                         <Element>
                             <isRawShader value="false"/>
-                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <materialID hash_id="554187230" srcString="bellevue_edificio"/>
                             <slotIndex value="4"/>
                         </Element>
                     </MaterialDesc>
                 </Component>
-                <Component name="Render3DComponent" hash_id="4070531333"/>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
             </GameObject>
         </GameObject>
     </GameObject>

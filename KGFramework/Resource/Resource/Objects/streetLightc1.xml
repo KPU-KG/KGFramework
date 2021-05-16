@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SavedGameObject>
-    <GameObject instanceId="487">
+    <GameObject instanceId="299">
         <Tag hash_id="1263226358" srcString="streetLightc1.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="78" y="2.0264154e-06" z="-45"/>
-            <Rotation_Q x="0" y="-0.70710677" z="0" w="0.70710677"/>
+            <Position x="-26" y="2.120488e-06" z="-45"/>
+            <Rotation_Q x="0" y="-0.70710683" z="0" w="0.70710677"/>
             <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
         </Component>
         <GameObject instanceId="329">
@@ -34,7 +34,7 @@
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
-                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <materialID hash_id="3861455024" srcString="streetlight"/>
                             <slotIndex value="0"/>
                         </Element>
                     </MaterialDesc>

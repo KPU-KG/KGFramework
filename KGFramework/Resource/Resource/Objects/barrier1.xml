@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SavedGameObject>
-    <GameObject instanceId="387">
+    <GameObject instanceId="724">
         <Tag hash_id="1193735393" srcString="barrier1.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="3" y="0" z="-29"/>
-            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Position x="35" y="0" z="-29"/>
+            <Rotation_Q x="-0" y="0" z="-0" w="1"/>
             <Scale x="0.02" y="0.02" z="0.02"/>
         </Component>
         <GameObject instanceId="382">
@@ -51,7 +51,7 @@
                         <MaterialDesc>
                             <Element>
                                 <isRawShader value="false"/>
-                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <materialID hash_id="4025314174" srcString="barrier"/>
                                 <slotIndex value="0"/>
                             </Element>
                         </MaterialDesc>
@@ -78,7 +78,7 @@
                         <MaterialDesc>
                             <Element>
                                 <isRawShader value="false"/>
-                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <materialID hash_id="4025314174" srcString="barrier"/>
                                 <slotIndex value="0"/>
                             </Element>
                         </MaterialDesc>
@@ -105,7 +105,7 @@
                         <MaterialDesc>
                             <Element>
                                 <isRawShader value="false"/>
-                                <materialID hash_id="441810431" srcString="PBRTile"/>
+                                <materialID hash_id="4025314174" srcString="barrier"/>
                                 <slotIndex value="0"/>
                             </Element>
                         </MaterialDesc>
