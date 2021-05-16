@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SavedGameObject>
-    <GameObject instanceId="293">
+    <GameObject instanceId="718">
         <Tag hash_id="1739910506" srcString="FillerBuilding03_LOD0.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="130.02541" y="0" z="-58.026199"/>
-            <Rotation_Q x="0" y="0.70710677" z="0" w="0.70710677"/>
+            <Position x="165.62131" y="-3.8146973e-06" z="-161.33344"/>
+            <Rotation_Q x="-0" y="0" z="-0" w="1"/>
             <Scale x="0.0070000002" y="0.0070000002" z="0.0070000002"/>
         </Component>
         <GameObject instanceId="290">
@@ -34,7 +34,7 @@
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
-                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <materialID hash_id="4283027558" srcString="filler_building_03"/>
                             <slotIndex value="0"/>
                         </Element>
                         <Element>
@@ -66,7 +66,7 @@
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
-                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <materialID hash_id="40299571" srcString="facade"/>
                             <slotIndex value="0"/>
                         </Element>
                         <Element>

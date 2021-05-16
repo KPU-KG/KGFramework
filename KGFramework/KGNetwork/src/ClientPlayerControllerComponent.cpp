@@ -402,8 +402,11 @@ void KG::Component::CPlayerControllerComponent::TryShoot(float elapsedTime)
         this->vectorAnimation->SetAnimation(VectorAnimSet::fire, 0, 1, 1.5f);
         this->bulletCount -= 1;
         OnChangeBulletCount(this->bulletCount);
-        if (this->sound)
-            this->sound->PlayEffectiveSound(SOUND_EFF_SHOT);
+        if ( this->sound )
+        {
+            int randSound = KG::Math::RandomInt(VECTOR_SOUND::FIRE_1, VECTOR_SOUND::FIRE_4);
+            this->sound->PlayEffectiveSound(randSound);
+        }
         Packet::CS_FIRE p = { };
         p.origin = this->cameraTransform->GetWorldPosition();
         p.direction = this->cameraTransform->GetWorldLook();
@@ -431,14 +434,14 @@ void KG::Component::CPlayerControllerComponent::TryReload(float elapsedTime)
             this->reloadFlag = true;
             this->vectorAnimation->SetAnimation(VectorAnimSet::reload, 0, 1, 1.0f);
             if (this->sound)
-                this->sound->PlayEffectiveSound(SOUND_EFF_RELOAD);
+                this->sound->PlayEffectiveSound(VECTOR_SOUND::RELOAD);
         }
         else
         {
             this->reloadFlag = true;
             this->vectorAnimation->SetAnimation(VectorAnimSet::reload_e, 0, 1, 1.0f);
             if (this->sound)
-                this->sound->PlayEffectiveSound(SOUND_EFF_RELOAD);
+                this->sound->PlayEffectiveSound(VECTOR_SOUND::RELOAD_EMPTY);
         }
     }
 }

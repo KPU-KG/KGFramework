@@ -287,3 +287,7 @@ void KG::Component::FakeGSCascadeCameraComponent::OnDataLoad(tinyxml2::XMLElemen
 void KG::Component::FakeGSCascadeCameraComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
 {
 }
+
+void KG::Component::FakeGSCascadeCameraComponent::SetMainCamera(ICameraComponent* camera)
+{
+}

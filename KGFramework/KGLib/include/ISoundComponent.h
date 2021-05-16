@@ -6,6 +6,21 @@
 constexpr const unsigned int SOUND_EFF_SHOT = 0;
 constexpr const unsigned int SOUND_EFF_RELOAD = 1;
 
+struct VECTOR_SOUND
+{
+    static constexpr unsigned int DRAW = 2;
+
+    static constexpr unsigned int FIRE_1 = 3;
+    static constexpr unsigned int FIRE_2 = 4;
+    static constexpr unsigned int FIRE_3 = 5;
+    static constexpr unsigned int FIRE_4 = 6;
+
+    static constexpr unsigned int RELOAD = 7;
+    static constexpr unsigned int RELOAD_EMPTY = 8;
+};
+
+
+
 namespace FMOD
 {
 	class System;

@@ -69,7 +69,7 @@ public:
     }
     void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override
     {
-        DebugNormalMessage("Called onContact()");
+        //DebugNormalMessage("Called onContact()");
         if ( CollisionCallback.count(pairHeader.actors[0]) != 0 )
             CollisionCallback[pairHeader.actors[0]].DoCallback();
         if ( CollisionCallback.count(pairHeader.actors[1]) != 0 )

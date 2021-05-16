@@ -113,6 +113,7 @@ void KG::Component::ShadowCasterComponent::OnPreRender()
 	switch ( this->targetLight->GetLightType() )
 	{
 	case KG::Component::LightType::DirectionalLight:
+        this->directionalLightCamera->SetMainCamera(static_cast<ICameraComponent*>(this->GetGameObject()->GetScene()->GetMainCamera()));
 		this->directionalLightCamera->OnPreRender();
 		this->targetLight->SetShadowCascadeMatrix( this->directionalLightCamera->GetViewProj() );
 		return;

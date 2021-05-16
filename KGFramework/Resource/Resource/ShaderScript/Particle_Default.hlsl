@@ -78,8 +78,8 @@ static float2 uvs[4] = { float2(0, 1), float2(0, 0), float2(1, 1), float2(1, 0) 
 void GeometryShaderFunction(point ParticleVertexOutput input[1], inout TriangleStream<ParticleGSOutput> outStream)
 {
     float3 up = float3(0.0f, 1.0f, 0.0f);
-    float3 right = cross(up, look);
-    up = cross(look, right);
+    float3 right = normalize(cross(up, look));
+    up = normalize(cross(look, right));
     
     ParticleData data = particleInfo[input[0].InstanceID];
     MaterialData mat = materialData[data.materialIndex];

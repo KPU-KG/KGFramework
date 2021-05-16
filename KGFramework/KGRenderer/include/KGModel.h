@@ -22,6 +22,7 @@ namespace KG::Resource
 		FrameModel& operator=(FrameModel&& other) noexcept;
 
 		FrameModel( const KG::Resource::Metadata::GeometrySetData& metadata );
-
-	};
+        static bool CheckKGGLoad(const std::string& fileDir);
+        static bool CheckKGGLoad(const KG::Resource::Metadata::GeometrySetData& metadata);
+    };
 }

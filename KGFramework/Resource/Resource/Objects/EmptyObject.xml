@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="969">
+        <Tag hash_id="1576330561" srcString="EmptyObject"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="0" y="0" z="4.5019951"/>
+            <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+            <Scale x="1" y="1" z="1"/>
+        </Component>
+    </GameObject>
+</SavedGameObject>

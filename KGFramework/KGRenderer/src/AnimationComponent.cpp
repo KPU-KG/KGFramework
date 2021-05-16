@@ -103,6 +103,16 @@ static float GetTimeData(const std::vector<KG::Utill::KeyData>& data, float curr
 		KG::Utill::KeyData tempData;
 		tempData.keyTime = currentTime;
 		tempData.value = 0.0f;
+        
+        //int pIndex = 0;
+        //for ( pIndex = 0; pIndex < data.size(); pIndex++ )
+        //{
+        //    if ( data[pIndex].keyTime < currentTime  )
+        //    {
+        //        break;
+        //    }
+        //}
+
 		auto p = std::equal_range(data.begin(), data.end(), tempData);
 		auto prev = p.first != data.begin() ? std::prev(p.first) : p.first;
 		auto last = p.second;

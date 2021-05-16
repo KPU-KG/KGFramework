@@ -129,6 +129,8 @@ namespace KG::Utill
 		void LoadFromPathFBX( const std::string& path );
         bool LoadToKGG(const std::string& path);
         void SaveToKGG(const std::string& path);
-	};
+        static bool IsKGGFileExist(const std::string& path);
+        static std::string ToKGGFilePath(const std::string& path);
+    };
 	extern DirectX::XMFLOAT4 ChangeEulerToDxQuat( float x, float y, float z );
 }

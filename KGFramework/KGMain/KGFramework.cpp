@@ -83,7 +83,16 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 	this->sound = std::make_unique<KG::Sound::SoundManager>();
 	this->sound->Initialize();
 	this->sound->RegisterSound("Resource/Sound/shot.wav", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_SHOT);
-	this->sound->RegisterSound("Resource/Sound/reload.wav", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_RELOAD);
+    this->sound->RegisterSound("Resource/Sound/reload.wav", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_RELOAD);
+
+    this->sound->RegisterSound("Resource/Sound/VectorDraw.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::DRAW);
+    this->sound->RegisterSound("Resource/Sound/VectorFire1.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_1);
+    this->sound->RegisterSound("Resource/Sound/VectorFire2.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_2);
+    this->sound->RegisterSound("Resource/Sound/VectorFire3.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_3);
+    this->sound->RegisterSound("Resource/Sound/VectorFire4.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_4);
+    this->sound->RegisterSound("Resource/Sound/VectorReload.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::RELOAD);
+    this->sound->RegisterSound("Resource/Sound/VectorReloadEmpty.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::RELOAD_EMPTY);
+
 
 	this->renderer->Initialize(renderDesc, renderSetting);
     this->renderer->SetEditUIRender(setting.isEditMode);
@@ -98,28 +107,28 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 
 	std::vector<KG::Utill::HashString> preLoads = 
 	{
-		//KG::Utill::HashString("mountain.fbx"),
-		//KG::Utill::HashString("crawler.fbx"),
-		//KG::Utill::HashString("bUILDING-2-op2.FBX"),
-		//KG::Utill::HashString("Building1.FBX"),
-		//KG::Utill::HashString("building-4.fbx"),
-		//KG::Utill::HashString("metal_fence.fbx"),
-		//KG::Utill::HashString("Dumpster.fbx"),
-		//KG::Utill::HashString("barrel.fbx"),
-		//KG::Utill::HashString("container.FBX"),
-		//KG::Utill::HashString("Crane.FBX"),
-		//KG::Utill::HashString("Pallet.FBX"),
-		//KG::Utill::HashString("SupportSmall.FBX"),
-		//KG::Utill::HashString("SupportBig.FBX"),
-		//KG::Utill::HashString("Stairs.FBX"),
-		//KG::Utill::HashString("PillarSmall.FBX"),
-		//KG::Utill::HashString("MetalFence.FBX"),
-		//KG::Utill::HashString("MetalFence-End.FBX"),
-		//KG::Utill::HashString("FloorShort.FBX"),
-		//KG::Utill::HashString("FloorLong.FBX"),
-		//KG::Utill::HashString("FloorHallSmall.FBX"),
-		//KG::Utill::HashString("FloorHallBig.FBX"),
-		//KG::Utill::HashString("FloorBase.FBX"),
+		KG::Utill::HashString("mountain.fbx"),
+		KG::Utill::HashString("crawler.fbx"),
+		KG::Utill::HashString("bUILDING-2-op2.FBX"),
+		KG::Utill::HashString("Building1.FBX"),
+		KG::Utill::HashString("building-4.fbx"),
+		KG::Utill::HashString("metal_fence.fbx"),
+		KG::Utill::HashString("Dumpster.fbx"),
+		KG::Utill::HashString("barrel.fbx"),
+		KG::Utill::HashString("container.FBX"),
+		KG::Utill::HashString("Crane.FBX"),
+		KG::Utill::HashString("Pallet.FBX"),
+		KG::Utill::HashString("SupportSmall.FBX"),
+		KG::Utill::HashString("SupportBig.FBX"),
+		KG::Utill::HashString("Stairs.FBX"),
+		KG::Utill::HashString("PillarSmall.FBX"),
+		KG::Utill::HashString("MetalFence.FBX"),
+		KG::Utill::HashString("MetalFence-End.FBX"),
+		KG::Utill::HashString("FloorShort.FBX"),
+		KG::Utill::HashString("FloorLong.FBX"),
+		KG::Utill::HashString("FloorHallSmall.FBX"),
+		KG::Utill::HashString("FloorHallBig.FBX"),
+		KG::Utill::HashString("FloorBase.FBX"),
 		KG::Utill::HashString("Vector.FBX"),
 		KG::Utill::HashString("Vector@Idle.FBX"),
 		KG::Utill::HashString("Vector@Reload.FBX"),
@@ -596,8 +605,15 @@ void KG::GameFramework::PostSceneFunction()
 			auto* snd = this->sound->GetNewSoundComponent();
 			snd->LinkSystem(this->sound->GetFmodSystem(), this->sound->GetChannel());
 			snd->RegisterSound(this->sound->GetSound(SOUND_EFF_SHOT), SOUND_EFF_SHOT);
-			snd->RegisterSound(this->sound->GetSound(SOUND_EFF_RELOAD), SOUND_EFF_RELOAD);
-			obj.AddComponent(snd);
+            snd->RegisterSound(this->sound->GetSound(SOUND_EFF_RELOAD), SOUND_EFF_RELOAD);
+            snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::DRAW), VECTOR_SOUND::DRAW);
+            snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_1), VECTOR_SOUND::FIRE_1);
+            snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_2), VECTOR_SOUND::FIRE_2);
+            snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_3), VECTOR_SOUND::FIRE_3);
+            snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_4), VECTOR_SOUND::FIRE_4);
+            snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::RELOAD), VECTOR_SOUND::RELOAD);
+            snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::RELOAD_EMPTY), VECTOR_SOUND::RELOAD_EMPTY);
+            obj.AddComponent(snd);
 		}
 		);
 

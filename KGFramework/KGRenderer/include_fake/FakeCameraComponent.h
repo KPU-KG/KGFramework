@@ -95,6 +95,9 @@ namespace KG::Component
         virtual void InitalizeCascade(KG::Component::ICameraComponent* directionalLightCamera, KG::Component::ILightComponent* light) override;
         virtual void OnDataLoad(tinyxml2::XMLElement* componentElement) override;
         virtual void OnDataSave(tinyxml2::XMLElement* parentElement) override;
+
+        // IGSCascadeCameraComponent을(를) 통해 상속됨
+        virtual void SetMainCamera(ICameraComponent* camera) override;
     };
 
 
