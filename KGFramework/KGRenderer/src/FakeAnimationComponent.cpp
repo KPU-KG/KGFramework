@@ -695,6 +695,7 @@ void KG::Component::FakeAnimationControllerComponent::ChangingUpdate(float elaps
 
 void KG::Component::FakeAnimationControllerComponent::Update(float elapsedTime)
 {
+    return;
     switch ( state )
     {
         case ANIMSTATE_PLAYING:

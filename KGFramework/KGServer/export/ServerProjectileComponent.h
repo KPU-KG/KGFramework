@@ -23,7 +23,7 @@ namespace KG::Component
 
 		bool isDelete = false;
 
-		float sendInterval = 1.f / 60.f;
+		float sendInterval = 1.f / 30.f;
 		float sendTimer = 0.f;
 		// ProjectileType type;
 

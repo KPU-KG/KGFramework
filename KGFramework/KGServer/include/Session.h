@@ -27,7 +27,7 @@ namespace KG::Server
 	{
 		WSAOVERLAPPED over;
 		WSABUF wsaBuf[1];
-		unsigned char packetBuffer[MAX_BUFFER];
+		unsigned char packetBuffer[MAX_BUFFER * 100];
 		OP_TYPE op;
 		SOCKET csocket; // Only OP_ACCEPT
 	};

@@ -28,7 +28,7 @@ namespace KG::Physics
 	protected:
 		PhysicsDesc desc;
 		IPhysicsScene() = default;
-		float							stepSize = 1.0f / 120.0f;
+		float							stepSize = 1.0f / 60.0f;
 	public:
 		void SetDsec(const PhysicsDesc& desc);
 
