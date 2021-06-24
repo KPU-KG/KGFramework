@@ -96,7 +96,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                     ::DispatchMessage(&msg);
                 }
             }
-            //else
+            else
             {
                 gameFramework.OnProcess();
             }
