@@ -36,6 +36,22 @@ namespace KG::Component
 		eRUNAWAY
 	};
 
+
+	// Action Queue에 행동들을 넣고 실행
+	// state마다 action이 다름
+	// 매 update마다 state 변환 조건 검사
+	// 해당 스테이트에 맞게 액션 조건 검사
+
+	class SEnemyControllerComponent;
+
+	struct Action {
+
+		// 조건 검사
+		virtual bool CheckCondition() = 0;
+
+
+	};
+
 	static struct MechAnimIndex {
 		const static UINT dead = 1U;
 		const static UINT shotBigCannon = 6U;

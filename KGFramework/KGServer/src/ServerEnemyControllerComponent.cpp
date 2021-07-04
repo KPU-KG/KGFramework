@@ -539,15 +539,12 @@ bool KG::Component::SEnemyControllerComponent::IsInTraceRange(const DirectX::XMF
 {
 	float rr = traceRange * traceRange;
 	float distance2 = GetDistance2FromEnemy(pos);
-	if (rr > distance2)
-		return true;
-	else
-		return false;
+	return rr > distance2;
 }
 
 bool KG::Component::SEnemyControllerComponent::IsInTraceRange(const float distance) const
 {
-	float rr = range * range;
+	float rr = traceRange * traceRange;
 	return rr > distance;
 }
 
