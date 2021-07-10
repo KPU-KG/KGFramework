@@ -44,13 +44,130 @@ namespace KG::Component
 
 	class SEnemyControllerComponent;
 
+
+
+	//////////////////////////////////////////////////////////////////////////////
+	// Enemy Actions
+	//////////////////////////////////////////////////////////////////////////////
+
 	struct Action {
-
+		SEnemyControllerComponent* enemyComp;
 		// 조건 검사
-		virtual bool CheckCondition() = 0;
-
-
+		// virtual bool CheckCondition() = 0;
+		Action(SEnemyControllerComponent* comp) { enemyComp = comp; }
+		virtual bool Execute(float elapsedTime) = 0;
+		virtual void EndAction() = 0;
 	};
+
+	struct IdleAction : public Action {
+		IdleAction(SEnemyControllerComponent* comp) : Action(comp) {}
+		virtual bool Execute(float elapsedTime) override final;
+		virtual void EndAction() override final;
+	};
+
+	struct SetGoalAction : public Action {
+		SetGoalAction(SEnemyControllerComponent* comp) : Action(comp) {}
+		virtual bool Execute(float elapsedTime) override final;
+		virtual void EndAction() override final;
+	};
+
+	struct SetTargetAction : public Action {
+		SetTargetAction(SEnemyControllerComponent* comp) : Action(comp) {}
+		virtual bool Execute(float elapsedTime) override final;
+		virtual void EndAction() override final;
+	};
+
+	struct MoveAction : public Action {
+		MoveAction(SEnemyControllerComponent* comp) : Action(comp) {}
+		virtual bool Execute(float elapsedTime) override final;
+		virtual void EndAction() override final;
+	};
+
+	struct RotateAction : public Action {
+		RotateAction(SEnemyControllerComponent* comp) : Action(comp) {}
+		virtual bool Execute(float elapsedTime) override final;
+		virtual void EndAction() override final;
+	};
+
+	struct AttackAction : public Action {
+		AttackAction(SEnemyControllerComponent* comp) : Action(comp) {}
+		virtual bool Execute(float elapsedTime) override final;
+		virtual void EndAction() override final;
+	};
+
+	//////////////////////////////////////////////////////////////////////////////
+	// Enemy States
+	//////////////////////////////////////////////////////////////////////////////
+
+	struct State {
+		Action* action;
+		SEnemyControllerComponent* enemyComp;
+		State(SEnemyControllerComponent* comp) { enemyComp = comp; }
+		virtual ~State() {}
+		virtual void Execute(float elapsedTime) = 0;
+		virtual void InitState() = 0;
+		virtual float GetValue() = 0;
+	};
+
+	struct WanderState : public State {
+		const static size_t WANDER_ACTION_COUNT = 4;
+		std::array<Action*, WANDER_ACTION_COUNT> action;
+		const static int WANDER_ACTION_IDLE = 0;
+		const static int WANDER_ACTION_SETGOAL = 1;
+		const static int WANDER_ACTION_ROTATE = 2;
+		const static int WANDER_ACTION_MOVE = 3;
+
+		int curAction = WANDER_ACTION_IDLE;
+		WanderState(SEnemyControllerComponent* comp) : State(comp) {}
+		virtual ~WanderState();
+		virtual void InitState() override final;
+
+		virtual void Execute(float elapsedTime) override final;
+
+		virtual float GetValue() override final;
+	};
+
+	struct TraceState : public State {
+		const static int TRACE_ACTION_COUNT = 3;
+		std::array<Action*, TRACE_ACTION_COUNT> action;
+
+		const static int TRACE_ACTION_SETGOAL = 0;
+		const static int TRACE_ACTION_ROTATE = 1;
+		const static int TRACE_ACTION_ATTACK = 2;
+
+		int curAction = TRACE_ACTION_SETGOAL;
+
+		TraceState(SEnemyControllerComponent* comp) : State(comp) {}
+
+		virtual void InitState() override final;
+
+		virtual void Execute(float elapsedTime) override final;
+
+		virtual float GetValue() override final;
+	};
+
+	//////////////////////////////////////////////////////////////////////////////
+	// Enemy State Manager
+	//////////////////////////////////////////////////////////////////////////////
+
+	struct StateManager {
+		const static int STATE_WANDER = 0;
+		const static int STATE_TRACE = 1;
+
+		const static int STATE_COUNT = 2;
+		SEnemyControllerComponent* enemyComp;
+		std::array<State*, STATE_COUNT> state;
+		int curState = STATE_WANDER;
+		StateManager(SEnemyControllerComponent* comp) { enemyComp = comp; }
+		~StateManager();
+
+		void Init();
+
+		void SetState();
+
+		void Execute(float elapsedTime);
+	};
+
 
 	static struct MechAnimIndex {
 		const static UINT dead = 1U;
@@ -124,18 +241,33 @@ namespace KG::Component
 		bool										isInAttackDelay = false;
 		bool										isAttackable = false;
 
+		StateManager*								stateManager;
+
+	public:
+
+		// move timer 셋
+		// idle timer 셋
+		// changed animation 셋
+
+		void SetMoveTime(float t) { moveTime = t; }
+		void MoveTimer(float elapsedTime) { moveTime += elapsedTime; }
+		void SetIdleTime(float t) { idleTimer = t; }
+		void IdleTimer(float elapsedTime) { idleTimer += elapsedTime; }
+		void SetAttackTime(float t) { attackTimer = t; }
+		void AttackTimer(float elapsedTime) { attackTimer += elapsedTime; }
+		void ReadyNextAnimation(bool b) { changedAnimation = b; }
+
 		void UpdateState();
 		bool SetGoal();
 		bool RotateToGoal(float elapsedTime);
-		bool MoveToGoal();
-		bool Idle(float elapsedTime);
+		bool MoveToGoal(float elapsedTime);
 		void ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime = 0.1f, int repeat = 1);
 		float GetDistance2FromEnemy(DirectX::XMFLOAT3 pos) const;
 		bool IsInTraceRange(const DirectX::XMFLOAT3 pos) const;
 		bool IsInTraceRange(const float distance) const;
 		bool AttackTarget(float elapsedTime);
 		// 공격 패킷을 어떻게 보내야 할까
-	public:
+		bool Idle(float elapsedTime);
 		bool IsAttackable() const;
 		void PostAttack();
 		void Attack(SGameManagerComponent* gameManager);
@@ -154,13 +286,12 @@ namespace KG::Component
 		}
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender) override;
 		virtual bool OnDrawGUI();
-		virtual void OnDataLoad(tinyxml2::XMLElement* objectElement) override;
-		virtual void OnDataSave(tinyxml2::XMLElement* objectElement) override;
 		void SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback);
 		void HitBullet();
 		bool IsDead() const;
 		bool IsDelete() const;
 		bool SetTarget();
+		bool SetAttackRotation();
 		bool IsTargetInRange() const;
 		void RegisterPlayerId(KG::Server::NET_OBJECT_ID id);
 		void DeregisterPlayerId(KG::Server::NET_OBJECT_ID id);
