@@ -59,30 +59,27 @@ namespace KG::Component
         UINT materialIndex = -1;
         ParticleType type = ParticleType::Add;
 
-
         int GetCount() const;
         ParticleData GetData(const DirectX::XMFLOAT3& position) const;
         ParticleData GetData(const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& baseSpeed) const;
     };
 
-
-
-	class DLL IParticleEmitterComponent : public IRenderComponent
-	{
-		virtual void OnCreate(KG::Core::GameObject* gameObject) override = 0;
-		virtual void OnPreRender() override = 0;
-	public:
+    class DLL IParticleEmitterComponent : public IRenderComponent
+    {
+        virtual void OnCreate(KG::Core::GameObject* gameObject) override = 0;
+        virtual void OnPreRender() override = 0;
+    public:
         virtual void AddParticleDesc(const KG::Utill::HashString& id, const ParticleDesc& desc) = 0;
         virtual void EmitParticle(const KG::Utill::HashString& id) = 0;
         virtual void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position) = 0;
         virtual void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position, const DirectX::XMFLOAT3 baseSpeed) = 0;
         virtual void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3 position, const DirectX::XMFLOAT3 baseSpeed, float lifeTime) = 0;
         virtual void EmitParticle(const ParticleData& desc, bool autoFillTime, ParticleType type) = 0;
-	public:
-		virtual void Update(float elapsedTime) override = 0;
-		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement) = 0;
-		virtual void OnDataSave(tinyxml2::XMLElement* parentElement) = 0;
-		virtual bool OnDrawGUI() = 0;
-	};
-	REGISTER_COMPONENT_ID(IParticleEmitterComponent);
+    public:
+        virtual void Update(float elapsedTime) override = 0;
+        virtual void OnDataLoad(tinyxml2::XMLElement* componentElement) = 0;
+        virtual void OnDataSave(tinyxml2::XMLElement* parentElement) = 0;
+        virtual bool OnDrawGUI() = 0;
+    };
+    REGISTER_COMPONENT_ID(IParticleEmitterComponent);
 };

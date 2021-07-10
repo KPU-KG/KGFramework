@@ -54,12 +54,14 @@ GBufferOut PixelEncode(Surface surface)
 {
     GBufferOut result;
     result.gbuffer0.xyz = surface.albedo;
-    result.gbuffer0.w = surface.reflection;
+    //result.gbuffer0.w = surface.reflection;
+    result.gbuffer0.w = 1;
     
     result.gbuffer1.x = surface.specular;
     result.gbuffer1.y = surface.metalic;
     result.gbuffer1.z = surface.roughness;
-    result.gbuffer1.w = surface.emssion;
+    result.gbuffer1.w = 1;
+    //result.gbuffer1.w = surface.emssion;
     
     result.gbuffer2.xy = EncodeNormal(surface.wNormal);
     

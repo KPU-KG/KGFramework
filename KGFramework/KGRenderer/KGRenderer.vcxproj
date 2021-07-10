@@ -182,6 +182,8 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\PostProcessComponent.cpp" />
+    <ClCompile Include="include_fake\FakePostProcessComponent.cpp" />
     <ClCompile Include="src\AnimationComponent.cpp" />
     <ClCompile Include="src\CameraComponent.cpp" />
     <ClCompile Include="src\D3D12Helper.cpp" />
@@ -220,6 +222,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\PostProcess.cpp" />
     <ClCompile Include="src\Render2DComponent.cpp" />
     <ClCompile Include="src\Render3DComponent.cpp" />
     <ClCompile Include="src\RenderTexture.cpp" />
@@ -228,6 +231,7 @@
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="export\FakePostProcessComponent.h" />
     <ClInclude Include="export\IAnimationComponent.h" />
     <ClInclude Include="export\ICameraComponent.h" />
     <ClInclude Include="export\IGeometryComponent.h" />
@@ -235,6 +239,7 @@
     <ClInclude Include="export\ILightComponent.h" />
     <ClInclude Include="export\IMaterialComponent.h" />
     <ClInclude Include="export\IParticleEmitterComponent.h" />
+    <ClInclude Include="export\IPostProcessComponent.h" />
     <ClInclude Include="export\IRender2DComponent.h" />
     <ClInclude Include="export\IRender3DComponent.h" />
     <ClInclude Include="export\IRenderComponent.h" />
@@ -269,6 +274,8 @@
     <ClInclude Include="include\MaterialComponent.h" />
     <ClInclude Include="include\ParticleEmitterComponent.h" />
     <ClInclude Include="include\ParticleGenerator.h" />
+    <ClInclude Include="include\PostProcess.h" />
+    <ClInclude Include="include\PostProcessComponent.h" />
     <ClInclude Include="include\Render2DComponent.h" />
     <ClInclude Include="include\Render3DComponent.h" />
     <ClInclude Include="include\RenderTexture.h" />

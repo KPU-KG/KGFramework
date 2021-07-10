@@ -42,6 +42,19 @@ KG::Renderer::Shader* KG::Resource::ResourceContainer::LoadShader(const KG::Util
 	}
 }
 
+KG::Renderer::PostProcess* KG::Resource::ResourceContainer::LoadPostProcess(const KG::Utill::HashString& id)
+{
+    if (this->postProcess.count(id))
+    {
+        return &this->postProcess.at(id);
+    }
+    else
+    {
+        auto metaData = ResourceLoader::LoadShaderSetFromFile("Resource/ShaderCode.xml", id);
+        return &this->postProcess.emplace(id, metaData).first->second;
+    }
+}
+
 KG::Resource::FrameModel* KG::Resource::ResourceContainer::LoadModel(const KG::Utill::HashString& id)
 {
 	if ( this->models.count(id) )

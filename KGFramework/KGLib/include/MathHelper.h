@@ -454,8 +454,6 @@ namespace KG::Math
 	}
 
 
-
-
 	inline DirectX::XMFLOAT2 RandomVector2(const DirectX::XMFLOAT2& min, const DirectX::XMFLOAT2& max)
 	{
 		return DirectX::XMFLOAT2(

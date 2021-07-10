@@ -69,8 +69,11 @@ KG::Resource::Metadata::ShaderSetData KG::Resource::ResourceLoader::LoadShaderSe
 			data.shaderGroup = ReadShaderGroup( shaderSets->Attribute( "group" ) );
 			data.enableCullBackface = shaderSets->BoolAttribute( "enableBackfaceCulling" );
 			data.enableDepthCliping = shaderSets->BoolAttribute( "enableDepthCliping" );
-			data.materialParameterSize = shaderSets->IntAttribute( "materialParameterSize" );
-			data.fileDir = shaderSets->Attribute( "fileDir" );
+            data.materialParameterSize = shaderSets->IntAttribute("materialParameterSize");
+            data.unitSizeX = shaderSets->Unsigned64Attribute("unitSizeX", 0);
+            data.unitSizeY = shaderSets->Unsigned64Attribute("unitSizeY", 0);
+            data.unitSizeZ = shaderSets->Unsigned64Attribute("unitSizeZ", 0);
+            data.fileDir = shaderSets->Attribute( "fileDir" );
 			break;
 		}
 		else

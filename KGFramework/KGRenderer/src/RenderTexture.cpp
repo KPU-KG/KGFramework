@@ -106,7 +106,7 @@ void KG::Renderer::RenderTexture::CreateGBufferSRView()
 	descManager->RequestEmptyIndex();
 	descManager->RequestEmptyIndex();
 	descManager->RequestEmptyIndex();
-	descManager->RequestEmptyIndex();
+    descManager->RequestEmptyIndex();
 
 	for ( size_t i = 0; i < 4; i++ )
 	{
@@ -371,7 +371,7 @@ void KG::Renderer::RenderTexture::Initialize(const RenderTextureDesc& desc)
 	{
 		this->PostRenderTargetTexture();
 	}
-	else if ( this->desc.uploadSRVRenderTarget )
+	else if ( this->desc.uploadSRVRenderTarget || this->desc.useRenderTarget)
 	{
 		this->PostRenderTargetSRV();
 	}
@@ -380,7 +380,7 @@ void KG::Renderer::RenderTexture::Initialize(const RenderTextureDesc& desc)
 	{
 		this->PostDepthStencilTexture();
 	}
-	else if ( this->desc.uploadSRVDepthBuffer )
+	else if ( this->desc.uploadSRVDepthBuffer || this->desc.useDepthStencilBuffer)
 	{
 		this->PostDepthStencilSRV();
 	}

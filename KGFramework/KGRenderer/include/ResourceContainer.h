@@ -9,6 +9,7 @@
 #include "KGGeometry.h"
 #include "KGModel.h"
 #include "KGShader.h"
+#include "PostProcess.h"
 #include "Texture.h"
 #include "GameObject.h"
 #include "ObjectContainer.h"
@@ -18,7 +19,8 @@ namespace KG::Resource
 	class ResourceContainer
 	{
 	private:
-		std::map<KG::Utill::HashString, KG::Renderer::Shader> shaders;
+        std::map<KG::Utill::HashString, KG::Renderer::Shader> shaders;
+        std::map<KG::Utill::HashString, KG::Renderer::PostProcess> postProcess;
 
 		std::map<KG::Utill::HashString, std::future<KG::Resource::FrameModel>> preloadModels;
 		std::map<KG::Utill::HashString, KG::Resource::FrameModel> models;
@@ -39,8 +41,9 @@ namespace KG::Resource
 		ResourceContainer& operator=( const ResourceContainer& other ) = delete;
 		ResourceContainer& operator=( ResourceContainer&& other ) = delete;
 
-		KG::Renderer::Shader* LoadShader(const KG::Utill::HashString& id);
-		KG::Resource::FrameModel* LoadModel( const KG::Utill::HashString& id );
+        KG::Renderer::Shader* LoadShader(const KG::Utill::HashString& id);
+        KG::Renderer::PostProcess* LoadPostProcess(const KG::Utill::HashString& id);
+        KG::Resource::FrameModel* LoadModel( const KG::Utill::HashString& id );
 		void PreLoadModels(std::vector<KG::Utill::HashString>&& vectors);
 		KG::Renderer::Geometry* LoadGeometry( const KG::Utill::HashString& id, UINT geometryIndex = 0 );
 		KG::Renderer::Geometry* LoadRawModel( const KG::Utill::HashString& id );

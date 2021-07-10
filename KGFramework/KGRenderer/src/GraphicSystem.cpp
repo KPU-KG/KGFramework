@@ -202,3 +202,15 @@ void KG::System::RenderSpriteSystem::OnPreRender()
         com.OnPreRender();
     }
 }
+
+void KG::System::PostProcessorSystem::OnUpdate(float elapsedTime)
+{
+}
+
+void KG::System::PostProcessorSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::PostProcessorSystem::OnPreRender()
+{
+}

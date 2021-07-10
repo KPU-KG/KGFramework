@@ -89,7 +89,6 @@ namespace KG::Renderer
 		DXGI_FORMAT format = DXGI_FORMAT_R8G8B8A8_UNORM
 	);
 
-
 	ID3D12Resource* CreateDepthStencilResource(
 		ID3D12Device* pd3dDevice,
 		size_t width,
@@ -105,6 +104,13 @@ namespace KG::Renderer
 		DXGI_FORMAT format = DXGI_FORMAT_R24G8_TYPELESS
 	);
 
+    ID3D12Resource* CreateUAVBufferResource(
+        ID3D12Device* pd3dDevice,
+        UINT width,
+        UINT height,
+        D3D12_HEAP_TYPE d3dHeapType = D3D12_HEAP_TYPE_DEFAULT,
+        D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_COPY_SOURCE
+    );
 
 	ID3D12Resource* CreateUploadHeapBuffer(ID3D12Device* device, size_t bufferSize);
 };

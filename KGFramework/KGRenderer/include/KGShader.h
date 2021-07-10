@@ -194,7 +194,7 @@ namespace KG::Renderer
 
 	class Shader
 	{
-	private:
+	protected:
 		std::map<std::tuple<ShaderMeshType, ShaderGeometryType, ShaderPixelType, ShaderTesselation>, ID3D12PipelineState*> pso;
 		unsigned renderPriority = 0;
 		KG::Resource::Metadata::ShaderSetData shaderSetData;

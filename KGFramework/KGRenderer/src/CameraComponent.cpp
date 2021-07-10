@@ -205,7 +205,7 @@ void KG::Component::CameraComponent::SetMainCamera()
 void KG::Component::CameraComponent::SetCameraRender(ID3D12GraphicsCommandList* commandList)
 {
 	std::memcpy(this->mappedCameraData, this->cameraData, sizeof(CameraData));
-	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::RootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::GraphicRootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
 
 	commandList->RSSetViewports(1, &this->viewport);
 	commandList->RSSetScissorRects(1, &this->scissorRect);
@@ -479,7 +479,7 @@ void KG::Component::GSCubeCameraComponent::OnPreRender()
 void KG::Component::GSCubeCameraComponent::SetCameraRender(ID3D12GraphicsCommandList* commandList)
 {
 	std::memcpy(this->mappedCameraData, this->cameraData, sizeof(GSCubeCameraData));
-	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::RootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::GraphicRootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
 
 	commandList->RSSetViewports(1, &this->viewport);
 	commandList->RSSetScissorRects(1, &this->scissorRect);
@@ -662,7 +662,7 @@ void KG::Component::GSCascadeCameraComponent::SetCameraRender(ID3D12GraphicsComm
 {
 	std::memcpy(this->mappedCameraData, this->cameraData, sizeof(GSCascadeCameraData));
 	auto worldPos = this->mainCamera->GetGameObject()->GetTransform()->GetWorldPosition();
-	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::RootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::GraphicRootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
 
 	commandList->RSSetViewports(1, &this->viewport);
 	commandList->RSSetScissorRects(1, &this->scissorRect);

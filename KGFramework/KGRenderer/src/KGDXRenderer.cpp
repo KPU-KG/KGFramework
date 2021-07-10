@@ -13,7 +13,6 @@
 #include "d3dx12.h"
 #include "Texture.h"
 
-
 using namespace KG::Renderer;
 
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 8> GetStaticSamplers();
@@ -32,6 +31,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
     KG::System::AnimationControllerSystem animationControllerSystem;
     KG::System::ShadowCasterSystem shadowSystem;
     KG::System::ParticleEmitterSystem particleSystem;
+    KG::System::PostProcessorSystem postProcessorSystem;
 
     void OnPreRender()
     {
@@ -47,6 +47,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
         this->avatarSystem.OnPreRender();
         this->animationControllerSystem.OnPreRender();
         this->particleSystem.OnPreRender();
+        this->postProcessorSystem.OnPreRender();
     }
 
     void OnUpdate(float elapsedTime)
@@ -63,6 +64,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
         this->animationControllerSystem.OnUpdate(elapsedTime);
         this->shadowSystem.OnUpdate(elapsedTime);
         this->particleSystem.OnUpdate(elapsedTime);
+        this->postProcessorSystem.OnUpdate(elapsedTime);
     }
     void OnPostUpdate(float elapsedTime)
     {
@@ -78,6 +80,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
         this->animationControllerSystem.OnPostUpdate(elapsedTime);
         this->shadowSystem.OnPostUpdate(elapsedTime);
         this->particleSystem.OnPostUpdate(elapsedTime);
+        this->postProcessorSystem.OnPostUpdate(elapsedTime);
     }
 
     void PostComponentProvider(KG::Component::ComponentProvider& provider)
@@ -94,6 +97,7 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
         this->animationControllerSystem.OnPostProvider(provider);
         this->shadowSystem.OnPostProvider(provider);
         this->particleSystem.OnPostProvider(provider);
+        this->postProcessorSystem.OnPostProvider(provider);
     }
 
     void Clear()
@@ -110,9 +114,9 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
         this->animationControllerSystem.Clear();
         this->shadowSystem.Clear();
         this->particleSystem.Clear();
+        this->postProcessorSystem.Clear();
     }
 };
-
 
 KG::Renderer::KGDXRenderer::KGDXRenderer()
 {
@@ -133,7 +137,7 @@ KG::Renderer::KGDXRenderer::~KGDXRenderer()
     TryRelease(generalRootSignature);
     TryRelease(fence);
 
-    for ( auto*& ptr : this->renderTargetBuffers )
+    for (auto*& ptr : this->renderTargetBuffers)
     {
         TryRelease(ptr);
     }
@@ -153,7 +157,7 @@ void KGDXRenderer::Initialize()
     this->CreateRtvDescriptorHeaps();
     this->CreateRenderTargetView();
     this->CreateGeneralRootSignature();
-
+    this->CreatePostProcessRootSignature();
 
     this->renderEngine = std::make_unique<KGRenderEngine>(this->d3dDevice);
     this->graphicSystems = std::make_unique<GraphicSystems>();
@@ -163,6 +167,7 @@ void KGDXRenderer::Initialize()
     this->InitializeImGui();
 
     this->particleGenerator.Initialize();
+    this->postProcessor = std::make_unique<PostProcessor>();
 }
 
 void KGDXRenderer::Render()
@@ -178,7 +183,7 @@ void KGDXRenderer::Render()
     ID3D12DescriptorHeap* heaps[] = { this->descriptorHeapManager->Get() };
     this->mainCommandList->SetDescriptorHeaps(1, heaps);
 
-    if ( !this->renderEngine->hasRenderJobs() )
+    if (!this->renderEngine->hasRenderJobs())
     {
         auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
             this->renderTargetBuffers[this->swapChainBufferIndex],
@@ -215,7 +220,7 @@ void KGDXRenderer::Render()
 
 void KG::Renderer::KGDXRenderer::PreRenderEditorUI()
 {
-    if ( !this->isRenderEditUI ) return;
+    if (!this->isRenderEditUI) return;
     // Start the Dear ImGui frame
     ImGui_ImplDX12_NewFrame();
     ImGui_ImplWin32_NewFrame();
@@ -230,7 +235,6 @@ void KG::Renderer::KGDXRenderer::PreRenderEditorUI()
     ImGui::PushStyleColor(ImGuiCol_DockingEmptyBg, ImVec4(0, 0, 0, 0));
     ImGui::SetNextWindowBgAlpha(0);
     ImGui::DockSpaceOverViewport();
-
 }
 
 void KG::Renderer::KGDXRenderer::PreloadModels(std::vector<KG::Utill::HashString>&& ids)
@@ -241,9 +245,9 @@ void KG::Renderer::KGDXRenderer::PreloadModels(std::vector<KG::Utill::HashString
 void KG::Renderer::KGDXRenderer::CubeCaemraRender()
 {
     PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(0), "CubeCameraRender");
-    for ( KG::Component::CubeCameraComponent& pointLightCamera : this->graphicSystems->cubeCameraSystem )
+    for (KG::Component::CubeCameraComponent& pointLightCamera : this->graphicSystems->cubeCameraSystem)
     {
-        for ( KG::Component::CameraComponent& cubeCamera : pointLightCamera.GetCameras() )
+        for (KG::Component::CameraComponent& cubeCamera : pointLightCamera.GetCameras())
         {
             PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(0), "Cube Camera Render : Camera %d", cubeCamera.GetCubeIndex());
 
@@ -271,7 +275,7 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
 {
     PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "NormalCameraRender");
     size_t _cameraCount = 1;
-    for ( KG::Component::CameraComponent& normalCamera : this->graphicSystems->cameraSystem )
+    for (KG::Component::CameraComponent& normalCamera : this->graphicSystems->cameraSystem)
     {
         PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Normal Camera Render : Camera %d", _cameraCount++);
         normalCamera.SetCameraRender(this->mainCommandList);
@@ -282,6 +286,7 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
         this->SkyBoxRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
         this->ParticleRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
         this->SpriteRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+        this->PostProcessRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
         this->InGameUIRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
         this->PassRenderEnd(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
 
@@ -289,53 +294,52 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
         PIXEndEvent(mainCommandList);
     }
     PIXEndEvent(mainCommandList);
-
 }
 
 void KG::Renderer::KGDXRenderer::ShadowMapRender()
 {
     PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "ShadowCameraRender");
     size_t cameraCount = 0;
-    for ( KG::Component::ShadowCasterComponent& comp : this->graphicSystems->shadowSystem )
+    for (KG::Component::ShadowCasterComponent& comp : this->graphicSystems->shadowSystem)
     {
-        switch ( comp.GetTargetLightType() )
+        switch (comp.GetTargetLightType())
         {
-            case KG::Component::LightType::DirectionalLight:
-            {
-                PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Directional Light ShadowMap Render : Camera %d", cameraCount++);
-                auto* cascadeCamera = comp.GetDirectionalLightCamera();
-                cascadeCamera->SetCameraRender(mainCommandList);
-                this->mainCommandList->ClearDepthStencilView(cascadeCamera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-                this->mainCommandList->OMSetRenderTargets(0, nullptr, false, &cascadeCamera->GetRenderTexture().dsvHandle);
-                this->renderEngine->Render(ShaderGroup::Opaque, ShaderGeometryType::GSCascadeShadow, ShaderPixelType::GSCubeShadow, mainCommandList);
-                cascadeCamera->EndCameraRender(mainCommandList);
-                PassRenderEnd(mainCommandList, cascadeCamera->GetRenderTexture(), 0);
-            }
-            break;
-            case KG::Component::LightType::PointLight:
-            {
-                PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Point Light ShadowMap Render : Camera %d", cameraCount++);
-                auto* pointLightCamera = comp.GetPointLightCamera();
-                pointLightCamera->SetCameraRender(mainCommandList);
-                this->mainCommandList->ClearDepthStencilView(pointLightCamera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-                this->mainCommandList->OMSetRenderTargets(0, nullptr, false, &pointLightCamera->GetRenderTexture().dsvHandle);
-                this->renderEngine->Render(ShaderGroup::Opaque, ShaderGeometryType::GSCubeShadow, ShaderPixelType::GSCubeShadow, mainCommandList);
-                pointLightCamera->EndCameraRender(mainCommandList);
-                PassRenderEnd(mainCommandList, pointLightCamera->GetRenderTexture(), 0);
-            }
-            break;
-            case KG::Component::LightType::SpotLight:
-            {
-                PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Directional Light ShadowMap Render : Camera %d", cameraCount++);
-                auto* camera = comp.GetSpotLightCamera();
-                camera->SetCameraRender(mainCommandList);
-                this->mainCommandList->ClearDepthStencilView(camera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-                this->mainCommandList->OMSetRenderTargets(0, nullptr, false, &camera->GetRenderTexture().dsvHandle);
-                this->renderEngine->Render(ShaderGroup::Opaque, ShaderGeometryType::Default, ShaderPixelType::Shadow, mainCommandList);
-                camera->EndCameraRender(mainCommandList);
-                PassRenderEnd(mainCommandList, camera->GetRenderTexture(), 0);
-            }
-            break;
+        case KG::Component::LightType::DirectionalLight:
+        {
+            PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Directional Light ShadowMap Render : Camera %d", cameraCount++);
+            auto* cascadeCamera = comp.GetDirectionalLightCamera();
+            cascadeCamera->SetCameraRender(mainCommandList);
+            this->mainCommandList->ClearDepthStencilView(cascadeCamera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+            this->mainCommandList->OMSetRenderTargets(0, nullptr, false, &cascadeCamera->GetRenderTexture().dsvHandle);
+            this->renderEngine->Render(ShaderGroup::Opaque, ShaderGeometryType::GSCascadeShadow, ShaderPixelType::GSCubeShadow, mainCommandList);
+            cascadeCamera->EndCameraRender(mainCommandList);
+            PassRenderEnd(mainCommandList, cascadeCamera->GetRenderTexture(), 0);
+        }
+        break;
+        case KG::Component::LightType::PointLight:
+        {
+            PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Point Light ShadowMap Render : Camera %d", cameraCount++);
+            auto* pointLightCamera = comp.GetPointLightCamera();
+            pointLightCamera->SetCameraRender(mainCommandList);
+            this->mainCommandList->ClearDepthStencilView(pointLightCamera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+            this->mainCommandList->OMSetRenderTargets(0, nullptr, false, &pointLightCamera->GetRenderTexture().dsvHandle);
+            this->renderEngine->Render(ShaderGroup::Opaque, ShaderGeometryType::GSCubeShadow, ShaderPixelType::GSCubeShadow, mainCommandList);
+            pointLightCamera->EndCameraRender(mainCommandList);
+            PassRenderEnd(mainCommandList, pointLightCamera->GetRenderTexture(), 0);
+        }
+        break;
+        case KG::Component::LightType::SpotLight:
+        {
+            PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Directional Light ShadowMap Render : Camera %d", cameraCount++);
+            auto* camera = comp.GetSpotLightCamera();
+            camera->SetCameraRender(mainCommandList);
+            this->mainCommandList->ClearDepthStencilView(camera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+            this->mainCommandList->OMSetRenderTargets(0, nullptr, false, &camera->GetRenderTexture().dsvHandle);
+            this->renderEngine->Render(ShaderGroup::Opaque, ShaderGeometryType::Default, ShaderPixelType::Shadow, mainCommandList);
+            camera->EndCameraRender(mainCommandList);
+            PassRenderEnd(mainCommandList, camera->GetRenderTexture(), 0);
+        }
+        break;
         }
         PIXEndEvent(mainCommandList);
     }
@@ -344,7 +348,7 @@ void KG::Renderer::KGDXRenderer::ShadowMapRender()
 
 void KG::Renderer::KGDXRenderer::EditorUIRender()
 {
-    if ( this->isRenderEditUI )
+    if (this->isRenderEditUI)
     {
         ImGui::PopStyleColor(1);
         PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(0), "ImGui UI Render");
@@ -377,9 +381,9 @@ void KG::Renderer::KGDXRenderer::CopyMainCamera()
         &barrierOne
     );
 
-    for ( KG::Component::CameraComponent& directionalLightCamera : this->graphicSystems->cameraSystem )
+    for (KG::Component::CameraComponent& directionalLightCamera : this->graphicSystems->cameraSystem)
     {
-        if ( directionalLightCamera.isMainCamera )
+        if (directionalLightCamera.isMainCamera)
         {
             TryResourceBarrier(this->mainCommandList,
                 directionalLightCamera.GetRenderTexture().BarrierTransition(
@@ -390,7 +394,6 @@ void KG::Renderer::KGDXRenderer::CopyMainCamera()
             );
 
             this->mainCommandList->CopyResource(this->renderTargetBuffers[this->swapChainBufferIndex], directionalLightCamera.GetRenderTexture().renderTarget);
-
 
             TryResourceBarrier(this->mainCommandList,
                 directionalLightCamera.GetRenderTexture().BarrierTransition(
@@ -418,7 +421,7 @@ void KG::Renderer::KGDXRenderer::OpaqueRender(ShaderGeometryType geoType, Shader
     PIXSetMarker(cmdList, PIX_COLOR(255, 0, 0), "Opaque Render");
     cmdList->OMSetRenderTargets(4, rt.gbufferHandle.data(), false, &rt.dsvHandle);
     rt.ClearGBuffer(this->mainCommandList, 0, 0, 0, 0);
-    cmdList->SetGraphicsRootDescriptorTable(RootParameterIndex::Texture1Heap, this->descriptorHeapManager->GetGPUHandle(0));
+    cmdList->SetGraphicsRootDescriptorTable(GraphicRootParameterIndex::Texture1Heap, this->descriptorHeapManager->GetGPUHandle(0));
 
     this->mainCommandList->ClearDepthStencilView(rt.dsvHandle,
         D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL,
@@ -474,7 +477,7 @@ void KG::Renderer::KGDXRenderer::LightPassRender(ID3D12GraphicsCommandList* cmdL
             D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
         )
     );
-    cmdList->SetGraphicsRootDescriptorTable(RootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle(rt.gbufferSRVIndex));
+    cmdList->SetGraphicsRootDescriptorTable(GraphicRootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle(rt.gbufferSRVIndex));
     auto rtvHandle = rt.GetRenderTargetRTVHandle(cubeIndex);
     cmdList->OMSetRenderTargets(1, &rtvHandle, true, nullptr);
     this->renderEngine->Render(ShaderGroup::DirectionalLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList);
@@ -488,6 +491,12 @@ void KG::Renderer::KGDXRenderer::SkyBoxRender(ID3D12GraphicsCommandList* cmdList
     auto rtvHandle = rt.GetRenderTargetRTVHandle(cubeIndex);
     cmdList->OMSetRenderTargets(1, &rtvHandle, true, &rt.dsvHandle);
     this->renderEngine->Render(ShaderGroup::SkyBox, ShaderGeometryType::SkyBox, ShaderPixelType::SkyBox, cmdList);
+}
+
+void KG::Renderer::KGDXRenderer::PostProcessRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
+{
+    PIXSetMarker(cmdList, PIX_COLOR(255, 0, 0), "PostProcess Pass Render");
+    this->postProcessor->Draw(cmdList, rt, cubeIndex);
 }
 
 void KG::Renderer::KGDXRenderer::PassRenderEnd(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
@@ -590,6 +599,12 @@ KG::Component::IParticleEmitterComponent* KG::Renderer::KGDXRenderer::GetNewPart
     return particleComp;
 }
 
+KG::Component::IPostProcessManagerComponent* KG::Renderer::KGDXRenderer::GetNewPostProcessorComponent()
+{
+    auto* postComp = static_cast<KG::Component::IPostProcessManagerComponent*>(this->graphicSystems->postProcessorSystem.GetNewComponent());
+    return postComp;
+}
+
 KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials)
 {
     return KG::Resource::ResourceContainer::GetInstance()->CreateObjectFromModel(id, container, materials);
@@ -608,6 +623,11 @@ KG::Renderer::KGDXRenderer* KG::Renderer::KGDXRenderer::GetInstance()
 ID3D12RootSignature* KG::Renderer::KGDXRenderer::GetGeneralRootSignature() const
 {
     return this->generalRootSignature;
+}
+
+ID3D12RootSignature* KG::Renderer::KGDXRenderer::GetPostProcessRootSignature() const
+{
+    return this->postProcessRootSignature;
 }
 
 KGRenderEngine* KG::Renderer::KGDXRenderer::GetRenderEngine() const
@@ -647,28 +667,28 @@ void KG::Renderer::KGDXRenderer::QueryHardwareFeature()
 
     d3dDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &featureSupport, sizeof(featureSupport));
 
-    switch ( featureSupport.ResourceBindingTier )
+    switch (featureSupport.ResourceBindingTier)
     {
-        case D3D12_RESOURCE_BINDING_TIER_1:
-        {
-            DebugNormalMessage("D3D12 RESOURCE BINDING TIER : 1");
-        }
-        break;
+    case D3D12_RESOURCE_BINDING_TIER_1:
+    {
+        DebugNormalMessage("D3D12 RESOURCE BINDING TIER : 1");
+    }
+    break;
 
-        case D3D12_RESOURCE_BINDING_TIER_2:
-        {
-            DebugNormalMessage("D3D12 RESOURCE BINDING TIER : 2");
-        }
-        break;
+    case D3D12_RESOURCE_BINDING_TIER_2:
+    {
+        DebugNormalMessage("D3D12 RESOURCE BINDING TIER : 2");
+    }
+    break;
 
-        case D3D12_RESOURCE_BINDING_TIER_3:
-        {
-            DebugNormalMessage("D3D12 RESOURCE BINDING TIER: 3");
-        }
-        break;
+    case D3D12_RESOURCE_BINDING_TIER_3:
+    {
+        DebugNormalMessage("D3D12 RESOURCE BINDING TIER: 3");
+    }
+    break;
     }
 
-    if ( featureSupport.PSSpecifiedStencilRefSupported )
+    if (featureSupport.PSSpecifiedStencilRefSupported)
     {
         DebugNormalMessage("D3D12 Stencil Ref Supported");
     }
@@ -676,7 +696,6 @@ void KG::Renderer::KGDXRenderer::QueryHardwareFeature()
     {
         DebugNormalMessage("D3D12 Stencil Ref Not Supported");
     }
-
 }
 
 void KG::Renderer::KGDXRenderer::CreateD3DDevice()
@@ -686,7 +705,7 @@ void KG::Renderer::KGDXRenderer::CreateD3DDevice()
 #if defined(_DEBUG) | defined(DEBUF)
     ID3D12Debug* d3dDebugController = nullptr;
     hResult = D3D12GetDebugInterface(IID_PPV_ARGS(&d3dDebugController));
-    if ( d3dDebugController )
+    if (d3dDebugController)
     {
         d3dDebugController->EnableDebugLayer();
         d3dDebugController->Release();
@@ -695,21 +714,21 @@ void KG::Renderer::KGDXRenderer::CreateD3DDevice()
 #endif
     hResult = ::CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&this->dxgiFactory));
     IDXGIAdapter1* d3dAdapter = nullptr;
-    for ( size_t i = 0; i < DXGI_ERROR_NOT_FOUND != this->dxgiFactory->EnumAdapters1(i, &d3dAdapter); i++ )
+    for (size_t i = 0; i < DXGI_ERROR_NOT_FOUND != this->dxgiFactory->EnumAdapters1(i, &d3dAdapter); i++)
     {
         DXGI_ADAPTER_DESC1 dxgiAdapterDesc;
         d3dAdapter->GetDesc1(&dxgiAdapterDesc);
-        if ( dxgiAdapterDesc.Flags & DXGI_ADAPTER_FLAG::DXGI_ADAPTER_FLAG_SOFTWARE )
+        if (dxgiAdapterDesc.Flags & DXGI_ADAPTER_FLAG::DXGI_ADAPTER_FLAG_SOFTWARE)
         {
             continue;
         }
-        if ( SUCCEEDED(::D3D12CreateDevice(d3dAdapter, D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&this->d3dDevice))) )
+        if (SUCCEEDED(::D3D12CreateDevice(d3dAdapter, D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_12_0, IID_PPV_ARGS(&this->d3dDevice))))
         {
             DebugNormalMessage("Init as Adapter : " << dxgiAdapterDesc.Description);
             break;
         }
     }
-    if ( !d3dAdapter )
+    if (!d3dAdapter)
     {
         this->dxgiFactory->EnumWarpAdapter(IID_PPV_ARGS(&d3dAdapter));
         D3D12CreateDevice(d3dAdapter, D3D_FEATURE_LEVEL::D3D_FEATURE_LEVEL_11_0, IID_PPV_ARGS(&this->d3dDevice));
@@ -793,7 +812,6 @@ void KG::Renderer::KGDXRenderer::CreateSRVDescriptorHeaps()
     srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
     this->srvDescriptorSize = this->d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
     this->descriptorHeapManager->Initialize(this->d3dDevice, srvHeapDesc, this->srvDescriptorSize);
-
 }
 
 void KG::Renderer::KGDXRenderer::CreateCommandQueueAndList()
@@ -813,7 +831,7 @@ void KG::Renderer::KGDXRenderer::CreateRenderTargetView()
 {
     D3D12_CPU_DESCRIPTOR_HANDLE rtvCpuDescHandle = this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
     renderTargetBuffers.resize(this->setting.maxSwapChainCount);
-    for ( size_t i = 0; i < this->setting.maxSwapChainCount; i++ )
+    for (size_t i = 0; i < this->setting.maxSwapChainCount; i++)
     {
         this->swapChain->GetBuffer(i, IID_PPV_ARGS(&this->renderTargetBuffers[i]));
         this->d3dDevice->CreateRenderTargetView(this->renderTargetBuffers[i], nullptr, rtvCpuDescHandle);
@@ -845,47 +863,45 @@ void KG::Renderer::KGDXRenderer::InitializeImGui()
         this->descriptorHeapManager->GetGPUHandle(this->imguiFontDescIndex));
 }
 
-
 void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 {
     D3D12_ROOT_PARAMETER pd3dRootParameters[9]{};
 
     // 0 : Space 0 : SRV 0 : Instance Data : 2
-    pd3dRootParameters[RootParameterIndex::InstanceData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-    pd3dRootParameters[RootParameterIndex::InstanceData].Descriptor.ShaderRegister = 0;
-    pd3dRootParameters[RootParameterIndex::InstanceData].Descriptor.RegisterSpace = 0;
-    pd3dRootParameters[RootParameterIndex::InstanceData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+    pd3dRootParameters[GraphicRootParameterIndex::InstanceData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+    pd3dRootParameters[GraphicRootParameterIndex::InstanceData].Descriptor.ShaderRegister = 0;
+    pd3dRootParameters[GraphicRootParameterIndex::InstanceData].Descriptor.RegisterSpace = 0;
+    pd3dRootParameters[GraphicRootParameterIndex::InstanceData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
     // 1 : Space 3 : SRV 1 : Animation Transform Data : 2
-    pd3dRootParameters[RootParameterIndex::AnimationTransformData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-    pd3dRootParameters[RootParameterIndex::AnimationTransformData].Descriptor.ShaderRegister = 1;
-    pd3dRootParameters[RootParameterIndex::AnimationTransformData].Descriptor.RegisterSpace = 3;
-    pd3dRootParameters[RootParameterIndex::AnimationTransformData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+    pd3dRootParameters[GraphicRootParameterIndex::AnimationTransformData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+    pd3dRootParameters[GraphicRootParameterIndex::AnimationTransformData].Descriptor.ShaderRegister = 1;
+    pd3dRootParameters[GraphicRootParameterIndex::AnimationTransformData].Descriptor.RegisterSpace = 3;
+    pd3dRootParameters[GraphicRootParameterIndex::AnimationTransformData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
     // 2 : Space 3 : SRV 0 : Bone Offset Data : 2
-    pd3dRootParameters[RootParameterIndex::BoneOffsetData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-    pd3dRootParameters[RootParameterIndex::BoneOffsetData].Descriptor.ShaderRegister = 0;
-    pd3dRootParameters[RootParameterIndex::BoneOffsetData].Descriptor.RegisterSpace = 3;
-    pd3dRootParameters[RootParameterIndex::BoneOffsetData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+    pd3dRootParameters[GraphicRootParameterIndex::BoneOffsetData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+    pd3dRootParameters[GraphicRootParameterIndex::BoneOffsetData].Descriptor.ShaderRegister = 0;
+    pd3dRootParameters[GraphicRootParameterIndex::BoneOffsetData].Descriptor.RegisterSpace = 3;
+    pd3dRootParameters[GraphicRootParameterIndex::BoneOffsetData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
     // 3 : Space 0 : SRV 1 : Material Data : 2
-    pd3dRootParameters[RootParameterIndex::MaterialData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-    pd3dRootParameters[RootParameterIndex::MaterialData].Descriptor.ShaderRegister = 1;
-    pd3dRootParameters[RootParameterIndex::MaterialData].Descriptor.RegisterSpace = 0;
-    pd3dRootParameters[RootParameterIndex::MaterialData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+    pd3dRootParameters[GraphicRootParameterIndex::MaterialData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+    pd3dRootParameters[GraphicRootParameterIndex::MaterialData].Descriptor.ShaderRegister = 1;
+    pd3dRootParameters[GraphicRootParameterIndex::MaterialData].Descriptor.RegisterSpace = 0;
+    pd3dRootParameters[GraphicRootParameterIndex::MaterialData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
     // 4 : Space 0 : CBV 0 : Camera Data : 2
-    pd3dRootParameters[RootParameterIndex::CameraData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
-    pd3dRootParameters[RootParameterIndex::CameraData].Descriptor.ShaderRegister = 0;
-    pd3dRootParameters[RootParameterIndex::CameraData].Descriptor.RegisterSpace = 0;
-    pd3dRootParameters[RootParameterIndex::CameraData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+    pd3dRootParameters[GraphicRootParameterIndex::CameraData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+    pd3dRootParameters[GraphicRootParameterIndex::CameraData].Descriptor.ShaderRegister = 0;
+    pd3dRootParameters[GraphicRootParameterIndex::CameraData].Descriptor.RegisterSpace = 0;
+    pd3dRootParameters[GraphicRootParameterIndex::CameraData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
     // 5 : Space 4 : CBV 1 : Pass Data : 2
-    pd3dRootParameters[RootParameterIndex::LightData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
-    pd3dRootParameters[RootParameterIndex::LightData].Descriptor.ShaderRegister = 0;
-    pd3dRootParameters[RootParameterIndex::LightData].Descriptor.RegisterSpace = 4;
-    pd3dRootParameters[RootParameterIndex::LightData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
-
+    pd3dRootParameters[GraphicRootParameterIndex::LightData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+    pd3dRootParameters[GraphicRootParameterIndex::LightData].Descriptor.ShaderRegister = 0;
+    pd3dRootParameters[GraphicRootParameterIndex::LightData].Descriptor.RegisterSpace = 4;
+    pd3dRootParameters[GraphicRootParameterIndex::LightData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
     // 6 : Space 1 : SRV 0 : Texture Data1 // unbounded : 1
 
@@ -897,10 +913,10 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
     txtureData1Range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
     txtureData1Range.RegisterSpace = 1;
 
-    pd3dRootParameters[RootParameterIndex::Texture1Heap].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    pd3dRootParameters[RootParameterIndex::Texture1Heap].DescriptorTable.NumDescriptorRanges = 1;
-    pd3dRootParameters[RootParameterIndex::Texture1Heap].DescriptorTable.pDescriptorRanges = &txtureData1Range;
-    pd3dRootParameters[RootParameterIndex::Texture1Heap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
+    pd3dRootParameters[GraphicRootParameterIndex::Texture1Heap].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[GraphicRootParameterIndex::Texture1Heap].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[GraphicRootParameterIndex::Texture1Heap].DescriptorTable.pDescriptorRanges = &txtureData1Range;
+    pd3dRootParameters[GraphicRootParameterIndex::Texture1Heap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
 
     // 7 : Space 2 : SRV 0 : Texture Data2 // unbounded : 1
 
@@ -912,10 +928,10 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
     txtureData2Range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
     txtureData2Range.RegisterSpace = 2;
 
-    pd3dRootParameters[RootParameterIndex::Texture2Heap].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    pd3dRootParameters[RootParameterIndex::Texture2Heap].DescriptorTable.NumDescriptorRanges = 1;
-    pd3dRootParameters[RootParameterIndex::Texture2Heap].DescriptorTable.pDescriptorRanges = &txtureData2Range;
-    pd3dRootParameters[RootParameterIndex::Texture2Heap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
+    pd3dRootParameters[GraphicRootParameterIndex::Texture2Heap].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[GraphicRootParameterIndex::Texture2Heap].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[GraphicRootParameterIndex::Texture2Heap].DescriptorTable.pDescriptorRanges = &txtureData2Range;
+    pd3dRootParameters[GraphicRootParameterIndex::Texture2Heap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
 
     // 8 : Space 0 : SRV 2,3,4,5,6 : G Buffer // unbounded : 1
 
@@ -927,10 +943,10 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
     GbufferRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
     GbufferRange.RegisterSpace = 0;
 
-    pd3dRootParameters[RootParameterIndex::GBufferHeap].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    pd3dRootParameters[RootParameterIndex::GBufferHeap].DescriptorTable.NumDescriptorRanges = 1;
-    pd3dRootParameters[RootParameterIndex::GBufferHeap].DescriptorTable.pDescriptorRanges = &GbufferRange;
-    pd3dRootParameters[RootParameterIndex::GBufferHeap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
+    pd3dRootParameters[GraphicRootParameterIndex::GBufferHeap].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[GraphicRootParameterIndex::GBufferHeap].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[GraphicRootParameterIndex::GBufferHeap].DescriptorTable.pDescriptorRanges = &GbufferRange;
+    pd3dRootParameters[GraphicRootParameterIndex::GBufferHeap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
 
     D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
     //D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags =
@@ -957,9 +973,112 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
     TryRelease(pd3dErrorBlob);
 }
 
+void KG::Renderer::KGDXRenderer::CreatePostProcessRootSignature()
+{
+    //딱히 디스크립터 힙으로 엮으라는 말 없다! -> 텍스처는 디스크립터힙만 된다!
+    D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[4];
+
+    pd3dDescriptorRanges[ComputeRootParameterIndex::Result].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+    pd3dDescriptorRanges[ComputeRootParameterIndex::Result].NumDescriptors = 1;
+    pd3dDescriptorRanges[ComputeRootParameterIndex::Result].BaseShaderRegister = 0; //Result
+    pd3dDescriptorRanges[ComputeRootParameterIndex::Result].RegisterSpace = 0;
+    pd3dDescriptorRanges[ComputeRootParameterIndex::Result].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    pd3dDescriptorRanges[ComputeRootParameterIndex::PrevResult].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+    pd3dDescriptorRanges[ComputeRootParameterIndex::PrevResult].NumDescriptors = 1;
+    pd3dDescriptorRanges[ComputeRootParameterIndex::PrevResult].BaseShaderRegister = 1; // 이전 결과
+    pd3dDescriptorRanges[ComputeRootParameterIndex::PrevResult].RegisterSpace = 0;
+    pd3dDescriptorRanges[ComputeRootParameterIndex::PrevResult].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    pd3dDescriptorRanges[ComputeRootParameterIndex::Source].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    pd3dDescriptorRanges[ComputeRootParameterIndex::Source].NumDescriptors = 1;
+    pd3dDescriptorRanges[ComputeRootParameterIndex::Source].BaseShaderRegister = 0; // 후처리 미적용 최종 결과
+    pd3dDescriptorRanges[ComputeRootParameterIndex::Source].RegisterSpace = 1;
+    pd3dDescriptorRanges[ComputeRootParameterIndex::Source].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    pd3dDescriptorRanges[ComputeRootParameterIndex::GBufferStart].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    pd3dDescriptorRanges[ComputeRootParameterIndex::GBufferStart].NumDescriptors = 5; // GBuffer 1, 2, 3, 4 / Depth Stencil
+    pd3dDescriptorRanges[ComputeRootParameterIndex::GBufferStart].BaseShaderRegister = 1; // GBuffer
+    pd3dDescriptorRanges[ComputeRootParameterIndex::GBufferStart].RegisterSpace = 1;
+    pd3dDescriptorRanges[ComputeRootParameterIndex::GBufferStart].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    //pd3dDescriptorRanges[4].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    //pd3dDescriptorRanges[4].NumDescriptors = 1;
+    //pd3dDescriptorRanges[4].BaseShaderRegister = 2; // GBuffer2
+    //pd3dDescriptorRanges[4].RegisterSpace = 1;
+    //pd3dDescriptorRanges[4].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    //pd3dDescriptorRanges[5].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    //pd3dDescriptorRanges[5].NumDescriptors = 1;
+    //pd3dDescriptorRanges[5].BaseShaderRegister = 3; // GBuffer3
+    //pd3dDescriptorRanges[5].RegisterSpace = 1;
+    //pd3dDescriptorRanges[5].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    //pd3dDescriptorRanges[6].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    //pd3dDescriptorRanges[6].NumDescriptors = 1;
+    //pd3dDescriptorRanges[6].BaseShaderRegister = 4; // GBuffer4
+    //pd3dDescriptorRanges[6].RegisterSpace = 1;
+    //pd3dDescriptorRanges[6].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    //pd3dDescriptorRanges[7].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    //pd3dDescriptorRanges[7].NumDescriptors = 1;
+    //pd3dDescriptorRanges[7].BaseShaderRegister = 5; // GBuffer5 / 뎁스 스텐실 버퍼
+    //pd3dDescriptorRanges[7].RegisterSpace = 1;
+    //pd3dDescriptorRanges[7].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    D3D12_ROOT_PARAMETER pd3dRootParameters[4];
+
+    pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[0].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[0].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[0]);
+    pd3dRootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[1].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[1].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[1]);
+    pd3dRootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[2].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[2].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[2]);
+    pd3dRootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[3].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[3].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[3]);
+    pd3dRootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+
+    D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+    //D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags =
+    //	D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+    //	D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+    //	D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
+
+    D3D12_ROOT_SIGNATURE_DESC d3dRootSignatureDesc;
+
+    ZeroDesc(d3dRootSignatureDesc);
+    d3dRootSignatureDesc.NumParameters = _countof(pd3dRootParameters);
+    d3dRootSignatureDesc.pParameters = pd3dRootParameters;
+    d3dRootSignatureDesc.NumStaticSamplers = 0;
+    d3dRootSignatureDesc.Flags = d3dRootSignatureFlags;
+
+    ID3DBlob* pd3dSignatureBlob = nullptr;
+    ID3DBlob* pd3dErrorBlob = nullptr;
+
+    auto result = ::D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
+    this->d3dDevice->CreateRootSignature(0, 
+        pd3dSignatureBlob->GetBufferPointer(),
+        pd3dSignatureBlob->GetBufferSize(),
+        IID_PPV_ARGS(&this->postProcessRootSignature));
+    TryRelease(pd3dSignatureBlob);
+    TryRelease(pd3dErrorBlob);
+
+}
+
 void KG::Renderer::KGDXRenderer::AllocateGBufferHeap()
 {
-    for ( size_t i = 0; i < 5; i++ )
+    for (size_t i = 0; i < 5; i++)
     {
         auto index = this->descriptorHeapManager->RequestEmptyIndex();
         DebugNormalMessage(L"디스크립터 힙 G-Buffer용 초기화 : " << index);
@@ -971,11 +1090,11 @@ void KG::Renderer::KGDXRenderer::MoveToNextFrame()
     this->swapChainBufferIndex = this->swapChain->GetCurrentBackBufferIndex();
     const UINT64 fenceValue = ++this->fenceValue;
     HRESULT hResult = this->commandQueue->Signal(this->fence, fenceValue);
-    if ( FAILED(hResult) )
+    if (FAILED(hResult))
     {
         throw hResult;
     }
-    if ( this->fence->GetCompletedValue() < fenceValue )
+    if (this->fence->GetCompletedValue() < fenceValue)
     {
         hResult = this->fence->SetEventOnCompletion(fenceValue, this->hFenceEvent);
         ::WaitForSingleObject(this->hFenceEvent, INFINITE);
@@ -997,7 +1116,7 @@ ID3D12Resource* KG::Renderer::KGDXRenderer::GetCurrentRenderTarget() const
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 8> GetStaticSamplers()
 {
     // Applications usually only need a handful of samplers.  So just define them all up front
-    // and keep them available as part of the root signature.  
+    // and keep them available as part of the root signature.
 
     const CD3DX12_STATIC_SAMPLER_DESC pointWrap(
         0, // shaderRegister

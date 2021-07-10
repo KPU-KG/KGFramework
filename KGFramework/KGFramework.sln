@@ -77,6 +77,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pixel", "Pixel", "{3A295F94
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Define", "Define", "{43F92087-EC1C-4518-9AE2-D3F2971C21F3}"
 	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Define_Compute.hlsl = Resource\Resource\ShaderScript\Define_Compute.hlsl
 		Resource\Resource\ShaderScript\Define_GBuffer.hlsl = Resource\Resource\ShaderScript\Define_GBuffer.hlsl
 		Resource\Resource\ShaderScript\Define_Global.hlsl = Resource\Resource\ShaderScript\Define_Global.hlsl
 		Resource\Resource\ShaderScript\Define_GSCamera.hlsl = Resource\Resource\ShaderScript\Define_GSCamera.hlsl
@@ -99,6 +100,11 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KGNetwork", "KGNetwork\KGNetwork.vcxproj", "{AF280AFE-9E18-4865-8C66-D980510DF4C0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HashConverter", "HashConverter\HashConverter.vcxproj", "{A73FEAF5-868F-425A-9D96-1067BBDEE97C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compute", "Compute", "{806BF353-281F-4440-BEE1-9C5C6E2D78E8}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Compute_Test.hlsl = Resource\Resource\ShaderScript\Compute_Test.hlsl
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -178,6 +184,7 @@ Global
 		{3A295F94-2BA0-43B3-816B-784DD6E7D6DF} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
 		{43F92087-EC1C-4518-9AE2-D3F2971C21F3} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
 		{96B900F6-5155-42BF-9A04-808233534E8B} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
+		{806BF353-281F-4440-BEE1-9C5C6E2D78E8} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EA476DDC-7B81-4DFD-9585-518EB4B6393F}

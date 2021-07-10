@@ -355,7 +355,7 @@ void KG::Renderer::Shader::Set( ID3D12GraphicsCommandList* pd3dCommandList, Shad
 	pd3dCommandList->SetPipelineState( pso );
 	if ( this->materialBuffer )
 	{
-		pd3dCommandList->SetGraphicsRootShaderResourceView( RootParameterIndex::MaterialData, this->materialBuffer->GetBuffer()->GetGPUVirtualAddress() );
+		pd3dCommandList->SetGraphicsRootShaderResourceView( GraphicRootParameterIndex::MaterialData, this->materialBuffer->GetBuffer()->GetGPUVirtualAddress() );
 	}
 }
 

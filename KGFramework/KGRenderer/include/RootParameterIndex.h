@@ -1,7 +1,7 @@
 #pragma once
 namespace KG::Renderer
 {
-	struct RootParameterIndex
+	struct GraphicRootParameterIndex
 	{
 		inline static constexpr size_t InstanceData = 0;
 		inline static constexpr size_t AnimationTransformData = 1;
@@ -18,7 +18,21 @@ namespace KG::Renderer
 		inline static constexpr size_t GBuffer4 = 12;
 		inline static constexpr size_t DepthStencilBuffer = 12;
 		inline static constexpr size_t GBufferHeap = 8;
-
-
 	};
+
+    struct ComputeRootParameterIndex
+    {
+        inline static constexpr size_t Result = 0;
+        inline static constexpr size_t PrevResult = 1;
+        inline static constexpr size_t Source = 2;
+        inline static constexpr size_t GBuffer1 = 3;
+        inline static constexpr size_t GBuffer2 = 4;
+        inline static constexpr size_t GBuffer3 = 5;
+        inline static constexpr size_t GBuffer4 = 6;
+        inline static constexpr size_t GBuffer5 = 7;
+        inline static constexpr size_t DepthStencilBuffer = 7;
+        inline static constexpr size_t GBufferStart = GBuffer1;
+        inline static constexpr size_t Texture1Heap = 8;
+        inline static constexpr size_t Texture2Heap = 9;
+    };
 }

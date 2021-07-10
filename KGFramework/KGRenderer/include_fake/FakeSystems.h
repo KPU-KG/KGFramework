@@ -64,4 +64,10 @@ namespace KG::System
         // IComponentSystem을(를) 통해 상속됨
         virtual void OnPreRender() override;
     };
+
+    struct FakePostProcessorSystem : public IComponentSystem<FakePostProcessManagerComponent>
+    {
+        // IComponentSystem을(를) 통해 상속됨
+        virtual void OnPreRender() override;
+    };
 }
