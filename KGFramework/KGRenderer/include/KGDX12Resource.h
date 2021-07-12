@@ -10,12 +10,39 @@ namespace KG::Resource
         UAV,
         SRV,
         RTV,
-        DSV
+        DSV,
+        DescriptorTypeCount
     };
+
     struct Descriptor
     {
+        UINT HeapIndex = -1;
+        KG::Renderer::DescriptorHeapManager* ownerHeap = nullptr;
+        
+        bool IsNull() const
+        {
+            return this->ownerHeap == nullptr;
+        }
 
+        D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const
+        {
+            if (ownerHeap)
+            {
+                return ownerHeap->GetGPUHandle(this->HeapIndex);
+            }
+            return D3D12_GPU_DESCRIPTOR_HANDLE();
+        }
+
+        D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle() const
+        {
+            if (ownerHeap)
+            {
+                return ownerHeap->GetCPUHandle(this->HeapIndex);
+            }
+            return D3D12_CPU_DESCRIPTOR_HANDLE();
+        }
     };
+
     struct DXResource
     {
         DXResource(ID3D12Resource* resource);
@@ -24,20 +51,19 @@ namespace KG::Resource
 
         ID3D12Resource* resource = nullptr;
 
-        //Desc Heap
-        KG::Renderer::DescriptorHeapManager* ownerDescHeap = nullptr;
-        UINT descHeapIndex;
+        std::array<Descriptor, DescriptorType::DescriptorTypeCount> descriptors;
         
+        Descriptor GetDescriptor(DescriptorType type) const;
+
         void AddOnDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc);
 
         void AddOnDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc);
 
-        void AddOnDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, UINT index);
+        void AddOnDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, D3D12_RENDER_TARGET_VIEW_DESC rtvDesc);
 
-        bool IsInDescHeap() const;
+        void AddOnDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc);
 
-        D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const;
-        D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle() const;
+        void SetDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, UINT index, DescriptorType type);
 
         // Barrier
         D3D12_RESOURCE_STATES currentState;
