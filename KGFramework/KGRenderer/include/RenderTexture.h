@@ -4,6 +4,7 @@
 #include "hash.h"
 #include "ISerializable.h"
 #include "SerializableProperty.h"
+#include "KGDX12Resource.h"
 #include "KGRenderer.h"
 
 
