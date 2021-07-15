@@ -43,8 +43,7 @@ void KG::Component::Render3DComponent::OnPreRender()
 		}
 		if ( this->reflectionProbe )
 		{
-			renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex =
-				this->reflectionProbe->GetRenderTexture().renderTargetSRVIndex;
+			renderJob->objectBuffer->mappedData[updateCount].object.environmentMapIndex = this->reflectionProbe->GetRenderTexture().renderTargetResource.GetDescriptor(DescriptorType::SRV).HeapIndex;
 		}
 		else
 		{

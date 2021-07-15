@@ -210,13 +210,14 @@ void KG::Component::CameraComponent::SetCameraRender(ID3D12GraphicsCommandList* 
 	commandList->RSSetViewports(1, &this->viewport);
 	commandList->RSSetScissorRects(1, &this->scissorRect);
 
-	TryResourceBarrier(commandList,
-		this->renderTexture->BarrierTransition(
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_DEPTH_WRITE
-		)
-	);
+
+    this->renderTexture->BarrierTransition(
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_DEPTH_WRITE
+    );
+    KG::Resource::DXResource::ApplyBarrierQueue(commandList);
+
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	if ( this->renderTexture->desc.useRenderTarget )
 	{
@@ -226,13 +227,12 @@ void KG::Component::CameraComponent::SetCameraRender(ID3D12GraphicsCommandList* 
 
 void KG::Component::CameraComponent::EndCameraRender(ID3D12GraphicsCommandList* commandList)
 {
-	TryResourceBarrier(commandList,
-		this->renderTexture->BarrierTransition(
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COMMON
-		)
-	);
+    this->renderTexture->BarrierTransition(
+        D3D12_RESOURCE_STATE_COMMON,
+        D3D12_RESOURCE_STATE_COMMON,
+        D3D12_RESOURCE_STATE_COMMON
+    );
+    KG::Resource::DXResource::ApplyBarrierQueue(commandList);
 }
 
 void KG::Component::CameraComponent::SetRenderTexture(KG::Renderer::RenderTexture* renderTexture, int index)
@@ -484,13 +484,12 @@ void KG::Component::GSCubeCameraComponent::SetCameraRender(ID3D12GraphicsCommand
 	commandList->RSSetViewports(1, &this->viewport);
 	commandList->RSSetScissorRects(1, &this->scissorRect);
 
-	TryResourceBarrier(commandList,
-		this->renderTexture->BarrierTransition(
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_DEPTH_WRITE
-		)
-	);
+    this->renderTexture->BarrierTransition(
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_DEPTH_WRITE
+    );
+    ApplyBarrierQueue(commandList);
 
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	if ( this->renderTexture->desc.useRenderTarget )
@@ -504,13 +503,12 @@ void KG::Component::GSCubeCameraComponent::SetCameraRender(ID3D12GraphicsCommand
 
 void KG::Component::GSCubeCameraComponent::EndCameraRender(ID3D12GraphicsCommandList* commandList)
 {
-	TryResourceBarrier(commandList,
-		this->renderTexture->BarrierTransition(
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COMMON
-		)
-	);
+    this->renderTexture->BarrierTransition(
+        D3D12_RESOURCE_STATE_COMMON,
+        D3D12_RESOURCE_STATE_COMMON,
+        D3D12_RESOURCE_STATE_COMMON
+    );
+    ApplyBarrierQueue(commandList);
 }
 
 void KG::Component::GSCubeCameraComponent::InitializeRenderTexture()
@@ -667,13 +665,12 @@ void KG::Component::GSCascadeCameraComponent::SetCameraRender(ID3D12GraphicsComm
 	commandList->RSSetViewports(1, &this->viewport);
 	commandList->RSSetScissorRects(1, &this->scissorRect);
 
-	TryResourceBarrier(commandList,
-		this->renderTexture->BarrierTransition(
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_DEPTH_WRITE
-		)
-	);
+    this->renderTexture->BarrierTransition(
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_DEPTH_WRITE
+    );
+    ApplyBarrierQueue(commandList);
 
 	if ( this->renderTexture->desc.useRenderTarget )
 	{
@@ -687,13 +684,12 @@ void KG::Component::GSCascadeCameraComponent::SetCameraRender(ID3D12GraphicsComm
 
 void KG::Component::GSCascadeCameraComponent::EndCameraRender(ID3D12GraphicsCommandList* commandList)
 {
-	TryResourceBarrier(commandList,
-		this->renderTexture->BarrierTransition(
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COMMON
-		)
-	);
+    this->renderTexture->BarrierTransition(
+        D3D12_RESOURCE_STATE_COMMON,
+        D3D12_RESOURCE_STATE_COMMON,
+        D3D12_RESOURCE_STATE_COMMON
+    );
+    ApplyBarrierQueue(commandList);
 }
 
 void KG::Component::GSCascadeCameraComponent::InitalizeCascade(KG::Component::ICameraComponent* directionalLightCamera, KG::Component::ILightComponent* light)

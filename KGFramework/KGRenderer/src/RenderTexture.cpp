@@ -12,12 +12,14 @@ void KG::Renderer::RenderTexture::CreateRenderTarget()
 	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
 	if ( this->desc.useCubeRender || this->desc.useGSArrayRender )
 	{
-		this->renderTarget = CreateArrayRenderTargetResource(device, this->desc.width, this->desc.height, this->desc.length, DXGI_FORMAT_R8G8B8A8_UNORM);
-	}
+		this->renderTargetResource.resource = CreateArrayRenderTargetResource(device, this->desc.width, this->desc.height, this->desc.length, DXGI_FORMAT_R8G8B8A8_UNORM);
+        this->renderTargetResource.currentState = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
+    }
 	else
 	{
-		this->renderTarget = CreateRenderTargetResource(device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM);
-	}
+		this->renderTargetResource.resource = CreateRenderTargetResource(device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM);
+        this->renderTargetResource.currentState = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
+    }
 }
 
 void KG::Renderer::RenderTexture::CreateRenderTargetView()
@@ -32,15 +34,12 @@ void KG::Renderer::RenderTexture::CreateRenderTargetView()
 	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	d3dDescriptorHeapDesc.NodeMask = 0;
 
-	HRESULT hResult = device->CreateDescriptorHeap(&d3dDescriptorHeapDesc, IID_PPV_ARGS(&this->rtvDescriptorHeap));
-
+    rtvDescriptorHeap.Initialize(device, d3dDescriptorHeapDesc, KGDXRenderer::GetInstance()->GetRTVSize());
 	if ( this->desc.useCubeRender )
 	{
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvCpuDescHandle = this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-
 		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc;
 		rtvDesc.ViewDimension = D3D12_RTV_DIMENSION::D3D12_RTV_DIMENSION_TEXTURE2DARRAY;
-		rtvDesc.Format = this->renderTarget->GetDesc().Format;
+		rtvDesc.Format = this->renderTargetResource->GetDesc().Format;
 		rtvDesc.Texture2DArray.MipSlice = 0;
 		rtvDesc.Texture2DArray.PlaneSlice = 0;
 
@@ -48,25 +47,34 @@ void KG::Renderer::RenderTexture::CreateRenderTargetView()
 		{
 			rtvDesc.Texture2DArray.FirstArraySlice = i;
 			rtvDesc.Texture2DArray.ArraySize = 1;
-
-			device->CreateRenderTargetView(this->renderTarget, &rtvDesc, rtvCpuDescHandle);
-			rtvCpuDescHandle.ptr += KGDXRenderer::GetInstance()->GetRTVSize();
+            this->renderTargetResource.AddOnDescriptorHeap(&rtvDescriptorHeap, rtvDesc);
 		}
 	}
 	else
 	{
-		D3D12_CPU_DESCRIPTOR_HANDLE rtvCpuDescHandle = this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-		device->CreateRenderTargetView(this->renderTarget, nullptr, rtvCpuDescHandle);
+        D3D12_RENDER_TARGET_VIEW_DESC rtvDesc;
+        rtvDesc.ViewDimension = D3D12_RTV_DIMENSION::D3D12_RTV_DIMENSION_TEXTURE2D;
+        rtvDesc.Format = this->renderTargetResource->GetDesc().Format;
+        rtvDesc.Texture2D.MipSlice = 0;
+        rtvDesc.Texture2D.PlaneSlice = 0;
+        this->renderTargetResource.AddOnDescriptorHeap(&rtvDescriptorHeap, rtvDesc);
 	}
 }
 
 void KG::Renderer::RenderTexture::CreateGBuffer()
 {
 	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
-	this->gbufferTextures[0] = CreateRenderTargetResource(device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM);
-	this->gbufferTextures[1] = CreateRenderTargetResource(device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM);
-	this->gbufferTextures[2] = CreateRenderTargetResource(device, this->desc.width, this->desc.height, DXGI_FORMAT_R16G16_SNORM);
-	this->gbufferTextures[3] = CreateRenderTargetResource(device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UINT);
+	this->gbufferTextureResources[0].resource = CreateRenderTargetResource(device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM);
+    this->gbufferTextureResources[0].currentState  = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
+
+	this->gbufferTextureResources[1].resource = CreateRenderTargetResource(device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM);
+    this->gbufferTextureResources[1].currentState  = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
+
+	this->gbufferTextureResources[2].resource = CreateRenderTargetResource(device, this->desc.width, this->desc.height, DXGI_FORMAT_R16G16_SNORM);
+    this->gbufferTextureResources[2].currentState  = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
+
+	this->gbufferTextureResources[3].resource = CreateRenderTargetResource(device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UINT);
+    this->gbufferTextureResources[3].currentState  = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
 }
 
 void KG::Renderer::RenderTexture::CreateGBufferRTView()
@@ -82,14 +90,16 @@ void KG::Renderer::RenderTexture::CreateGBufferRTView()
 	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	d3dDescriptorHeapDesc.NodeMask = 0;
 
-	HRESULT hResult = device->CreateDescriptorHeap(&d3dDescriptorHeapDesc, IID_PPV_ARGS(&this->gbufferDescriptorHeap));
+    gbufferDescriptorHeap.Initialize(device, d3dDescriptorHeapDesc, rtvSize);
 
-	D3D12_CPU_DESCRIPTOR_HANDLE rtvCpuDescHandle = this->gbufferDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
 	for ( size_t i = 0; i < 4; i++ )
 	{
-		device->CreateRenderTargetView(this->gbufferTextures[i], nullptr, rtvCpuDescHandle);
-		this->gbufferHandle[i] = rtvCpuDescHandle;
-		rtvCpuDescHandle.ptr += rtvSize;
+        D3D12_RENDER_TARGET_VIEW_DESC rtvDesc;
+        rtvDesc.ViewDimension = D3D12_RTV_DIMENSION::D3D12_RTV_DIMENSION_TEXTURE2D;
+        rtvDesc.Format = gbufferTextureResources[i]->GetDesc().Format;
+        rtvDesc.Texture2D.MipSlice = 0;
+        rtvDesc.Texture2D.PlaneSlice = 0;
+        this->gbufferTextureResources[i].AddOnDescriptorHeap(&gbufferDescriptorHeap, rtvDesc);
 	}
 }
 
@@ -102,21 +112,15 @@ void KG::Renderer::RenderTexture::CreateGBufferSRView()
 	ZeroDesc(srvDesc);
 
 	auto descManager = KGDXRenderer::GetInstance()->GetDescriptorHeapManager();
-	this->gbufferSRVIndex = descManager->RequestEmptyIndex();
-	descManager->RequestEmptyIndex();
-	descManager->RequestEmptyIndex();
-	descManager->RequestEmptyIndex();
-    descManager->RequestEmptyIndex();
-
 	for ( size_t i = 0; i < 4; i++ )
 	{
 		srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-		srvDesc.Format = this->gbufferTextures[i]->GetDesc().Format;
+		srvDesc.Format = this->gbufferTextureResources[i]->GetDesc().Format;
 		srvDesc.ViewDimension = D3D12_SRV_DIMENSION_TEXTURE2D;
 		srvDesc.Texture2D.MostDetailedMip = 0;
-		srvDesc.Texture2D.MipLevels = this->gbufferTextures[i]->GetDesc().MipLevels;
+		srvDesc.Texture2D.MipLevels = this->gbufferTextureResources[i]->GetDesc().MipLevels;
 		srvDesc.Texture2D.ResourceMinLODClamp = 0;
-		device->CreateShaderResourceView(this->gbufferTextures[i], &srvDesc, descManager->GetCPUHandle(this->gbufferSRVIndex + i));
+        this->gbufferTextureResources[i].AddOnDescriptorHeap(descManager, srvDesc);
 	}
 
 	//±íÀÌ G¹öÆÛ
@@ -126,7 +130,8 @@ void KG::Renderer::RenderTexture::CreateGBufferSRView()
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = this->depthStencilBuffer->GetDesc().MipLevels;
 	srvDesc.Texture2D.ResourceMinLODClamp = 0;
-	device->CreateShaderResourceView(this->depthStencilBuffer, &srvDesc, descManager->GetCPUHandle(this->gbufferSRVIndex + 4));
+    this->depthStencilBuffer.AddOnDescriptorHeap(descManager, srvDesc);
+	//device->CreateShaderResourceView(this->depthStencilBuffer, &srvDesc, descManager->GetCPUHandle(this->gbufferSRVIndex + 4));
 
 }
 
@@ -136,18 +141,20 @@ void KG::Renderer::RenderTexture::CreateDepthStencilBuffer()
 
 	if ( this->desc.useCubeRender || this->desc.useGSArrayRender )
 	{
-		this->depthStencilBuffer = CreateArrayDepthStencilResource(device, this->desc.width, this->desc.height, this->desc.length);
-	}
+		this->depthStencilBuffer.resource = CreateArrayDepthStencilResource(device, this->desc.width, this->desc.height, this->desc.length);
+        this->depthStencilBuffer.currentState = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
+    }
 	else
 	{
-		this->depthStencilBuffer = CreateDepthStencilResource(device, this->desc.width, this->desc.height);
-	}
+		this->depthStencilBuffer.resource = CreateDepthStencilResource(device, this->desc.width, this->desc.height);
+        this->depthStencilBuffer.currentState = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
+    }
 }
 
 void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
 {
 	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
-	auto rtvSize = KGDXRenderer::GetInstance()->GetRTVSize();
+	auto dsvSize = KGDXRenderer::GetInstance()->GetDSVSize();
 
 	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
 	ZeroDesc(d3dDescriptorHeapDesc);
@@ -157,8 +164,7 @@ void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
 	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	d3dDescriptorHeapDesc.NodeMask = 0;
 
-	HRESULT hResult = device->CreateDescriptorHeap(&d3dDescriptorHeapDesc, IID_PPV_ARGS(&this->dsvDescriptorHeap));
-
+    dsvDescriptorHeap.Initialize(device, d3dDescriptorHeapDesc, dsvSize);
 
 	if ( this->isCubeDepth() || this->desc.useGSArrayRender )
 	{
@@ -168,13 +174,11 @@ void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
 		d3dDepthStencillViewDesc.Texture2DArray.MipSlice = 0;
 		d3dDepthStencillViewDesc.Flags = D3D12_DSV_FLAG_NONE;
 
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvCpuDescHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-		this->dsvHandle = dsvCpuDescHandle;
 		if ( this->desc.useGSCubeRender || this->desc.useGSArrayRender )
 		{
 			d3dDepthStencillViewDesc.Texture2DArray.ArraySize = this->desc.length;
 			d3dDepthStencillViewDesc.Texture2DArray.FirstArraySlice = 0;
-			device->CreateDepthStencilView(this->depthStencilBuffer, &d3dDepthStencillViewDesc, dsvCpuDescHandle);
+            depthStencilBuffer.AddOnDescriptorHeap(&this->dsvDescriptorHeap, d3dDepthStencillViewDesc);
 		}
 		else
 		{
@@ -183,8 +187,7 @@ void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
 				d3dDepthStencillViewDesc.Texture2DArray.FirstArraySlice = i;
 				d3dDepthStencillViewDesc.Texture2DArray.ArraySize = 1;
 
-				device->CreateDepthStencilView(this->depthStencilBuffer, &d3dDepthStencillViewDesc, dsvCpuDescHandle);
-				dsvCpuDescHandle.ptr += KGDXRenderer::GetInstance()->GetDSVSize();
+                depthStencilBuffer.AddOnDescriptorHeap(&this->dsvDescriptorHeap, d3dDepthStencillViewDesc);
 			}
 		}
 	}
@@ -195,10 +198,7 @@ void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
 		d3dDepthStencillViewDesc.ViewDimension = D3D12_DSV_DIMENSION_TEXTURE2D;
 		d3dDepthStencillViewDesc.Texture2D.MipSlice = 0;
 		d3dDepthStencillViewDesc.Flags = D3D12_DSV_FLAG_NONE;
-
-		D3D12_CPU_DESCRIPTOR_HANDLE dsvCpuDescHandle = this->dsvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-		device->CreateDepthStencilView(this->depthStencilBuffer, &d3dDepthStencillViewDesc, dsvCpuDescHandle);
-		this->dsvHandle = dsvCpuDescHandle;
+        depthStencilBuffer.AddOnDescriptorHeap(&this->dsvDescriptorHeap, d3dDepthStencillViewDesc);
 	}
 }
 
@@ -212,15 +212,14 @@ UINT KG::Renderer::RenderTexture::PostRenderTargetSRV()
 
 	auto descManager = KGDXRenderer::GetInstance()->GetDescriptorHeapManager();
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.Format = this->renderTarget->GetDesc().Format;
+	srvDesc.Format = this->renderTargetResource->GetDesc().Format;
 	srvDesc.ViewDimension = this->desc.useCubeRender ? D3D12_SRV_DIMENSION_TEXTURECUBE : D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
-	srvDesc.Texture2D.MipLevels = this->renderTarget->GetDesc().MipLevels;
+	srvDesc.Texture2D.MipLevels = this->renderTargetResource->GetDesc().MipLevels;
 	srvDesc.Texture2D.ResourceMinLODClamp = 0;
 
-	this->renderTargetSRVIndex = descManager->RequestEmptyIndex();
-	device->CreateShaderResourceView(this->renderTarget, &srvDesc, descManager->GetCPUHandle(this->renderTargetSRVIndex));
-	return this->renderTargetSRVIndex;
+    this->renderTargetResource.AddOnDescriptorHeap(descManager, srvDesc);
+	return this->renderTargetResource.GetDescriptor(KG::Resource::DescriptorType::SRV).HeapIndex;
 }
 
 KG::Resource::Texture* KG::Renderer::RenderTexture::PostRenderTargetTexture()
@@ -228,7 +227,7 @@ KG::Resource::Texture* KG::Renderer::RenderTexture::PostRenderTargetTexture()
 	auto resourceContainer = KG::Resource::ResourceContainer::GetInstance();
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
-	srvDesc.Format = this->renderTarget->GetDesc().Format;
+	srvDesc.Format = this->renderTargetResource->GetDesc().Format;
 	srvDesc.ViewDimension = this->desc.useCubeRender ? D3D12_SRV_DIMENSION_TEXTURECUBE : D3D12_SRV_DIMENSION_TEXTURE2D;
 	if ( this->desc.useCubeRender )
 	{
@@ -243,7 +242,7 @@ KG::Resource::Texture* KG::Renderer::RenderTexture::PostRenderTargetTexture()
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 	}
-	this->renderTargetTexture = resourceContainer->CreateTexture(this->desc.renderTargetTextureId, this->renderTarget, srvDesc);
+	this->renderTargetTexture = resourceContainer->CreateTexture(this->desc.renderTargetTextureId, this->renderTargetResource.resource, srvDesc);
 	return this->renderTargetTexture;
 }
 
@@ -289,10 +288,8 @@ UINT KG::Renderer::RenderTexture::PostDepthStencilSRV()
 		srvDesc.Texture2D.MostDetailedMip = 0;
 		srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 	}
-
-	this->depthStencilSRVIndex = descManager->RequestEmptyIndex();
-	device->CreateShaderResourceView(this->depthStencilBuffer, &srvDesc, descManager->GetCPUHandle(this->depthStencilSRVIndex));
-	return this->depthStencilSRVIndex;
+    this->depthStencilBuffer.AddOnDescriptorHeap(descManager, srvDesc);
+	return this->depthStencilBuffer.GetDescriptor(KG::Resource::DescriptorType::SRV).HeapIndex;
 }
 
 KG::Resource::Texture* KG::Renderer::RenderTexture::PostDepthStencilTexture()
@@ -400,35 +397,14 @@ D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::RenderTexture::GetGBufferRTVHandle(siz
 	return handle;
 }
 
-std::pair<size_t, D3D12_RESOURCE_BARRIER*> KG::Renderer::RenderTexture::BarrierTransition(
-	D3D12_RESOURCE_STATES renderTargetState,
-	D3D12_RESOURCE_STATES gbufferState,
-	D3D12_RESOURCE_STATES depthStencilState
-)
+void KG::Renderer::RenderTexture::BarrierTransition(D3D12_RESOURCE_STATES rtv, D3D12_RESOURCE_STATES gbuffer, D3D12_RESOURCE_STATES dsv)
 {
-	size_t csr = 0;
-	if ( this->desc.useRenderTarget && renderTargetState != this->renderTargetState )
-	{
-		this->resourceBarrier[csr] = CD3DX12_RESOURCE_BARRIER::Transition(this->renderTarget, this->renderTargetState, renderTargetState);
-		this->renderTargetState = renderTargetState;
-		csr += 1;
-	}
-	if ( this->desc.useDeferredRender && gbufferState != this->gbufferState )
-	{
-		for ( size_t i = 0; i < 4; i++ )
-		{
-			this->resourceBarrier[csr] = CD3DX12_RESOURCE_BARRIER::Transition(this->gbufferTextures[i], this->gbufferState, gbufferState);
-			csr += 1;
-		}
-		this->gbufferState = gbufferState;
-	}
-	if ( this->desc.useDepthStencilBuffer && depthStencilState != this->depthStencilState )
-	{
-		this->resourceBarrier[csr] = CD3DX12_RESOURCE_BARRIER::Transition(this->depthStencilBuffer, this->depthStencilState, depthStencilState);
-		this->depthStencilState = depthStencilState;
-		csr += 1;
-	}
-	return std::pair<size_t, D3D12_RESOURCE_BARRIER*>(csr, this->resourceBarrier.data());
+    if(this->renderTargetResource.resource) this->renderTargetResource.AddTransitionQueue(rtv);
+    if(this->gbufferTextureResources[0].resource) this->gbufferTextureResources[0].AddTransitionQueue(gbuffer);
+    if(this->gbufferTextureResources[1].resource) this->gbufferTextureResources[1].AddTransitionQueue(gbuffer);
+    if(this->gbufferTextureResources[2].resource) this->gbufferTextureResources[2].AddTransitionQueue(gbuffer);
+    if(this->gbufferTextureResources[3].resource) this->gbufferTextureResources[3].AddTransitionQueue(gbuffer);
+    if(this->depthStencilBuffer.resource) this->depthStencilBuffer.AddTransitionQueue(dsv);
 }
 
 void KG::Renderer::RenderTexture::ClearGBuffer(ID3D12GraphicsCommandList* cmdList, float r, float g, float b, float a)
@@ -447,17 +423,12 @@ bool KG::Renderer::RenderTexture::isCubeDepth()
 
 void KG::Renderer::RenderTexture::Release()
 {
-	TryRelease(this->renderTarget);
-	TryRelease(this->rtvDescriptorHeap);
-
-	TryRelease(this->depthStencilBuffer);
-	TryRelease(this->dsvDescriptorHeap);
-
-	for ( size_t i = 0; i < 4; i++ )
-	{
-		TryRelease(this->gbufferTextures[i]);
-	}
-	TryRelease(this->gbufferDescriptorHeap);
+    renderTargetResource.Release();
+    for (auto& i : gbufferTextureResources)
+    {
+        i.Release();
+    }
+    depthStencilBuffer.Release();
 }
 
 KG::Renderer::RenderTextureProperty::RenderTextureProperty(KG::Renderer::RenderTextureDesc& ref)

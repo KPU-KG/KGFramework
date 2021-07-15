@@ -155,48 +155,44 @@ void KG::Renderer::PostProcessor::Draw(ID3D12GraphicsCommandList* cmdList, Rende
     auto* descHeap = KGDXRenderer::GetInstance()->GetDescriptorHeapManager();
     cmdList->SetComputeRootSignature(rootSignature);
 
-    auto sourceHandle = descHeap->GetGPUHandle(renderTexture.renderTargetSRVIndex);
+    auto sourceHandle = renderTexture.renderTargetResource.GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle();
     cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Source, sourceHandle);
 
-    auto gbufferHandle = descHeap->GetGPUHandle(renderTexture.gbufferSRVIndex);
+    auto gbufferHandle = renderTexture.gbufferTextureResources[0].GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle();
     cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::GBufferStart, gbufferHandle);
 
     for (auto* process : this->processQueue)
     {
         auto prev = this->currentOutputIndex == 0 ? 1 : 0;
-        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Result, this->outputGPUHandles[currentOutputIndex]);
-        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::PrevResult, this->outputGPUHandles[prev]);
+        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Result, 
+            this->outputResources[currentOutputIndex].GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle()
+        );
+        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::PrevResult,
+            this->outputResources[prev].GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
 
         process->Draw(cmdList, this->width, this->height, 1);
         this->currentOutputIndex = prev;
     }
-    this->CopyToResult(cmdList, renderTexture.renderTarget, renderTexture, cubeIndex);
+    this->CopyToResult(cmdList, renderTexture.renderTargetResource, renderTexture, cubeIndex);
 }
 
-void KG::Renderer::PostProcessor::CopyToOutput(ID3D12GraphicsCommandList* cmdList, ID3D12Resource* target, RenderTexture& renderTexture, size_t cubeIndex)
+void KG::Renderer::PostProcessor::CopyToOutput(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, RenderTexture& renderTexture, size_t cubeIndex)
 {
-    auto barrierTargetOne = CD3DX12_RESOURCE_BARRIER::Transition(target,
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-        D3D12_RESOURCE_STATE_COPY_SOURCE);
-    auto barrierTargetTwo = CD3DX12_RESOURCE_BARRIER::Transition(target,
-        D3D12_RESOURCE_STATE_COPY_DEST,
-        D3D12_RESOURCE_STATE_COPY_SOURCE);
-    cmdList->ResourceBarrier(1, &barrierOne);
-    cmdList->CopyResource(target, this->outputResources[this->currentOutputIndex]);
-    cmdList->ResourceBarrier(1, &barrierTwo);
+    auto prev = this->currentOutputIndex == 0 ? 1 : 0;
+    auto& output = this->outputResources[prev];
+    target.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
+    output.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
+    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+    cmdList->CopyResource(output, target);
 }
 
-void KG::Renderer::PostProcessor::CopyToResult(ID3D12GraphicsCommandList* cmdList, ID3D12Resource* target, RenderTexture& renderTexture, size_t cubeIndex)
+void KG::Renderer::PostProcessor::CopyToResult(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, RenderTexture& renderTexture, size_t cubeIndex)
 {
-    auto barrierOne = CD3DX12_RESOURCE_BARRIER::Transition(target,
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-        D3D12_RESOURCE_STATE_COPY_DEST);
-    auto barrierTwo = CD3DX12_RESOURCE_BARRIER::Transition(target,
-        D3D12_RESOURCE_STATE_COPY_DEST,
-        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    cmdList->ResourceBarrier(1, &barrierOne);
-    cmdList->CopyResource(target, this->outputResources[this->currentOutputIndex]);
-    cmdList->ResourceBarrier(1, &barrierTwo);
+    auto& output = this->outputResources[this->currentOutputIndex];
+    output.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
+    target.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
+    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+    cmdList->CopyResource(target, output);
 }
 
 
@@ -238,9 +234,7 @@ void KG::Renderer::PostProcessor::Initialize()
     for (size_t i = 0; i < this->outputCount; i++)
     {
         auto index = descHeap->RequestEmptyIndex();
-        this->outputResources[i] = CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight);
-        this->outputCPUHandles[i] = descHeap->GetCPUHandle(index);
-        this->outputGPUHandles[i] = descHeap->GetGPUHandle(index);
-        device->CreateUnorderedAccessView(this->outputResources[i], nullptr, &uavDesc, this->outputCPUHandles[i]);
+        this->outputResources[i].SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
+        this->outputResources[i].AddOnDescriptorHeap(descHeap, uavDesc);
     }
 }

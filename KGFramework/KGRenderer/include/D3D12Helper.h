@@ -1,6 +1,9 @@
 #pragma once
+#include <exception>
 #include <d3d12.h>
 #include <pix3.h>
+#include <stdio.h>
+#include <stdlib.h>
 //#include <PIXEventsCommon.h>
 
 
@@ -41,14 +44,6 @@ namespace KG::Renderer
 		if ( FAILED( hr ) )
 		{
 			throw com_exception( hr );
-		}
-	}
-
-	inline void TryResourceBarrier( ID3D12GraphicsCommandList* commandList, const std::pair<size_t, D3D12_RESOURCE_BARRIER*>& barrier )
-	{
-		if ( barrier.first )
-		{
-			commandList->ResourceBarrier( barrier.first, barrier.second );
 		}
 	}
 
@@ -117,4 +112,3 @@ namespace KG::Renderer
 
 using KG::Renderer::ThrowIfFailed;
 using KG::Renderer::TryRelease;
-using KG::Renderer::TryResourceBarrier;

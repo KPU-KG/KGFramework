@@ -28,7 +28,7 @@ void KG::Component::ShadowCasterComponent::InitializeAsPointLightShadow()
 	this->pointLightCamera->SetNearZ( 0.01f );
 	this->pointLightCamera->SetFarZ( this->targetLight->GetPointLightRef().FalloffEnd );
 	this->pointLightCamera->OnCreate(this->gameObject);
-	this->targetLight->SetShadowCasterTextureIndex( this->pointLightCamera->GetRenderTexture().depthStencilSRVIndex );
+	this->targetLight->SetShadowCasterTextureIndex( this->pointLightCamera->GetRenderTexture().depthStencilBuffer.GetDescriptor(DescriptorType::SRV).HeapIndex );
 	this->targetLight->SetShadowMatrix( this->pointLightCamera->GetProj() );
 }
 
@@ -57,7 +57,7 @@ void KG::Component::ShadowCasterComponent::InitializeAsDirectionalLightShadow()
 	this->directionalLightCamera->SetFarZ( 500.0f );
 	this->directionalLightCamera->OnCreate(this->gameObject);
 	this->directionalLightCamera->SetDefaultRender();
-	this->targetLight->SetShadowCasterTextureIndex( this->directionalLightCamera->GetRenderTexture().depthStencilSRVIndex );
+	this->targetLight->SetShadowCasterTextureIndex( this->directionalLightCamera->GetRenderTexture().depthStencilBuffer.GetDescriptor(DescriptorType::SRV).HeapIndex);
 }
 
 void KG::Component::ShadowCasterComponent::InitializeAsSpotLightShadow()
@@ -84,7 +84,7 @@ void KG::Component::ShadowCasterComponent::InitializeAsSpotLightShadow()
 	this->spotLightCamera->SetFovY( DirectX::XMConvertToDegrees( this->targetLight->GetSpotLightRef().Phi ) );
 	this->spotLightCamera->SetAspectRatio( 1.0f );
 	this->spotLightCamera->OnCreate( this->gameObject );
-	this->targetLight->SetShadowCasterTextureIndex( this->spotLightCamera->GetRenderTexture().depthStencilSRVIndex );
+	this->targetLight->SetShadowCasterTextureIndex( this->spotLightCamera->GetRenderTexture().depthStencilBuffer.GetDescriptor(DescriptorType::SRV).HeapIndex );
 }
 
 void KG::Component::ShadowCasterComponent::OnCreate( KG::Core::GameObject* gameObject )

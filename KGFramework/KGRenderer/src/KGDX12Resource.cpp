@@ -2,52 +2,70 @@
 
 KG::Resource::DXResource::DXResource(ID3D12Resource* resource)
 {
-    this->resource = resource;
+    this->SetResource(resource);
 }
 
 KG::Resource::DXResource::~DXResource()
 {
+    this->Release();
+}
+
+void KG::Resource::DXResource::SetResource(ID3D12Resource* resource)
+{
+    this->resource = resource;
+}
+
+void KG::Resource::DXResource::Release()
+{
+    for (auto& i : this->descriptors)
+    {
+        for (auto& j : i)
+        {
+            j.ownerHeap->ReleaseHandleAtIndex(j.HeapIndex);
+        }
+    }
     TryRelease(resource);
 }
 
-KG::Resource::Descriptor KG::Resource::DXResource::GetDescriptor(DescriptorType type) const
+KG::Resource::Descriptor KG::Resource::DXResource::GetDescriptor(DescriptorType type, UINT index) const
 {
-    return this->descriptors[type];
+    return this->descriptors[type][index];
 }
 
 void KG::Resource::DXResource::AddOnDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc)
 {
-    this->SetDescriptorHeap(heap, heap->RequestEmptyIndex(), DescriptorType::SRV);
+    auto& desc = this->AddDescriptor(heap, heap->RequestEmptyIndex(), DescriptorType::SRV);
     auto* device = KG::Renderer::KGDXRenderer::GetInstance()->GetD3DDevice();
-    device->CreateShaderResourceView(this->resource, &srvDesc, this->GetDescriptor(DescriptorType::SRV).GetCPUHandle());
+    device->CreateShaderResourceView(this->resource, &srvDesc, desc.GetCPUHandle());
 }
 
 void KG::Resource::DXResource::AddOnDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc)
 {
-    this->SetDescriptorHeap(heap, heap->RequestEmptyIndex(), DescriptorType::UAV);
+    auto& desc = this->AddDescriptor(heap, heap->RequestEmptyIndex(), DescriptorType::UAV);
     auto* device = KG::Renderer::KGDXRenderer::GetInstance()->GetD3DDevice();
-    device->CreateUnorderedAccessView(this->resource, nullptr, &uavDesc, this->GetDescriptor(DescriptorType::UAV).GetCPUHandle());
+    device->CreateUnorderedAccessView(this->resource, nullptr, &uavDesc, desc.GetCPUHandle());
 }
 
 void KG::Resource::DXResource::AddOnDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, D3D12_RENDER_TARGET_VIEW_DESC rtvDesc)
 {
-    this->SetDescriptorHeap(heap, heap->RequestEmptyIndex(), DescriptorType::RTV);
+    auto& desc = this->AddDescriptor(heap, heap->RequestEmptyIndex(), DescriptorType::RTV);
     auto* device = KG::Renderer::KGDXRenderer::GetInstance()->GetD3DDevice();
-    device->CreateRenderTargetView(this->resource, &rtvDesc, this->GetDescriptor(DescriptorType::RTV).GetCPUHandle());
+    device->CreateRenderTargetView(this->resource, &rtvDesc, desc.GetCPUHandle());
 }
 
 void KG::Resource::DXResource::AddOnDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc)
 {
-    this->SetDescriptorHeap(heap, heap->RequestEmptyIndex(), DescriptorType::DSV);
+    auto& desc = this->AddDescriptor(heap, heap->RequestEmptyIndex(), DescriptorType::DSV);
     auto* device = KG::Renderer::KGDXRenderer::GetInstance()->GetD3DDevice();
-    device->CreateDepthStencilView(this->resource, &dsvDesc, this->GetDescriptor(DescriptorType::DSV).GetCPUHandle());
+    device->CreateDepthStencilView(this->resource, &dsvDesc, desc.GetCPUHandle());
 }
 
-void KG::Resource::DXResource::SetDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, UINT index, DescriptorType type)
+KG::Resource::Descriptor& KG::Resource::DXResource::AddDescriptor(KG::Renderer::DescriptorHeapManager* heap, UINT index, DescriptorType type)
 {
-    auto& desc = this->descriptors[type];
+    auto& desc = this->descriptors[type].emplace_back();
     desc.ownerHeap = heap;
     desc.HeapIndex = index;
+    return desc;
 }
 
 void KG::Resource::DXResource::AddTransitionQueue(D3D12_RESOURCE_STATES next)
@@ -61,7 +79,14 @@ void KG::Resource::DXResource::AddTransitionQueue(D3D12_RESOURCE_STATES next)
 
 void KG::Resource::DXResource::ApplyBarrierQueue(ID3D12GraphicsCommandList* cmdList)
 {
-    cmdList->ResourceBarrier(batchedQueue.size(), batchedQueue.data());
-    batchedQueue.clear();
+    if (!batchedQueue.empty())
+    {
+        cmdList->ResourceBarrier(batchedQueue.size(), batchedQueue.data());
+        batchedQueue.clear();
+    }
 }
 
+void ApplyBarrierQueue(ID3D12GraphicsCommandList* cmdList)
+{
+    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+}

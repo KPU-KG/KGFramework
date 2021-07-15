@@ -204,23 +204,17 @@
     <ClCompile Include="src\Render2DComponent.cpp">
       <Filter>소스 파일\KGDXRenderer\Component</Filter>
     </ClCompile>
-    <ClCompile Include="include\PostProcessComponent.cpp">
-      <Filter>소스 파일\KGDXRenderer\Component</Filter>
-    </ClCompile>
-    <ClCompile Include="KGDX12Resource.cpp">
-      <Filter>소스 파일\KGDXRenderer\Core\Resource</Filter>
-    </ClCompile>
-    <ClCompile Include="src\PostProcessComponent.cpp">
-      <Filter>소스 파일\KGDXRenderer\Core</Filter>
-    </ClCompile>
     <ClCompile Include="src\PostProcess.cpp">
-      <Filter>소스 파일\KGDXRenderer\Core</Filter>
-    </ClCompile>
-    <ClCompile Include="src\KGDX12Resource.cpp">
       <Filter>소스 파일\KGDXRenderer\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\FakePostProcessComponent.cpp">
       <Filter>소스 파일\KGFakeRenderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KGDX12Resource.cpp">
+      <Filter>소스 파일\KGDXRenderer\Core\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\PostProcessComponent.cpp">
+      <Filter>소스 파일\KGDXRenderer\Component</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

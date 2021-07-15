@@ -260,13 +260,13 @@ void KG::Renderer::KGDXRenderer::CubeCaemraRender()
             cubeCamera.EndCameraRender(this->mainCommandList);
             PIXEndEvent(mainCommandList);
         }
-        TryResourceBarrier(this->mainCommandList,
-            pointLightCamera.GetRenderTexture().BarrierTransition(
-                D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-                D3D12_RESOURCE_STATE_COMMON,
-                D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-            )
+        pointLightCamera.GetRenderTexture().BarrierTransition(
+            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+            D3D12_RESOURCE_STATE_COMMON,
+            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
         );
+        ApplyBarrierQueue(this->mainCommandList);
+
     }
     PIXEndEvent(mainCommandList);
 }
@@ -309,8 +309,9 @@ void KG::Renderer::KGDXRenderer::ShadowMapRender()
             PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Directional Light ShadowMap Render : Camera %d", cameraCount++);
             auto* cascadeCamera = comp.GetDirectionalLightCamera();
             cascadeCamera->SetCameraRender(mainCommandList);
-            this->mainCommandList->ClearDepthStencilView(cascadeCamera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-            this->mainCommandList->OMSetRenderTargets(0, nullptr, false, &cascadeCamera->GetRenderTexture().dsvHandle);
+            auto dsvHandle = cascadeCamera->GetRenderTexture().depthStencilBuffer.GetDescriptor(DescriptorType::DSV).GetCPUHandle();
+            this->mainCommandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+            this->mainCommandList->OMSetRenderTargets(0, nullptr, false, &dsvHandle);
             this->renderEngine->Render(ShaderGroup::Opaque, ShaderGeometryType::GSCascadeShadow, ShaderPixelType::GSCubeShadow, mainCommandList);
             cascadeCamera->EndCameraRender(mainCommandList);
             PassRenderEnd(mainCommandList, cascadeCamera->GetRenderTexture(), 0);
@@ -321,8 +322,9 @@ void KG::Renderer::KGDXRenderer::ShadowMapRender()
             PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Point Light ShadowMap Render : Camera %d", cameraCount++);
             auto* pointLightCamera = comp.GetPointLightCamera();
             pointLightCamera->SetCameraRender(mainCommandList);
-            this->mainCommandList->ClearDepthStencilView(pointLightCamera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-            this->mainCommandList->OMSetRenderTargets(0, nullptr, false, &pointLightCamera->GetRenderTexture().dsvHandle);
+            auto dsvHandle = pointLightCamera->GetRenderTexture().depthStencilBuffer.GetDescriptor(DescriptorType::DSV).GetCPUHandle();
+            this->mainCommandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+            this->mainCommandList->OMSetRenderTargets(0, nullptr, false, &dsvHandle);
             this->renderEngine->Render(ShaderGroup::Opaque, ShaderGeometryType::GSCubeShadow, ShaderPixelType::GSCubeShadow, mainCommandList);
             pointLightCamera->EndCameraRender(mainCommandList);
             PassRenderEnd(mainCommandList, pointLightCamera->GetRenderTexture(), 0);
@@ -333,8 +335,9 @@ void KG::Renderer::KGDXRenderer::ShadowMapRender()
             PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Directional Light ShadowMap Render : Camera %d", cameraCount++);
             auto* camera = comp.GetSpotLightCamera();
             camera->SetCameraRender(mainCommandList);
-            this->mainCommandList->ClearDepthStencilView(camera->GetRenderTexture().dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
-            this->mainCommandList->OMSetRenderTargets(0, nullptr, false, &camera->GetRenderTexture().dsvHandle);
+            auto dsvHandle = camera->GetRenderTexture().depthStencilBuffer.GetDescriptor(DescriptorType::DSV).GetCPUHandle();
+            this->mainCommandList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+            this->mainCommandList->OMSetRenderTargets(0, nullptr, false, &dsvHandle);
             this->renderEngine->Render(ShaderGroup::Opaque, ShaderGeometryType::Default, ShaderPixelType::Shadow, mainCommandList);
             camera->EndCameraRender(mainCommandList);
             PassRenderEnd(mainCommandList, camera->GetRenderTexture(), 0);
@@ -385,23 +388,21 @@ void KG::Renderer::KGDXRenderer::CopyMainCamera()
     {
         if (directionalLightCamera.isMainCamera)
         {
-            TryResourceBarrier(this->mainCommandList,
-                directionalLightCamera.GetRenderTexture().BarrierTransition(
-                    D3D12_RESOURCE_STATE_COPY_SOURCE,
-                    D3D12_RESOURCE_STATE_COMMON,
-                    D3D12_RESOURCE_STATE_COMMON
-                )
+            directionalLightCamera.GetRenderTexture().BarrierTransition(
+                D3D12_RESOURCE_STATE_COPY_SOURCE,
+                D3D12_RESOURCE_STATE_COMMON,
+                D3D12_RESOURCE_STATE_COMMON
             );
+            ApplyBarrierQueue(this->mainCommandList);
 
-            this->mainCommandList->CopyResource(this->renderTargetBuffers[this->swapChainBufferIndex], directionalLightCamera.GetRenderTexture().renderTarget);
+            this->mainCommandList->CopyResource(this->renderTargetBuffers[this->swapChainBufferIndex], directionalLightCamera.GetRenderTexture().renderTargetResource.resource);
 
-            TryResourceBarrier(this->mainCommandList,
-                directionalLightCamera.GetRenderTexture().BarrierTransition(
-                    D3D12_RESOURCE_STATE_COMMON,
-                    D3D12_RESOURCE_STATE_COMMON,
-                    D3D12_RESOURCE_STATE_COMMON
-                )
+            directionalLightCamera.GetRenderTexture().BarrierTransition(
+                D3D12_RESOURCE_STATE_COMMON,
+                D3D12_RESOURCE_STATE_COMMON,
+                D3D12_RESOURCE_STATE_COMMON
             );
+            ApplyBarrierQueue(this->mainCommandList);
             break;
         }
         PIXEndEvent(mainCommandList);
@@ -419,11 +420,19 @@ void KG::Renderer::KGDXRenderer::CopyMainCamera()
 void KG::Renderer::KGDXRenderer::OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
 {
     PIXSetMarker(cmdList, PIX_COLOR(255, 0, 0), "Opaque Render");
-    cmdList->OMSetRenderTargets(4, rt.gbufferHandle.data(), false, &rt.dsvHandle);
+    std::array<D3D12_CPU_DESCRIPTOR_HANDLE, 4> gbufferHandle =
+    {
+        rt.gbufferTextureResources[0].GetDescriptor(DescriptorType::RTV).GetCPUHandle(),
+        rt.gbufferTextureResources[1].GetDescriptor(DescriptorType::RTV).GetCPUHandle(),
+        rt.gbufferTextureResources[2].GetDescriptor(DescriptorType::RTV).GetCPUHandle(),
+        rt.gbufferTextureResources[3].GetDescriptor(DescriptorType::RTV).GetCPUHandle()
+    };
+    auto dsvHandle = rt.depthStencilBuffer.GetDescriptor(DescriptorType::DSV).GetCPUHandle();
+    cmdList->OMSetRenderTargets(4, gbufferHandle.data(), false, &dsvHandle);
     rt.ClearGBuffer(this->mainCommandList, 0, 0, 0, 0);
     cmdList->SetGraphicsRootDescriptorTable(GraphicRootParameterIndex::Texture1Heap, this->descriptorHeapManager->GetGPUHandle(0));
 
-    this->mainCommandList->ClearDepthStencilView(rt.dsvHandle,
+    this->mainCommandList->ClearDepthStencilView(dsvHandle,
         D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL,
         1.0f, 0, 0, nullptr);
 
@@ -449,35 +458,34 @@ void KG::Renderer::KGDXRenderer::SpriteRender(ID3D12GraphicsCommandList* cmdList
 
 void KG::Renderer::KGDXRenderer::InGameUIRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
 {
-    TryResourceBarrier(cmdList,
-        rt.BarrierTransition(
-            D3D12_RESOURCE_STATE_RENDER_TARGET,
-            D3D12_RESOURCE_STATE_RENDER_TARGET,
-            D3D12_RESOURCE_STATE_DEPTH_WRITE
-        )
+    rt.BarrierTransition(
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_DEPTH_WRITE
     );
-    cmdList->ClearDepthStencilView(rt.dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
+    ApplyBarrierQueue(cmdList);
+    auto dsvHandle = rt.depthStencilBuffer.GetDescriptor(DescriptorType::DSV).GetCPUHandle();
+    cmdList->ClearDepthStencilView(dsvHandle, D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH, 1.0f, 0, 0, nullptr);
     this->renderEngine->Render(ShaderGroup::UI, ShaderGeometryType::Particle, ShaderPixelType::Transparent, cmdList);
-    TryResourceBarrier(cmdList,
-        rt.BarrierTransition(
-            D3D12_RESOURCE_STATE_RENDER_TARGET,
-            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-            D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-        )
+    rt.BarrierTransition(
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+        D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
     );
+    ApplyBarrierQueue(cmdList);
 }
 
 void KG::Renderer::KGDXRenderer::LightPassRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
 {
     PIXSetMarker(cmdList, PIX_COLOR(255, 0, 0), "Light Pass Render");
-    TryResourceBarrier(cmdList,
-        rt.BarrierTransition(
-            D3D12_RESOURCE_STATE_RENDER_TARGET,
-            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-            D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
-        )
+    rt.BarrierTransition(
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+        D3D12_RESOURCE_STATE_DEPTH_READ | D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE
     );
-    cmdList->SetGraphicsRootDescriptorTable(GraphicRootParameterIndex::GBufferHeap, this->descriptorHeapManager->GetGPUHandle(rt.gbufferSRVIndex));
+    ApplyBarrierQueue(cmdList);
+    auto gbufferTable = rt.gbufferTextureResources[0].GetDescriptor(DescriptorType::SRV).GetGPUHandle();
+    cmdList->SetGraphicsRootDescriptorTable(GraphicRootParameterIndex::GBufferHeap, gbufferTable);
     auto rtvHandle = rt.GetRenderTargetRTVHandle(cubeIndex);
     cmdList->OMSetRenderTargets(1, &rtvHandle, true, nullptr);
     this->renderEngine->Render(ShaderGroup::DirectionalLight, ShaderGeometryType::Light, ShaderPixelType::Light, cmdList);
@@ -489,7 +497,8 @@ void KG::Renderer::KGDXRenderer::SkyBoxRender(ID3D12GraphicsCommandList* cmdList
 {
     PIXSetMarker(cmdList, PIX_COLOR(255, 0, 0), "SkyBox Pass Render");
     auto rtvHandle = rt.GetRenderTargetRTVHandle(cubeIndex);
-    cmdList->OMSetRenderTargets(1, &rtvHandle, true, &rt.dsvHandle);
+    auto dsvHandle = rt.depthStencilBuffer.GetDescriptor(DescriptorType::DSV).GetCPUHandle();
+    cmdList->OMSetRenderTargets(1, &rtvHandle, true,&dsvHandle);
     this->renderEngine->Render(ShaderGroup::SkyBox, ShaderGeometryType::SkyBox, ShaderPixelType::SkyBox, cmdList);
 }
 
@@ -501,13 +510,12 @@ void KG::Renderer::KGDXRenderer::PostProcessRender(ID3D12GraphicsCommandList* cm
 
 void KG::Renderer::KGDXRenderer::PassRenderEnd(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
 {
-    TryResourceBarrier(cmdList,
-        rt.BarrierTransition(
-            D3D12_RESOURCE_STATE_RENDER_TARGET,
-            D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
-            D3D12_RESOURCE_STATE_DEPTH_WRITE
-        )
+    rt.BarrierTransition(
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE,
+        D3D12_RESOURCE_STATE_DEPTH_WRITE
     );
+    ApplyBarrierQueue(cmdList);
 }
 
 KG::Renderer::ParticleGenerator* KG::Renderer::KGDXRenderer::GetParticleGenerator()

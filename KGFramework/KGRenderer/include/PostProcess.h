@@ -42,9 +42,7 @@ namespace KG::Renderer
         UINT width = 0;
         UINT height = 0;
         static constexpr UINT unitSize = 256;
-        std::array<ID3D12Resource*, outputCount> outputResources;
-        std::array<D3D12_CPU_DESCRIPTOR_HANDLE, outputCount> outputCPUHandles;
-        std::array<D3D12_GPU_DESCRIPTOR_HANDLE, outputCount> outputGPUHandles;
+        std::array<KG::Resource::DXResource, outputCount> outputResources;
 
         using ProcessPredTy = std::function<bool(const PostProcess const*, const PostProcess const*)>;
         std::multiset<PostProcess*, ProcessPredTy> processQueue;
@@ -53,8 +51,8 @@ namespace KG::Renderer
         PostProcessor();
         void AddPostProcess(const KG::Utill::HashString& id, int priority = 0);
         void Draw(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex);
-        void CopyToOutput(ID3D12GraphicsCommandList* cmdList, ID3D12Resource* target, RenderTexture& renderTexture, size_t cubeIndex);
-        void CopyToResult(ID3D12GraphicsCommandList* cmdList, ID3D12Resource* target, RenderTexture& renderTexture, size_t cubeIndex);
+        void CopyToOutput(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, RenderTexture& renderTexture, size_t cubeIndex);
+        void CopyToResult(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, RenderTexture& renderTexture, size_t cubeIndex);
         void OnDrawGUI();
     };
 }

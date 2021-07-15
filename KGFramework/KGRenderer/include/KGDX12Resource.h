@@ -1,4 +1,5 @@
 #pragma once
+#include <vector>
 #include "D3D12Helper.h"
 #include "DescriptorHeapManager.h"
 #include "KGDXRenderer.h"
@@ -45,15 +46,19 @@ namespace KG::Resource
 
     struct DXResource
     {
+        DXResource() = default;
         DXResource(ID3D12Resource* resource);
 
         ~DXResource();
 
         ID3D12Resource* resource = nullptr;
+        void SetResource(ID3D12Resource* resource);
 
-        std::array<Descriptor, DescriptorType::DescriptorTypeCount> descriptors;
+        std::array<std::vector<Descriptor>, DescriptorType::DescriptorTypeCount> descriptors;
+
+        void Release();
         
-        Descriptor GetDescriptor(DescriptorType type) const;
+        Descriptor GetDescriptor(DescriptorType type, UINT index = 0) const;
 
         void AddOnDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc);
 
@@ -63,13 +68,13 @@ namespace KG::Resource
 
         void AddOnDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc);
 
-        void SetDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, UINT index, DescriptorType type);
+        Descriptor& AddDescriptor(KG::Renderer::DescriptorHeapManager* heap, UINT index, DescriptorType type);
 
         // Barrier
         D3D12_RESOURCE_STATES currentState;
         void AddTransitionQueue(D3D12_RESOURCE_STATES next);
         
-        static std::vector<D3D12_RESOURCE_BARRIER> batchedQueue;
+        inline static std::vector<D3D12_RESOURCE_BARRIER> batchedQueue;
         static void ApplyBarrierQueue(ID3D12GraphicsCommandList* cmdList);
 
         operator ID3D12Resource* ()
@@ -82,3 +87,5 @@ namespace KG::Resource
         }
     };
 }
+using KG::Resource::DescriptorType;
+void ApplyBarrierQueue(ID3D12GraphicsCommandList* cmdList);
