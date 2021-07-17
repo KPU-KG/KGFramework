@@ -1,7 +1,8 @@
 #pragma once
 #include "ISystem.h"
 #include "ServerBaseComponent.h"
-#include "ServerEnemyControllerComponent.h"
+// #include "ServerEnemyUnitComponent.h"
+#include "ServerEnemyMechComponent.h"
 #include "ServerGameManagerComponent.h"
 #include "ServerPlayerControllerComponent.h"
 #include "EnemyGeneratorComponent.h"
@@ -46,12 +47,28 @@ namespace KG::System
 		}
 	};
 
-	class SEnemyControllerComponentSystem : public KG::System::SBaseComponentSystem<SEnemyControllerComponent>
+	// class SEnemyControllerComponentSystem : public KG::System::SBaseComponentSystem<SEnemyUnitComponent>
+	// {
+	// public:
+	// 	virtual void OnUpdate(float elapsedTime) override
+	// 	{
+	// 		for ( auto& com : *this )
+	// 		{
+	// 			com.Update(elapsedTime);
+	// 		}
+	// 	}
+	// 
+	// 	// IComponentSystem을(를) 통해 상속됨
+	// 	virtual void OnPostUpdate(float elapsedTime) override;
+	// 	virtual void OnPreRender() override;
+	// };
+
+	class SEnemyMechComponentSystem : public KG::System::SBaseComponentSystem<SEnemyMechComponent>
 	{
 	public:
 		virtual void OnUpdate(float elapsedTime) override
 		{
-			for ( auto& com : *this )
+			for (auto& com : *this)
 			{
 				com.Update(elapsedTime);
 			}
@@ -61,6 +78,7 @@ namespace KG::System
 		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;
 	};
+
 	class SGameManagerComponentSystem : public KG::System::SBaseComponentSystem<SGameManagerComponent>
 	{
 	public:

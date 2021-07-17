@@ -15,7 +15,7 @@ namespace KG::Component
 {
 	class SGameManagerComponent;
 	class SPlayerComponent;
-	class SEnemyControllerComponent;
+	class SEnemyMechComponent;
 	class EnemyGeneratorComponent;
 	class SProjectileComponent;
 	class SBaseComponent;
@@ -42,7 +42,8 @@ namespace KG::Server
 
 		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() = 0;
 		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() = 0;
-		virtual KG::Component::SEnemyControllerComponent* GetNewEnemyControllerComponent() = 0;
+		// virtual KG::Component::SEnemyUnitComponent* GetNewEnemyControllerComponent(const int type) = 0;
+		virtual KG::Component::SEnemyMechComponent* GetNewEnemyMechComponent() = 0;
 		virtual KG::Component::EnemyGeneratorComponent* GetNewEnemyGeneratorComponent() = 0;
 		virtual KG::Component::SProjectileComponent* GetNewProjectileComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;

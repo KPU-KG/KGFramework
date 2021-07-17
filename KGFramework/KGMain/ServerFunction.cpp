@@ -11,7 +11,9 @@
 #include "SceneCameraComponent.h"
 #include "IKGServer.h"
 #include "ServerPlayerControllerComponent.h"
-#include "ServerEnemyControllerComponent.h"
+#include "ServerGameManagerComponent.h"
+// #include "ServerEnemyUnitComponent.h"
+#include "ServerEnemyMechComponent.h"
 #include "ServerProjectileComponent.h"
 #include "InputManager.h"
 
@@ -75,7 +77,7 @@ void KG::GameFramework::PostServerFunction()
 			phy->AddFilterGroup(KG::Component::FilterGroup::eENEMY, KG::Component::FilterGroup::eNONE);
 			obj.AddComponent(phy);
 
-			auto* comp = this->networkServer->GetNewEnemyControllerComponent();
+			auto* comp = this->networkServer->GetNewEnemyMechComponent();
 			comp->SetIdleInterval(2);
 			comp->SetRotateInterval(3);
 			comp->SetSpeed(3);

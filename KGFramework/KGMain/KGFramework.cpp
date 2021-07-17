@@ -11,7 +11,9 @@
 #include "LambdaComponent.h"
 #include "SceneCameraComponent.h"
 #include "InputManager.h"
-#include "ServerEnemyControllerComponent.h"
+// #include "ServerEnemyControllerComponent.h"
+#include "ServerEnemyUnitComponent.h"
+#include "ServerEnemyMechComponent.h"
 #include "ClientEnemyControllerComponent.h"
 #include "EnemyGeneratorComponent.h"
 
@@ -458,45 +460,45 @@ void KG::GameFramework::PostSceneFunction()
 		}
 		);
 	
-	this->scene->AddModelPreset("EnemyCrawler",
-		[]()
-		{
-			KG::Resource::MaterialMatch a;
-			a.defaultMaterial.emplace_back("crawlerLow");
-			a.defaultMaterial.emplace_back("crawlerLaser");
-			a.defaultMaterial.emplace_back("crawlerModular");
-
-			return std::make_pair(
-				KG::Utill::HashString("crawler.fbx"),
-				std::move(a)
-			);
-		}
-		,
-			[this](KG::Core::GameObject& obj)
-		{
-			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
-			ctrl->RegisterAnimation("crawler.fbx"_id, 0);
-			ctrl->SetAnimation(KG::Utill::HashString("crawler.fbx"_id));
-
-			ctrl->SetDefaultAnimation(KG::Utill::HashString("crawler.fbx"_id));
-			ctrl->SetIgnoreScale(false);
-			ctrl->SetIgnoreTranslate(true);
-			obj.AddComponent(ctrl);
-
-			auto* enemyController = this->networkServer->GetNewEnemyControllerComponent();
-			// enemyController->SetCenter();
-			enemyController->SetIdleInterval(2);
-			enemyController->SetRotateInterval(3);
-			enemyController->SetSpeed(3);
-			enemyController->SetWanderRange(3);
-			obj.AddTemporalComponent(enemyController);
-
-			auto* phy = this->physics->GetNewDynamicRigidComponent();
-			obj.AddTemporalComponent(phy);
-
-			// obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
-		}
-		);
+	// this->scene->AddModelPreset("EnemyCrawler",
+	// 	[]()
+	// 	{
+	// 		KG::Resource::MaterialMatch a;
+	// 		a.defaultMaterial.emplace_back("crawlerLow");
+	// 		a.defaultMaterial.emplace_back("crawlerLaser");
+	// 		a.defaultMaterial.emplace_back("crawlerModular");
+	// 
+	// 		return std::make_pair(
+	// 			KG::Utill::HashString("crawler.fbx"),
+	// 			std::move(a)
+	// 		);
+	// 	}
+	// 	,
+	// 		[this](KG::Core::GameObject& obj)
+	// 	{
+	// 		auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+	// 		ctrl->RegisterAnimation("crawler.fbx"_id, 0);
+	// 		ctrl->SetAnimation(KG::Utill::HashString("crawler.fbx"_id));
+	// 
+	// 		ctrl->SetDefaultAnimation(KG::Utill::HashString("crawler.fbx"_id));
+	// 		ctrl->SetIgnoreScale(false);
+	// 		ctrl->SetIgnoreTranslate(true);
+	// 		obj.AddComponent(ctrl);
+	// 
+	// 		auto* enemyController = this->networkServer->GetNewEnemyControllerComponent();
+	// 		// enemyController->SetCenter();
+	// 		enemyController->SetIdleInterval(2);
+	// 		enemyController->SetRotateInterval(3);
+	// 		enemyController->SetSpeed(3);
+	// 		enemyController->SetWanderRange(3);
+	// 		obj.AddTemporalComponent(enemyController);
+	// 
+	// 		auto* phy = this->physics->GetNewDynamicRigidComponent();
+	// 		obj.AddTemporalComponent(phy);
+	// 
+	// 		// obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+	// 	}
+	// 	);
 		
 	this->scene->AddModelPreset("EnemyMech",
 		[]()

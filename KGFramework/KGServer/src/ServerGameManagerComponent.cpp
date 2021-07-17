@@ -6,6 +6,7 @@
 #include "PhysicsComponent.h"
 #include "IPhysicsScene.h"
 #include <random>
+#include "ServerEnemyMechComponent.h"
 
 std::random_device rdRegion;
 std::mt19937 genRegion(rdRegion());
@@ -167,7 +168,7 @@ KG::Component::Region KG::Component::EnemyGeneratorComponent::GetNextRegion()
 	return region[currentRegion];
 }
 
-void KG::Component::EnemyGeneratorComponent::AddEnemyControllerCompoenent(KG::Component::SEnemyControllerComponent* comp)
+void KG::Component::EnemyGeneratorComponent::AddEnemyControllerCompoenent(KG::Component::SEnemyUnitComponent* comp)
 {
 	enemies.emplace_back(comp);
 }
@@ -294,7 +295,7 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		comp->SetNetObjectId(id);
 		this->server->SetServerObject(id, comp);
 
-		auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyControllerComponent>();
+		auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyMechComponent>();
 		enemyCtrl->SetCenter(region.position);
 		enemyCtrl->SetWanderRange(region.range);
 		enemyCtrl->SetPosition(genPos);

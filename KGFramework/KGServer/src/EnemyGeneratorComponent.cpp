@@ -39,7 +39,7 @@
 // 
 // ool KG::Component::EnemyGeneratorComponent::OnDrawGUI()
 // 
-// 	if (ImGui::ComponentHeader<KG::Component::SEnemyControllerComponent>()) {
+// 	if (ImGui::ComponentHeader<KG::Component::SEnemyUnitComponent>()) {
 // 		ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 // 
 // 		ImGuiIO& io = ImGui::GetIO();
@@ -105,7 +105,7 @@
 // 	comp->SetNetObjectId(id);
 // 	this->server->SetServerObject(id, comp);
 // 
-// 	auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyControllerComponent>();
+// 	auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyUnitComponent>();
 // 	enemyCtrl->SetCenter(this->region[region].position);
 // 	enemyCtrl->SetWanderRange(this->region[region].range);
 // 

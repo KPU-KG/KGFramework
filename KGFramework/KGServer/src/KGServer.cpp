@@ -2,7 +2,8 @@
 #include "Protocol.h"
 #include "ServerUtill.h"
 #include "KGServer.h"
-
+#include "ServerEnemyMechComponent.h"
+#include "ServerGameManagerComponent.h"
 #include <sstream>
 
 
@@ -216,9 +217,25 @@ KG::Component::SPlayerComponent* KG::Server::Server::GetNewPlayerComponent()
 	return comp;
 }
 
-KG::Component::SEnemyControllerComponent* KG::Server::Server::GetNewEnemyControllerComponent()
+// KG::Component::SEnemyUnitComponent* KG::Server::Server::GetNewEnemyControllerComponent(const int type)
+// {
+// 	KG::Component::SEnemyUnitComponent* comp = nullptr;
+// 	switch (type) {
+// 	case KG::Component::ENEMY_TYPE_MECH:
+// 		comp = reinterpret_cast<KG::Component::SEnemyMechComponent*>(this->sEnemyControllerSystem.GetNewComponent());
+// 		break;
+// 	default:
+// 		comp = nullptr;
+// 		break;
+// 	}
+// 	// auto* comp = this->sEnemyControllerSystem.GetNewComponent();
+// 	comp->SetServerInstance(this);
+// 	return comp;
+// }
+
+KG::Component::SEnemyMechComponent* KG::Server::Server::GetNewEnemyMechComponent()
 {
-	auto* comp = this->sEnemyControllerSystem.GetNewComponent();
+	auto* comp = this->sEnemyMechSystem.GetNewComponent();
 	comp->SetServerInstance(this);
 	return comp;
 }
@@ -241,7 +258,7 @@ void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider&
 {
 	this->sGameManagerSystem.OnPostProvider(provider);
 	this->sPlayerSystem.OnPostProvider(provider);
-	this->sEnemyControllerSystem.OnPostProvider(provider);
+	this->sEnemyMechSystem.OnPostProvider(provider);
 	this->enemyGeneratorSystem.OnPostProvider(provider);
 	this->sProjectileSystem.OnPostProvider(provider);
 }
@@ -342,7 +359,7 @@ void KG::Server::Server::Update(float elapsedTime)
 {
 	this->sGameManagerSystem.OnUpdate(elapsedTime);
 	this->sPlayerSystem.OnUpdate(elapsedTime);
-	this->sEnemyControllerSystem.OnUpdate(elapsedTime);
+	this->sEnemyMechSystem.OnUpdate(elapsedTime);
 	this->enemyGeneratorSystem.OnUpdate(elapsedTime);
 	this->sProjectileSystem.OnUpdate(elapsedTime);
 }

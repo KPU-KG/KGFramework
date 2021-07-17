@@ -8,7 +8,7 @@
 // 
 // namespace KG::Component
 // {
-// 	class SEnemyControllerComponent;
+// 	class SEnemyUnitComponent;
 // 	class EnemyGeneratorComponent;
 // 	class SGameManagerComponent;
 // 
@@ -32,7 +32,7 @@
 // 
 // 	class DLL EnemyGeneratorComponent : public SBaseComponent {
 // 	protected:
-// 		std::vector<SEnemyControllerComponent*> enemies;
+// 		std::vector<SEnemyUnitComponent*> enemies;
 // 		std::vector<KG::Component::Region> region;
 // 		int currentRegion = 0;
 // 		bool generateEnemy = false;
@@ -44,7 +44,7 @@
 // 
 // 		bool IsGeneratable() const;
 // 		KG::Component::Region GetNextRegion();
-// 		void AddEnemyControllerCompoenent(SEnemyControllerComponent* comp);
+// 		void AddEnemyControllerCompoenent(SEnemyUnitComponent* comp);
 // 		int GetCurrentRegionIndex() const;
 // 		KG::Component::Region GetCurrentRegion();
 // 

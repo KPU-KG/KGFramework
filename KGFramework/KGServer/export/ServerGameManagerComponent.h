@@ -15,7 +15,9 @@ namespace KG::Physics
 
 namespace KG::Component
 {
-	class SEnemyControllerComponent;
+	static constexpr int ENEMY_TYPE_MECH = 0;
+
+	class SEnemyUnitComponent;
 	class EnemyGeneratorComponent;
 	class SGameManagerComponent;
 
@@ -41,7 +43,7 @@ namespace KG::Component
 
 	class DLL EnemyGeneratorComponent : public SBaseComponent {
 	protected:
-		std::vector<SEnemyControllerComponent*> enemies;
+		std::vector<SEnemyUnitComponent*> enemies;
 		std::vector<KG::Component::Region> region;
 		int currentRegion = 0;
 		bool generateEnemy = false;
@@ -56,7 +58,7 @@ namespace KG::Component
 		virtual void Update(float elapsedTime) override;
 		bool IsGeneratable() const;
 		void GenerateEnemy();
-		void AddEnemyControllerCompoenent(SEnemyControllerComponent* comp);
+		void AddEnemyControllerCompoenent(SEnemyUnitComponent* comp);
 		void SendAddEnemyPacket(KG::Server::SESSION_ID player);
 		unsigned int GetScore() const;
 		void RegisterPlayerToEnemy(KG::Server::NET_OBJECT_ID id);

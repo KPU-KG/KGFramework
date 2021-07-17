@@ -1,11 +1,10 @@
 #include "pch.h"
-#include "ServerEnemyControllerComponent.h"
+#include "ServerEnemyMechComponent.h"
 #include "KGServer.h"
 #include "Transform.h"
 
 #include "PhysicsComponent.h"
 #include "IAnimationComponent.h"
-
 #include "imgui/imgui.h"
 #include "MathHelper.h"
 
@@ -13,11 +12,12 @@
 #include <random>
 #include "Scene.h"
 
+
 std::random_device rd;
 std::mt19937 gen(rd());
 std::uniform_real_distribution<float> goalRange(-0.5, 0.5);
 
-bool KG::Component::SEnemyControllerComponent::SetGoal()
+bool KG::Component::SEnemyMechComponent::SetGoal()
 {
 
 	if (this->nodeCount > 0) {
@@ -59,7 +59,7 @@ bool KG::Component::SEnemyControllerComponent::SetGoal()
 	return true;
 }
 
-bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
+bool KG::Component::SEnemyMechComponent::RotateToGoal(float elapsedTime)
 {
 	if (anim) {
 		if (!changedAnimation)
@@ -67,8 +67,13 @@ bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 	}
 	rotateTimer += elapsedTime;
 	float rotateInterval = this->rotateInterval;
-	if (state == EnemyState::eTRACE)
+
+	if (stateManager->curState == MechStateManager::STATE_TRACE)
 		rotateInterval = this->rotateAttackInterval;
+
+	// if (state == EnemyState::eTRACE)
+	// 	rotateInterval = this->rotateAttackInterval;
+
 	if (rotateInterval <= rotateTimer) {
 		return true;
 	}
@@ -83,7 +88,7 @@ bool KG::Component::SEnemyControllerComponent::RotateToGoal(float elapsedTime)
 	return false;
 }
 
-bool KG::Component::SEnemyControllerComponent::MoveToGoal(float elapsedTime)
+bool KG::Component::SEnemyMechComponent::MoveToGoal(float elapsedTime)
 {
 	if (anim) {
 		if (!changedAnimation)
@@ -131,7 +136,7 @@ bool KG::Component::SEnemyControllerComponent::MoveToGoal(float elapsedTime)
 	return false;
 }
 
-bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
+bool KG::Component::SEnemyMechComponent::Idle(float elapsedTime)
 {
 	if (anim) {
 		if (!changedAnimation) {
@@ -144,50 +149,19 @@ bool KG::Component::SEnemyControllerComponent::Idle(float elapsedTime)
 	return false;
 }
 
-KG::Component::SEnemyControllerComponent::SEnemyControllerComponent()
+KG::Component::SEnemyMechComponent::SEnemyMechComponent()
 {
 
 }
 
-void KG::Component::SEnemyControllerComponent::SetCenter(DirectX::XMFLOAT3 center) {
-	this->center = center;
-}
-
-void KG::Component::SEnemyControllerComponent::SetSpeed(float speed) {
-	this->speed = speed;
-}
-
-void KG::Component::SEnemyControllerComponent::SetIdleInterval(float interval) {
-	this->idleInterval = interval;
-}
-
-void KG::Component::SEnemyControllerComponent::SetRotateInterval(float interval) {
-	this->rotateInterval = interval;
-}
-
-void KG::Component::SEnemyControllerComponent::SetWanderRange(float range) {
-	this->range = range;
-}
-
-void KG::Component::SEnemyControllerComponent::SetPosition(DirectX::XMFLOAT3 position)
+void KG::Component::SEnemyMechComponent::OnCreate(KG::Core::GameObject* obj)
 {
-	this->rigid->SetPosition(position);
-}
-
-void KG::Component::SEnemyControllerComponent::OnCreate(KG::Core::GameObject* obj)
-{
-	SBaseComponent::OnCreate(obj);
-	this->transform = this->gameObject->GetTransform();
-	this->center = this->transform->GetWorldPosition();
-	this->rigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
-	if (this->rigid)
-		this->rigid->SetRaycastCallback(raycastCallback);
-	this->anim = this->gameObject->GetComponent<IAnimationControllerComponent>();
-	this->stateManager = new StateManager(this);
+	SEnemyUnitComponent::OnCreate(obj);
+	this->stateManager = new MechStateManager(this);
 	stateManager->Init();
 }
 
-void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
+void KG::Component::SEnemyMechComponent::Update(float elapsedTime)
 {
 	if (hp <= 0) {
 		if (!isDead && anim->GetCurrentPlayingAnimationIndex() != KG::Component::MechAnimIndex::dead) {
@@ -219,16 +193,24 @@ void KG::Component::SEnemyControllerComponent::Update(float elapsedTime)
 	}
 }
 
-bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
+void KG::Component::SEnemyMechComponent::HitBullet() {
+	this->hp -= 1;
+
+	KG::Packet::SC_ENEMY_HP hp;
+	hp.percentage = float(this->hp) / float(maxHp);
+	this->BroadcastPacket(&hp);
+}
+
+bool KG::Component::SEnemyMechComponent::OnDrawGUI()
 {
-	if (ImGui::ComponentHeader<KG::Component::SEnemyControllerComponent>()) {
+	if (ImGui::ComponentHeader<KG::Component::SEnemyMechComponent>()) {
 		ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
 
 		if (this->isUsing()) {
 			ImGui::TextDisabled("Center : (%f, %f, %f)", center.x, center.y, center.z);
 			ImGui::TextDisabled("Range : %f", range);
 			const char* curAction = "None";
-			switch (this->action) {
+			/*switch (this->action) {
 			case EnemyAction::eIDLE:
 				curAction = "Idle";
 				break;
@@ -244,7 +226,7 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 			case EnemyAction::eATTACK:
 				curAction = "Attack";
 				break;
-			}
+			}*/
 			ImGui::TextDisabled("Action : %s", curAction);
 			ImGui::TextDisabled("Goal : (%f, %f, %f)", goal.x, goal.y, goal.z);
 			ImGui::TextDisabled("Direction : (%f, %f, %f)", direction.x, direction.y, direction.z);
@@ -273,7 +255,7 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 
 		view = Math::Matrix4x4::Transpose(view);
 		proj = Math::Matrix4x4::Transpose(proj);
-
+		/*
 		XMFLOAT4X4 mat;
 
 		for (int i = 0; i < nodeCount; ++i) {
@@ -310,34 +292,14 @@ bool KG::Component::SEnemyControllerComponent::OnDrawGUI()
 				node[nodeCount++] = { 0,0,0 };
 			}
 		}
-
+		*/
 	}
 	return false;
 }
 
-void KG::Component::SEnemyControllerComponent::SetRaycastCallback(KG::Component::RaycastCallbackFunc&& callback) {
-	this->raycastCallback = callback;
-}
 
-void KG::Component::SEnemyControllerComponent::HitBullet() {
-	this->hp -= 1;
 
-    KG::Packet::SC_ENEMY_HP hp;
-    hp.percentage = float(this->hp) / float(maxHp);
-    this->BroadcastPacket(&hp);
-}
-
-bool KG::Component::SEnemyControllerComponent::IsDead() const
-{
-	return isDead;
-}
-
-bool KG::Component::SEnemyControllerComponent::IsDelete() const
-{
-	return destroyInterval <= destroyTimer;
-}
-
-bool KG::Component::SEnemyControllerComponent::SetTarget()
+bool KG::Component::SEnemyMechComponent::SetTarget()
 {
 	if (this->target) {
 		if (IsTargetInRange()) {
@@ -371,7 +333,16 @@ bool KG::Component::SEnemyControllerComponent::SetTarget()
 	return false;
 }
 
-bool KG::Component::SEnemyControllerComponent::SetAttackRotation()
+void KG::Component::SEnemyMechComponent::Destroy()
+{
+	if (rigid)
+		rigid->ReleaseActor();
+	KG::Packet::SC_REMOVE_OBJECT removeObjectPacket = {};
+	this->BroadcastPacket((void*)&removeObjectPacket);
+	gameObject->Destroy();
+}
+
+bool KG::Component::SEnemyMechComponent::SetAttackRotation()
 {
 	if (target == nullptr) {
 		DebugNormalMessage("Enemy Controller : target is null");
@@ -399,28 +370,7 @@ bool KG::Component::SEnemyControllerComponent::SetAttackRotation()
 	// return false;
 }
 
-void KG::Component::SEnemyControllerComponent::RegisterPlayerId(KG::Server::NET_OBJECT_ID id)
-{
-	if (playerId.count(id) == 0)
-		playerId.insert(id);
-}
-
-void KG::Component::SEnemyControllerComponent::DeregisterPlayerId(KG::Server::NET_OBJECT_ID id)
-{
-	if (playerId.count(id) > 0)
-		playerId.erase(id);
-}
-
-void KG::Component::SEnemyControllerComponent::Destroy()
-{
-	if (rigid)
-		rigid->ReleaseActor();
-	KG::Packet::SC_REMOVE_OBJECT removeObjectPacket = {};
-	this->BroadcastPacket((void*)&removeObjectPacket);
-	gameObject->Destroy();
-}
-
-bool KG::Component::SEnemyControllerComponent::IsTargetInRange() const
+bool KG::Component::SEnemyMechComponent::IsTargetInRange() const
 {
 	if (target) {
 		auto pos = target->GetGameObject()->GetTransform()->GetWorldPosition();
@@ -429,7 +379,7 @@ bool KG::Component::SEnemyControllerComponent::IsTargetInRange() const
 	return false;
 }
 
-inline void KG::Component::SEnemyControllerComponent::ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime, int repeat) {
+inline void KG::Component::SEnemyMechComponent::ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime, int repeat) {
 	anim->ChangeAnimation(animId, animIndex, nextState, blendingTime, repeat);
 	KG::Packet::SC_CHANGE_ANIMATION pa = {};
 	pa.animId = animId.value;
@@ -441,27 +391,27 @@ inline void KG::Component::SEnemyControllerComponent::ChangeAnimation(const KG::
 	changedAnimation = true;
 }
 
-float KG::Component::SEnemyControllerComponent::GetDistance2FromEnemy(DirectX::XMFLOAT3 pos) const
+float KG::Component::SEnemyMechComponent::GetDistance2FromEnemy(DirectX::XMFLOAT3 pos) const
 {
 	auto myPos = this->transform->GetWorldPosition();
 	float distance = (pos.x - myPos.x) * (pos.x - myPos.x) + (pos.y - myPos.y) * (pos.y - myPos.y);
 	return distance;
 }
 
-bool KG::Component::SEnemyControllerComponent::IsInTraceRange(const DirectX::XMFLOAT3 pos) const
+bool KG::Component::SEnemyMechComponent::IsInTraceRange(const DirectX::XMFLOAT3 pos) const
 {
 	float rr = traceRange * traceRange;
 	float distance2 = GetDistance2FromEnemy(pos);
 	return rr > distance2;
 }
 
-bool KG::Component::SEnemyControllerComponent::IsInTraceRange(const float distance) const
+bool KG::Component::SEnemyMechComponent::IsInTraceRange(const float distance) const
 {
 	float rr = traceRange * traceRange;
 	return rr > distance;
 }
 
-bool KG::Component::SEnemyControllerComponent::AttackTarget(float elapsedTime)
+bool KG::Component::SEnemyMechComponent::AttackTarget(float elapsedTime)
 {
 	if (attackTimer == 0 && !isInAttackDelay) {
 		if (this->anim)
@@ -481,17 +431,7 @@ bool KG::Component::SEnemyControllerComponent::AttackTarget(float elapsedTime)
 	return false;
 }
 
-bool KG::Component::SEnemyControllerComponent::IsAttackable() const
-{
-	return isAttackable;
-}
-
-void KG::Component::SEnemyControllerComponent::PostAttack()
-{
-	isAttackable = false;
-}
-
-void KG::Component::SEnemyControllerComponent::Attack(SGameManagerComponent* gameManager)
+void KG::Component::SEnemyMechComponent::Attack(SGameManagerComponent* gameManager)
 {
 	auto presetName = "Projectile";
 	auto presetId = KG::Utill::HashString(presetName);
@@ -505,7 +445,7 @@ void KG::Component::SEnemyControllerComponent::Attack(SGameManagerComponent* gam
 	origin.y += 3;
 	auto direction = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, origin));
 
-	
+
 	KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
 	auto tag = KG::Utill::HashString(presetName);
 	addObjectPacket.objectTag = tag;
@@ -521,8 +461,8 @@ void KG::Component::SEnemyControllerComponent::Attack(SGameManagerComponent* gam
 	// comp->GetGameObject()->GetTransform()->SetScale(0.1, 0.1, 0.1);
 
 	auto projectile = comp->GetGameObject()->GetComponent<SProjectileComponent>();
-	
-	
+
+
 	projectile->Initialize(origin, direction, 20, 1);
 	this->server->SetServerObject(id, projectile);
 	gameManager->BroadcastPacket(&addObjectPacket);
@@ -531,22 +471,16 @@ void KG::Component::SEnemyControllerComponent::Attack(SGameManagerComponent* gam
 	DebugNormalMessage("Enemy Controller : Shot Projectile");
 }
 
-
-bool KG::Component::SEnemyControllerComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender)
-{
-	return false;
-}
-
 bool KG::Component::IdleAction::Execute(float elapsedTime) {
-	return enemyComp->Idle(elapsedTime);
+	return dynamic_cast<SEnemyMechComponent*>(enemyComp)->Idle(elapsedTime);
 }
 
 void KG::Component::IdleAction::EndAction() {
-	enemyComp->ReadyNextAnimation(false);
+	dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
 }
 
 bool KG::Component::SetGoalAction::Execute(float elapsedTime) {
-	return enemyComp->SetGoal();
+	return dynamic_cast<SEnemyMechComponent*>(enemyComp)->SetGoal();
 }
 
 void KG::Component::SetGoalAction::EndAction() {
@@ -554,7 +488,7 @@ void KG::Component::SetGoalAction::EndAction() {
 }
 
 bool KG::Component::SetTargetAction::Execute(float elapsedTime) {
-	return enemyComp->SetAttackRotation();
+	return dynamic_cast<SEnemyMechComponent*>(enemyComp)->SetAttackRotation();
 }
 
 void KG::Component::SetTargetAction::EndAction() {
@@ -562,8 +496,9 @@ void KG::Component::SetTargetAction::EndAction() {
 }
 
 bool KG::Component::MoveAction::Execute(float elapsedTime) {
-	return enemyComp->MoveToGoal(elapsedTime);
-	enemyComp->SetIdleTime(0);
+	bool result = dynamic_cast<SEnemyMechComponent*>(enemyComp)->MoveToGoal(elapsedTime);
+	dynamic_cast<SEnemyMechComponent*>(enemyComp)->SetIdleTime(0);
+	return result;
 }
 
 void KG::Component::MoveAction::EndAction() {
@@ -571,19 +506,19 @@ void KG::Component::MoveAction::EndAction() {
 }
 
 bool KG::Component::RotateAction::Execute(float elapsedTime) {
-	return enemyComp->RotateToGoal(elapsedTime);
+	return dynamic_cast<SEnemyMechComponent*>(enemyComp)->RotateToGoal(elapsedTime);
 }
 
 void KG::Component::RotateAction::EndAction() {
-	enemyComp->ReadyNextAnimation(false);
+	dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
 }
 
 bool KG::Component::AttackAction::Execute(float elapsedTime) {
-	return enemyComp->AttackTarget(elapsedTime);
+	return dynamic_cast<SEnemyMechComponent*>(enemyComp)->AttackTarget(elapsedTime);
 }
 
 void KG::Component::AttackAction::EndAction() {
-	enemyComp->ReadyNextAnimation(false);
+	dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
 }
 
 KG::Component::WanderState::~WanderState() {
@@ -649,18 +584,18 @@ void KG::Component::TraceState::Execute(float elapsedTime) {
 }
 
 float KG::Component::TraceState::GetValue() {
-	if (enemyComp->SetTarget())
+	if (dynamic_cast<SEnemyMechComponent*>(enemyComp)->SetTarget())
 		return 2;
 	return 0;
 }
 
-KG::Component::StateManager::~StateManager() {
+KG::Component::MechStateManager::~MechStateManager() {
 	for (auto& s : state) {
 		delete s;
 	}
 }
 
-void KG::Component::StateManager::Init() {
+void KG::Component::MechStateManager::Init() {
 	state[STATE_WANDER] = new WanderState(enemyComp);
 	state[STATE_TRACE] = new TraceState(enemyComp);
 	for (auto& s : state) {
@@ -668,7 +603,7 @@ void KG::Component::StateManager::Init() {
 	}
 }
 
-void KG::Component::StateManager::SetState() {
+void KG::Component::MechStateManager::SetState() {
 	int max = INT_MIN;
 	int idx = -1;
 	for (int i = 0; i < STATE_COUNT; ++i) {
@@ -685,7 +620,7 @@ void KG::Component::StateManager::SetState() {
 	}
 }
 
-void KG::Component::StateManager::Execute(float elapsedTime) {
+void KG::Component::MechStateManager::Execute(float elapsedTime) {
 	SetState();
 	state[curState]->Execute(elapsedTime);
 }
