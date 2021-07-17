@@ -66,6 +66,12 @@ namespace KG::Physics
 		virtual void Initialize() override;
 		virtual bool Advance(float timeElapsed) override;
 
+
+        virtual bool SetGUIContext(ImGuiContext* context) override
+        {
+            ImGui::SetCurrentContext(context);
+            return true;
+        }
 		// 임시 지평면
 		virtual void AddDynamicActor(KG::Component::DynamicRigidComponent* rigid) override final;
 		virtual void AddStaticActor(KG::Component::StaticRigidComponent* rigid) override final;

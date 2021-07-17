@@ -50,11 +50,7 @@ namespace KG::Physics
 		virtual KG::Component::StaticRigidComponent* GetNewStaticRigidComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 		virtual void ReleaseActor(KG::Component::IRigidComponent* comp) = 0;
-		bool SetGUIContext(ImGuiContext* context)
-		{
-			ImGui::SetCurrentContext(context);
-			return true;
-		}
+        virtual bool SetGUIContext(ImGuiContext* context) = 0;
 		virtual KG::Component::IRigidComponent* QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) = 0;
         virtual RaycastResult QueryRaycastResult(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) = 0;
 		void SetStepSize(float stepSize) {
