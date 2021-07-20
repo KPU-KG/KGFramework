@@ -1,4 +1,5 @@
 #include "KGDX12Resource.h"
+#include "KGDXRenderer.h"
 
 KG::Resource::DXResource::DXResource(ID3D12Resource* resource)
 {
@@ -17,14 +18,14 @@ void KG::Resource::DXResource::SetResource(ID3D12Resource* resource)
 
 void KG::Resource::DXResource::Release()
 {
-    for (auto& i : this->descriptors)
-    {
-        for (auto& j : i)
-        {
-            j.ownerHeap->ReleaseHandleAtIndex(j.HeapIndex);
-        }
-    }
-    TryRelease(resource);
+    //for (auto& i : this->descriptors)
+    //{
+    //    for (auto& j : i)
+    //    {
+    //        j.ownerHeap->ReleaseHandleAtIndex(j.HeapIndex);
+    //    }
+    //}
+    //TryRelease(resource);
 }
 
 KG::Resource::Descriptor KG::Resource::DXResource::GetDescriptor(DescriptorType type, UINT index) const
@@ -89,4 +90,27 @@ void KG::Resource::DXResource::ApplyBarrierQueue(ID3D12GraphicsCommandList* cmdL
 void ApplyBarrierQueue(ID3D12GraphicsCommandList* cmdList)
 {
     KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+}
+
+bool KG::Resource::Descriptor::IsNull() const
+{
+    return this->ownerHeap == nullptr;
+}
+
+D3D12_GPU_DESCRIPTOR_HANDLE KG::Resource::Descriptor::GetGPUHandle() const
+{
+    if (ownerHeap)
+    {
+        return ownerHeap->GetGPUHandle(this->HeapIndex);
+    }
+    return D3D12_GPU_DESCRIPTOR_HANDLE();
+}
+
+D3D12_CPU_DESCRIPTOR_HANDLE KG::Resource::Descriptor::GetCPUHandle() const
+{
+    if (ownerHeap)
+    {
+        return ownerHeap->GetCPUHandle(this->HeapIndex);
+    }
+    return D3D12_CPU_DESCRIPTOR_HANDLE();
 }

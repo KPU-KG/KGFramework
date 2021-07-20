@@ -24,6 +24,7 @@ namespace KG::Renderer
         bool useGSArrayRender = false;
         bool useRenderTarget = true;
         bool useDeferredRender = true;
+        bool useHDR = false;
         bool useDepthStencilBuffer = true;
         bool uploadSRVRenderTarget = false;
         bool uploadSRVDepthBuffer = false;
@@ -62,6 +63,7 @@ namespace KG::Renderer
         KG::Core::SerializableProperty<bool> useRenderTarget;
         KG::Core::SerializableProperty<bool> useDeferredRender;
         KG::Core::SerializableProperty<bool> useDepthStencilBuffer;
+        KG::Core::SerializableProperty<bool> useHDR;
         KG::Core::SerializableProperty<bool> uploadSRVRenderTarget;
         KG::Core::SerializableProperty<bool> uploadSRVDepthBuffer;
         KG::Core::SerializableProperty<KG::Utill::HashString> renderTargetTextureId;

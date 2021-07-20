@@ -10,14 +10,16 @@ using KG::Renderer::KGDXRenderer;
 void KG::Renderer::RenderTexture::CreateRenderTarget()
 {
 	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
-	if ( this->desc.useCubeRender || this->desc.useGSArrayRender )
+    //auto format = this->desc.useHDR ? DXGI_FORMAT_R16G16B16A16_FLOAT : DXGI_FORMAT_R8G8B8A8_UNORM;
+    auto format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+    if ( this->desc.useCubeRender || this->desc.useGSArrayRender )
 	{
-		this->renderTargetResource.resource = CreateArrayRenderTargetResource(device, this->desc.width, this->desc.height, this->desc.length, DXGI_FORMAT_R8G8B8A8_UNORM);
+		this->renderTargetResource.resource = CreateArrayRenderTargetResource(device, this->desc.width, this->desc.height, this->desc.length, format);
         this->renderTargetResource.currentState = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
     }
 	else
 	{
-		this->renderTargetResource.resource = CreateRenderTargetResource(device, this->desc.width, this->desc.height, DXGI_FORMAT_R8G8B8A8_UNORM);
+		this->renderTargetResource.resource = CreateRenderTargetResource(device, this->desc.width, this->desc.height, format);
         this->renderTargetResource.currentState = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
     }
 }
@@ -59,6 +61,7 @@ void KG::Renderer::RenderTexture::CreateRenderTargetView()
         rtvDesc.Texture2D.PlaneSlice = 0;
         this->renderTargetResource.AddOnDescriptorHeap(&rtvDescriptorHeap, rtvDesc);
 	}
+    D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc;
 }
 
 void KG::Renderer::RenderTexture::CreateGBuffer()
@@ -219,7 +222,17 @@ UINT KG::Renderer::RenderTexture::PostRenderTargetSRV()
 	srvDesc.Texture2D.ResourceMinLODClamp = 0;
 
     this->renderTargetResource.AddOnDescriptorHeap(descManager, srvDesc);
-	return this->renderTargetResource.GetDescriptor(KG::Resource::DescriptorType::SRV).HeapIndex;
+	auto ret =  this->renderTargetResource.GetDescriptor(KG::Resource::DescriptorType::SRV).HeapIndex;
+
+    D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
+    ZeroDesc(uavDesc);
+    uavDesc.Texture2D.MipSlice = 0;
+    uavDesc.Texture2D.PlaneSlice = 0;
+    uavDesc.ViewDimension = D3D12_UAV_DIMENSION::D3D12_UAV_DIMENSION_TEXTURE2D;
+    uavDesc.Format = this->renderTargetResource->GetDesc().Format;
+    this->renderTargetResource.AddOnDescriptorHeap(descManager, uavDesc);
+
+    return ret;
 }
 
 KG::Resource::Texture* KG::Renderer::RenderTexture::PostRenderTargetTexture()
@@ -442,11 +455,12 @@ KG::Renderer::RenderTextureProperty::RenderTextureProperty(KG::Renderer::RenderT
 	CONST_KG_PROPERTY(useGSArrayRender, ref.useGSArrayRender),
 	CONST_KG_PROPERTY(useRenderTarget, ref.useRenderTarget),
 	CONST_KG_PROPERTY(useDeferredRender, ref.useDeferredRender),
+    CONST_KG_PROPERTY(useHDR, ref.useHDR),
 	CONST_KG_PROPERTY(useDepthStencilBuffer, ref.useDepthStencilBuffer),
 	CONST_KG_PROPERTY(uploadSRVRenderTarget, ref.uploadSRVRenderTarget),
 	CONST_KG_PROPERTY(uploadSRVDepthBuffer, ref.uploadSRVDepthBuffer),
 	CONST_KG_PROPERTY(renderTargetTextureId, ref.renderTargetTextureId),
-	CONST_KG_PROPERTY(depthBufferTextureId, ref.depthBufferTextureId)
+    CONST_KG_PROPERTY(depthBufferTextureId, ref.depthBufferTextureId)
 {
 }
 
@@ -462,8 +476,9 @@ void KG::Renderer::RenderTextureProperty::OnDataLoad(tinyxml2::XMLElement* objec
 	useGSArrayRender.OnDataLoad(renderTextureDesc);
 	useRenderTarget.OnDataLoad(renderTextureDesc);
 	useDeferredRender.OnDataLoad(renderTextureDesc);
-	useDepthStencilBuffer.OnDataLoad(renderTextureDesc);
-	uploadSRVRenderTarget.OnDataLoad(renderTextureDesc);
+    useDepthStencilBuffer.OnDataLoad(renderTextureDesc);
+    useHDR.OnDataLoad(renderTextureDesc);
+    uploadSRVRenderTarget.OnDataLoad(renderTextureDesc);
 	uploadSRVDepthBuffer.OnDataLoad(renderTextureDesc);
 	renderTargetTextureId.OnDataLoad(renderTextureDesc);
 	depthBufferTextureId.OnDataLoad(renderTextureDesc);
@@ -487,6 +502,7 @@ void KG::Renderer::RenderTextureProperty::OnDataSave(tinyxml2::XMLElement* objec
 	useRenderTarget.OnDataSave(renderTextureDesc);
 	useDeferredRender.OnDataSave(renderTextureDesc);
 	useDepthStencilBuffer.OnDataSave(renderTextureDesc);
+    useHDR.OnDataSave(renderTextureDesc);
 	uploadSRVRenderTarget.OnDataSave(renderTextureDesc);
 	uploadSRVDepthBuffer.OnDataSave(renderTextureDesc);
 	renderTargetTextureId.OnDataSave(renderTextureDesc);
@@ -508,8 +524,9 @@ bool KG::Renderer::RenderTextureProperty::OnDrawGUI()
 		flag |= useGSArrayRender.OnDrawGUI();
 		flag |= useRenderTarget.OnDrawGUI();
 		flag |= useDeferredRender.OnDrawGUI();
-		flag |= useDepthStencilBuffer.OnDrawGUI();
-		flag |= uploadSRVRenderTarget.OnDrawGUI();
+        flag |= useDepthStencilBuffer.OnDrawGUI();
+        flag |= useHDR.OnDrawGUI();
+        flag |= uploadSRVRenderTarget.OnDrawGUI();
 		flag |= uploadSRVDepthBuffer.OnDrawGUI();
 		flag |= renderTargetTextureId.OnDrawGUI();
 		flag |= depthBufferTextureId.OnDrawGUI();

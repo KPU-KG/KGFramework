@@ -3,6 +3,7 @@
 #include <d3d12.h>
 #include <vector>
 #include <functional>
+#include "KGDX12Resource.h"
 #include "KGRenderer.h"
 #include "KGShader.h"
 #include "ParticleGenerator.h"
@@ -23,8 +24,10 @@ namespace KG::Renderer
 
         UINT swapChainBufferIndex = 0;
 
-        vector<ID3D12Resource*> renderTargetBuffers;
-        ID3D12DescriptorHeap* rtvDescriptorHeap = nullptr;
+        //vector<ID3D12Resource*> renderTargetBuffers;
+        //ID3D12DescriptorHeap* rtvDescriptorHeap = nullptr;
+        vector<KG::Resource::DXResource> renderTargetResources;
+        DescriptorHeapManager rtvDescriptorHeap;
 
         UINT rtvDescriptorSize = 0;
         UINT srvDescriptorSize = 0;

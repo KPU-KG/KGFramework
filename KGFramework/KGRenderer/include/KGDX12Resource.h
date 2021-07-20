@@ -1,8 +1,8 @@
 #pragma once
 #include <vector>
+#include <array>
 #include "D3D12Helper.h"
 #include "DescriptorHeapManager.h"
-#include "KGDXRenderer.h"
 #include "d3dx12.h"   
 namespace KG::Resource
 {
@@ -20,28 +20,11 @@ namespace KG::Resource
         UINT HeapIndex = -1;
         KG::Renderer::DescriptorHeapManager* ownerHeap = nullptr;
         
-        bool IsNull() const
-        {
-            return this->ownerHeap == nullptr;
-        }
+        bool IsNull() const;
 
-        D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const
-        {
-            if (ownerHeap)
-            {
-                return ownerHeap->GetGPUHandle(this->HeapIndex);
-            }
-            return D3D12_GPU_DESCRIPTOR_HANDLE();
-        }
+        D3D12_GPU_DESCRIPTOR_HANDLE GetGPUHandle() const;
 
-        D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle() const
-        {
-            if (ownerHeap)
-            {
-                return ownerHeap->GetCPUHandle(this->HeapIndex);
-            }
-            return D3D12_CPU_DESCRIPTOR_HANDLE();
-        }
+        D3D12_CPU_DESCRIPTOR_HANDLE GetCPUHandle() const;
     };
 
     struct DXResource
@@ -54,7 +37,7 @@ namespace KG::Resource
         ID3D12Resource* resource = nullptr;
         void SetResource(ID3D12Resource* resource);
 
-        std::array<std::vector<Descriptor>, DescriptorType::DescriptorTypeCount> descriptors;
+        std::array<std::vector<KG::Resource::Descriptor>, KG::Resource::DescriptorType::DescriptorTypeCount> descriptors;
 
         void Release();
         

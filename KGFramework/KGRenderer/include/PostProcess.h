@@ -4,6 +4,7 @@
 #include "ResourceMetaData.h"
 #include "KGShader.h"
 #include "DynamicConstantBufferManager.h"
+#include "SerializableProperty.h"
 #include <set>
 
 namespace KG::Renderer
@@ -21,6 +22,7 @@ namespace KG::Renderer
         std::map<KG::Utill::HashString, size_t> materialIndex;
         std::unique_ptr<Resource::DynamicConstantBufferManager> materialBuffer;
     public:
+        bool isActive = true;
         int priority = 0;
         UINT unitSizeX = 1;
         UINT unitSizeY = 1;
@@ -33,6 +35,8 @@ namespace KG::Renderer
         bool CheckMaterialLoaded(const KG::Utill::HashString& ID);
         size_t RequestMaterialIndex(const KG::Utill::HashString& ID);
         Resource::DynamicElementInterface GetMaterialElement(const KG::Utill::HashString& ID);
+        bool OnDrawGUI();
+        void OnDataSave(tinyxml2::XMLElement* element);
     };
 
     class PostProcessor
@@ -44,6 +48,14 @@ namespace KG::Renderer
         static constexpr UINT unitSize = 256;
         std::array<KG::Resource::DXResource, outputCount> outputResources;
 
+        KG::Resource::DXResource buffer0;
+        KG::Resource::DXResource buffer1;
+        KG::Resource::DXResource buffer2;
+
+        KG::Resource::DXResource bufferLDR;
+
+        PostProcess* copyProcess;
+
         using ProcessPredTy = std::function<bool(const PostProcess const*, const PostProcess const*)>;
         std::multiset<PostProcess*, ProcessPredTy> processQueue;
         void Initialize();
@@ -51,8 +63,11 @@ namespace KG::Renderer
         PostProcessor();
         void AddPostProcess(const KG::Utill::HashString& id, int priority = 0);
         void Draw(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex);
+        void CopyToSwapchain(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, KG::Resource::DXResource& swapchain);
         void CopyToOutput(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, RenderTexture& renderTexture, size_t cubeIndex);
         void CopyToResult(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, RenderTexture& renderTexture, size_t cubeIndex);
         void OnDrawGUI();
+        void OnDataSave(tinyxml2::XMLElement* element);
+        void OnDataLoad(tinyxml2::XMLElement* element);
     };
 }

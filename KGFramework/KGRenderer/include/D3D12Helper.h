@@ -106,6 +106,14 @@ namespace KG::Renderer
         D3D12_HEAP_TYPE d3dHeapType = D3D12_HEAP_TYPE_DEFAULT,
         D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_COPY_SOURCE
     );
+    ID3D12Resource* CreateUAVBufferResource(
+        ID3D12Device* pd3dDevice,
+        UINT width,
+        UINT height,
+        DXGI_FORMAT format,
+        D3D12_HEAP_TYPE d3dHeapType = D3D12_HEAP_TYPE_DEFAULT,
+        D3D12_RESOURCE_STATES d3dResourceStates = D3D12_RESOURCE_STATE_COPY_SOURCE
+    );
 
 	ID3D12Resource* CreateUploadHeapBuffer(ID3D12Device* device, size_t bufferSize);
 };

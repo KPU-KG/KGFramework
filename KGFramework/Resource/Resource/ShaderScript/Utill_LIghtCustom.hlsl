@@ -71,8 +71,8 @@ float4 CustomLightCalculator(LightData light, Surface info, float3 lightDir, flo
  
  
     float3 F = fresnelSchlick(F0, VDotH);
-    float D = ndfGGX(NDotH, info.roughness);
-    float G = gaSchlickGGX(NDotL, NDotV, info.roughness);
+    float D = ndfGGX(NDotH, clamp(info.roughness, 0.0001, 1));
+    float G = gaSchlickGGX(NDotL, NDotV, clamp(info.roughness, 0.0001, 1));
  
     float3 kd = lerp(float3(1, 1, 1) - F, float3(0.0f, 0.0f, 0.0f), info.metalic.xxx);
  

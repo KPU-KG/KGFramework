@@ -130,17 +130,17 @@ KG::Renderer::KGDXRenderer::~KGDXRenderer()
     TryRelease(dxgiFactory);
     TryRelease(swapChain);
     TryRelease(d3dDevice);
-    TryRelease(rtvDescriptorHeap);
+    //TryRelease(rtvDescriptorHeap);
     TryRelease(commandQueue);
     TryRelease(mainCommandAllocator);
     TryRelease(mainCommandList);
     TryRelease(generalRootSignature);
     TryRelease(fence);
 
-    for (auto*& ptr : this->renderTargetBuffers)
-    {
-        TryRelease(ptr);
-    }
+    //for (auto*& ptr : this->renderTargetBuffers)
+    //{
+    //    TryRelease(ptr);
+    //}
     DebugNormalMessage("Close D3D12 Renderer");
 }
 
@@ -185,13 +185,8 @@ void KGDXRenderer::Render()
 
     if (!this->renderEngine->hasRenderJobs())
     {
-        auto barrier = CD3DX12_RESOURCE_BARRIER::Transition(
-            this->renderTargetBuffers[this->swapChainBufferIndex],
-            D3D12_RESOURCE_STATE_PRESENT,
-            D3D12_RESOURCE_STATE_RENDER_TARGET);
-        this->mainCommandList->ResourceBarrier(1,
-            &barrier
-        );
+        this->renderTargetResources[this->swapChainBufferIndex].AddTransitionQueue(D3D12_RESOURCE_STATE_RENDER_TARGET);
+        ApplyBarrierQueue(this->mainCommandList);
     }
     this->ShadowMapRender();
     this->CubeCaemraRender();
@@ -200,6 +195,8 @@ void KGDXRenderer::Render()
     this->EditorUIRender();
 
     hResult = this->mainCommandList->Close();
+
+    ThrowIfFailed(hResult);
 
     ID3D12CommandList* d3dCommandLists[] = { this->mainCommandList };
     this->commandQueue->ExecuteCommandLists(1, d3dCommandLists);
@@ -353,6 +350,8 @@ void KG::Renderer::KGDXRenderer::EditorUIRender()
 {
     if (this->isRenderEditUI)
     {
+        this->renderTargetResources[this->swapChainBufferIndex].AddTransitionQueue(D3D12_RESOURCE_STATE_RENDER_TARGET);
+        ApplyBarrierQueue(this->mainCommandList);
         ImGui::PopStyleColor(1);
         PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(0), "ImGui UI Render");
         auto rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart()).Offset(this->swapChainBufferIndex, this->rtvDescriptorSize);
@@ -362,59 +361,20 @@ void KG::Renderer::KGDXRenderer::EditorUIRender()
         ImGui::EndFrame();
     }
     PIXEndEvent(mainCommandList);
-    auto barrierTwo = CD3DX12_RESOURCE_BARRIER::Transition(
-        this->renderTargetBuffers[this->swapChainBufferIndex],
-        D3D12_RESOURCE_STATE_RENDER_TARGET,
-        D3D12_RESOURCE_STATE_PRESENT);
-    this->mainCommandList->ResourceBarrier(1,
-        &barrierTwo
-    );
+    this->renderTargetResources[this->swapChainBufferIndex].AddTransitionQueue(D3D12_RESOURCE_STATE_PRESENT);
+    ApplyBarrierQueue(this->mainCommandList);
 }
 
 void KG::Renderer::KGDXRenderer::CopyMainCamera()
 {
     PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Present MainCamera");
-    size_t _cameraCount = 1;
-
-    auto barrierOne = CD3DX12_RESOURCE_BARRIER::Transition(
-        this->renderTargetBuffers[this->swapChainBufferIndex],
-        D3D12_RESOURCE_STATE_PRESENT,
-        D3D12_RESOURCE_STATE_COPY_DEST);
-    this->mainCommandList->ResourceBarrier(1,
-        &barrierOne
-    );
-
-    for (KG::Component::CameraComponent& directionalLightCamera : this->graphicSystems->cameraSystem)
+    for (KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem)
     {
-        if (directionalLightCamera.isMainCamera)
+        if (camera.isMainCamera)
         {
-            directionalLightCamera.GetRenderTexture().BarrierTransition(
-                D3D12_RESOURCE_STATE_COPY_SOURCE,
-                D3D12_RESOURCE_STATE_COMMON,
-                D3D12_RESOURCE_STATE_COMMON
-            );
-            ApplyBarrierQueue(this->mainCommandList);
-
-            this->mainCommandList->CopyResource(this->renderTargetBuffers[this->swapChainBufferIndex], directionalLightCamera.GetRenderTexture().renderTargetResource.resource);
-
-            directionalLightCamera.GetRenderTexture().BarrierTransition(
-                D3D12_RESOURCE_STATE_COMMON,
-                D3D12_RESOURCE_STATE_COMMON,
-                D3D12_RESOURCE_STATE_COMMON
-            );
-            ApplyBarrierQueue(this->mainCommandList);
-            break;
+            this->postProcessor->CopyToSwapchain(this->mainCommandList, camera.GetRenderTexture().renderTargetResource, this->renderTargetResources[this->swapChainBufferIndex]);
         }
-        PIXEndEvent(mainCommandList);
     }
-
-    auto barrierTwo = CD3DX12_RESOURCE_BARRIER::Transition(
-        this->renderTargetBuffers[this->swapChainBufferIndex],
-        D3D12_RESOURCE_STATE_COPY_DEST,
-        D3D12_RESOURCE_STATE_RENDER_TARGET);
-    this->mainCommandList->ResourceBarrier(1,
-        &barrierTwo
-    );
 }
 
 void KG::Renderer::KGDXRenderer::OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
@@ -770,6 +730,7 @@ void KG::Renderer::KGDXRenderer::CreateSwapChain()
     ::ZeroMemory(&dxgiSwapChainDesc, sizeof(decltype(dxgiSwapChainDesc)));
     dxgiSwapChainDesc.Width = this->setting.clientWidth;
     dxgiSwapChainDesc.Height = this->setting.clientHeight;
+    //dxgiSwapChainDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
     dxgiSwapChainDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     dxgiSwapChainDesc.SampleDesc.Count = (this->setting.msaa4xEnable) ? 4 : 1;
     dxgiSwapChainDesc.SampleDesc.Quality = (this->setting.msaa4xEnable) ? (this->setting.msaa4xQualityLevel - 1) : 0;
@@ -777,6 +738,7 @@ void KG::Renderer::KGDXRenderer::CreateSwapChain()
     dxgiSwapChainDesc.BufferCount = this->setting.maxSwapChainCount;
     dxgiSwapChainDesc.Scaling = DXGI_SCALING::DXGI_SCALING_NONE;
     dxgiSwapChainDesc.SwapEffect = DXGI_SWAP_EFFECT::DXGI_SWAP_EFFECT_FLIP_DISCARD;
+    //dxgiSwapChainDesc.AlphaMode = DXGI_ALPHA_MODE::DXGI_ALPHA_MODE_UNSPECIFIED;
     dxgiSwapChainDesc.AlphaMode = DXGI_ALPHA_MODE::DXGI_ALPHA_MODE_UNSPECIFIED;
     dxgiSwapChainDesc.Flags = DXGI_SWAP_CHAIN_FLAG::DXGI_SWAP_CHAIN_FLAG_ALLOW_MODE_SWITCH;
 
@@ -806,8 +768,8 @@ void KG::Renderer::KGDXRenderer::CreateRtvDescriptorHeaps()
     d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
     d3dDescriptorHeapDesc.NodeMask = 0;
 
-    HRESULT hResult = this->d3dDevice->CreateDescriptorHeap(&d3dDescriptorHeapDesc, IID_PPV_ARGS(&this->rtvDescriptorHeap));
     this->rtvDescriptorSize = this->d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+    this->rtvDescriptorHeap.Initialize(d3dDevice, d3dDescriptorHeapDesc, rtvDescriptorSize);
 }
 
 void KG::Renderer::KGDXRenderer::CreateSRVDescriptorHeaps()
@@ -837,13 +799,19 @@ void KG::Renderer::KGDXRenderer::CreateCommandQueueAndList()
 
 void KG::Renderer::KGDXRenderer::CreateRenderTargetView()
 {
-    D3D12_CPU_DESCRIPTOR_HANDLE rtvCpuDescHandle = this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-    renderTargetBuffers.resize(this->setting.maxSwapChainCount);
+    D3D12_RENDER_TARGET_VIEW_DESC rtvDesc;
+    ZeroDesc(rtvDesc);
+    rtvDesc.Format = DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM;
+    rtvDesc.ViewDimension = D3D12_RTV_DIMENSION_TEXTURE2D;
+    rtvDesc.Texture2D.MipSlice = 0;
+    rtvDesc.Texture2D.PlaneSlice = 0;
+    this->renderTargetResources.resize(this->setting.maxSwapChainCount);
     for (size_t i = 0; i < this->setting.maxSwapChainCount; i++)
     {
-        this->swapChain->GetBuffer(i, IID_PPV_ARGS(&this->renderTargetBuffers[i]));
-        this->d3dDevice->CreateRenderTargetView(this->renderTargetBuffers[i], nullptr, rtvCpuDescHandle);
-        rtvCpuDescHandle.ptr += this->rtvDescriptorSize;
+        ID3D12Resource* resource = nullptr;
+        this->swapChain->GetBuffer(i, IID_PPV_ARGS(&resource));
+        this->renderTargetResources[i].SetResource(resource);
+        this->renderTargetResources[i].AddOnDescriptorHeap(&this->rtvDescriptorHeap, rtvDesc);
     }
 }
 
@@ -865,7 +833,7 @@ void KG::Renderer::KGDXRenderer::InitializeImGui()
     this->imguiFontDescIndex = this->descriptorHeapManager->RequestEmptyIndex();
     // Setup Platform/Renderer backends
     ImGui_ImplWin32_Init(this->desc.hWnd);
-    ImGui_ImplDX12_Init(this->d3dDevice, this->renderTargetBuffers.size(),
+    ImGui_ImplDX12_Init(this->d3dDevice, this->renderTargetResources.size(),
         DXGI_FORMAT_R8G8B8A8_UNORM, this->descriptorHeapManager->Get(),
         this->descriptorHeapManager->GetCPUHandle(this->imguiFontDescIndex),
         this->descriptorHeapManager->GetGPUHandle(this->imguiFontDescIndex));
@@ -984,78 +952,64 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 void KG::Renderer::KGDXRenderer::CreatePostProcessRootSignature()
 {
     //딱히 디스크립터 힙으로 엮으라는 말 없다! -> 텍스처는 디스크립터힙만 된다!
-    D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[4];
+    D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[5];
 
-    pd3dDescriptorRanges[ComputeRootParameterIndex::Result].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
-    pd3dDescriptorRanges[ComputeRootParameterIndex::Result].NumDescriptors = 1;
-    pd3dDescriptorRanges[ComputeRootParameterIndex::Result].BaseShaderRegister = 0; //Result
-    pd3dDescriptorRanges[ComputeRootParameterIndex::Result].RegisterSpace = 0;
-    pd3dDescriptorRanges[ComputeRootParameterIndex::Result].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    pd3dDescriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+    pd3dDescriptorRanges[0].NumDescriptors = 1;
+    pd3dDescriptorRanges[0].BaseShaderRegister = 0; //Result
+    pd3dDescriptorRanges[0].RegisterSpace = 0;
+    pd3dDescriptorRanges[0].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-    pd3dDescriptorRanges[ComputeRootParameterIndex::PrevResult].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
-    pd3dDescriptorRanges[ComputeRootParameterIndex::PrevResult].NumDescriptors = 1;
-    pd3dDescriptorRanges[ComputeRootParameterIndex::PrevResult].BaseShaderRegister = 1; // 이전 결과
-    pd3dDescriptorRanges[ComputeRootParameterIndex::PrevResult].RegisterSpace = 0;
-    pd3dDescriptorRanges[ComputeRootParameterIndex::PrevResult].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    pd3dDescriptorRanges[1].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+    pd3dDescriptorRanges[1].NumDescriptors = 1;
+    pd3dDescriptorRanges[1].BaseShaderRegister = 1; // 이전 결과
+    pd3dDescriptorRanges[1].RegisterSpace = 0;
+    pd3dDescriptorRanges[1].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-    pd3dDescriptorRanges[ComputeRootParameterIndex::Source].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    pd3dDescriptorRanges[ComputeRootParameterIndex::Source].NumDescriptors = 1;
-    pd3dDescriptorRanges[ComputeRootParameterIndex::Source].BaseShaderRegister = 0; // 후처리 미적용 최종 결과
-    pd3dDescriptorRanges[ComputeRootParameterIndex::Source].RegisterSpace = 1;
-    pd3dDescriptorRanges[ComputeRootParameterIndex::Source].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    pd3dDescriptorRanges[2].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    pd3dDescriptorRanges[2].NumDescriptors = 1;
+    pd3dDescriptorRanges[2].BaseShaderRegister = 0; // 후처리 미적용 최종 결과
+    pd3dDescriptorRanges[2].RegisterSpace = 1;
+    pd3dDescriptorRanges[2].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-    pd3dDescriptorRanges[ComputeRootParameterIndex::GBufferStart].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    pd3dDescriptorRanges[ComputeRootParameterIndex::GBufferStart].NumDescriptors = 5; // GBuffer 1, 2, 3, 4 / Depth Stencil
-    pd3dDescriptorRanges[ComputeRootParameterIndex::GBufferStart].BaseShaderRegister = 1; // GBuffer
-    pd3dDescriptorRanges[ComputeRootParameterIndex::GBufferStart].RegisterSpace = 1;
-    pd3dDescriptorRanges[ComputeRootParameterIndex::GBufferStart].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    pd3dDescriptorRanges[3].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    pd3dDescriptorRanges[3].NumDescriptors = 5; // GBuffer 1, 2, 3, 4 / Depth Stencil
+    pd3dDescriptorRanges[3].BaseShaderRegister = 1; // GBuffer
+    pd3dDescriptorRanges[3].RegisterSpace = 1;
+    pd3dDescriptorRanges[3].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-    //pd3dDescriptorRanges[4].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    //pd3dDescriptorRanges[4].NumDescriptors = 1;
-    //pd3dDescriptorRanges[4].BaseShaderRegister = 2; // GBuffer2
-    //pd3dDescriptorRanges[4].RegisterSpace = 1;
-    //pd3dDescriptorRanges[4].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    pd3dDescriptorRanges[4].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+    pd3dDescriptorRanges[4].NumDescriptors = 3;
+    pd3dDescriptorRanges[4].BaseShaderRegister = 0; //Result
+    pd3dDescriptorRanges[4].RegisterSpace = 2;
+    pd3dDescriptorRanges[4].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-    //pd3dDescriptorRanges[5].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    //pd3dDescriptorRanges[5].NumDescriptors = 1;
-    //pd3dDescriptorRanges[5].BaseShaderRegister = 3; // GBuffer3
-    //pd3dDescriptorRanges[5].RegisterSpace = 1;
-    //pd3dDescriptorRanges[5].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    D3D12_ROOT_PARAMETER pd3dRootParameters[5];
 
-    //pd3dDescriptorRanges[6].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    //pd3dDescriptorRanges[6].NumDescriptors = 1;
-    //pd3dDescriptorRanges[6].BaseShaderRegister = 4; // GBuffer4
-    //pd3dDescriptorRanges[6].RegisterSpace = 1;
-    //pd3dDescriptorRanges[6].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    pd3dRootParameters[ComputeRootParameterIndex::Result].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[ComputeRootParameterIndex::Result].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[ComputeRootParameterIndex::Result].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[0]);
+    pd3dRootParameters[ComputeRootParameterIndex::Result].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-    //pd3dDescriptorRanges[7].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    //pd3dDescriptorRanges[7].NumDescriptors = 1;
-    //pd3dDescriptorRanges[7].BaseShaderRegister = 5; // GBuffer5 / 뎁스 스텐실 버퍼
-    //pd3dDescriptorRanges[7].RegisterSpace = 1;
-    //pd3dDescriptorRanges[7].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    pd3dRootParameters[ComputeRootParameterIndex::PrevResult].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[ComputeRootParameterIndex::PrevResult].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[ComputeRootParameterIndex::PrevResult].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[1]);
+    pd3dRootParameters[ComputeRootParameterIndex::PrevResult].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-    D3D12_ROOT_PARAMETER pd3dRootParameters[4];
+    pd3dRootParameters[ComputeRootParameterIndex::Source].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[ComputeRootParameterIndex::Source].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[ComputeRootParameterIndex::Source].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[2]);
+    pd3dRootParameters[ComputeRootParameterIndex::Source].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-    pd3dRootParameters[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    pd3dRootParameters[0].DescriptorTable.NumDescriptorRanges = 1;
-    pd3dRootParameters[0].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[0]);
-    pd3dRootParameters[0].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+    pd3dRootParameters[ComputeRootParameterIndex::GBufferStart].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[ComputeRootParameterIndex::GBufferStart].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[ComputeRootParameterIndex::GBufferStart].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[3]);
+    pd3dRootParameters[ComputeRootParameterIndex::GBufferStart].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
-    pd3dRootParameters[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    pd3dRootParameters[1].DescriptorTable.NumDescriptorRanges = 1;
-    pd3dRootParameters[1].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[1]);
-    pd3dRootParameters[1].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-    pd3dRootParameters[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    pd3dRootParameters[2].DescriptorTable.NumDescriptorRanges = 1;
-    pd3dRootParameters[2].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[2]);
-    pd3dRootParameters[2].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
-    pd3dRootParameters[3].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    pd3dRootParameters[3].DescriptorTable.NumDescriptorRanges = 1;
-    pd3dRootParameters[3].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[3]);
-    pd3dRootParameters[3].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
-
+    pd3dRootParameters[ComputeRootParameterIndex::UAVBuffers].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[ComputeRootParameterIndex::UAVBuffers].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[ComputeRootParameterIndex::UAVBuffers].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[4]);
+    pd3dRootParameters[ComputeRootParameterIndex::UAVBuffers].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
     D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
     //D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags =
@@ -1118,7 +1072,7 @@ D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::KGDXRenderer::GetCurrentRenderTargetHa
 
 ID3D12Resource* KG::Renderer::KGDXRenderer::GetCurrentRenderTarget() const
 {
-    return this->renderTargetBuffers[this->swapChainBufferIndex];
+    return this->renderTargetResources[this->swapChainBufferIndex].resource;
 }
 
 std::array<const CD3DX12_STATIC_SAMPLER_DESC, 8> GetStaticSamplers()

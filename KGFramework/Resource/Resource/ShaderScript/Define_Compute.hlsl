@@ -12,4 +12,8 @@ Texture2D InputGBuffer2 : register(t3, space1);
 Texture2D<uint4> InputGBuffer3 : register(t4, space1);
 Texture2D InputGBuffer4 : register(t5, space1);
 
+RWTexture2D<float4> buffer0 : register(u0, space2);
+RWTexture2D<float4> buffer1 : register(u1, space2);
+RWTexture2D<float4> buffer2 : register(u2, space2);
+
 #endif // __DEPENDENCY_HLSL__

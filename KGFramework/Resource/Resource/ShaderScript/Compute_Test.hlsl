@@ -2,6 +2,8 @@
 
 groupshared float4 sharedCache[4][4][4];
 
+
+
 [numthreads(4, 4, 4)]
 void ComputeShaderFunction(int3 groupThreadID : SV_GroupThreadID, int3 dispatchThreadID : SV_DispatchThreadID)
 {
@@ -16,7 +18,7 @@ void ComputeShaderFunction(int3 groupThreadID : SV_GroupThreadID, int3 dispatchT
     
     ////Sync
     //GroupMemoryBarrierWithGroupSync();
-    float4 color = inputSource[int2(texPosX, texPosY)];
+    float4 color = prevResult[int2(texPosX, texPosY)];
     float4 filter = float4(0.299, 0.587, 0.114, 0);
     outputResult[dispatchThreadID.xy] = dot(color, filter);
 

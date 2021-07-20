@@ -121,7 +121,7 @@ float4 PixelShaderFunction(LightVertexOut input) : SV_Target0
         float4(0.0f,0.0f,1.0f, 1.0f),
     };
     
-    float shadowFactor = max(DirectionalShadowCascadePCF(calcWorldPosition, lightData, shadowData, id), 0.25f);
+    float shadowFactor = max(DirectionalShadowCascadePCF(calcWorldPosition, lightData, shadowData, id), 0.5f);
     
     return CustomLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(-cameraDirection), 1.0f) * shadowFactor;
     //return CustomLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(-cameraDirection), 1.0f) * shadowFactor * cascadeDebugColor[id];

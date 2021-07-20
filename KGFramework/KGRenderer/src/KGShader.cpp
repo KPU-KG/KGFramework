@@ -465,8 +465,9 @@ ID3D12PipelineState* KG::Renderer::Shader::CreatePSO( ShaderMeshType meshType, S
 	else
 	{
 		d3dPipelineStateDesc.NumRenderTargets = 1;
-		d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
-	}
+        d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R16G16B16A16_FLOAT;
+        //d3dPipelineStateDesc.RTVFormats[0] = DXGI_FORMAT_R8G8B8A8_UNORM;
+    }
 	d3dPipelineStateDesc.DSVFormat = DXGI_FORMAT_D24_UNORM_S8_UINT;
 	d3dPipelineStateDesc.SampleDesc.Count = 1;
 	auto d3dDevice = KGDXRenderer::GetInstance()->GetD3DDevice();
