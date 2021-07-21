@@ -1,28 +1,84 @@
 #include "Define_Compute.hlsl"
-#define UNIT_COUNT 1024
-
-groupshared float shaderCache[UNIT_COUNT];
+#include "Compute_HDR_DEFINE.hlsl"
+#define UNIT_COUNT 64
 
 [numthreads(UNIT_COUNT, 1, 1)]
-void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadID : SV_GroupThreadID, int3 dispatchThreadID : SV_DispatchThreadID)
+void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadID : SV_GroupThreadID, int3 dispatchThreadId : SV_DispatchThreadID)
 {
-    int texWidth = -1;
-    int texHeight = -1;
-    int texLevel = -1;
-    outputResult.GetDimensions(texWidth, texHeight);
+    DownscaleInfo info;
+    float width = 0;
+    float height = 0;
+    outputResult.GetDimensions(width, height);
+    info.res = int2(width * 0.25f, height * 0.25f);
+    info.domain = width * height * 0.0625f;
+    info.groupSize = width * height * 1024 * 0.0625f;
     
-    int texPosX = clamp(dispatchThreadID.x, 0, texWidth - 1);
-    int texPosY = clamp(dispatchThreadID.y, 0, texHeight - 1);
-    
-    shaderCache[groupThreadID.x] = buffer0.Load(dispatchThreadID.xy).x;
-    GroupMemoryBarrierWithGroupSync();
-    float lum = 0;
-    float count = 0;
-    for (int i = 0; i < UNIT_COUNT; i++)
+   // 공유 메모리에 ID값 저장
+    float favgLum = 0.f;
+
+    if (dispatchThreadId.x < info.groupSize )
     {
-        lum += shaderCache[i];
+        favgLum = buffer0[int2(dispatchThreadId.x, 0)].x;
     }
-    lum /= clamp((texWidth - groupId.x * UNIT_COUNT), 1, UNIT_COUNT);
-    buffer0[dispatchThreadID.xy] = float4(lum.xxxx);
-    outputResult[dispatchThreadID.xy] = prevResult.Load(dispatchThreadID.xy);
+
+    shaderCache[dispatchThreadId.x] = favgLum;
+
+    GroupMemoryBarrierWithGroupSync(); // 동기화 후 다음 과정으로
+
+    // 64에서 16으로 다운 스케일
+    if (dispatchThreadId.x % 4 == 0)
+    {
+        // 휘도 값 합산
+        float fstepAvgLum = favgLum;
+
+        fstepAvgLum += dispatchThreadId.x + 1 < info.groupSize ? shaderCache[dispatchThreadId.x + 1] : favgLum;
+
+        fstepAvgLum += dispatchThreadId.x + 2 < info.groupSize ? shaderCache[dispatchThreadId.x + 2] : favgLum;
+
+        fstepAvgLum += dispatchThreadId.x + 3 < info.groupSize ? shaderCache[dispatchThreadId.x + 3] : favgLum;
+
+        // 결과 값 저장
+        favgLum = fstepAvgLum;
+
+        shaderCache[dispatchThreadId.x] = fstepAvgLum;
+    }
+
+    GroupMemoryBarrierWithGroupSync(); // 동기화 후 다음 과정으로
+
+    // 16에서 4로 다운스케일
+    if (dispatchThreadId.x % 16 == 0)
+    {
+        // 휘도 값 합산
+        float fstepAvgLum = favgLum;
+
+        fstepAvgLum += dispatchThreadId.x + 4 < info.groupSize ? shaderCache[dispatchThreadId.x + 4] : favgLum;
+
+        fstepAvgLum += dispatchThreadId.x + 8 < info.groupSize ? shaderCache[dispatchThreadId.x + 8] : favgLum;
+
+        fstepAvgLum += dispatchThreadId.x + 12 < info.groupSize ? shaderCache[dispatchThreadId.x + 12] : favgLum;
+
+        // 결과 값 저장
+        favgLum = fstepAvgLum;
+        shaderCache[dispatchThreadId.x] = fstepAvgLum;
+    }
+    
+    GroupMemoryBarrierWithGroupSync(); // 동기화 후 다음 과정으로
+
+    // 4에서 1로 다운스케일
+    if (dispatchThreadId.x == 0)
+    {
+        // 휘도 값 합산
+        float fFinalLumValue = favgLum;
+
+        fFinalLumValue += dispatchThreadId.x + 16 < info.groupSize ? shaderCache[dispatchThreadId.x + 16] : favgLum;
+
+        fFinalLumValue += dispatchThreadId.x + 32 < info.groupSize ? shaderCache[dispatchThreadId.x + 32] : favgLum;
+
+        fFinalLumValue += dispatchThreadId.x + 48 < info.groupSize ? shaderCache[dispatchThreadId.x + 48] : favgLum;
+
+        fFinalLumValue /= 64.f;
+        
+        float lum = max(fFinalLumValue, 0.0001).xxxx;
+        buffer2[int2(0, 0)] = lerp(buffer2[int2(0, 0)], lum, 0.05f);
+    }
 }

@@ -9,9 +9,9 @@ namespace KG::Resource::Metadata
 		bool enableCullBackface;
 		bool enableDepthCliping;
 		int materialParameterSize;
-        UINT unitSizeX;
-        UINT unitSizeY;
-        UINT unitSizeZ;
+        std::string groupCountX;
+        std::string groupCountY;
+        std::string groupCountZ;
 	};
 
 

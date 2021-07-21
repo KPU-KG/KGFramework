@@ -29,10 +29,6 @@
                 <priority value="0"/>
             </PostProcess>
             <PostProcess>
-                <id hash_id="889566042" srcString="PostHDR_THREE"/>
-                <priority value="0"/>
-            </PostProcess>
-            <PostProcess>
                 <id hash_id="310150263" srcString="PostTONEMAP"/>
                 <priority value="0"/>
             </PostProcess>

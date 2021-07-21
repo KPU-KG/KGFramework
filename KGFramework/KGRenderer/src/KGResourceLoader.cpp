@@ -70,9 +70,12 @@ KG::Resource::Metadata::ShaderSetData KG::Resource::ResourceLoader::LoadShaderSe
 			data.enableCullBackface = shaderSets->BoolAttribute( "enableBackfaceCulling" );
 			data.enableDepthCliping = shaderSets->BoolAttribute( "enableDepthCliping" );
             data.materialParameterSize = shaderSets->IntAttribute("materialParameterSize");
-            data.unitSizeX = shaderSets->Unsigned64Attribute("unitSizeX", 0);
-            data.unitSizeY = shaderSets->Unsigned64Attribute("unitSizeY", 0);
-            data.unitSizeZ = shaderSets->Unsigned64Attribute("unitSizeZ", 0);
+            const char* gx = shaderSets->Attribute("groupSizeX");
+            const char* gy = shaderSets->Attribute("groupSizeY");
+            const char* gz = shaderSets->Attribute("groupSizeZ");
+            data.groupCountX = gx ? gx : "1";
+            data.groupCountY = gy ? gy : "1";
+            data.groupCountZ = gz ? gz : "1";
             data.fileDir = shaderSets->Attribute( "fileDir" );
 			break;
 		}

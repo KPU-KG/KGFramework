@@ -1,29 +1,26 @@
 #include "Define_Compute.hlsl"
-#define UNIT_COUNT 1024
+#include "Compute_HDR_DEFINE.hlsl"
 
-groupshared float4 shaderCache[UNIT_COUNT];
-static const float4 lumFactor = float4(0.299, 0.587, 0.114, 0);
-
-[numthreads(1, UNIT_COUNT, 1)]
-void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadID : SV_GroupThreadID, int3 dispatchThreadID : SV_DispatchThreadID)
+[numthreads(UNIT_COUNT, 1, 1)]
+void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadId : SV_GroupThreadID, int3 dispatchThreadId : SV_DispatchThreadID)
 {
-    int texWidth = -1;
-    int texHeight = -1;
-    int texLevel = -1;
-    outputResult.GetDimensions(texWidth, texHeight);
     
-    int texPosX = clamp(dispatchThreadID.x, 0, texWidth - 1);
-    int texPosY = clamp(dispatchThreadID.y, 0, texHeight - 1);
+    DownscaleInfo info;
+    float width = 0;
+    float height = 0;
+    outputResult.GetDimensions(width, height);
+    info.res = int2(width * 0.25f, height * 0.25f);
+    info.domain = width * height * 0.0625f;
+    info.groupSize = width * height * 1024 * 0.0625f;
     
-    shaderCache[groupThreadID.y] = prevResult.Load(dispatchThreadID.xy);
-    GroupMemoryBarrierWithGroupSync();
-    float lum;
-    float count = 0;
-    for (int i = 0; i < UNIT_COUNT; i++)
-    {
-        lum += dot(shaderCache[i], lumFactor);
-    }
-    lum /= clamp((texHeight - groupId.y * UNIT_COUNT), 1, UNIT_COUNT);
-    buffer0[dispatchThreadID.xy] = float4(lum.xxxx);
-    outputResult[dispatchThreadID.xy] = shaderCache[groupThreadID.y];
+    uint2 vCurPixel = uint2(dispatchThreadId.x % info.res.x, dispatchThreadId.x / info.res.x);
+
+    // 16 픽셀 그룹을 하나의 픽셀로 줄여 공유 메모리에 저장
+    float favgLum = DownScale4x4(vCurPixel, groupThreadId.x, info);
+
+    // 1024에서 4로 다운스케일
+    favgLum = DownScale1024to4(dispatchThreadId.x, groupThreadId.x, favgLum, info);
+
+    // 4에서 1로 다운스케일
+    DownScale4to1(dispatchThreadId.x, groupThreadId.x, groupId.x, favgLum, info);
 }

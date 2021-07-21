@@ -259,7 +259,13 @@
     <ClInclude Include="include\ISoundManager.h" />
     <ClInclude Include="include\ISystem.h" />
     <ClInclude Include="include\KGColor.h" />
+    <ClInclude Include="include\KGLua.h" />
     <ClInclude Include="include\LambdaComponent.h" />
+    <ClInclude Include="include\lua\lauxlib.h" />
+    <ClInclude Include="include\lua\lua.h" />
+    <ClInclude Include="include\lua\lua.hpp" />
+    <ClInclude Include="include\lua\luaconf.h" />
+    <ClInclude Include="include\lua\lualib.h" />
     <ClInclude Include="include\MaterialMatch.h" />
     <ClInclude Include="include\MathHelper.h" />
     <ClInclude Include="include\ObjectContainer.h" />

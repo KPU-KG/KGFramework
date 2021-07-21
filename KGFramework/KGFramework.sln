@@ -104,6 +104,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compute", "Compute", "{806BF353-281F-4440-BEE1-9C5C6E2D78E8}"
 	ProjectSection(SolutionItems) = preProject
 		Resource\Resource\ShaderScript\Compute_CopySwapChain.hlsl = Resource\Resource\ShaderScript\Compute_CopySwapChain.hlsl
+		Resource\Resource\ShaderScript\Compute_HDR_DEFINE.hlsl = Resource\Resource\ShaderScript\Compute_HDR_DEFINE.hlsl
 		Resource\Resource\ShaderScript\Compute_HDR_FOUR.hlsl = Resource\Resource\ShaderScript\Compute_HDR_FOUR.hlsl
 		Resource\Resource\ShaderScript\Compute_HDR_ONE.hlsl = Resource\Resource\ShaderScript\Compute_HDR_ONE.hlsl
 		Resource\Resource\ShaderScript\Compute_HDR_THREE.hlsl = Resource\Resource\ShaderScript\Compute_HDR_THREE.hlsl

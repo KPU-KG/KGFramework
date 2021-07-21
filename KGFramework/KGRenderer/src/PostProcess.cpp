@@ -8,6 +8,8 @@
 #include "ImguiHelper.h"
 #include "SerializableProperty.h"
 
+using namespace std::literals;
+
 void KG::Renderer::PostProcess::CreateMaterialBuffer(const KG::Resource::Metadata::ShaderSetData& data)
 {
     auto device = KG::Renderer::KGDXRenderer::GetInstance()->GetD3DDevice();
@@ -18,6 +20,9 @@ void KG::Renderer::PostProcess::CreateMaterialBuffer(const KG::Resource::Metadat
         DebugNormalMessage("Create Material Buffer");
         materialBuffer = std::make_unique<KG::Resource::DynamicConstantBufferManager>(device, elementSize, elementCount);
     }
+    this->commandX = "return "s + data.groupCountX;
+    this->commandY = "return "s + data.groupCountY;
+    this->commandZ = "return "s + data.groupCountZ;
 }
 
 ID3D10Blob* KG::Renderer::PostProcess::CompileShaderFromMetadata()
@@ -90,9 +95,9 @@ void KG::Renderer::PostProcess::Set(ID3D12GraphicsCommandList* pd3dCommandList)
 KG::Renderer::PostProcess::PostProcess(const KG::Resource::Metadata::ShaderSetData& data)
 {
     this->shaderSetData = data;
-    this->unitSizeX = data.unitSizeX;
-    this->unitSizeY = data.unitSizeY;
-    this->unitSizeZ = data.unitSizeZ;
+    //this->unitSizeX = data.unitSizeX;
+    //this->unitSizeY = data.unitSizeY;
+    //this->unitSizeZ = data.unitSizeZ;
     this->CreatePSO();
     this->CreateMaterialBuffer(this->shaderSetData);
 }
@@ -102,13 +107,21 @@ KG::Renderer::PostProcess::~PostProcess()
     TryRelease(this->pso);
 }
 
-void KG::Renderer::PostProcess::Draw(ID3D12GraphicsCommandList* cmdList, UINT textureSizeX, UINT textureSizeY, UINT textureSizeZ)
+void KG::Renderer::PostProcess::Draw(ID3D12GraphicsCommandList* cmdList, UINT cachedScreenX, UINT cachedScreenY, GroupCountParser& parser)
 {
     this->Set(cmdList);
-    UINT threadCountX = UINT(std::ceil(float(textureSizeX) / float(unitSizeX)));
-    UINT threadCountY = UINT(std::ceil(float(textureSizeY) / float(unitSizeY)));
-    UINT threadCountZ = UINT(std::ceil(float(textureSizeZ) / float(unitSizeZ)));
-    cmdList->Dispatch(threadCountX, threadCountY, threadCountZ);
+    this->GetGroupSize(cachedScreenX, cachedScreenY, parser);
+    cmdList->Dispatch(groupCountX, groupCountY, groupCountZ);
+}
+
+void KG::Renderer::PostProcess::GetGroupSize(UINT cachedScreenX, UINT cachedScreenY, GroupCountParser& parser)
+{
+    if (cachedScreenX == this->cachedScreenX && cachedScreenY == this->cachedScreenY) return;
+    this->cachedScreenX = cachedScreenX;
+    this->cachedScreenY = cachedScreenY;
+    this->groupCountX = parser.GetResult(this->commandX, cachedScreenX, cachedScreenY);
+    this->groupCountY = parser.GetResult(this->commandY, cachedScreenX, cachedScreenY);
+    this->groupCountZ = parser.GetResult(this->commandZ, cachedScreenX, cachedScreenY);
 }
 
 size_t KG::Renderer::PostProcess::GetMaterialIndex(const KG::Utill::HashString& ID)
@@ -227,7 +240,7 @@ void KG::Renderer::PostProcessor::Draw(ID3D12GraphicsCommandList* cmdList, Rende
         this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
         KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
 
-        process->Draw(cmdList, this->width, this->height, 1);
+        process->Draw(cmdList, this->width, this->height, parser);
 
         this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
@@ -245,7 +258,7 @@ void KG::Renderer::PostProcessor::CopyToSwapchain(ID3D12GraphicsCommandList* cmd
     ApplyBarrierQueue(cmdList);
     cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Result, this->bufferLDR.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
     cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::PrevResult, target.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
-    this->copyProcess->Draw(cmdList, this->width, this->height, 1);
+    this->copyProcess->Draw(cmdList, this->width, this->height, parser);
     bufferLDR.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
     swapchain.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
     ApplyBarrierQueue(cmdList);
@@ -330,6 +343,7 @@ void KG::Renderer::PostProcessor::Initialize()
 
     this->width = setting.clientWidth;
     this->height = setting.clientHeight;
+    this->parser.Initialize();
 
     D3D12_UNORDERED_ACCESS_VIEW_DESC uavDesc{};
     ZeroDesc(uavDesc);

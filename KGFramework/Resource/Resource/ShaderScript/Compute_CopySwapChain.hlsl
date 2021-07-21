@@ -1,6 +1,6 @@
 #include "Define_Compute.hlsl"
 
-[numthreads(4, 4, 1)]
+[numthreads(32, 32, 1)]
 void ComputeShaderFunction(int3 groupThreadID : SV_GroupThreadID, int3 dispatchThreadID : SV_DispatchThreadID)
 {
     int texWidth = -1;
