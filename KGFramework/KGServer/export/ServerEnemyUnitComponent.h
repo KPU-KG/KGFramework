@@ -48,8 +48,9 @@ namespace KG::Component
 	class DLL SEnemyUnitComponent : public SBaseComponent
 	{
 	protected:
+		const char*									presetName;
 		std::unordered_set<KG::Server::NET_OBJECT_ID> playerId;
-		KG::Component::SBaseComponent* target = nullptr;
+		KG::Component::SBaseComponent*				target = nullptr;
 
 		DynamicRigidComponent*						rigid = nullptr;
 		TransformComponent*							transform = nullptr;
@@ -101,6 +102,8 @@ namespace KG::Component
 		void SetRotateInterval(float interval);
 		void SetWanderRange(float range);
 		void SetPosition(DirectX::XMFLOAT3 position);
+		void SetEnemyPresetName(const char* name) { this->presetName = name; }
+		const char* GetEnemyPresetName() const { return this->presetName; }
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override

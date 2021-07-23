@@ -18,7 +18,6 @@
 #include "ServerGameManagerComponent.h"
 #include "ServerPlayerControllerComponent.h"
 #include "ServerEnemyUnitComponent.h"
-#include "EnemyGeneratorComponent.h"
 #include "ServerProjectileComponent.h"
 #include "ServerSystems.h"
 
@@ -48,8 +47,8 @@ namespace KG::Server
 		//Server System
 		KG::System::SGameManagerComponentSystem sGameManagerSystem;
 		KG::System::SPlayerComponentSystem sPlayerSystem;
-		// KG::System::SEnemyControllerComponentSystem sEnemyControllerSystem;
 		KG::System::SEnemyMechComponentSystem sEnemyMechSystem;
+		KG::System::SEnemyCrawlerComponentSystem sEnemyCrawlerSystem;
 		KG::System::EnemyGeneratorSystem enemyGeneratorSystem;
 		KG::System::SProjectileComponentSystem sProjectileSystem;
 		KG::Physics::IPhysicsScene* physicsScene;
@@ -86,8 +85,8 @@ namespace KG::Server
 		virtual void UnlockWorld() override;
 		virtual KG::Component::SGameManagerComponent* GetNewGameManagerComponent() override;
 		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() override;
-		// virtual KG::Component::SEnemyUnitComponent* GetNewEnemyControllerComponent(const int type) override;
 		virtual KG::Component::SEnemyMechComponent* GetNewEnemyMechComponent() override;
+		virtual KG::Component::SEnemyCrawlerComponent* GetNewEnemyCrawlerComponent() override;
 		virtual KG::Component::EnemyGeneratorComponent* GetNewEnemyGeneratorComponent() override;
 		virtual KG::Component::SProjectileComponent* GetNewProjectileComponent() override;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;

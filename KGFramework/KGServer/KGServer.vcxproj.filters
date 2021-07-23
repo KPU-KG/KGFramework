@@ -63,9 +63,6 @@
     <ClInclude Include="include\ServerSystems.h">
       <Filter>헤더 파일</Filter>
     </ClInclude>
-    <ClInclude Include="export\EnemyGeneratorComponent.h">
-      <Filter>헤더 파일\Component</Filter>
-    </ClInclude>
     <ClInclude Include="export\ServerProjectileComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
@@ -73,6 +70,9 @@
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
     <ClInclude Include="export\ServerEnemyUnitComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="export\ServerEnemyCrawlerComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
   </ItemGroup>
@@ -101,9 +101,6 @@
     <ClCompile Include="src\ServerSystems.cpp">
       <Filter>소스 파일</Filter>
     </ClCompile>
-    <ClCompile Include="src\EnemyGeneratorComponent.cpp">
-      <Filter>소스 파일\Component</Filter>
-    </ClCompile>
     <ClCompile Include="src\ServerProjectileComponent.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
@@ -111,6 +108,9 @@
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
     <ClCompile Include="src\ServerEnemyMechComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ServerEnemyCrawlerComponent.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
   </ItemGroup>

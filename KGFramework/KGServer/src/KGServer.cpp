@@ -217,25 +217,16 @@ KG::Component::SPlayerComponent* KG::Server::Server::GetNewPlayerComponent()
 	return comp;
 }
 
-// KG::Component::SEnemyUnitComponent* KG::Server::Server::GetNewEnemyControllerComponent(const int type)
-// {
-// 	KG::Component::SEnemyUnitComponent* comp = nullptr;
-// 	switch (type) {
-// 	case KG::Component::ENEMY_TYPE_MECH:
-// 		comp = reinterpret_cast<KG::Component::SEnemyMechComponent*>(this->sEnemyControllerSystem.GetNewComponent());
-// 		break;
-// 	default:
-// 		comp = nullptr;
-// 		break;
-// 	}
-// 	// auto* comp = this->sEnemyControllerSystem.GetNewComponent();
-// 	comp->SetServerInstance(this);
-// 	return comp;
-// }
-
 KG::Component::SEnemyMechComponent* KG::Server::Server::GetNewEnemyMechComponent()
 {
 	auto* comp = this->sEnemyMechSystem.GetNewComponent();
+	comp->SetServerInstance(this);
+	return comp;
+}
+
+KG::Component::SEnemyCrawlerComponent* KG::Server::Server::GetNewEnemyCrawlerComponent()
+{
+	auto* comp = this->sEnemyCrawlerSystem.GetNewComponent();
 	comp->SetServerInstance(this);
 	return comp;
 }
@@ -259,6 +250,7 @@ void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider&
 	this->sGameManagerSystem.OnPostProvider(provider);
 	this->sPlayerSystem.OnPostProvider(provider);
 	this->sEnemyMechSystem.OnPostProvider(provider);
+	this->sEnemyCrawlerSystem.OnPostProvider(provider);
 	this->enemyGeneratorSystem.OnPostProvider(provider);
 	this->sProjectileSystem.OnPostProvider(provider);
 }
@@ -360,6 +352,7 @@ void KG::Server::Server::Update(float elapsedTime)
 	this->sGameManagerSystem.OnUpdate(elapsedTime);
 	this->sPlayerSystem.OnUpdate(elapsedTime);
 	this->sEnemyMechSystem.OnUpdate(elapsedTime);
+	this->sEnemyCrawlerSystem.OnUpdate(elapsedTime);
 	this->enemyGeneratorSystem.OnUpdate(elapsedTime);
 	this->sProjectileSystem.OnUpdate(elapsedTime);
 }

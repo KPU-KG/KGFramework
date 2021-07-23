@@ -13,9 +13,9 @@
 #include "Scene.h"
 
 
-std::random_device rd;
-std::mt19937 gen(rd());
-std::uniform_real_distribution<float> goalRange(-0.5, 0.5);
+std::random_device mechRd;
+std::mt19937 mechGen(mechRd());
+std::uniform_real_distribution<float> mechGoalRange(-0.5, 0.5);
 
 bool KG::Component::SEnemyMechComponent::SetGoal()
 {
@@ -23,7 +23,7 @@ bool KG::Component::SEnemyMechComponent::SetGoal()
 	if (this->nodeCount > 0) {
 		if (randomCircuit) {
 			std::uniform_int_distribution<int> randomIndex(1, this->nodeCount);
-			currentNode = randomIndex(gen) - 1;
+			currentNode = randomIndex(mechGen) - 1;
 		}
 		else {
 			currentNode = ++currentNode % this->nodeCount;
@@ -31,9 +31,8 @@ bool KG::Component::SEnemyMechComponent::SetGoal()
 		goal = this->node[currentNode];
 	}
 	else {
-		goal.x = goalRange(gen) * range + center.x;
-		// goal.y = goalRange(gen) * range;
-		goal.z = goalRange(gen) * range + center.z;
+		goal.x = mechGoalRange(mechGen) * range + center.x;
+		goal.z = mechGoalRange(mechGen) * range + center.z;
 	}
 
 	auto pos = transform->GetWorldPosition();
@@ -471,70 +470,70 @@ void KG::Component::SEnemyMechComponent::Attack(SGameManagerComponent* gameManag
 	DebugNormalMessage("Enemy Controller : Shot Projectile");
 }
 
-bool KG::Component::IdleAction::Execute(float elapsedTime) {
+bool KG::Component::MechIdleAction::Execute(float elapsedTime) {
 	return dynamic_cast<SEnemyMechComponent*>(enemyComp)->Idle(elapsedTime);
 }
 
-void KG::Component::IdleAction::EndAction() {
+void KG::Component::MechIdleAction::EndAction() {
 	dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
 }
 
-bool KG::Component::SetGoalAction::Execute(float elapsedTime) {
+bool KG::Component::MechSetGoalAction::Execute(float elapsedTime) {
 	return dynamic_cast<SEnemyMechComponent*>(enemyComp)->SetGoal();
 }
 
-void KG::Component::SetGoalAction::EndAction() {
+void KG::Component::MechSetGoalAction::EndAction() {
 
 }
 
-bool KG::Component::SetTargetAction::Execute(float elapsedTime) {
+bool KG::Component::MechSetTargetAction::Execute(float elapsedTime) {
 	return dynamic_cast<SEnemyMechComponent*>(enemyComp)->SetAttackRotation();
 }
 
-void KG::Component::SetTargetAction::EndAction() {
+void KG::Component::MechSetTargetAction::EndAction() {
 
 }
 
-bool KG::Component::MoveAction::Execute(float elapsedTime) {
+bool KG::Component::MechMoveAction::Execute(float elapsedTime) {
 	bool result = dynamic_cast<SEnemyMechComponent*>(enemyComp)->MoveToGoal(elapsedTime);
 	dynamic_cast<SEnemyMechComponent*>(enemyComp)->SetIdleTime(0);
 	return result;
 }
 
-void KG::Component::MoveAction::EndAction() {
+void KG::Component::MechMoveAction::EndAction() {
 
 }
 
-bool KG::Component::RotateAction::Execute(float elapsedTime) {
+bool KG::Component::MechRotateAction::Execute(float elapsedTime) {
 	return dynamic_cast<SEnemyMechComponent*>(enemyComp)->RotateToGoal(elapsedTime);
 }
 
-void KG::Component::RotateAction::EndAction() {
+void KG::Component::MechRotateAction::EndAction() {
 	dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
 }
 
-bool KG::Component::AttackAction::Execute(float elapsedTime) {
+bool KG::Component::MechAttackAction::Execute(float elapsedTime) {
 	return dynamic_cast<SEnemyMechComponent*>(enemyComp)->AttackTarget(elapsedTime);
 }
 
-void KG::Component::AttackAction::EndAction() {
+void KG::Component::MechAttackAction::EndAction() {
 	dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
 }
 
-KG::Component::WanderState::~WanderState() {
+KG::Component::MechWanderState::~MechWanderState() {
 	for (auto& a : action) {
 		delete a;
 	}
 }
 
-void KG::Component::WanderState::InitState() {
-	action[WANDER_ACTION_IDLE] = new IdleAction(enemyComp);
-	action[WANDER_ACTION_SETGOAL] = new SetGoalAction(enemyComp);
-	action[WANDER_ACTION_ROTATE] = new RotateAction(enemyComp);
-	action[WANDER_ACTION_MOVE] = new MoveAction(enemyComp);
+void KG::Component::MechWanderState::InitState() {
+	action[WANDER_ACTION_IDLE] = new MechIdleAction(enemyComp);
+	action[WANDER_ACTION_SETGOAL] = new MechSetGoalAction(enemyComp);
+	action[WANDER_ACTION_ROTATE] = new MechRotateAction(enemyComp);
+	action[WANDER_ACTION_MOVE] = new MechMoveAction(enemyComp);
 }
 
-void KG::Component::WanderState::Execute(float elapsedTime) {
+void KG::Component::MechWanderState::Execute(float elapsedTime) {
 	bool endAction = action[curAction]->Execute(elapsedTime);
 	if (endAction) {
 		action[curAction]->EndAction();
@@ -555,17 +554,23 @@ void KG::Component::WanderState::Execute(float elapsedTime) {
 	}
 }
 
-float KG::Component::WanderState::GetValue() {
+float KG::Component::MechWanderState::GetValue() {
 	return 1;
 }
 
-void KG::Component::TraceState::InitState() {
-	action[TRACE_ACTION_SETGOAL] = new SetTargetAction(enemyComp);
-	action[TRACE_ACTION_ROTATE] = new RotateAction(enemyComp);
-	action[TRACE_ACTION_ATTACK] = new AttackAction(enemyComp);
+KG::Component::MechTraceState::~MechTraceState()
+{
+	for (auto& act : action)
+		delete act;
 }
 
-void KG::Component::TraceState::Execute(float elapsedTime) {
+void KG::Component::MechTraceState::InitState() {
+	action[TRACE_ACTION_SETGOAL] = new MechSetTargetAction(enemyComp);
+	action[TRACE_ACTION_ROTATE] = new MechRotateAction(enemyComp);
+	action[TRACE_ACTION_ATTACK] = new MechAttackAction(enemyComp);
+}
+
+void KG::Component::MechTraceState::Execute(float elapsedTime) {
 	bool endAction = action[curAction]->Execute(elapsedTime);
 	if (endAction) {
 		action[curAction]->EndAction();
@@ -583,7 +588,7 @@ void KG::Component::TraceState::Execute(float elapsedTime) {
 	}
 }
 
-float KG::Component::TraceState::GetValue() {
+float KG::Component::MechTraceState::GetValue() {
 	if (dynamic_cast<SEnemyMechComponent*>(enemyComp)->SetTarget())
 		return 2;
 	return 0;
@@ -596,8 +601,8 @@ KG::Component::MechStateManager::~MechStateManager() {
 }
 
 void KG::Component::MechStateManager::Init() {
-	state[STATE_WANDER] = new WanderState(enemyComp);
-	state[STATE_TRACE] = new TraceState(enemyComp);
+	state[STATE_WANDER] = new MechWanderState(enemyComp);
+	state[STATE_TRACE] = new MechTraceState(enemyComp);
 	for (auto& s : state) {
 		s->InitState();
 	}
@@ -616,7 +621,6 @@ void KG::Component::MechStateManager::SetState() {
 
 	if (curState != idx) {
 		curState = idx;
-		// state[curState]->InitState();
 	}
 }
 

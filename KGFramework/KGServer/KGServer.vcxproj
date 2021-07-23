@@ -179,8 +179,8 @@
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="export\EnemyGeneratorComponent.h" />
     <ClInclude Include="export\IKGServer.h" />
+    <ClInclude Include="export\ServerEnemyCrawlerComponent.h" />
     <ClInclude Include="export\ServerEnemyMechComponent.h" />
     <ClInclude Include="export\ServerBaseComponent.h" />
     <ClInclude Include="export\ServerEnemyUnitComponent.h" />
@@ -196,10 +196,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp" />
-    <ClCompile Include="src\EnemyGeneratorComponent.cpp" />
     <ClCompile Include="src\KGServer.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\ServerBaseComponent.cpp" />
+    <ClCompile Include="src\ServerEnemyCrawlerComponent.cpp" />
     <ClCompile Include="src\ServerEnemyMechComponent.cpp" />
     <ClCompile Include="src\ServerEnemyUnitComponent.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>

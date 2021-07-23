@@ -61,3 +61,11 @@ void KG::System::SEnemyMechComponentSystem::OnPreRender()
 {
 
 }
+
+void KG::System::SEnemyCrawlerComponentSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::SEnemyCrawlerComponentSystem::OnPreRender()
+{
+}

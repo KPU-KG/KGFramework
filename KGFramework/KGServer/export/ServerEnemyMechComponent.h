@@ -13,38 +13,38 @@ namespace KG::Component
 	//////////////////////////////////////////////////////////////////////////////
 	// Enemy Actions
 	//////////////////////////////////////////////////////////////////////////////
-	struct IdleAction : public Action {
-		IdleAction(SEnemyUnitComponent* comp) : Action(comp) {}
+	struct MechIdleAction : public Action {
+		MechIdleAction(SEnemyUnitComponent* comp) : Action(comp) {}
 		virtual bool Execute(float elapsedTime) override final;
 		virtual void EndAction() override final;
 	};
 
-	struct SetGoalAction : public Action {
-		SetGoalAction(SEnemyUnitComponent* comp) : Action(comp) {}
+	struct MechSetGoalAction : public Action {
+		MechSetGoalAction(SEnemyUnitComponent* comp) : Action(comp) {}
 		virtual bool Execute(float elapsedTime) override final;
 		virtual void EndAction() override final;
 	};
 
-	struct SetTargetAction : public Action {
-		SetTargetAction(SEnemyUnitComponent* comp) : Action(comp) {}
+	struct MechSetTargetAction : public Action {
+		MechSetTargetAction(SEnemyUnitComponent* comp) : Action(comp) {}
 		virtual bool Execute(float elapsedTime) override final;
 		virtual void EndAction() override final;
 	};
 
-	struct MoveAction : public Action {
-		MoveAction(SEnemyUnitComponent* comp) : Action(comp) {}
+	struct MechMoveAction : public Action {
+		MechMoveAction(SEnemyUnitComponent* comp) : Action(comp) {}
 		virtual bool Execute(float elapsedTime) override final;
 		virtual void EndAction() override final;
 	};
 
-	struct RotateAction : public Action {
-		RotateAction(SEnemyUnitComponent* comp) : Action(comp) {}
+	struct MechRotateAction : public Action {
+		MechRotateAction(SEnemyUnitComponent* comp) : Action(comp) {}
 		virtual bool Execute(float elapsedTime) override final;
 		virtual void EndAction() override final;
 	};
 
-	struct AttackAction : public Action {
-		AttackAction(SEnemyUnitComponent* comp) : Action(comp) {}
+	struct MechAttackAction : public Action {
+		MechAttackAction(SEnemyUnitComponent* comp) : Action(comp) {}
 		virtual bool Execute(float elapsedTime) override final;
 		virtual void EndAction() override final;
 	};
@@ -53,7 +53,7 @@ namespace KG::Component
 	// Enemy States
 	//////////////////////////////////////////////////////////////////////////////
 
-	struct WanderState : public State {
+	struct MechWanderState : public State {
 		const static size_t WANDER_ACTION_COUNT = 4;
 		std::array<Action*, WANDER_ACTION_COUNT> action;
 		const static int WANDER_ACTION_IDLE = 0;
@@ -62,8 +62,8 @@ namespace KG::Component
 		const static int WANDER_ACTION_MOVE = 3;
 
 		int curAction = WANDER_ACTION_IDLE;
-		WanderState(SEnemyUnitComponent* comp) : State(comp) {}
-		virtual ~WanderState();
+		MechWanderState(SEnemyUnitComponent* comp) : State(comp) {}
+		virtual ~MechWanderState();
 		virtual void InitState() override final;
 
 		virtual void Execute(float elapsedTime) override final;
@@ -71,7 +71,7 @@ namespace KG::Component
 		virtual float GetValue() override final;
 	};
 
-	struct TraceState : public State {
+	struct MechTraceState : public State {
 		const static int TRACE_ACTION_COUNT = 3;
 		std::array<Action*, TRACE_ACTION_COUNT> action;
 
@@ -81,7 +81,8 @@ namespace KG::Component
 
 		int curAction = TRACE_ACTION_SETGOAL;
 
-		TraceState(SEnemyUnitComponent* comp) : State(comp) {}
+		MechTraceState(SEnemyUnitComponent* comp) : State(comp) {}
+		virtual ~MechTraceState();
 
 		virtual void InitState() override final;
 

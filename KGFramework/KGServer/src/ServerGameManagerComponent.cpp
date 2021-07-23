@@ -11,6 +11,7 @@
 std::random_device rdRegion;
 std::mt19937 genRegion(rdRegion());
 std::uniform_int_distribution<int> randomSpawn(3, 4);
+std::uniform_int_distribution<int> enemyType(0, 1);
 
 KG::Component::Region::Region()
 	:
@@ -185,7 +186,7 @@ KG::Component::Region KG::Component::EnemyGeneratorComponent::GetCurrentRegion()
 
 void  KG::Component::EnemyGeneratorComponent::SendAddEnemyPacket(KG::Server::SESSION_ID player) {
 	for (auto& e : this->enemies) {
-		auto presetName = "EnemyMech";						// 적 종류 추가되면 enemy에서 불러올 것
+		auto presetName = e->GetEnemyPresetName();						// 적 종류 추가되면 enemy에서 불러올 것
 		auto presetId = KG::Utill::HashString(presetName);
 
 		auto* scene = this->gameObject->GetScene();
@@ -271,7 +272,19 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 
 	for (int i = 0; i < enemyCount; ++i) {
 		std::uniform_real_distribution<float> randomPos(-region.range, region.range);
-		auto presetName = "EnemyMech";
+		int type = enemyType(genRegion);
+		// const char* presetName = nullptr;
+		// switch (type) {
+		// case 0:
+		// 	presetName = "EnemyMech";
+		// 	break;
+		// case 1:
+		// 	presetName = "EnemyCrawler";
+		// 	break;
+		// }
+		auto presetName = "EnemyCrawler";
+		// auto presetName = "EnemyMech";
+
 		auto presetId = KG::Utill::HashString(presetName);
 
 		auto* scene = this->gameObject->GetScene();
@@ -295,13 +308,36 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		comp->SetNetObjectId(id);
 		this->server->SetServerObject(id, comp);
 
-		auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyMechComponent>();
+		// switch (type) {
+		// case 0:
+		// {
+		// 
+		// 	auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyMechComponent>();
+		// 	enemyCtrl->SetCenter(region.position);
+		// 	enemyCtrl->SetWanderRange(region.range);
+		// 	enemyCtrl->SetPosition(genPos);
+		// 	AddEnemyControllerCompoenent(enemyCtrl);
+		// }
+		// 	break;
+		// case 1:
+		// {
+		// 
+		// 	auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyCrawlerComponent>();
+		// 	enemyCtrl->SetCenter(region.position);
+		// 	enemyCtrl->SetWanderRange(region.range);
+		// 	enemyCtrl->SetPosition(genPos);
+		// 	AddEnemyControllerCompoenent(enemyCtrl);
+		// }
+		// 	break;
+		// }
+
+		auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyCrawlerComponent>();
+		// auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyMechComponent>();
 		enemyCtrl->SetCenter(region.position);
 		enemyCtrl->SetWanderRange(region.range);
 		enemyCtrl->SetPosition(genPos);
-
 		AddEnemyControllerCompoenent(enemyCtrl);
-
+		enemyCtrl->SetEnemyPresetName(presetName);
 		this->GetGameObject()->GetTransform()->AddChild(comp->GetGameObject()->GetTransform());
 		this->BroadcastPacket(&addObjectPacket);
 	}
