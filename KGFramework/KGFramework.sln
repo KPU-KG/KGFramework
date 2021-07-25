@@ -90,6 +90,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Surface", "Surface", "{96B9
 	ProjectSection(SolutionItems) = preProject
 		Resource\Resource\ShaderScript\Surface_DefaultPBR.hlsl = Resource\Resource\ShaderScript\Surface_DefaultPBR.hlsl
 		Resource\Resource\ShaderScript\Surface_Empty.hlsl = Resource\Resource\ShaderScript\Surface_Empty.hlsl
+		Resource\Resource\ShaderScript\Surface_PBRFPSMask.hlsl = Resource\Resource\ShaderScript\Surface_PBRFPSMask.hlsl
+		Resource\Resource\ShaderScript\Surface_PBRGlossSmooth.hlsl = Resource\Resource\ShaderScript\Surface_PBRGlossSmooth.hlsl
 		Resource\Resource\ShaderScript\Surface_SkyBox.hlsl = Resource\Resource\ShaderScript\Surface_SkyBox.hlsl
 	EndProjectSection
 EndProject

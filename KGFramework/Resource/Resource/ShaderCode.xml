@@ -6,7 +6,7 @@
     <SurfaceShaderSet id="DirectionalLight" fileDir="Resource/ShaderScript/Light_Directional.hlsl" group="DirectionalLight" enableBackfaceCulling="false" enableDepthCliping="false" materialParameterSize="0" hash_id="2348000913"/>
     <SurfaceShaderSet id="PointLight" fileDir="Resource/ShaderScript/Light_Point.hlsl" group="MeshVolumeLight" enableBackfaceCulling="false" enableDepthCliping="false" materialParameterSize="0" hash_id="4198276667"/>
     <SurfaceShaderSet id="SpotLight" fileDir="Resource/ShaderScript/Light_Spot.hlsl" group="MeshVolumeLight" enableBackfaceCulling="false" enableDepthCliping="false" materialParameterSize="0" hash_id="504779331"/>
-    <SurfaceShaderSet id="AmbientLight" fileDir="Resource/ShaderScript/Light_Ambient.hlsl" group="AmbientLight" enableBackfaceCulling="false" enableDepthCliping="false" materialParameterSize="0" hash_id="1669293293"/>
+    <SurfaceShaderSet id="AmbientLight" fileDir="Resource/ShaderScript/Light_Ambient.hlsl" group="AmbientLight" enableBackfaceCulling="false" enableDepthCliping="false" materialParameterSize="4" hash_id="1669293293"/>
     <SurfaceShaderSet id="ParticleAdd" fileDir="Resource/ShaderScript/Particle_Default.hlsl" group="ParticleAdd" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="32" hash_id="3487980688"/>
     <SurfaceShaderSet id="ParticleTransparent" fileDir="Resource/ShaderScript/Particle_Default.hlsl" group="ParticleTransparent" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="32" hash_id="786424407"/>
     <SurfaceShaderSet id="UIDefault" fileDir="Resource/ShaderScript/UI_Default.hlsl" group="UI" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="4" hash_id="888949730"/>

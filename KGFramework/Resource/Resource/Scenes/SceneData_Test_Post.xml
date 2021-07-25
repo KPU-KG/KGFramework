@@ -2012,8 +2012,8 @@
             <Component name="IMaterialComponent" hash_id="308235170">
                 <MaterialDesc>
                     <Element>
-                        <isRawShader value="true"/>
-                        <materialID hash_id="1669293293" srcString="AmbientLight"/>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="1802361946" srcString="AmbientIBL"/>
                         <slotIndex value="0"/>
                     </Element>
                 </MaterialDesc>

@@ -9,15 +9,10 @@ namespace KG::Renderer
 		inline static constexpr size_t MaterialData = 3;
 		inline static constexpr size_t LightData = 4;
 		inline static constexpr size_t CameraData = 5;
-		inline static constexpr size_t Texture1Heap = 6;
-		inline static constexpr size_t Texture2Heap = 7;
-		inline static constexpr size_t GBuffer0 = 8;
-		inline static constexpr size_t GBuffer1 = 9;
-		inline static constexpr size_t GBuffer2 = 10;
-		inline static constexpr size_t GBuffer3 = 11;
-		inline static constexpr size_t GBuffer4 = 12;
-		inline static constexpr size_t DepthStencilBuffer = 12;
-		inline static constexpr size_t GBufferHeap = 8;
+		inline static constexpr size_t Texture = 6;
+        inline static constexpr size_t TextureArray = 7;
+        inline static constexpr size_t TextureCube = 8;
+        inline static constexpr size_t GBufferHeap = 9;
 	};
 
     struct ComputeRootParameterIndex

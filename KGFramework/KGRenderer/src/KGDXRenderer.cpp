@@ -390,7 +390,9 @@ void KG::Renderer::KGDXRenderer::OpaqueRender(ShaderGeometryType geoType, Shader
     auto dsvHandle = rt.depthStencilBuffer.GetDescriptor(DescriptorType::DSV).GetCPUHandle();
     cmdList->OMSetRenderTargets(4, gbufferHandle.data(), false, &dsvHandle);
     rt.ClearGBuffer(this->mainCommandList, 0, 0, 0, 0);
-    cmdList->SetGraphicsRootDescriptorTable(GraphicRootParameterIndex::Texture1Heap, this->descriptorHeapManager->GetGPUHandle(0));
+    cmdList->SetGraphicsRootDescriptorTable(GraphicRootParameterIndex::Texture, this->descriptorHeapManager->GetGPUHandle(0));
+    cmdList->SetGraphicsRootDescriptorTable(GraphicRootParameterIndex::TextureArray, this->descriptorHeapManager->GetGPUHandle(0));
+    cmdList->SetGraphicsRootDescriptorTable(GraphicRootParameterIndex::TextureCube, this->descriptorHeapManager->GetGPUHandle(0));
 
     this->mainCommandList->ClearDepthStencilView(dsvHandle,
         D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL,
@@ -841,7 +843,7 @@ void KG::Renderer::KGDXRenderer::InitializeImGui()
 
 void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 {
-    D3D12_ROOT_PARAMETER pd3dRootParameters[9]{};
+    D3D12_ROOT_PARAMETER pd3dRootParameters[10]{};
 
     // 0 : Space 0 : SRV 0 : Instance Data : 2
     pd3dRootParameters[GraphicRootParameterIndex::InstanceData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
@@ -889,12 +891,12 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
     txtureData1Range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
     txtureData1Range.RegisterSpace = 1;
 
-    pd3dRootParameters[GraphicRootParameterIndex::Texture1Heap].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    pd3dRootParameters[GraphicRootParameterIndex::Texture1Heap].DescriptorTable.NumDescriptorRanges = 1;
-    pd3dRootParameters[GraphicRootParameterIndex::Texture1Heap].DescriptorTable.pDescriptorRanges = &txtureData1Range;
-    pd3dRootParameters[GraphicRootParameterIndex::Texture1Heap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
+    pd3dRootParameters[GraphicRootParameterIndex::Texture].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[GraphicRootParameterIndex::Texture].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[GraphicRootParameterIndex::Texture].DescriptorTable.pDescriptorRanges = &txtureData1Range;
+    pd3dRootParameters[GraphicRootParameterIndex::Texture].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
 
-    // 7 : Space 2 : SRV 0 : Texture Data2 // unbounded : 1
+    // 7 : Space 2 : SRV 0 : Texture Array // unbounded : 1
 
     D3D12_DESCRIPTOR_RANGE txtureData2Range;
     ZeroDesc(txtureData2Range);
@@ -902,14 +904,28 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
     txtureData2Range.NumDescriptors = -1;
     txtureData2Range.OffsetInDescriptorsFromTableStart = 0;
     txtureData2Range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    txtureData2Range.RegisterSpace = 2;
+    txtureData2Range.RegisterSpace = 5;
 
-    pd3dRootParameters[GraphicRootParameterIndex::Texture2Heap].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    pd3dRootParameters[GraphicRootParameterIndex::Texture2Heap].DescriptorTable.NumDescriptorRanges = 1;
-    pd3dRootParameters[GraphicRootParameterIndex::Texture2Heap].DescriptorTable.pDescriptorRanges = &txtureData2Range;
-    pd3dRootParameters[GraphicRootParameterIndex::Texture2Heap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
+    pd3dRootParameters[GraphicRootParameterIndex::TextureArray].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[GraphicRootParameterIndex::TextureArray].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[GraphicRootParameterIndex::TextureArray].DescriptorTable.pDescriptorRanges = &txtureData2Range;
+    pd3dRootParameters[GraphicRootParameterIndex::TextureArray].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
 
-    // 8 : Space 0 : SRV 2,3,4,5,6 : G Buffer // unbounded : 1
+    // 8 : space 3 : SRV 0 : Texture Cube // unbounded : 1
+    D3D12_DESCRIPTOR_RANGE txtureCubeRange;
+    ZeroDesc(txtureCubeRange);
+    txtureCubeRange.BaseShaderRegister = 0;
+    txtureCubeRange.NumDescriptors = -1;
+    txtureCubeRange.OffsetInDescriptorsFromTableStart = 0;
+    txtureCubeRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    txtureCubeRange.RegisterSpace = 2;
+
+    pd3dRootParameters[GraphicRootParameterIndex::TextureCube].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[GraphicRootParameterIndex::TextureCube].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[GraphicRootParameterIndex::TextureCube].DescriptorTable.pDescriptorRanges = &txtureCubeRange;
+    pd3dRootParameters[GraphicRootParameterIndex::TextureCube].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
+
+    // 9 : Space 0 : SRV 2,3,4,5,6 : G Buffer // unbounded : 1
 
     D3D12_DESCRIPTOR_RANGE GbufferRange;
     ZeroDesc(GbufferRange);
@@ -944,6 +960,10 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
     ID3DBlob* pd3dErrorBlob = nullptr;
 
     auto result = ::D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
+    if (FAILED(result))
+    {
+        DebugErrorMessage((const char*)pd3dErrorBlob->GetBufferPointer());
+    }
     this->d3dDevice->CreateRootSignature(0, pd3dSignatureBlob->GetBufferPointer(), pd3dSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&this->generalRootSignature));
     TryRelease(pd3dSignatureBlob);
     TryRelease(pd3dErrorBlob);

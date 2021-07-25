@@ -10,6 +10,13 @@ struct LightVertexOut
     uint InstanceID : SV_InstanceID;
 };
 
+struct MaterialData
+{
+    uint lutTextureIndex;
+};
+
+StructuredBuffer<MaterialData> materialData : register(t1);
+
 LightVertexOut VertexShaderFunction(VertexData input, uint InstanceID : SV_InstanceID)
 {
     LightVertexOut result;
@@ -36,6 +43,6 @@ float4 PixelShaderFunction(LightVertexOut input) : SV_Target0
     float3 calcWorldPosition = DepthToWorldPosition(depth, input.projPosition.xy, mul(inverseProjection, inverseView));
     float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
     
-    return CustomAmbientLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(cameraDirection), 1.0f) + 0.075f;
+    return CustomAmbientLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(cameraDirection), 1.0f, materialData[0].lutTextureIndex) + 0.075f;
 }
 

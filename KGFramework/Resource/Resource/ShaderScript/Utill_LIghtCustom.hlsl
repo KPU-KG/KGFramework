@@ -71,8 +71,8 @@ float4 CustomLightCalculator(LightData light, Surface info, float3 lightDir, flo
  
  
     float3 F = fresnelSchlick(F0, VDotH);
-    float D = ndfGGX(NDotH, clamp(info.roughness, 0.0001, 1));
-    float G = gaSchlickGGX(NDotL, NDotV, clamp(info.roughness, 0.0001, 1));
+    float D = ndfGGX(NDotH, clamp( 1- info.roughness, 0.0001, 1));
+    float G = gaSchlickGGX(NDotL, NDotV, clamp(1 - info.roughness, 0.0001, 1));
  
     float3 kd = lerp(float3(1, 1, 1) - F, float3(0.0f, 0.0f, 0.0f), info.metalic.xxx);
  
@@ -80,7 +80,7 @@ float4 CustomLightCalculator(LightData light, Surface info, float3 lightDir, flo
     float3 diffuseBRDF = kd * info.albedo;
     
     // Cook-Torrance specular microfacet BRDF.
-    float3 specularBRDF = (F * D * G) / max(0.00001f, 4.0f * NDotL * NDotV);
+    float3 specularBRDF = (F * D * G) / max(0.00001f, 4.0f * NDotL * NDotV) * info.specular;
     
     return float4((diffuseBRDF + specularBRDF) * NDotL * light.Strength * atten, 1.0f);
     
@@ -108,7 +108,7 @@ float4 CustomLightCalculator(LightData light, Surface info, float3 lightDir, flo
     //return finalColor;
 }
 
-float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightDir, float3 cameraDir, float atten)
+float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightDir, float3 cameraDir, float atten, uint lutIndex)
 {
     
     float3 L = -lightDir;
@@ -125,13 +125,16 @@ float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightD
     float3 F0 = lerp(Fdielectric.xxx, info.albedo.xyz, info.metalic.xxx);
     
     float3 F = fresnelSchlick(F0, VDotH);
-    float G = gaSchlickGGX(NDotL, NDotV, info.roughness);
+    float G = gaSchlickGGX(NDotL, NDotV, 1 - info.roughness);
  
     float3 kd = lerp(float3(1, 1, 1) - F, float3(0.0f, 0.0f, 0.0f), 1.0f.xxx - info.metalic.xxx);
     //float3 reflec = reflect(-cameraDir, info.wNormal);
     float3 reflec = reflect(cameraDir, info.wNormal);
+    
+    float2 envBRDF = shaderTexture[lutIndex].Sample(gsamLinearClamp, float2(max(dot(N, V), 0.0f), 1 - info.roughness)).rg;
     float3 envPixel = shaderTextureCube[info.environmentMap].Sample(gsamAnisotoropicWrap, normalize(reflec)).rgb;
-    return float4(F * envPixel * info.albedo, 1.0f);
+    float3 specularIBL = (F * envBRDF.x + envBRDF.y) * envPixel;
+    return float4(specularIBL, 1.0f);
 }
 
 #endif

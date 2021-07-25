@@ -9,6 +9,8 @@
     <Texture id="SkySunset" fileDir="Resource/Texture/Skymap/sunset.dds" dimension="TextureCube" format="DDS" hash_id="2071956174"/>
     <Texture id="SkySnow" fileDir="Resource/Texture/Skymap/snowcube1024.dds" dimension="TextureCube" format="DDS" hash_id="4111474821"/>
     <Texture id="SkyDay" fileDir="Resource/Texture/Skymap/daytime.dds" dimension="TextureCube" format="DDS" hash_id="3325274414"/>
+    <!--LUT-->
+    <Texture id="iblLUT" fileDir="Resource/Texture/specLUT/ibl_brdf_lut.dds" dimension="Texture2D" format="DDS" hash_id="2315349235"/>
     <!--Metal PBR-->
     <Texture id="metal_color" fileDir="Resource/Texture/cc0_metal/color.dds" dimension="Texture2D" format="DDS" hash_id="1743296994"/>
     <Texture id="metal_metalic" fileDir="Resource/Texture/cc0_metal/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2937800030"/>
@@ -39,6 +41,7 @@
     <Texture id="soldier_haed_normal" fileDir="Resource/Geometry/animation/Unity_Soldier_Head_NMM_01.dds" dimension="Texture2D" format="DDS" hash_id="4052277792"/>
     <Texture id="soldier_body_albedo" fileDir="Resource/Geometry/animation/Soldier_Body_Albedo.dds" dimension="Texture2D" format="DDS" hash_id="2332798320"/>
     <Texture id="soldier_body_normal" fileDir="Resource/Geometry/animation/Soldier_Body_Normal.dds" dimension="Texture2D" format="DDS" hash_id="4117762142"/>
+    <Texture id="soldier_body_mask" fileDir="Resource/Geometry/animation/Soldier_Body_Normal.dds" dimension="Texture2D" format="DDS" hash_id="4117762142"/>
     <!--asphalt-->
     <Texture id="asphalt_color" fileDir="Resource/Texture/asphalt/color.dds" dimension="Texture2D" format="DDS" hash_id="3289000514"/>
     <Texture id="asphalt_normal" fileDir="Resource/Texture/asphalt/normal.dds" dimension="Texture2D" format="DDS" hash_id="4181683200"/>
@@ -150,12 +153,15 @@
     <!--Textrue-->
     <Texture id="arms_color" fileDir="Resource/Geometry/arms/Textrue/color.dds" dimension="Texture2D" format="DDS" hash_id="2273684824"/>
     <Texture id="arms_normal" fileDir="Resource/Geometry/arms/Textrue/normal.dds" dimension="Texture2D" format="DDS" hash_id="1969247054"/>
+    <Texture id="arms_mask" fileDir="Resource/Geometry/arms/Textrue/mask.dds" dimension="Texture2D" format="DDS" hash_id="528200807"/>
     <!--vectorSight-->
     <Texture id="vectorSight_color" fileDir="Resource/Geometry/vector/vectorTex/vectorSight/color.dds" dimension="Texture2D" format="DDS" hash_id="2732856979"/>
     <Texture id="vectorSight_normal" fileDir="Resource/Geometry/vector/vectorTex/vectorSight/normal.dds" dimension="Texture2D" format="DDS" hash_id="986294203"/>
+    <Texture id="vectorSight_mask" fileDir="Resource/Geometry/vector/vectorTex/vectorSight/mask.dds" dimension="Texture2D" format="DDS" hash_id="664492698"/>
     <!--vectorNormal-->
     <Texture id="vectorNormal_color" fileDir="Resource/Geometry/vector/vectorTex/vectorNormal/color.dds" dimension="Texture2D" format="DDS" hash_id="1993964501"/>
     <Texture id="vectorNormal_normal" fileDir="Resource/Geometry/vector/vectorTex/vectorNormal/normal.dds" dimension="Texture2D" format="DDS" hash_id="3100935333"/>
+    <Texture id="vectorNormal_mask" fileDir="Resource/Geometry/vector/vectorTex/vectorNormal/mask.dds" dimension="Texture2D" format="DDS" hash_id="3742436096"/>
     <!--mountain-->
     <Texture id="mountain_color" fileDir="Resource/Geometry/back/mountain/color.dds" dimension="Texture2D" format="DDS" hash_id="3235815808"/>
     <Texture id="mountain_normal" fileDir="Resource/Geometry/back/mountain/normal.dds" dimension="Texture2D" format="DDS" hash_id="3380690070"/>

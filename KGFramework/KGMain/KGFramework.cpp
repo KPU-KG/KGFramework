@@ -690,7 +690,7 @@ void KG::GameFramework::PostSceneFunction()
 			auto* m = this->renderer->GetNewMaterialComponent();
 			auto* g = this->renderer->GetNewGeomteryComponent();
 			auto* r = this->renderer->GetNewRenderComponent();
-			m->PostShader(KG::Utill::HashString("AmbientLight"));
+			m->PostMaterial(KG::Utill::HashString("AmbientIBL"));
 			g->AddGeometry(KG::Utill::HashString("lightPlane"_id));
 			obj.AddComponent(t);
 			obj.AddComponent(m);

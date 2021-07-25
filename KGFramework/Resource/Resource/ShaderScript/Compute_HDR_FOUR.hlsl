@@ -3,7 +3,7 @@
 groupshared float shaderCache;
 
 static const float3 lumFactor = float3(0.299, 0.587, 0.114);
-static const float MiddleGray = 2.429f;
+static const float MiddleGray = 3.429f;
 static const float LimWhiteSQR = 5.8f;
 
 float3 ToneMapping(float3 hdrColor)
@@ -20,6 +20,5 @@ void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadID : SV_G
     shaderCache = buffer2.Load(int3(0, 0, 0)).x;
     GroupMemoryBarrierWithGroupSync();
     float3 color = ToneMapping(prevResult[dispatchThreadID.xy].xyz);
-    //outputResult[dispatchThreadID.xy] = float4(color.x, color.y, color.z, 1.0f);
     outputResult[dispatchThreadID.xy] = float4(color.x, color.y, color.z, 1.0f);
 }
