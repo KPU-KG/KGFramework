@@ -10,7 +10,7 @@ struct MaterialData
     uint MaskMapTextureIndex; // metalic / ao / detail mask / gloss
     float SpecularValue;
     float2 UVSize;
-    float pad;
+    float2 pad;
 };
 
 // Don't Touch This Line
@@ -31,6 +31,7 @@ Surface UserSurfaceFunction(SurfaceInput input)
     result.specular = mat.SpecularValue;
     result.metalic = shaderTexture[mat.MaskMapTextureIndex].Sample(gsamAnisotoropicWrap, uv).r;
     result.roughness = 1 - shaderTexture[mat.MaskMapTextureIndex].Sample(gsamAnisotoropicWrap, uv).a;
+    //result.roughness = 1.0f;
     result.emssion = 0.0f;
     
     float3x3 TBN = float3x3(
