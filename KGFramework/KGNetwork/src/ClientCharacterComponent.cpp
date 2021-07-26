@@ -142,11 +142,11 @@ void KG::Component::CCharacterComponent::ProcessMove(float elapsedTime)
 
 	if (abs(this->forwardValue) >= this->inputMinimum)
 	{
-		this->transform->Translate(this->transform->GetLook() * speed * elapsedTime * this->forwardValue);
+		this->transform->Translate(this->rotationTrasnform->GetLook() * speed * elapsedTime * this->forwardValue);
 	}
 	if (abs(this->rightValue) >= this->inputMinimum)
 	{
-		this->transform->Translate(this->transform->GetRight() * speed * elapsedTime * this->rightValue);
+		this->transform->Translate(this->rotationTrasnform->GetRight() * speed * elapsedTime * this->rightValue);
 	}
 }
 
