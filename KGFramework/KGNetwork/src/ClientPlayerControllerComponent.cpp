@@ -127,6 +127,12 @@ bool KG::Component::CPlayerControllerComponent::OnProcessPacket(unsigned char* p
             auto* ScenePacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_DATA>(packet);
             this->characterTransform->SetPosition(ScenePacket->position);
             hpbar->progress.value = ScenePacket->playerHp;
+            if (ScenePacket->playerHp == 0 && this->isActive) {
+                this->isActive = false;
+            }
+            else if (ScenePacket->playerHp != 0 && !this->isActive) {
+                this->isActive = true;
+            }
             //회전 정보 무시 = 에임 랙걸림
             return true;
         }
@@ -136,28 +142,30 @@ bool KG::Component::CPlayerControllerComponent::OnProcessPacket(unsigned char* p
 
 void KG::Component::CPlayerControllerComponent::InternalUpdate(float elapsedTime)
 {
-    auto* input = KG::Input::InputManager::GetInputManager();
-    if ( input->IsTouching('9') )
-    {
-        input->SetMouseCapture(false);
-    }
-
-    if ( input->IsTouching('0') )
-    {
-        input->SetMouseCapture(true);
-    }
-    this->ProcessMove(elapsedTime);
-    this->ProcessMoveAnimation(elapsedTime);
-    this->ProcessMouse(elapsedTime);
-    if ( !this->CheckReloading() )
-    {
-        if ( input->GetKeyState('R') == Input::KeyState::Down )
+    if (this->isActive) {
+        auto* input = KG::Input::InputManager::GetInputManager();
+        if (input->IsTouching('9'))
         {
-            this->TryReload(elapsedTime);
+            input->SetMouseCapture(false);
         }
-        else
+
+        if (input->IsTouching('0'))
         {
-            this->ProcessShoot(elapsedTime);
+            input->SetMouseCapture(true);
+        }
+        this->ProcessMove(elapsedTime);
+        this->ProcessMoveAnimation(elapsedTime);
+        this->ProcessMouse(elapsedTime);
+        if (!this->CheckReloading())
+        {
+            if (input->GetKeyState('R') == Input::KeyState::Down)
+            {
+                this->TryReload(elapsedTime);
+            }
+            else
+            {
+                this->ProcessShoot(elapsedTime);
+            }
         }
     }
 }

@@ -45,8 +45,14 @@ namespace KG::Component
 		std::vector<KG::Component::Region> region;
 		int currentRegion = 0;
 		bool generateEnemy = false;
+		bool generateBoss = false;
 		unsigned int score = 0;
 		KG::Component::Region GetNextRegion();
+		//KG::Component::Region GetRegion0() { return region[0]; };
+		//KG::Component::Region GetRegion1() { return region[1]; }; // boss
+		//KG::Component::Region GetRegion2() { return region[2]; };
+		//KG::Component::Region GetRegion3() { return region[3]; };
+		//KG::Component::Region GetBossRegion();
 		int GetCurrentRegionIndex() const;
 		KG::Component::Region GetCurrentRegion();
 	public:
@@ -56,6 +62,7 @@ namespace KG::Component
 		virtual void Update(float elapsedTime) override;
 		bool IsGeneratable() const;
 		void GenerateEnemy();
+		void GenerateBoss();
 		void AddEnemyControllerCompoenent(SEnemyControllerComponent* comp);
 		void SendAddEnemyPacket(KG::Server::SESSION_ID player);
 		unsigned int GetScore() const;

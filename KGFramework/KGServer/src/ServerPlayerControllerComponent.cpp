@@ -40,15 +40,31 @@ void KG::Component::SPlayerComponent::OnCreate(KG::Core::GameObject* obj)
 
 void KG::Component::SPlayerComponent::Update(float elapsedTime)
 {
-	this->rotationTrasnform->SetRotation(this->inputs.rotation);
-	//auto eulerInputs = KG::Math::Quaternion::ToEuler(this->inputs.rotation);
-	//this->physics->AddTorque(XMFLOAT3(0, 1, 0), 40000);
-	this->ProcessMove(elapsedTime);
-	packetSendTimer += elapsedTime;
-	if ( packetSendTimer > this->packetInterval )
-	{
-		this->SendSyncPacket();
-		packetSendTimer = 0.0f;
+	if (!this->isActive) {
+		this->Respawn(elapsedTime);
+	}
+	else {
+		this->rotationTrasnform->SetRotation(this->inputs.rotation);
+		//auto eulerInputs = KG::Math::Quaternion::ToEuler(this->inputs.rotation);
+		//this->physics->AddTorque(XMFLOAT3(0, 1, 0), 40000);
+		this->ProcessMove(elapsedTime);
+		packetSendTimer += elapsedTime;
+		if (packetSendTimer > this->packetInterval)
+		{
+			this->SendSyncPacket();
+			packetSendTimer = 0.0f;
+		}
+	}
+}
+
+void KG::Component::SPlayerComponent::Respawn(float elapsedTime) {
+	if (this->respawnTimer > 3.0f) {
+		this->isActive = true;
+		this->hpPoint = 5;
+		this->respawnTimer = 0;
+	}
+	else {
+		this->respawnTimer += elapsedTime;
 	}
 }
 
@@ -67,6 +83,11 @@ void KG::Component::SPlayerComponent::SendSyncPacket()
 	syncPacket.forwardValue = this->forwardValue;
 	syncPacket.rightValue = this->rightValue;
     syncPacket.playerHp = static_cast<float>(this->hpPoint) / static_cast<float>(this->MAX_HP);
+	syncPacket.inputs.stateW = this->inputs.stateW;
+	syncPacket.inputs.stateA = this->inputs.stateA;
+	syncPacket.inputs.stateS = this->inputs.stateS;
+	syncPacket.inputs.stateD = this->inputs.stateD;
+	syncPacket.inputs.stateShift = this->inputs.stateShift;
 	//std::cout << "SendSyncPacket f : " << forwardValue << " / r :" << rightValue << "\n";
 	this->BroadcastPacket(&syncPacket);
 }
@@ -182,7 +203,11 @@ bool KG::Component::SPlayerComponent::OnProcessPacket(unsigned char* packet, KG:
 void KG::Component::SPlayerComponent::HitBullet(int damage)
 {
 	hpPoint -= damage;
-	if (hpPoint < 0)
+	if (hpPoint < 0) {
 		hpPoint = 0;
+		isActive = false;
+		DirectX::XMFLOAT3 pos(10, 0, 0);
+		this->physics->SetPosition(pos);
+	}
 }
 
