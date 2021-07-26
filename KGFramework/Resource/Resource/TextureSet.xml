@@ -8,8 +8,9 @@
     <Texture id="zero" fileDir="Resource/Texture/zero.dds" dimension="Texture2D" format="DDS" hash_id="3256532051"/>
     <Texture id="SkySunset" fileDir="Resource/Texture/Skymap/sunset.dds" dimension="TextureCube" format="DDS" hash_id="2071956174"/>
     <Texture id="SkySnow" fileDir="Resource/Texture/Skymap/snowcube1024.dds" dimension="TextureCube" format="DDS" hash_id="4111474821"/>
-    <Texture id="SkyDay" fileDir="Resource/Texture/Skymap/daytime.dds" dimension="TextureCube" format="DDS" hash_id="3325274414"/>
-    <!--LUT-->
+  <Texture id="SkyDay" fileDir="Resource/Texture/Skymap/output_skybox_hdr.dds" dimension="TextureCube" format="DDS" hash_id="3325274414"/>
+  <!--<Texture id="SkyDay" fileDir="Resource/Texture/Skymap/daytime.dds" dimension="TextureCube" format="DDS" hash_id="3325274414"/>-->
+  <!--LUT-->
     <Texture id="iblLUT" fileDir="Resource/Texture/specLUT/ibl_brdf_lut.dds" dimension="Texture2D" format="DDS" hash_id="2315349235"/>
     <!--Metal PBR-->
     <Texture id="metal_color" fileDir="Resource/Texture/cc0_metal/color.dds" dimension="Texture2D" format="DDS" hash_id="1743296994"/>

@@ -331,7 +331,6 @@ namespace KG::Component
 
 		GSCascadeCameraData* cameraData = nullptr;
 		GSCascadeCameraData* mappedCameraData = nullptr;
-
 		bool ProjDirty = true;
 
 		void OnProjDirty() { ProjDirty = true; }
@@ -346,6 +345,8 @@ namespace KG::Component
 		bool isMainCamera = true;
 
 		KG::Renderer::RenderTextureDesc renderTextureDesc;
+
+        float cascadePoint[4] = { 0.0f, 0.3f, 0.6f, 1.0f };
 
 		//Viewport 설정 필요
 

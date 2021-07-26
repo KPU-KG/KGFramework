@@ -47,6 +47,7 @@ namespace KG::Component
 	public:
 		virtual void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		virtual void OnDataSave(tinyxml2::XMLElement* parentElement);
+        virtual bool OnDrawGUI() override;
 	};
     REGISTER_COMPONENT_ID_REPLACE( ShadowCasterComponent, IShadowCasterComponent);
 };

@@ -215,8 +215,8 @@ ID3D12Resource* KG::Renderer::CreateDepthStencilResource( ID3D12Device* pd3dDevi
 	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
 
 	D3D12_CLEAR_VALUE clearValue;
-	clearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	clearValue.DepthStencil.Depth = 1.0f;
+    clearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    clearValue.DepthStencil.Depth = 1.0f;
 	clearValue.DepthStencil.Stencil = 0;
 
 	HRESULT hResult = pd3dDevice->CreateCommittedResource(

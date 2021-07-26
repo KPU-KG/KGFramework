@@ -216,6 +216,7 @@ UINT KG::Renderer::RenderTexture::PostRenderTargetSRV()
 	auto descManager = KGDXRenderer::GetInstance()->GetDescriptorHeapManager();
 	srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
 	srvDesc.Format = this->renderTargetResource->GetDesc().Format;
+
 	srvDesc.ViewDimension = this->desc.useCubeRender ? D3D12_SRV_DIMENSION_TEXTURECUBE : D3D12_SRV_DIMENSION_TEXTURE2D;
 	srvDesc.Texture2D.MostDetailedMip = 0;
 	srvDesc.Texture2D.MipLevels = this->renderTargetResource->GetDesc().MipLevels;
@@ -302,6 +303,16 @@ UINT KG::Renderer::RenderTexture::PostDepthStencilSRV()
 		srvDesc.Texture2D.ResourceMinLODClamp = 0.0f;
 	}
     this->depthStencilBuffer.AddOnDescriptorHeap(descManager, srvDesc);
+    if (this->desc.useGSArrayRender)
+    {
+        for (size_t i = 0; i < this->desc.length; i++)
+        {
+            srvDesc.Texture2DArray.ArraySize = 1;
+            srvDesc.Texture2DArray.FirstArraySlice = i;
+            srvDesc.Texture2DArray.MipLevels = 1;
+            this->depthStencilBuffer.AddOnDescriptorHeap(descManager, srvDesc);
+        }
+    }
 	return this->depthStencilBuffer.GetDescriptor(KG::Resource::DescriptorType::SRV).HeapIndex;
 }
 

@@ -723,8 +723,6 @@ void KG::Component::GSCascadeCameraComponent::RefreshNormalViewProj()
 
 void KG::Component::GSCascadeCameraComponent::RefreshCascadeViewProj()
 {
-	static constexpr float cascadePoint[] = { 0.0f, 0.035f, 0.3f, 1.0f };
-
 	using namespace Math::Literal;
 
 	auto frustum = mainCamera->GetFrustum();
