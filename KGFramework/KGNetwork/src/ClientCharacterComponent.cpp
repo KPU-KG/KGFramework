@@ -142,11 +142,11 @@ void KG::Component::CCharacterComponent::ProcessMove(float elapsedTime)
 
 	if (abs(this->forwardValue) >= this->inputMinimum)
 	{
-		this->transform->Translate(this->rotationTrasnform->GetLook() * speed * elapsedTime * this->forwardValue);
+		this->transform->Translate(this->rotationTransform->GetLook() * speed * elapsedTime * this->forwardValue);
 	}
 	if (abs(this->rightValue) >= this->inputMinimum)
 	{
-		this->transform->Translate(this->rotationTrasnform->GetRight() * speed * elapsedTime * this->rightValue);
+		this->transform->Translate(this->rotationTransform->GetRight() * speed * elapsedTime * this->rightValue);
 	}
 }
 
@@ -154,7 +154,7 @@ void KG::Component::CCharacterComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	this->transform = this->GetGameObject()->GetComponent<TransformComponent>();
 	this->characterAnimation = this->GetGameObject()->GetComponent<IAnimationControllerComponent>();
-	this->rotationTrasnform = this->GetGameObject()->GetChild()->GetTransform();
+	this->rotationTransform = this->GetGameObject()->GetChild()->GetTransform();
 	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
 	this->physics->SetApply(false);
 }
@@ -199,7 +199,7 @@ bool KG::Component::CCharacterComponent::OnProcessPacket(unsigned char* packet, 
 			auto* ScenePacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_DATA>(packet);
 			//this->transform->SetPosition(ScenePacket->position);
 			this->InterpolatePosition(ScenePacket->position);
-			this->rotationTrasnform->SetRotation(ScenePacket->rotation);
+			this->rotationTransform->SetRotation(ScenePacket->rotation);
 			this->rightValue = ScenePacket->rightValue;
 			this->forwardValue = ScenePacket->forwardValue;
 			this->inputs = ScenePacket->inputs; // 인풋 갱신, 클라 업데이트 -> 무브 프로세스

@@ -14,7 +14,7 @@ namespace KG::Component
 	{
 
 		KG::Component::TransformComponent* transform = nullptr;
-		KG::Component::TransformComponent* rotationTrasnform = nullptr;
+		KG::Component::TransformComponent* rotationTransform = nullptr;
 		KG::Component::IAnimationControllerComponent* characterAnimation = nullptr;
 		KG::Component::DynamicRigidComponent* physics = nullptr;
 		constexpr static float inputRatio = 25.0f;
