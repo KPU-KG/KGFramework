@@ -21,7 +21,7 @@ namespace KG::Component
 	class DLL SPlayerComponent : public SBaseComponent
 	{
 	private:
-		static constexpr float packetInterval = 1 / 60.0f;
+		static constexpr float packetInterval = 1 / 10.0f;
 		float packetSendTimer = 0;
 		KG::Packet::CS_INPUT inputs;
 		KG::Component::TransformComponent* trasnform = nullptr;
@@ -40,16 +40,17 @@ namespace KG::Component
 		float rightValue = 0.0f;
 
 		bool isActive = true;
-
+		float respawnTimer = 0;
 		// Bullet
 		int bulletCount = 30;
-        static constexpr int MAX_HP = 30;
+        static constexpr int MAX_HP = 5;
         int hpPoint = MAX_HP;
 
 		bool reloadFlag = false;
 
 		void SendSyncPacket();
 		void ProcessMove(float elapsedTime);
+		void Respawn(float elapsedTime);
 	public:
 		std::shared_mutex playerInfoLock;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;

@@ -24,7 +24,11 @@ namespace KG::Component
 		constexpr static float bulletRepeatTime = 0.1f;
 		float forwardValue = 0.0f;
 		float rightValue = 0.0f;
+		float speedValue = 0.75f;
+		KG::Packet::INPUTS inputs;
 		void ProcessMoveAnim();
+		void ProcessMove(float elapsedTime);
+		void InterpolatePosition(DirectX::XMFLOAT3 position);
 	public:
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;

@@ -1,5 +1,6 @@
 #pragma once
 #define DEFAULT_PACKET_HEADER( x ) PacketHeader header = PacketHeader{sizeof(x), PacketID(KG::Packet::PacketType::x), KG::Server::NULL_NET_OBJECT_ID }
+#define PLAYERNUM 4
 
 #include "hash.h"
 #include <DirectXMath.h>
@@ -16,14 +17,14 @@ namespace KG::Server
 	constexpr NET_OBJECT_ID NULL_NET_OBJECT_ID = -343434;
 
 };
+
 namespace KG::Packet
 {
 	enum class PacketType : unsigned char
 	{
 		None = 0,
-		PacketHeader = 1,
+		PacketHeader = 1, 
 
-		SC_LOGIN_OK = 100, // 초기버전 미사용
 		SC_PLAYER_INIT,
 		SC_ADD_OBJECT,
 		SC_REMOVE_OBJECT,
@@ -38,9 +39,14 @@ namespace KG::Packet
 		SC_SYNC_ANIMATION,
 		SC_PLAYER_DATA,
         SC_ENEMY_HP,
-		CS_REQ_LOGIN = 200, // 초기버전 미사용
+		SC_LOGIN_OK,
+		SC_LOBBY_FULL,
+		SC_LOBBY_DATA,
+		SC_GAME_START,
+		CS_REQ_LOGIN, 
 		CS_INPUT, // 사용
-		CS_FIRE
+		CS_FIRE,
+		CS_LOBBY_CHANGE
 	};
 
 	
@@ -139,11 +145,7 @@ namespace KG::Packet
 		KG::Server::NET_OBJECT_ID objectId;
 	};
 	
-	//struct SC_LOGIN_OK
-	//{
-	//	DEFAULT_PACKET_HEADER(SC_LOGIN_OK);
-	//};
-
+	
 	struct SC_PLAYER_INIT
 	{
 		DEFAULT_PACKET_HEADER(SC_PLAYER_INIT);
@@ -152,11 +154,22 @@ namespace KG::Packet
 		RawFloat4 rotation;
 	};
 
-	struct SC_PLAYER_DATA // 플레이어, 적 관련 좌표만 주기적으로 송신
+
+	struct INPUTS
+	{
+		unsigned char stateW;
+		unsigned char stateA;
+		unsigned char stateS;
+		unsigned char stateD;
+		unsigned char stateShift;
+	};
+
+	struct SC_PLAYER_DATA // 플레이어, 적 관련 주기적으로 송신
 	{
 		DEFAULT_PACKET_HEADER(SC_PLAYER_DATA);
 		RawFloat3 position;
 		RawFloat4 rotation;
+		INPUTS inputs;
         float playerHp;
 		float forwardValue;
 		float rightValue;
@@ -229,6 +242,28 @@ namespace KG::Packet
         float percentage;
     };
 
+	struct SC_LOBBY_DATA
+	{
+		DEFAULT_PACKET_HEADER(SC_LOBBY_DATA);
+		char playerinfo[4];
+	};
+	
+	struct SC_LOGIN_OK
+	{
+		DEFAULT_PACKET_HEADER(SC_LOGIN_OK);
+		char lobbyid;
+	};
+
+	struct SC_LOBBY_FULL
+	{
+		DEFAULT_PACKET_HEADER(SC_LOBBY_FULL);
+	};
+	
+	struct SC_GAME_START
+	{
+		DEFAULT_PACKET_HEADER(SC_GAME_START);
+	};
+
 	struct CS_REQ_LOGIN
 	{
 		DEFAULT_PACKET_HEADER(CS_REQ_LOGIN);
@@ -251,6 +286,13 @@ namespace KG::Packet
 		RawFloat3 origin;
 		RawFloat3 direction;
 		float distance;
+	};
+
+	struct CS_LOBBY_CHANGE
+	{
+		DEFAULT_PACKET_HEADER(CS_LOBBY_CHANGE);
+		char id; // 플레이어 번호
+		char state; // 변경 상태
 	};
 
 #pragma pack(pop)
