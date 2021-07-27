@@ -46,10 +46,10 @@ void KG::Component::ShadowCasterComponent::InitializeAsDirectionalLightShadow()
 	desc.useDepthStencilBuffer = true;
 	desc.uploadSRVDepthBuffer = true;
 	desc.uploadSRVRenderTarget = false;
-	desc.width = 2048;
-	desc.height = 2048;
-	//desc.width = 4096;
-	//desc.height = 4096;
+	//desc.width = 2048;
+	//desc.height = 2048;
+	desc.width = 4096;
+	desc.height = 4096;
 	desc.length = 4;
 	this->directionalLightCamera->renderTextureDesc = desc;
 	this->directionalLightCamera->InitalizeCascade( static_cast<CameraComponent*>(this->gameObject->GetScene()->GetMainCamera()), this->targetLight );
@@ -200,7 +200,7 @@ bool KG::Component::ShadowCasterComponent::OnDrawGUI()
         {
             ImGui::OpenPopup("ShadowMap PopUp");
         }
-        if (ImGui::BeginPopup("ShadowMap PopUp"))
+        if (ImGui::BeginPopupModal("ShadowMap PopUp", 0, ImGuiWindowFlags_AlwaysAutoResize))
         {
             switch (this->GetTargetLightType())
             {
@@ -208,33 +208,37 @@ bool KG::Component::ShadowCasterComponent::OnDrawGUI()
             {
                 ImGui::SameLine();
                 ImGui::BeginGroup();
-                ImGui::DragFloat("cas 0", this->GetDirectionalLightCamera()->cascadePoint, 0.01f, 0.0f, 1.0f);
+                ImGui::DragFloat("cas 0", this->GetDirectionalLightCamera()->cascadePoint + 1, 0.01f, 0.0f, 1.0f);
                 auto handle = this->GetDirectionalLightCamera()->GetRenderTexture().depthStencilBuffer.GetDescriptor(DescriptorType::SRV, 1).GetGPUHandle();
                 ImGui::Image((ImTextureID)handle.ptr, ImVec2(350, 350));
                 ImGui::EndGroup();
 
                 ImGui::SameLine();
                 ImGui::BeginGroup();
-                ImGui::DragFloat("cas 1", this->GetDirectionalLightCamera()->cascadePoint + 1, 0.01f, 0.0f, 1.0f);
+                ImGui::DragFloat("cas 1", this->GetDirectionalLightCamera()->cascadePoint + 2, 0.01f, 0.0f, 1.0f);
                 handle = this->GetDirectionalLightCamera()->GetRenderTexture().depthStencilBuffer.GetDescriptor(DescriptorType::SRV, 2).GetGPUHandle();
                 ImGui::Image((ImTextureID)handle.ptr, ImVec2(350, 350));
                 ImGui::EndGroup();
 
                 ImGui::SameLine();
                 ImGui::BeginGroup();
-                ImGui::DragFloat("cas 2", this->GetDirectionalLightCamera()->cascadePoint + 2, 0.01f, 0.0f, 1.0f);
+                ImGui::DragFloat("cas 2", this->GetDirectionalLightCamera()->cascadePoint + 3, 0.01f, 0.0f, 1.0f);
                 handle = this->GetDirectionalLightCamera()->GetRenderTexture().depthStencilBuffer.GetDescriptor(DescriptorType::SRV, 3).GetGPUHandle();
                 ImGui::Image((ImTextureID)handle.ptr, ImVec2(350, 350));
                 ImGui::EndGroup();
 
                 ImGui::SameLine();
                 ImGui::BeginGroup();
-                ImGui::DragFloat("cas 3", this->GetDirectionalLightCamera()->cascadePoint + 3, 0.01f, 0.0f, 1.0f);
+                ImGui::DragFloat("cas 3", this->GetDirectionalLightCamera()->cascadePoint + 4, 0.01f, 0.0f, 1.0f);
                 handle = this->GetDirectionalLightCamera()->GetRenderTexture().depthStencilBuffer.GetDescriptor(DescriptorType::SRV, 4).GetGPUHandle();
                 ImGui::Image((ImTextureID)handle.ptr, ImVec2(350, 350));
                 ImGui::EndGroup();
             }
                 break;
+            }
+            if (ImGui::Button("Close"))
+            {
+                ImGui::CloseCurrentPopup();
             }
             ImGui::EndPopup();
         }

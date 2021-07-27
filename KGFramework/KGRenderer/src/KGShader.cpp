@@ -54,9 +54,9 @@ D3D12_RASTERIZER_DESC KG::Renderer::Shader::CreateRasterizerState( ShaderMeshTyp
     }
 	if ( pixType == ShaderPixelType::GSCubeShadow || pixType == ShaderPixelType::Shadow)
 	{
-		d3dRasterizerDesc.DepthBias = 10000;
-		d3dRasterizerDesc.DepthBiasClamp = 0.1f;
-		d3dRasterizerDesc.SlopeScaledDepthBias = 1.5f;
+		d3dRasterizerDesc.DepthBias = 0;
+		d3dRasterizerDesc.DepthBiasClamp = -0.1f;
+		d3dRasterizerDesc.SlopeScaledDepthBias = 10.5f;
 	}
     else 
     {

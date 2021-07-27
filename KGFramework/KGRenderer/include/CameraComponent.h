@@ -346,7 +346,7 @@ namespace KG::Component
 
 		KG::Renderer::RenderTextureDesc renderTextureDesc;
 
-        float cascadePoint[4] = { 0.0f, 0.3f, 0.6f, 1.0f };
+        float cascadePoint[5] = { 0.0f, 0.01f, 0.025f, 0.1f, 0.5f };
 
 		//Viewport 설정 필요
 
