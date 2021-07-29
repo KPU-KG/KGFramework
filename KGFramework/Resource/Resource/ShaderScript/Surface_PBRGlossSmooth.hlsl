@@ -7,11 +7,10 @@ struct MaterialData
 {
     uint ColorTextureIndex;
     uint NormalTextureIndex;
-    uint GlossinessTextureIndex;
-    uint SmoothnessTextureIndex;
+    uint MetalicSmoothTextureIndex;
     float SpecularValue;
     float2 UVSize;
-    float pad;
+    float2 pad;
 };
 
 // Don't Touch This Line
@@ -30,8 +29,9 @@ Surface UserSurfaceFunction(SurfaceInput input)
     result.reflection = objectInfo[input.InstanceID].environmentMapIndex / 12000.0f;
     
     result.specular = mat.SpecularValue;
-    result.metalic = shaderTexture[mat.MetalicTextureIndex].Sample(gsamAnisotoropicWrap, uv).xxx;
-    result.roughness = shaderTexture[mat.RoughnessTextureIndex].Sample(gsamAnisotoropicWrap, uv).xxx;
+    float4 metalicSmooth = shaderTexture[mat.MetalicSmoothTextureIndex].Sample(gsamAnisotoropicWrap, uv);
+    result.metalic = metalicSmooth.x;
+    result.roughness = 1 - metalicSmooth.a;
     result.emssion = 0.0f;
     
     float3x3 TBN = float3x3(

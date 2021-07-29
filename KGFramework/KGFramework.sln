@@ -31,6 +31,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XML", "XML", "{85D78402-5B3
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShaderCode", "ShaderCode", "{612EE3CC-1D6B-4E8F-8C11-7510E32215FA}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\Texture\Skymap\sunset_skybox_radiance.dds = Resource\Resource\Texture\Skymap\sunset_skybox_radiance.dds
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{85EDFD5A-179A-491B-B1BC-1CD4CC6BDB20}"
 	ProjectSection(SolutionItems) = preProject

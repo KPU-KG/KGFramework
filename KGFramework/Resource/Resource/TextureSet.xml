@@ -6,11 +6,15 @@
     <Texture id="grass" fileDir="Resource/Texture/grass.dds" dimension="Texture2D" format="DDS" hash_id="3681460185"/>
     <Texture id="one" fileDir="Resource/Texture/one.dds" dimension="Texture2D" format="DDS" hash_id="94880491"/>
     <Texture id="zero" fileDir="Resource/Texture/zero.dds" dimension="Texture2D" format="DDS" hash_id="3256532051"/>
-    <Texture id="SkySunset" fileDir="Resource/Texture/Skymap/sunset.dds" dimension="TextureCube" format="DDS" hash_id="2071956174"/>
     <Texture id="SkySnow" fileDir="Resource/Texture/Skymap/snowcube1024.dds" dimension="TextureCube" format="DDS" hash_id="4111474821"/>
-  <Texture id="SkyDay" fileDir="Resource/Texture/Skymap/output_skybox_hdr.dds" dimension="TextureCube" format="DDS" hash_id="3325274414"/>
-  <!--<Texture id="SkyDay" fileDir="Resource/Texture/Skymap/daytime.dds" dimension="TextureCube" format="DDS" hash_id="3325274414"/>-->
-  <!--LUT-->
+    <Texture id="SkyDay" fileDir="Resource/Texture/Skymap/output_skybox_hdr.dds" dimension="TextureCube" format="DDS" hash_id="3325274414"/>
+    <Texture id="SkyDay_irradiance" fileDir="Resource/Texture/Skymap/output_skybox_irradiance.dds" dimension="TextureCube" format="DDS" hash_id="3965083815"/>
+    <Texture id="SkyDay_radiance" fileDir="Resource/Texture/Skymap/output_skybox_radiance.dds" dimension="TextureCube" format="DDS" hash_id="1777447134"/>
+    <Texture id="SkySunset" fileDir="Resource/Texture/Skymap/sunset.dds" dimension="TextureCube" format="DDS" hash_id="2071956174"/>
+    <Texture id="SkySunset_irradiance" fileDir="Resource/Texture/Skymap/sunset_skybox_radiance.dds" dimension="TextureCube" format="DDS" hash_id="1549620103"/>
+    <Texture id="SkySunset_radiance" fileDir="Resource/Texture/Skymap/sunset_skybox_irradiance.dds" dimension="TextureCube" format="DDS" hash_id="2776523966"/>
+    <!--<Texture id="SkyDay" fileDir="Resource/Texture/Skymap/daytime.dds" dimension="TextureCube" format="DDS" hash_id="3325274414"/>-->
+    <!--LUT-->
     <Texture id="iblLUT" fileDir="Resource/Texture/specLUT/ibl_brdf_lut.dds" dimension="Texture2D" format="DDS" hash_id="2315349235"/>
     <!--Metal PBR-->
     <Texture id="metal_color" fileDir="Resource/Texture/cc0_metal/color.dds" dimension="Texture2D" format="DDS" hash_id="1743296994"/>
@@ -231,6 +235,7 @@
     <Texture id="streetlight_normal" fileDir="Resource/Geometry/newmo/Props/Pole/streetLightc1/Textures/streetlight/normal.dds" dimension="Texture2D" format="DDS" hash_id="3068713474"/>
     <Texture id="streetlight_rough" fileDir="Resource/Geometry/newmo/Props/Pole/streetLightc1/Textures/streetlight/rough.dds" dimension="Texture2D" format="DDS" hash_id="1187273206"/>
     <Texture id="streetlight_metalic" fileDir="Resource/Geometry/newmo/Props/Pole/streetLightc1/Textures/streetlight/metalic.dds" dimension="Texture2D" format="DDS" hash_id="2463398644"/>
+    <Texture id="streetlight_ms" fileDir="Resource/Geometry/newmo/Props/Pole/streetLightc1/Textures/streetlight/metalicsmooth.dds" dimension="Texture2D" format="DDS" hash_id="141896951"/>
     <!--cliff_v01-->
     <Texture id="cliff_v01_color" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v01/color.dds" dimension="Texture2D" format="DDS" hash_id="2214511347"/>
     <Texture id="cliff_v01_normal" fileDir="Resource/Geometry/newmo/Cliffs/Textures/cliff_v01/normal.dds" dimension="Texture2D" format="DDS" hash_id="2341435163"/>

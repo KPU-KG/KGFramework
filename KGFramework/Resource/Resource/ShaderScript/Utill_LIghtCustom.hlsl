@@ -71,8 +71,8 @@ float4 CustomLightCalculator(LightData light, Surface info, float3 lightDir, flo
  
  
     float3 F = fresnelSchlick(F0, VDotH);
-    float D = ndfGGX(NDotH, clamp( 1- info.roughness, 0.0001, 1));
-    float G = gaSchlickGGX(NDotL, NDotV, clamp(1 - info.roughness, 0.0001, 1));
+    float D = ndfGGX(NDotH, clamp(info.roughness, 0.0001, 1));
+    float G = gaSchlickGGX(NDotL, NDotV, clamp(info.roughness, 0.0001, 1));
  
     float3 kd = lerp(float3(1, 1, 1) - F, float3(0.0f, 0.0f, 0.0f), info.metalic.xxx);
  
@@ -108,7 +108,14 @@ float4 CustomLightCalculator(LightData light, Surface info, float3 lightDir, flo
     //return finalColor;
 }
 
-float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightDir, float3 cameraDir, float atten, uint lutIndex)
+uint querySpecularTextureLevels(uint irrad)
+{
+    uint width, height, levels;
+    shaderTextureCube[irrad].GetDimensions(0, width, height, levels);
+    return levels;
+}
+
+float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightDir, float3 cameraDir, float atten, uint lutIndex, uint diffuseRad, uint specularRad)
 {
     
     float3 L = -lightDir;
@@ -121,20 +128,26 @@ float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightD
     float NDotH = saturate(dot(N, H));
     float VDotH = saturate(dot(V, H));
     
+    float cosLo = max(dot(N, -V), 0.0f);
+    
     float Fdielectric = 0.04f;
     float3 F0 = lerp(Fdielectric.xxx, info.albedo.xyz, info.metalic.xxx);
     
     float3 F = fresnelSchlick(F0, VDotH);
-    float G = gaSchlickGGX(NDotL, NDotV, 1 - info.roughness);
+    float G = gaSchlickGGX(NDotL, NDotV, clamp(info.roughness, 0.0001, 1));
  
-    float3 kd = lerp(float3(1, 1, 1) - F, float3(0.0f, 0.0f, 0.0f), 1.0f.xxx - info.metalic.xxx);
+    float3 kd = lerp(float3(1, 1, 1) - F, float3(0.0f, 0.0f, 0.0f), info.metalic.xxx);
     //float3 reflec = reflect(-cameraDir, info.wNormal);
     float3 reflec = reflect(cameraDir, info.wNormal);
     
-    float2 envBRDF = shaderTexture[lutIndex].Sample(gsamLinearClamp, float2(max(dot(N, V), 0.0f), 1 - info.roughness)).rg;
-    float3 envPixel = shaderTextureCube[info.environmentMap].Sample(gsamAnisotoropicWrap, normalize(reflec)).rgb;
-    float3 specularIBL = (F * envBRDF.x + envBRDF.y) * envPixel;
-    return float4(specularIBL, 1.0f);
+    float3 diffuseIrradiance = shaderTextureCube[diffuseRad].Sample(gsamAnisotoropicWrap, N);
+    float3 diffuseIBL = kd * info.albedo * diffuseIrradiance;
+    
+    float2 specularBRDF = shaderTexture[lutIndex].Sample(gsamLinearClamp, float2(VDotH, 1 - info.roughness)).rg;
+    uint specularTextureLevel = querySpecularTextureLevels(specularRad);
+    float3 specularIrradiance = shaderTextureCube[specularRad].SampleLevel(gsamAnisotoropicWrap, normalize(reflec), specularTextureLevel * (info.roughness)).rgb;
+    float3 specularIBL = (F0 * specularBRDF.x + specularBRDF.y) * specularIrradiance;
+    return float4(diffuseIBL + specularIBL, 1.0f);
 }
 
 #endif

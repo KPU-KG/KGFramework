@@ -3,7 +3,10 @@
 groupshared float shaderCache;
 
 static const float3 lumFactor = float3(0.299, 0.587, 0.114);
-static const float MiddleGray = 3.429f;
+//static const float MiddleGray = 3.429f;
+//static const float LimWhiteSQR = 5.8f;
+
+static const float MiddleGray = 1.429f;
 static const float LimWhiteSQR = 5.8f;
 
 float3 ToneMapping(float3 hdrColor)
