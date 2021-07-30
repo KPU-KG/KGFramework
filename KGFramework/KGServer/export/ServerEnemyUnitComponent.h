@@ -5,8 +5,6 @@
 #include <vector>
 #include <unordered_set>
 
-constexpr int MAX_NODE = 5;
-
 namespace KG::Component
 {
 	class SEnemyUnitComponent;
@@ -32,12 +30,13 @@ namespace KG::Component
 	struct StateManager {
 		SEnemyUnitComponent* enemyComp;
 		int curState = 0;
-		StateManager(SEnemyUnitComponent* comp) { enemyComp = comp; }
+		StateManager(SEnemyUnitComponent* comp);
 		virtual ~StateManager();
 
-		virtual void Init();
-		virtual void SetState();
-		virtual void Execute(float elapsedTime);
+		virtual void Init() = 0;
+		virtual void SetState() = 0;
+		virtual void Execute(float elapsedTime) = 0;
+		int GetCurState() const;
 	};
 
 	class DynamicRigidComponent;
@@ -48,6 +47,7 @@ namespace KG::Component
 	class DLL SEnemyUnitComponent : public SBaseComponent
 	{
 	protected:
+		char** session;
 		const char*									presetName;
 		std::unordered_set<KG::Server::NET_OBJECT_ID> playerId;
 		KG::Component::SBaseComponent*				target = nullptr;
@@ -95,7 +95,9 @@ namespace KG::Component
 		bool IsAttackable() const;
 		virtual void PostAttack();
 		virtual void Attack(SGameManagerComponent* gameManager);
+		void SetSession(char** s);
 		SEnemyUnitComponent();
+		virtual ~SEnemyUnitComponent();
 		void SetCenter(DirectX::XMFLOAT3 center);
 		void SetSpeed(float speed);
 		void SetIdleInterval(float interval);

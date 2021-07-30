@@ -13,15 +13,23 @@ namespace KG::Physics
 	class IPhysicsScene;
 }
 
+// 맵 사이즈
+// x 420 z 300
+// + 여유분 20
+
 namespace KG::Component
 {
-	static constexpr int ENEMY_TYPE_MECH = 0;
-
 	class SEnemyUnitComponent;
 	class EnemyGeneratorComponent;
 	class SGameManagerComponent;
 
-	// 나중에 파일 분리할 것
+	constexpr int SESSION_TYPE_NONE = 0;
+	constexpr int SESSION_TYPE_BUILDING = 1;
+	constexpr int SESSION_TYPE_UNIT = 2;
+
+	constexpr unsigned int MAP_SIZE_X = 340;
+	constexpr unsigned int MAP_SIZE_Z = 460;
+
 	struct Region {
 		friend KG::Component::EnemyGeneratorComponent;
 		friend KG::Component::SGameManagerComponent;
@@ -45,8 +53,13 @@ namespace KG::Component
 	protected:
 		std::vector<SEnemyUnitComponent*> enemies;
 		std::vector<KG::Component::Region> region;
+
+		// 세션 나누기
+		char** session;
+
 		int currentRegion = 0;
 		bool generateEnemy = false;
+		bool initialized = false;
 		unsigned int score = 0;
 		KG::Component::Region GetNextRegion();
 		int GetCurrentRegionIndex() const;
@@ -54,6 +67,8 @@ namespace KG::Component
 	public:
 		bool isAttackable = false;
 		EnemyGeneratorComponent();
+		~EnemyGeneratorComponent();
+		void Initialize();
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		bool IsGeneratable() const;

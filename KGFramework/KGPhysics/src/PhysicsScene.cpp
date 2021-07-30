@@ -507,3 +507,75 @@ RaycastResult KG::Physics::PhysicsScene::QueryRaycastResult(DirectX::XMFLOAT3 or
     }
     return result;
 }
+
+std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> KG::Physics::PhysicsScene::GetStaticActorExtents()
+{
+    std::vector<std::pair<std::pair<int, int>, std::pair<int, int>>> bounds;
+
+    PxActorTypeFlags types;
+    types.set(PxActorTypeFlag::eRIGID_STATIC);
+
+    PxActor** buf = nullptr;
+    PxU32 size = this->scene->getNbActors(types);
+    buf = new PxActor * [size];
+    scene->getActors(types, buf, static_cast<physx::PxU32>(size), 1);
+
+    for (int i = 0; i < size - 1; ++i) {
+        auto wb = buf[i]->getWorldBounds();
+        if (wb.isValid()) {
+            auto e = wb.getExtents();
+            auto p = wb.getCenter();
+            bounds.emplace_back(std::make_pair(round(e.x), round(e.z)), std::make_pair(round(p.x), round(p.z)));
+        }
+    }
+
+    return bounds;
+}
+
+// std::vector<std::pair<int, int>> KG::Physics::PhysicsScene::GetStaticActorsPosition()
+// {
+//     std::vector<std::pair<int, int>> pos;
+//     
+//     PxActorTypeFlags types;
+//     types.set(PxActorTypeFlag::eRIGID_STATIC);
+//     
+//     PxActor** buf;
+//     PxU32 size = this->scene->getNbActors(types);
+//     scene->getActors(types, buf, static_cast<physx::PxU32>(size), 0);
+// 
+//     for (int i = 0; i < size; ++i) {
+//         auto p = buf[i]->getWorldBounds().getExtents();
+//         // auto p = buf[i]->getWorldBounds().getCenter();
+//         buf[i]->getWorldBounds().
+//         pos.emplace_back(p.x, p.z);
+//     }
+// 
+//     return pos;
+// }
+// 
+// uint32_t KG::Physics::PhysicsScene::GetStaticActors(physx::PxActor** buf, uint32_t size) {
+//     PxActorTypeFlags types;
+//     types.set(PxActorTypeFlag::eRIGID_STATIC);
+//     return scene->getActors(types, buf, static_cast<physx::PxU32>(size), 0);
+// }
+// 
+// uint32_t KG::Physics::PhysicsScene::GetNbStaticActors()
+// {
+//     PxActorTypeFlags types;
+//     types.set(PxActorTypeFlag::eRIGID_STATIC);
+//     return this->scene->getNbActors(types);
+// }
+// 
+// uint32_t KG::Physics::PhysicsScene::GetDynamicActors(physx::PxActor** buf, uint32_t size)
+// {
+//     PxActorTypeFlags types;
+//     types.set(PxActorTypeFlag::eRIGID_DYNAMIC);
+//     return scene->getActors(types, buf, static_cast<physx::PxU32>(size), 0);
+// }
+// 
+// uint32_t KG::Physics::PhysicsScene::GetNbDynamicActors()
+// {
+//     PxActorTypeFlags types;
+//     types.set(PxActorTypeFlag::eRIGID_DYNAMIC);
+//     return this->scene->getNbActors(types);
+// }

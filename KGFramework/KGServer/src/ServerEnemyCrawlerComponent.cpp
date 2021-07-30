@@ -515,6 +515,8 @@ float KG::Component::CrawlerTraceState::GetValue() {
 	return 0;
 }
 
+KG::Component::CrawlerStateManager::CrawlerStateManager(SEnemyUnitComponent* comp) : StateManager(comp) { }
+
 KG::Component::CrawlerStateManager::~CrawlerStateManager() {
 	for (auto& s : state) {
 		delete s;
@@ -527,6 +529,7 @@ void KG::Component::CrawlerStateManager::Init() {
 	for (auto& s : state) {
 		s->InitState();
 	}
+	curState = STATE_WANDER;
 }
 
 void KG::Component::CrawlerStateManager::SetState() {

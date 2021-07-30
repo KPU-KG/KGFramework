@@ -116,6 +116,9 @@ bool KG::Component::EnemyGeneratorComponent::OnDrawGUI()
 void KG::Component::EnemyGeneratorComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	SBaseComponent::OnCreate(obj);
+	for (int x = 0; x < MAP_SIZE_X; ++x) {
+		memset(session[x], SESSION_TYPE_NONE, MAP_SIZE_Z * sizeof(char));
+	}
 }
 
 void KG::Component::EnemyGeneratorComponent::Update(float elapsedTime)
@@ -147,7 +150,61 @@ KG::Component::EnemyGeneratorComponent::EnemyGeneratorComponent()
 	:
 	generateProp("GenerateEnemy", generateEnemy)
 {
+	session = new char* [MAP_SIZE_X];
+	for (int x = 0; x < MAP_SIZE_Z; ++x)
+		session[x] = new char[MAP_SIZE_Z];
+}
 
+KG::Component::EnemyGeneratorComponent::~EnemyGeneratorComponent()
+{
+	for (int x = 0; x < MAP_SIZE_X; ++x) {
+		delete session[x];
+	}
+
+	delete[] session;
+}
+
+void KG::Component::EnemyGeneratorComponent::Initialize()
+{
+	if (initialized)
+		return;
+
+	auto physicsScene = this->server->GetPhysicsScene();
+	if (physicsScene == nullptr)
+		return;
+
+	auto actorExtents = physicsScene->GetStaticActorExtents();
+	for (auto extent : actorExtents) {
+		auto bound = extent.first;
+		auto center = extent.second;
+		int bx = bound.first;
+		int bz = bound.second;
+		int cx = center.first + (MAP_SIZE_X / 2);
+		int cz = center.second + (MAP_SIZE_Z / 2);
+
+		int x = max(0, cx - bx);
+		int w = min(MAP_SIZE_X, cx + bx);
+		int z = max(0, cz - bz);
+		int d = min(MAP_SIZE_Z, cz + bz) - z;
+		if (z + d >= MAP_SIZE_Z)
+			d = MAP_SIZE_Z - z;
+
+		if (w - x > 200 || d > 200)
+			continue;
+		for (; x < w; ++x) {
+			memset(&session[x][z], SESSION_TYPE_BUILDING, d);
+		}
+
+#ifdef _DEBUG
+		DebugNormalMessage("bound : " << bx << ", " << bz << " / center : " << cx << ", " << cz);
+#endif
+	}
+
+#ifdef _DEBUG
+	DebugNormalMessage("Enemy Generator : Initialize Session");
+#endif
+
+	initialized = true;
 }
 
 bool KG::Component::EnemyGeneratorComponent::IsGeneratable() const
@@ -258,6 +315,7 @@ void KG::Component::EnemyGeneratorComponent::SendAttackPacket(SGameManagerCompon
 			e->PostAttack();
 		}
 	}
+	this->isAttackable = false;
 }
 
 void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
@@ -268,7 +326,7 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		return;
 	auto region = GetNextRegion();
 
-	int enemyCount = randomSpawn(genRegion);
+	int enemyCount = 1; // randomSpawn(genRegion);
 
 	for (int i = 0; i < enemyCount; ++i) {
 		std::uniform_real_distribution<float> randomPos(-region.range, region.range);
@@ -282,8 +340,8 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		// 	presetName = "EnemyCrawler";
 		// 	break;
 		// }
-		auto presetName = "EnemyCrawler";
-		// auto presetName = "EnemyMech";
+		// auto presetName = "EnemyCrawler";
+		auto presetName = "EnemyMech";
 
 		auto presetId = KG::Utill::HashString(presetName);
 
@@ -331,13 +389,14 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		// 	break;
 		// }
 
-		auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyCrawlerComponent>();
-		// auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyMechComponent>();
+		// auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyCrawlerComponent>();
+		auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyMechComponent>();
 		enemyCtrl->SetCenter(region.position);
 		enemyCtrl->SetWanderRange(region.range);
 		enemyCtrl->SetPosition(genPos);
 		AddEnemyControllerCompoenent(enemyCtrl);
 		enemyCtrl->SetEnemyPresetName(presetName);
+		enemyCtrl->SetSession(session);
 		this->GetGameObject()->GetTransform()->AddChild(comp->GetGameObject()->GetTransform());
 		this->BroadcastPacket(&addObjectPacket);
 	}
@@ -353,7 +412,7 @@ void KG::Component::SGameManagerComponent::UpdatePlayerSession() {
 	auto& pid = this->server->GetDisconnectedPlayerId();
 	while (!pid.empty()) {
 		auto id = pid.top();
-		if (playerObjects.count(id)) {
+		if (playerObjects.count(id) > 0) {
 			playerObjects.unsafe_erase(id);
 			enemyGenerator->DeregisterPlayerToEnemy(id);
 		}
@@ -370,7 +429,6 @@ void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 
 void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 {
-	// if (playerObjects.size() != this->server->)
 	this->UpdatePlayerSession();
 	if (enemyGenerator == nullptr) {
 		enemyGenerator = this->gameObject->GetComponent<EnemyGeneratorComponent>();
@@ -382,9 +440,12 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 
 	if (enemyGenerator) {
 		if (enemyGenerator->IsGeneratable()) {
+			enemyGenerator->Initialize();
 			enemyGenerator->GenerateEnemy();
 			for (auto& p : playerObjects) {
+				p.second->playerInfoLock.lock();
 				enemyGenerator->RegisterPlayerToEnemy(p.first);
+				p.second->playerInfoLock.unlock();
 			}
 		}
 		if (enemyGenerator->isAttackable) {

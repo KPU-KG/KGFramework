@@ -24,6 +24,7 @@ namespace physx
 	class PxPvd;
 	class PxScene;
 	class PxRigidDynamic;
+	class PxActor;
 }
 
 namespace KG::Component 
@@ -77,5 +78,12 @@ namespace KG::Physics
         virtual KG::Component::IRigidComponent* QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) override final;
         virtual RaycastResult QueryRaycastResult(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) override final;
 		static PhysicsScene* GetInstance() { return instance; }
+
+		virtual std::vector < std::pair<std::pair<int, int>, std::pair<int, int>>> GetStaticActorExtents() override final;
+		// virtual std::pair<std::vector<std::pair<int, int>>, std::vector<std::pair<int, int>>> GetStaticActorsPosition() override final;
+		// virtual uint32_t GetStaticActors(physx::PxActor** buf, uint32_t size) override final;
+		// virtual uint32_t GetNbStaticActors() override final;
+		// virtual uint32_t GetDynamicActors(physx::PxActor** buf, uint32_t size) override final;
+		// virtual uint32_t GetNbDynamicActors() override final;
 	};
 }

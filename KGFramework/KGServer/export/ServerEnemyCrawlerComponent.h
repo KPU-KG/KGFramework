@@ -98,15 +98,14 @@ namespace KG::Component
 		const static int STATE_WANDER = 0;
 		const static int STATE_TRACE = 1;
 
-		const static int STATE_COUNT = 2;
+		const static size_t STATE_COUNT = 2;
 		std::array<State*, STATE_COUNT> state;
-		int curState = STATE_WANDER;
-		CrawlerStateManager(SEnemyUnitComponent* comp) : StateManager(comp) { }
+		CrawlerStateManager(SEnemyUnitComponent* comp);
 		virtual ~CrawlerStateManager();
 
-		virtual void Init() override;
-		virtual void SetState() override;
-		virtual void Execute(float elapsedTime) override;
+		virtual void Init() override final;
+		virtual void SetState() override final;
+		virtual void Execute(float elapsedTime) override final;
 	};
 
 

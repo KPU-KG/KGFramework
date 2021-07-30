@@ -458,38 +458,6 @@ void KG::GameFramework::PostSceneFunction()
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}
 		);
-	
-	// this->scene->AddModelPreset("EnemyCrawler",
-	// []()
-	// {
-	// 	KG::Resource::MaterialMatch a;
-	// 	a.defaultMaterial.emplace_back("crawlerLow");
-	// 	a.defaultMaterial.emplace_back("crawlerLaser");
-	// 	a.defaultMaterial.emplace_back("crawlerModular");
-	// 
-	// 	return std::make_pair(
-	// 		KG::Utill::HashString("crawler.fbx"),
-	// 		std::move(a)
-	// 	);
-	// }
-	// ,
-	// 	[this](KG::Core::GameObject& obj)
-	// {
-	// 	auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
-	// 	ctrl->RegisterAnimation("crawler.fbx"_id, 0);
-	// 	ctrl->SetAnimation(KG::Utill::HashString("crawler.fbx"_id));
-	// 
-	// 	ctrl->SetDefaultAnimation(KG::Utill::HashString("crawler.fbx"_id));
-	// 	ctrl->SetIgnoreScale(false);
-	// 	ctrl->SetIgnoreTranslate(true);
-	// 	obj.AddComponent(ctrl);
-	// 
-	// 	auto* phy = this->physics->GetNewDynamicRigidComponent();
-	// 	obj.AddTemporalComponent(phy);
-	// 
-	// 	// obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
-	// }
-	// );
 		
 	this->scene->AddModelPreset("EnemyMech",
 		[]()
