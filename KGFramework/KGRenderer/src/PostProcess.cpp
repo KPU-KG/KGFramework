@@ -95,9 +95,6 @@ void KG::Renderer::PostProcess::Set(ID3D12GraphicsCommandList* pd3dCommandList)
 KG::Renderer::PostProcess::PostProcess(const KG::Resource::Metadata::ShaderSetData& data)
 {
     this->shaderSetData = data;
-    //this->unitSizeX = data.unitSizeX;
-    //this->unitSizeY = data.unitSizeY;
-    //this->unitSizeZ = data.unitSizeZ;
     this->CreatePSO();
     this->CreateMaterialBuffer(this->shaderSetData);
 }
@@ -147,53 +144,39 @@ KG::Resource::DynamicElementInterface KG::Renderer::PostProcess::GetMaterialElem
     return this->materialBuffer->GetElement(index);
 }
 
-bool KG::Renderer::PostProcess::OnDrawGUI()
+KG::Resource::DynamicElementInterface KG::Renderer::PostProcess::GetMaterialElement(UINT index)
 {
-    bool ret = false;
-    ImGui::BulletText(id.srcString.c_str());
-    ImGui::SameLine();
-    ImGui::Checkbox("Active", &this->isActive);
-    ImGui::SameLine();
-    if (ImGui::SmallButton("+"))
-    {
-        ret = true;
-        this->priority++;
-    }
-    ImGui::SameLine();
-    if (ImGui::SmallButton("-"))
-    {
-        ret = true;
-        this->priority--;
-    }
-    return ret;
-}
-
-void KG::Renderer::PostProcess::OnDataSave(tinyxml2::XMLElement* document)
-{
-    auto* element = document->InsertNewChildElement("PostProcess");
-    KG::Utill::XMLConverter::XMLElementSave<KG::Utill::HashString>(element, "id", this->id);
-    KG::Utill::XMLConverter::XMLElementSave<int>(element, "priority", this->priority);
+    return this->materialBuffer->GetElement(index);
 }
 
 KG::Renderer::PostProcessor::PostProcessor()
-    : processQueue([](const PostProcess const* a, const PostProcess const* b)-> bool { return a->priority < b->priority; })
 {
     this->Initialize();
     this->copyProcess = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess("PostCopy"_id);
     this->copyProcess->id = KG::Utill::HashString("PostCopy");
 
-    this->ssaoProcessOne = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess("PostSSAO_One"_id);
-    this->ssaoProcessOne->id = KG::Utill::HashString("PostSSAO_One");
+    {
+        auto mat = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcessMaterial("PostSSAO_One"_id);
+        auto* shader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess(mat.second);
+        this->ssaoProcessOne = std::make_tuple(shader, mat.first, true);
+        std::get<0>(this->ssaoProcessOne)->id = KG::Utill::HashString("PostSSAO_One");
+    }
 
-    this->ssaoProcessTwo= KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess("PostSSAO_Two"_id);
-    this->ssaoProcessTwo->id = KG::Utill::HashString("PostSSAO_Two");
+    {
+        auto mat = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcessMaterial("PostSSAO_One"_id);
+        auto* shader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess(mat.second);
+        this->ssaoProcessTwo = std::make_tuple(shader, mat.first, true);
+        std::get<0>(this->ssaoProcessTwo)->id = KG::Utill::HashString("PostSSAO_Two");
+    }
 }
 
-void KG::Renderer::PostProcessor::AddPostProcess(const KG::Utill::HashString& id, int priority)
+void KG::Renderer::PostProcessor::AddPostProcess(const KG::Utill::HashString& id, bool active)
 {
-    auto* process = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess(id);
-    process->id = id;
-    this->processQueue.insert(process);
+    auto mat = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcessMaterial(id);
+    auto* shader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess(mat.second);
+    auto process = std::make_pair(shader, mat.first);
+    process.first->id = id;
+    this->processQueue.emplace_back(process);
 }
 
 void KG::Renderer::PostProcessor::Draw(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex, ID3D12Resource* cameraData)
@@ -224,9 +207,9 @@ void KG::Renderer::PostProcessor::Draw(ID3D12GraphicsCommandList* cmdList, Rende
     this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
     this->bufferLDR.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
     KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
-    for (auto* process : this->processQueue)
+    for (PostProcessMaterial process : this->processQueue)
     {
-        if (!process->isActive) continue;
+        if (std::get<2>(process) == false) continue;
         auto prev = this->currentOutputIndex == 0 ? 1 : 0;
         cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Result,
             this->outputResources[currentOutputIndex].GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle()
@@ -473,7 +456,10 @@ void KG::Renderer::PostProcessor::OnDataSave(tinyxml2::XMLElement* element)
 {
     for (auto& i : this->processQueue)
     {
-        i->OnDataSave(element);
+        //auto* element = document->InsertNewChildElement("PostProcess");
+        //KG::Utill::XMLConverter::XMLElementSave<KG::Utill::HashString>(element, "id", this->id);
+        //KG::Utill::XMLConverter::XMLElementSave<bool>(element, "isActive", this->isActive);
+        //i->OnDataSave(element);
     }
 }
 
@@ -483,7 +469,7 @@ void KG::Renderer::PostProcessor::OnDataLoad(tinyxml2::XMLElement* element)
     while (csr != nullptr)
     {
         auto id = KG::Utill::XMLConverter::XMLElementLoad<KG::Utill::HashString>(csr, "id");
-        auto priority = KG::Utill::XMLConverter::XMLElementLoad<int>(csr, "priority");
+        auto isActive = KG::Utill::XMLConverter::XMLElementLoad<bool>(csr, "isActive");
         this->AddPostProcess(id, priority);
         csr = csr->NextSiblingElement("PostProcess");
     }

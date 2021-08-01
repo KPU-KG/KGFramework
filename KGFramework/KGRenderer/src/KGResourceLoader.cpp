@@ -465,3 +465,81 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceLoader::LoadMater
 	}
 	return std::make_pair( index, shaderHashID );
 }
+
+std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceLoader::LoadPostProcessMaterialFromFile(const std::string& xmlDir, const KG::Utill::HashString& targetID)
+{
+    bool isDirty = false;
+    KG::Resource::Metadata::TextureData data;
+    tinyxml2::XMLDocument doc;
+
+    size_t index;
+    KG::Utill::hashType shaderHashID;
+
+    doc.LoadFile(xmlDir.c_str());
+    auto shaderSets = doc.FirstChildElement("MaterialSet")->FirstChildElement("Material");
+    while (shaderSets)
+    {
+        auto id = shaderSets->Attribute("id");
+        auto hash = shaderSets->Attribute("hash_id");
+        auto shaderId = shaderSets->Attribute("shaderID");
+        auto shaderHash = shaderSets->Attribute("shaderHashID");
+        unsigned hash_id = 0;
+        unsigned shaderHash_id = 0;
+        if (!hash)
+        {
+            hash_id = KG::Utill::HashString(id).value;
+            shaderSets->SetAttribute("hash_id", hash_id);
+            isDirty = true;
+        }
+        else
+        {
+            hash_id = std::stoul(hash);
+        }
+
+        if (!shaderHash)
+        {
+            shaderHash_id = KG::Utill::HashString(shaderId).value;
+            shaderSets->SetAttribute("shaderHashID", shaderHash_id);
+            isDirty = true;
+        }
+        else
+        {
+            shaderHash_id = std::stoul(shaderHash);
+        }
+
+        if (hash_id == targetID.value)
+        {
+            shaderHashID = shaderHash_id;
+
+            auto* currentShader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess(shaderHash_id);
+            bool hasMaterialDesc = currentShader->MaterialDescription.size() != 0;
+            //메인 로직
+            auto IDSTRING = KG::Utill::HashString(hash_id);
+            if (!currentShader->CheckMaterialLoaded(IDSTRING))
+            {
+                index = currentShader->RequestMaterialIndex(IDSTRING);
+                auto elementInterface = currentShader->GetMaterialElement(IDSTRING);
+                auto childs = shaderSets->FirstChildElement();
+                int offset = 0;
+                while (childs)
+                {
+                    DebugNormalMessage(L"메테리얼 읽는 중 ");
+                    auto* a = hasMaterialDesc ? nullptr : &currentShader->MaterialDescription.emplace_back();
+                    MaterialParser::parsers.at(childs->Name())(childs, elementInterface, offset, isDirty, a);
+                    if (a && a->type == KG::Renderer::MaterialType::PADDING) currentShader->MaterialDescription.pop_back();
+                    childs = childs->NextSiblingElement();
+                }
+            }
+            break;
+        }
+        else
+        {
+            shaderSets = shaderSets->NextSiblingElement();
+        }
+    }
+    if (isDirty)
+    {
+        doc.SaveFile(xmlDir.c_str());
+    }
+    return std::make_pair(index, shaderHashID);
+}

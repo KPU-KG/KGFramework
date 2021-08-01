@@ -245,15 +245,18 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceContainer::LoadMa
 	}
 }
 
-//void KG::Resource::ResourceContainer::AddAnimation( const KG::Utill::HashString& id, UINT animationIndex, const KG::Utill::AnimationSet& animation )
-//{
-//	this->animations.emplace( std::make_pair( id, animationIndex ), animation );
-//}
-//
-//void KG::Resource::ResourceContainer::AddAnimation( const KG::Utill::HashString& id, UINT animationIndex, KG::Utill::AnimationSet&& animation )
-//{
-//	this->animations.emplace( std::make_pair( id, animationIndex ), std::move(animation) );
-//}
+std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceContainer::LoadPostProcessMaterial(const KG::Utill::HashString& id)
+{
+    if (this->postProcessMaterials.count(id))
+    {
+        return this->postProcessMaterials.at(id);
+    }
+    else
+    {
+        auto result = KG::Resource::ResourceLoader::LoadMaterialFromFile("Resource/MaterialSet.xml", id);
+        return this->postProcessMaterials.emplace(id, result).first->second;
+    }
+}
 
 void KG::Resource::ResourceContainer::ConvertNodeToObject(const KG::Utill::HashString& id, KG::Core::GameObject* object, KG::Utill::ModelNode* node, const MaterialMatch& materials, KG::Core::GameObject* rootObject)
 {

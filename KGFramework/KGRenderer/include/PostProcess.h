@@ -45,8 +45,7 @@ namespace KG::Renderer
         std::map<KG::Utill::HashString, size_t> materialIndex;
         std::unique_ptr<Resource::DynamicConstantBufferManager> materialBuffer;
     public:
-        bool isActive = true;
-        int priority = 0;
+        std::vector<MaterialElement> MaterialDescription;
 
         UINT cachedScreenX = 0;
         UINT cachedScreenY = 0;
@@ -69,17 +68,18 @@ namespace KG::Renderer
         bool CheckMaterialLoaded(const KG::Utill::HashString& ID);
         size_t RequestMaterialIndex(const KG::Utill::HashString& ID);
         Resource::DynamicElementInterface GetMaterialElement(const KG::Utill::HashString& ID);
-        bool OnDrawGUI();
-        void OnDataSave(tinyxml2::XMLElement* element);
+        Resource::DynamicElementInterface GetMaterialElement(UINT index);
     };
 
     class PostProcessor
     {
+        using PostProcessMaterial = std::tuple<PostProcess*, UINT, bool>;
         static constexpr UINT outputCount = 2;
+        static constexpr UINT unitSize = 256;
+        GroupCountParser parser;
         UINT currentOutputIndex = 0;
         UINT width = 0;
         UINT height = 0;
-        static constexpr UINT unitSize = 256;
         std::array<KG::Resource::DXResource, outputCount> outputResources;
 
         KG::Resource::DXResource buffer0;
@@ -94,18 +94,16 @@ namespace KG::Renderer
         KG::Resource::DXResource bufferSSAO;
 
         PostProcess* copyProcess;
-        PostProcess* ssaoProcessOne;
-        PostProcess* ssaoProcessTwo;
-        GroupCountParser parser;
+        PostProcessMaterial ssaoProcessOne;
+        PostProcessMaterial ssaoProcessTwo;
 
-        PostProcess* debugProcess;
+        PostProcessMaterial debugProcess;
 
-        using ProcessPredTy = std::function<bool(const PostProcess const*, const PostProcess const*)>;
-        std::multiset<PostProcess*, ProcessPredTy> processQueue;
+        std::vector<PostProcessMaterial> processQueue;
         void Initialize();
     public:
         PostProcessor();
-        void AddPostProcess(const KG::Utill::HashString& id, int priority = 0);
+        void AddPostProcess(const KG::Utill::HashString& id, bool active = true);
         void Draw(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex, ID3D12Resource* cameraData);
         void SSAO(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex, ID3D12Resource* cameraData);
         void CopyToSwapchain(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, KG::Resource::DXResource& swapchain);
