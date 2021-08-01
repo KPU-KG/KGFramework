@@ -24,7 +24,15 @@
                 <priority value="0"/>
             </PostProcess>
             <PostProcess>
-                <id hash_id="310150263" srcString="PostTONEMAP"/>
+                <id srcString="PostHDR_DAY"/>
+                <priority value="0"/>
+            </PostProcess>
+            <PostProcess>
+                <id hash_id="3152931315" srcString="PostFXAA"/>
+                <priority value="0"/>
+            </PostProcess>
+            <PostProcess>
+                <id hash_id="1916210601" srcString="PostGC"/>
                 <priority value="0"/>
             </PostProcess>
         </Component>
@@ -58,8 +66,8 @@
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="64.710793" y="48.360893" z="13.707524"/>
-                <Rotation_Q x="0.011986483" y="-0.98062557" z="0.24084984" w="0.048811108"/>
+                <Position x="35.772804" y="1.9819747" z="0.39001411"/>
+                <Rotation_Q x="0.038966447" y="-0.97202754" z="0.19069012" w="0.19863908"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
@@ -72,7 +80,7 @@
                     <textureWidth value="1600"/>
                     <textureHeight value="900"/>
                     <arrayCount value="1"/>
-                    <useScreenSize value="false"/>
+                    <useScreenSize value="true"/>
                     <useCubeRender value="false"/>
                     <useGSCubeRender value="false"/>
                     <useGSArrayRender value="false"/>

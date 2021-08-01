@@ -299,7 +299,7 @@ ID3D12Resource* KG::Renderer::CreateUAVBufferResource(ID3D12Device* pd3dDevice, 
     d3dResourceDesc.SampleDesc.Quality = 0;
     d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
     //d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-    d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE | D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+    d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE | D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;;
 
     D3D12_RESOURCE_STATES d3dResourceInitialStates = d3dResourceStates;
 

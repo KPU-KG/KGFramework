@@ -62,7 +62,7 @@ ID3D12PipelineState* KG::Renderer::PostProcess::CreatePSO()
     D3D12_CACHED_PIPELINE_STATE d3dCachedPipelineState = { };
     D3D12_COMPUTE_PIPELINE_STATE_DESC psDesc;
     ::ZeroMemory(&psDesc, sizeof(D3D12_COMPUTE_PIPELINE_STATE_DESC));
-    
+
     psDesc.pRootSignature = KGDXRenderer::GetInstance()->GetPostProcessRootSignature();
     ID3DBlob* computeShader = this->CompileShaderFromMetadata();
 
@@ -180,7 +180,13 @@ KG::Renderer::PostProcessor::PostProcessor()
 {
     this->Initialize();
     this->copyProcess = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess("PostCopy"_id);
-    this->copyProcess->id = "PostCopy"_id;
+    this->copyProcess->id = KG::Utill::HashString("PostCopy");
+
+    this->ssaoProcessOne = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess("PostSSAO_One"_id);
+    this->ssaoProcessOne->id = KG::Utill::HashString("PostSSAO_One");
+
+    this->ssaoProcessTwo= KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess("PostSSAO_Two"_id);
+    this->ssaoProcessTwo->id = KG::Utill::HashString("PostSSAO_Two");
 }
 
 void KG::Renderer::PostProcessor::AddPostProcess(const KG::Utill::HashString& id, int priority)
@@ -190,7 +196,7 @@ void KG::Renderer::PostProcessor::AddPostProcess(const KG::Utill::HashString& id
     this->processQueue.insert(process);
 }
 
-void KG::Renderer::PostProcessor::Draw(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex)
+void KG::Renderer::PostProcessor::Draw(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex, ID3D12Resource* cameraData)
 {
     auto* rootSignature = KGDXRenderer::GetInstance()->GetPostProcessRootSignature();
     auto* descHeap = KGDXRenderer::GetInstance()->GetDescriptorHeapManager();
@@ -203,11 +209,8 @@ void KG::Renderer::PostProcessor::Draw(ID3D12GraphicsCommandList* cmdList, Rende
     auto sourceHandle = renderTexture.renderTargetResource.GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle();
     cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Source, sourceHandle);
 
-    //renderTexture.gbufferTextureResources[0].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    //renderTexture.gbufferTextureResources[1].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    //renderTexture.gbufferTextureResources[2].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    //renderTexture.gbufferTextureResources[3].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    //renderTexture.depthStencilBuffer.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    cmdList->SetComputeRootConstantBufferView(ComputeRootParameterIndex::CameraData, cameraData->GetGPUVirtualAddress());
+
     auto gbufferHandle = renderTexture.gbufferTextureResources[0].GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle();
     cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::GBufferStart, gbufferHandle);
 
@@ -215,8 +218,7 @@ void KG::Renderer::PostProcessor::Draw(ID3D12GraphicsCommandList* cmdList, Rende
     cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::UAVBuffers, uavbufferHandle);
 
     this->CopyToOutput(cmdList, renderTexture.renderTargetResource, renderTexture, cubeIndex);
-    this->outputResources[0].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    this->outputResources[1].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+
     this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
     this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
     this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
@@ -224,23 +226,26 @@ void KG::Renderer::PostProcessor::Draw(ID3D12GraphicsCommandList* cmdList, Rende
     KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
     for (auto* process : this->processQueue)
     {
-        if(!process->isActive) continue;
+        if (!process->isActive) continue;
         auto prev = this->currentOutputIndex == 0 ? 1 : 0;
-        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Result, 
+        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Result,
             this->outputResources[currentOutputIndex].GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle()
         );
         cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::PrevResult,
-            this->outputResources[prev].GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
+            this->outputResources[prev].GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle());
 
         cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::UAVBuffers,
             buffer0.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
 
+        this->outputResources[currentOutputIndex].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+        this->outputResources[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
         this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
         this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
         KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
 
         process->Draw(cmdList, this->width, this->height, parser);
+        if (this->debugProcess == process) this->CopyToDebug(cmdList);
 
         this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
@@ -249,6 +254,75 @@ void KG::Renderer::PostProcessor::Draw(ID3D12GraphicsCommandList* cmdList, Rende
         this->currentOutputIndex = prev;
     }
     this->CopyToResult(cmdList, renderTexture.renderTargetResource, renderTexture, cubeIndex);
+}
+
+void KG::Renderer::PostProcessor::SSAO(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex, ID3D12Resource* cameraData)
+{
+    auto* rootSignature = KGDXRenderer::GetInstance()->GetPostProcessRootSignature();
+    auto* descHeap = KGDXRenderer::GetInstance()->GetDescriptorHeapManager();
+    cmdList->SetComputeRootSignature(rootSignature);
+
+    //renderTexture.renderTargetResource.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    auto sourceHandle = renderTexture.renderTargetResource.GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle();
+    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Source, sourceHandle);
+
+    cmdList->SetComputeRootConstantBufferView(ComputeRootParameterIndex::CameraData, cameraData->GetGPUVirtualAddress());
+
+    auto gbufferHandle = renderTexture.gbufferTextureResources[0].GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle();
+    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::GBufferStart, gbufferHandle);
+
+    auto uavbufferHandle = buffer0.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle();
+    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::UAVBuffers, uavbufferHandle);
+
+    //this->CopyToOutput(cmdList, renderTexture.renderTargetResource, renderTexture, cubeIndex);
+
+    this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    this->bufferLDR.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+
+    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Result,
+        this->bufferSSAO.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle()
+    );
+
+    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::UAVBuffers,
+        buffer0.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
+
+    this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+
+    this->ssaoProcessOne->Draw(cmdList, this->width, this->height, parser);
+    if (this->debugProcess == this->ssaoProcessOne) this->CopyToDebug(cmdList);
+
+    this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+
+
+    this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+
+    this->ssaoProcessTwo->Draw(cmdList, this->width, this->height, parser);
+    if (this->debugProcess == this->ssaoProcessTwo) this->CopyToDebug(cmdList);
+
+    this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    this->bufferSSAO.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
+    renderTexture.gbufferTextureResources[1].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
+    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+
+    cmdList->CopyResource(renderTexture.gbufferTextureResources[1], this->bufferSSAO);
+
+    this->bufferSSAO.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    renderTexture.gbufferTextureResources[1].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
 }
 
 void KG::Renderer::PostProcessor::CopyToSwapchain(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, KG::Resource::DXResource& swapchain)
@@ -288,15 +362,67 @@ void KG::Renderer::PostProcessor::CopyToResult(ID3D12GraphicsCommandList* cmdLis
     cmdList->CopyResource(target, output);
 }
 
+void KG::Renderer::PostProcessor::CopyToDebug(ID3D12GraphicsCommandList* cmdList)
+{
+    buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
+    buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
+    buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
+    buffer0Debug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
+    buffer1Debug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
+    buffer2Debug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
+    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+    cmdList->CopyResource(buffer0Debug, buffer0);
+    cmdList->CopyResource(buffer1Debug, buffer1);
+    cmdList->CopyResource(buffer2Debug, buffer2);
+    buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    buffer0Debug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    buffer1Debug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    buffer2Debug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+}
+
 
 void KG::Renderer::PostProcessor::OnDrawGUI()
 {
-    for (auto i = this->processQueue.begin(); i != this->processQueue.end(); i++)
+    bool sort = false;
+    static bool isOpenDebug = false;
+    std::array<PostProcess*, 2> ssaoProcess = {this->ssaoProcessOne, this->ssaoProcessTwo};
+    if(ImGui::TreeNode("SSAO"))
     {
-        ImGui::PushID((*i)->id);
-        (*i)->OnDrawGUI();
-        ImGui::PopID();
+        for (auto i = ssaoProcess.begin(); i != ssaoProcess.end(); i++)
+        {
+            ImGui::PushID((*i)->id);
+            sort = (*i)->OnDrawGUI();
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Debug"))
+            {
+                this->debugProcess = (*i);
+                isOpenDebug = true;
+            }
+            ImGui::PopID();
+        }
+        ImGui::TreePop();
     }
+
+    if (ImGui::TreeNode("PostProcess"))
+    {
+        for (auto i = this->processQueue.begin(); i != this->processQueue.end(); i++)
+        {
+            ImGui::PushID((*i)->id);
+            sort = (*i)->OnDrawGUI();
+            ImGui::SameLine();
+            if (ImGui::SmallButton("Debug"))
+            {
+                this->debugProcess = (*i);
+                isOpenDebug = true;
+            }
+            ImGui::PopID();
+        }
+        ImGui::TreePop();
+    }
+
     ImGui::Separator();
     static KG::Utill::HashString hash;
     static int priority = 0;
@@ -308,9 +434,38 @@ void KG::Renderer::PostProcessor::OnDrawGUI()
         hash = KG::Utill::HashString();
         priority = 0;
     }
-    if (ImGui::BeginPopup("Buffer"))
+    if (isOpenDebug)
     {
+        ImGui::SetNextWindowBgAlpha(0.8f);
+        if (ImGui::Begin("PostProcessDebug"))
+        {
+            ImGui::Text(this->debugProcess->id.srcString.c_str());
 
+            float width = ImGui::GetWindowWidth() / 3 - 20;
+            ImGui::BeginGroup();
+            ImGui::SetNextItemWidth(width - 30);
+            ImGui::BulletText("Buffer 0");
+            auto handle = this->buffer0Debug.GetDescriptor(DescriptorType::SRV).GetGPUHandle();
+            ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, width), "Buffer0");
+            ImGui::EndGroup();
+
+            ImGui::SameLine();
+            ImGui::BeginGroup();
+            ImGui::SetNextItemWidth(width - 30);
+            ImGui::BulletText("Buffer 1");
+            handle = this->buffer1Debug.GetDescriptor(DescriptorType::SRV).GetGPUHandle();
+            ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, width), "Buffer1");
+            ImGui::EndGroup();
+
+            ImGui::SameLine();
+            ImGui::BeginGroup();
+            ImGui::SetNextItemWidth(width - 30);
+            ImGui::BulletText("Buffer 2");
+            handle = this->buffer2Debug.GetDescriptor(DescriptorType::SRV).GetGPUHandle();
+            ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, width), "Buffer2");
+            ImGui::EndGroup();
+        }
+        ImGui::End();
     }
 }
 
@@ -353,11 +508,24 @@ void KG::Renderer::PostProcessor::Initialize()
     //uavDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     uavDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 
+    D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc{};
+    ZeroDesc(srvDesc);
+    srvDesc.Texture2D.MipLevels = 0;
+    srvDesc.Texture2D.PlaneSlice = 0;
+    srvDesc.Texture2D.MostDetailedMip = 0;
+    srvDesc.Texture2D.MipLevels = 1;
+    srvDesc.Texture2D.ResourceMinLODClamp = 0;
+    srvDesc.ViewDimension = D3D12_SRV_DIMENSION::D3D12_SRV_DIMENSION_TEXTURE2D;
+    srvDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+    srvDesc.Shader4ComponentMapping = D3D12_DEFAULT_SHADER_4_COMPONENT_MAPPING;
+
+
     for (size_t i = 0; i < this->outputCount; i++)
     {
         auto index = descHeap->RequestEmptyIndex();
         this->outputResources[i].SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
         this->outputResources[i].AddOnDescriptorHeap(descHeap, uavDesc);
+        this->outputResources[i].AddOnDescriptorHeap(descHeap, srvDesc);
     }
     this->buffer0.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
     this->buffer0.AddOnDescriptorHeap(descHeap, uavDesc);
@@ -367,7 +535,20 @@ void KG::Renderer::PostProcessor::Initialize()
     this->buffer2.AddOnDescriptorHeap(descHeap, uavDesc);
     this->buffer2.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
     this->buffer2.AddOnDescriptorHeap(descHeap, uavDesc);
+
+    this->buffer0Debug.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
+    this->buffer0Debug.AddOnDescriptorHeap(descHeap, srvDesc);
+    this->buffer1Debug.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
+    this->buffer1Debug.AddOnDescriptorHeap(descHeap, srvDesc);
+    this->buffer2Debug.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
+    this->buffer2Debug.AddOnDescriptorHeap(descHeap, srvDesc);
+    this->buffer2Debug.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
+    this->buffer2Debug.AddOnDescriptorHeap(descHeap, srvDesc);
+
+
     uavDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     this->bufferLDR.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight, DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM));
     this->bufferLDR.AddOnDescriptorHeap(descHeap, uavDesc);
+    this->bufferSSAO.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight, DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM));
+    this->bufferSSAO.AddOnDescriptorHeap(descHeap, uavDesc);
 }

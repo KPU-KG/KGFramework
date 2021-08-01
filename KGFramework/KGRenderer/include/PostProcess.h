@@ -86,11 +86,19 @@ namespace KG::Renderer
         KG::Resource::DXResource buffer1;
         KG::Resource::DXResource buffer2;
 
+        KG::Resource::DXResource buffer0Debug;
+        KG::Resource::DXResource buffer1Debug;
+        KG::Resource::DXResource buffer2Debug;
+
         KG::Resource::DXResource bufferLDR;
+        KG::Resource::DXResource bufferSSAO;
 
         PostProcess* copyProcess;
+        PostProcess* ssaoProcessOne;
+        PostProcess* ssaoProcessTwo;
         GroupCountParser parser;
 
+        PostProcess* debugProcess;
 
         using ProcessPredTy = std::function<bool(const PostProcess const*, const PostProcess const*)>;
         std::multiset<PostProcess*, ProcessPredTy> processQueue;
@@ -98,10 +106,12 @@ namespace KG::Renderer
     public:
         PostProcessor();
         void AddPostProcess(const KG::Utill::HashString& id, int priority = 0);
-        void Draw(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex);
+        void Draw(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex, ID3D12Resource* cameraData);
+        void SSAO(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex, ID3D12Resource* cameraData);
         void CopyToSwapchain(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, KG::Resource::DXResource& swapchain);
         void CopyToOutput(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, RenderTexture& renderTexture, size_t cubeIndex);
         void CopyToResult(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, RenderTexture& renderTexture, size_t cubeIndex);
+        void CopyToDebug(ID3D12GraphicsCommandList* cmdList);
         void OnDrawGUI();
         void OnDataSave(tinyxml2::XMLElement* element);
         void OnDataLoad(tinyxml2::XMLElement* element);

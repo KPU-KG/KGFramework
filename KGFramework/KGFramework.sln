@@ -32,6 +32,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XML", "XML", "{85D78402-5B3
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShaderCode", "ShaderCode", "{612EE3CC-1D6B-4E8F-8C11-7510E32215FA}"
 	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_DAY.hlsl = Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_DAY.hlsl
 		Resource\Resource\Texture\Skymap\sunset_skybox_radiance.dds = Resource\Resource\Texture\Skymap\sunset_skybox_radiance.dds
 	EndProjectSection
 EndProject
@@ -109,11 +110,16 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compute", "Compute", "{806BF353-281F-4440-BEE1-9C5C6E2D78E8}"
 	ProjectSection(SolutionItems) = preProject
 		Resource\Resource\ShaderScript\Compute_CopySwapChain.hlsl = Resource\Resource\ShaderScript\Compute_CopySwapChain.hlsl
+		Resource\Resource\ShaderScript\Compute_FXAA.hlsl = Resource\Resource\ShaderScript\Compute_FXAA.hlsl
+		Resource\Resource\ShaderScript\Compute_GC.hlsl = Resource\Resource\ShaderScript\Compute_GC.hlsl
 		Resource\Resource\ShaderScript\Compute_HDR_DEFINE.hlsl = Resource\Resource\ShaderScript\Compute_HDR_DEFINE.hlsl
-		Resource\Resource\ShaderScript\Compute_HDR_FOUR.hlsl = Resource\Resource\ShaderScript\Compute_HDR_FOUR.hlsl
 		Resource\Resource\ShaderScript\Compute_HDR_ONE.hlsl = Resource\Resource\ShaderScript\Compute_HDR_ONE.hlsl
-		Resource\Resource\ShaderScript\Compute_HDR_THREE.hlsl = Resource\Resource\ShaderScript\Compute_HDR_THREE.hlsl
+		Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_DAY.hlsl = Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_DAY.hlsl
+		Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_SUNSET.hlsl = Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_SUNSET.hlsl
 		Resource\Resource\ShaderScript\Compute_HDR_TWO.hlsl = Resource\Resource\ShaderScript\Compute_HDR_TWO.hlsl
+		Resource\Resource\ShaderScript\Compute_SSAO_DEFINE.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_DEFINE.hlsl
+		Resource\Resource\ShaderScript\Compute_SSAO_ONE.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_ONE.hlsl
+		Resource\Resource\ShaderScript\Compute_SSAO_TWO.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_TWO.hlsl
 		Resource\Resource\ShaderScript\Compute_Test.hlsl = Resource\Resource\ShaderScript\Compute_Test.hlsl
 	EndProjectSection
 EndProject

@@ -24,7 +24,15 @@
                 <priority value="0"/>
             </PostProcess>
             <PostProcess>
-                <id hash_id="310150263" srcString="PostTONEMAP"/>
+                <id srcString="PostHDR_SUNSET"/>
+                <priority value="0"/>
+            </PostProcess>
+            <PostProcess>
+                <id hash_id="3152931315" srcString="PostFXAA"/>
+                <priority value="0"/>
+            </PostProcess>
+            <PostProcess>
+                <id hash_id="1916210601" srcString="PostGC"/>
                 <priority value="0"/>
             </PostProcess>
         </Component>

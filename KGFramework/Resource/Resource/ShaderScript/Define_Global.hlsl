@@ -68,4 +68,14 @@ SamplerState gsamAnisotoropicClamp : register(s5);
 SamplerComparisonState gsamAnisotoropicCompClamp : register(s6);
 SamplerComparisonState gsamLinerCompClamp : register(s7);
 
+float3 LinearToGamma(float3 rgb)
+{
+    return pow(rgb, 1 / 2.2);
+}
+
+float3 GammaToLinear(float3 rgb)
+{
+    return pow(rgb, 2.2);
+}
+
 #endif

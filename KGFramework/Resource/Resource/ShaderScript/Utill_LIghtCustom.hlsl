@@ -140,12 +140,12 @@ float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightD
     //float3 reflec = reflect(-cameraDir, info.wNormal);
     float3 reflec = reflect(cameraDir, info.wNormal);
     
-    float3 diffuseIrradiance = shaderTextureCube[diffuseRad].Sample(gsamAnisotoropicWrap, N);
+    float3 diffuseIrradiance = GammaToLinear(shaderTextureCube[diffuseRad].Sample(gsamAnisotoropicWrap, N));
     float3 diffuseIBL = kd * info.albedo * diffuseIrradiance;
     
-    float2 specularBRDF = shaderTexture[lutIndex].Sample(gsamLinearClamp, float2(VDotH, 1 - info.roughness)).rg;
+    float2 specularBRDF = shaderTexture[lutIndex].Sample(gsamLinearClamp, float2(VDotH, (1 - info.roughness))).rg;
     uint specularTextureLevel = querySpecularTextureLevels(specularRad);
-    float3 specularIrradiance = shaderTextureCube[specularRad].SampleLevel(gsamAnisotoropicWrap, normalize(reflec), specularTextureLevel * (info.roughness)).rgb;
+    float3 specularIrradiance = GammaToLinear(shaderTextureCube[specularRad].SampleLevel(gsamAnisotoropicWrap, normalize(reflec), specularTextureLevel * (info.roughness)).rgb);
     float3 specularIBL = (F0 * specularBRDF.x + specularBRDF.y) * specularIrradiance;
     return float4(diffuseIBL + specularIBL, 1.0f);
 }

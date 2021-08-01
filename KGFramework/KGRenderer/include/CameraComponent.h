@@ -110,6 +110,7 @@ namespace KG::Component
 
 		void CalculateViewMatrix();
 		void CalculateProjectionMatrix();
+        ID3D12Resource* GetCameraDataBuffer() const { return this->cameraDataBuffer; };
 
 		virtual void SetFovY( float value ) override { OnProjDirty(); this->fovY = value; };
 		virtual void SetAspectRatio( float value ) override { OnProjDirty(); this->aspectRatio = value; };
@@ -346,7 +347,7 @@ namespace KG::Component
 
 		KG::Renderer::RenderTextureDesc renderTextureDesc;
 
-        float cascadePoint[5] = { 0.0f, 0.01f, 0.025f, 0.1f, 0.5f };
+        float cascadePoint[5] = { 0.0f, 0.01f, 0.025f, 0.1f, 1.0f };
 
 		//Viewport 설정 필요
 

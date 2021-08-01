@@ -22,6 +22,7 @@ namespace KG::Renderer
         inline static constexpr size_t Source = 2;
         inline static constexpr size_t GBufferStart = 3;
         inline static constexpr size_t UAVBuffers = 4;
+        inline static constexpr size_t CameraData = 5;
         inline static constexpr size_t Texture1Heap = 8;
         inline static constexpr size_t Texture2Heap = 9;
     };
