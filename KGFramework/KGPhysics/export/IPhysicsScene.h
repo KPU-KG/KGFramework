@@ -59,12 +59,9 @@ namespace KG::Physics
 		void SetStepSize(float stepSize) {
 			this->stepSize = stepSize;
 		}
-		// virtual std::vector<std::pair<int, int>> GetStaticActorsPosition() = 0;
 		virtual std::vector < std::pair<std::pair<int, int>, std::pair<int, int>>> GetStaticActorExtents() = 0;
-		// virtual uint32_t GetStaticActors(physx::PxActor** buf, uint32_t size) = 0;
-		// virtual uint32_t GetNbStaticActors() = 0;
-		// virtual uint32_t GetDynamicActors(physx::PxActor** buf, uint32_t size) = 0;
-		// virtual uint32_t GetNbDynamicActors() = 0;
+		virtual bool IsInitialized() const = 0;
+
 	};
 
 	DLL KG::Physics::IPhysicsScene* GetPhysicsScene();

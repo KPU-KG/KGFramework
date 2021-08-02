@@ -142,12 +142,12 @@ bool KG::Component::SEnemyUnitComponent::OnProcessPacket(unsigned char* packet, 
 }
 
 
-KG::Component::StateManager::StateManager(SEnemyUnitComponent* comp) {
-	enemyComp = comp;
-}
-
-KG::Component::StateManager::~StateManager() {
-
-}
-
-int KG::Component::StateManager::GetCurState() const { return curState; }
+// KG::Component::StateManager::StateManager(SEnemyUnitComponent* comp) {
+// 	enemyComp = comp;
+// }
+// 
+// KG::Component::StateManager::~StateManager() {
+// 
+// }
+// 
+// int KG::Component::StateManager::GetCurState() const { return curState; }

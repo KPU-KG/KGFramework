@@ -172,6 +172,8 @@ void KG::Component::EnemyGeneratorComponent::Initialize()
 	auto physicsScene = this->server->GetPhysicsScene();
 	if (physicsScene == nullptr)
 		return;
+	if (!physicsScene->IsInitialized())
+		return;
 
 	auto actorExtents = physicsScene->GetStaticActorExtents();
 	for (auto extent : actorExtents) {
@@ -223,7 +225,8 @@ KG::Component::Region KG::Component::EnemyGeneratorComponent::GetNextRegion()
 {
 	std::uniform_int_distribution<int> randomRegion(0, this->region.size() - 1);
 	currentRegion = randomRegion(genRegion);
-	return region[currentRegion];
+	return region[0];
+	// return region[currentRegion];
 }
 
 void KG::Component::EnemyGeneratorComponent::AddEnemyControllerCompoenent(KG::Component::SEnemyUnitComponent* comp)

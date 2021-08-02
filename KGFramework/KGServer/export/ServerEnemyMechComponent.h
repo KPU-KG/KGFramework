@@ -8,6 +8,8 @@
 
 namespace KG::Component
 {
+
+	class SEnemyMechComponent;
 	//////////////////////////////////////////////////////////////////////////////
 	// Enemy Actions
 	//////////////////////////////////////////////////////////////////////////////
@@ -66,18 +68,16 @@ namespace KG::Component
 	struct MechWanderState : public State {
 		const static size_t WANDER_ACTION_COUNT = 4;
 		std::array<Action*, WANDER_ACTION_COUNT> action;
-		const static int WANDER_ACTION_IDLE = 0;
-		const static int WANDER_ACTION_SET_GOAL = 1;
-		const static int WANDER_ACTION_ROTATE = 2;
-		const static int WANDER_ACTION_MOVE = 3;
+		const static size_t WANDER_ACTION_IDLE = 0;
+		const static size_t WANDER_ACTION_SET_GOAL = 1;
+		const static size_t WANDER_ACTION_ROTATE = 2;
+		const static size_t WANDER_ACTION_MOVE = 3;
 
 		int curAction = WANDER_ACTION_IDLE;
 		MechWanderState(SEnemyUnitComponent* comp) : State(comp) {}
-		virtual ~MechWanderState();
+		~MechWanderState();
 		virtual void InitState() override final;
-
 		virtual void Execute(float elapsedTime) override final;
-
 		virtual float GetValue() override final;
 	};
 
@@ -86,25 +86,23 @@ namespace KG::Component
 	//            else -> search root -> if (movable) -> rotate->move->attack
 	//                                         else -> return to spawn position
 	struct MechTraceState : public State {
-		const static int TRACE_ACTION_COUNT = 6;
+		const static size_t TRACE_ACTION_COUNT = 6;
 		std::array<Action*, TRACE_ACTION_COUNT> action;
 
-		const static int TRACE_ACTION_SET_TARGET_ROTATION = 0;
-		const static int TRACE_ACTION_ROTATE = 1;
-		const static int TRACE_ACTION_ATTACK = 2;
-		const static int TRACE_ACTION_CHECK_ATTACKABLE = 3;
-		const static int TRACE_ACTION_CHECK_ROOT = 4;
-		const static int TRACE_ACTION_MOVE = 5;
+		const static size_t TRACE_ACTION_SET_TARGET_ROTATION = 0;
+		const static size_t TRACE_ACTION_ROTATE = 1;
+		const static size_t TRACE_ACTION_ATTACK = 2;
+		const static size_t TRACE_ACTION_CHECK_ATTACKABLE = 3;
+		const static size_t TRACE_ACTION_CHECK_ROOT = 4;
+		const static size_t TRACE_ACTION_MOVE = 5;
 
 		int curAction = TRACE_ACTION_CHECK_ATTACKABLE;
 
 		MechTraceState(SEnemyUnitComponent* comp) : State(comp) {}
-		virtual ~MechTraceState();
+		~MechTraceState();
 
 		virtual void InitState() override final;
-
 		virtual void Execute(float elapsedTime) override final;
-
 		virtual float GetValue() override final;
 	};
 
@@ -112,18 +110,23 @@ namespace KG::Component
 	// Enemy State Manager
 	//////////////////////////////////////////////////////////////////////////////
 
-	struct MechStateManager : public StateManager {
-		const static int STATE_WANDER = 0;
-		const static int STATE_TRACE = 1;
+	struct MechStateManager {
+		SEnemyMechComponent* enemyComp;
+
+		const static size_t STATE_WANDER = 0;
+		const static size_t STATE_TRACE = 1;
 
 		const static size_t STATE_COUNT = 2;
+		int curState = 0;
 		std::array<State*, STATE_COUNT> state;
-		MechStateManager(SEnemyUnitComponent* comp);
-		virtual ~MechStateManager();
+		MechStateManager(SEnemyMechComponent* comp);
+		~MechStateManager();
 
-		virtual void Init() override final;
-		virtual void SetState() override final;
-		virtual void Execute(float elapsedTime) override final;
+
+		void Init();
+		void SetState();
+		void Execute(float elapsedTime);
+		int GetCurState() const;
 	};
 
 
@@ -152,6 +155,8 @@ namespace KG::Component
 
 		float										attackInterval = 2;
 		float										attackTimer = 0;
+
+		MechStateManager* stateManager;
 
 	public:
 		void SetMoveTime(float t) { moveTime = t; }

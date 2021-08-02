@@ -55,14 +55,14 @@ namespace KG::Component
 	struct CrawlerWanderState : public State {
 		const static size_t WANDER_ACTION_COUNT = 4;
 		std::array<Action*, WANDER_ACTION_COUNT> action;
-		const static int WANDER_ACTION_IDLE = 0;
-		const static int WANDER_ACTION_SETGOAL = 1;
-		const static int WANDER_ACTION_ROTATE = 2;
-		const static int WANDER_ACTION_MOVE = 3;
+		const static size_t WANDER_ACTION_IDLE = 0;
+		const static size_t WANDER_ACTION_SETGOAL = 1;
+		const static size_t WANDER_ACTION_ROTATE = 2;
+		const static size_t WANDER_ACTION_MOVE = 3;
 
 		int curAction = WANDER_ACTION_IDLE;
 		CrawlerWanderState(SEnemyUnitComponent* comp) : State(comp) {}
-		virtual ~CrawlerWanderState();
+		~CrawlerWanderState();
 		virtual void InitState() override final;
 
 		virtual void Execute(float elapsedTime) override final;
@@ -71,17 +71,17 @@ namespace KG::Component
 	};
 
 	struct CrawlerTraceState : public State {
-		const static int TRACE_ACTION_COUNT = 3;
+		const static size_t TRACE_ACTION_COUNT = 3;
 		std::array<Action*, TRACE_ACTION_COUNT> action;
 
-		const static int TRACE_ACTION_SETGOAL = 0;
-		const static int TRACE_ACTION_ROTATE = 1;
-		const static int TRACE_ACTION_ATTACK = 2;
+		const static size_t TRACE_ACTION_SETGOAL = 0;
+		const static size_t TRACE_ACTION_ROTATE = 1;
+		const static size_t TRACE_ACTION_ATTACK = 2;
 
 		int curAction = TRACE_ACTION_SETGOAL;
 
 		CrawlerTraceState(SEnemyUnitComponent* comp) : State(comp) {}
-		virtual ~CrawlerTraceState();
+		~CrawlerTraceState();
 
 		virtual void InitState() override final;
 
@@ -94,18 +94,22 @@ namespace KG::Component
 	// Enemy State Manager
 	//////////////////////////////////////////////////////////////////////////////
 
-	struct CrawlerStateManager : public StateManager {
-		const static int STATE_WANDER = 0;
-		const static int STATE_TRACE = 1;
+	struct CrawlerStateManager {
+		const static size_t STATE_WANDER = 0;
+		const static size_t STATE_TRACE = 1;
 
 		const static size_t STATE_COUNT = 2;
 		std::array<State*, STATE_COUNT> state;
 		CrawlerStateManager(SEnemyUnitComponent* comp);
-		virtual ~CrawlerStateManager();
+		~CrawlerStateManager();
 
-		virtual void Init() override final;
-		virtual void SetState() override final;
-		virtual void Execute(float elapsedTime) override final;
+		void Init();
+		void SetState();
+		void Execute(float elapsedTime);
+
+		SEnemyUnitComponent* enemyComp;
+		int curState = 0;
+		int GetCurState() const;
 	};
 
 
@@ -128,6 +132,8 @@ namespace KG::Component
 		float										traceRange = 10;
 		float										attackInterval = 2;
 		float										attackTimer = 0;
+
+		CrawlerStateManager* stateManager;
 
 	public:
 		void SetMoveTime(float t) { moveTime = t; }

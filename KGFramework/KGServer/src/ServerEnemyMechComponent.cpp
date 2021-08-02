@@ -59,8 +59,8 @@ bool KG::Component::SEnemyMechComponent::RotateToGoal(float elapsedTime)
 	float rotateInterval = this->rotateInterval;
 
 	if (stateManager->GetCurState() == MechStateManager::STATE_TRACE) {
-		if (noObstacleInAttack)
-			rotateInterval = this->rotateAttackInterval;
+		// if (noObstacleInAttack)
+		rotateInterval = this->rotateAttackInterval;
 	}
 
 	if (rotateInterval <= rotateTimer) {
@@ -335,31 +335,23 @@ bool KG::Component::SEnemyMechComponent::IsTargetInRange() const
 bool KG::Component::SEnemyMechComponent::CheckAttackable()
 {
 	noObstacleInAttack = false;
-	XMFLOAT3 targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-	XMFLOAT3 origin = this->transform->GetWorldPosition();
-	origin.y = targetPos.y;
-	XMFLOAT3 dir = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, origin));
-	auto comp = this->rigid->GetScene()->QueryRaycast(origin, dir, traceRange, this->rigid->GetId());
-	if (comp == nullptr) {
-		return noObstacleInAttack;
-	}
-	else {
+	// auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
+	// auto origin = this->transform->GetWorldPosition();
+	// origin.y = targetPos.y;
+	XMFLOAT3 dir = Math::Vector3::Normalize(Math::Vector3::Subtract(this->target->GetGameObject()->GetTransform()->GetWorldPosition(), this->transform->GetWorldPosition()));
+	auto comp = this->rigid->GetScene()->QueryRaycast(this->transform->GetWorldPosition(), dir, traceRange, this->rigid->GetId());
+	if (comp != nullptr) {
 		auto filter = comp->GetFilterGroup();
 		if (filter & static_cast<uint32_t>(FilterGroup::ePLAYER)) {
 			noObstacleInAttack = true;
 		}
 	}
-	return noObstacleInAttack;
+	return true;
 }
 
 bool KG::Component::SEnemyMechComponent::NoObstacleInAttack() const
 {
 	return noObstacleInAttack;
-}
-
-bool operator<(std::pair<int, int> a, std::pair<int, int> b)
-{
-
 }
 
 struct Coord {
@@ -731,7 +723,7 @@ bool KG::Component::MechMoveAction::Execute(float elapsedTime) {
 }
 
 void KG::Component::MechMoveAction::EndAction() {
-
+	dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
 }
 
 bool KG::Component::MechRotateAction::Execute(float elapsedTime) {
@@ -873,7 +865,7 @@ void KG::Component::MechTraceState::Execute(float elapsedTime) {
 			break;
 
 		case TRACE_ACTION_MOVE:
-			curAction = TRACE_ACTION_SET_TARGET_ROTATION;
+			curAction = TRACE_ACTION_CHECK_ATTACKABLE;
 			break;
 		}
 	}
@@ -885,7 +877,7 @@ float KG::Component::MechTraceState::GetValue() {
 	return 0;
 }
 
-KG::Component::MechStateManager::MechStateManager(SEnemyUnitComponent* comp) : StateManager(comp) 
+KG::Component::MechStateManager::MechStateManager(SEnemyMechComponent* comp) : enemyComp(comp) 
 {
 
 }
@@ -924,4 +916,9 @@ void KG::Component::MechStateManager::SetState() {
 void KG::Component::MechStateManager::Execute(float elapsedTime) {
 	SetState();
 	state[curState]->Execute(elapsedTime);
+}
+
+int KG::Component::MechStateManager::GetCurState() const
+{
+	return curState;
 }

@@ -45,6 +45,7 @@ namespace KG::Physics
 	private:
 		static inline PhysicsScene* instance = nullptr;
 	protected:
+		bool initialized = false;
 		physx::PxDefaultAllocator*		allocator;
 		physx::PxErrorCallback*			errorCallback;
 		physx::PxFoundation*			foundation;
@@ -77,13 +78,9 @@ namespace KG::Physics
 		virtual void ReleaseActor(KG::Component::IRigidComponent* comp) override final;
         virtual KG::Component::IRigidComponent* QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) override final;
         virtual RaycastResult QueryRaycastResult(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) override final;
+		virtual bool IsInitialized() const override final;
 		static PhysicsScene* GetInstance() { return instance; }
 
 		virtual std::vector < std::pair<std::pair<int, int>, std::pair<int, int>>> GetStaticActorExtents() override final;
-		// virtual std::pair<std::vector<std::pair<int, int>>, std::vector<std::pair<int, int>>> GetStaticActorsPosition() override final;
-		// virtual uint32_t GetStaticActors(physx::PxActor** buf, uint32_t size) override final;
-		// virtual uint32_t GetNbStaticActors() override final;
-		// virtual uint32_t GetDynamicActors(physx::PxActor** buf, uint32_t size) override final;
-		// virtual uint32_t GetNbDynamicActors() override final;
 	};
 }

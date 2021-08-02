@@ -18,7 +18,6 @@ namespace KG::Component
 	};
 
 	struct State {
-		Action* action;
 		SEnemyUnitComponent* enemyComp;
 		State(SEnemyUnitComponent* comp) { enemyComp = comp; }
 		virtual ~State() {}
@@ -27,17 +26,17 @@ namespace KG::Component
 		virtual float GetValue() = 0;
 	};
 
-	struct StateManager {
-		SEnemyUnitComponent* enemyComp;
-		int curState = 0;
-		StateManager(SEnemyUnitComponent* comp);
-		virtual ~StateManager();
-
-		virtual void Init() = 0;
-		virtual void SetState() = 0;
-		virtual void Execute(float elapsedTime) = 0;
-		int GetCurState() const;
-	};
+	// struct StateManager {
+	// 	SEnemyUnitComponent* enemyComp;
+	// 	int curState = 0;
+	// 	StateManager(SEnemyUnitComponent* comp);
+	// 	virtual ~StateManager();
+	// 
+	// 	virtual void Init() = 0;
+	// 	virtual void SetState() = 0;
+	// 	virtual void Execute(float elapsedTime) = 0;
+	// 	int GetCurState() const;
+	// };
 
 	class DynamicRigidComponent;
 	class IAnimationControllerComponent;
@@ -88,7 +87,7 @@ namespace KG::Component
 		bool										isInAttackDelay = false;
 		bool										isAttackable = false;
 
-		StateManager*								stateManager;
+		// StateManager*								stateManager;
 
 	public:
 

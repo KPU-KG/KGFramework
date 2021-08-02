@@ -1,4 +1,6 @@
+
 #include "pch.h"
+
 #include "ServerEnemyCrawlerComponent.h"
 #include "KGServer.h"
 #include "Transform.h"
@@ -515,7 +517,7 @@ float KG::Component::CrawlerTraceState::GetValue() {
 	return 0;
 }
 
-KG::Component::CrawlerStateManager::CrawlerStateManager(SEnemyUnitComponent* comp) : StateManager(comp) { }
+KG::Component::CrawlerStateManager::CrawlerStateManager(SEnemyUnitComponent* comp) : enemyComp(comp) { }
 
 KG::Component::CrawlerStateManager::~CrawlerStateManager() {
 	for (auto& s : state) {
@@ -551,4 +553,9 @@ void KG::Component::CrawlerStateManager::SetState() {
 void KG::Component::CrawlerStateManager::Execute(float elapsedTime) {
 	SetState();
 	state[curState]->Execute(elapsedTime);
+}
+
+int KG::Component::CrawlerStateManager::GetCurState() const
+{
+	return curState;
 }
