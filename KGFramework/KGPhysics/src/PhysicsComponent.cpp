@@ -288,6 +288,7 @@ void KG::Component::StaticRigidComponent::OnCreate(KG::Core::GameObject* gameObj
 
 void KG::Component::StaticRigidComponent::SetupFiltering(uint32_t filterGroup, uint32_t filterMask)
 {
+	filterGroup |= static_cast<uint32_t>(FilterGroup::eBOX);
 	IRigidComponent::SetupFiltering(filterGroup, filterMask);
 
 	const physx::PxU32 numShapes = this->actor->getNbShapes();
@@ -297,6 +298,7 @@ void KG::Component::StaticRigidComponent::SetupFiltering(uint32_t filterGroup, u
 	{
 		physx::PxShape* shape = shapes[i];
 		shape->setSimulationFilterData(*filterData);
+		shape->setQueryFilterData(*filterData);
 		if (collisionCallback != nullptr)
 			shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
 	}

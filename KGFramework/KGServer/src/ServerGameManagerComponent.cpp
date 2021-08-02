@@ -225,7 +225,7 @@ KG::Component::Region KG::Component::EnemyGeneratorComponent::GetNextRegion()
 {
 	std::uniform_int_distribution<int> randomRegion(0, this->region.size() - 1);
 	currentRegion = randomRegion(genRegion);
-	return region[0];
+	return region[3];
 	// return region[currentRegion];
 }
 
