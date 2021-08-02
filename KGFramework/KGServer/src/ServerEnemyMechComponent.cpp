@@ -11,6 +11,7 @@
 
 #include <string>
 #include <random>
+#include <queue>
 #include "Scene.h"
 
 
@@ -334,14 +335,19 @@ bool KG::Component::SEnemyMechComponent::IsTargetInRange() const
 bool KG::Component::SEnemyMechComponent::CheckAttackable()
 {
 	noObstacleInAttack = false;
-	auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-	auto origin = this->transform->GetWorldPosition();
+	XMFLOAT3 targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
+	XMFLOAT3 origin = this->transform->GetWorldPosition();
 	origin.y = targetPos.y;
 	XMFLOAT3 dir = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, origin));
-	auto comp = this->rigid->GetScene()->QueryRaycast(origin, dir, 30, this->rigid->GetId());
-	auto filter = comp->GetFilterGroup();
-	if (filter & static_cast<uint32_t>(FilterGroup::ePLAYER)) {
-		noObstacleInAttack = true;
+	auto comp = this->rigid->GetScene()->QueryRaycast(origin, dir, traceRange, this->rigid->GetId());
+	if (comp == nullptr) {
+		return noObstacleInAttack;
+	}
+	else {
+		auto filter = comp->GetFilterGroup();
+		if (filter & static_cast<uint32_t>(FilterGroup::ePLAYER)) {
+			noObstacleInAttack = true;
+		}
 	}
 	return noObstacleInAttack;
 }
@@ -351,6 +357,27 @@ bool KG::Component::SEnemyMechComponent::NoObstacleInAttack() const
 	return noObstacleInAttack;
 }
 
+bool operator<(std::pair<int, int> a, std::pair<int, int> b)
+{
+
+}
+
+struct Coord {
+	int x, z;
+	int g = 0, h = 0;
+	Coord* parent = nullptr;
+	Coord(int x, int z) : x(x), z(z) {}
+	Coord(float x, float z) : x(round(x)), z(round(z)) {}
+
+	bool operator<(const Coord& r) {
+		return (g + h) > (r.g + r.h);
+	}
+
+	bool operator==(const Coord& r) {
+		return (x == r.x && z == r.z);
+	}
+};
+
 bool KG::Component::SEnemyMechComponent::CheckRoot()
 {
 	isMovableInTrace = false;
@@ -359,12 +386,15 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 	int mx = INT16_MAX;
 	int mz = INT16_MAX;
 
-	auto center = this->transform->GetPosition();
-
+	auto myPos = this->transform->GetWorldPosition();
+	auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
 	for (int tx = -10; tx < 10; ++tx) {
 		for (int tz = -10; tz < 10; ++tz) {
-			int dx = center.x + tx;
-			int dz = center.z + tz;
+
+			// auto center = this->transform->GetWorldPosition();
+
+			int dx = myPos.x + tx;
+			int dz = myPos.z + tz;
 
 			// 해당 위치가 맵 밖이면 체크 x
 			if (dx < 0 || dz < 0 || dx >= MAP_SIZE_X || dz >= MAP_SIZE_Z)
@@ -374,13 +404,29 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 			if (session[dx][dz])
 				continue;
 
-			center.x = dx;
-			center.z = dz;
+			XMFLOAT3 pathPos;
 
-			XMFLOAT3 dir = Math::Vector3::Normalize(Math::Vector3::Subtract(this->target->GetGameObject()->GetTransform()->GetPosition(), center));
-			auto comp = this->rigid->GetScene()->QueryRaycast(this->center, dir, 30);
+			pathPos.x = dx;
+			pathPos.y = targetPos.y;
+			pathPos.z = dz;
+
+			myPos.y = pathPos.y;
+
+			// a*를 여기서 써야되나??
+
+			auto dir = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, pathPos));
+			auto comp = this->rigid->GetScene()->QueryRaycast(pathPos, dir, traceRange, this->rigid->GetId());
 			if (comp == nullptr)
 				continue;
+
+			auto pathVec = Math::Vector3::Subtract(myPos, pathPos);
+			auto pathDir = Math::Vector3::Normalize(pathVec);
+			float pathDist = sqrt(pathVec.x * pathVec.x + pathVec.z * pathVec.z);
+			auto pathComp = this->rigid->GetScene()->QueryRaycast(myPos, pathDir, pathDist, this->rigid->GetId());
+			if (pathComp != nullptr)
+				continue;
+			// 여기서 센터까지 레이캐스트로 아무것도 없으면 그냥 거리로 계산
+			// 아니면 a*로 플레이어 위치 잡고 가면서 노드마다 한 번 더 체크
 
 			auto filter = comp->GetFilterGroup();
 			if (filter & static_cast<uint32_t>(FilterGroup::ePLAYER)) {
@@ -402,48 +448,31 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 	// 그리디 알고리즘으로 갈 수 있는지 체크 (가능하면 감)
 	// A* 사용
 
-	int cx = center.x;
-	int cz = center.z;
+	int cx = myPos.x;
+	int cz = myPos.z;
 	bool blocked = false;
-	while (cx != mx && cz != mz) {
-		// target mx, mz
-		if (session[cx][cz] == 1) {
-			blocked = true;
-			break;
-		}
-		if (abs(mx - cx) < abs(mz - cz)) {
-			if (mx < cx)
-				cx -= 1;
-			else
-				cx += 1;
-		}
-		else {
-			if (mz < cz)
-				cz -= 1;
-			else
-				cz += 1;
-		}
-	}
+	auto v = Math::Vector3::Subtract(targetPos, myPos);
+	XMFLOAT3 dir = Math::Vector3::Normalize(v);
+	auto dist = sqrt(v.x * v.x + v.z * v.z);
+	auto comp = this->rigid->GetScene()->QueryRaycast(this->center, dir, dist, this->rigid->GetId());
 
-	if (!blocked) {
+	if (comp == nullptr) {
 		goal.x = mx;
 		goal.z = mz;
 
-		auto pos = transform->GetWorldPosition();
-		distance = std::sqrt(std::pow((goal.x - pos.x), 2) + std::pow((goal.y - pos.y), 2));
+		distance = std::sqrt(std::pow((goal.x - myPos.x), 2) + std::pow((goal.y - myPos.y), 2));
 		arriveTime = distance / (speed + 3);
 		moveTime = 0;
-
+		
 		direction = Math::Vector3::Subtract(goal, transform->GetWorldPosition());
 		direction.y = 0;
 		XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&direction)));
-
+		
 		auto dir = DirectX::XMFLOAT2{ direction.x, direction.z };
-
+		
 		auto look = DirectX::XMFLOAT2{ transform->GetLook().x, transform->GetLook().z };
 		rotateTimer = 0;
-		// 나중에는 이동 불가능한 위치 선택시 false 리턴
-
+		
 		XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
 		XMFLOAT2 crs;
 		XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
@@ -453,9 +482,127 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 		return true;
 	}
 	else {
-		// a* 사용
+		std::set<Coord> open_list;
+		std::vector<Coord> closed_list;
+		Coord g(targetPos.x, targetPos.z);
+		while (!open_list.empty()) {
+			auto c = *(open_list.begin());
+			if (c == g) {
+				Coord* cur = &c;
+				while (cur->parent != nullptr) {
+					cur = c.parent;
+				}
+				goal.x = cur->x;
+				goal.z = cur->z;
+				isMovableInTrace = true;
+				return true;
+				// push path
+				// pathfinding = true
+				// break;
+			}
+			else {
+				for (int dx = -1; dx < 2; ++dx) {
+					int x = c.x + dx;
+
+					if (x < 0 || x >= MAP_SIZE_X) 
+						continue;
+					
+					for (int dz = -1; dz < 2;++dz) {
+						int z = c.z + dz;
+
+						if (z < 0 || z >= MAP_SIZE_Z) 
+							continue;
+
+						if (session[x][z])
+							continue;
+						
+						Coord newCoord(x, z);
+
+						bool is_closed = false;
+						for (auto cl : closed_list) {
+							if (cl == newCoord) {
+								is_closed = true;
+								break;
+							}
+						}
+						if (is_closed)
+							continue;
+
+						newCoord.h = g.x * 10 + g.z * 10;
+						if (dx != 0 && dz != 0)
+							newCoord.g = c.g + 14;
+						else
+							newCoord.g = c.g + 10;
+						newCoord.parent = &c;
+
+						for (auto ol : open_list) {
+							if (ol == newCoord) {
+								if (newCoord.g < ol.g) {
+									ol.g = newCoord.g;
+									ol.parent = newCoord.parent;
+								}
+							}
+						}
+					}
+				}
+			}
+		}
 		return false;
 	}
+	// while (cx != mx && cz != mz) {
+	// 	
+	// 
+	// 	// target mx, mz
+	// 	if (session[cx][cz] == 1) {
+	// 		blocked = true;
+	// 		break;
+	// 	}
+	// 	if (abs(mx - cx) < abs(mz - cz)) {
+	// 		if (mx < cx)
+	// 			cx -= 1;
+	// 		else
+	// 			cx += 1;
+	// 	}
+	// 	else {
+	// 		if (mz < cz)
+	// 			cz -= 1;
+	// 		else
+	// 			cz += 1;
+	// 	}
+	// }
+	// 
+	// if (!blocked) {
+	// 	goal.x = mx;
+	// 	goal.z = mz;
+	// 
+	// 	auto pos = transform->GetWorldPosition();
+	// 	distance = std::sqrt(std::pow((goal.x - pos.x), 2) + std::pow((goal.y - pos.y), 2));
+	// 	arriveTime = distance / (speed + 3);
+	// 	moveTime = 0;
+	// 
+	// 	direction = Math::Vector3::Subtract(goal, transform->GetWorldPosition());
+	// 	direction.y = 0;
+	// 	XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&direction)));
+	// 
+	// 	auto dir = DirectX::XMFLOAT2{ direction.x, direction.z };
+	// 
+	// 	auto look = DirectX::XMFLOAT2{ transform->GetLook().x, transform->GetLook().z };
+	// 	rotateTimer = 0;
+	// 	// 나중에는 이동 불가능한 위치 선택시 false 리턴
+	// 
+	// 	XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
+	// 	XMFLOAT2 crs;
+	// 	XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
+	// 	if (crs.x >= 0)
+	// 		angle.x *= -1;
+	// 	isMovableInTrace = true;
+	// 	return true;
+	// }
+	// else {
+	// 	// 목적지
+	// 	// a* 사용
+	// 	return false;
+	// }
 }
 
 bool KG::Component::SEnemyMechComponent::IsMobableInTrace() const
@@ -697,9 +844,6 @@ void KG::Component::MechTraceState::Execute(float elapsedTime) {
 			break;
 		case TRACE_ACTION_SET_TARGET_ROTATION:
 			curAction = TRACE_ACTION_ROTATE;
-			// if attackable
-			// else
-			// check root
 			break;
 
 		case TRACE_ACTION_CHECK_ROOT:
@@ -708,7 +852,6 @@ void KG::Component::MechTraceState::Execute(float elapsedTime) {
 			}
 			else {
 				curAction = TRACE_ACTION_ROTATE;
-				// curAction = TRACE_ACTION_RETURN_TO_SPAWN
 			}
 			break;
 		// case check root

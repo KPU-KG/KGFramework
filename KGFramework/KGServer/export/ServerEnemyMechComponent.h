@@ -148,7 +148,7 @@ namespace KG::Component
 
 		DirectX::XMFLOAT2							angle;
 
-		float										traceRange = 10;
+		float										traceRange = 30;
 
 		float										attackInterval = 2;
 		float										attackTimer = 0;
