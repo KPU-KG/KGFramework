@@ -145,6 +145,7 @@ namespace KG::Component
 		bool isMovableInTrace = false;
 		bool isPathFinding = false;
 		DirectX::XMFLOAT3							goal = { 0,0,0 };
+		std::pair<int, int>	prevTarget;
 		std::vector<std::pair<int, int>>			path;
 
 		float										distance = 0;

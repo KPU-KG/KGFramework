@@ -54,7 +54,7 @@ namespace KG::Physics
 			ImGui::SetCurrentContext(context);
 			return true;
 		}
-		virtual KG::Component::IRigidComponent* QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) = 0;
+		virtual KG::Component::IRigidComponent* QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0, uint32_t mask = 0) = 0;
         virtual RaycastResult QueryRaycastResult(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId = 0) = 0;
 		void SetStepSize(float stepSize) {
 			this->stepSize = stepSize;

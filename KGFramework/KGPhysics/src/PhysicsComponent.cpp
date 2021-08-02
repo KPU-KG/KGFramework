@@ -125,6 +125,7 @@ void KG::Component::DynamicRigidComponent::SetupFiltering(unsigned int filterGro
 	{
 		physx::PxShape* shape = shapes[i];
 		shape->setSimulationFilterData(*filterData);
+		shape->setQueryFilterData(*filterData);
 		if (collisionCallback != nullptr)
 			shape->setFlag(physx::PxShapeFlag::eTRIGGER_SHAPE, true);
 	}
@@ -469,7 +470,6 @@ void KG::Component::IRigidComponent::SetupFiltering(uint32_t filterGroup, uint32
 	filterData->word0 = filterGroup;									// word0 - 해당 액터의 충돌 필터
 	filterData->word1 = filterMask;										// word1 - 충돌 처리를 하지 않을 필터 - 이건 나중에 테이블로 정리
 	filterData->word2 = this->id;										// 피직스 씬에서의 아이디
-
 }
 
 KG::Component::IRigidComponent::IRigidComponent() 

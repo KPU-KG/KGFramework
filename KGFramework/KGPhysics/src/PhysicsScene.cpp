@@ -454,22 +454,40 @@ void KG::Physics::PhysicsScene::ReleaseActor(KG::Component::IRigidComponent* com
     this->scene->removeActor(*actor);
 }
 
-KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId)
+KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float maxDistance, unsigned int myId, uint32_t mask)
 {
     PxVec3 org{ origin.x, origin.y, origin.z };
     PxVec3 dir{ direction.x, direction.y, direction.z };
     PxReal dst = maxDistance;
     PxRaycastHit hit[2];
     PxRaycastBuffer buf(hit, 2);
-    if ( scene->raycast(org, dir, dst, buf) )
-    {
-        for ( int i = 0; i < buf.getNbTouches(); ++i )
+    PxQueryFilterData filter = PxQueryFilterData();
+    filter.data.word0 = mask;
+    if (mask != 0) {
+        if (scene->raycast(org, dir, dst, buf, PxHitFlag::eDEFAULT, filter))
         {
-            PxU32 hitId = hit[i].shape->getSimulationFilterData().word2;
-            if ( myId != hitId )
+            for (int i = 0; i < buf.getNbTouches(); ++i)
             {
-                if ( compIndex.count(hitId) != 0 )
-                    return compIndex[hitId];
+                PxU32 hitId = hit[i].shape->getSimulationFilterData().word2;
+                if (myId != hitId)
+                {
+                    if (compIndex.count(hitId) != 0)
+                        return compIndex[hitId];
+                }
+            }
+        }
+    }
+    else {
+        if (scene->raycast(org, dir, dst, buf))
+        {
+            for (int i = 0; i < buf.getNbTouches(); ++i)
+            {
+                PxU32 hitId = hit[i].shape->getSimulationFilterData().word2;
+                if (myId != hitId)
+                {
+                    if (compIndex.count(hitId) != 0)
+                        return compIndex[hitId];
+                }
             }
         }
     }

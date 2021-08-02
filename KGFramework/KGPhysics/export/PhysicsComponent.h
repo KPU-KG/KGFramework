@@ -74,6 +74,7 @@ namespace KG::Component
 
 		uint32_t												filterGroup = 0;
 		uint32_t												maskGroup = 0;
+		// uint32_t												queryMaskGroup;
 
 		KG::Component::CollisionCallbackFunc					collisionCallback = nullptr;
 		RaycastCallbackFunc										raycastCallback = nullptr;
@@ -112,6 +113,7 @@ namespace KG::Component
 		virtual void SetApply(bool apply) {};
 		virtual void ReleaseActor() = 0;
 		void AddFilterGroup(FilterGroup filterGroup, FilterGroup filterMask);
+		// void SetQueryMaskGroup(uint32_t mask);
 
 	public:
 		// property
