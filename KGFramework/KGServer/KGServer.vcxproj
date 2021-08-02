@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
     <ProjectConfiguration Include="Debug|Win32">
@@ -184,6 +184,7 @@
     <ClInclude Include="export\ServerBaseComponent.h" />
     <ClInclude Include="export\ServerEnemyControllerComponent.h" />
     <ClInclude Include="export\ServerGameManagerComponent.h" />
+    <ClInclude Include="export\ServerLobbyComponent.h" />
     <ClInclude Include="export\ServerPlayerControllerComponent.h" />
     <ClInclude Include="export\ServerProjectileComponent.h" />
     <ClInclude Include="include\framework.h" />
@@ -203,6 +204,7 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="src\ServerGameManagerComponent.cpp" />
+    <ClCompile Include="src\ServerLobbyComponent.cpp" />
     <ClCompile Include="src\ServerPlayerControllerComponent.cpp" />
     <ClCompile Include="src\ServerProjectileComponent.cpp" />
     <ClCompile Include="src\ServerSystems.cpp" />

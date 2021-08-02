@@ -4,10 +4,6 @@
 #include "ServerBaseComponent.h"
 #include "Debug.h"
 
-namespace KG::Physics {
-	class IPhysicsScene;
-}
-
 static enum LobbyState
 {
 	Empty,
@@ -15,25 +11,32 @@ static enum LobbyState
 	Ready,
 };
 
+struct PlayerInfo {
+	char state = LobbyState::Empty;
+	KG::Server::SESSION_ID id;
+};
 namespace KG::Component
 {
 	class DLL SLobbyComponent : public SBaseComponent
 	{
 	private:
 		// 플레이어 접속 상태
-		char PlayerInfo[PLAYERNUM] = { LobbyState::Empty, };
+		PlayerInfo playerinfo[PLAYERNUM];
 		// *
-		// 연결 끊어졌을 때 Wait로 변경
+		// 연결 끊어졌을 때 Empty로 변경
+		
 	public:
+		SLobbyComponent();
+		void DisconnectPlayer(KG::Server::SESSION_ID playerId);
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
-		virtual void Update(float elapsedTime) override;
-		virtual void Destroy() override;
+		virtual void Destroy() override {};
 		virtual void OnDestroy() override
 		{
 			IComponent::OnDestroy();
 		}
-		virtual bool OnDrawGUI();
-		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender); // sendpacket
+		//virtual bool OnDrawGUI();
+		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
+		
 	};
 	REGISTER_COMPONENT_ID(SLobbyComponent);
 }

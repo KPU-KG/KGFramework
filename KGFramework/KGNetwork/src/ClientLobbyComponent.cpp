@@ -22,13 +22,40 @@ bool KG::Component::CLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
         auto* Packet = KG::Packet::PacketCast<KG::Packet::SC_LOBBY_DATA>(packet);
         // *
         // 전부 레디면 바로시작? -> 시작 버튼 필요 X
-        // 시작 버튼 -> 시작 버튼을 쓰면 누가 누르는지?
+        // 시작 버튼 -> 시작 버튼을 쓰면 누가 누를지
         for (size_t i = 0; i < PLAYERNUM; i++)
         {
             this->playerInfo[i] = Packet->playerinfo[i];
         }
         return true;
     }
+    case KG::Packet::PacketType::SC_GAME_START:
+    {
+        // 게임 시작
+    }
     }
     return false;
+}
+
+void KG::Component::CLobbyComponent::SendReadyPacket() {
+    KG::Packet::CS_LOBBY_CHANGE Packet;
+    Packet.id = this->id;
+    Packet.state = LobbyState::Ready;
+    this->SendPacket(&Packet);
+}
+
+void KG::Component::CLobbyComponent::SendWaitPacket() {
+    KG::Packet::CS_LOBBY_CHANGE Packet;
+    Packet.id = this->id;
+    Packet.state = LobbyState::Wait;
+    this->SendPacket(&Packet);
+}
+
+
+void KG::Component::CLobbyComponent::OnCreate(KG::Core::GameObject* obj)
+{
+}
+
+void KG::Component::CLobbyComponent::Update(float elapsedTime)
+{
 }

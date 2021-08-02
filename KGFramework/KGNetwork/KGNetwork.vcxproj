@@ -181,6 +181,7 @@
     <ClCompile Include="src\ClientCharacterComponent.cpp" />
     <ClCompile Include="src\ClientEnemyControllerComponent.cpp" />
     <ClCompile Include="src\ClientGameManagerComponent.cpp" />
+    <ClCompile Include="src\ClientLobbyComponent.cpp" />
     <ClCompile Include="src\ClientPlayerControllerComponent.cpp" />
     <ClCompile Include="src\ClientProjectileComponent.cpp" />
     <ClCompile Include="src\ClientSystems.cpp" />
@@ -194,6 +195,7 @@
     <ClInclude Include="export\ClientCharacterComponent.h" />
     <ClInclude Include="export\ClientEnemyControllerComponent.h" />
     <ClInclude Include="export\ClientGameManagerComponent.h" />
+    <ClInclude Include="export\ClientLobbyComponent.h" />
     <ClInclude Include="export\ClientPlayerControllerComponent.h" />
     <ClInclude Include="export\ClientProjectileComponent.h" />
     <ClInclude Include="export\IKGNetwork.h" />

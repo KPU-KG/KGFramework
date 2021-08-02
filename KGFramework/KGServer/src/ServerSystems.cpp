@@ -51,3 +51,11 @@ void KG::System::SProjectileComponentSystem::OnPostUpdate(float elapsedTime)
 void KG::System::SProjectileComponentSystem::OnPreRender()
 {
 }
+
+void KG::System::SLobbyComponentSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::SLobbyComponentSystem::OnPreRender()
+{
+}

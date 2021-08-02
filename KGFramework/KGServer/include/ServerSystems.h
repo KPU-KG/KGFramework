@@ -4,6 +4,7 @@
 #include "ServerEnemyControllerComponent.h"
 #include "ServerGameManagerComponent.h"
 #include "ServerPlayerControllerComponent.h"
+#include "ServerLobbyComponent.h"
 #include "EnemyGeneratorComponent.h"
 #include "ServerProjectileComponent.h"
 
@@ -124,4 +125,22 @@ namespace KG::System
 		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;
 	};
+
+
+	class SLobbyComponentSystem : public SBaseComponentSystem<SLobbyComponent>
+	{
+	public:
+		virtual void OnUpdate(float elapsedTime) override
+		{
+			for (auto& com : *this)
+			{
+				com.Update(elapsedTime);
+			}
+		}
+
+		// IComponentSystem을(를) 통해 상속됨
+		virtual void OnPostUpdate(float elapsedTime) override;
+		virtual void OnPreRender() override;
+	};
+
 }

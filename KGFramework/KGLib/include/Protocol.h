@@ -14,6 +14,7 @@ namespace KG::Server
 	using NET_OBJECT_ID = int;
 	constexpr SESSION_ID SERVER_ID = 0;
 	constexpr NET_OBJECT_ID SCENE_CONTROLLER_ID = 0;
+	constexpr NET_OBJECT_ID LOBBY_ID = 1;
 	constexpr NET_OBJECT_ID NULL_NET_OBJECT_ID = -343434;
 
 };
