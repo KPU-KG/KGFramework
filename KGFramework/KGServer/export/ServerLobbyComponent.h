@@ -13,7 +13,7 @@ static enum LobbyState
 
 struct PlayerInfo {
 	char state = LobbyState::Empty;
-	KG::Server::SESSION_ID id;
+	KG::Server::SESSION_ID id = -1;
 };
 namespace KG::Component
 {
@@ -27,7 +27,7 @@ namespace KG::Component
 		
 	public:
 		SLobbyComponent();
-		void DisconnectPlayer(KG::Server::SESSION_ID playerId);
+		void DisconnectLobbyPlayer(KG::Server::SESSION_ID playerId);
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Destroy() override {};
 		virtual void OnDestroy() override
