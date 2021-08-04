@@ -6,7 +6,7 @@ void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadID : SV_G
 {
     uint2 res = GetRes();
     uint3 CurPixel = uint3(dispatchThreadID.x % res.x, dispatchThreadID.x / res.x, 0);
-    if(CurPixel.y < res.y)
+    if (CurPixel.y < res.y)
     {
         float minDepth = 1.0f;
         float3 avgNormal = float3(0, 0, 0);
@@ -18,7 +18,7 @@ void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadID : SV_G
             [unroll]
             for (int j = 0; j < 2; j++)
             {
-                float curDepth = InputGBuffer4.Load(FullResPixel, int2(j, i));
+                float curDepth = InputGBuffer4.Load(FullResPixel, int2(j, i)).x;
                 minDepth = min(curDepth, minDepth);
                 
                 //float3 normalWorld = DecodeNormal(InputGBuffer2.Load(FullResPixel, int2(j, i)).xy);
@@ -28,6 +28,7 @@ void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadID : SV_G
         uint2 outputPosition = GetPositionBuffer(dispatchThreadID.x);
         float3 normalWorld = DecodeNormal(InputGBuffer2.Load(FullResPixel, int2(0, 0)).xy);
         //buffer0[dispatchThreadID.x].yzw = avgNormal * 0.25f;
-        buffer0[outputPosition] = float4(ConvertZToLinearDepth(GetProjValue(projection), minDepth), mul(normalWorld, (float3x3) view));
+        buffer0[CurPixel.xy] = float4(ConvertZToLinearDepth(GetProjValue(projection), minDepth), mul(normalWorld, (float3x3) view));
+        buffer1[CurPixel.xy] = float4(LinearToGamma(float3(ConvertZToLinearDepth(GetProjValue(projection), minDepth), 0, 0)), 1);
     }
 }

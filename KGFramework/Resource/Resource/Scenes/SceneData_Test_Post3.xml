@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene>
-    <SkyBoxId hash_id="2071956174" srcString="SkySunset"/>
+    <SkyBoxId hash_id="3325274414" srcString="SkyDay"/>
     <GameObject instanceId="0">
         <Tag hash_id="2696201701" srcString="rootNode"/>
         <Component name="TransformComponent" hash_id="3882513520">
@@ -10,34 +10,29 @@
         </Component>
         <Component name="ILightComponent" hash_id="2391118483">
             <LightType value="0"/>
-            <Strength x="0.40000001" y="0.2" z="0.1"/>
-            <Direction x="0.71887636" y="-0.5657075" z="-0.43398073"/>
+            <Strength x="1" y="1" z="1"/>
+            <Direction x="-0.57735026" y="-0.57735026" z="-0.57735026"/>
         </Component>
         <Component name="IShadowCasterComponent" hash_id="1896069075"/>
         <Component name="IPostProcessManagerComponent" hash_id="2492596121">
             <PostProcess>
                 <id hash_id="3871390774" srcString="PostHDR_ONE"/>
-                <isRaw value="true"/>
                 <isActive value="true"/>
             </PostProcess>
             <PostProcess>
                 <id hash_id="3853283612" srcString="PostHDR_TWO"/>
-                <isRaw value="true"/>
                 <isActive value="true"/>
             </PostProcess>
             <PostProcess>
-                <id srcString="HDRTonemap_Sunset"/>
-                <isRaw value="false"/>
+                <id hash_id="3868582732" srcString="PostHDR_DAY"/>
                 <isActive value="true"/>
             </PostProcess>
             <PostProcess>
                 <id hash_id="3152931315" srcString="PostFXAA"/>
-                <isRaw value="true"/>
                 <isActive value="true"/>
             </PostProcess>
             <PostProcess>
                 <id hash_id="1916210601" srcString="PostGC"/>
-                <isRaw value="true"/>
                 <isActive value="true"/>
             </PostProcess>
         </Component>
@@ -52,7 +47,7 @@
                 <MaterialDesc>
                     <Element>
                         <isRawShader value="false"/>
-                        <materialID hash_id="2071956174" srcString="SkySunset"/>
+                        <materialID hash_id="3325274414" srcString="SkyDay"/>
                         <slotIndex value="0"/>
                     </Element>
                 </MaterialDesc>
@@ -71,21 +66,21 @@
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="54.733204" y="33.159569" z="-53.124161"/>
-                <Rotation_Q x="-0.27619544" y="-0.39240837" z="0.12296547" w="-0.88137931"/>
+                <Position x="35.772804" y="1.9819747" z="0.39001411"/>
+                <Rotation_Q x="0.049907465" y="-0.94466579" z="0.14454088" w="0.3261908"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
                 <IsMainCamera value="true"/>
                 <FovY value="90"/>
                 <AspectRatio value="1.7777778"/>
-                <Near-Z value="0.099999998"/>
+                <Near-Z value="0.0099999998"/>
                 <Far-Z value="1000000"/>
                 <RenderTextureDesc>
                     <textureWidth value="1600"/>
                     <textureHeight value="900"/>
                     <arrayCount value="1"/>
-                    <useScreenSize value="false"/>
+                    <useScreenSize value="true"/>
                     <useCubeRender value="false"/>
                     <useGSCubeRender value="false"/>
                     <useGSArrayRender value="false"/>
@@ -2021,7 +2016,7 @@
                 <MaterialDesc>
                     <Element>
                         <isRawShader value="false"/>
-                        <materialID hash_id="452798195" srcString="AmbientIBL_sunset"/>
+                        <materialID hash_id="1802361946" srcString="AmbientIBL"/>
                         <slotIndex value="0"/>
                     </Element>
                 </MaterialDesc>

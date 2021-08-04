@@ -51,6 +51,8 @@ namespace KG::Resource
 
         void AddOnDescriptorHeap(KG::Renderer::DescriptorHeapManager* heap, D3D12_DEPTH_STENCIL_VIEW_DESC dsvDesc);
 
+        void SetDebugName(const std::wstring& name);
+
         Descriptor& AddDescriptor(KG::Renderer::DescriptorHeapManager* heap, UINT index, DescriptorType type);
 
         // Barrier

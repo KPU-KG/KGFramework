@@ -1001,7 +1001,7 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 void KG::Renderer::KGDXRenderer::CreatePostProcessRootSignature()
 {
     //딱히 디스크립터 힙으로 엮으라는 말 없다! -> 텍스처는 디스크립터힙만 된다!
-    D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[5];
+    D3D12_DESCRIPTOR_RANGE pd3dDescriptorRanges[7];
 
     pd3dDescriptorRanges[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
     pd3dDescriptorRanges[0].NumDescriptors = 1;
@@ -1033,7 +1033,20 @@ void KG::Renderer::KGDXRenderer::CreatePostProcessRootSignature()
     pd3dDescriptorRanges[4].RegisterSpace = 2;
     pd3dDescriptorRanges[4].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
 
-    D3D12_ROOT_PARAMETER pd3dRootParameters[6];
+    pd3dDescriptorRanges[5].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    pd3dDescriptorRanges[5].NumDescriptors = 3;
+    pd3dDescriptorRanges[5].BaseShaderRegister = 0; //Result
+    pd3dDescriptorRanges[5].RegisterSpace = 3;
+    pd3dDescriptorRanges[5].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    pd3dDescriptorRanges[6].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+    pd3dDescriptorRanges[6].NumDescriptors = 1;
+    pd3dDescriptorRanges[6].BaseShaderRegister = 0; //Result
+    pd3dDescriptorRanges[6].RegisterSpace = 3;
+    pd3dDescriptorRanges[6].OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+
+    D3D12_ROOT_PARAMETER pd3dRootParameters[10];
+    ZeroMemory(pd3dRootParameters, 10 * sizeof(D3D12_ROOT_PARAMETER));
 
     pd3dRootParameters[ComputeRootParameterIndex::Result].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
     pd3dRootParameters[ComputeRootParameterIndex::Result].DescriptorTable.NumDescriptorRanges = 1;
@@ -1060,10 +1073,31 @@ void KG::Renderer::KGDXRenderer::CreatePostProcessRootSignature()
     pd3dRootParameters[ComputeRootParameterIndex::UAVBuffers].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[4]);
     pd3dRootParameters[ComputeRootParameterIndex::UAVBuffers].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
+    pd3dRootParameters[ComputeRootParameterIndex::SRVBuffers].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[ComputeRootParameterIndex::SRVBuffers].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[ComputeRootParameterIndex::SRVBuffers].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[5]);
+    pd3dRootParameters[ComputeRootParameterIndex::SRVBuffers].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[ComputeRootParameterIndex::MaterialData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+    pd3dRootParameters[ComputeRootParameterIndex::MaterialData].Descriptor.RegisterSpace = 2;
+    pd3dRootParameters[ComputeRootParameterIndex::MaterialData].Descriptor.ShaderRegister = 0;
+    pd3dRootParameters[ComputeRootParameterIndex::MaterialData].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[ComputeRootParameterIndex::MaterialIndex].ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
+    pd3dRootParameters[ComputeRootParameterIndex::MaterialIndex].Constants.Num32BitValues = 1;
+    pd3dRootParameters[ComputeRootParameterIndex::MaterialIndex].Constants.RegisterSpace = 1;
+    pd3dRootParameters[ComputeRootParameterIndex::MaterialIndex].Constants.ShaderRegister = 0;
+    pd3dRootParameters[ComputeRootParameterIndex::MaterialIndex].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
     pd3dRootParameters[ComputeRootParameterIndex::CameraData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
     pd3dRootParameters[ComputeRootParameterIndex::CameraData].Descriptor.RegisterSpace = 0;
     pd3dRootParameters[ComputeRootParameterIndex::CameraData].Descriptor.ShaderRegister = 0;
     pd3dRootParameters[ComputeRootParameterIndex::CameraData].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[ComputeRootParameterIndex::FrameData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[ComputeRootParameterIndex::FrameData].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[ComputeRootParameterIndex::FrameData].DescriptorTable.pDescriptorRanges = &(pd3dDescriptorRanges[6]);
+    pd3dRootParameters[ComputeRootParameterIndex::FrameData].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
 
     D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
     //D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags =
@@ -1085,6 +1119,7 @@ void KG::Renderer::KGDXRenderer::CreatePostProcessRootSignature()
     ID3DBlob* pd3dErrorBlob = nullptr;
 
     auto result = ::D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
+    if (FAILED(result)) DebugErrorMessage((const char*)pd3dErrorBlob->GetBufferPointer());
     this->d3dDevice->CreateRootSignature(0, 
         pd3dSignatureBlob->GetBufferPointer(),
         pd3dSignatureBlob->GetBufferSize(),

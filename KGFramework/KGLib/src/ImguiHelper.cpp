@@ -12,7 +12,7 @@ bool ImGui::TextureView(ImTextureID id, ImVec2 size, const char* popup)
     if (ret)
     {
         float width = ImGui::GetColumnWidth();
-        ImGui::Image(id, ImVec2(width, width));
+        ImGui::Image(id, ImVec2(width, std::ceil(width * float(size.y) / float(size.x))));
         ImGui::EndPopup();
     }
     return ret;

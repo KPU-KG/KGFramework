@@ -253,7 +253,7 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceContainer::LoadPo
     }
     else
     {
-        auto result = KG::Resource::ResourceLoader::LoadMaterialFromFile("Resource/MaterialSet.xml", id);
+        auto result = KG::Resource::ResourceLoader::LoadPostProcessMaterialFromFile("Resource/MaterialSet.xml", id);
         return this->postProcessMaterials.emplace(id, result).first->second;
     }
 }

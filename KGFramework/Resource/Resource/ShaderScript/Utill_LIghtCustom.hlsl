@@ -147,7 +147,7 @@ float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightD
     uint specularTextureLevel = querySpecularTextureLevels(specularRad);
     float3 specularIrradiance = GammaToLinear(shaderTextureCube[specularRad].SampleLevel(gsamAnisotoropicWrap, normalize(reflec), specularTextureLevel * (info.roughness)).rgb);
     float3 specularIBL = (F0 * specularBRDF.x + specularBRDF.y) * specularIrradiance;
-    return float4(diffuseIBL + specularIBL, 1.0f);
+    return float4(atten * (diffuseIBL + specularIBL), 1.0f);
 }
 
 #endif

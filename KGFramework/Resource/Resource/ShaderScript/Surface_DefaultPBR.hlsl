@@ -28,7 +28,7 @@ Surface UserSurfaceFunction(SurfaceInput input)
     
     
     result.albedo = GammaToLinear(shaderTexture[mat.ColorTextureIndex].Sample(gsamAnisotoropicWrap, uv).xyz);
-    result.reflection = objectInfo[input.InstanceID].environmentMapIndex / 12000.0f;
+    //result.reflection = objectInfo[input.InstanceID].environmentMapIndex / 12000.0f;
     
     result.specular = mat.SpecularValue;
     result.metalic = shaderTexture[mat.MetalicTextureIndex].Sample(gsamAnisotoropicWrap, uv).x;

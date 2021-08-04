@@ -16,12 +16,12 @@ struct VertexData
 struct Surface
 {
     float3 albedo;
-    float reflection;
+    float1 emssion;
     
     float1 specular;
     float1 metalic;
     float1 roughness;
-    float1 emssion;
+    float ao;
     
     float3 wNormal;
     

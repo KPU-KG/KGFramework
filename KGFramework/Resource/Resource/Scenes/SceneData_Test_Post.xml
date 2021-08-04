@@ -17,23 +17,28 @@
         <Component name="IPostProcessManagerComponent" hash_id="2492596121">
             <PostProcess>
                 <id hash_id="3871390774" srcString="PostHDR_ONE"/>
-                <priority value="0"/>
+                <isRaw value="true"/>
+                <isActive value="true"/>
             </PostProcess>
             <PostProcess>
                 <id hash_id="3853283612" srcString="PostHDR_TWO"/>
-                <priority value="0"/>
+                <isRaw value="true"/>
+                <isActive value="true"/>
             </PostProcess>
             <PostProcess>
-                <id srcString="PostHDR_DAY"/>
-                <priority value="0"/>
+                <id hash_id="1514760794" srcString="HDRTonemap_Day"/>
+                <isRaw value="false"/>
+                <isActive value="true"/>
             </PostProcess>
             <PostProcess>
                 <id hash_id="3152931315" srcString="PostFXAA"/>
-                <priority value="0"/>
+                <isRaw value="true"/>
+                <isActive value="true"/>
             </PostProcess>
             <PostProcess>
                 <id hash_id="1916210601" srcString="PostGC"/>
-                <priority value="0"/>
+                <isRaw value="true"/>
+                <isActive value="true"/>
             </PostProcess>
         </Component>
         <GameObject instanceId="0">
@@ -66,15 +71,15 @@
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="35.772804" y="1.9819747" z="0.39001411"/>
-                <Rotation_Q x="0.038966447" y="-0.97202754" z="0.19069012" w="0.19863908"/>
+                <Position x="55.438835" y="21.465841" z="-9.1005316"/>
+                <Rotation_Q x="0.10264347" y="-0.88167566" z="0.20678234" w="0.43766049"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
                 <IsMainCamera value="true"/>
                 <FovY value="90"/>
                 <AspectRatio value="1.7777778"/>
-                <Near-Z value="0.0099999998"/>
+                <Near-Z value="0.099999998"/>
                 <Far-Z value="1000000"/>
                 <RenderTextureDesc>
                     <textureWidth value="1600"/>

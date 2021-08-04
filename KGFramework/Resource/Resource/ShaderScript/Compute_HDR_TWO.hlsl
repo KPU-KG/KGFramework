@@ -18,7 +18,7 @@ void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadID : SV_G
 
     if (dispatchThreadId.x < info.groupSize )
     {
-        favgLum = buffer0[int2(dispatchThreadId.x, 0)].x;
+        favgLum = prevBuffer0.Load(int3(dispatchThreadId.x, 0, 0)).x;
     }
 
     shaderCache[dispatchThreadId.x] = favgLum;
@@ -79,6 +79,6 @@ void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadID : SV_G
         fFinalLumValue /= 64.f;
         
         float lum = max(fFinalLumValue, 0.0001).xxxx;
-        buffer2[int2(0, 0)] = lerp(buffer2[int2(0, 0)], lum, 0.05f);
+        frameData[int2(0, 0)] = lerp(frameData[int2(0, 0)], lum, 0.05f);
     }
 }

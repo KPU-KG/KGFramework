@@ -61,6 +61,11 @@ void KG::Resource::DXResource::AddOnDescriptorHeap(KG::Renderer::DescriptorHeapM
     device->CreateDepthStencilView(this->resource, &dsvDesc, desc.GetCPUHandle());
 }
 
+void KG::Resource::DXResource::SetDebugName(const std::wstring& name)
+{
+    this->resource->SetName(name.c_str());
+}
+
 KG::Resource::Descriptor& KG::Resource::DXResource::AddDescriptor(KG::Renderer::DescriptorHeapManager* heap, UINT index, DescriptorType type)
 {
     auto& desc = this->descriptors[type].emplace_back();

@@ -16,6 +16,12 @@ RWTexture2D<float4> buffer0 : register(u0, space2);
 RWTexture2D<float4> buffer1 : register(u1, space2);
 RWTexture2D<float4> buffer2 : register(u2, space2);
 
+Texture2D<float4> prevBuffer0 : register(t0, space3);
+Texture2D<float4> prevBuffer1 : register(t1, space3);
+Texture2D<float4> prevBuffer2 : register(t2, space3);
+
+RWTexture2D<float4> frameData : register(u0, space3);
+
 cbuffer CameraData : register(b0)
 {
     float4x4 view;
@@ -32,5 +38,11 @@ cbuffer CameraData : register(b0)
     float1 pad1;
     double gameTime;
 };
+
+cbuffer Material : register(b0, space1)
+{
+    uint materialIndex;
+};
+
 
 #endif // __DEPENDENCY_HLSL__

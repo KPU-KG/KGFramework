@@ -676,4 +676,20 @@
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
     </Material>
+    <Material id="HDRTonemap_Day" shaderID="PostHDR_TONE" hash_id="1514760794" shaderHashID="3494680670">
+        <FLOAT1 byte="4" comment="MiddleGray" x="3.429"/>
+        <FLOAT1 byte="4" comment="LimWhiteSQR" x="5.8"/>
+    </Material>
+    <Material id="HDRTonemap_Sunset" shaderID="PostHDR_TONE" hash_id="1000435066" shaderHashID="3494680670">
+        <FLOAT1 byte="4" comment="MiddleGray" x="1.129"/>
+        <FLOAT1 byte="4" comment="LimWhiteSQR" x="5.8"/>
+    </Material>
+    <Material id="SSAO_TWO_MAT" shaderID="PostSSAO_Two" hash_id="2850377983" shaderHashID="3436939178">
+        <FLOAT1 byte="4" comment="offsetRadius" x="10"/>
+        <FLOAT1 byte="4" comment="radius" x="10"/>
+    </Material>
+    <Material id="SSAO_FIVE_MAT" shaderID="PostSSAO_FIVE" hash_id="223475845" shaderHashID="3191908704">
+        <FLOAT1 byte="4" comment="lerpT" x="0"/>
+        <FLOAT1 byte="4" comment="defaultValue" x="1"/>
+    </Material>
 </MaterialSet>

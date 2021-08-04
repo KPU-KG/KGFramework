@@ -108,7 +108,19 @@ void KG::Renderer::PostProcess::Draw(ID3D12GraphicsCommandList* cmdList, UINT ca
 {
     this->Set(cmdList);
     this->GetGroupSize(cachedScreenX, cachedScreenY, parser);
+    if (this->materialBuffer)
+    {
+        cmdList->SetComputeRootShaderResourceView(ComputeRootParameterIndex::MaterialData, this->materialBuffer->GetBuffer()->GetGPUVirtualAddress());
+    }
     cmdList->Dispatch(groupCountX, groupCountY, groupCountZ);
+}
+
+void KG::Renderer::PostProcess::SetMaterialIndex(ID3D12GraphicsCommandList* cmdList, UINT index)
+{
+    if (this->materialBuffer)
+    {
+        cmdList->SetComputeRoot32BitConstants(ComputeRootParameterIndex::MaterialIndex, 1, &index, 0);
+    }
 }
 
 void KG::Renderer::PostProcess::GetGroupSize(UINT cachedScreenX, UINT cachedScreenY, GroupCountParser& parser)
@@ -156,26 +168,58 @@ KG::Renderer::PostProcessor::PostProcessor()
     this->copyProcess->id = KG::Utill::HashString("PostCopy");
 
     {
-        auto mat = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcessMaterial("PostSSAO_One"_id);
-        auto* shader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess(mat.second);
-        this->ssaoProcessOne = std::make_tuple(shader, mat.first, true);
-        std::get<0>(this->ssaoProcessOne)->id = KG::Utill::HashString("PostSSAO_One");
+        auto& ref = this->ssaoQueue.emplace_back();
+        auto* shader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess("PostSSAO_One"_id);
+        ref = std::make_tuple(shader, INT_MAX, true, KG::Utill::HashString("PostSSAO_One"), true);
+        std::get<TupleProcess>(ref)->id = KG::Utill::HashString("PostSSAO_One");
     }
 
     {
-        auto mat = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcessMaterial("PostSSAO_One"_id);
-        auto* shader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess(mat.second);
-        this->ssaoProcessTwo = std::make_tuple(shader, mat.first, true);
-        std::get<0>(this->ssaoProcessTwo)->id = KG::Utill::HashString("PostSSAO_Two");
+        auto& ref = this->ssaoQueue.emplace_back();
+        auto pair = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcessMaterial("SSAO_TWO_MAT"_id);
+        auto* shader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess(pair.second);
+        ref = std::make_tuple(shader, pair.first, true, KG::Utill::HashString("SSAO_TWO_MAT"), false);
+        std::get<TupleProcess>(ref)->id = KG::Utill::HashString("SSAO_TWO_MAT");
+    }
+
+    {
+        auto& ref = this->ssaoQueue.emplace_back();
+        auto* shader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess("PostSSAO_Three"_id);
+        ref = std::make_tuple(shader, INT_MAX, true, KG::Utill::HashString("PostSSAO_Three"), true);
+        std::get<TupleProcess>(ref)->id = KG::Utill::HashString("PostSSAO_Three");
+    }
+
+    {
+        auto& ref = this->ssaoQueue.emplace_back();
+        auto* shader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess("PostSSAO_Four"_id);
+        ref = std::make_tuple(shader, INT_MAX, true, KG::Utill::HashString("PostSSAO_Four"), true);
+        std::get<TupleProcess>(ref)->id = KG::Utill::HashString("PostSSAO_Four");
+    }
+
+    {
+        auto& ref = this->ssaoQueue.emplace_back();
+        auto pair = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcessMaterial("SSAO_FIVE_MAT"_id);
+        auto* shader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess(pair.second);
+        ref = std::make_tuple(shader, pair.first, true, KG::Utill::HashString("SSAO_FIVE_MAT"), false);
+        std::get<TupleProcess>(ref)->id = KG::Utill::HashString("SSAO_FIVE_MAT");
     }
 }
 
 void KG::Renderer::PostProcessor::AddPostProcess(const KG::Utill::HashString& id, bool active)
 {
+    auto* shader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess(id);
+    auto process = std::make_tuple(shader, INT_MAX, active, id, true);
+    std::get<TupleProcess>(process)->id = id;
+    this->processQueue.emplace_back(process);
+}
+
+
+void KG::Renderer::PostProcessor::AddPostProcessMateiral(const KG::Utill::HashString& id, bool active)
+{
     auto mat = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcessMaterial(id);
     auto* shader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess(mat.second);
-    auto process = std::make_pair(shader, mat.first);
-    process.first->id = id;
+    auto process = std::make_tuple(shader, mat.first, active, id, false);
+    std::get<TupleProcess>(process)->id = id;
     this->processQueue.emplace_back(process);
 }
 
@@ -196,43 +240,39 @@ void KG::Renderer::PostProcessor::Draw(ID3D12GraphicsCommandList* cmdList, Rende
 
     auto gbufferHandle = renderTexture.gbufferTextureResources[0].GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle();
     cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::GBufferStart, gbufferHandle);
-
-    auto uavbufferHandle = buffer0.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle();
-    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::UAVBuffers, uavbufferHandle);
+    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::FrameData, bufferFramed.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
 
     this->CopyToOutput(cmdList, renderTexture.renderTargetResource, renderTexture, cubeIndex);
 
-    this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
     this->bufferLDR.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
     KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
-    for (PostProcessMaterial process : this->processQueue)
+    for (PostProcessMaterial& process : this->processQueue)
     {
-        if (std::get<2>(process) == false) continue;
+        if (std::get<TupleActive>(process) == false) continue;
         auto prev = this->currentOutputIndex == 0 ? 1 : 0;
-        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Result,
-            this->outputResources[currentOutputIndex].GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle()
-        );
-        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::PrevResult,
-            this->outputResources[prev].GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle());
-
-        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::UAVBuffers,
-            buffer0.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
-
         this->outputResources[currentOutputIndex].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+        this->buffer0[currentOutputIndex].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+        this->buffer1[currentOutputIndex].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+        this->buffer2[currentOutputIndex].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+        this->bufferFramed.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+
         this->outputResources[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-        this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-        this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-        this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+        this->buffer0[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        this->buffer1[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        this->buffer2[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+
         KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
 
-        process->Draw(cmdList, this->width, this->height, parser);
-        if (this->debugProcess == process) this->CopyToDebug(cmdList);
+        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Result, this->outputResources[currentOutputIndex].GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
+        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::PrevResult, this->outputResources[prev].GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle());
+        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::UAVBuffers, buffer0[this->currentOutputIndex].GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
+        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::SRVBuffers, buffer0[prev].GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle());
 
-        this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-        this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-        this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        if (!std::get<TupleIsRawShader>(process)) std::get<TupleProcess>(process)->SetMaterialIndex(cmdList, std::get<TupleMaterialIndex>(process));
+        std::get<TupleProcess>(process)->Draw(cmdList, this->width, this->height, parser);
+        if (this->debugProcess == &process) this->CopyToDebug(cmdList);
+
+        this->bufferFramed.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
         KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
         this->currentOutputIndex = prev;
     }
@@ -245,67 +285,53 @@ void KG::Renderer::PostProcessor::SSAO(ID3D12GraphicsCommandList* cmdList, Rende
     auto* descHeap = KGDXRenderer::GetInstance()->GetDescriptorHeapManager();
     cmdList->SetComputeRootSignature(rootSignature);
 
-    //renderTexture.renderTargetResource.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    auto sourceHandle = renderTexture.renderTargetResource.GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle();
-    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Source, sourceHandle);
+    renderTexture.renderTargetResource.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    renderTexture.gbufferTextureResources[0].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    renderTexture.gbufferTextureResources[1].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    renderTexture.gbufferTextureResources[2].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    renderTexture.gbufferTextureResources[3].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    this->bufferSSAO.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
 
+    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Source, renderTexture.renderTargetResource.GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle());
+    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::GBufferStart, renderTexture.gbufferTextureResources[0].GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle());
+    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Result, this->bufferSSAO.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
     cmdList->SetComputeRootConstantBufferView(ComputeRootParameterIndex::CameraData, cameraData->GetGPUVirtualAddress());
 
-    auto gbufferHandle = renderTexture.gbufferTextureResources[0].GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle();
-    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::GBufferStart, gbufferHandle);
+    for (PostProcessMaterial& process : this->ssaoQueue)
+    {
+        if (std::get<TupleActive>(process) == false) continue;
+        auto prev = this->currentOutputIndex == 0 ? 1 : 0;
+        this->buffer0[currentOutputIndex].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+        this->buffer1[currentOutputIndex].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+        this->buffer2[currentOutputIndex].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
 
-    auto uavbufferHandle = buffer0.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle();
-    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::UAVBuffers, uavbufferHandle);
+        this->buffer0[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        this->buffer1[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+        this->buffer2[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
 
-    //this->CopyToOutput(cmdList, renderTexture.renderTargetResource, renderTexture, cubeIndex);
+        KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
 
-    this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    this->bufferLDR.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+        //cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Result, this->outputResources[currentOutputIndex].GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
+        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::PrevResult, this->outputResources[prev].GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle());
+        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::UAVBuffers, buffer0[this->currentOutputIndex].GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
+        cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::SRVBuffers, buffer0[prev].GetDescriptor(KG::Resource::DescriptorType::SRV).GetGPUHandle());
 
-    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::Result,
-        this->bufferSSAO.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle()
-    );
+        if (!std::get<TupleIsRawShader>(process)) std::get<TupleProcess>(process)->SetMaterialIndex(cmdList, std::get<TupleMaterialIndex>(process));
+        std::get<TupleProcess>(process)->Draw(cmdList, this->width, this->height, parser);
+        if (this->debugProcess == &process) this->CopyToDebug(cmdList);
+        KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+        this->currentOutputIndex = prev;
+    }
 
-    cmdList->SetComputeRootDescriptorTable(ComputeRootParameterIndex::UAVBuffers,
-        buffer0.GetDescriptor(KG::Resource::DescriptorType::UAV).GetGPUHandle());
-
-    this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
-
-    this->ssaoProcessOne->Draw(cmdList, this->width, this->height, parser);
-    if (this->debugProcess == this->ssaoProcessOne) this->CopyToDebug(cmdList);
-
-    this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
-
-
-    this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
-
-    this->ssaoProcessTwo->Draw(cmdList, this->width, this->height, parser);
-    if (this->debugProcess == this->ssaoProcessTwo) this->CopyToDebug(cmdList);
-
-    this->buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    this->buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    this->buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
     this->bufferSSAO.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
     renderTexture.gbufferTextureResources[1].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
     KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
 
     cmdList->CopyResource(renderTexture.gbufferTextureResources[1], this->bufferSSAO);
 
-    this->bufferSSAO.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    renderTexture.gbufferTextureResources[1].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
-    KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
+    //renderTexture.gbufferTextureResources[1].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    //KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
 }
 
 void KG::Renderer::PostProcessor::CopyToSwapchain(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, KG::Resource::DXResource& swapchain)
@@ -347,22 +373,39 @@ void KG::Renderer::PostProcessor::CopyToResult(ID3D12GraphicsCommandList* cmdLis
 
 void KG::Renderer::PostProcessor::CopyToDebug(ID3D12GraphicsCommandList* cmdList)
 {
-    buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
-    buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
-    buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
+    auto index = this->currentOutputIndex;
+    auto prev = this->currentOutputIndex == 0 ? 1 : 0;
+    buffer0[index].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
+    buffer1[index].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
+    buffer2[index].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
+    buffer0[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
+    buffer1[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
+    buffer2[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_SOURCE);
     buffer0Debug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
     buffer1Debug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
     buffer2Debug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
+    buffer0PrevDebug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
+    buffer1PrevDebug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
+    buffer2PrevDebug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COPY_DEST);
     KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
-    cmdList->CopyResource(buffer0Debug, buffer0);
-    cmdList->CopyResource(buffer1Debug, buffer1);
-    cmdList->CopyResource(buffer2Debug, buffer2);
-    buffer0.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    buffer1.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    buffer2.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    cmdList->CopyResource(buffer0Debug, buffer0[index]);
+    cmdList->CopyResource(buffer1Debug, buffer1[index]);
+    cmdList->CopyResource(buffer2Debug, buffer2[index]);
+    cmdList->CopyResource(buffer0PrevDebug, buffer0[prev]);
+    cmdList->CopyResource(buffer1PrevDebug, buffer1[prev]);
+    cmdList->CopyResource(buffer2PrevDebug, buffer2[prev]);
+    buffer0[index].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    buffer1[index].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    buffer2[index].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    buffer0[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    buffer1[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    buffer2[prev].AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
     buffer0Debug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
     buffer1Debug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
     buffer2Debug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    buffer0PrevDebug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    buffer1PrevDebug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
+    buffer2PrevDebug.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE);
     KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
 }
 
@@ -371,18 +414,32 @@ void KG::Renderer::PostProcessor::OnDrawGUI()
 {
     bool sort = false;
     static bool isOpenDebug = false;
-    std::array<PostProcess*, 2> ssaoProcess = {this->ssaoProcessOne, this->ssaoProcessTwo};
-    if(ImGui::TreeNode("SSAO"))
+    if (ImGui::TreeNode("SSAO"))
     {
-        for (auto i = ssaoProcess.begin(); i != ssaoProcess.end(); i++)
+        for (auto i = this->ssaoQueue.begin(); i != this->ssaoQueue.end(); i++)
         {
-            ImGui::PushID((*i)->id);
-            sort = (*i)->OnDrawGUI();
+            ImGui::PushID(std::get<TupleProcess>(*i)->id);
+            ImGui::Text(std::get<TupleProcess>(*i)->id.srcString.c_str());
+            ImGui::SameLine();
+            ImGui::Checkbox("on", &std::get<TupleActive>(*i));
             ImGui::SameLine();
             if (ImGui::SmallButton("Debug"))
             {
-                this->debugProcess = (*i);
+                this->debugProcess = &(*i);
                 isOpenDebug = true;
+            }
+            if (!std::get<TupleIsRawShader>(*i))
+            {
+                ImGui::SameLine();
+                if (ImGui::TreeNode("EditMaterial"))
+                {
+                    auto intf = std::get<TupleProcess>(*i)->GetMaterialElement(std::get<TupleMaterialIndex>(*i));
+                    for (auto& desc : std::get<TupleProcess>(*i)->MaterialDescription)
+                    {
+                        desc.DrawGUI(intf);
+                    }
+                    ImGui::TreePop();
+                }
             }
             ImGui::PopID();
         }
@@ -393,13 +450,28 @@ void KG::Renderer::PostProcessor::OnDrawGUI()
     {
         for (auto i = this->processQueue.begin(); i != this->processQueue.end(); i++)
         {
-            ImGui::PushID((*i)->id);
-            sort = (*i)->OnDrawGUI();
+            ImGui::PushID(std::get<TupleProcess>(*i)->id);
+            ImGui::Text(std::get<TupleProcess>(*i)->id.srcString.c_str());
+            ImGui::SameLine();
+            ImGui::Checkbox("on", &std::get<TupleActive>(*i));
             ImGui::SameLine();
             if (ImGui::SmallButton("Debug"))
             {
-                this->debugProcess = (*i);
+                this->debugProcess = &(*i);
                 isOpenDebug = true;
+            }
+            if (!std::get<TupleIsRawShader>(*i))
+            {
+                ImGui::SameLine();
+                if (ImGui::TreeNode("EditMaterial"))
+                {
+                    auto intf = std::get<TupleProcess>(*i)->GetMaterialElement(std::get<TupleMaterialIndex>(*i));
+                    for (auto& desc : std::get<TupleProcess>(*i)->MaterialDescription)
+                    {
+                        desc.DrawGUI(intf);
+                    }
+                    ImGui::TreePop();
+                }
             }
             ImGui::PopID();
         }
@@ -411,25 +483,31 @@ void KG::Renderer::PostProcessor::OnDrawGUI()
     static int priority = 0;
     ImGui::InputHashString("PostProcess ID", &hash);
     ImGui::InputInt("Priority", &priority);
+    static bool isRaw = false;
+    ImGui::Checkbox("Raw", &isRaw);
     if (ImGui::SmallButton("add"))
     {
-        this->AddPostProcess(hash, priority);
+        if (isRaw)
+            this->AddPostProcess(hash);
+        else
+            this->AddPostProcessMateiral(hash);
         hash = KG::Utill::HashString();
         priority = 0;
     }
     if (isOpenDebug)
     {
-        ImGui::SetNextWindowBgAlpha(0.8f);
+        ImGui::SetNextWindowBgAlpha(1.0f);
         if (ImGui::Begin("PostProcessDebug"))
         {
-            ImGui::Text(this->debugProcess->id.srcString.c_str());
+            ImGui::Text(std::get<TupleProcess>(*this->debugProcess)->id.srcString.c_str());
 
             float width = ImGui::GetWindowWidth() / 3 - 20;
+            float height = width * 9 / 16;
             ImGui::BeginGroup();
             ImGui::SetNextItemWidth(width - 30);
             ImGui::BulletText("Buffer 0");
             auto handle = this->buffer0Debug.GetDescriptor(DescriptorType::SRV).GetGPUHandle();
-            ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, width), "Buffer0");
+            ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, height), "Buffer0");
             ImGui::EndGroup();
 
             ImGui::SameLine();
@@ -437,7 +515,7 @@ void KG::Renderer::PostProcessor::OnDrawGUI()
             ImGui::SetNextItemWidth(width - 30);
             ImGui::BulletText("Buffer 1");
             handle = this->buffer1Debug.GetDescriptor(DescriptorType::SRV).GetGPUHandle();
-            ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, width), "Buffer1");
+            ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, height), "Buffer1");
             ImGui::EndGroup();
 
             ImGui::SameLine();
@@ -445,21 +523,44 @@ void KG::Renderer::PostProcessor::OnDrawGUI()
             ImGui::SetNextItemWidth(width - 30);
             ImGui::BulletText("Buffer 2");
             handle = this->buffer2Debug.GetDescriptor(DescriptorType::SRV).GetGPUHandle();
-            ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, width), "Buffer2");
+            ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, height), "Buffer2");
+            ImGui::EndGroup();
+
+            ImGui::BeginGroup();
+            ImGui::SetNextItemWidth(width - 30);
+            ImGui::BulletText("Prev Buffer 0");
+            handle = this->buffer0PrevDebug.GetDescriptor(DescriptorType::SRV).GetGPUHandle();
+            ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, height), "Prev Buffer0");
+            ImGui::EndGroup();
+
+            ImGui::SameLine();
+            ImGui::BeginGroup();
+            ImGui::SetNextItemWidth(width - 30);
+            ImGui::BulletText("Prev Buffer 1");
+            handle = this->buffer1PrevDebug.GetDescriptor(DescriptorType::SRV).GetGPUHandle();
+            ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, height), "Prev Buffer1");
+            ImGui::EndGroup();
+
+            ImGui::SameLine();
+            ImGui::BeginGroup();
+            ImGui::SetNextItemWidth(width - 30);
+            ImGui::BulletText("Prev Buffer 2");
+            handle = this->buffer2PrevDebug.GetDescriptor(DescriptorType::SRV).GetGPUHandle();
+            ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, height), "Prev Buffer2");
             ImGui::EndGroup();
         }
         ImGui::End();
     }
 }
 
-void KG::Renderer::PostProcessor::OnDataSave(tinyxml2::XMLElement* element)
+void KG::Renderer::PostProcessor::OnDataSave(tinyxml2::XMLElement* document)
 {
     for (auto& i : this->processQueue)
     {
-        //auto* element = document->InsertNewChildElement("PostProcess");
-        //KG::Utill::XMLConverter::XMLElementSave<KG::Utill::HashString>(element, "id", this->id);
-        //KG::Utill::XMLConverter::XMLElementSave<bool>(element, "isActive", this->isActive);
-        //i->OnDataSave(element);
+        auto* element = document->InsertNewChildElement("PostProcess");
+        KG::Utill::XMLConverter::XMLElementSave<KG::Utill::HashString>(element, "id", std::get<TupleProcess>(i)->id);
+        KG::Utill::XMLConverter::XMLElementSave<bool>(element, "isRaw", std::get<TupleIsRawShader>(i));
+        KG::Utill::XMLConverter::XMLElementSave<bool>(element, "isActive", std::get<TupleActive>(i));
     }
 }
 
@@ -469,8 +570,15 @@ void KG::Renderer::PostProcessor::OnDataLoad(tinyxml2::XMLElement* element)
     while (csr != nullptr)
     {
         auto id = KG::Utill::XMLConverter::XMLElementLoad<KG::Utill::HashString>(csr, "id");
+        auto isRaw = KG::Utill::XMLConverter::XMLElementLoad<bool>(csr, "isRaw");
         auto isActive = KG::Utill::XMLConverter::XMLElementLoad<bool>(csr, "isActive");
-        this->AddPostProcess(id, priority);
+        if (isRaw) {
+            this->AddPostProcess(id, isActive);
+        }
+        else {
+            this->AddPostProcessMateiral(id, isActive);
+        }
+
         csr = csr->NextSiblingElement("PostProcess");
     }
 }
@@ -512,15 +620,22 @@ void KG::Renderer::PostProcessor::Initialize()
         this->outputResources[i].SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
         this->outputResources[i].AddOnDescriptorHeap(descHeap, uavDesc);
         this->outputResources[i].AddOnDescriptorHeap(descHeap, srvDesc);
+
+        this->buffer0[i].SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
+        this->buffer1[i].SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
+        this->buffer2[i].SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
+
+        this->buffer0[i].AddOnDescriptorHeap(descHeap, uavDesc);
+        this->buffer1[i].AddOnDescriptorHeap(descHeap, uavDesc);
+        this->buffer2[i].AddOnDescriptorHeap(descHeap, uavDesc);
+
+        this->buffer0[i].AddOnDescriptorHeap(descHeap, srvDesc);
+        this->buffer1[i].AddOnDescriptorHeap(descHeap, srvDesc);
+        this->buffer2[i].AddOnDescriptorHeap(descHeap, srvDesc);
     }
-    this->buffer0.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
-    this->buffer0.AddOnDescriptorHeap(descHeap, uavDesc);
-    this->buffer1.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
-    this->buffer1.AddOnDescriptorHeap(descHeap, uavDesc);
-    this->buffer2.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
-    this->buffer2.AddOnDescriptorHeap(descHeap, uavDesc);
-    this->buffer2.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
-    this->buffer2.AddOnDescriptorHeap(descHeap, uavDesc);
+
+    this->bufferFramed.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
+    this->bufferFramed.AddOnDescriptorHeap(descHeap, uavDesc);
 
     this->buffer0Debug.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
     this->buffer0Debug.AddOnDescriptorHeap(descHeap, srvDesc);
@@ -528,9 +643,13 @@ void KG::Renderer::PostProcessor::Initialize()
     this->buffer1Debug.AddOnDescriptorHeap(descHeap, srvDesc);
     this->buffer2Debug.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
     this->buffer2Debug.AddOnDescriptorHeap(descHeap, srvDesc);
-    this->buffer2Debug.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
-    this->buffer2Debug.AddOnDescriptorHeap(descHeap, srvDesc);
 
+    this->buffer0PrevDebug.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
+    this->buffer0PrevDebug.AddOnDescriptorHeap(descHeap, srvDesc);
+    this->buffer1PrevDebug.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
+    this->buffer1PrevDebug.AddOnDescriptorHeap(descHeap, srvDesc);
+    this->buffer2PrevDebug.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight));
+    this->buffer2PrevDebug.AddOnDescriptorHeap(descHeap, srvDesc);
 
     uavDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;
     this->bufferLDR.SetResource(CreateUAVBufferResource(device, setting.clientWidth, setting.clientHeight, DXGI_FORMAT::DXGI_FORMAT_R8G8B8A8_UNORM));

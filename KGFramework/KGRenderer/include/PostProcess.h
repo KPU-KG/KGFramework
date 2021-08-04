@@ -63,6 +63,7 @@ namespace KG::Renderer
         PostProcess(const KG::Resource::Metadata::ShaderSetData& data);
         ~PostProcess();
         void Draw(ID3D12GraphicsCommandList* cmdList, UINT cachedScreenX, UINT cachedScreenY, GroupCountParser& parser);
+        void SetMaterialIndex(ID3D12GraphicsCommandList* cmdList, UINT index);
         void GetGroupSize(UINT cachedScreenX, UINT cachedScreenY, GroupCountParser& parser);
         size_t GetMaterialIndex(const KG::Utill::HashString& ID);
         bool CheckMaterialLoaded(const KG::Utill::HashString& ID);
@@ -73,7 +74,12 @@ namespace KG::Renderer
 
     class PostProcessor
     {
-        using PostProcessMaterial = std::tuple<PostProcess*, UINT, bool>;
+        using PostProcessMaterial = std::tuple<PostProcess*, UINT, bool, KG::Utill::HashString, bool>;
+        static constexpr UINT TupleProcess = 0;
+        static constexpr UINT TupleMaterialIndex = 1;
+        static constexpr UINT TupleActive = 2;
+        static constexpr UINT TupleID = 3;
+        static constexpr UINT TupleIsRawShader = 4;
         static constexpr UINT outputCount = 2;
         static constexpr UINT unitSize = 256;
         GroupCountParser parser;
@@ -82,28 +88,32 @@ namespace KG::Renderer
         UINT height = 0;
         std::array<KG::Resource::DXResource, outputCount> outputResources;
 
-        KG::Resource::DXResource buffer0;
-        KG::Resource::DXResource buffer1;
-        KG::Resource::DXResource buffer2;
+        KG::Resource::DXResource buffer0[2];
+        KG::Resource::DXResource buffer1[2];
+        KG::Resource::DXResource buffer2[2];
+        KG::Resource::DXResource bufferFramed;
 
         KG::Resource::DXResource buffer0Debug;
         KG::Resource::DXResource buffer1Debug;
         KG::Resource::DXResource buffer2Debug;
 
+        KG::Resource::DXResource buffer0PrevDebug;
+        KG::Resource::DXResource buffer1PrevDebug;
+        KG::Resource::DXResource buffer2PrevDebug;
+
         KG::Resource::DXResource bufferLDR;
         KG::Resource::DXResource bufferSSAO;
 
         PostProcess* copyProcess;
-        PostProcessMaterial ssaoProcessOne;
-        PostProcessMaterial ssaoProcessTwo;
-
-        PostProcessMaterial debugProcess;
+        PostProcessMaterial* debugProcess;
 
         std::vector<PostProcessMaterial> processQueue;
+        std::vector<PostProcessMaterial> ssaoQueue;
         void Initialize();
     public:
         PostProcessor();
         void AddPostProcess(const KG::Utill::HashString& id, bool active = true);
+        void AddPostProcessMateiral(const KG::Utill::HashString& id, bool active = true);
         void Draw(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex, ID3D12Resource* cameraData);
         void SSAO(ID3D12GraphicsCommandList* cmdList, RenderTexture& renderTexture, size_t cubeIndex, ID3D12Resource* cameraData);
         void CopyToSwapchain(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, KG::Resource::DXResource& swapchain);

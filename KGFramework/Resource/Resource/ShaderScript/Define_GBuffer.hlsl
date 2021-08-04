@@ -75,12 +75,12 @@ Surface PixelDecode(float4 gbuffer0, float4 gbuffer1, float4 gbuffer2, uint4 gbu
 {
     Surface result;
     result.albedo = gbuffer0.xyz;
-    result.reflection = gbuffer0.w;
+    result.emssion = gbuffer0.w;
     
     result.specular =gbuffer1.x;
     result.metalic = gbuffer1.y;
     result.roughness = gbuffer1.z;
-    result.emssion = gbuffer1.w;
+    result.ao = gbuffer1.w;
     
     
     result.wNormal = normalize(DecodeNormal(gbuffer2.xy));
