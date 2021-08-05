@@ -117,7 +117,7 @@ void KG::Component::EnemyGeneratorComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	SBaseComponent::OnCreate(obj);
 	for (int x = 0; x < MAP_SIZE_X; ++x) {
-		memset(session[x], SESSION_TYPE_NONE, MAP_SIZE_Z * sizeof(char));
+		std::fill(session[x].begin(), session[x].end(), SESSION_TYPE_NONE);
 	}
 }
 
@@ -150,18 +150,17 @@ KG::Component::EnemyGeneratorComponent::EnemyGeneratorComponent()
 	:
 	generateProp("GenerateEnemy", generateEnemy)
 {
-	session = new char* [MAP_SIZE_X];
-	for (int x = 0; x < MAP_SIZE_Z; ++x)
-		session[x] = new char[MAP_SIZE_Z];
+	session.resize(MAP_SIZE_X);
+	for (int i = 0; i < session.size(); ++i)
+		session[i].resize(MAP_SIZE_Z);
 }
 
 KG::Component::EnemyGeneratorComponent::~EnemyGeneratorComponent()
 {
-	for (int x = 0; x < MAP_SIZE_X; ++x) {
-		delete session[x];
-	}
+	for (int i = 0; i < session.size(); ++i)
+		session[i].clear();
+	session.clear();
 
-	delete[] session;
 }
 
 void KG::Component::EnemyGeneratorComponent::Initialize()

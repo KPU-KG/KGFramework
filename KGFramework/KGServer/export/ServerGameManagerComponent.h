@@ -55,7 +55,7 @@ namespace KG::Component
 		std::vector<KG::Component::Region> region;
 
 		// 세션 나누기
-		char** session;
+		std::vector<std::vector<char>> session;
 
 		int currentRegion = 0;
 		bool generateEnemy = false;

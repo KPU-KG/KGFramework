@@ -46,7 +46,7 @@ namespace KG::Component
 	class DLL SEnemyUnitComponent : public SBaseComponent
 	{
 	protected:
-		char** session;
+		std::vector<std::vector<char>> session;
 		const char*									presetName;
 		std::unordered_set<KG::Server::NET_OBJECT_ID> playerId;
 		KG::Component::SBaseComponent*				target = nullptr;
@@ -87,14 +87,12 @@ namespace KG::Component
 		bool										isInAttackDelay = false;
 		bool										isAttackable = false;
 
-		// StateManager*								stateManager;
-
 	public:
 
 		bool IsAttackable() const;
 		virtual void PostAttack();
 		virtual void Attack(SGameManagerComponent* gameManager);
-		void SetSession(char** s);
+		void SetSession(std::vector<std::vector<char>> s);
 		SEnemyUnitComponent();
 		virtual ~SEnemyUnitComponent();
 		void SetCenter(DirectX::XMFLOAT3 center);
