@@ -459,36 +459,53 @@ KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX:
     PxVec3 org{ origin.x, origin.y, origin.z };
     PxVec3 dir{ direction.x, direction.y, direction.z };
     PxReal dst = maxDistance;
-    PxRaycastHit hit[2];
-    PxRaycastBuffer buf(hit, 2);
+
+    PxRaycastBuffer hit;
+    // PxRaycastHit hit[2];
+    // PxRaycastBuffer buf(hit, 2);
+
     PxQueryFilterData filter = PxQueryFilterData();
     filter.data.word0 = mask;
     if (mask != 0) {
-        if (scene->raycast(org, dir, dst, buf, PxHitFlag::eDEFAULT, filter))
+        // if (scene->raycast(org, dir, dst, buf, PxHitFlag::eDEFAULT, filter))
+        if (scene->raycast(org, dir, dst, hit, PxHitFlag::eDEFAULT, filter))
         {
-            for (int i = 0; i < buf.getNbTouches(); ++i)
+            PxU32 hitId = hit.block.shape->getSimulationFilterData().word2;
+            if (myId != hitId)
             {
-                PxU32 hitId = hit[i].shape->getSimulationFilterData().word2;
-                if (myId != hitId)
-                {
-                    if (compIndex.count(hitId) != 0)
-                        return compIndex[hitId];
-                }
+                if (compIndex.count(hitId) != 0)
+                    return compIndex[hitId];
             }
+            // for (int i = 0; i < buf.getNbTouches(); ++i)
+            // {
+            //     PxU32 hitId = hit[i].shape->getSimulationFilterData().word2;
+            //     if (myId != hitId)
+            //     {
+            //         if (compIndex.count(hitId) != 0)
+            //             return compIndex[hitId];
+            //     }
+            // }
         }
     }
     else {
-        if (scene->raycast(org, dir, dst, buf))
+       //  if (scene->raycast(org, dir, dst, buf))
+        if (scene->raycast(org, dir, dst, hit))
         {
-            for (int i = 0; i < buf.getNbTouches(); ++i)
+            PxU32 hitId = hit.block.shape->getSimulationFilterData().word2;
+            if (myId != hitId)
             {
-                PxU32 hitId = hit[i].shape->getSimulationFilterData().word2;
-                if (myId != hitId)
-                {
-                    if (compIndex.count(hitId) != 0)
-                        return compIndex[hitId];
-                }
+                if (compIndex.count(hitId) != 0)
+                    return compIndex[hitId];
             }
+            // for (int i = 0; i < buf.getNbTouches(); ++i)
+            // {
+            //     PxU32 hitId = hit[i].shape->getSimulationFilterData().word2;
+            //     if (myId != hitId)
+            //     {
+            //         if (compIndex.count(hitId) != 0)
+            //             return compIndex[hitId];
+            //     }
+            // }
         }
     }
     return nullptr;

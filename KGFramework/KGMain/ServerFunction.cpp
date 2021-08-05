@@ -44,10 +44,6 @@ void KG::GameFramework::PostServerFunction()
 		KG::Utill::HashString("Projectile"),
 		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent*
 		{
-			// auto* trans = this->system->transformSystem.GetNewComponent();
-			// trans->SetScale(0.001, 0.001, 0.001);
-			// obj.AddComponent(trans);
-
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			auto& box = phy->GetCollisionBox();
 			box.position = { 0, 0, 0 };

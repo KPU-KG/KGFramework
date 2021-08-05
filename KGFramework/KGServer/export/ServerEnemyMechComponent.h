@@ -144,6 +144,8 @@ namespace KG::Component
 		bool noObstacleInAttack = false;
 		bool isMovableInTrace = false;
 		bool isPathFinding = false;
+		bool isAttackRotation = false;
+
 		DirectX::XMFLOAT3							goal = { 0,0,0 };
 		std::pair<int, int>	prevTarget;
 		std::vector<std::pair<int, int>>			path;
@@ -151,7 +153,7 @@ namespace KG::Component
 		float										distance = 0;
 		float										arriveTime = 0;
 		float										moveTime = 0;
-
+		int checkTime = 0;
 		DirectX::XMFLOAT2							angle;
 
 		float										traceRange = 70;
@@ -203,6 +205,7 @@ namespace KG::Component
 
 		bool IsMobableInTrace() const;
 		bool IsPathFinding() const;
+		bool IsAttackRotation() const;
 		virtual void Destroy() override;
 	};
 
