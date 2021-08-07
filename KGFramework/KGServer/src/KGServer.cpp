@@ -341,6 +341,7 @@ KG::Component::SBaseComponent* KG::Server::Server::FindNetObject(NET_OBJECT_ID i
 		return it->second;
 }
 
+
 std::stack<KG::Server::NET_OBJECT_ID>& KG::Server::Server::GetDisconnectedPlayerId()
 {
 	return this->disconnectedPlayerId;
@@ -416,6 +417,10 @@ void KG::Server::Server::Disconnect(SESSION_ID playerId)
 			SendRemovePlayer(playerCompId, pl.id);
 		}
 	}
+
+	auto l = this->FindNetObject(KG::Server::LOBBY_ID);
+	KG::Component::SLobbyComponent* lobby = (KG::Component::SLobbyComponent*)l;
+	lobby->DisconnectLobbyPlayer(playerId);
 }
 
 void KG::Server::Server::DoRecv(SESSION_ID key)

@@ -22,7 +22,7 @@ KG::Component::Region::Region()
 
 }
 
-KG::Component::Region::Region(DirectX::XMFLOAT3 position, float range, float heightOffset) : Region() 
+KG::Component::Region::Region(DirectX::XMFLOAT3 position, float range, float heightOffset) : Region()
 {
 	this->position = position;
 	this->range = range;
@@ -132,7 +132,7 @@ void KG::Component::EnemyGeneratorComponent::Update(float elapsedTime)
 				enemies.erase(enemies.begin() + i);
 				destroyFlag = false;
 				// 적 종류에 따라 점수 증가
-				score += 10;
+				score += 1;
 				break;
 			}
 		}
@@ -285,7 +285,7 @@ void KG::Component::EnemyGeneratorComponent::OnDataLoad(tinyxml2::XMLElement* ob
 
 void KG::Component::EnemyGeneratorComponent::OnDataSave(tinyxml2::XMLElement* objectElement) {
 	auto* componentElement = objectElement->InsertNewChildElement("Component");
- 	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::EnemyGeneratorComponent);
+	ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::EnemyGeneratorComponent);
 	generateProp.OnDataSave(componentElement);
 	for (auto& i : this->region)
 	{
@@ -326,7 +326,23 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		return;
 	if (!this->generateEnemy)
 		return;
-	auto region = GetNextRegion();
+
+	auto region = this->region[this->currentRegion];
+
+	switch (this->currentRegion) {
+	case 0:
+		this->currentRegion = 2;
+		break;
+	case 2:
+		this->currentRegion = 3;
+		break;
+	case 3:
+		this->currentRegion = 0;
+		break;
+	default:
+		this->currentRegion = 0;
+		break;
+	}
 
 	int enemyCount = 1; // randomSpawn(genRegion);
 
@@ -349,6 +365,12 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 
 		auto* scene = this->gameObject->GetScene();
 		auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
+
+		auto t = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("EnemyMark"));
+
+		if (t) {
+			t->GetTransform()->SetPosition(region.position.x, 120, region.position.z);
+		}
 
 		DirectX::XMFLOAT3 genPos{
 			randomPos(genRegion) + region.position.x,
@@ -404,6 +426,57 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 	}
 }
 
+void KG::Component::EnemyGeneratorComponent::GenerateBoss()
+{
+	if (this->region.size() == 0)
+		return;
+	if (!this->generateEnemy)
+		return;
+
+	auto t = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("BossBarrier"));
+
+	if (t) {
+		t->Destroy();
+	}
+	auto region = this->region[1];
+	// auto region = GetBossRegion();
+
+	std::uniform_real_distribution<float> randomPos(-region.range, region.range);
+	auto presetName = "EnemyMech";
+	auto presetId = KG::Utill::HashString(presetName);
+
+	auto* scene = this->gameObject->GetScene();
+	auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
+
+	DirectX::XMFLOAT3 genPos{
+		randomPos(genRegion) + region.position.x,
+		region.position.y + region.heightOffset,
+		randomPos(genRegion) + region.position.z
+	};
+
+	KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
+	auto tag = KG::Utill::HashString(presetName);
+	addObjectPacket.objectTag = tag;
+	addObjectPacket.parentTag = 0;
+	addObjectPacket.presetId = tag;
+	addObjectPacket.position = genPos;
+
+	auto id = this->server->GetNewObjectId();
+	addObjectPacket.newObjectId = id;
+	comp->SetNetObjectId(id);
+	this->server->SetServerObject(id, comp);
+
+	auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyControllerComponent>();
+	enemyCtrl->SetCenter(region.position);
+	enemyCtrl->SetWanderRange(region.range);
+	enemyCtrl->SetPosition(genPos);
+
+	AddEnemyControllerCompoenent(enemyCtrl);
+
+	this->GetGameObject()->GetTransform()->AddChild(comp->GetGameObject()->GetTransform());
+	this->BroadcastPacket(&addObjectPacket);
+}
+
 void  KG::Component::SGameManagerComponent::RegisterPlayersToEnemy() {
 	for (auto& id : playerObjects) {
 		enemyGenerator->RegisterPlayerToEnemy(id.first);
@@ -442,17 +515,30 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 
 	if (enemyGenerator) {
 		if (enemyGenerator->IsGeneratable()) {
-			enemyGenerator->Initialize();
-			enemyGenerator->GenerateEnemy();
-			for (auto& p : playerObjects) {
-				p.second->playerInfoLock.lock();
-				enemyGenerator->RegisterPlayerToEnemy(p.first);
-				p.second->playerInfoLock.unlock();
+			if (enemyGenerator->GetScore() < 10) {
+				enemyGenerator->Initialize();
+				enemyGenerator->GenerateEnemy();
+				for (auto& p : playerObjects) {
+					p.second->playerInfoLock.lock();
+					enemyGenerator->RegisterPlayerToEnemy(p.first);
+					p.second->playerInfoLock.unlock();
+				}
+			}
+			else {
+				enemyGenerator->Initialize();
+				enemyGenerator->GenerateBoss();
+				for (auto& p : playerObjects) {
+					p.second->playerInfoLock.lock();
+					enemyGenerator->RegisterPlayerToEnemy(p.first);
+					p.second->playerInfoLock.unlock();
+				}
 			}
 		}
 		if (enemyGenerator->isAttackable) {
 			enemyGenerator->SendAttackPacket(this);
 		}
+
+
 	}
 }
 
@@ -538,7 +624,7 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 		playerObjects.insert(std::make_pair(newPlayerId, playerComp));
 		this->server->SetServerObject(newPlayerId, playerComp);
 		this->server->UnlockWorld();
-
+		
 		KG::Packet::SC_PLAYER_INIT initPacket = {};
 		initPacket.playerObjectId = newPlayerId;
 		initPacket.position = KG::Packet::RawFloat3(newPlayerId + 10, 1, newPlayerId + 5);
@@ -555,9 +641,9 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 		// 	enemyGenerator->RegisterPlayerToEnemy(newPlayerId);
 		// }
 
-		for ( auto& [id, ptr] : this->playerObjects )
+		for (auto& [id, ptr] : this->playerObjects)
 		{
-			if ( id == newPlayerId ) continue;
+			if (id == newPlayerId) continue;
 			std::shared_lock sl{ ptr->playerInfoLock };
 
 			KG::Packet::SC_ADD_PLAYER addPacket = {};

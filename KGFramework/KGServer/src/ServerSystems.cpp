@@ -66,6 +66,14 @@ void KG::System::SEnemyCrawlerComponentSystem::OnPostUpdate(float elapsedTime)
 {
 }
 
-void KG::System::SEnemyCrawlerComponentSystem::OnPreRender()
+void KG::System::SEnemyCrawlerComponentSystem::OnPreRender() 
+{
+}
+
+void KG::System::SLobbyComponentSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::SLobbyComponentSystem::OnPreRender()
 {
 }

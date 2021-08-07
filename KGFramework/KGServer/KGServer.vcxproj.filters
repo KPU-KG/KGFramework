@@ -75,6 +75,9 @@
     <ClInclude Include="export\ServerEnemyCrawlerComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
+    <ClInclude Include="export\ServerLobbyComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -111,6 +114,9 @@
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
     <ClCompile Include="src\ServerEnemyCrawlerComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ServerLobbyComponent.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
   </ItemGroup>

@@ -18,6 +18,7 @@
 #include "ServerGameManagerComponent.h"
 #include "ServerPlayerControllerComponent.h"
 #include "ServerEnemyUnitComponent.h"
+#include "ServerLobbyComponent.h"
 #include "ServerProjectileComponent.h"
 #include "ServerSystems.h"
 
@@ -51,6 +52,7 @@ namespace KG::Server
 		KG::System::SEnemyCrawlerComponentSystem sEnemyCrawlerSystem;
 		KG::System::EnemyGeneratorSystem enemyGeneratorSystem;
 		KG::System::SProjectileComponentSystem sProjectileSystem;
+		KG::System::SLobbyComponentSystem sLobbySystem;
 		KG::Physics::IPhysicsScene* physicsScene;
 
 		std::stack<KG::Server::NET_OBJECT_ID> disconnectedPlayerId;

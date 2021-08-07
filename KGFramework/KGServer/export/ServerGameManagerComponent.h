@@ -60,8 +60,15 @@ namespace KG::Component
 		int currentRegion = 0;
 		bool generateEnemy = false;
 		bool initialized = false;
+		bool generateBoss = false;
+
 		unsigned int score = 0;
 		KG::Component::Region GetNextRegion();
+		//KG::Component::Region GetRegion0() { return region[0]; };
+		//KG::Component::Region GetRegion1() { return region[1]; }; // boss
+		//KG::Component::Region GetRegion2() { return region[2]; };
+		//KG::Component::Region GetRegion3() { return region[3]; };
+		//KG::Component::Region GetBossRegion();
 		int GetCurrentRegionIndex() const;
 		KG::Component::Region GetCurrentRegion();
 	public:
@@ -74,6 +81,7 @@ namespace KG::Component
 		bool IsGeneratable() const;
 		void GenerateEnemy();
 		void AddEnemyControllerCompoenent(SEnemyUnitComponent* comp);
+		void GenerateBoss();
 		void SendAddEnemyPacket(KG::Server::SESSION_ID player);
 		unsigned int GetScore() const;
 		void RegisterPlayerToEnemy(KG::Server::NET_OBJECT_ID id);
