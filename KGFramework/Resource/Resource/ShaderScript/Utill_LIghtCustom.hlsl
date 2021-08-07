@@ -77,12 +77,14 @@ float4 CustomLightCalculator(LightData light, Surface info, float3 lightDir, flo
     float3 kd = lerp(float3(1, 1, 1) - F, float3(0.0f, 0.0f, 0.0f), info.metalic.xxx);
  
     // Lambert diffuse BRDF.
-    float3 diffuseBRDF = kd * info.albedo;
+    float3 diffuseBRDF = NDotL * (info.albedo - info.albedo * info.metalic);
+    //float3 diffuseBRDF = kd * info.albedo / 3.141592;
     
     // Cook-Torrance specular microfacet BRDF.
-    float3 specularBRDF = (F * D * G) / max(0.00001f, 4.0f * NDotL * NDotV) * info.specular;
-    
-    return float4((diffuseBRDF + specularBRDF) * NDotL * light.Strength * atten, 1.0f);
+    float3 specularColor = lerp(0.08 * info.specular.xxx, info.albedo, info.metalic.xxx);
+    float3 specularBRDF = (F * D * G) / max(0.00001f, 4.0f * NDotL * NDotV) * specularColor;
+
+    return float4((diffuseBRDF + specularBRDF) * light.Strength * atten, 1.0f);
     
     
     //// Diffuse Section
