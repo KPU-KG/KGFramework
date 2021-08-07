@@ -466,7 +466,7 @@ void KG::Component::EnemyGeneratorComponent::GenerateBoss()
 	comp->SetNetObjectId(id);
 	this->server->SetServerObject(id, comp);
 
-	auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyControllerComponent>();
+	auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyCrawlerComponent>();
 	enemyCtrl->SetCenter(region.position);
 	enemyCtrl->SetWanderRange(region.range);
 	enemyCtrl->SetPosition(genPos);
