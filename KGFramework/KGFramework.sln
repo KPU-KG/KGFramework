@@ -69,6 +69,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ETC", "ETC", "{CC3BB28C-12D
 		Resource\Resource\ShaderScript\UI_Default.hlsl = Resource\Resource\ShaderScript\UI_Default.hlsl
 		Resource\Resource\ShaderScript\Utill_LIghtCustom.hlsl = Resource\Resource\ShaderScript\Utill_LIghtCustom.hlsl
 		Resource\Resource\ShaderScript\Utill_ShaderSelector.hlsl = Resource\Resource\ShaderScript\Utill_ShaderSelector.hlsl
+		Resource\Resource\ShaderScript\Utill_Transparent.hlsl = Resource\Resource\ShaderScript\Utill_Transparent.hlsl
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pixel", "Pixel", "{3A295F94-2BA0-43B3-816B-784DD6E7D6DF}"

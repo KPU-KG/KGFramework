@@ -692,4 +692,8 @@
         <FLOAT1 byte="4" comment="lerpT" x="0"/>
         <FLOAT1 byte="4" comment="defaultValue" x="1"/>
     </Material>
+    <Material id="TrasparentWhite" shaderID="Transparent_Default" hash_id="1598743950" shaderHashID="875924835">
+        <Texture byte="4" comment="ColorTexture" id="one" hash_id="94880491"/>
+        <FLOAT1 byte="4" comment="alphaValue" x="0.3"/>
+    </Material>
 </MaterialSet>

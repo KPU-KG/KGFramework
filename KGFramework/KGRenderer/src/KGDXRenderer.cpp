@@ -278,10 +278,10 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
         normalCamera.SetCameraRender(this->mainCommandList);
 
         this->OpaqueRender(ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
-        this->TransparentRender(ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
         this->SSAORender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex(), normalCamera.GetCameraDataBuffer());
         this->LightPassRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
         this->SkyBoxRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+        this->TransparentRender(ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
         this->ParticleRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
         this->SpriteRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
         this->PostProcessRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex(), normalCamera.GetCameraDataBuffer());
