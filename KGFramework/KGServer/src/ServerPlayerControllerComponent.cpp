@@ -42,18 +42,19 @@ void KG::Component::SPlayerComponent::Update(float elapsedTime)
 {
 	if (!this->isActive) {
 		this->Respawn(elapsedTime);
+		
 	}
 	else {
 		this->rotationTrasnform->SetRotation(this->inputs.rotation);
 		//auto eulerInputs = KG::Math::Quaternion::ToEuler(this->inputs.rotation);
 		//this->physics->AddTorque(XMFLOAT3(0, 1, 0), 40000);
 		this->ProcessMove(elapsedTime);
-		packetSendTimer += elapsedTime;
-		if (packetSendTimer > this->packetInterval)
-		{
-			this->SendSyncPacket();
-			packetSendTimer = 0.0f;
-		}
+	}
+	packetSendTimer += elapsedTime;
+	if (packetSendTimer > this->packetInterval)
+	{
+		this->SendSyncPacket();
+		packetSendTimer = 0.0f;
 	}
 }
 
@@ -211,7 +212,7 @@ bool KG::Component::SPlayerComponent::OnProcessPacket(unsigned char* packet, KG:
 void KG::Component::SPlayerComponent::HitBullet(int damage)
 {
 	hpPoint -= damage;
-	if (hpPoint < 0) {
+	if (hpPoint <= 0) {
 		hpPoint = 0;
 		isActive = false;
 		DirectX::XMFLOAT3 pos(10, 0, 0);
