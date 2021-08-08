@@ -47,6 +47,7 @@ namespace KG::Packet
 		CS_REQ_LOGIN, 
 		CS_INPUT, // »ç¿ë
 		CS_FIRE,
+		CS_RELOAD,
 		CS_LOBBY_CHANGE
 	};
 
@@ -288,6 +289,12 @@ namespace KG::Packet
 		RawFloat3 direction;
 		float distance;
 	};
+
+	struct CS_RELOAD
+	{
+		DEFAULT_PACKET_HEADER(CS_RELOAD);
+	};
+
 
 	struct CS_LOBBY_CHANGE
 	{

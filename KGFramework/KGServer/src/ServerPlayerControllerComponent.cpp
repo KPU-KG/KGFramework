@@ -182,18 +182,26 @@ bool KG::Component::SPlayerComponent::OnProcessPacket(unsigned char* packet, KG:
 	return true;
 	case KG::Packet::PacketType::CS_FIRE:
 	{
-		if (this->physicsScene) {
-			this->server->LockWorld();
-			auto* firePacket = KG::Packet::PacketCast<KG::Packet::CS_FIRE>(packet);
-			auto comp = this->physicsScene->QueryRaycast(firePacket->origin, firePacket->direction, firePacket->distance);
-			if (comp) {
-				auto callback = comp->GetRaycastCallback();
-				if (callback) {
-					callback(KG::Component::RaycastType::BULLET_HIT, this->physics);
+		if (bulletCount > 0) {
+			this->bulletCount -= 1;
+			if (this->physicsScene) {
+				this->server->LockWorld();
+				auto* firePacket = KG::Packet::PacketCast<KG::Packet::CS_FIRE>(packet);
+				auto comp = this->physicsScene->QueryRaycast(firePacket->origin, firePacket->direction, firePacket->distance);
+				if (comp) {
+					auto callback = comp->GetRaycastCallback();
+					if (callback) {
+						callback(KG::Component::RaycastType::BULLET_HIT, this->physics);
+					}
 				}
+				this->server->UnlockWorld();
 			}
-			this->server->UnlockWorld();
 		}
+	}
+	return true;
+	case KG::Packet::PacketType::CS_RELOAD:
+	{
+		this->bulletCount = 30;
 	}
 	return true;
 	}
