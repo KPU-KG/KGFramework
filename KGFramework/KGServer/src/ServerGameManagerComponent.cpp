@@ -358,8 +358,8 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		// 	presetName = "EnemyCrawler";
 		// 	break;
 		// }
-		// auto presetName = "EnemyCrawler";
-		auto presetName = "EnemyMech";
+		auto presetName = "EnemyCrawler";
+		// auto presetName = "EnemyMech";
 
 		auto presetId = KG::Utill::HashString(presetName);
 
@@ -413,8 +413,8 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		// 	break;
 		// }
 
-		// auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyCrawlerComponent>();
-		auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyMechComponent>();
+		auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyCrawlerComponent>();
+		// auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyMechComponent>();
 		enemyCtrl->SetCenter(region.position);
 		enemyCtrl->SetWanderRange(region.range);
 		enemyCtrl->SetPosition(genPos);
