@@ -13,5 +13,5 @@
     <isStartServer value="true"/>
     <isStartLogin value="false"/>
     <ipAddress value="127.0.0.1"/>
-    <startScenePath value="Resource/Scenes/SceneData_80.xml"/>
+    <startScenePath value="Resource/Scenes/SceneData_86.xml"/>
 </Settings>

@@ -69,14 +69,17 @@ namespace KG::Server
 		void DoRecv(SESSION_ID key);
 		void ProcessPacket(SESSION_ID playerId, unsigned char* buffer);
 
+		
 
 	public:
 		std::mutex worldLock;
 		int currentnum = 0;
+		
 
 		NET_OBJECT_ID GetNewObjectId();
 		void SetSessionState(SESSION_ID session, KG::Server::PLAYER_STATE state);
 		void SetSessionId(SESSION_ID session, KG::Server::NET_OBJECT_ID id);
+		bool isPlay = true;
 		//void AddPlayer();
 
 		// IServer을(를) 통해 상속됨

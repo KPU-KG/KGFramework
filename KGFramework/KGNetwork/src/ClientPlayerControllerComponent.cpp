@@ -481,6 +481,8 @@ void KG::Component::CPlayerControllerComponent::TryReload(float elapsedTime)
             if (this->sound)
                 this->sound->PlayEffectiveSound(VECTOR_SOUND::RELOAD_EMPTY);
         }
+        Packet::CS_RELOAD packet;
+        this->SendPacket(&packet);
     }
 }
 
