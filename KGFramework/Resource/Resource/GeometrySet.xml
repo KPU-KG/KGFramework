@@ -170,4 +170,6 @@
     <Geometry id="Cliff_5x14_V04.FBX" fileDir="Resource/Geometry/newmo/Cliffs/Cliff_5x14_V04.FBX" rawMesh="true" hash_id="4114949293"/>
     <!--VectorDropModel.fbx-->
     <Geometry id="VectorDropModel.fbx" fileDir="Resource/Geometry/vector/VectorDropModel.fbx" rawMesh="true" hash_id="3538754280"/>
+    <!--CruiseMissile.fbx-->
+    <Geometry id="CruiseMissile.fbx" fileDir="Resource/Geometry/missile/Models/CruiseMissile.fbx" rawMesh="true" hash_id="358065974"/>
 </GeometrySet>

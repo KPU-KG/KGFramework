@@ -672,4 +672,13 @@
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
     </Material>
+    <Material id="missile" shaderID="PBRDefault" hash_id="3666496559" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="missile_color" hash_id="3896858263"/>
+        <Texture byte="4" comment="normalTexture" id="missile_normal" hash_id="3255239263"/>
+        <Texture byte="4" comment="metalicTexture" id="missile_metalic" hash_id="437528647"/>
+        <Texture byte="4" comment="roughTexture" id="missile_rough" hash_id="2651637069"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
+        <Padding byte="4"/>
+    </Material>
 </MaterialSet>

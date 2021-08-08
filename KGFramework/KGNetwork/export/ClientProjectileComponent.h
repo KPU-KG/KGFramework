@@ -16,8 +16,6 @@ namespace KG::Component
 	{
 	private:
 		TransformComponent* transform = nullptr;
-		// IAnimationControllerComponent* anim = nullptr;
-		// IRenderSpriteComponent* hpBar = nullptr;
 
 	public:
 		CProjectileComponent();

@@ -47,7 +47,17 @@ void KG::Component::SProjectileComponent::Update(float elapsedTime)
 	if (sendInterval <= sendTimer) {
 		KG::Packet::SC_MOVE_OBJECT packet;
 		packet.position = this->transform->GetWorldPosition();
+		auto rot = this->transform->GetRotation();
+
+		auto srcQuatVector = XMLoadFloat4(&rot);
+		
+		auto quaternion = KG::Math::Quaternion::FromEuler(XMFLOAT3(0, XMConvertToRadians(-90), 0));
+		auto result = XMQuaternionMultiply(srcQuatVector, XMLoadFloat4(&quaternion));
+		XMStoreFloat4(&rot, result);
+		packet.rotation = rot;
+
 		this->BroadcastPacket((void*)&packet);
+
 		sendTimer = 0;
 	}
 	// this->rigid->AddForce(this->direction, speed * elapsedTime);

@@ -10,7 +10,6 @@ void KG::Component::CProjectileComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	CBaseComponent::OnCreate(obj);
 	this->transform = this->gameObject->GetTransform();
-	// this->transform->SetScale(0.001, 0.001, 0.001);
 }
 
 void KG::Component::CProjectileComponent::Update(float elapsedTime)
@@ -23,8 +22,10 @@ bool KG::Component::CProjectileComponent::OnProcessPacket(unsigned char* packet,
 	case KG::Packet::PacketType::SC_MOVE_OBJECT:
 	{
 		auto* p = KG::Packet::PacketCast<KG::Packet::SC_MOVE_OBJECT>(packet);
+		
 		this->transform->SetPosition(p->position);
 		this->transform->SetRotation(p->rotation);
+
 		return true;
 	}
 	case KG::Packet::PacketType::SC_REMOVE_OBJECT:

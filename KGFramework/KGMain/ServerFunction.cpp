@@ -60,6 +60,25 @@ void KG::GameFramework::PostServerFunction()
 	);
 
 	this->scene->AddNetworkCreator(
+		KG::Utill::HashString("Missile"),
+		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent*
+		{
+			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			auto& box = phy->GetCollisionBox();
+			box.position = { 0, 0, 0 };
+			box.scale = { 1,1,3 };
+			phy->SetApply(true);
+			phy->AddFilterGroup(KG::Component::FilterGroup::eBULLET, KG::Component::FilterGroup::eENEMY);
+			phy->AddFilterGroup(KG::Component::FilterGroup::eNONE, KG::Component::FilterGroup::eBULLET);
+			obj.AddComponent(phy);
+
+			auto* comp = this->networkServer->GetNewProjectileComponent();
+			obj.AddComponent(comp);
+			return comp;
+		}
+	);
+
+	this->scene->AddNetworkCreator(
 		KG::Utill::HashString("EnemyMech"),
 		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent* {
 

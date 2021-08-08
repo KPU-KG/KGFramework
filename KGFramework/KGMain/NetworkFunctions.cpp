@@ -100,6 +100,17 @@ void KG::GameFramework::PostNetworkFunction()
         }
     );
 
+    this->scene->AddNetworkCreator(
+        KG::Utill::HashString("Missile"),
+        [this](KG::Core::GameObject& obj) -> KG::Component::IComponent*
+        {
+            auto* comp = this->networkClient->GetNewProjectileComponent();
+            obj.AddComponent(comp);
+
+            return comp;
+        }
+    );
+
 	this->scene->AddNetworkCreator(
 		KG::Utill::HashString("EnemyMech"),
 		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent*

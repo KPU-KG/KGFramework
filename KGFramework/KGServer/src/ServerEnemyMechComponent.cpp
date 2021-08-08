@@ -338,8 +338,13 @@ bool KG::Component::SEnemyMechComponent::SetAttackRotation()
 bool KG::Component::SEnemyMechComponent::IsTargetInRange() const
 {
 	if (target) {
-		auto pos = target->GetGameObject()->GetTransform()->GetWorldPosition();
-		return IsInTraceRange(pos);
+		if (target->isUsing()) {
+			auto pos = target->GetGameObject()->GetTransform()->GetWorldPosition();
+			return IsInTraceRange(pos);
+		}
+		else {
+			return false;
+		}
 	}
 	return false;
 }
@@ -650,40 +655,50 @@ bool KG::Component::SEnemyMechComponent::AttackTarget(float elapsedTime)
 
 void KG::Component::SEnemyMechComponent::Attack(SGameManagerComponent* gameManager)
 {
-	auto presetName = "Projectile";
-	auto presetId = KG::Utill::HashString(presetName);
+	// auto presetName = "Projectile";
+	for (int i = 0; i < 2; ++i) {
+		auto presetName = "Missile";
+		auto presetId = KG::Utill::HashString(presetName);
 
-	auto* scene = this->gameObject->GetScene();
-	auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
+		auto* scene = this->gameObject->GetScene();
+		auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
 
-	auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-	targetPos.y += 1;
-	auto origin = this->transform->GetPosition();
-	origin.y += 3;
-	auto direction = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, origin));
+		auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
+		targetPos.y += 1;
+		auto origin = this->transform->GetWorldPosition();
+		origin.y += 2;
+		auto right = this->transform->GetWorldRight();
+		right.y = 0;
+		auto direction = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, origin));
 
-
-	KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
-	auto tag = KG::Utill::HashString(presetName);
-	addObjectPacket.objectTag = tag;
-	addObjectPacket.parentTag = 0;
-	addObjectPacket.presetId = tag;
-	addObjectPacket.position = origin;
-
-	auto id = this->server->GetNewObjectId();
-	addObjectPacket.newObjectId = id;
-	comp->SetNetObjectId(id);
-	this->server->SetServerObject(id, comp);
-
-	auto projectile = comp->GetGameObject()->GetComponent<SProjectileComponent>();
+		XMStoreFloat3(&right, Math::Vector3::XMVectorScale(XMLoadFloat3(&right), (-1 + 2 * i)));
+		origin = Math::Vector3::Add(origin, right);
 
 
-	projectile->Initialize(origin, direction, 20, 1);
-	this->server->SetServerObject(id, projectile);
-	gameManager->BroadcastPacket(&addObjectPacket);
-	this->GetGameObject()->GetTransform()->GetParent()->AddChild(comp->GetGameObject()->GetTransform());
-	DebugNormalMessage("Enemy Mech : Shot Projectile");
+		KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
+		auto tag = KG::Utill::HashString(presetName);
+		addObjectPacket.objectTag = tag;
+		addObjectPacket.parentTag = 0;
+		addObjectPacket.presetId = tag;
+		addObjectPacket.position = origin;
+		// addObjectPacket.rotation = 
 
+		auto id = this->server->GetNewObjectId();
+		addObjectPacket.newObjectId = id;
+		comp->SetNetObjectId(id);
+		this->server->SetServerObject(id, comp);
+
+		auto projectile = comp->GetGameObject()->GetComponent<SProjectileComponent>();
+
+
+		projectile->Initialize(origin, direction, 20, 1);
+
+		this->server->SetServerObject(id, projectile);
+		gameManager->BroadcastPacket(&addObjectPacket);
+		this->GetGameObject()->GetTransform()->GetParent()->AddChild(comp->GetGameObject()->GetTransform());
+
+		DebugNormalMessage("Enemy Mech : Shot Projectile");
+	}
 	// prevTarget.first = round(this->target->GetGameObject()->GetTransform()->GetWorldPosition().x);
 	// prevTarget.second = round(this->target->GetGameObject()->GetTransform()->GetWorldPosition().z);
 }
