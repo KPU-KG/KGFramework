@@ -28,6 +28,7 @@ namespace KG::Component
 	public:
 		SLobbyComponent();
 		void DisconnectLobbyPlayer(KG::Server::SESSION_ID playerId);
+		// bool CheckReady();
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Destroy() override {};
 		virtual void OnDestroy() override

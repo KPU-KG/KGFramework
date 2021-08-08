@@ -505,6 +505,10 @@ void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 {
 	this->UpdatePlayerSession();
+	//auto l = this->server->FindNetObject(KG::Server::LOBBY_ID);
+	//KG::Component::SLobbyComponent* lobby = (KG::Component::SLobbyComponent*)l;
+
+
 	if (enemyGenerator == nullptr) {
 		enemyGenerator = this->gameObject->GetComponent<EnemyGeneratorComponent>();
 		if (enemyGenerator) {
@@ -513,8 +517,8 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 		}
 	}
 
-	if (enemyGenerator) {
-		if (enemyGenerator->IsGeneratable()) {
+	if (enemyGenerator != nullptr) {
+		if (enemyGenerator->IsGeneratable() && this->server->isPlay) {
 			if (enemyGenerator->GetScore() < 10) {
 				enemyGenerator->Initialize();
 				enemyGenerator->GenerateEnemy();
@@ -537,8 +541,6 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 		if (enemyGenerator->isAttackable) {
 			enemyGenerator->SendAttackPacket(this);
 		}
-
-
 	}
 }
 
@@ -624,7 +626,7 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 		playerObjects.insert(std::make_pair(newPlayerId, playerComp));
 		this->server->SetServerObject(newPlayerId, playerComp);
 		this->server->UnlockWorld();
-		
+
 		KG::Packet::SC_PLAYER_INIT initPacket = {};
 		initPacket.playerObjectId = newPlayerId;
 		initPacket.position = KG::Packet::RawFloat3(newPlayerId + 10, 1, newPlayerId + 5);
