@@ -6,7 +6,7 @@
     <fullScreenHeight value="1080"/>
     <fullScreen value="false"/>
     <isVsync value="false"/>
-    <isPxDebugger value="false"/>
+    <isPxDebugger value="true"/>
     <isEditMode value="false"/>
     <isConsoleMode value="true"/>
     <isStartClient value="false"/>

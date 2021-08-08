@@ -27,8 +27,11 @@ bool KG::Component::SEnemyMechComponent::SetGoal()
 	auto pos = transform->GetWorldPosition();
 	distance = std::sqrt(std::pow((goal.x - pos.x), 2) + std::pow((goal.y - pos.y), 2));
 
+	auto spd = speed;
+	if (this->stateManager->GetCurState() == MechStateManager::STATE_TRACE)
+		spd += traceStateSpeed;
 
-	arriveTime = distance / speed;
+	arriveTime = distance / spd;
 	moveTime = 0;
 
 	direction = Math::Vector3::Subtract(goal, transform->GetWorldPosition());
@@ -85,8 +88,12 @@ bool KG::Component::SEnemyMechComponent::MoveToGoal(float elapsedTime)
 			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
 	}
 
+	auto spd = speed;
+	if (this->stateManager->GetCurState() == MechStateManager::STATE_TRACE)
+		spd += traceStateSpeed;
+
 	if (rigid) {
-		rigid->SetVelocity(direction, speed);
+		rigid->SetVelocity(direction, spd);
 	}
 
 	if (noObstacleInAttack)
@@ -96,7 +103,7 @@ bool KG::Component::SEnemyMechComponent::MoveToGoal(float elapsedTime)
 
 	if (moveTime / arriveTime >= 1) {
 		moveTime = 0;
-		checkTime = 0;
+		// checkTime = 0;
 		return true;
 	}
 
@@ -128,10 +135,10 @@ bool KG::Component::SEnemyMechComponent::MoveToGoal(float elapsedTime)
 		return true;
 	}
 
-	if (checkTime < moveTime) {
-		checkTime++;
-		return true;
-	}
+	// if (checkTime < moveTime) {
+	// 	checkTime++;
+	// 	return true;
+	// }
 
 	return false;
 }
@@ -292,17 +299,17 @@ bool KG::Component::SEnemyMechComponent::SetAttackRotation()
 		goal.y = 0;
 		isAttackRotation = true;
 	}
-	else if (isPathFinding) {
-		if (path.size() > 0) {
-			this->goal.x = path[0].first;
-			this->goal.z = path[0].second;
-			path.erase(path.begin());
-		}
-		else {
-			this->goal = target->GetGameObject()->GetTransform()->GetWorldPosition();
-			goal.y = 0;
-		}
-	}
+	// else if (isPathFinding) {
+	// 	if (path.size() > 0) {
+	// 		this->goal.x = path[0].first;
+	// 		this->goal.z = path[0].second;
+	// 		path.erase(path.begin());
+	// 	}
+	// 	else {
+	// 		this->goal = target->GetGameObject()->GetTransform()->GetWorldPosition();
+	// 		goal.y = 0;
+	// 	}
+	// }
 	
 	// else if (!isMovableInTrace) {
 	// 	this->goal = target->GetGameObject()->GetTransform()->GetWorldPosition();
@@ -340,22 +347,29 @@ bool KG::Component::SEnemyMechComponent::IsTargetInRange() const
 bool KG::Component::SEnemyMechComponent::CheckAttackable()
 {
 	noObstacleInAttack = false;
-	XMFLOAT3 dir = Math::Vector3::Normalize(Math::Vector3::Subtract(this->target->GetGameObject()->GetTransform()->GetWorldPosition(), this->transform->GetWorldPosition()));
+	auto pos = this->transform->GetWorldPosition();
+	pos.y = 0.5;
+
+	XMFLOAT3 dir = Math::Vector3::Normalize(Math::Vector3::Subtract(this->target->GetGameObject()->GetTransform()->GetWorldPosition(), pos));
 	uint32_t mask = static_cast<uint32_t>(FilterGroup::ePLAYER);
 	mask |= static_cast<uint32_t>(FilterGroup::eBUILDING);
 	mask |= static_cast<uint32_t>(FilterGroup::eBOX);
 	
-	auto comp = this->rigid->GetScene()->QueryRaycast(this->transform->GetWorldPosition(), dir, attackRange, this->rigid->GetId(), mask);
+	DebugNormalMessage("dir : " << dir);
+	DebugNormalMessage("mask : " << mask);
+	DebugNormalMessage("pos : " << pos);
+
+	auto comp = this->rigid->GetScene()->QueryRaycast(pos, dir, attackRange, this->rigid->GetId(), mask);
 	if (comp != nullptr) {
 		auto filter = comp->GetFilterGroup();
 		if (filter & static_cast<uint32_t>(FilterGroup::ePLAYER)) {
 			noObstacleInAttack = true;
 		}
 	}
-	if (noObstacleInAttack) {
-		isPathFinding = false;
-		path.clear();
-	}
+	// if (noObstacleInAttack) {
+	// 	isPathFinding = false;
+	// 	path.clear();
+	// }
 	return true;
 }
 
@@ -466,18 +480,18 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 
 		// set rotation var
 		distance = std::sqrt(std::pow((goal.x - myPos.x), 2) + std::pow((goal.z - myPos.z), 2));
-		arriveTime = distance / (speed + 3);
+		arriveTime = distance / (speed + traceStateSpeed);
 		moveTime = 0;
-		
+
 		direction = Math::Vector3::Subtract(goal, transform->GetWorldPosition());
 		direction.y = 0;
 		XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&direction)));
-		
+
 		auto dir = DirectX::XMFLOAT2{ direction.x, direction.z };
-		
+
 		auto look = DirectX::XMFLOAT2{ transform->GetLook().x, transform->GetLook().z };
 		rotateTimer = 0;
-		
+
 		XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
 		XMFLOAT2 crs;
 		XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
@@ -485,7 +499,7 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 			angle.x *= -1;
 		isMovableInTrace = true;
 		return true;
-	}
+	}/*
 	else {
 		std::set<Coord> open_list;
 		std::vector<Coord> closed_list;
@@ -511,18 +525,18 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 				for (int dx = -1; dx < 2; ++dx) {
 					int x = c.x + dx;
 
-					if (x < 0 || x >= MAP_SIZE_X) 
+					if (x < 0 || x >= MAP_SIZE_X)
 						continue;
-					
+
 					for (int dz = -1; dz < 2;++dz) {
 						int z = c.z + dz;
 
-						if (z < 0 || z >= MAP_SIZE_Z) 
+						if (z < 0 || z >= MAP_SIZE_Z)
 							continue;
 
 						if (session[x][z])
 							continue;
-						
+
 						Coord newCoord(static_cast<int>(x + (MAP_SIZE_X / 2)), static_cast<int>(z + (MAP_SIZE_Z / 2)));
 
 						bool is_closed = false;
@@ -560,9 +574,9 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 				closed_list.emplace_back(c);
 				open_list.erase(c);
 			}
-		}
-		return true;
-	}
+		}*/
+	return true;
+	// }
 }
 
 bool KG::Component::SEnemyMechComponent::IsMobableInTrace() const
@@ -570,10 +584,10 @@ bool KG::Component::SEnemyMechComponent::IsMobableInTrace() const
 	return isMovableInTrace;
 }
 
-bool KG::Component::SEnemyMechComponent::IsPathFinding() const
-{
-	return isPathFinding;
-}
+// bool KG::Component::SEnemyMechComponent::IsPathFinding() const
+// {
+// 	return isPathFinding;
+// }
 
 bool KG::Component::SEnemyMechComponent::IsAttackRotation() const
 {
@@ -670,8 +684,8 @@ void KG::Component::SEnemyMechComponent::Attack(SGameManagerComponent* gameManag
 	this->GetGameObject()->GetTransform()->GetParent()->AddChild(comp->GetGameObject()->GetTransform());
 	DebugNormalMessage("Enemy Mech : Shot Projectile");
 
-	prevTarget.first = round(this->target->GetGameObject()->GetTransform()->GetWorldPosition().x);
-	prevTarget.second = round(this->target->GetGameObject()->GetTransform()->GetWorldPosition().z);
+	// prevTarget.first = round(this->target->GetGameObject()->GetTransform()->GetWorldPosition().x);
+	// prevTarget.second = round(this->target->GetGameObject()->GetTransform()->GetWorldPosition().z);
 }
 
 bool KG::Component::MechIdleAction::Execute(float elapsedTime) {
@@ -705,9 +719,9 @@ bool KG::Component::MechMoveAction::Execute(float elapsedTime) {
 }
 
 void KG::Component::MechMoveAction::EndAction() {
-	if (!dynamic_cast<SEnemyMechComponent*>(enemyComp)->IsPathFinding()) {
-		dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
-	}
+	// if (!dynamic_cast<SEnemyMechComponent*>(enemyComp)->IsPathFinding()) {
+	dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
+	// }
 }
 
 bool KG::Component::MechRotateAction::Execute(float elapsedTime) {
@@ -715,9 +729,9 @@ bool KG::Component::MechRotateAction::Execute(float elapsedTime) {
 }
 
 void KG::Component::MechRotateAction::EndAction() {
-	if (!dynamic_cast<SEnemyMechComponent*>(enemyComp)->IsPathFinding()) {
+	// if (!dynamic_cast<SEnemyMechComponent*>(enemyComp)->IsPathFinding()) {
 		dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
-	}
+	// }
 }
 
 bool KG::Component::MechAttackAction::Execute(float elapsedTime) {
@@ -819,10 +833,10 @@ void KG::Component::MechTraceState::Execute(float elapsedTime) {
 			break;
 
 		case TRACE_ACTION_CHECK_ROOT:
-			if (dynamic_cast<SEnemyMechComponent*>(enemyComp)->IsPathFinding()) {
-				curAction = TRACE_ACTION_SET_TARGET_ROTATION;
-			}
-			else if (dynamic_cast<SEnemyMechComponent*>(enemyComp)->IsMobableInTrace()) {
+			// if (dynamic_cast<SEnemyMechComponent*>(enemyComp)->IsPathFinding()) {
+			// 	curAction = TRACE_ACTION_SET_TARGET_ROTATION;
+			// }
+			if (dynamic_cast<SEnemyMechComponent*>(enemyComp)->IsMobableInTrace()) {
 				curAction = TRACE_ACTION_ROTATE;
 			}
 			else {

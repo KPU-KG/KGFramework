@@ -55,7 +55,6 @@ void KG::GameFramework::PostServerFunction()
 
 			auto* comp = this->networkServer->GetNewProjectileComponent();
 			obj.AddComponent(comp);
-			// projectile->Initialize(obj.GetTransform()->GetWorldPosition())
 			return comp;
 		}
 	);

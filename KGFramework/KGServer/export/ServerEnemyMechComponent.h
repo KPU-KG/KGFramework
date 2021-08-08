@@ -81,10 +81,6 @@ namespace KG::Component
 		virtual float GetValue() override final;
 	};
 
-
-	// if (attackable) -> rotate -> attack
-	//            else -> search root -> if (movable) -> rotate->move->attack
-	//                                         else -> return to spawn position
 	struct MechTraceState : public State {
 		const static size_t TRACE_ACTION_COUNT = 6;
 		std::array<Action*, TRACE_ACTION_COUNT> action;
@@ -143,12 +139,13 @@ namespace KG::Component
 	protected:
 		bool noObstacleInAttack = false;
 		bool isMovableInTrace = false;
-		bool isPathFinding = false;
+		// bool isPathFinding = false;
 		bool isAttackRotation = false;
 
 		DirectX::XMFLOAT3							goal = { 0,0,0 };
-		std::pair<int, int>	prevTarget;
-		std::vector<std::pair<int, int>>			path;
+		// std::vector<std::pair<int, int>>			path;
+		float traceStateSpeed = 3;
+
 
 		float										distance = 0;
 		float										arriveTime = 0;
@@ -162,7 +159,7 @@ namespace KG::Component
 		float										attackInterval = 2;
 		float										attackTimer = 0;
 
-		MechStateManager* stateManager;
+		MechStateManager*							stateManager;
 
 	public:
 		void SetMoveTime(float t) { moveTime = t; }
@@ -204,7 +201,7 @@ namespace KG::Component
 		bool CheckRoot();
 
 		bool IsMobableInTrace() const;
-		bool IsPathFinding() const;
+		// bool IsPathFinding() const;
 		bool IsAttackRotation() const;
 		virtual void Destroy() override;
 	};
