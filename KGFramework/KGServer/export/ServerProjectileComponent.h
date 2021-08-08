@@ -20,8 +20,10 @@ namespace KG::Component
 		DirectX::XMFLOAT3 direction;
 		float speed;
 		float damage;
+		DirectX::XMFLOAT3 targetPos;
 
 		bool isDelete = false;
+		bool isSetTarget = false;
 
 		float sendInterval = 1.f / 30.f;
 		float sendTimer = 0.f;
@@ -37,6 +39,7 @@ namespace KG::Component
 	public:
 		SProjectileComponent();
 		void Initialize(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float speed, float damage = 1);
+		void SetTargetPosition(DirectX::XMFLOAT3 pos);
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override;

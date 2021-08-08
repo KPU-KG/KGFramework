@@ -656,6 +656,7 @@ bool KG::Component::SEnemyMechComponent::AttackTarget(float elapsedTime)
 void KG::Component::SEnemyMechComponent::Attack(SGameManagerComponent* gameManager)
 {
 	// auto presetName = "Projectile";
+	float interval = 3;
 	for (int i = 0; i < 2; ++i) {
 		auto presetName = "Missile";
 		auto presetId = KG::Utill::HashString(presetName);
@@ -666,12 +667,13 @@ void KG::Component::SEnemyMechComponent::Attack(SGameManagerComponent* gameManag
 		auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
 		targetPos.y += 1;
 		auto origin = this->transform->GetWorldPosition();
-		origin.y += 2;
+		origin.y += 4;
 		auto right = this->transform->GetWorldRight();
 		right.y = 0;
+
 		auto direction = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, origin));
 
-		XMStoreFloat3(&right, Math::Vector3::XMVectorScale(XMLoadFloat3(&right), (-1 + 2 * i)));
+		XMStoreFloat3(&right, Math::Vector3::XMVectorScale(XMLoadFloat3(&right), (-interval / 2 + interval * i)));
 		origin = Math::Vector3::Add(origin, right);
 
 
@@ -681,7 +683,6 @@ void KG::Component::SEnemyMechComponent::Attack(SGameManagerComponent* gameManag
 		addObjectPacket.parentTag = 0;
 		addObjectPacket.presetId = tag;
 		addObjectPacket.position = origin;
-		// addObjectPacket.rotation = 
 
 		auto id = this->server->GetNewObjectId();
 		addObjectPacket.newObjectId = id;
@@ -691,7 +692,8 @@ void KG::Component::SEnemyMechComponent::Attack(SGameManagerComponent* gameManag
 		auto projectile = comp->GetGameObject()->GetComponent<SProjectileComponent>();
 
 
-		projectile->Initialize(origin, direction, 20, 1);
+		projectile->Initialize(origin, direction, 25, 1);
+		projectile->SetTargetPosition(targetPos);
 
 		this->server->SetServerObject(id, projectile);
 		gameManager->BroadcastPacket(&addObjectPacket);
