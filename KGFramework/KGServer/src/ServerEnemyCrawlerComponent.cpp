@@ -281,36 +281,41 @@ void KG::Component::SEnemyCrawlerComponent::Attack(SGameManagerComponent* gameMa
 			area = nullptr;
 		}
 
-		auto presetName = "Missile";
+		auto presetName = "CrawlerMissile";
+		// auto presetName = "Missile";
 		auto presetId = KG::Utill::HashString(presetName);
 
 		auto* scene = this->gameObject->GetScene();
 		auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
 
-		auto origin = this->transform->GetWorldPosition();
-		origin.y += 10;
-		auto direction = Math::Vector3::Normalize(Math::Vector3::Subtract(shootTarget, origin));
+		// auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
+		// targetPos.y += 1;
+		// auto origin = this->transform->GetWorldPosition();
+		// origin.y += 10;
 
+		auto pos = this->transform->GetWorldPosition();
+		pos.y += 3;
 
 		KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
 		auto tag = KG::Utill::HashString(presetName);
 		addObjectPacket.objectTag = tag;
 		addObjectPacket.parentTag = 0;
 		addObjectPacket.presetId = tag;
-		addObjectPacket.position = origin;
+		addObjectPacket.position = pos;
 
 		auto id = this->server->GetNewObjectId();
 		addObjectPacket.newObjectId = id;
 		comp->SetNetObjectId(id);
 		this->server->SetServerObject(id, comp);
 
-		auto projectile = comp->GetGameObject()->GetComponent<SProjectileComponent>();
+		auto missile = comp->GetGameObject()->GetComponent<SCrawlerMissileComponent>();
+		missile->Initialize(pos, shootTarget);
 
+		// auto missile = comp->GetGameObject()->GetComponent<SProjectileComponent>();
+		// missile->Initialize(origin, direction, 20, 1);
+		// missile->SetTargetPosition(shootTarget);
 
-		projectile->Initialize(origin, direction, 20, 1);
-		projectile->SetTargetPosition(shootTarget);
-
-		this->server->SetServerObject(id, projectile);
+		this->server->SetServerObject(id, missile);
 		gameManager->BroadcastPacket(&addObjectPacket);
 		this->GetGameObject()->GetTransform()->GetParent()->AddChild(comp->GetGameObject()->GetTransform());
 	}

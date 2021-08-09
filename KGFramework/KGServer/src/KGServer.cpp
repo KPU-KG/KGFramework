@@ -252,6 +252,13 @@ KG::Component::SCubeAreaRedComponent* KG::Server::Server::GetNewCubeAreaRedCompo
 	return comp;
 }
 
+KG::Component::SCrawlerMissileComponent* KG::Server::Server::GetNewCrawlerMissileComponent()
+{
+	auto* comp = this->sCrawlerMissileSystem.GetNewComponent();
+	comp->SetServerInstance(this);
+	return comp;
+}
+
 void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->sGameManagerSystem.OnPostProvider(provider);
@@ -260,6 +267,7 @@ void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider&
 	this->sEnemyCrawlerSystem.OnPostProvider(provider);
 	this->enemyGeneratorSystem.OnPostProvider(provider);
 	this->sProjectileSystem.OnPostProvider(provider);
+	this->sCrawlerMissileSystem.OnPostProvider(provider);
 	this->sCubeAreaRedSystem.OnPostProvider(provider);
 }
 
@@ -364,6 +372,7 @@ void KG::Server::Server::Update(float elapsedTime)
 	this->sEnemyCrawlerSystem.OnUpdate(elapsedTime);
 	this->enemyGeneratorSystem.OnUpdate(elapsedTime);
 	this->sProjectileSystem.OnUpdate(elapsedTime);
+	this->sCrawlerMissileSystem.OnUpdate(elapsedTime);
 	this->sCubeAreaRedSystem.OnUpdate(elapsedTime);
 }
 

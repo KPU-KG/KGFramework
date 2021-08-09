@@ -85,3 +85,11 @@ void KG::System::SCubeAreaRedSystem::OnPostUpdate(float elapsedTime)
 void KG::System::SCubeAreaRedSystem::OnPreRender()
 {
 }
+
+void KG::System::SCrawlerMissileComponentSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::SCrawlerMissileComponentSystem::OnPreRender()
+{
+}

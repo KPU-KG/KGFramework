@@ -160,6 +160,23 @@ namespace KG::System
 		virtual void OnPreRender() override;
 	};
 
+	class SCrawlerMissileComponentSystem : public SBaseComponentSystem<SCrawlerMissileComponent>
+	{
+	public:
+		virtual void OnUpdate(float elapsedTime) override
+		{
+			for (auto& com : *this)
+			{
+				com.Update(elapsedTime);
+				if (com.IsDelete()) {
+					com.Destroy();
+				}
+			}
+		}
+		virtual void OnPostUpdate(float elapsedTime) override;
+		virtual void OnPreRender() override;
+	};
+
 
 	class SLobbyComponentSystem : public SBaseComponentSystem<SLobbyComponent>
 	{

@@ -53,6 +53,7 @@ namespace KG::Server
 		KG::System::SEnemyCrawlerComponentSystem sEnemyCrawlerSystem;
 		KG::System::EnemyGeneratorSystem enemyGeneratorSystem;
 		KG::System::SProjectileComponentSystem sProjectileSystem;
+		KG::System::SCrawlerMissileComponentSystem sCrawlerMissileSystem;
 		KG::System::SCubeAreaRedSystem sCubeAreaRedSystem;
 		KG::System::SLobbyComponentSystem sLobbySystem;
 		KG::Physics::IPhysicsScene* physicsScene;
@@ -94,6 +95,8 @@ namespace KG::Server
 		virtual KG::Component::EnemyGeneratorComponent* GetNewEnemyGeneratorComponent() override;
 		virtual KG::Component::SProjectileComponent* GetNewProjectileComponent() override;
 		virtual KG::Component::SCubeAreaRedComponent* GetNewCubeAreaRedComponent() override;
+		virtual KG::Component::SCrawlerMissileComponent* GetNewCrawlerMissileComponent() override;
+
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 		virtual void DrawImGUI() override;
 		virtual bool isStarted() const override;

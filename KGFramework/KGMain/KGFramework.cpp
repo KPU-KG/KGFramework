@@ -299,6 +299,24 @@ void KG::GameFramework::PostSceneFunction()
 		}
 		);
 
+	this->scene->AddModelPreset("CrawlerMissile",
+		[]()
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("missile");
+
+			return std::make_pair(
+				KG::Utill::HashString("CruiseMissile.fbx"),
+				std::move(a)
+			);
+		}
+		,
+			[this](KG::Core::GameObject& obj)
+		{
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+		);
+
 	this->scene->AddObjectPreset("StaticTileCube",
 		[this](KG::Core::GameObject& obj)
 		{
