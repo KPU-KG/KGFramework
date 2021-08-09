@@ -7,6 +7,7 @@
 
 #include "PhysicsComponent.h"
 #include "IAnimationComponent.h"
+#include "ServerCubeAreaRed.h"
 #include "imgui/imgui.h"
 #include "MathHelper.h"
 
@@ -17,62 +18,6 @@
 
 std::random_device crawlerRd;
 std::mt19937 crawlerGen(crawlerRd());
-std::uniform_real_distribution<float> crawlerGoalRange(-0.5, 0.5);
-
-// bool KG::Component::SEnemyCrawlerComponent::SetGoal()
-// {
-// 
-// 	goal.x = crawlerGoalRange(crawlerGen) * range + center.x;
-// 	goal.z = crawlerGoalRange(crawlerGen) * range + center.z;
-// 
-// 	auto pos = transform->GetWorldPosition();
-// 	distance = std::sqrt(std::pow((goal.x - pos.x), 2) + std::pow((goal.y - pos.y), 2));
-// 	arriveTime = distance / speed;
-// 	moveTime = 0;
-// 
-// 	direction = Math::Vector3::Subtract(goal, transform->GetWorldPosition());
-// 	direction.y = 0;
-// 	XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&direction)));
-// 
-// 	auto dir = DirectX::XMFLOAT2{ direction.x, direction.z };
-// 
-// 	auto look = DirectX::XMFLOAT2{ transform->GetLook().x, transform->GetLook().z };
-// 	rotateTimer = 0;
-// 	// 나중에는 이동 불가능한 위치 선택시 false 리턴
-// 
-// 	XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-// 	XMFLOAT2 crs;
-// 	XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-// 	if (crs.x >= 0)
-// 		angle.x *= -1;
-// 	return true;
-// }
-
-// bool KG::Component::SEnemyCrawlerComponent::RotateToGoal(float elapsedTime)
-// {
-// 	if (anim) {
-// 		if (!changedAnimation)
-// 			ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
-// 	}
-// 	rotateTimer += elapsedTime;
-// 	float rotateInterval = this->rotateInterval;
-// 
-// 	if (stateManager->curState == CrawlerStateManager::STATE_TRACE)
-// 		rotateInterval = this->rotateAttackInterval;
-// 
-// 	if (rotateInterval <= rotateTimer) {
-// 		return true;
-// 	}
-// 	else {
-// 		DirectX::XMFLOAT4 rot;
-// 		float r = angle.x * elapsedTime / rotateInterval;
-// 		angle.y -= abs(r);
-// 		XMStoreFloat4(&rot, XMQuaternionRotationRollPitchYaw(0, r, 0));
-// 		gameObject->GetTransform()->Rotate(rot);
-// 		rigid->SetRotation(transform->GetRotation());
-// 	}
-// 	return false;
-// }
 
 bool KG::Component::SEnemyCrawlerComponent::Idle(float elapsedTime)
 {
@@ -98,6 +43,7 @@ void KG::Component::SEnemyCrawlerComponent::OnCreate(KG::Core::GameObject* obj)
 	SEnemyUnitComponent::OnCreate(obj);
 	this->stateManager = new CrawlerStateManager(this);
 	stateManager->Init();
+	hp = maxHp;
 }
 
 void KG::Component::SEnemyCrawlerComponent::Update(float elapsedTime)
@@ -142,35 +88,7 @@ void KG::Component::SEnemyCrawlerComponent::HitBullet() {
 
 bool KG::Component::SEnemyCrawlerComponent::OnDrawGUI()
 {
-	// if (ImGui::ComponentHeader<KG::Component::SEnemyCrawlerComponent>()) {
-	// 	ImGuizmo::SetDrawlist(ImGui::GetForegroundDrawList());
-	// 
-	// 	if (this->isUsing()) {
-	// 		ImGui::TextDisabled("Center : (%f, %f, %f)", center.x, center.y, center.z);
-	// 		ImGui::TextDisabled("Range : %f", range);
-	// 		ImGui::TextDisabled("Goal : (%f, %f, %f)", goal.x, goal.y, goal.z);
-	// 		ImGui::TextDisabled("Direction : (%f, %f, %f)", direction.x, direction.y, direction.z);
-	// 		ImGui::TextDisabled("Distance : %f", distance);
-	// 		ImGui::TextDisabled("MoveTime : %f", moveTime);
-	// 		ImGui::TextDisabled("ArriveTime : %f", arriveTime);
-	// 		auto angle = transform->GetEulerDegree();
-	// 		ImGui::TextDisabled("rotation : (%f, %f, %f)", angle.x, angle.y, angle.z);
-	// 		ImGui::TextDisabled("this->angle : (%f, %f)", this->angle.x, this->angle.y);
-	// 	}
-	// 	else {
-	// 		std::string cs("position");
-	// 		KG::Utill::ImguiProperty::DrawGUIProperty<DirectX::XMFLOAT3>(cs, this->center);
-	// 
-	// 		std::string rs("range");
-	// 		KG::Utill::ImguiProperty::DrawGUIProperty<float>(rs, this->range);
-	// 	}
-	// 
-	// 	auto view = this->gameObject->GetScene()->GetMainCameraView();
-	// 	auto proj = this->gameObject->GetScene()->GetMainCameraProj();
-	// 
-	// 	view = Math::Matrix4x4::Transpose(view);
-	// 	proj = Math::Matrix4x4::Transpose(proj);
-	// }
+
 	return false;
 }
 
@@ -246,16 +164,16 @@ bool KG::Component::SEnemyCrawlerComponent::SetAttackArea()
 	if (!this->target->isUsing())
 		return true;
 
-	auto center = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-	center.y = -0.4;
+	shootAreaCenter = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
+	shootAreaCenter.y = 0.5;
 	std::uniform_real_distribution<float> shootAreaRange(-areaWidth, areaWidth);
 
 	while (!shootArea.empty())
 		shootArea.pop();
 
 	for (int i = 0; i < 8; ++i) {
-		float x = shootAreaRange(crawlerGen) + center.x;
-		float z = shootAreaRange(crawlerGen) + center.z;
+		float x = shootAreaRange(crawlerGen) + shootAreaCenter.x;
+		float z = shootAreaRange(crawlerGen) + shootAreaCenter.z;
 		shootArea.push(std::make_pair(x, z));
 	}
 
@@ -266,6 +184,9 @@ bool KG::Component::SEnemyCrawlerComponent::SetAttackArea()
 
 bool KG::Component::SEnemyCrawlerComponent::Shoot(float elapsedTime)
 {
+	if (!inShootAction)
+		inShootAction = true;
+
 	if (this->target == nullptr)
 		return true;
 
@@ -274,8 +195,10 @@ bool KG::Component::SEnemyCrawlerComponent::Shoot(float elapsedTime)
 			ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::idle, ANIMSTATE_STOP, 0.1, 1);
 		isAttackable = true;
 		isInAttackDelay = true;
-		if (shootArea.empty())
+		if (shootArea.empty()) {
+			inShootAction = false;
 			return true;
+		}
 		else {
 			auto p = shootArea.front();
 			shootArea.pop();
@@ -290,7 +213,6 @@ bool KG::Component::SEnemyCrawlerComponent::Shoot(float elapsedTime)
 		if (attackTimer >= attackInterval) {
 			isInAttackDelay = false;
 			attackTimer = 0;
-			// return true;
 		}
 	}
 
@@ -319,6 +241,46 @@ float KG::Component::SEnemyCrawlerComponent::GetDistance2FromEnemy(DirectX::XMFL
 void KG::Component::SEnemyCrawlerComponent::Attack(SGameManagerComponent* gameManager)
 {
 	if (stateManager->GetCurState() == CrawlerStateManager::STATE_SHOOT_ATTACK) {
+		if (inShootAction) {
+			if (!isFilledArea) {
+				auto presetName = "CubeAreaRed";
+				auto presetId = KG::Utill::HashString(presetName);
+
+				auto* scene = this->gameObject->GetScene();
+				auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
+
+				KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
+				auto tag = KG::Utill::HashString(presetName);
+				addObjectPacket.objectTag = tag;
+				addObjectPacket.parentTag = 0;
+				addObjectPacket.presetId = tag;
+				addObjectPacket.position = shootAreaCenter;
+
+				auto id = this->server->GetNewObjectId();
+				addObjectPacket.newObjectId = id;
+				comp->SetNetObjectId(id);
+				this->server->SetServerObject(id, comp);
+
+				auto areaComp = comp->GetGameObject()->GetComponent<SCubeAreaRedComponent>();
+
+				areaComp->Initialize(shootAreaCenter, areaWidth);
+				
+				this->area = areaComp;
+
+				this->server->SetServerObject(id, areaComp);
+				gameManager->BroadcastPacket(&addObjectPacket);
+				this->GetGameObject()->GetTransform()->GetParent()->AddChild(comp->GetGameObject()->GetTransform());
+
+				isFilledArea = true;
+			}
+		}
+		else {
+			isFilledArea = false;
+			if (area)
+				area->GetGameObject()->Destroy();
+			area = nullptr;
+		}
+
 		auto presetName = "Missile";
 		auto presetId = KG::Utill::HashString(presetName);
 

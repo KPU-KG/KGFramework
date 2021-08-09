@@ -1,31 +1,23 @@
 #pragma once
 #include "ServerBaseComponent.h"
 
-
 namespace KG::Component
 {
-	class DynamicRigidComponent;
-
-	class DLL SProjectileComponent : public SBaseComponent
+	class DLL SCubeAreaRedComponent : public SBaseComponent
 	{
 	private:
-		DynamicRigidComponent* rigid = nullptr;
 		TransformComponent* transform = nullptr;
-
-		DirectX::XMFLOAT3 direction;
-		float speed;
-		float damage;
-		DirectX::XMFLOAT3 targetPos;
-
+		float fillTimer = 0;
+		float fillInterval = 0;
 		bool isDelete = false;
-		bool isSetTarget = false;
+
+		float width;
 
 		float sendInterval = 1.f / 30.f;
 		float sendTimer = 0.f;
 	public:
-		SProjectileComponent();
-		void Initialize(DirectX::XMFLOAT3 origin, DirectX::XMFLOAT3 direction, float speed, float damage = 1);
-		void SetTargetPosition(DirectX::XMFLOAT3 pos);
+		SCubeAreaRedComponent();
+		void Initialize(DirectX::XMFLOAT3 center, float width, float interval = 0);
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override;
@@ -33,5 +25,5 @@ namespace KG::Component
 		bool IsDelete() const;
 	};
 
-	REGISTER_COMPONENT_ID(SProjectileComponent);
+	REGISTER_COMPONENT_ID(SCubeAreaRedComponent);
 }

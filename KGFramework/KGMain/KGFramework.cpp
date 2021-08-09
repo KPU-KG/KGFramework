@@ -281,24 +281,6 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
-	// this->scene->AddObjectPreset("Missile",
-	// 	[this](KG::Core::GameObject& obj)
-	// 	{
-	// 		auto* t = this->system->transformSystem.GetNewComponent();
-	// 		t->SetScale(0.001, 0.001, 0.001);
-	// 
-	// 		auto* g = this->renderer->GetNewGeomteryComponent();
-	// 		g->AddGeometry(KG::Utill::HashString("CruiseMissile.fbx"));
-	// 		auto* m = this->renderer->GetNewMaterialComponent();
-	// 		m->PostMaterial(KG::Utill::HashString("missile"));
-	// 		auto* r = this->renderer->GetNewRenderComponent();
-	// 		obj.AddComponent(t);
-	// 		obj.AddComponent(g);
-	// 		obj.AddComponent(m);
-	// 		obj.AddComponent(r);
-	// 	}
-	// );
-
 	this->scene->AddModelPreset("Missile",
 		[]()
 		{
@@ -337,6 +319,30 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(c);
 		}
 	);
+
+	this->scene->AddObjectPreset("CubeAreaRed",
+		[this](KG::Core::GameObject& obj)
+		{
+			
+			// auto* t = obj.GetTransform();
+			// if (t == nullptr) {
+			// 	t = this->system->transformSystem.GetNewComponent();
+			// 	obj.AddComponent(t);
+			// }
+
+			auto* g = this->renderer->GetNewGeomteryComponent();
+			g->AddGeometry(KG::Utill::HashString("cube"));
+
+			auto* m = this->renderer->GetNewMaterialComponent();
+			m->PostMaterial(KG::Utill::HashString("area_red"));
+
+			auto* r = this->renderer->GetNewRenderComponent();
+
+			obj.AddComponent(g);
+			obj.AddComponent(m);
+			obj.AddComponent(r);
+		}
+		);
 
     this->scene->AddObjectPreset("2DUI",
         [this](KG::Core::GameObject& obj)

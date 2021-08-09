@@ -357,4 +357,9 @@
     <Texture id="missile_normal" fileDir="Resource/Geometry/missile/Textures/missile/normal.dds" dimension="Texture2D" format="DDS" hash_id="3255239263"/>
     <Texture id="missile_rough" fileDir="Resource/Geometry/missile/Textures/missile/rough.dds" dimension="Texture2D" format="DDS" hash_id="2651637069"/>
     <Texture id="missile_metalic" fileDir="Resource/Geometry/missile/Textures/missile/metalic.dds" dimension="Texture2D" format="DDS" hash_id="437528647"/>
+    <!--area_red-->
+    <Texture id="area_red_color" fileDir="Resource/Texture/area_red/color.dds" dimension="Texture2D" format="DDS" hash_id="2306373458"/>
+    <Texture id="area_red_normal" fileDir="Resource/Texture/area_red/normal.dds" dimension="Texture2D" format="DDS" hash_id="1372604208"/>
+    <Texture id="area_red_rough" fileDir="Resource/Texture/area_red/rough.dds" dimension="Texture2D" format="DDS" hash_id="241303944"/>
+    <Texture id="area_red_metalic" fileDir="Resource/Texture/area_red/metalic.dds" dimension="Texture2D" format="DDS" hash_id="287641294"/>
 </TextureSet>

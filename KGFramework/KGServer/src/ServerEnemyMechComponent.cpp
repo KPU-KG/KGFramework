@@ -166,6 +166,7 @@ void KG::Component::SEnemyMechComponent::OnCreate(KG::Core::GameObject* obj)
 	SEnemyUnitComponent::OnCreate(obj);
 	this->stateManager = new MechStateManager(this);
 	stateManager->Init();
+	hp = maxHp;
 }
 
 void KG::Component::SEnemyMechComponent::Update(float elapsedTime)

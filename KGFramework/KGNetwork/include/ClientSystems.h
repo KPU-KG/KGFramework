@@ -7,6 +7,7 @@
 #include "ClientEnemyControllerComponent.h"
 #include "ClientPlayerControllerComponent.h"
 #include "ClientProjectileComponent.h"
+#include "ClientCubeAreaRedComponent.h"
 
 namespace KG::System
 {
@@ -64,6 +65,31 @@ namespace KG::System
 	{
 		KG::Server::Network* network = nullptr;
 		virtual void OnGetNewComponent(CEnemyControllerComponent* comp)
+		{
+			comp->SetNetworkInstance(network);
+		}
+	public:
+		void SetNetworkInstance(KG::Server::Network* network)
+		{
+			this->network = network;
+		}
+		virtual void OnUpdate(float elapsedTime) override
+		{
+			for (auto& com : *this)
+			{
+				com.Update(elapsedTime);
+			}
+		}
+
+		// IComponentSystem을(를) 통해 상속됨
+		virtual void OnPostUpdate(float elapsedTime) override;
+		virtual void OnPreRender() override;
+	};
+
+	class CCubeAreaRedComponentSystem : public KG::System::IComponentSystem<CCubeAreaRedComponent>
+	{
+		KG::Server::Network* network = nullptr;
+		virtual void OnGetNewComponent(CCubeAreaRedComponent* comp)
 		{
 			comp->SetNetworkInstance(network);
 		}

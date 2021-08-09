@@ -27,40 +27,6 @@ void KG::Component::SProjectileComponent::Initialize(DirectX::XMFLOAT3 origin, D
 	DirectX::XMFLOAT4 rot;
 	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), angle.x));
 	gameObject->GetTransform()->Rotate(rot);
-
-
-	// auto dir = DirectX::XMFLOAT2{ direction.x, direction.z };
-	// auto look = DirectX::XMFLOAT2{ transform->GetWorldLook().x, transform->GetWorldLook().z };
-	// XMFLOAT2 angle;
-	// 
-	// XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-	// XMFLOAT2 crs;
-	// XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-	// if (crs.x >= 0)
-	// 	angle.x *= -1;
-	// 
-	// DirectX::XMFLOAT4 rot;
-	// XMStoreFloat4(&rot, XMQuaternionRotationRollPitchYaw(0, angle.x, 0));
-	// gameObject->GetTransform()->Rotate(rot);
-	// 
-	// dir = DirectX::XMFLOAT2{ direction.y, direction.z };
-	// look = DirectX::XMFLOAT2{ transform->GetWorldLook().y, transform->GetWorldLook().z };
-	// 
-	// XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-	// XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-	// if (crs.x >= 0)
-	// 	angle.x *= -1;
-	// 
-	// auto axis = transform->GetWorldRight();
-	// XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&axis), angle.x));
-
-	gameObject->GetTransform()->Rotate(rot);
-
-
-
-	// zx평면에서 각도 맞춰진 상태
-	// right 기준으로 y축 각도 돌리기
-
 	rigid->SetRotation(transform->GetRotation());
 
 	this->rigid->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
@@ -108,34 +74,6 @@ void KG::Component::SProjectileComponent::Update(float elapsedTime)
 	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), angle.x));
 	gameObject->GetTransform()->Rotate(rot);
 	rigid->SetRotation(transform->GetRotation());
-
-
-	// auto dir = DirectX::XMFLOAT2{ direction.x, direction.z };
-	// auto look = DirectX::XMFLOAT2{ transform->GetWorldLook().x, transform->GetWorldLook().z };
-	// XMFLOAT2 angle;
-	// 
-	// XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-	// XMFLOAT2 crs;
-	// XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-	// if (crs.x >= 0)
-	// 	angle.x *= -1;
-	// 
-	// DirectX::XMFLOAT4 rot;
-	// XMStoreFloat4(&rot, XMQuaternionRotationRollPitchYaw(0, angle.x, 0));
-	// gameObject->GetTransform()->Rotate(rot);
-	// 
-	// dir = DirectX::XMFLOAT2{ direction.y, direction.z };
-	// look = DirectX::XMFLOAT2{ transform->GetWorldLook().y, transform->GetWorldLook().z };
-	// 
-	// XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-	// XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-	// if (crs.x >= 0)
-	// 	angle.x *= -1;
-	// 
-	// auto axis = transform->GetWorldRight();
-	// XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&axis), angle.x));
-
-	// gameObject->GetTransform()->Rotate(rot);
 
 	sendTimer += elapsedTime;
 	if (sendInterval <= sendTimer) {

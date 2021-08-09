@@ -15,6 +15,7 @@
 #include "ServerEnemyMechComponent.h"
 #include "ServerEnemyCrawlerComponent.h"
 #include "ServerProjectileComponent.h"
+#include "ServerCubeAreaRed.h"
 #include "InputManager.h"
 
 void KG::GameFramework::PostServerFunction()
@@ -132,6 +133,15 @@ void KG::GameFramework::PostServerFunction()
 					comp->HitBullet();
 				}
 				});
+			obj.AddComponent(comp);
+			return comp;
+		}
+	);
+
+	this->scene->AddNetworkCreator(
+		KG::Utill::HashString("CubeAreaRed"),
+		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent* {
+			auto* comp = this->networkServer->GetNewCubeAreaRedComponent();
 			obj.AddComponent(comp);
 			return comp;
 		}

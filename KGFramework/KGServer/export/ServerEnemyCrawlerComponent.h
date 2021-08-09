@@ -112,11 +112,15 @@ namespace KG::Component
 		const static UINT walk = 1U;
 	};
 
+	class SCubeAreaRedComponent;
+
 	class DLL SEnemyCrawlerComponent : public SEnemyUnitComponent
 	{
 	protected:
+		static constexpr int maxHp = 10;
 		float areaWidth = 3;
 		std::queue<std::pair<float, float>>			shootArea;
+		DirectX::XMFLOAT3							shootAreaCenter;
 		DirectX::XMFLOAT3							shootTarget;
 
 		DirectX::XMFLOAT2							angle;
@@ -124,8 +128,11 @@ namespace KG::Component
 		float										attackInterval = 0.5;
 		float										attackTimer = 0;
 
-		CrawlerStateManager* stateManager;
+		SCubeAreaRedComponent*		area;
 
+		CrawlerStateManager* stateManager;
+		bool inShootAction = false;
+		bool isFilledArea = false;
 	public:
 		void SetIdleTime(float t) { idleTimer = t; }
 		void IdleTimer(float elapsedTime) { idleTimer += elapsedTime; }
@@ -133,9 +140,6 @@ namespace KG::Component
 		void AttackTimer(float elapsedTime) { attackTimer += elapsedTime; }
 		void ReadyNextAnimation(bool b) { changedAnimation = b; }
 
-		// bool SetGoal();
-		// bool RotateToGoal(float elapsedTime);
-		// bool MoveToGoal(float elapsedTime);
 		void ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime = 0.1f, int repeat = 1);
 		float GetDistance2FromEnemy(DirectX::XMFLOAT3 pos) const;
 		bool Idle(float elapsedTime);

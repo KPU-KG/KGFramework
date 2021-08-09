@@ -14,6 +14,7 @@
 #include "ClientPlayerControllerComponent.h"
 #include "ClientEnemyControllerComponent.h"
 #include "ClientProjectileComponent.h"
+#include "ClientCubeAreaRedComponent.h"
 #include "InputManager.h"
 
 
@@ -158,6 +159,16 @@ void KG::GameFramework::PostNetworkFunction()
             auto* comp = this->networkClient->GetNewEnemyControllerOomponent();
             obj.AddComponent(comp);
 
+            return comp;
+        }
+    );
+
+    this->scene->AddNetworkCreator(
+        KG::Utill::HashString("CubeAreaRed"),
+        [this](KG::Core::GameObject& obj) -> KG::Component::IComponent*
+        {
+            auto* comp = this->networkClient->GetNewCubeAreaRedComponent();
+            obj.AddComponent(comp);
             return comp;
         }
     );

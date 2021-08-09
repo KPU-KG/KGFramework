@@ -193,6 +193,13 @@ KG::Component::CProjectileComponent* KG::Server::Network::GetNewProjectileCompon
 	return comp;
 }
 
+KG::Component::CCubeAreaRedComponent* KG::Server::Network::GetNewCubeAreaRedComponent()
+{
+	auto* comp = this->cCubeAreaRedSystem.GetNewComponent();
+	comp->SetNetworkInstance(this);
+	return comp;
+}
+
 void KG::Server::Network::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->cGameManagerSystem.OnPostProvider(provider);

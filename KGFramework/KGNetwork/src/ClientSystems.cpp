@@ -39,3 +39,11 @@ void KG::System::CProjectileComponentSystem::OnPostUpdate(float elapsedTime)
 void KG::System::CProjectileComponentSystem::OnPreRender()
 {
 }
+
+void KG::System::CCubeAreaRedComponentSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::CCubeAreaRedComponentSystem::OnPreRender()
+{
+}
