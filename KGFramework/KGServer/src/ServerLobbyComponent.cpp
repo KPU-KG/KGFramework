@@ -88,11 +88,12 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 			}
 		}
 
-		// 저장된 맵 번호로 씬 로드
+		// 저장된 맵 번호로 씬 로드 *
 
 		KG::Packet::SC_GAME_START StartPacket;
+		StartPacket.mapnum = this->mapnum;
 		this->BroadcastPacket(&StartPacket);
-		this->server->isPlay = true;
+		//this->server->isPlay = true;
 		// 전부 레디면 시작 + 시작 패킷 전송
 	}
 	return true;

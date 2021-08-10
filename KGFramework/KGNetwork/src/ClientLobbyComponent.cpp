@@ -30,10 +30,14 @@ bool KG::Component::CLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
         }
         return true;
     }
-    case KG::Packet::PacketType::SC_GAME_START:
+    case KG::Packet::PacketType::SC_GAME_START: // 게임 시작
     {
-        // 게임 시작
+        auto* Packet = KG::Packet::PacketCast<KG::Packet::SC_GAME_START>(packet);
+        if (Packet->mapnum == 0) {
+            //0번맵 로드
+        }
     }
+    return true;
     }
     return false;
 }

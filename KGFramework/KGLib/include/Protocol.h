@@ -273,6 +273,7 @@ namespace KG::Packet
 	struct SC_GAME_START
 	{
 		DEFAULT_PACKET_HEADER(SC_GAME_START);
+		int mapnum;
 	};
 
 	struct SC_GAME_END
