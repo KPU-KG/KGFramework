@@ -69,8 +69,14 @@ KG::Resource::Metadata::ShaderSetData KG::Resource::ResourceLoader::LoadShaderSe
 			data.shaderGroup = ReadShaderGroup( shaderSets->Attribute( "group" ) );
 			data.enableCullBackface = shaderSets->BoolAttribute( "enableBackfaceCulling" );
 			data.enableDepthCliping = shaderSets->BoolAttribute( "enableDepthCliping" );
-			data.materialParameterSize = shaderSets->IntAttribute( "materialParameterSize" );
-			data.fileDir = shaderSets->Attribute( "fileDir" );
+            data.materialParameterSize = shaderSets->IntAttribute("materialParameterSize");
+            const char* gx = shaderSets->Attribute("groupSizeX");
+            const char* gy = shaderSets->Attribute("groupSizeY");
+            const char* gz = shaderSets->Attribute("groupSizeZ");
+            data.groupCountX = gx ? gx : "1";
+            data.groupCountY = gy ? gy : "1";
+            data.groupCountZ = gz ? gz : "1";
+            data.fileDir = shaderSets->Attribute( "fileDir" );
 			break;
 		}
 		else
@@ -183,8 +189,15 @@ KG::Resource::Metadata::TextureData KG::Resource::ResourceLoader::LoadTextureFro
 
 namespace MaterialParser
 {
-	static bool Texture( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty )
+	static bool Texture( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty, KG::Renderer::MaterialElement* mat )
 	{
+        if (mat)
+        {
+            mat->offset = offset;
+            mat->comment = xml->Attribute("comment");
+            if (mat->comment.size() == 0) mat->comment = "Unknown Element"s;
+            mat->type = KG::Renderer::MaterialType::Texture;
+        }
 		size_t byte = xml->IntAttribute( "byte" );
 		auto id = xml->Attribute( "id" );
 		auto hash = xml->Attribute( "hash_id" );
@@ -206,8 +219,15 @@ namespace MaterialParser
 		return true;
 	}
 
-	static bool FLOAT1( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty )
+	static bool FLOAT1( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty, KG::Renderer::MaterialElement* mat)
 	{
+        if (mat)
+        {
+            mat->offset = offset;
+            mat->comment = xml->Attribute("comment");
+            if (mat->comment.size() == 0) mat->comment = "Unknown Element"s;
+            mat->type = KG::Renderer::MaterialType::FLOAT1;
+        }
 		size_t byte = xml->IntAttribute( "byte" );
 		auto x = xml->FloatAttribute( "x" );
 		element.Set( offset, x );
@@ -215,8 +235,15 @@ namespace MaterialParser
 		return true;
 	}
 
-	static bool FLOAT2( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty )
+	static bool FLOAT2( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty, KG::Renderer::MaterialElement* mat)
 	{
+        if (mat)
+        {
+            mat->offset = offset;
+            mat->comment = xml->Attribute("comment");
+            if (mat->comment.size() == 0) mat->comment = "Unknown Element"s;
+            mat->type = KG::Renderer::MaterialType::FLOAT2;
+        }
 		size_t byte = xml->IntAttribute( "byte" );
 		auto x = xml->FloatAttribute( "x" );
 		auto y = xml->FloatAttribute( "y" );
@@ -226,8 +253,15 @@ namespace MaterialParser
 		return true;
 	}
 
-	static bool FLOAT3( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty )
+	static bool FLOAT3( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty, KG::Renderer::MaterialElement* mat)
 	{
+        if (mat)
+        {
+            mat->offset = offset;
+            mat->comment = xml->Attribute("comment");
+            if (mat->comment.size() == 0) mat->comment = "Unknown Element"s;
+            mat->type = KG::Renderer::MaterialType::FLOAT3;
+        }
 		size_t byte = xml->IntAttribute( "byte" );
 		auto x = xml->FloatAttribute( "x" );
 		auto y = xml->FloatAttribute( "y" );
@@ -239,8 +273,15 @@ namespace MaterialParser
 		return true;
 	}
 
-	static bool FLOAT4( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty )
+	static bool FLOAT4( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty, KG::Renderer::MaterialElement* mat)
 	{
+        if (mat)
+        {
+            mat->offset = offset;
+            mat->comment = xml->Attribute("comment");
+            if (mat->comment.size() == 0) mat->comment = "Unknown Element"s;
+            mat->type = KG::Renderer::MaterialType::FLOAT4;
+        }
 		size_t byte = xml->IntAttribute( "byte" );
 		auto x = xml->FloatAttribute( "x" );
 		auto y = xml->FloatAttribute( "y" );
@@ -254,8 +295,15 @@ namespace MaterialParser
 		return true;
 	}
 
-	static bool Color3( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty )
+	static bool Color3( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty, KG::Renderer::MaterialElement* mat)
 	{
+        if (mat)
+        {
+            mat->offset = offset;
+            mat->comment = xml->Attribute("comment");
+            if (mat->comment.size() == 0) mat->comment = "Unknown Element"s;
+            mat->type = KG::Renderer::MaterialType::COLOR3;
+        }
 		size_t byte = xml->IntAttribute( "byte" );
 		auto x = xml->FloatAttribute( "r" );
 		auto y = xml->FloatAttribute( "g" );
@@ -267,8 +315,15 @@ namespace MaterialParser
 		return true;
 	}
 
-	static bool Color4( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty )
+	static bool Color4( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty, KG::Renderer::MaterialElement* mat)
 	{
+        if (mat)
+        {
+            mat->offset = offset;
+            mat->comment = xml->Attribute("comment");
+            if (mat->comment.size() == 0) mat->comment = "Unknown Element"s;
+            mat->type = KG::Renderer::MaterialType::COLOR4;
+        }
 		size_t byte = xml->IntAttribute( "byte" );
 		auto x = xml->FloatAttribute( "r" );
 		auto y = xml->FloatAttribute( "g" );
@@ -282,8 +337,15 @@ namespace MaterialParser
 		return true;
 	}
 
-	static bool ColorCode( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty )
+	static bool ColorCode( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty, KG::Renderer::MaterialElement* mat)
 	{
+        if (mat)
+        {
+            mat->offset = offset;
+            mat->comment = xml->Attribute("comment");
+            if (mat->comment.size() == 0) mat->comment = "Unknown Element"s;
+            mat->type = KG::Renderer::MaterialType::COLOR4;
+        }
 		size_t byte = xml->IntAttribute( "byte" );
 		auto code = xml->Attribute( "code" );
 		int r, g, b;
@@ -297,8 +359,14 @@ namespace MaterialParser
 		return true;
 	}
 
-	static bool Padding( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty )
+	static bool Padding( tinyxml2::XMLElement* xml, KG::Resource::DynamicElementInterface& element, int& offset, bool& isDirty, KG::Renderer::MaterialElement* mat)
 	{
+        if (mat)
+        {
+            mat->offset = offset;
+            mat->comment = "PADDING";
+            mat->type = KG::Renderer::MaterialType::PADDING;
+        }
 		if ( !(xml->Name() == "Padding"s) )
 			return false;
 		size_t byte = xml->IntAttribute( "byte" );
@@ -306,7 +374,7 @@ namespace MaterialParser
 		return true;
 	}
 
-	static std::map<std::string_view, std::function<bool( tinyxml2::XMLElement*, KG::Resource::DynamicElementInterface&, int&, bool& )>> parsers =
+	static std::map<std::string_view, std::function<bool( tinyxml2::XMLElement*, KG::Resource::DynamicElementInterface&, int&, bool&, KG::Renderer::MaterialElement*)>> parsers =
 	{
 		std::make_pair( "Texture", Texture ),
 		std::make_pair( "FLOAT1", FLOAT1 ),
@@ -366,6 +434,7 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceLoader::LoadMater
 			shaderHashID = shaderHash_id;
 
 			KG::Renderer::Shader* currentShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader( shaderHash_id );
+            bool hasMaterialDesc = currentShader->MaterialDescription.size() != 0;
 			//메인 로직
 			auto IDSTRING = KG::Utill::HashString( hash_id );
 			if ( !currentShader->CheckMaterialLoaded( IDSTRING ) )
@@ -376,8 +445,10 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceLoader::LoadMater
 				int offset = 0;
 				while ( childs )
 				{
-					DebugNormalMessage( L"메테리얼 읽는 중 " )
-						MaterialParser::parsers.at( childs->Name() )(childs, elementInterface, offset, isDirty);
+                    DebugNormalMessage(L"메테리얼 읽는 중 ");
+                    auto* a = hasMaterialDesc ? nullptr : &currentShader->MaterialDescription.emplace_back();
+					MaterialParser::parsers.at( childs->Name() )(childs, elementInterface, offset, isDirty, a);
+                    if( a && a->type == KG::Renderer::MaterialType::PADDING) currentShader->MaterialDescription.pop_back();
 					childs = childs->NextSiblingElement();
 				}
 			}
@@ -393,4 +464,82 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceLoader::LoadMater
 		doc.SaveFile( xmlDir.c_str() );
 	}
 	return std::make_pair( index, shaderHashID );
+}
+
+std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceLoader::LoadPostProcessMaterialFromFile(const std::string& xmlDir, const KG::Utill::HashString& targetID)
+{
+    bool isDirty = false;
+    KG::Resource::Metadata::TextureData data;
+    tinyxml2::XMLDocument doc;
+
+    size_t index;
+    KG::Utill::hashType shaderHashID;
+
+    doc.LoadFile(xmlDir.c_str());
+    auto shaderSets = doc.FirstChildElement("MaterialSet")->FirstChildElement("Material");
+    while (shaderSets)
+    {
+        auto id = shaderSets->Attribute("id");
+        auto hash = shaderSets->Attribute("hash_id");
+        auto shaderId = shaderSets->Attribute("shaderID");
+        auto shaderHash = shaderSets->Attribute("shaderHashID");
+        unsigned hash_id = 0;
+        unsigned shaderHash_id = 0;
+        if (!hash)
+        {
+            hash_id = KG::Utill::HashString(id).value;
+            shaderSets->SetAttribute("hash_id", hash_id);
+            isDirty = true;
+        }
+        else
+        {
+            hash_id = std::stoul(hash);
+        }
+
+        if (!shaderHash)
+        {
+            shaderHash_id = KG::Utill::HashString(shaderId).value;
+            shaderSets->SetAttribute("shaderHashID", shaderHash_id);
+            isDirty = true;
+        }
+        else
+        {
+            shaderHash_id = std::stoul(shaderHash);
+        }
+
+        if (hash_id == targetID.value)
+        {
+            shaderHashID = shaderHash_id;
+
+            auto* currentShader = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess(shaderHash_id);
+            bool hasMaterialDesc = currentShader->MaterialDescription.size() != 0;
+            //메인 로직
+            auto IDSTRING = KG::Utill::HashString(hash_id);
+            if (!currentShader->CheckMaterialLoaded(IDSTRING))
+            {
+                index = currentShader->RequestMaterialIndex(IDSTRING);
+                auto elementInterface = currentShader->GetMaterialElement(IDSTRING);
+                auto childs = shaderSets->FirstChildElement();
+                int offset = 0;
+                while (childs)
+                {
+                    DebugNormalMessage(L"메테리얼 읽는 중 ");
+                    auto* a = hasMaterialDesc ? nullptr : &currentShader->MaterialDescription.emplace_back();
+                    MaterialParser::parsers.at(childs->Name())(childs, elementInterface, offset, isDirty, a);
+                    if (a && a->type == KG::Renderer::MaterialType::PADDING) currentShader->MaterialDescription.pop_back();
+                    childs = childs->NextSiblingElement();
+                }
+            }
+            break;
+        }
+        else
+        {
+            shaderSets = shaderSets->NextSiblingElement();
+        }
+    }
+    if (isDirty)
+    {
+        doc.SaveFile(xmlDir.c_str());
+    }
+    return std::make_pair(index, shaderHashID);
 }

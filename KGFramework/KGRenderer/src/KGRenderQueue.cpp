@@ -203,12 +203,12 @@ void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelT
 	}
 	this->shader->Set( cmdList, this->meshType, pixType, geoType, tessel );
 	auto addr = this->objectBuffer->buffer.resource->GetGPUVirtualAddress();
-	cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::InstanceData, addr );
+	cmdList->SetGraphicsRootShaderResourceView( GraphicRootParameterIndex::InstanceData, addr );
 
 	if ( this->meshType == ShaderMeshType::SkinnedMesh )
 	{
 		auto animAddr = this->animationBuffer->buffer.resource->GetGPUVirtualAddress();
-		cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::AnimationTransformData, animAddr );
+		cmdList->SetGraphicsRootShaderResourceView( GraphicRootParameterIndex::AnimationTransformData, animAddr );
 	}
 
 	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::AmbientLight ||
@@ -217,7 +217,7 @@ void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelT
 		shader->GetGroup() == KG::Renderer::ShaderGroup::Transparent )
 	{
 		auto shadowAddr = this->shadowLightBuffer->buffer.resource->GetGPUVirtualAddress();
-		cmdList->SetGraphicsRootShaderResourceView( RootParameterIndex::LightData, shadowAddr );
+		cmdList->SetGraphicsRootShaderResourceView( GraphicRootParameterIndex::LightData, shadowAddr );
 	}
 
 	this->geometry->Render( cmdList, this->updateCount);

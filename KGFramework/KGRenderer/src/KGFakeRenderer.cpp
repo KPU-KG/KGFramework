@@ -126,6 +126,12 @@ KG::Component::IParticleEmitterComponent* KG::Renderer::KGFakeRenderer::GetNewPa
     return particleComp;
 }
 
+KG::Component::IPostProcessManagerComponent* KG::Renderer::KGFakeRenderer::GetNewPostProcessorComponent()
+{
+    auto* anim = static_cast<KG::Component::IPostProcessManagerComponent*>(this->graphicSystems->postProcessSystem.GetNewComponent());
+    return anim;
+}
+
 KG::Core::GameObject* KG::Renderer::KGFakeRenderer::LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials)
 {
     return KG::Resource::FakeResourceContainer::GetInstance()->CreateObjectFromModel(id, container, materials);
@@ -135,3 +141,4 @@ KG::Core::GameObject* KG::Renderer::KGFakeRenderer::LoadFromModel(const KG::Util
 {
     return KG::Resource::FakeResourceContainer::GetInstance()->CreateObjectFromModel(id, scene, materials);
 }
+

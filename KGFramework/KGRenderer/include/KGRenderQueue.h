@@ -34,7 +34,6 @@ namespace KG::Renderer
 		BufferPool<ShadowLightData>* shadowLightBufferPool = nullptr;
 		PooledBuffer<ShadowLightData>* shadowLightBuffer = nullptr;
 
-
 		bool CheckBufferFull() const;
 		void GetNewBuffer();
 

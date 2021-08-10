@@ -14,14 +14,13 @@ Texture2DArray<float> shadowArray[] : register(t0, space1);
 
 bool isInPosition(float3 position)
 {
-    return (abs(position.x) < 1.0f) && (abs(position.y) < 1.0f) && (abs(position.z) < 1.0f);
+    return (abs(position.x) <= 1.0f) && (abs(position.y) <= 1.0f) && (abs(position.z) <= 1.0f);
 }
 
-float DirectionalShadowCascadePCF(float3 worldPosition, LightData lightData, ShadowData shadowData, out uint id)
+float DirectionalShadowCascadePCF(float3 worldPosition, LightData lightData, ShadowData shadowData, float cosTheta)
 {
     if (shadowData.shadowMapIndex[0] == 0)
     {
-        id = 0;
         return 1.0f;
     }
     
@@ -29,28 +28,18 @@ float DirectionalShadowCascadePCF(float3 worldPosition, LightData lightData, Sha
     float depth = 1.0f;
     uint index = 0;
     
+    for (uint cascade = 0; cascade < 4; cascade++)
     {
-        float4 projPos = mul(float4(worldPosition, 1.0f), shadowData.shadowMatrix[0]);
-        float3 projPos3 = projPos.xyz / projPos.w;
-        uv = ProjPositionToUV(projPos3.xy);
-        depth = projPos3.z;
-        index = 0;
-
-    }
-    
-    for (uint cascade = 0; cascade < 3; cascade++)
-    {
-        float4 projPos = mul(float4(worldPosition, 1.0f), shadowData.shadowMatrix[cascade + 1]);
+        float4 projPos = mul(float4(worldPosition, 1.0f), shadowData.shadowMatrix[cascade]);
         float3 projPos3 = projPos.xyz / projPos.w;
         if (isInPosition(projPos3))
         {
             uv = ProjPositionToUV(projPos3.xy);
             depth = projPos3.z;
-            index = cascade + 1;
+            index = cascade;
             break;
         }
     }
-    id = index;
     static float2 poissonDisk[16] = 
         {
         float2(-0.94201624, -0.39906216),
@@ -73,14 +62,17 @@ float DirectionalShadowCascadePCF(float3 worldPosition, LightData lightData, Sha
         float2(0.19984126, 0.78641367),
         float2(0.14383161, -0.14100790)
     };
+    float bias = 0.1f * tan(acos(cosTheta));
+    bias = clamp(bias, 0.002f, 0.005f);
+    //bias = 0.001f;
+    //bias += 0.001f  + index * 0.001f;
     float result = 0.0f;
-    for (uint n = 0; n < 8; n++)
+    for (uint n = 0; n < 16; n++)
     {
-        result += shadowArray[shadowData.shadowMapIndex[0]].SampleCmpLevelZero(gsamAnisotoropicCompClamp, float3(uv + (poissonDisk[n] / 1400.0f), index), (depth) - 0.001f);
+        result += shadowArray[shadowData.shadowMapIndex[0]].SampleCmpLevelZero(gsamAnisotoropicCompClamp, float3(uv + (poissonDisk[n] / 1400.0f), index), (depth - bias));
     }
-    result /= 8.0f;
+    result /= 16.0f;
     return result;
-    return shadowArray[shadowData.shadowMapIndex[0]].SampleCmpLevelZero(gsamLinerCompClamp, float3(uv, index), (depth) - 0.001f);
 }
 
 
@@ -111,8 +103,6 @@ float4 PixelShaderFunction(LightVertexOut input) : SV_Target0
     float3 calcWorldPosition = DepthToWorldPosition(depth, input.projPosition.xy, mul(inverseProjection, inverseView));
     float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
     
-    uint id;
-    
     float4 cascadeDebugColor[4] = 
         {
         float4(1.0f,1.0f,1.0f, 1.0f),
@@ -121,7 +111,7 @@ float4 PixelShaderFunction(LightVertexOut input) : SV_Target0
         float4(0.0f,0.0f,1.0f, 1.0f),
     };
     
-    float shadowFactor = max(DirectionalShadowCascadePCF(calcWorldPosition, lightData, shadowData, id), 0.25f);
+    float shadowFactor = max(DirectionalShadowCascadePCF(calcWorldPosition, lightData, shadowData, dot(normalize(lightData.Direction), normalize(pixelData.wNormal))), 0.25f);
     
     return CustomLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(-cameraDirection), 1.0f) * shadowFactor;
     //return CustomLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(-cameraDirection), 1.0f) * shadowFactor * cascadeDebugColor[id];

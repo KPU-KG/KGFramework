@@ -58,6 +58,8 @@ namespace ImGui
         }
     }
 
+    bool TextureView(ImTextureID id, ImVec2 size, const char* popup);
+
     inline bool InputHashString(const char* label, std::string* myString, const ImVec2& size = ImVec2(0, 0), ImGuiInputTextFlags flags = 0)
     {
         IM_ASSERT((flags & (ImGuiInputTextFlags_CallbackResize | ImGuiInputTextFlags_CallbackCompletion | ImGuiInputTextFlags_CallbackEdit)) == 0);
