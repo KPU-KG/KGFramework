@@ -25,6 +25,7 @@ namespace KG::Component
 	class CEnemyControllerComponent;
 	class CProjectileComponent;
 	class CCubeAreaRedComponent;
+	class CLobbyComponent;
 }
 
 namespace KG::Server
@@ -48,6 +49,7 @@ namespace KG::Server
 		virtual KG::Component::CEnemyControllerComponent* GetNewEnemyControllerOomponent() = 0;
 		virtual KG::Component::CProjectileComponent* GetNewProjectileComponent() = 0;
 		virtual KG::Component::CCubeAreaRedComponent* GetNewCubeAreaRedComponent() = 0;
+		virtual KG::Component::CLobbyComponent* GetNewLobbyComponent() = 0;
 
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 

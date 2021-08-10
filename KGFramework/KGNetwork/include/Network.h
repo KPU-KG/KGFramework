@@ -43,6 +43,7 @@ namespace KG::Server
 
 		void ProcessPacket(unsigned char* buffer);
 	public:
+		char GetLobbyInfo(int num);
 		virtual void Initialize() override;
 		virtual void SetAddress(DWORD address) override;
         virtual void SetAddress(const std::string& address) override;
@@ -61,6 +62,7 @@ namespace KG::Server
 		virtual KG::Component::CEnemyControllerComponent* GetNewEnemyControllerOomponent() override;
 		virtual KG::Component::CProjectileComponent* GetNewProjectileComponent() override;
 		virtual KG::Component::CCubeAreaRedComponent* GetNewCubeAreaRedComponent() override;
+		virtual KG::Component::CLobbyComponent* GetNewLobbyComponent() override;
 
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 

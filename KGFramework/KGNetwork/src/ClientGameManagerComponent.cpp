@@ -14,7 +14,9 @@ void KG::Component::CGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 
 void KG::Component::CGameManagerComponent::Update(float elapsedTime)
 {
-
+	//char a = (char)this->network->GetLobbyInfo(0);
+	//char b = (char)this->network->GetLobbyInfo(1);
+	//std::cout << a << b << std::endl;
 }
 
 bool KG::Component::CGameManagerComponent::OnDrawGUI()
@@ -87,12 +89,6 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 			// 게임 종료 패킷 수신 -> 씬초기화 + 로비 재접속?
 		}
 		return true;
-	/*	클라
-		------
-		플레이어 정보 받고 플레이어 + 팀 정보로 처리
-		인풋 전송
-		데드레커닝 - kgmain->playercontroller 계산과 동일하게 서버 연산 +
-	*/
 	}
 	return false;
 }

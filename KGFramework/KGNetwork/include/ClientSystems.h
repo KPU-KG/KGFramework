@@ -169,6 +169,12 @@ namespace KG::System
 			comp->SetNetworkInstance(network);
 		}
 	public:
+		char GetInfo(int num) {
+			for (auto& com : *this)
+			{
+				return com.GetLobbyInfo(num);
+			}
+		}
 		void SetNetworkInstance(KG::Server::Network* network)
 		{
 			this->network = network;

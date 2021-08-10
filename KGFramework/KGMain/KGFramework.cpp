@@ -943,6 +943,7 @@ void KG::GameFramework::StartServer(bool lock)
 
     //Hard Code
     this->scene->AddSceneComponent("SGameManagerComponent"_id, this->componentProvider.GetComponent("SGameManagerComponent"_id));
+	this->scene->AddSceneComponent("SLobbyComponent"_id, this->componentProvider.GetComponent("SLobbyComponent"_id));
     this->networkServer->Start(lock);
 }
 
@@ -959,6 +960,7 @@ void KG::GameFramework::StartClient()
 
     //Hard Code
     this->scene->AddSceneComponent("CGameManagerComponent"_id, this->componentProvider.GetComponent("CGameManagerComponent"_id));
+	this->scene->AddSceneComponent("CLobbyComponent"_id, this->componentProvider.GetComponent("CLobbyComponent"_id));
 
 
     this->networkClient->SetAddress(this->setting.ipAddress);

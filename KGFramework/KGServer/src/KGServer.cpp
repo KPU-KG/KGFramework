@@ -132,6 +132,7 @@ void KG::Server::Server::Initialize()
 
 	//Init Systems
 	this->sGameManagerSystem.SetServerInstance(this);
+	this->sLobbySystem.SetServerInstance(this);
 }
 
 void KG::Server::Server::Start(bool lock)
@@ -268,7 +269,6 @@ KG::Component::SCrawlerMissileComponent* KG::Server::Server::GetNewCrawlerMissil
 
 void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
-	std::cout << "sss" << std::endl;
 	this->sGameManagerSystem.OnPostProvider(provider);
 	this->sPlayerSystem.OnPostProvider(provider);
 	this->sEnemyMechSystem.OnPostProvider(provider);
@@ -324,6 +324,7 @@ void KG::Server::Server::BroadcastPacket(void* packet, SESSION_ID ignore)
 			// std::shared_lock<std::shared_mutex> lg{ i.second.sessionLock };
 			if ( i.second.state == PLAYER_STATE_INGAME )
 			{
+				std::cout << "send to :" << i.first << std::endl;
 				this->SendPacket(i.first, packet);
 			}
 		}

@@ -36,7 +36,6 @@ void KG::Component::SLobbyComponent::DisconnectLobbyPlayer(KG::Server::SESSION_I
 
 bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender)
 {
-	this->server->FindNetObject(sender);
 	switch (type)
 	{
 	case KG::Packet::PacketType::CS_REQ_LOGIN:
@@ -114,3 +113,4 @@ void KG::Component::SLobbyComponent::OnCreate(KG::Core::GameObject* obj)
 	this->SetNetObjectId(KG::Server::LOBBY_ID);
 	this->server->SetServerObject(this->networkObjectId, this);
 }
+

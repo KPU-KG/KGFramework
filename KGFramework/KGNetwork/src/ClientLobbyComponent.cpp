@@ -1,4 +1,5 @@
 #include "pch.h"
+#include "Network.h"
 #include "ClientLobbyComponent.h"
 
 bool KG::Component::CLobbyComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type)
@@ -51,11 +52,31 @@ void KG::Component::CLobbyComponent::SendWaitPacket() {
     this->SendPacket(&Packet);
 }
 
+void KG::Component::CLobbyComponent::SendSelectPacket(int mapnumber) {
+    KG::Packet::CS_SELECT_MAP Packet;
+    Packet.mapnum = mapnumber;
+    this->SendPacket(&Packet);
+}
+
 
 void KG::Component::CLobbyComponent::OnCreate(KG::Core::GameObject* obj)
 {
+    this->SetNetObjectId(KG::Server::LOBBY_ID);
+    this->network->SetNetworkObject(this->networkObjectId, this);
 }
 
 void KG::Component::CLobbyComponent::Update(float elapsedTime)
 {
+}
+
+char KG::Component::CLobbyComponent::GetLobbyInfo(int num)
+{
+    return this->playerInfo[num];
+}
+
+
+
+void KG::Component::CLobbyComponent::SendLoginPacket() {
+    KG::Packet::CS_REQ_LOGIN login = {};
+    this->SendPacket(&login);
 }

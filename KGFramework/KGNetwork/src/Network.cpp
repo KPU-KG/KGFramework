@@ -17,6 +17,7 @@ void KG::Server::Network::Initialize()
 	WSAData wsaData = {};
 	WSAStartup(MAKEWORD(2, 2), &wsaData);
 	this->cGameManagerSystem.SetNetworkInstance(this);
+	this->cLobbySystem.SetNetworkInstance(this);
 }
 
 void KG::Server::Network::SetAddress(DWORD address)
@@ -200,6 +201,13 @@ KG::Component::CCubeAreaRedComponent* KG::Server::Network::GetNewCubeAreaRedComp
 	return comp;
 }
 
+KG::Component::CLobbyComponent* KG::Server::Network::GetNewLobbyComponent()
+{
+	auto* comp = this->cLobbySystem.GetNewComponent();
+	comp->SetNetworkInstance(this);
+	return comp;
+}
+
 void KG::Server::Network::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
 	this->cLobbySystem.OnPostProvider(provider);
@@ -240,7 +248,8 @@ bool KG::Server::Network::TryConnect()
 
 void KG::Server::Network::Login()
 {
-    auto* ptr = static_cast<KG::Component::CGameManagerComponent*>(this->networkObjects[0]);
+    //auto* ptr = static_cast<KG::Component::CGameManagerComponent*>(this->networkObjects[0]);
+	auto* ptr = static_cast<KG::Component::CLobbyComponent*>(this->networkObjects[1]);
     ptr->SendLoginPacket();
 }
 
@@ -250,5 +259,10 @@ void KG::Server::Network::Update(float elapsedTime)
 	this->cPlayerSystem.OnUpdate(elapsedTime);
 	this->cCharacterSystem.OnUpdate(elapsedTime);
 	// this->cProjectileSystem.OnUpdate(elapsedTime);
+}
+
+char KG::Server::Network::GetLobbyInfo(int num)
+{
+	return this->cLobbySystem.GetInfo(num);
 }
 
