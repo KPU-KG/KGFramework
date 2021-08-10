@@ -8,6 +8,16 @@ KG::Component::SLobbyComponent::SLobbyComponent()
 
 }
 
+//bool KG::Component::SLobbyComponent::CheckReady() {
+//	for (size_t i = 0; i < PLAYERNUM; i++)
+//	{
+//		if (this->playerinfo[i].state == LobbyState::Wait) {
+//			return false;
+//		}
+//	}
+//	return true;
+//}
+
 void KG::Component::SLobbyComponent::DisconnectLobbyPlayer(KG::Server::SESSION_ID playerId) {
 	std::cout << "disconnect lobby id: " << playerId << "\n";
 	for (size_t i = 0; i < 4; i++)
@@ -79,6 +89,7 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 		}
 		KG::Packet::SC_GAME_START StartPacket;
 		this->BroadcastPacket(&StartPacket);
+		this->server->isPlay = true;
 		// 전부 레디면 시작, 패킷 전송
 	}
 	return true;

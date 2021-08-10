@@ -127,10 +127,10 @@ bool KG::Component::CPlayerControllerComponent::OnProcessPacket(unsigned char* p
             auto* ScenePacket = KG::Packet::PacketCast<KG::Packet::SC_PLAYER_DATA>(packet);
             this->characterTransform->SetPosition(ScenePacket->position);
             hpbar->progress.value = ScenePacket->playerHp;
-            if (ScenePacket->playerHp == 0 && this->isActive) {
+            if (ScenePacket->playerHp <= 0 && this->isActive) {
                 this->isActive = false;
             }
-            else if (ScenePacket->playerHp != 0 && !this->isActive) {
+            else if (ScenePacket->playerHp > 0 && !this->isActive) {
                 this->isActive = true;
             }
             //회전 정보 무시 = 에임 랙걸림
@@ -481,6 +481,8 @@ void KG::Component::CPlayerControllerComponent::TryReload(float elapsedTime)
             if (this->sound)
                 this->sound->PlayEffectiveSound(VECTOR_SOUND::RELOAD_EMPTY);
         }
+        Packet::CS_RELOAD packet;
+        this->SendPacket(&packet);
     }
 }
 
