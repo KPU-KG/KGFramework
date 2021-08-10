@@ -43,6 +43,7 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 		for (size_t i = 0; i < PLAYERNUM; i++)
 		{
 			if (this->playerinfo[i].state == LobbyState::Empty) {
+				this->server->SetSessionState(sender, KG::Server::PLAYER_STATE::PLAYER_STATE_INGAME);
 				KG::Packet::SC_LOGIN_OK Packet;
 				Packet.lobbyid = i;
 				this->SendPacket(sender, &Packet);
