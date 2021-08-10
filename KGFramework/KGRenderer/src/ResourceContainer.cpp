@@ -42,6 +42,19 @@ KG::Renderer::Shader* KG::Resource::ResourceContainer::LoadShader(const KG::Util
 	}
 }
 
+KG::Renderer::PostProcess* KG::Resource::ResourceContainer::LoadPostProcess(const KG::Utill::HashString& id)
+{
+    if (this->postProcess.count(id))
+    {
+        return &this->postProcess.at(id);
+    }
+    else
+    {
+        auto metaData = ResourceLoader::LoadShaderSetFromFile("Resource/ShaderCode.xml", id);
+        return &this->postProcess.emplace(id, metaData).first->second;
+    }
+}
+
 KG::Resource::FrameModel* KG::Resource::ResourceContainer::LoadModel(const KG::Utill::HashString& id)
 {
 	if ( this->models.count(id) )
@@ -232,15 +245,18 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceContainer::LoadMa
 	}
 }
 
-//void KG::Resource::ResourceContainer::AddAnimation( const KG::Utill::HashString& id, UINT animationIndex, const KG::Utill::AnimationSet& animation )
-//{
-//	this->animations.emplace( std::make_pair( id, animationIndex ), animation );
-//}
-//
-//void KG::Resource::ResourceContainer::AddAnimation( const KG::Utill::HashString& id, UINT animationIndex, KG::Utill::AnimationSet&& animation )
-//{
-//	this->animations.emplace( std::make_pair( id, animationIndex ), std::move(animation) );
-//}
+std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceContainer::LoadPostProcessMaterial(const KG::Utill::HashString& id)
+{
+    if (this->postProcessMaterials.count(id))
+    {
+        return this->postProcessMaterials.at(id);
+    }
+    else
+    {
+        auto result = KG::Resource::ResourceLoader::LoadPostProcessMaterialFromFile("Resource/MaterialSet.xml", id);
+        return this->postProcessMaterials.emplace(id, result).first->second;
+    }
+}
 
 void KG::Resource::ResourceContainer::ConvertNodeToObject(const KG::Utill::HashString& id, KG::Core::GameObject* object, KG::Utill::ModelNode* node, const MaterialMatch& materials, KG::Core::GameObject* rootObject)
 {

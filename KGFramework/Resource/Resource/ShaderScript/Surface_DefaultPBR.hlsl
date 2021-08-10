@@ -26,12 +26,13 @@ Surface UserSurfaceFunction(SurfaceInput input)
     float2x2 uvScale = float2x2(mat.UVSize.x, 0, 0, mat.UVSize.y);
     float2 uv = mul(input.uv, uvScale);
     
-    result.albedo = shaderTexture[mat.ColorTextureIndex].Sample(gsamAnisotoropicWrap, uv).xyz;
-    result.reflection = objectInfo[input.InstanceID].environmentMapIndex / 12000.0f;
     
-    result.specular = 0.0f;
-    result.metalic = shaderTexture[mat.MetalicTextureIndex].Sample(gsamAnisotoropicWrap, uv).xxx;
-    result.roughness = shaderTexture[mat.RoughnessTextureIndex].Sample(gsamAnisotoropicWrap, uv).xxx;
+    result.albedo = GammaToLinear(shaderTexture[mat.ColorTextureIndex].Sample(gsamAnisotoropicWrap, uv).xyz);
+    //result.reflection = objectInfo[input.InstanceID].environmentMapIndex / 12000.0f;
+    
+    result.specular = mat.SpecularValue;
+    result.metalic = shaderTexture[mat.MetalicTextureIndex].Sample(gsamAnisotoropicWrap, uv).x;
+    result.roughness = shaderTexture[mat.RoughnessTextureIndex].Sample(gsamAnisotoropicWrap, uv).x;
     result.emssion = 0.0f;
     
     float3x3 TBN = float3x3(

@@ -152,7 +152,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
    KG::EngineDesc engineDesc;
    KG::Setting setting = KG::Setting::Load();
    DWORD dwStyle = WS_OVERLAPPED | WS_CAPTION | WS_MINIMIZEBOX | WS_SYSMENU | WS_BORDER;
-   RECT rc = { 0, 0, setting.clientWidth , setting.clientHeight };
+   RECT rc = { 0, 0, setting.GetGameResolutionWidth() , setting.GetGameResolutionHeigth() };
    AdjustWindowRect(&rc, dwStyle, FALSE);
 
    HWND hWnd = 0;

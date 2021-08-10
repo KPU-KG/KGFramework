@@ -32,11 +32,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XML", "XML", "{85D78402-5B3
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShaderCode", "ShaderCode", "{612EE3CC-1D6B-4E8F-8C11-7510E32215FA}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_DAY.hlsl = Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_DAY.hlsl
+		Resource\Resource\Texture\Skymap\sunset_skybox_radiance.dds = Resource\Resource\Texture\Skymap\sunset_skybox_radiance.dds
+	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Document", "Document", "{85EDFD5A-179A-491B-B1BC-1CD4CC6BDB20}"
 	ProjectSection(SolutionItems) = preProject
 		Doc\GBufferFormat.txt = Doc\GBufferFormat.txt
 		Doc\RootParameter.txt = Doc\RootParameter.txt
+		Resource\Resource\TextureSet.xml = Resource\Resource\TextureSet.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Mesh", "Mesh", "{74DDEDF6-9870-4F3C-8842-F9569A42DA7B}"
@@ -65,6 +70,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ETC", "ETC", "{CC3BB28C-12D
 		Resource\Resource\ShaderScript\UI_Default.hlsl = Resource\Resource\ShaderScript\UI_Default.hlsl
 		Resource\Resource\ShaderScript\Utill_LIghtCustom.hlsl = Resource\Resource\ShaderScript\Utill_LIghtCustom.hlsl
 		Resource\Resource\ShaderScript\Utill_ShaderSelector.hlsl = Resource\Resource\ShaderScript\Utill_ShaderSelector.hlsl
+		Resource\Resource\ShaderScript\Utill_Transparent.hlsl = Resource\Resource\ShaderScript\Utill_Transparent.hlsl
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pixel", "Pixel", "{3A295F94-2BA0-43B3-816B-784DD6E7D6DF}"
@@ -77,6 +83,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Pixel", "Pixel", "{3A295F94
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Define", "Define", "{43F92087-EC1C-4518-9AE2-D3F2971C21F3}"
 	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Define_Compute.hlsl = Resource\Resource\ShaderScript\Define_Compute.hlsl
 		Resource\Resource\ShaderScript\Define_GBuffer.hlsl = Resource\Resource\ShaderScript\Define_GBuffer.hlsl
 		Resource\Resource\ShaderScript\Define_Global.hlsl = Resource\Resource\ShaderScript\Define_Global.hlsl
 		Resource\Resource\ShaderScript\Define_GSCamera.hlsl = Resource\Resource\ShaderScript\Define_GSCamera.hlsl
@@ -89,6 +96,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Surface", "Surface", "{96B9
 	ProjectSection(SolutionItems) = preProject
 		Resource\Resource\ShaderScript\Surface_DefaultPBR.hlsl = Resource\Resource\ShaderScript\Surface_DefaultPBR.hlsl
 		Resource\Resource\ShaderScript\Surface_Empty.hlsl = Resource\Resource\ShaderScript\Surface_Empty.hlsl
+		Resource\Resource\ShaderScript\Surface_PBRFPSMask.hlsl = Resource\Resource\ShaderScript\Surface_PBRFPSMask.hlsl
+		Resource\Resource\ShaderScript\Surface_PBRGlossSmooth.hlsl = Resource\Resource\ShaderScript\Surface_PBRGlossSmooth.hlsl
 		Resource\Resource\ShaderScript\Surface_SkyBox.hlsl = Resource\Resource\ShaderScript\Surface_SkyBox.hlsl
 	EndProjectSection
 EndProject
@@ -99,6 +108,27 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KGNetwork", "KGNetwork\KGNetwork.vcxproj", "{AF280AFE-9E18-4865-8C66-D980510DF4C0}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "HashConverter", "HashConverter\HashConverter.vcxproj", "{A73FEAF5-868F-425A-9D96-1067BBDEE97C}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compute", "Compute", "{806BF353-281F-4440-BEE1-9C5C6E2D78E8}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\Compute_Blur_Define.hlsl = Resource\Resource\ShaderScript\Compute_Blur_Define.hlsl
+		Resource\Resource\ShaderScript\Compute_CopySwapChain.hlsl = Resource\Resource\ShaderScript\Compute_CopySwapChain.hlsl
+		Resource\Resource\ShaderScript\Compute_FXAA.hlsl = Resource\Resource\ShaderScript\Compute_FXAA.hlsl
+		Resource\Resource\ShaderScript\Compute_GC.hlsl = Resource\Resource\ShaderScript\Compute_GC.hlsl
+		Resource\Resource\ShaderScript\Compute_HDR_DEFINE.hlsl = Resource\Resource\ShaderScript\Compute_HDR_DEFINE.hlsl
+		Resource\Resource\ShaderScript\Compute_HDR_ONE.hlsl = Resource\Resource\ShaderScript\Compute_HDR_ONE.hlsl
+		Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_DAY.hlsl = Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_DAY.hlsl
+		Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_Material.hlsl = Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_Material.hlsl
+		Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_SUNSET.hlsl = Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_SUNSET.hlsl
+		Resource\Resource\ShaderScript\Compute_HDR_TWO.hlsl = Resource\Resource\ShaderScript\Compute_HDR_TWO.hlsl
+		Resource\Resource\ShaderScript\Compute_SSAO_DEFINE.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_DEFINE.hlsl
+		Resource\Resource\ShaderScript\Compute_SSAO_FIVE.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_FIVE.hlsl
+		Resource\Resource\ShaderScript\Compute_SSAO_Four.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_Four.hlsl
+		Resource\Resource\ShaderScript\Compute_SSAO_ONE.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_ONE.hlsl
+		Resource\Resource\ShaderScript\Compute_SSAO_THREE.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_THREE.hlsl
+		Resource\Resource\ShaderScript\Compute_SSAO_TWO.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_TWO.hlsl
+		Resource\Resource\ShaderScript\Compute_Test.hlsl = Resource\Resource\ShaderScript\Compute_Test.hlsl
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -178,6 +208,7 @@ Global
 		{3A295F94-2BA0-43B3-816B-784DD6E7D6DF} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
 		{43F92087-EC1C-4518-9AE2-D3F2971C21F3} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
 		{96B900F6-5155-42BF-9A04-808233534E8B} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
+		{806BF353-281F-4440-BEE1-9C5C6E2D78E8} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EA476DDC-7B81-4DFD-9585-518EB4B6393F}

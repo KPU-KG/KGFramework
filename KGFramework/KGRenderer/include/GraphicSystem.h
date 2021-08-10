@@ -118,4 +118,13 @@ namespace KG::System
 		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;
 	};
+
+    struct PostProcessorSystem : public IComponentSystem<PostProcessManagerComponent>
+    {
+        KG::Utill::HashString systemComponentId = KG::Utill::HashString(KG::Component::ComponentID<PostProcessManagerComponent>::name());
+    public:
+        virtual void OnUpdate(float elapsedTime) override;
+        virtual void OnPostUpdate(float elapsedTime) override;
+        virtual void OnPreRender() override;
+    };
 }

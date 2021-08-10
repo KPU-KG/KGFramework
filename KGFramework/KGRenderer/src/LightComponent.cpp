@@ -2,6 +2,7 @@
 #include "LightComponent.h"
 #include "KGRenderQueue.h"
 #include "ResourceContainer.h"
+#include "Scene.h"
 
 void KG::Component::LightComponent::SetRenderJob(KG::Renderer::KGRenderJob* renderJob)
 {
@@ -274,6 +275,11 @@ bool KG::Component::LightComponent::OnDrawGUI()
 		{
 			case LightType::DirectionalLight:
 				flag |= this->directionProp.OnDrawGUI();
+                if (ImGui::Button("SetCameraDirection"))
+                {
+                    auto look = this->GetGameObject()->GetScene()->GetMainCamera()->GetGameObject()->GetComponent<KG::Component::TransformComponent>()->GetWorldLook();
+                    this->GetDirectionalLightRef().Direction = Math::Vector3::ScalarProduct(look, -1.0f, false);
+                }
 				break;
 			case LightType::PointLight:
 				flag |= this->fallOffStartProp.OnDrawGUI();

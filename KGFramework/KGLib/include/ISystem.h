@@ -138,10 +138,11 @@ namespace KG::System
 		virtual void OnPostUpdate( float elapsedTime ) = 0;
 		virtual void OnPreRender() = 0;
 		virtual void OnPostProvider(KG::Component::ComponentProvider& provider) = 0;
+        virtual void Clear() {};
 	};
 
 	template <class Ty>
-	class IComponentSystem : ISystem
+	class IComponentSystem : public ISystem
 	{
 	protected:
 		ComponentPooler<Ty> pool;
@@ -190,7 +191,7 @@ namespace KG::System
 		{
 			return this->pool.end();
 		}
-		virtual void Clear() 
+		virtual void Clear() override
 		{
 			for ( auto& comp : pool )
 			{

@@ -119,6 +119,9 @@ bool KG::Core::Scene::OnDrawGUI()
 				if ( ImGui::MenuItem("Make Add Particle Texture From Directory") )
 					ImGuiFileDialog::Instance()->OpenDialog("MakeParticleTexture", " Choose a File", ".DDS{.dds,.DDS},"
 						, ImGui::GetCurrentShortPath("Resource\\Texture\\Particles"), "", 0, nullptr);
+                if (ImGui::MenuItem("Make Add UI Texture From Directory"))
+                    ImGuiFileDialog::Instance()->OpenDialog("MakeUI", " Choose a File", ".DDS{.dds,.DDS},"
+                        , ImGui::GetCurrentShortPath("Resource\\Texture\\ui"), "", 0, nullptr);
 				if ( ImGui::MenuItem("Make Geometry From File") )
 					ImGuiFileDialog::Instance()->OpenDialog("MakeGeometry", " Choose a File", ".FBX{.fbx,.FBX},"
 						, ImGui::GetCurrentShortPath("Resource\\Geometry\\"), "", 1, nullptr);
@@ -516,6 +519,62 @@ bool KG::Core::Scene::OnDrawGUI()
 		// close
 		ImGuiFileDialog::Instance()->Close();
 	}
+
+    if (ImGuiFileDialog::Instance()->Display("MakeUI"))
+    {
+        // action if OK
+        if (ImGuiFileDialog::Instance()->IsOk())
+        {
+
+            auto map = ImGuiFileDialog::Instance()->GetSelection();
+            for (auto [fileName, getFilePathName] : map)
+            {
+                std::string filePathName = ImGui::ShortPathToLongPath(getFilePathName);
+                std::string ddsFilePath = filePathName.substr(filePathName.rfind("Resource"));
+                std::string rawName = filePathName.substr(filePathName.rfind("\\") + 1, filePathName.length() - 4);
+                for (auto& i : ddsFilePath)
+                {
+                    if (i == '\\')
+                    {
+                        i = '/';
+                    }
+                }
+
+                //Create Textures
+                {
+                    tinyxml2::XMLDocument textureSet;
+                    textureSet.LoadFile("Resource/TextureSet.xml");
+                    textureSet.FirstChildElement("TextureSet")->InsertNewComment(ddsFilePath.c_str());
+
+                    auto* texEle = textureSet.FirstChildElement("TextureSet")->InsertNewChildElement("Texture");
+                    texEle->SetAttribute("id", rawName.c_str());
+                    texEle->SetAttribute("fileDir", ddsFilePath.c_str());
+                    texEle->SetAttribute("dimension", "Texture2D");
+                    texEle->SetAttribute("format", "DDS");
+
+                    textureSet.SaveFile("Resource/TextureSet.xml");
+                }
+
+                //Create Material
+                {
+                    tinyxml2::XMLDocument materialSet;
+                    materialSet.LoadFile("Resource/MaterialSet.xml");
+                    auto* matEle = materialSet.FirstChildElement("MaterialSet")->InsertNewChildElement("Material");
+                    matEle->SetAttribute("id", rawName.c_str());
+                    matEle->SetAttribute("shaderID", "UIDefault");
+                    {
+                        auto* node = matEle->InsertNewChildElement("Texture");
+                        node->SetAttribute("byte", 4);
+                        node->SetAttribute("comment", "uiTexture");
+                        node->SetAttribute("id", rawName.c_str());
+                    }
+                    materialSet.SaveFile("Resource/MaterialSet.xml");
+                }
+            }
+        }
+        // close
+        ImGuiFileDialog::Instance()->Close();
+    }
 
 	return false;
 }

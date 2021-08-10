@@ -21,6 +21,19 @@ namespace KG::Component
         RIGHT_BOTTOM,
     };
 
+    const DirectX::XMFLOAT2 rectPivots[] =
+    {
+        DirectX::XMFLOAT2(+0, +1),
+        DirectX::XMFLOAT2(+0, +0),
+        DirectX::XMFLOAT2(+0, -1),
+        DirectX::XMFLOAT2(-1, +1),
+        DirectX::XMFLOAT2(-1, +0),
+        DirectX::XMFLOAT2(-1, -1),
+        DirectX::XMFLOAT2(+1, +1),
+        DirectX::XMFLOAT2(+1, +0),
+        DirectX::XMFLOAT2(+1, -1),
+    };
+
     
     enum class ProgressShape
     { 
@@ -35,6 +48,7 @@ namespace KG::Component
     {
         DirectX::XMFLOAT2 position = DirectX::XMFLOAT2(0, 0); //-1 ~ 1 정규화된 좌표
         DirectX::XMFLOAT2 size = DirectX::XMFLOAT2(1, 1);
+        DirectX::XMFLOAT2 source = DirectX::XMFLOAT2(1, 1);
         float rotationAngle = 0;
         float depth = 0;
         RectPivot parentPivot = RectPivot::CENTER;

@@ -45,6 +45,8 @@ ID3D12Resource* KG::Renderer::CreateBufferResource(ID3D12Device* pd3dDevice, ID3
 		d3dResourceInitialStates, nullptr, IID_PPV_ARGS(&pd3dBuffer)
 	);
 
+    ThrowIfFailed(hResult);
+
 	if (pData)
 	{
 		switch (d3dHeapType)
@@ -120,7 +122,7 @@ ID3D12Resource* KG::Renderer::CreateRenderTargetResource( ID3D12Device* pd3dDevi
 	d3dResourceDesc.SampleDesc.Count = 1;
 	d3dResourceDesc.SampleDesc.Quality = 0;
 	d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE | D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE | D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET | D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
 	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
 	//D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -136,7 +138,8 @@ ID3D12Resource* KG::Renderer::CreateRenderTargetResource( ID3D12Device* pd3dDevi
 		&d3dHeapPropertiesDesc, D3D12_HEAP_FLAG_NONE, &d3dResourceDesc,
 		d3dResourceInitialStates, &clearValue, IID_PPV_ARGS( &pd3dBuffer )
 	);
-	return pd3dBuffer;
+    ThrowIfFailed(hResult);
+    return pd3dBuffer;
 }
 
 ID3D12Resource* KG::Renderer::CreateArrayRenderTargetResource( ID3D12Device* pd3dDevice, size_t width, size_t height, size_t length, DXGI_FORMAT format )
@@ -163,7 +166,7 @@ ID3D12Resource* KG::Renderer::CreateArrayRenderTargetResource( ID3D12Device* pd3
 	d3dResourceDesc.SampleDesc.Count = 1;
 	d3dResourceDesc.SampleDesc.Quality = 0;
 	d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
-	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE | D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET;
+	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE | D3D12_RESOURCE_FLAG_ALLOW_RENDER_TARGET | D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
 	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
 	//D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_RENDER_TARGET;
@@ -179,7 +182,8 @@ ID3D12Resource* KG::Renderer::CreateArrayRenderTargetResource( ID3D12Device* pd3
 		&d3dHeapPropertiesDesc, D3D12_HEAP_FLAG_NONE, &d3dResourceDesc,
 		d3dResourceInitialStates, &clearValue, IID_PPV_ARGS( &pd3dBuffer )
 	);
-	return pd3dBuffer;
+    ThrowIfFailed(hResult);
+    return pd3dBuffer;
 }
 
 ID3D12Resource* KG::Renderer::CreateDepthStencilResource( ID3D12Device* pd3dDevice, size_t width, size_t height, DXGI_FORMAT format )
@@ -211,8 +215,8 @@ ID3D12Resource* KG::Renderer::CreateDepthStencilResource( ID3D12Device* pd3dDevi
 	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON;
 
 	D3D12_CLEAR_VALUE clearValue;
-	clearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
-	clearValue.DepthStencil.Depth = 1.0f;
+    clearValue.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+    clearValue.DepthStencil.Depth = 1.0f;
 	clearValue.DepthStencil.Stencil = 0;
 
 	HRESULT hResult = pd3dDevice->CreateCommittedResource(
@@ -265,6 +269,48 @@ ID3D12Resource* KG::Renderer::CreateArrayDepthStencilResource( ID3D12Device* pd3
 	return pd3dBuffer;
 }
 
+ID3D12Resource* KG::Renderer::CreateUAVBufferResource(ID3D12Device* pd3dDevice, UINT width, UINT height, D3D12_HEAP_TYPE d3dHeapType, D3D12_RESOURCE_STATES d3dResourceStates)
+{
+    return CreateUAVBufferResource(pd3dDevice, width, height, DXGI_FORMAT::DXGI_FORMAT_R16G16B16A16_FLOAT, d3dHeapType, d3dResourceStates);
+}
+
+ID3D12Resource* KG::Renderer::CreateUAVBufferResource(ID3D12Device* pd3dDevice, UINT width, UINT height, DXGI_FORMAT format, D3D12_HEAP_TYPE d3dHeapType, D3D12_RESOURCE_STATES d3dResourceStates)
+{
+    ID3D12Resource* pd3dBuffer = nullptr;
+
+    D3D12_HEAP_PROPERTIES d3dHeapPropertiesDesc;
+    ZeroDesc(d3dHeapPropertiesDesc);
+    d3dHeapPropertiesDesc.Type = d3dHeapType;
+    d3dHeapPropertiesDesc.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+    d3dHeapPropertiesDesc.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+    d3dHeapPropertiesDesc.CreationNodeMask = 1;
+    d3dHeapPropertiesDesc.VisibleNodeMask = 1;
+
+    D3D12_RESOURCE_DESC d3dResourceDesc;
+    ZeroDesc(d3dResourceDesc);
+    d3dResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_TEXTURE2D;
+    d3dResourceDesc.Alignment = 0;
+    d3dResourceDesc.Width = width;
+    d3dResourceDesc.Height = height;
+    d3dResourceDesc.DepthOrArraySize = 1;
+    d3dResourceDesc.MipLevels = 1;
+    d3dResourceDesc.Format = format;
+    d3dResourceDesc.SampleDesc.Count = 1;
+    d3dResourceDesc.SampleDesc.Quality = 0;
+    d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_UNKNOWN;
+    //d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+    d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE | D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;;
+
+    D3D12_RESOURCE_STATES d3dResourceInitialStates = d3dResourceStates;
+
+    HRESULT hResult = pd3dDevice->CreateCommittedResource(
+        &d3dHeapPropertiesDesc, D3D12_HEAP_FLAG_NONE, &d3dResourceDesc,
+        d3dResourceInitialStates, nullptr, IID_PPV_ARGS(&pd3dBuffer)
+    );
+    ThrowIfFailed(hResult);
+    return pd3dBuffer;
+}
+
 ID3D12Resource* KG::Renderer::CreateUploadHeapBuffer(ID3D12Device* device, size_t bufferSize)
 {
 	ID3D12Resource* pd3dBuffer = nullptr;
@@ -297,5 +343,6 @@ ID3D12Resource* KG::Renderer::CreateUploadHeapBuffer(ID3D12Device* device, size_
 		&d3dHeapPropertiesDesc, D3D12_HEAP_FLAG_NONE, &d3dResourceDesc,
 		D3D12_RESOURCE_STATE_GENERIC_READ, nullptr, IID_PPV_ARGS(&pd3dBuffer)
 	);
+    ThrowIfFailed(hResult);
 	return pd3dBuffer;
 }

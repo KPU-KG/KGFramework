@@ -28,6 +28,7 @@ SkyBoxOut VertexShaderFunction(VertexData input, uint InstanceID : SV_InstanceID
 float4 PixelShaderFunction(SkyBoxOut input) : SV_Target0
 {
     MaterialData mat = materialData[0];
-    return shaderTextureCube[mat.SkyBoxTextureIndex].Sample(gsamAnisotoropicWrap, normalize(input.PosL));
+    float3 color = shaderTextureCube[mat.SkyBoxTextureIndex].Sample(gsamAnisotoropicWrap, normalize(input.PosL)).xyz;
+    return float4(GammaToLinear(color), 1.0f);
 }
 

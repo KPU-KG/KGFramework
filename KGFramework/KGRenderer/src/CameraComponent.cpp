@@ -175,9 +175,15 @@ DirectX::XMFLOAT4X4 KG::Component::CameraComponent::GetViewProj()
 DirectX::BoundingFrustum KG::Component::CameraComponent::GetFrustum()
 {
 	DirectX::BoundingFrustum bf;
-	auto proj = this->GetProj();
+    auto newFarZ = Math::Clamp(this->farZ, this->nearZ, 300.0f);
+    auto proj = DirectX::XMMatrixPerspectiveFovLH(
+        DirectX::XMConvertToRadians(this->fovY),
+        this->aspectRatio,
+        this->nearZ,
+        newFarZ
+    );
 	auto view = this->GetView();
-	DirectX::BoundingFrustum::CreateFromMatrix(bf, XMMatrixTranspose(XMLoadFloat4x4(&proj)));
+	DirectX::BoundingFrustum::CreateFromMatrix(bf, proj);
 	XMMATRIX inverseView = XMMatrixInverse(nullptr, XMMatrixTranspose(XMLoadFloat4x4(&view)));
 	bf.Transform(bf, inverseView);
 	return bf;
@@ -205,18 +211,19 @@ void KG::Component::CameraComponent::SetMainCamera()
 void KG::Component::CameraComponent::SetCameraRender(ID3D12GraphicsCommandList* commandList)
 {
 	std::memcpy(this->mappedCameraData, this->cameraData, sizeof(CameraData));
-	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::RootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::GraphicRootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
 
 	commandList->RSSetViewports(1, &this->viewport);
 	commandList->RSSetScissorRects(1, &this->scissorRect);
 
-	TryResourceBarrier(commandList,
-		this->renderTexture->BarrierTransition(
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_DEPTH_WRITE
-		)
-	);
+
+    this->renderTexture->BarrierTransition(
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_DEPTH_WRITE
+    );
+    KG::Resource::DXResource::ApplyBarrierQueue(commandList);
+
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	if ( this->renderTexture->desc.useRenderTarget )
 	{
@@ -226,13 +233,12 @@ void KG::Component::CameraComponent::SetCameraRender(ID3D12GraphicsCommandList* 
 
 void KG::Component::CameraComponent::EndCameraRender(ID3D12GraphicsCommandList* commandList)
 {
-	TryResourceBarrier(commandList,
-		this->renderTexture->BarrierTransition(
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COMMON
-		)
-	);
+    this->renderTexture->BarrierTransition(
+        D3D12_RESOURCE_STATE_COMMON,
+        D3D12_RESOURCE_STATE_COMMON,
+        D3D12_RESOURCE_STATE_COMMON
+    );
+    KG::Resource::DXResource::ApplyBarrierQueue(commandList);
 }
 
 void KG::Component::CameraComponent::SetRenderTexture(KG::Renderer::RenderTexture* renderTexture, int index)
@@ -479,18 +485,17 @@ void KG::Component::GSCubeCameraComponent::OnPreRender()
 void KG::Component::GSCubeCameraComponent::SetCameraRender(ID3D12GraphicsCommandList* commandList)
 {
 	std::memcpy(this->mappedCameraData, this->cameraData, sizeof(GSCubeCameraData));
-	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::RootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::GraphicRootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
 
 	commandList->RSSetViewports(1, &this->viewport);
 	commandList->RSSetScissorRects(1, &this->scissorRect);
 
-	TryResourceBarrier(commandList,
-		this->renderTexture->BarrierTransition(
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_DEPTH_WRITE
-		)
-	);
+    this->renderTexture->BarrierTransition(
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_DEPTH_WRITE
+    );
+    ApplyBarrierQueue(commandList);
 
 	float clearColor[4] = { 0.0f, 0.0f, 0.0f, 0.0f };
 	if ( this->renderTexture->desc.useRenderTarget )
@@ -504,13 +509,12 @@ void KG::Component::GSCubeCameraComponent::SetCameraRender(ID3D12GraphicsCommand
 
 void KG::Component::GSCubeCameraComponent::EndCameraRender(ID3D12GraphicsCommandList* commandList)
 {
-	TryResourceBarrier(commandList,
-		this->renderTexture->BarrierTransition(
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COMMON
-		)
-	);
+    this->renderTexture->BarrierTransition(
+        D3D12_RESOURCE_STATE_COMMON,
+        D3D12_RESOURCE_STATE_COMMON,
+        D3D12_RESOURCE_STATE_COMMON
+    );
+    ApplyBarrierQueue(commandList);
 }
 
 void KG::Component::GSCubeCameraComponent::InitializeRenderTexture()
@@ -602,7 +606,7 @@ KG::Component::GSCascadeCameraComponent::GSCascadeCameraComponent()
 void KG::Component::GSCascadeCameraComponent::RefreshCameraData()
 {
 	this->RefreshCascadeViewProj();
-	this->RefreshNormalViewProj();
+	//this->RefreshNormalViewProj();
 }
 
 void KG::Component::GSCascadeCameraComponent::SetDefaultRender()
@@ -662,18 +666,17 @@ void KG::Component::GSCascadeCameraComponent::SetCameraRender(ID3D12GraphicsComm
 {
 	std::memcpy(this->mappedCameraData, this->cameraData, sizeof(GSCascadeCameraData));
 	auto worldPos = this->mainCamera->GetGameObject()->GetTransform()->GetWorldPosition();
-	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::RootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
+	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::GraphicRootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
 
 	commandList->RSSetViewports(1, &this->viewport);
 	commandList->RSSetScissorRects(1, &this->scissorRect);
 
-	TryResourceBarrier(commandList,
-		this->renderTexture->BarrierTransition(
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_RENDER_TARGET,
-			D3D12_RESOURCE_STATE_DEPTH_WRITE
-		)
-	);
+    this->renderTexture->BarrierTransition(
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_RENDER_TARGET,
+        D3D12_RESOURCE_STATE_DEPTH_WRITE
+    );
+    ApplyBarrierQueue(commandList);
 
 	if ( this->renderTexture->desc.useRenderTarget )
 	{
@@ -687,13 +690,12 @@ void KG::Component::GSCascadeCameraComponent::SetCameraRender(ID3D12GraphicsComm
 
 void KG::Component::GSCascadeCameraComponent::EndCameraRender(ID3D12GraphicsCommandList* commandList)
 {
-	TryResourceBarrier(commandList,
-		this->renderTexture->BarrierTransition(
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COMMON,
-			D3D12_RESOURCE_STATE_COMMON
-		)
-	);
+    this->renderTexture->BarrierTransition(
+        D3D12_RESOURCE_STATE_COMMON,
+        D3D12_RESOURCE_STATE_COMMON,
+        D3D12_RESOURCE_STATE_COMMON
+    );
+    ApplyBarrierQueue(commandList);
 }
 
 void KG::Component::GSCascadeCameraComponent::InitalizeCascade(KG::Component::ICameraComponent* directionalLightCamera, KG::Component::ILightComponent* light)
@@ -727,8 +729,6 @@ void KG::Component::GSCascadeCameraComponent::RefreshNormalViewProj()
 
 void KG::Component::GSCascadeCameraComponent::RefreshCascadeViewProj()
 {
-	static constexpr float cascadePoint[] = { 0.0f, 0.035f, 0.3f, 1.0f };
-
 	using namespace Math::Literal;
 
 	auto frustum = mainCamera->GetFrustum();
@@ -736,7 +736,7 @@ void KG::Component::GSCascadeCameraComponent::RefreshCascadeViewProj()
 	XMFLOAT3 viewCorner[8] = {};
 	frustum.GetCorners(corner);
 	XMFLOAT3 lightDirection = directionalLight->GetDirectionalLightRef().Direction;
-	for ( size_t cascade = 0; cascade < 3; cascade++ )
+	for ( size_t cascade = 0; cascade < 4; cascade++ )
 	{
 		std::array<XMFLOAT3, 8> currentCorner;
 
@@ -746,6 +746,7 @@ void KG::Component::GSCascadeCameraComponent::RefreshCascadeViewProj()
 			currentCorner[c + 4] = Math::Lerp(corner[c], corner[c + 4], cascadePoint[cascade + 1]);
 		}
 
+
 		XMFLOAT3 center = {};
 		for ( auto& i : currentCorner )
 		{
@@ -753,44 +754,30 @@ void KG::Component::GSCascadeCameraComponent::RefreshCascadeViewProj()
 		}
 		center = center * (1.0f / 8.0f);
 
-		float radius = 0.0f;
-		for ( size_t i = 0; i < 8; i++ )
-		{
-			float dist = Math::Vector3::Length(currentCorner[i] - center);
-			radius = std::max(radius, dist);
-		}
-		auto eyePos = XMVectorSubtract(XMLoadFloat3(&center), XMVectorScale(XMLoadFloat3(&lightDirection), radius));
-		auto view = DirectX::XMMatrixLookToLH(
-			eyePos,
-			XMLoadFloat3(&lightDirection),
-			XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f)
-		);
-		float maxX = 0.0f;
-		float maxY = 0.0f;
-		float maxZ = 0.0f;
-		float minX = 100000.0f;
-		float minY = 100000.0f;
-		float minZ = 100000.0f;
+        float radius = 0.0f;
+        for (size_t i = 0; i < 8; i++)
+        {
+            float dist = Math::Vector3::Length(currentCorner[i] - center);
+            radius = std::max(radius, dist);
+        }
 
-		for ( size_t i = 0; i < 8; i++ )
-		{
-			auto pos = XMLoadFloat3(&currentCorner[i]);
-			auto viewPos = XMVector3TransformCoord(pos, view);
-			maxX = std::max(maxX, XMVectorGetX(viewPos));
-			maxY = std::max(maxY, XMVectorGetY(viewPos));
-			maxZ = std::max(maxZ, XMVectorGetZ(viewPos));
-			minX = std::min(minX, XMVectorGetX(viewPos));
-			minY = std::min(minY, XMVectorGetY(viewPos));
-			minZ = std::min(minZ, XMVectorGetZ(viewPos));
-		}
+        radius = std::ceil(radius * 16.0f) / 16.0f;
+        auto dir = XMVector3Normalize(XMLoadFloat3(&lightDirection));
+        //center = XMFLOAT3(500, 500, 0);
+        auto eyePos = XMVectorSubtract(XMLoadFloat3(&center), XMVectorScale(dir, fabs(radius)));
+        auto view = DirectX::XMMatrixLookToLH(
+            eyePos,
+            dir,
+            XMVectorSet(0.0f, 1.0f, 0.0f, 1.0f)
+        );
+        auto proj = DirectX::XMMatrixOrthographicLH( radius * 2, radius * 2, 0.1f, radius * 2 );
+        //auto proj = DirectX::XMMatrixPerspectiveLH(radius, radius, 0.01f, radius * 2);
+        //auto proj = DirectX::XMMatrixPerspectiveFovLH(3.141592f * 0.5f, 1.0f, 0.01f, radius * 2);
+        XMStoreFloat4(&this->cameraData->cameraWorldPosition[cascade], eyePos);
+        XMStoreFloat4x4(&this->cameraData->view[cascade], XMMatrixTranspose(view));
+        XMStoreFloat4x4(&this->cameraData->projection[cascade], XMMatrixTranspose(proj));
+    }
 
-
-		//auto proj = DirectX::XMMatrixOrthographicLH( radius, radius, 0.01f, radius * 2 );
-		auto proj = DirectX::XMMatrixOrthographicOffCenterLH(minX, maxX, minY, maxY, 0.01f, radius * 1.5);
-		XMStoreFloat4(&this->cameraData->cameraWorldPosition[cascade + 1], eyePos);
-		XMStoreFloat4x4(&this->cameraData->view[cascade + 1], XMMatrixTranspose(view));
-		XMStoreFloat4x4(&this->cameraData->projection[cascade + 1], XMMatrixTranspose(proj));
-	}
 }
 
 void KG::Component::GSCascadeCameraComponent::InitializeRenderTexture()

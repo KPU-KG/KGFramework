@@ -22,6 +22,7 @@ namespace KG::Renderer
         KG::System::FakeAnimationControllerSystem animationControllerSystem;
         KG::System::FakeShadowCasterSystem shadowSystem;
         KG::System::FakeParticleEmitterSystem particleSystem;
+        KG::System::FakePostProcessorSystem postProcessSystem;
 
         void OnPreRender()
         {
@@ -37,6 +38,7 @@ namespace KG::Renderer
             this->avatarSystem.OnPreRender();
             this->animationControllerSystem.OnPreRender();
             this->particleSystem.OnPreRender();
+            this->postProcessSystem.OnPreRender();
         }
 
         void OnUpdate(float elapsedTime)
@@ -53,6 +55,7 @@ namespace KG::Renderer
             this->animationControllerSystem.OnUpdate(elapsedTime);
             this->shadowSystem.OnUpdate(elapsedTime);
             this->particleSystem.OnUpdate(elapsedTime);
+            this->postProcessSystem.OnUpdate(elapsedTime);
         }
         void OnPostUpdate(float elapsedTime)
         {
@@ -68,6 +71,7 @@ namespace KG::Renderer
             this->animationControllerSystem.OnPostUpdate(elapsedTime);
             this->shadowSystem.OnPostUpdate(elapsedTime);
             this->particleSystem.OnPostUpdate(elapsedTime);
+            this->postProcessSystem.OnPostUpdate(elapsedTime);
         }
 
         void PostComponentProvider(KG::Component::ComponentProvider& provider)
@@ -84,6 +88,7 @@ namespace KG::Renderer
             this->animationControllerSystem.OnPostProvider(provider);
             this->shadowSystem.OnPostProvider(provider);
             this->particleSystem.OnPostProvider(provider);
+            this->postProcessSystem.OnPostProvider(provider);
         }
 
         void Clear()
@@ -100,6 +105,7 @@ namespace KG::Renderer
             this->animationControllerSystem.Clear();
             this->shadowSystem.Clear();
             this->particleSystem.Clear();
+            this->postProcessSystem.Clear();
         }
     };
 
@@ -126,6 +132,7 @@ namespace KG::Renderer
         virtual UINT QueryMaterialIndex(const KG::Utill::HashString& materialId) const override;
         virtual double GetGameTime() const override;
         virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
+
         virtual KG::Component::IRender3DComponent* GetNewRenderComponent() override;
         virtual KG::Component::IRender2DComponent* GetNewRender2DComponent() override;
         virtual KG::Component::IRenderSpriteComponent* GetNewRenderSpriteComponent() override;
@@ -138,7 +145,9 @@ namespace KG::Renderer
         virtual KG::Component::IShadowCasterComponent* GetNewShadowCasterComponent() override;
         virtual KG::Component::IAnimationControllerComponent* GetNewAnimationControllerComponent() override;
         virtual KG::Component::IParticleEmitterComponent* GetNewParticleEmitterComponent() override;
+        virtual KG::Component::IPostProcessManagerComponent* GetNewPostProcessorComponent() override;
         virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials) override;
         virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials) override;
+
     };
 }

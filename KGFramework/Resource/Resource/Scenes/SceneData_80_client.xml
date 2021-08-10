@@ -65,7 +65,7 @@
                     <useRenderTarget value="true"/>
                     <useDeferredRender value="true"/>
                     <useDepthStencilBuffer value="true"/>
-                    <uploadSRVRenderTarget value="false"/>
+                    <uploadSRVRenderTarget value="true"/>
                     <uploadSRVDepthBuffer value="false"/>
                     <renderTargetTextureId hash_id="0" srcString=""/>
                     <depthBufferTextureId hash_id="0" srcString=""/>

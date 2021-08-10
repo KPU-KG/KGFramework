@@ -49,4 +49,14 @@ float2 ProjPositionToUV(float2 projPosition)
     return projPosition;
 }
 
+float2 UVToProjPosition(float2 projPosition)
+{
+    projPosition.x -= 1.0f;
+    projPosition.y -= 1.0f;
+    projPosition.x /= 0.5f;
+    projPosition.y /= 0.5f;
+    projPosition.y = 1 - projPosition.y;
+    return projPosition;
+}
+
 #endif

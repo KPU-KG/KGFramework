@@ -194,6 +194,7 @@
     <ClCompile Include="src\FakeLightComponent.cpp" />
     <ClCompile Include="src\FakeMaterialComponent.cpp" />
     <ClCompile Include="src\FakeParticleEmitterComponent.cpp" />
+    <ClCompile Include="src\FakePostProcessComponent.cpp" />
     <ClCompile Include="src\FakeRender2DComponent.cpp" />
     <ClCompile Include="src\FakeRender3DComponent.cpp" />
     <ClCompile Include="src\FakeResourceContainer.cpp" />
@@ -202,6 +203,7 @@
     <ClCompile Include="src\GeometryComponent.cpp" />
     <ClCompile Include="src\GraphicSystem.cpp" />
     <ClCompile Include="src\IParticleEmitterComponent.cpp" />
+    <ClCompile Include="src\KGDX12Resource.cpp" />
     <ClCompile Include="src\KGDXRenderer.cpp" />
     <ClCompile Include="src\KGFakeRenderer.cpp" />
     <ClCompile Include="src\KGGeometry.cpp" />
@@ -220,6 +222,8 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\PostProcess.cpp" />
+    <ClCompile Include="src\PostProcessComponent.cpp" />
     <ClCompile Include="src\Render2DComponent.cpp" />
     <ClCompile Include="src\Render3DComponent.cpp" />
     <ClCompile Include="src\RenderTexture.cpp" />
@@ -228,6 +232,7 @@
     <ClCompile Include="src\Texture.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="export\FakePostProcessComponent.h" />
     <ClInclude Include="export\IAnimationComponent.h" />
     <ClInclude Include="export\ICameraComponent.h" />
     <ClInclude Include="export\IGeometryComponent.h" />
@@ -235,6 +240,7 @@
     <ClInclude Include="export\ILightComponent.h" />
     <ClInclude Include="export\IMaterialComponent.h" />
     <ClInclude Include="export\IParticleEmitterComponent.h" />
+    <ClInclude Include="export\IPostProcessComponent.h" />
     <ClInclude Include="export\IRender2DComponent.h" />
     <ClInclude Include="export\IRender3DComponent.h" />
     <ClInclude Include="export\IRenderComponent.h" />
@@ -258,6 +264,7 @@
     <ClInclude Include="include\GraphicSystem.h" />
     <ClInclude Include="include\IDXRenderComponent.h" />
     <ClInclude Include="include\IndexAllocator.h" />
+    <ClInclude Include="include\KGDX12Resource.h" />
     <ClInclude Include="include\KGDXRenderer.h" />
     <ClInclude Include="include\KGGeometry.h" />
     <ClInclude Include="include\KGGraphicBuffer.h" />
@@ -269,6 +276,8 @@
     <ClInclude Include="include\MaterialComponent.h" />
     <ClInclude Include="include\ParticleEmitterComponent.h" />
     <ClInclude Include="include\ParticleGenerator.h" />
+    <ClInclude Include="include\PostProcess.h" />
+    <ClInclude Include="include\PostProcessComponent.h" />
     <ClInclude Include="include\Render2DComponent.h" />
     <ClInclude Include="include\Render3DComponent.h" />
     <ClInclude Include="include\RenderTexture.h" />

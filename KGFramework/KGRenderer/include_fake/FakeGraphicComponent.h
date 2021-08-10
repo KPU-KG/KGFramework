@@ -15,5 +15,6 @@
 #include "FakeAnimationComponent.h"
 #include "FakeShadowCasterComponent.h"
 #include "FakeParticleEmitterComponent.h"
+#include "FakePostProcessComponent.h"
 
 // 컴포넌트 모으는 헤더파일입니다.

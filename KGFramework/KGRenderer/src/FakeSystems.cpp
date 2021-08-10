@@ -96,3 +96,11 @@ void KG::System::FakeRenderSpriteSystem::OnPreRender()
         i.OnPreRender();
     }
 }
+
+void KG::System::FakePostProcessorSystem::OnPreRender()
+{
+    for (auto& i : this->pool)
+    {
+        i.OnPreRender();
+    }
+}
