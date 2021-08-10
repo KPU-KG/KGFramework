@@ -528,7 +528,7 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 
 	if (enemyGenerator != nullptr) {
 		if (enemyGenerator->IsGeneratable() && this->server->isPlay) {
-			if (enemyGenerator->GetScore() < 10) {
+			if (enemyGenerator->GetScore() < 3) {
 				enemyGenerator->Initialize();
 				enemyGenerator->GenerateEnemy();
 				for (auto& p : playerObjects) {
@@ -546,8 +546,13 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 					p.second->playerInfoLock.unlock();
 				}
 			}
-			else {
-				SendEndPacket();
+			else { // 보스 잡으면 종료 패킷 보내기 -> 시간유예? 일단 5초
+				if (endtimer > 3.f) {
+					SendEndPacket();
+				}
+				else {
+					endtimer += elapsedTime;
+				}
 			}
 		}
 		if (enemyGenerator->isAttackable) {

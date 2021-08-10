@@ -105,6 +105,7 @@ namespace KG::Component
 	public:
 		void SendEndPacket();
 		float updatetimer = 0;
+		float endtimer = 0;
 		concurrency::concurrent_unordered_map<KG::Server::NET_OBJECT_ID, KG::Component::SPlayerComponent*> playerObjects;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
