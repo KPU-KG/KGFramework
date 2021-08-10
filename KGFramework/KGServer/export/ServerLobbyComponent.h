@@ -22,6 +22,7 @@ namespace KG::Component
 	private:
 		// 플레이어 접속 상태
 		PlayerInfo playerinfo[PLAYERNUM];
+		int mapnum = 0;
 		// *
 		// 연결 끊어졌을 때 Empty로 변경
 		

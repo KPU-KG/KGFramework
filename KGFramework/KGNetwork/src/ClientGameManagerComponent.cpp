@@ -82,6 +82,11 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 			//}
 		}
 		return true;
+		case KG::Packet::PacketType::SC_GAME_END:
+		{
+			// 게임 종료 패킷 수신 -> 씬초기화 + 로비 재접속?
+		}
+		return true;
 	/*	클라
 		------
 		플레이어 정보 받고 플레이어 + 팀 정보로 처리

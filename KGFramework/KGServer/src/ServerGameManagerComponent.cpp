@@ -132,7 +132,11 @@ void KG::Component::EnemyGeneratorComponent::Update(float elapsedTime)
 				enemies.erase(enemies.begin() + i);
 				destroyFlag = false;
 				// 적 종류에 따라 점수 증가
-				score += 1;
+				if (generateBoss)
+					score += 100;
+				else {
+					score += 1;
+				}
 				break;
 			}
 		}
@@ -320,6 +324,12 @@ void KG::Component::EnemyGeneratorComponent::SendAttackPacket(SGameManagerCompon
 	this->isAttackable = false;
 }
 
+void KG::Component::SGameManagerComponent::SendEndPacket()
+{
+	KG::Packet::SC_GAME_END Packet;
+	this->BroadcastPacket(&Packet);
+}
+
 void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 {
 	if (this->region.size() == 0)
@@ -433,6 +443,8 @@ void KG::Component::EnemyGeneratorComponent::GenerateBoss()
 	if (!this->generateEnemy)
 		return;
 
+	this->generateBoss = true;
+
 	auto t = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("BossBarrier"));
 
 	if (t) {
@@ -505,9 +517,6 @@ void KG::Component::SGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 {
 	this->UpdatePlayerSession();
-	//auto l = this->server->FindNetObject(KG::Server::LOBBY_ID);
-	//KG::Component::SLobbyComponent* lobby = (KG::Component::SLobbyComponent*)l;
-
 
 	if (enemyGenerator == nullptr) {
 		enemyGenerator = this->gameObject->GetComponent<EnemyGeneratorComponent>();
@@ -528,7 +537,7 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 					p.second->playerInfoLock.unlock();
 				}
 			}
-			else {
+			else if (enemyGenerator->GetScore() < 100) {
 				enemyGenerator->Initialize();
 				enemyGenerator->GenerateBoss();
 				for (auto& p : playerObjects) {
@@ -536,6 +545,9 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 					enemyGenerator->RegisterPlayerToEnemy(p.first);
 					p.second->playerInfoLock.unlock();
 				}
+			}
+			else {
+				SendEndPacket();
 			}
 		}
 		if (enemyGenerator->isAttackable) {

@@ -44,11 +44,13 @@ namespace KG::Packet
 		SC_LOBBY_FULL,
 		SC_LOBBY_DATA,
 		SC_GAME_START,
+		SC_GAME_END,
 		CS_REQ_LOGIN, 
 		CS_INPUT, // 사용
 		CS_FIRE,
 		CS_RELOAD,
-		CS_LOBBY_CHANGE
+		CS_LOBBY_CHANGE,
+		CS_SELECT_MAP
 	};
 
 	
@@ -266,6 +268,11 @@ namespace KG::Packet
 		DEFAULT_PACKET_HEADER(SC_GAME_START);
 	};
 
+	struct SC_GAME_END
+	{
+		DEFAULT_PACKET_HEADER(SC_GAME_END);
+	};
+
 	struct CS_REQ_LOGIN
 	{
 		DEFAULT_PACKET_HEADER(CS_REQ_LOGIN);
@@ -302,6 +309,14 @@ namespace KG::Packet
 		char id; // 플레이어 번호
 		char state; // 변경 상태
 	};
+
+	struct CS_SELECT_MAP
+	{
+		DEFAULT_PACKET_HEADER(CS_SELECT_MAP);
+		int mapnum; // 맵 번호
+	};
+
+	
 
 #pragma pack(pop)
 

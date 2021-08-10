@@ -103,6 +103,7 @@ namespace KG::Component
 		void RegisterPlayersToEnemy();
 		void UpdatePlayerSession();
 	public:
+		void SendEndPacket();
 		float updatetimer = 0;
 		concurrency::concurrent_unordered_map<KG::Server::NET_OBJECT_ID, KG::Component::SPlayerComponent*> playerObjects;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
