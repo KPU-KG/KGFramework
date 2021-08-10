@@ -11,11 +11,11 @@ KG::Component::Render2DComponent::Render2DComponent()
     :
     positionProp("Position", transform2D.position),
     sizeProp("Size", transform2D.size),
-    rotationAngleProp("Rotation Angle", transform2D.rotationAngle),
+    rotationAngleProp("RotationAngle", transform2D.rotationAngle),
     depthProp("Depth", transform2D.depth),
-    materialIdProp("Material ID", material2D.materialId),
-    leftTopUVProp("LeftTop UV", material2D.leftTopUV),
-    rightBottomUVProp("RightBottom UV", material2D.rightBottomUV),
+    materialIdProp("MaterialID", material2D.materialId),
+    leftTopUVProp("LeftTopUV", material2D.leftTopUV),
+    rightBottomUVProp("RightBottomUV", material2D.rightBottomUV),
     colorProp("Color", material2D.color),
     parentPivotProp("ParentPivot", this->transform2D.parentPivot,
         {
@@ -42,7 +42,7 @@ KG::Component::Render2DComponent::Render2DComponent()
             { RectPivot::RIGHT_BOTTOM, "RIGHT_BOTTOM" }
         }),
     progressShapeProp(
-        "Progress Shape", this->progress.shape,
+        "ProgressShape", this->progress.shape,
         {
             {ProgressShape::RIGHT_LEFT, "RIGHT_LEFT"},
             {ProgressShape::TOP_BOTTOM, "TOP_BOTTOM"},
@@ -50,7 +50,7 @@ KG::Component::Render2DComponent::Render2DComponent()
             {ProgressShape::CIRCLE_CLOCK, "CIRCLE_CLOCK"},
             {ProgressShape::CIRCLE_RCLOCK, "CIRCLE_RCLOCK"}
         }),
-    progressValueProp("Progress Value", this->progress.value)
+    progressValueProp("ProgressValue", this->progress.value)
 {
 }
 
@@ -104,10 +104,44 @@ void KG::Component::Render2DComponent::ReloadRender()
 
 void KG::Component::Render2DComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
 {
+    positionProp.OnDataLoad(componentElement);
+    sizeProp.OnDataLoad(componentElement);
+    rotationAngleProp.OnDataLoad(componentElement);
+    depthProp.OnDataLoad(componentElement);
+    parentPivotProp.OnDataLoad(componentElement);
+    localPivotProp.OnDataLoad(componentElement);
+
+    //Material2D
+    materialIdProp.OnDataLoad(componentElement);
+    leftTopUVProp.OnDataLoad(componentElement);
+    rightBottomUVProp.OnDataLoad(componentElement);
+    colorProp.OnDataLoad(componentElement);
+
+    //Progress
+    progressShapeProp.OnDataLoad(componentElement);
+    progressValueProp.OnDataLoad(componentElement);
 }
 
 void KG::Component::Render2DComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
 {
+    auto* componentElement = parentElement->InsertNewChildElement("Component");
+    ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::Render2DComponent);
+    positionProp.OnDataSave(componentElement);
+    sizeProp.OnDataSave(componentElement);
+    rotationAngleProp.OnDataSave(componentElement);
+    depthProp.OnDataSave(componentElement);
+    parentPivotProp.OnDataSave(componentElement);
+    localPivotProp.OnDataSave(componentElement);
+
+    //Material2D
+    materialIdProp.OnDataSave(componentElement);
+    leftTopUVProp.OnDataSave(componentElement);
+    rightBottomUVProp.OnDataSave(componentElement);
+    colorProp.OnDataSave(componentElement);
+
+    //Progress
+    progressShapeProp.OnDataSave(componentElement);
+    progressValueProp.OnDataSave(componentElement);
 }
 
 bool KG::Component::Render2DComponent::OnDrawGUI()

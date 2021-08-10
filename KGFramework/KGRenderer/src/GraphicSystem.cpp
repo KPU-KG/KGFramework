@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "GraphicSystem.h"
+#include <queue>
 
 void KG::System::Render2DSystem::OnUpdate(float elapsedTime)
 {
@@ -9,11 +10,25 @@ void KG::System::Render2DSystem::OnPostUpdate(float elapsedTime)
 {
 }
 
+class Render2DComp {
+public:
+    bool operator()(KG::Component::Render2DComponent* a, KG::Component::Render2DComponent* b) const {
+        return a->transform2D.depth < b->transform2D.depth;
+    }
+};
+
+
 void KG::System::Render2DSystem::OnPreRender()
 {
+    static std::priority_queue<KG::Component::Render2DComponent*, std::vector<KG::Component::Render2DComponent*>, Render2DComp> queue;
     for ( auto& com : this->pool )
     {
-        com.OnPreRender();
+        queue.push(&com);
+    }
+    while (!queue.empty())
+    {
+        queue.top()->OnPreRender();
+        queue.pop();
     }
 }
 
