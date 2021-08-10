@@ -65,6 +65,21 @@ void KG::Component::SEnemyCrawlerComponent::Update(float elapsedTime)
 	}
 	else {
 		stateManager->Execute(elapsedTime);
+		for (auto e = this->areaEvent.begin(); e != this->areaEvent.end();) {
+			if (e->area == nullptr) {
+				e = this->areaEvent.erase(e);
+				continue;
+			}
+			e->timer -= elapsedTime;
+			
+			if (e->timer <= 0) {
+				e->area->GetGameObject()->Destroy();
+				e = this->areaEvent.erase(e);
+				continue;
+			}
+
+			e++;
+		}
 	}
 	sendTimer += elapsedTime;
 	if (sendTimer >= sendInterval) {
@@ -165,7 +180,7 @@ bool KG::Component::SEnemyCrawlerComponent::SetAttackArea()
 		return true;
 
 	shootAreaCenter = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-	shootAreaCenter.y = 0.5;
+	shootAreaCenter.y = 0.1;
 	std::uniform_real_distribution<float> shootAreaRange(-areaWidth, areaWidth);
 
 	while (!shootArea.empty())
@@ -176,9 +191,6 @@ bool KG::Component::SEnemyCrawlerComponent::SetAttackArea()
 		float z = shootAreaRange(crawlerGen) + shootAreaCenter.z;
 		shootArea.push(std::make_pair(x, z));
 	}
-
-	// Area »ý¼º
-
 	return true;
 }
 
@@ -276,22 +288,20 @@ void KG::Component::SEnemyCrawlerComponent::Attack(SGameManagerComponent* gameMa
 		}
 		else {
 			isFilledArea = false;
-			if (area)
-				area->GetGameObject()->Destroy();
+			if (area) {
+				AreaEvent e;
+				e.area = this->area;
+				e.timer = 2.6f;
+				this->areaEvent.emplace_back(e);
+			}
 			area = nullptr;
 		}
 
 		auto presetName = "CrawlerMissile";
-		// auto presetName = "Missile";
 		auto presetId = KG::Utill::HashString(presetName);
 
 		auto* scene = this->gameObject->GetScene();
 		auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
-
-		// auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-		// targetPos.y += 1;
-		// auto origin = this->transform->GetWorldPosition();
-		// origin.y += 10;
 
 		auto pos = this->transform->GetWorldPosition();
 		pos.y += 3;
@@ -310,10 +320,6 @@ void KG::Component::SEnemyCrawlerComponent::Attack(SGameManagerComponent* gameMa
 
 		auto missile = comp->GetGameObject()->GetComponent<SCrawlerMissileComponent>();
 		missile->Initialize(pos, shootTarget);
-
-		// auto missile = comp->GetGameObject()->GetComponent<SProjectileComponent>();
-		// missile->Initialize(origin, direction, 20, 1);
-		// missile->SetTargetPosition(shootTarget);
 
 		this->server->SetServerObject(id, missile);
 		gameManager->BroadcastPacket(&addObjectPacket);

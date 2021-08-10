@@ -37,10 +37,6 @@ namespace KG::Component
 		virtual void EndAction() override final;
 	};
 
-
-	// action[SHOOT_ACTION_SET_AREA] = new CrawlerSetAreaAction(enemyComp);
-	// action[SHOOT_ACTION_ATTACK] = new CrawlerShootAction(enemyComp);
-
 	//////////////////////////////////////////////////////////////////////////////
 	// Enemy States
 	//////////////////////////////////////////////////////////////////////////////
@@ -114,6 +110,11 @@ namespace KG::Component
 
 	class SCubeAreaRedComponent;
 
+	struct AreaEvent {
+		SCubeAreaRedComponent* area = nullptr;
+		float timer = 2.6;
+	};
+
 	class DLL SEnemyCrawlerComponent : public SEnemyUnitComponent
 	{
 	protected:
@@ -129,6 +130,8 @@ namespace KG::Component
 		float										attackTimer = 0;
 
 		SCubeAreaRedComponent*		area;
+		std::vector<AreaEvent>		areaEvent;
+
 
 		CrawlerStateManager* stateManager;
 		bool inShootAction = false;
