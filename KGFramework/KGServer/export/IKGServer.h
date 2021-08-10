@@ -20,6 +20,7 @@ namespace KG::Component
 	class EnemyGeneratorComponent;
 	class SProjectileComponent;
 	class SBaseComponent;
+	class SLobbyComponent;
 };
 
 namespace KG::Physics {
@@ -47,6 +48,7 @@ namespace KG::Server
 		virtual KG::Component::SEnemyCrawlerComponent* GetNewEnemyCrawlerComponent() = 0;
 		virtual KG::Component::EnemyGeneratorComponent* GetNewEnemyGeneratorComponent() = 0;
 		virtual KG::Component::SProjectileComponent* GetNewProjectileComponent() = 0;
+		virtual KG::Component::SLobbyComponent* GetNewLobbyComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 		virtual void DrawImGUI() = 0;
 		virtual bool isStarted() const = 0;

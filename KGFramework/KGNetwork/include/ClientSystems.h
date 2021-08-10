@@ -6,6 +6,7 @@
 #include "ClientCharacterComponent.h"
 #include "ClientEnemyControllerComponent.h"
 #include "ClientPlayerControllerComponent.h"
+#include "ClientLobbyComponent.h"
 #include "ClientProjectileComponent.h"
 
 namespace KG::System
@@ -130,6 +131,29 @@ namespace KG::System
 		}
 
 		// IComponentSystem을(를) 통해 상속됨
+		virtual void OnPostUpdate(float elapsedTime) override;
+		virtual void OnPreRender() override;
+	};
+
+	class CLobbyComponentSystem : public KG::System::IComponentSystem<CLobbyComponent>
+	{
+		KG::Server::Network* network = nullptr;
+		virtual void OnGetNewComponent(CLobbyComponent* comp)
+		{
+			comp->SetNetworkInstance(network);
+		}
+	public:
+		void SetNetworkInstance(KG::Server::Network* network)
+		{
+			this->network = network;
+		}
+		virtual void OnUpdate(float elapsedTime) override
+		{
+			for (auto& com : *this)
+			{
+				com.Update(elapsedTime);
+			}
+		}
 		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;
 	};

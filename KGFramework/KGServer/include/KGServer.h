@@ -94,6 +94,7 @@ namespace KG::Server
 		virtual KG::Component::SEnemyCrawlerComponent* GetNewEnemyCrawlerComponent() override;
 		virtual KG::Component::EnemyGeneratorComponent* GetNewEnemyGeneratorComponent() override;
 		virtual KG::Component::SProjectileComponent* GetNewProjectileComponent() override;
+		virtual KG::Component::SLobbyComponent* GetNewLobbyComponent() override;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 		virtual void DrawImGUI() override;
 		virtual bool isStarted() const override;

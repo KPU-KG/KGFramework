@@ -195,6 +195,7 @@ KG::Component::CProjectileComponent* KG::Server::Network::GetNewProjectileCompon
 
 void KG::Server::Network::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
+	this->cLobbySystem.OnPostProvider(provider);
 	this->cGameManagerSystem.OnPostProvider(provider);
 	this->cEnemyControllerSystem.OnPostProvider(provider);
 	// this->cProjectileSystem.OnPostProvider(provider);

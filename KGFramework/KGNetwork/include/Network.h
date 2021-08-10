@@ -10,6 +10,7 @@
 #include "ClientPlayerControllerComponent.h"
 #include "ClientEnemyControllerComponent.h"
 #include "ClientProjectileComponent.h"
+#include "ClientLobbyComponent.h"
 #include "ClientSystems.h"
 
 namespace KG::Server
@@ -34,6 +35,7 @@ namespace KG::Server
 		KG::System::CCharacterComponentSystem cCharacterSystem;
 		KG::System::CEnemyControllerComponentSystem cEnemyControllerSystem;
 		KG::System::CProjectileComponentSystem cProjectileSystem;
+		KG::System::CLobbyComponentSystem cLobbySystem;
 
 
 		std::unordered_map<KG::Server::NET_OBJECT_ID, KG::Component::CBaseComponent*> networkObjects;

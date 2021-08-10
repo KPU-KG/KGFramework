@@ -87,13 +87,23 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 				return true;
 			}
 		}
+
+		// 저장된 맵 번호로 씬 로드
+
 		KG::Packet::SC_GAME_START StartPacket;
 		this->BroadcastPacket(&StartPacket);
 		this->server->isPlay = true;
-		// 전부 레디면 시작, 패킷 전송
+		// 전부 레디면 시작 + 시작 패킷 전송
+	}
+	return true;
+	case KG::Packet::PacketType::CS_SELECT_MAP: // 맵 선택 패킷 -> 맵 번호 로비 서버에 저장
+	{
+		auto* Packet = KG::Packet::PacketCast<KG::Packet::CS_SELECT_MAP>(packet);
+		this->mapnum = Packet->mapnum;
 	}
 	return true;
 	}
+	
 	return false;
 	
 }

@@ -245,14 +245,24 @@ KG::Component::SProjectileComponent* KG::Server::Server::GetNewProjectileCompone
 	return comp;
 }
 
+KG::Component::SLobbyComponent* KG::Server::Server::GetNewLobbyComponent()
+{
+	auto* comp = this->sLobbySystem.GetNewComponent();
+	comp->SetServerInstance(this);
+	return comp;
+}
+
+
 void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
+	std::cout << "sss" << std::endl;
 	this->sGameManagerSystem.OnPostProvider(provider);
 	this->sPlayerSystem.OnPostProvider(provider);
 	this->sEnemyMechSystem.OnPostProvider(provider);
 	this->sEnemyCrawlerSystem.OnPostProvider(provider);
 	this->enemyGeneratorSystem.OnPostProvider(provider);
 	this->sProjectileSystem.OnPostProvider(provider);
+	this->sLobbySystem.OnPostProvider(provider);
 }
 
 void KG::Server::Server::DrawImGUI()
