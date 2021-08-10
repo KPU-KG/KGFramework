@@ -50,7 +50,9 @@ KG::Component::Render2DComponent::Render2DComponent()
             {ProgressShape::CIRCLE_CLOCK, "CIRCLE_CLOCK"},
             {ProgressShape::CIRCLE_RCLOCK, "CIRCLE_RCLOCK"}
         }),
-    progressValueProp("ProgressValue", this->progress.value)
+    progressValueProp("ProgressValue", this->progress.value),
+    visibleProp("visible", this->visible),
+    sourceProp("source", this->transform2D.source)
 {
 }
 
@@ -65,13 +67,21 @@ void KG::Component::Render2DComponent::OnCreate(KG::Core::GameObject* gameObject
 
 void KG::Component::Render2DComponent::OnPreRender()
 {
-    if ( this->renderJob != nullptr )
+    if ( this->renderJob != nullptr && this->visible )
     {
         int updateCount = renderJob->GetUpdateCount();
         auto setting = KG::Renderer::KGDXRenderer::GetInstance()->GetSetting();
         float wh = (float)setting.clientHeight / (float)setting.clientWidth;
         auto normalizeSize = this->transform2D.size;
         normalizeSize.x *= wh;
+        if (transform2D.source.x > transform2D.source.y)
+        {
+            normalizeSize.x *= transform2D.source.x / transform2D.source.y;
+        }
+        else 
+        {
+            normalizeSize.y *= transform2D.source.y / transform2D.source.x;
+        }
 
         renderJob->objectBuffer->mappedData[updateCount].object2d.position = this->transform2D.position;
         renderJob->objectBuffer->mappedData[updateCount].object2d.size = normalizeSize;
@@ -90,11 +100,12 @@ void KG::Component::Render2DComponent::OnPreRender()
 
 void KG::Component::Render2DComponent::SetVisible(bool visible)
 {
+    this->visible = visible;
 }
 
 bool KG::Component::Render2DComponent::GetVisible() const
 {
-    return false;
+    return this->visible;
 }
 
 void KG::Component::Render2DComponent::ReloadRender()
@@ -104,8 +115,11 @@ void KG::Component::Render2DComponent::ReloadRender()
 
 void KG::Component::Render2DComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
 {
+    visibleProp.OnDataLoad(componentElement);
+
     positionProp.OnDataLoad(componentElement);
     sizeProp.OnDataLoad(componentElement);
+    sourceProp.OnDataLoad(componentElement);
     rotationAngleProp.OnDataLoad(componentElement);
     depthProp.OnDataLoad(componentElement);
     parentPivotProp.OnDataLoad(componentElement);
@@ -126,8 +140,11 @@ void KG::Component::Render2DComponent::OnDataSave(tinyxml2::XMLElement* parentEl
 {
     auto* componentElement = parentElement->InsertNewChildElement("Component");
     ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::Render2DComponent);
+    visibleProp.OnDataSave(componentElement);
+
     positionProp.OnDataSave(componentElement);
     sizeProp.OnDataSave(componentElement);
+    sourceProp.OnDataSave(componentElement);
     rotationAngleProp.OnDataSave(componentElement);
     depthProp.OnDataSave(componentElement);
     parentPivotProp.OnDataSave(componentElement);
@@ -148,10 +165,13 @@ bool KG::Component::Render2DComponent::OnDrawGUI()
 {
     if ( ImGui::ComponentHeader<Render2DComponent>() )
     {
+        visibleProp.OnDrawGUI();
         if ( ImGui::TreeNode("Transform2D") )
         {
-            this->positionProp.OnDrawGUI();
+            //this->positionProp.OnDrawGUI();
+            ImGui::DragFloat2("position", (float*)&(this->transform2D.position), 0.05f);
             this->sizeProp.OnDrawGUI();
+            this->sourceProp.OnDrawGUI();
             this->rotationAngleProp.OnDrawGUI();
             this->depthProp.OnDrawGUI();
             this->parentPivotProp.OnDrawGUI();

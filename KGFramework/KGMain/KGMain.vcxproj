@@ -168,6 +168,7 @@
     <ClInclude Include="GameTimer.h" />
     <ClInclude Include="KGFramework.h" />
     <ClInclude Include="KGMain.h" />
+    <ClInclude Include="LobbyUIComponent.h" />
     <ClInclude Include="PlayerControllerComponent.h" />
     <ClInclude Include="Resource.h" />
     <ClInclude Include="SceneCameraComponent.h" />
@@ -180,6 +181,7 @@
     <ClCompile Include="GameTimer.cpp" />
     <ClCompile Include="KGFramework.cpp" />
     <ClCompile Include="KGMain.cpp" />
+    <ClCompile Include="LobbyUIComponent.cpp" />
     <ClCompile Include="NetworkFunctions.cpp" />
     <ClCompile Include="PlayerControllerComponent.cpp" />
     <ClCompile Include="SceneCameraComponent.cpp" />

@@ -364,4 +364,22 @@
     <Texture id="mechCyan_normal" fileDir="Resource/Geometry/mech/Texture/mechCyan/normal.dds" dimension="Texture2D" format="DDS" hash_id="3571105011"/>
     <Texture id="mechCyan_rough" fileDir="Resource/Geometry/mech/Texture/mechCyan/rough.dds" dimension="Texture2D" format="DDS" hash_id="1870321057"/>
     <Texture id="mechCyan_metalic" fileDir="Resource/Geometry/mech/Texture/mechCyan/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3523430035"/>
+    <!--Resource/Texture/ui/title_0000_start.DDS-->
+    <Texture id="title_0000_start.DDS" fileDir="Resource/Texture/ui/title_0000_start.DDS" dimension="Texture2D" format="DDS" hash_id="29829928"/>
+    <!--Resource/Texture/ui/title_0001_RETAKE.DDS-->
+    <Texture id="title_0001_RETAKE.DDS" fileDir="Resource/Texture/ui/title_0001_RETAKE.DDS" dimension="Texture2D" format="DDS" hash_id="1705933719"/>
+    <!--Resource/Texture/ui/title_0002_Lobby.DDS-->
+    <Texture id="title_0002_Lobby.DDS" fileDir="Resource/Texture/ui/title_0002_Lobby.DDS" dimension="Texture2D" format="DDS" hash_id="3735035690"/>
+    <!--Resource/Texture/ui/title_0003_player1.DDS-->
+    <Texture id="title_0003_player1.DDS" fileDir="Resource/Texture/ui/title_0003_player1.DDS" dimension="Texture2D" format="DDS" hash_id="384940511"/>
+    <!--Resource/Texture/ui/title_0003_player2.DDS-->
+    <Texture id="title_0003_player2.DDS" fileDir="Resource/Texture/ui/title_0003_player2.DDS" dimension="Texture2D" format="DDS" hash_id="1967613120"/>
+    <!--Resource/Texture/ui/title_0003_player3.DDS-->
+    <Texture id="title_0003_player3.DDS" fileDir="Resource/Texture/ui/title_0003_player3.DDS" dimension="Texture2D" format="DDS" hash_id="2793924165"/>
+    <!--Resource/Texture/ui/title_0003_player4.DDS-->
+    <Texture id="title_0003_player4.DDS" fileDir="Resource/Texture/ui/title_0003_player4.DDS" dimension="Texture2D" format="DDS" hash_id="74279750"/>
+    <!--Resource/Texture/ui/title_0004_ready.DDS-->
+    <Texture id="title_0004_ready.DDS" fileDir="Resource/Texture/ui/title_0004_ready.DDS" dimension="Texture2D" format="DDS" hash_id="1002456789"/>
+    <!--Resource/Texture/ui/title_0004_wait.DDS-->
+    <Texture id="title_0004_wait.DDS" fileDir="Resource/Texture/ui/title_0004_wait.DDS" dimension="Texture2D" format="DDS" hash_id="4074367257"/>
 </TextureSet>

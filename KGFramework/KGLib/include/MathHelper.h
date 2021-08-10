@@ -349,6 +349,11 @@ namespace KG::Math
 			return DirectX::XMFLOAT2(a.x - b.x, a.y - b.y);
 		}
 
+        inline DirectX::XMFLOAT2 operator-(float a, const DirectX::XMFLOAT2& b)
+        {
+            return DirectX::XMFLOAT2(a - b.x, a - b.y);
+        }
+
 		inline DirectX::XMFLOAT2 operator*(const DirectX::XMFLOAT2& a, const DirectX::XMFLOAT2& b)
 		{
 			return DirectX::XMFLOAT2(a.x * b.x, a.y * b.y);

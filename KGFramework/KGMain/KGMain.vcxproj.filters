@@ -66,6 +66,9 @@
     <ClInclude Include="SceneCameraComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
+    <ClInclude Include="LobbyUIComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="KGMain.rc">
@@ -107,6 +110,9 @@
     </ClCompile>
     <ClCompile Include="ServerFunction.cpp">
       <Filter>소스 파일\Framework</Filter>
+    </ClCompile>
+    <ClCompile Include="LobbyUIComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

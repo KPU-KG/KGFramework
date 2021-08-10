@@ -28,6 +28,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "XML", "XML", "{85D78402-5B3
 		Resource\Resource\GeometrySet.xml = Resource\Resource\GeometrySet.xml
 		Resource\Resource\MaterialSet.xml = Resource\Resource\MaterialSet.xml
 		Resource\Resource\ShaderCode.xml = Resource\Resource\ShaderCode.xml
+		Resource\Resource\TextureSet.xml = Resource\Resource\TextureSet.xml
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ShaderCode", "ShaderCode", "{612EE3CC-1D6B-4E8F-8C11-7510E32215FA}"

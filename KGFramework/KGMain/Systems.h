@@ -3,6 +3,7 @@
 #include "LambdaComponent.h"
 #include "SceneCameraComponent.h"
 #include "PlayerControllerComponent.h"
+#include "LobbyUIComponent.h"
 #include "Systems.h"
 namespace KG
 {
@@ -11,7 +12,8 @@ namespace KG
 		KG::System::TransformSystem transformSystem;
 		KG::System::LambdaComponentSystem lambdaSystem;
 		KG::System::SceneCameraComponentSystem sceneCameraSystem;
-		KG::System::PlayerControllerComponentSystem playerComponentSystem;
+        KG::System::PlayerControllerComponentSystem playerComponentSystem;
+        KG::System::LobbyUIComponentSystem lobbyComponentSystem;
 
 		void PostComponentProvider(KG::Component::ComponentProvider& provider)
 		{
@@ -19,7 +21,8 @@ namespace KG
 			this->transformSystem.OnPostProvider(provider);
 			this->sceneCameraSystem.OnPostProvider(provider);
 			this->playerComponentSystem.OnPostProvider(provider);
-		}
+            this->lobbyComponentSystem.OnPostProvider(provider);
+        }
 
 		void OnPreRender()
 		{
@@ -31,6 +34,8 @@ namespace KG
 			this->transformSystem.OnUpdate(elaspedTime);
 			this->sceneCameraSystem.OnUpdate(elaspedTime);
 			this->playerComponentSystem.OnUpdate(elaspedTime);
+            this->lobbyComponentSystem.OnUpdate(elaspedTime);
+
 		}
 		void OnPostUpdate(float elaspedTime)
 		{
@@ -38,6 +43,8 @@ namespace KG
 			this->transformSystem.OnPostUpdate(elaspedTime);
 			this->sceneCameraSystem.OnPostUpdate(elaspedTime);
 			this->playerComponentSystem.OnPostUpdate(elaspedTime);
+            this->lobbyComponentSystem.OnPostUpdate(elaspedTime);
+
 		}
 	};
 };

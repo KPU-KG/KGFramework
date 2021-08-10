@@ -696,4 +696,37 @@
         <Texture byte="4" comment="ColorTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="alphaValue" x="0.3"/>
     </Material>
+    <!--<Material id="UIWhite" shaderID="UIDefault">
+    <Texture byte="4" comment="" id="one"/>
+  </Material>-->
+    <Material id="UILobbyTitle" shaderID="UIDefault" hash_id="3371175613" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="one"/>
+    </Material>
+    <Material id="title_0000_start.DDS" shaderID="UIDefault" hash_id="29829928" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0000_start.DDS" hash_id="29829928"/>
+    </Material>
+    <Material id="title_0001_RETAKE.DDS" shaderID="UIDefault" hash_id="1705933719" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0001_RETAKE.DDS" hash_id="1705933719"/>
+    </Material>
+    <Material id="title_0002_Lobby.DDS" shaderID="UIDefault" hash_id="3735035690" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0002_Lobby.DDS" hash_id="3735035690"/>
+    </Material>
+    <Material id="title_0003_player1.DDS" shaderID="UIDefault" hash_id="384940511" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0003_player1.DDS" hash_id="384940511"/>
+    </Material>
+    <Material id="title_0003_player2.DDS" shaderID="UIDefault" hash_id="1967613120" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0003_player2.DDS" hash_id="1967613120"/>
+    </Material>
+    <Material id="title_0003_player3.DDS" shaderID="UIDefault" hash_id="2793924165" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0003_player3.DDS" hash_id="2793924165"/>
+    </Material>
+    <Material id="title_0003_player4.DDS" shaderID="UIDefault" hash_id="74279750" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0003_player4.DDS" hash_id="74279750"/>
+    </Material>
+    <Material id="title_0004_ready.DDS" shaderID="UIDefault" hash_id="1002456789" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0004_ready.DDS" hash_id="1002456789"/>
+    </Material>
+    <Material id="title_0004_wait.DDS" shaderID="UIDefault" hash_id="4074367257" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0004_wait.DDS" hash_id="4074367257"/>
+    </Material>
 </MaterialSet>
