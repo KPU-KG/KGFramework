@@ -44,6 +44,21 @@ void KG::Component::SEnemyCrawlerComponent::OnCreate(KG::Core::GameObject* obj)
 	this->stateManager = new CrawlerStateManager(this);
 	stateManager->Init();
 	hp = maxHp;
+
+	this->rigid->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
+		auto filterMy = my->GetFilterMask();
+		auto filterOther = other->GetFilterGroup();
+		if (!(filterMy & filterOther)) {
+			auto col = other->GetCollisionCallback();
+			if (col != nullptr)
+				col(other, my);
+
+			// 플레이어 콜백 함수에 추가할것
+			// 1. 데미지 입고 일정 시간동안 차징에 데미지 안받는 것
+			// 2. 맞는 순간에 날아가는 것
+			// this->GetGameObject()->Destroy();
+		}
+		});
 }
 
 void KG::Component::SEnemyCrawlerComponent::Update(float elapsedTime)
@@ -133,42 +148,25 @@ bool KG::Component::SEnemyCrawlerComponent::SetTarget()
 		else
 			target = comp;
 	}
+	if (target == nullptr)
+		return false;
+
 	return true;
 }
 
 void KG::Component::SEnemyCrawlerComponent::Destroy()
 {
+	for (auto iter : this->areaEvent) {
+		if (iter.area != nullptr)
+			iter.area->GetGameObject()->Destroy();
+	}
+	this->areaEvent.clear();
+
 	if (rigid)
 		rigid->ReleaseActor();
 	KG::Packet::SC_REMOVE_OBJECT removeObjectPacket = {};
 	this->BroadcastPacket((void*)&removeObjectPacket);
 	gameObject->Destroy();
-}
-
-bool KG::Component::SEnemyCrawlerComponent::SetAttackRotation()
-{
-	if (target == nullptr) {
-		DebugNormalMessage("Enemy Controller : target is null");
-		return false;
-	}
-	this->goal = target->GetGameObject()->GetTransform()->GetWorldPosition();
-	goal.y = 0;
-
-	direction = Math::Vector3::Subtract(goal, transform->GetWorldPosition());
-	direction.y = 0;
-	XMStoreFloat3(&direction, XMVector3Normalize(XMLoadFloat3(&direction)));
-
-	auto dir = DirectX::XMFLOAT2{ direction.x, direction.z };
-
-	auto look = DirectX::XMFLOAT2{ transform->GetWorldLook().x, transform->GetWorldLook().z };
-	rotateTimer = 0;
-
-	XMStoreFloat2(&angle, DirectX::XMVector2AngleBetweenVectors(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-	XMFLOAT2 crs;
-	XMStoreFloat2(&crs, XMVector2Cross(XMLoadFloat2(&look), XMLoadFloat2(&dir)));
-	if (crs.x >= 0)
-		angle.x *= -1;
-	return true;
 }
 
 bool KG::Component::SEnemyCrawlerComponent::SetAttackArea()
@@ -231,6 +229,113 @@ bool KG::Component::SEnemyCrawlerComponent::Shoot(float elapsedTime)
 	return false;
 }
 
+bool KG::Component::SEnemyCrawlerComponent::Rotate(float elapsedTime)
+{
+	if (this->target == nullptr)
+		return true;
+
+	auto look = this->transform->GetWorldLook();
+	auto dir = Math::Vector3::Subtract(this->target->GetGameObject()->GetTransform()->GetWorldPosition(), this->transform->GetWorldPosition());
+
+	look.y = 0;
+	dir.y = 0;
+	
+	XMFLOAT3 angle;
+	XMStoreFloat3(&angle, XMVector3AngleBetweenVectors(XMLoadFloat3(&look), XMLoadFloat3(&dir)));
+
+	XMFLOAT3 crs;
+	XMStoreFloat3(&crs, XMVector3Cross(XMLoadFloat3(&look), XMLoadFloat3(&dir)));
+
+	float amount = min(abs(angle.x), this->rotateSpeed * elapsedTime);
+
+	if (crs.y >= 0) {
+		amount *= -1;
+	}
+
+	DirectX::XMFLOAT4 rot;
+	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), amount));
+	gameObject->GetTransform()->Rotate(rot);
+	rigid->SetRotation(transform->GetRotation());
+
+	if (amount == abs(angle.x)) {
+		chargeOrigin = this->transform->GetWorldPosition();
+		chargeTarget = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
+		chargeDist = sqrt(GetDistance2FromEnemy(chargeTarget));
+		moveDist = 0;
+		prevPosition = this->chargeOrigin;
+		return true;
+	}
+	return false;
+}
+
+bool KG::Component::SEnemyCrawlerComponent::Charging(float elapsedTime)
+{
+	if (this->target == nullptr)
+		return true;
+
+	if (!isCharging) {
+		isCharging = true;
+		isAttackable = true;
+	}
+
+	chargingTimer += elapsedTime;
+	if (chargingTimer >= chargingInterval) {
+		chargingTimer = 0;
+		return true;
+	}
+
+	return false;
+}
+
+bool KG::Component::SEnemyCrawlerComponent::ChargeAttack(float elapsedTime)
+{
+	if (this->target == nullptr)
+		return true;
+
+	if (!changedAnimation) {
+		ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
+	}
+	auto dir = Math::Vector3::Subtract(this->chargeTarget, this->chargeOrigin);
+	XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&dir)));
+	this->rigid->SetVelocity(dir, this->chargeSpeed);
+
+	moveDist += sqrt(GetDistance2FromEnemy(this->prevPosition));
+	this->prevPosition = this->transform->GetWorldPosition();
+	if (moveDist >= chargeDist) {
+		this->rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
+		isCharging = false;
+		return true;
+	}
+
+	return false;
+}
+
+bool KG::Component::SEnemyCrawlerComponent::ChargeDelay(float elapsedTIme)
+{
+	if (isFilledArea) {
+		if (this->area != nullptr) {
+			this->area->GetGameObject()->Destroy();
+			this->area = nullptr;
+		}
+		isFilledArea = false;
+	}
+
+	if (this->target == nullptr)
+		return true;
+
+	if (!changedAnimation) {
+		ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::idle, ANIMSTATE_PLAYING, 0.1f, -1);
+	}
+
+	chargeDelayTimer += elapsedTIme;
+
+	if (chargeDelayTimer >= chargeDelay) {
+		chargeDelayTimer = 0;
+		return true;
+	}
+	return false;
+}
+
 inline void KG::Component::SEnemyCrawlerComponent::ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime, int repeat) {
 	anim->ChangeAnimation(animId, animIndex, nextState, blendingTime, repeat);
 	KG::Packet::SC_CHANGE_ANIMATION pa = {};
@@ -275,7 +380,7 @@ void KG::Component::SEnemyCrawlerComponent::Attack(SGameManagerComponent* gameMa
 
 				auto areaComp = comp->GetGameObject()->GetComponent<SCubeAreaRedComponent>();
 
-				areaComp->Initialize(shootAreaCenter, areaWidth);
+				areaComp->Initialize(shootAreaCenter, XMFLOAT3{ areaWidth, 0.001, areaWidth });
 				
 				this->area = areaComp;
 
@@ -325,6 +430,51 @@ void KG::Component::SEnemyCrawlerComponent::Attack(SGameManagerComponent* gameMa
 		gameManager->BroadcastPacket(&addObjectPacket);
 		this->GetGameObject()->GetTransform()->GetParent()->AddChild(comp->GetGameObject()->GetTransform());
 	}
+	else if (stateManager->GetCurState() == CrawlerStateManager::STATE_CHARGE_ATTACK) {
+		if (!isFilledArea) {
+			auto presetName = "CubeAreaRed";
+			auto presetId = KG::Utill::HashString(presetName);
+
+			auto* scene = this->gameObject->GetScene();
+			auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
+
+			// x축 2 z축 타겟과의 거리?
+
+			float dist = sqrt(GetDistance2FromEnemy(this->chargeTarget));
+
+			XMFLOAT3 areaCenter;
+			XMStoreFloat3(&areaCenter, Math::Vector3::XMVectorLerp(XMLoadFloat3(&this->chargeOrigin), XMLoadFloat3(&this->chargeTarget), 0.5));
+
+			areaCenter.y = 0.1;
+
+			XMFLOAT3 areaScale{ 3, 0.001, dist};
+
+			KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
+			auto tag = KG::Utill::HashString(presetName);
+			addObjectPacket.objectTag = tag;
+			addObjectPacket.parentTag = 0;
+			addObjectPacket.presetId = tag;
+			addObjectPacket.position = areaCenter;
+
+			auto id = this->server->GetNewObjectId();
+			addObjectPacket.newObjectId = id;
+			comp->SetNetObjectId(id);
+			this->server->SetServerObject(id, comp);
+
+			auto areaComp = comp->GetGameObject()->GetComponent<SCubeAreaRedComponent>();
+
+			areaComp->Initialize(areaCenter, areaScale);
+			areaComp->SetRotation(this->transform->GetRotation());
+
+			this->area = areaComp;
+
+			this->server->SetServerObject(id, areaComp);
+			gameManager->BroadcastPacket(&addObjectPacket);
+			this->GetGameObject()->GetTransform()->GetParent()->AddChild(comp->GetGameObject()->GetTransform());
+
+			isFilledArea = true;
+		}
+	}
 }
 
 bool KG::Component::CrawlerIdleAction::Execute(float elapsedTime) {
@@ -361,8 +511,49 @@ bool KG::Component::CrawlerSetAreaAction::Execute(float elapsedTime)
 
 void KG::Component::CrawlerSetAreaAction::EndAction()
 {
+
 }
 
+bool KG::Component::CrawlerRotateAction::Execute(float elapsedTime)
+{
+	return dynamic_cast<SEnemyCrawlerComponent*>(enemyComp)->Rotate(elapsedTime);
+}
+
+void KG::Component::CrawlerRotateAction::EndAction()
+{
+	dynamic_cast<SEnemyCrawlerComponent*>(enemyComp)->ReadyNextAnimation(false);
+}
+
+bool KG::Component::CrawlerChargingAction::Execute(float elapsedTime)
+{
+	return dynamic_cast<SEnemyCrawlerComponent*>(enemyComp)->Charging(elapsedTime);
+}
+
+void KG::Component::CrawlerChargingAction::EndAction()
+{
+	dynamic_cast<SEnemyCrawlerComponent*>(enemyComp)->ReadyNextAnimation(false);
+}
+
+bool KG::Component::CrawlerChargeAttackAction::Execute(float elapsedTime)
+{
+	return dynamic_cast<SEnemyCrawlerComponent*>(enemyComp)->ChargeAttack(elapsedTime);
+}
+
+void KG::Component::CrawlerChargeAttackAction::EndAction()
+{
+	dynamic_cast<SEnemyCrawlerComponent*>(enemyComp)->ReadyNextAnimation(false);
+}
+
+
+bool KG::Component::CrawlerChargeDelayAction::Execute(float elapsedTime)
+{
+	return dynamic_cast<SEnemyCrawlerComponent*>(enemyComp)->ChargeDelay(elapsedTime);
+}
+
+void KG::Component::CrawlerChargeDelayAction::EndAction()
+{
+	dynamic_cast<SEnemyCrawlerComponent*>(enemyComp)->ReadyNextAnimation(false);
+}
 
 KG::Component::CrawlerShootState::~CrawlerShootState()
 {
@@ -400,6 +591,52 @@ float KG::Component::CrawlerShootState::GetValue()
 	else
 		return 0.f;
 }
+
+
+KG::Component::CrawlerChargeState::~CrawlerChargeState()
+{
+	for (auto& act : action)
+		delete act;
+}
+
+void KG::Component::CrawlerChargeState::InitState()
+{
+	action[CHARGE_ACTION_ROTATE] = new CrawlerRotateAction(enemyComp);
+	action[CHARGE_ACTION_CHARGING] = new CrawlerChargingAction(enemyComp);
+	action[CHARGE_ACTION_ATTACK] = new CrawlerChargeAttackAction(enemyComp);
+	action[CHARGE_ACTION_DELAY] = new CrawlerChargeDelayAction(enemyComp);
+}
+
+void KG::Component::CrawlerChargeState::Execute(float elapsedTime)
+{
+	bool endAction = action[curAction]->Execute(elapsedTime);
+	if (endAction) {
+		switch (curAction) {
+		case CHARGE_ACTION_ROTATE:
+			curAction = CHARGE_ACTION_CHARGING;
+			break;
+		case CHARGE_ACTION_CHARGING:
+			curAction = CHARGE_ACTION_ATTACK;
+			break;
+		case CHARGE_ACTION_ATTACK:
+			curAction = CHARGE_ACTION_DELAY;
+			break;
+		case CHARGE_ACTION_DELAY:
+			curAction = CHARGE_ACTION_ROTATE;
+			isFinished = true;
+			break;
+		}
+	}
+}
+
+float KG::Component::CrawlerChargeState::GetValue()
+{
+	if (isFinished)
+		return 1.f;
+	else
+		return 0.f;
+}
+
 
 
 KG::Component::CrawlerSetTargetState::~CrawlerSetTargetState()
@@ -450,6 +687,7 @@ KG::Component::CrawlerStateManager::~CrawlerStateManager() {
 void KG::Component::CrawlerStateManager::Init() {
 	state[STATE_SET_TARGET] = new CrawlerSetTargetState(enemyComp);
 	state[STATE_SHOOT_ATTACK] = new CrawlerShootState(enemyComp);
+	state[STATE_CHARGE_ATTACK] = new CrawlerChargeState(enemyComp);
 	for (auto& s : state) {
 		s->InitState();
 	}
@@ -463,10 +701,25 @@ void KG::Component::CrawlerStateManager::SetState() {
 		case STATE_SET_TARGET:
 			// 패턴 추가되면 랜덤으로 선택하도록 수정
 			dynamic_cast<CrawlerSetTargetState*>(state[curState])->isFinished = false;
-			curState = STATE_SHOOT_ATTACK;
+			{
+				std::uniform_int_distribution<int> nextState(0, 1);
+
+				switch (nextState(crawlerGen)) {
+				case 0:
+					curState = STATE_CHARGE_ATTACK;
+					break;
+				case 1:
+					curState = STATE_SHOOT_ATTACK;
+					break;
+				}
+			}
 			break;
 		case STATE_SHOOT_ATTACK:
 			dynamic_cast<CrawlerShootState*>(state[curState])->isFinished = false;
+			curState = STATE_SET_TARGET;
+			break;
+		case STATE_CHARGE_ATTACK:
+			dynamic_cast<CrawlerChargeState*>(state[curState])->isFinished = false;
 			curState = STATE_SET_TARGET;
 			break;
 		}

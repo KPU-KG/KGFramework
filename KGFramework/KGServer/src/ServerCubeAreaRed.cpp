@@ -6,12 +6,17 @@ KG::Component::SCubeAreaRedComponent::SCubeAreaRedComponent()
 {
 }
 
-void KG::Component::SCubeAreaRedComponent::Initialize(DirectX::XMFLOAT3 center, float width, float interval)
+void KG::Component::SCubeAreaRedComponent::Initialize(DirectX::XMFLOAT3 center, DirectX::XMFLOAT3 scale, float interval)
 {
 	DebugNormalMessage("Create Red Area");
 	this->transform->SetPosition(center);
-	this->width = width;
-	this->transform->SetScale(width, 0.01, width);
+	this->scale = scale;
+	this->transform->SetScale(scale);
+}
+
+void KG::Component::SCubeAreaRedComponent::SetRotation(DirectX::XMFLOAT4 rot)
+{
+	this->transform->SetRotation(rot);
 }
 
 void KG::Component::SCubeAreaRedComponent::OnCreate(KG::Core::GameObject* obj)
@@ -25,7 +30,7 @@ void KG::Component::SCubeAreaRedComponent::Update(float elapsedTime)
 	sendTimer += elapsedTime;
 	if (sendInterval <= sendTimer) {
 		KG::Packet::SC_SCALE_OBJECT scaleP = {};
-		scaleP.scale = XMFLOAT3{ width, 0.01, width };
+		scaleP.scale = this->scale;
 		this->BroadcastPacket((void*)&scaleP);
 
 		KG::Packet::SC_MOVE_OBJECT moveP;
