@@ -1,5 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <MaterialSet xmlns="KGResource.xsd">
+    <Material id="AmbientIBL" shaderID="AmbientLight" hash_id="1802361946" shaderHashID="1669293293">
+        <Texture byte="4" comment="specular_ibl_lut" id="iblLUT" hash_id="2315349235"/>
+        <Texture byte="4" comment="irradiance" id="SkyDay_irradiance" hash_id="3965083815"/>
+        <Texture byte="4" comment="radiance" id="SkyDay_radiance" hash_id="1777447134"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="AmbientIBL_sunset" shaderID="AmbientLight" hash_id="452798195" shaderHashID="1669293293">
+        <Texture byte="4" comment="specular_ibl_lut" id="iblLUT" hash_id="2315349235"/>
+        <Texture byte="4" comment="irradiance" id="SkySunset_irradiance" hash_id="1549620103"/>
+        <Texture byte="4" comment="radiance" id="SkySunset_radiance" hash_id="2776523966"/>
+        <Padding byte="4"/>
+    </Material>
     <Material id="PBRMetal" shaderID="PBRDefault" hash_id="1858199364" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="metal_color" hash_id="1743296994"/>
         <Texture byte="4" comment="normalTexture" id="metal_normal" hash_id="2012282528"/>
@@ -48,7 +60,7 @@
     <Material id="PBRTile" shaderID="PBRDefault" hash_id="441810431" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="tile_color" hash_id="319263237"/>
         <Texture byte="4" comment="normalTexture" id="tile_normal" hash_id="973327093"/>
-        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="metalicTexture" id="zero"/>
         <Texture byte="4" comment="roughnessTexture" id="tile_rough" hash_id="1273007583"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="4" y="4"/>
@@ -58,19 +70,18 @@
         <Texture byte="4" comment="colorTexture" id="soldier_head_albedo" hash_id="1073280886"/>
         <Texture byte="4" comment="normalTexture" id="soldier_haed_normal" hash_id="4052277792"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughnessTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughnessTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
     </Material>
-    <Material id="soldierBody" shaderID="PBRDefault" hash_id="4246576393" shaderHashID="3533550914">
+    <Material id="soldierBody" shaderID="PBRMetalicSmooth" hash_id="4246576393" shaderHashID="1053346762">
         <Texture byte="4" comment="colorTexture" id="soldier_body_albedo" hash_id="2332798320"/>
         <Texture byte="4" comment="normalTexture" id="soldier_body_normal" hash_id="4117762142"/>
-        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughnessTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="maskTexture" id="soldier_body_mask" hash_id="2943841655"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
-        <Padding byte="4"/>
+        <Padding byte="8"/>
     </Material>
     <!--SKYBOX-->
     <Material id="SkySunset" shaderID="SkyBox" hash_id="2071956174" shaderHashID="3327424171">
@@ -87,7 +98,7 @@
         <Texture byte="4" comment="normalTexture" id="asphalt_normal" hash_id="4181683200"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
         <Texture byte="4" comment="roughTexture" id="asphalt_rough" hash_id="3588301720"/>
-        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.1"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
     </Material>
@@ -96,7 +107,7 @@
         <Texture byte="4" comment="normalTexture" id="line_asphalt_normal" hash_id="438735835"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
         <Texture byte="4" comment="roughTexture" id="line_asphalt_rough" hash_id="3669739897"/>
-        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.1"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="5"/>
         <Padding byte="4"/>
     </Material>
@@ -191,10 +202,10 @@
         <Padding byte="4"/>
     </Material>
     <Material id="pipe_metal" shaderID="PBRDefault" hash_id="1768708505" shaderHashID="3533550914">
-        <Texture byte="4" comment="colorTexture" id="pipe_metal_color"/>
-        <Texture byte="4" comment="normalTexture" id="pipe_metal_normal"/>
-        <Texture byte="4" comment="metalicTexture" id="pipe_metal_metalic"/>
-        <Texture byte="4" comment="roughTexture" id="pipe_metal_rough"/>
+        <Texture byte="4" comment="colorTexture" id="pipe_metal_color" hash_id="3724816981"/>
+        <Texture byte="4" comment="normalTexture" id="pipe_metal_normal" hash_id="922787365"/>
+        <Texture byte="4" comment="metalicTexture" id="pipe_metal_metalic" hash_id="3336866289"/>
+        <Texture byte="4" comment="roughTexture" id="pipe_metal_rough" hash_id="1494903823"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -275,7 +286,7 @@
         <Texture byte="4" comment="colorTexture" id="crane_color" hash_id="1603407992"/>
         <Texture byte="4" comment="normalTexture" id="crane_normal" hash_id="1837015662"/>
         <Texture byte="4" comment="metalicTexture" id="crane_metalic" hash_id="820988632"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -284,43 +295,40 @@
         <Texture byte="4" comment="colorTexture" id="construction_color" hash_id="3209013374"/>
         <Texture byte="4" comment="normalTexture" id="construction_normal" hash_id="1897116092"/>
         <Texture byte="4" comment="metalicTexture" id="construction_metalic" hash_id="4065980882"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
     </Material>
-    <Material id="arms" shaderID="PBRDefault" hash_id="2987153180" shaderHashID="3533550914">
+    <Material id="arms" shaderID="PBRMetalicSmooth" hash_id="2987153180" shaderHashID="1053346762">
         <Texture byte="4" comment="colorTexture" id="arms_color" hash_id="2273684824"/>
         <Texture byte="4" comment="normalTexture" id="arms_normal" hash_id="1969247054"/>
-        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="mask" id="arms_mask" hash_id="528200807"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
-        <Padding byte="4"/>
+        <Padding byte="8"/>
     </Material>
-    <Material id="vectorSight" shaderID="PBRDefault" hash_id="2936323147" shaderHashID="3533550914">
+    <Material id="vectorSight" shaderID="PBRMetalicSmooth" hash_id="2936323147" shaderHashID="1053346762">
         <Texture byte="4" comment="colorTexture" id="vectorSight_color" hash_id="2732856979"/>
         <Texture byte="4" comment="normalTexture" id="vectorSight_normal" hash_id="986294203"/>
-        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="mask" id="vectorSight_mask" hash_id="664492698"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
-        <Padding byte="4"/>
+        <Padding byte="8"/>
     </Material>
-    <Material id="vectorNormal" shaderID="PBRDefault" hash_id="2018951961" shaderHashID="3533550914">
+    <Material id="vectorNormal" shaderID="PBRMetalicSmooth" hash_id="2018951961" shaderHashID="1053346762">
         <Texture byte="4" comment="colorTexture" id="vectorNormal_color" hash_id="1993964501"/>
         <Texture byte="4" comment="normalTexture" id="vectorNormal_normal" hash_id="3100935333"/>
-        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="mask" id="vectorNormal_mask" hash_id="3742436096"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
-        <Padding byte="4"/>
+        <Padding byte="8"/>
     </Material>
     <Material id="mountain" shaderID="PBRDefault" hash_id="1761621572" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="mountain_color" hash_id="3235815808"/>
         <Texture byte="4" comment="normalTexture" id="mountain_normal" hash_id="3380690070"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -355,8 +363,8 @@
     <Material id="MechMetal" shaderID="PBRDefault" hash_id="2527336259" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="one" hash_id="94880491"/>
         <Texture byte="4" comment="normalTexture" id="one" hash_id="94880491"/>
-        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="metalicTexture" id="zero"/>
+        <Texture byte="4" comment="roughTexture" id="one"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -465,20 +473,19 @@
     <Material id="SpriteWhite" shaderID="SpriteDefault" hash_id="2585029165" shaderHashID="3480911269">
         <Texture byte="4" comment="" id="one" hash_id="94880491"/>
     </Material>
-    <Material id="streetlight" shaderID="PBRDefault" hash_id="3861455024" shaderHashID="3533550914">
+    <Material id="streetlight" shaderID="PBRMetalicSmooth" hash_id="3861455024" shaderHashID="1053346762">
         <Texture byte="4" comment="colorTexture" id="streetlight_color" hash_id="3488498860"/>
         <Texture byte="4" comment="normalTexture" id="streetlight_normal" hash_id="3068713474"/>
-        <Texture byte="4" comment="metalicTexture" id="streetlight_metalic" hash_id="2463398644"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="metalicsmoothTexture" id="streetlight_ms" hash_id="141896951"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
-        <Padding byte="4"/>
+        <Padding byte="8"/>
     </Material>
     <Material id="barrier" shaderID="PBRDefault" hash_id="4025314174" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="barrier_color" hash_id="1486026182"/>
         <Texture byte="4" comment="normalTexture" id="barrier_normal" hash_id="1477444132"/>
-        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="metalicTexture" id="zero"/>
+        <Texture byte="4" comment="roughTexture" id="one"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -487,7 +494,7 @@
         <Texture byte="4" comment="colorTexture" id="BellevuePlace19_Marcos_color" hash_id="3071798262"/>
         <Texture byte="4" comment="normalTexture" id="BellevuePlace19_Marcos_normal" hash_id="2649809204"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -496,7 +503,7 @@
         <Texture byte="4" comment="colorTexture" id="BellevuePlace19_tejado_color" hash_id="3616477338"/>
         <Texture byte="4" comment="normalTexture" id="BellevuePlace19_tejado_normal" hash_id="2202885208"/>
         <Texture byte="4" comment="metalicTexture" id="BellevuePlace19_tejado_metalic" hash_id="943539702"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -505,7 +512,7 @@
         <Texture byte="4" comment="colorTexture" id="bellevue_edificio_color" hash_id="2655492710"/>
         <Texture byte="4" comment="normalTexture" id="bellevue_edificio_normal" hash_id="2110357700"/>
         <Texture byte="4" comment="metalicTexture" id="bellevue_edificio_metalic" hash_id="178304762"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -514,16 +521,13 @@
         <Texture byte="4" comment="colorTexture" id="Cine_Mark1_bricks_color" hash_id="1066050784"/>
         <Texture byte="4" comment="normalTexture" id="one" hash_id="94880491"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
-        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
-        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
-        <Padding byte="4"/>
-    </Material>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>s
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/><FLOAT2 byte="8" comment="UVsize" x="1" y="1"/><Padding byte="4"/></Material>
     <Material id="Cine_Mark1_Concrete" shaderID="PBRDefault" hash_id="1936601827" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="Cine_Mark1_Concrete_color" hash_id="550649963"/>
         <Texture byte="4" comment="normalTexture" id="Cine_Mark1_Concrete_normal" hash_id="643214451"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -532,7 +536,7 @@
         <Texture byte="4" comment="colorTexture" id="Cine_Mark1_DetailParts_color" hash_id="270901041"/>
         <Texture byte="4" comment="normalTexture" id="one" hash_id="94880491"/>
         <Texture byte="4" comment="metalicTexture" id="Cine_Mark1_DetailParts_metalic" hash_id="2054169813"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -541,7 +545,7 @@
         <Texture byte="4" comment="colorTexture" id="filler_building_01_color" hash_id="1441652192"/>
         <Texture byte="4" comment="normalTexture" id="filler_building_01_normal" hash_id="3588750838"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -550,7 +554,7 @@
         <Texture byte="4" comment="colorTexture" id="filler_building_03_color" hash_id="521005550"/>
         <Texture byte="4" comment="normalTexture" id="filler_building_03_normal" hash_id="3552978444"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -558,8 +562,8 @@
     <Material id="T_filler_building_windows" shaderID="PBRDefault" hash_id="3696185881" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="T_filler_building_windows_color" hash_id="2615855829"/>
         <Texture byte="4" comment="normalTexture" id="T_filler_building_windows_normal" hash_id="904730021"/>
-        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="metalicTexture" id="zero"/>
+        <Texture byte="4" comment="roughTexture" id="one"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -568,7 +572,7 @@
         <Texture byte="4" comment="colorTexture" id="Mattres_Firm_extras_color" hash_id="1053657680"/>
         <Texture byte="4" comment="normalTexture" id="Mattres_Firm_extras_normal" hash_id="1894521158"/>
         <Texture byte="4" comment="metalicTexture" id="Mattres_Firm_extras_metalic" hash_id="3728517008"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -577,7 +581,7 @@
         <Texture byte="4" comment="colorTexture" id="Mattres_Firm_frames_color"/>
         <Texture byte="4" comment="normalTexture" id="Mattres_Firm_frames_normal"/>
         <Texture byte="4" comment="metalicTexture" id="Mattres_Firm_frames_metalic"/>
-        <Texture byte="4" comment="roughTexture" id="zero"/>
+        <Texture byte="4" comment="roughTexture" id="one"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -585,8 +589,8 @@
     <Material id="Mattres_Firm_roof" shaderID="PBRDefault" hash_id="3344005283" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="Mattres_Firm_roof_color" hash_id="3713369899"/>
         <Texture byte="4" comment="normalTexture" id="Mattres_Firm_roof_normal" hash_id="920231731"/>
-        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="metalicTexture" id="zero"/>
+        <Texture byte="4" comment="roughTexture" id="one"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -595,7 +599,7 @@
         <Texture byte="4" comment="colorTexture" id="Mattres_Firm_signs_color" hash_id="2418178057"/>
         <Texture byte="4" comment="normalTexture" id="one" hash_id="94880491"/>
         <Texture byte="4" comment="metalicTexture" id="Mattres_Firm_signs_metalic" hash_id="3469961645"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -604,7 +608,7 @@
         <Texture byte="4" comment="colorTexture" id="Mattres_Firm_wall_color"/>
         <Texture byte="4" comment="normalTexture" id="Mattres_Firm_wall_normal"/>
         <Texture byte="4" comment="metalicTexture" id="zero"/>
-        <Texture byte="4" comment="roughTexture" id="zero"/>
+        <Texture byte="4" comment="roughTexture" id="one"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -613,7 +617,7 @@
         <Texture byte="4" comment="colorTexture" id="cactus_metalparts_color" hash_id="3150635826"/>
         <Texture byte="4" comment="normalTexture" id="cactus_metalparts_normal" hash_id="3272165648"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -622,7 +626,7 @@
         <Texture byte="4" comment="colorTexture" id="cactus_building_color" hash_id="2899406987"/>
         <Texture byte="4" comment="normalTexture" id="cactus_building_normal" hash_id="203878291"/>
         <Texture byte="4" comment="metalicTexture" id="cactus_building_metalic" hash_id="957806387"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -631,7 +635,7 @@
         <Texture byte="4" comment="colorTexture" id="cliff_v01_color" hash_id="2214511347"/>
         <Texture byte="4" comment="normalTexture" id="cliff_v01_normal" hash_id="2341435163"/>
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -649,7 +653,7 @@
         <Texture byte="4" comment="colorTexture" id="Container Games_color" hash_id="3650272199"/>
         <Texture byte="4" comment="normalTexture" id="Container Games_normal" hash_id="3664826735"/>
         <Texture byte="4" comment="metalicTexture" id="Container Games_metalic" hash_id="3791292791"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="one" hash_id="94880491"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -680,5 +684,67 @@
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
+    </Material>
+    <Material id="area_red" shaderID="PBRDefault" hash_id="1008453098" shaderHashID="3533550914">
+        <Texture byte="4" comment="colorTexture" id="area_red_color" hash_id="2306373458"/>
+        <Texture byte="4" comment="normalTexture" id="area_red_normal" hash_id="1372604208"/>
+        <Texture byte="4" comment="metalicTexture" id="area_red_metalic" hash_id="287641294"/>
+        <Texture byte="4" comment="roughTexture" id="area_red_rough" hash_id="241303944"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="HDRTonemap_Day" shaderID="PostHDR_TONE" hash_id="1514760794" shaderHashID="3494680670">
+        <FLOAT1 byte="4" comment="MiddleGray" x="3.429"/>
+        <FLOAT1 byte="4" comment="LimWhiteSQR" x="5.8"/>
+    </Material>
+    <Material id="HDRTonemap_Sunset" shaderID="PostHDR_TONE" hash_id="1000435066" shaderHashID="3494680670">
+        <FLOAT1 byte="4" comment="MiddleGray" x="1.129"/>
+        <FLOAT1 byte="4" comment="LimWhiteSQR" x="5.8"/>
+    </Material>
+    <Material id="SSAO_TWO_MAT" shaderID="PostSSAO_Two" hash_id="2850377983" shaderHashID="3436939178">
+        <FLOAT1 byte="4" comment="offsetRadius" x="10"/>
+        <FLOAT1 byte="4" comment="radius" x="10"/>
+    </Material>
+    <Material id="SSAO_FIVE_MAT" shaderID="PostSSAO_FIVE" hash_id="223475845" shaderHashID="3191908704">
+        <FLOAT1 byte="4" comment="lerpT" x="0"/>
+        <FLOAT1 byte="4" comment="defaultValue" x="1"/>
+    </Material>
+    <Material id="TrasparentWhite" shaderID="Transparent_Default" hash_id="1598743950" shaderHashID="875924835">
+        <Texture byte="4" comment="ColorTexture" id="one" hash_id="94880491"/>
+        <FLOAT1 byte="4" comment="alphaValue" x="0.3"/>
+    </Material>
+    <!--<Material id="UIWhite" shaderID="UIDefault">
+    <Texture byte="4" comment="" id="one"/>
+  </Material>-->
+    <Material id="UILobbyTitle" shaderID="UIDefault" hash_id="3371175613" shaderHashID="888949730">
+        <Texture byte="4" comment="" id="one"/>
+    </Material>
+    <Material id="title_0000_start.DDS" shaderID="UIDefault" hash_id="29829928" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0000_start.DDS" hash_id="29829928"/>
+    </Material>
+    <Material id="title_0001_RETAKE.DDS" shaderID="UIDefault" hash_id="1705933719" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0001_RETAKE.DDS" hash_id="1705933719"/>
+    </Material>
+    <Material id="title_0002_Lobby.DDS" shaderID="UIDefault" hash_id="3735035690" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0002_Lobby.DDS" hash_id="3735035690"/>
+    </Material>
+    <Material id="title_0003_player1.DDS" shaderID="UIDefault" hash_id="384940511" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0003_player1.DDS" hash_id="384940511"/>
+    </Material>
+    <Material id="title_0003_player2.DDS" shaderID="UIDefault" hash_id="1967613120" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0003_player2.DDS" hash_id="1967613120"/>
+    </Material>
+    <Material id="title_0003_player3.DDS" shaderID="UIDefault" hash_id="2793924165" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0003_player3.DDS" hash_id="2793924165"/>
+    </Material>
+    <Material id="title_0003_player4.DDS" shaderID="UIDefault" hash_id="74279750" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0003_player4.DDS" hash_id="74279750"/>
+    </Material>
+    <Material id="title_0004_ready.DDS" shaderID="UIDefault" hash_id="1002456789" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0004_ready.DDS" hash_id="1002456789"/>
+    </Material>
+    <Material id="title_0004_wait.DDS" shaderID="UIDefault" hash_id="4074367257" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0004_wait.DDS" hash_id="4074367257"/>
     </Material>
 </MaterialSet>

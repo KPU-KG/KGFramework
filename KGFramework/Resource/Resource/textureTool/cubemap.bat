@@ -1,0 +1,2 @@
+texassemble cube -o cube.dds -w 512 -h 512 -stripmips output_face_list_posx.dds output_face_list_negx.dds output_face_list_posy.dds output_face_list_negy.dds output_face_list_posz.dds output_face_list_negz.dds
+puase

@@ -16,12 +16,12 @@ struct VertexData
 struct Surface
 {
     float3 albedo;
-    float reflection;
+    float1 emssion;
     
     float1 specular;
     float1 metalic;
     float1 roughness;
-    float1 emssion;
+    float ao;
     
     float3 wNormal;
     
@@ -55,11 +55,9 @@ StructuredBuffer<InstanceData> objectInfo : register(t0);
 
 Texture2D<float4> shaderTexture[] : register(t0, space1);
 
-Texture2DArray<float4> shaderTextureArray[] : register(t0, space1);
+Texture2DArray<float4> shaderTextureArray[] : register(t0, space5);
 
-TextureCube<float4> shaderTextureCube[] : register(t0, space1);
-
-TextureCube<float4> shaderTexture3[] : register(t0, space2);
+TextureCube<float4> shaderTextureCube[] : register(t0, space2);
 
 SamplerState gsamPointWrap : register(s0);
 SamplerState gsamPointClamp : register(s1);
@@ -69,5 +67,15 @@ SamplerState gsamAnisotoropicWrap : register(s4);
 SamplerState gsamAnisotoropicClamp : register(s5);
 SamplerComparisonState gsamAnisotoropicCompClamp : register(s6);
 SamplerComparisonState gsamLinerCompClamp : register(s7);
+
+float3 LinearToGamma(float3 rgb)
+{
+    return pow(rgb, 1 / 2.2);
+}
+
+float3 GammaToLinear(float3 rgb)
+{
+    return pow(rgb, 2.2);
+}
 
 #endif

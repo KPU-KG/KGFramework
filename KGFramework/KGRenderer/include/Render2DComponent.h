@@ -60,9 +60,12 @@ namespace KG::Component
         UINT materialIndex = 0;
         KG::Renderer::Geometry* uiGeometry = nullptr;
         KG::Renderer::Shader* uiShader = nullptr;
+        bool visible = true;
+        KG::Core::SerializableProperty<bool> visibleProp;
         //Transform2D
         KG::Core::SerializableProperty<DirectX::XMFLOAT2> positionProp;
         KG::Core::SerializableProperty<DirectX::XMFLOAT2> sizeProp;
+        KG::Core::SerializableProperty<DirectX::XMFLOAT2> sourceProp;
         KG::Core::SerializableProperty<float> rotationAngleProp;
         KG::Core::SerializableProperty<float> depthProp;
         KG::Core::SerializableEnumProperty<RectPivot> parentPivotProp;

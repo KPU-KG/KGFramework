@@ -192,9 +192,29 @@ namespace KG::Renderer
 	}
 
 
+    enum MaterialType
+    {
+        Texture,
+        FLOAT1,
+        FLOAT2,
+        FLOAT3,
+        FLOAT4,
+        COLOR4,
+        COLOR3,
+        PADDING
+    };
+
+    struct MaterialElement
+    {
+        MaterialType type;
+        int offset;
+        std::string comment;
+        void DrawGUI(Resource::DynamicElementInterface& data);
+    };
+
 	class Shader
 	{
-	private:
+	protected:
 		std::map<std::tuple<ShaderMeshType, ShaderGeometryType, ShaderPixelType, ShaderTesselation>, ID3D12PipelineState*> pso;
 		unsigned renderPriority = 0;
 		KG::Resource::Metadata::ShaderSetData shaderSetData;
@@ -208,6 +228,7 @@ namespace KG::Renderer
 		ID3D10Blob* CompileShaderFromMetadata( ShaderTarget shaderTarget, ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType, 
 			ShaderTesselation tessel = ShaderTesselation::NormalMesh );
 	public:
+        std::vector<MaterialElement> MaterialDescription;
 		Shader( const KG::Resource::Metadata::ShaderSetData& data );
 		~Shader();
 		void Set( ID3D12GraphicsCommandList* pd3dCommandList, ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType, ShaderTesselation tessel = ShaderTesselation::NormalMesh );
@@ -219,6 +240,7 @@ namespace KG::Renderer
 		size_t GetMaterialIndex( const KG::Utill::HashString& ID );
 		bool CheckMaterialLoaded( const KG::Utill::HashString& ID );
 		size_t RequestMaterialIndex( const KG::Utill::HashString& ID );
-		Resource::DynamicElementInterface GetMaterialElement( const KG::Utill::HashString& ID );
-	};
+        Resource::DynamicElementInterface GetMaterialElement(const KG::Utill::HashString& ID);
+        Resource::DynamicElementInterface GetMaterialElement(UINT index);
+    };
 }

@@ -7,6 +7,7 @@
 #include "ServerPlayerControllerComponent.h"
 #include "ServerLobbyComponent.h"
 #include "ServerProjectileComponent.h"
+#include "ServerCubeAreaRed.h"
 
 namespace KG::System
 {
@@ -79,6 +80,22 @@ namespace KG::System
 		virtual void OnPreRender() override;
 	};
 
+	class SCubeAreaRedSystem : public KG::System::SBaseComponentSystem<SCubeAreaRedComponent>
+	{
+	public:
+		virtual void OnUpdate(float elapsedTime) override
+		{
+			for (auto& com : *this)
+			{
+				com.Update(elapsedTime);
+			}
+		}
+
+		// IComponentSystem을(를) 통해 상속됨
+		virtual void OnPostUpdate(float elapsedTime) override;
+		virtual void OnPreRender() override;
+	};
+
 	class SGameManagerComponentSystem : public KG::System::SBaseComponentSystem<SGameManagerComponent>
 	{
 	public:
@@ -127,6 +144,23 @@ namespace KG::System
 	};
 
 	class SProjectileComponentSystem : public SBaseComponentSystem<SProjectileComponent>
+	{
+	public:
+		virtual void OnUpdate(float elapsedTime) override
+		{
+			for (auto& com : *this)
+			{
+				com.Update(elapsedTime);
+				if (com.IsDelete()) {
+					com.Destroy();
+				}
+			}
+		}
+		virtual void OnPostUpdate(float elapsedTime) override;
+		virtual void OnPreRender() override;
+	};
+
+	class SCrawlerMissileComponentSystem : public SBaseComponentSystem<SCrawlerMissileComponent>
 	{
 	public:
 		virtual void OnUpdate(float elapsedTime) override

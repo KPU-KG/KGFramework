@@ -180,6 +180,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="export\IKGServer.h" />
+    <ClInclude Include="export\ServerCubeAreaRed.h" />
     <ClInclude Include="export\ServerEnemyCrawlerComponent.h" />
     <ClInclude Include="export\ServerEnemyMechComponent.h" />
     <ClInclude Include="export\ServerBaseComponent.h" />
@@ -200,6 +201,7 @@
     <ClCompile Include="src\KGServer.cpp" />
     <ClCompile Include="src\pch.cpp" />
     <ClCompile Include="src\ServerBaseComponent.cpp" />
+    <ClCompile Include="src\ServerCubeAreaRed.cpp" />
     <ClCompile Include="src\ServerEnemyCrawlerComponent.cpp" />
     <ClCompile Include="src\ServerEnemyMechComponent.cpp" />
     <ClCompile Include="src\ServerEnemyUnitComponent.cpp">

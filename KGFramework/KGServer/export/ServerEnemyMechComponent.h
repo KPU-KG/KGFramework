@@ -137,6 +137,8 @@ namespace KG::Component
 	class DLL SEnemyMechComponent : public SEnemyUnitComponent
 	{
 	protected:
+		static constexpr int maxHp = 10;
+
 		bool noObstacleInAttack = false;
 		bool isMovableInTrace = false;
 		// bool isPathFinding = false;

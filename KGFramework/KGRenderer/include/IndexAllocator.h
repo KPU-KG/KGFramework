@@ -51,7 +51,7 @@ namespace KG::Utill
 		}
 		void ReleaseIndex( index_type index )
 		{
-			DebugAssertion( index < csr, L"디스크립터 힙 매니저가 초과하여 반환되었습니다." );
+			DebugAssertion( index <= csr, L"디스크립터 힙 매니저가 초과하여 반환되었습니다." );
 			this->checker[index] = false;
 			if ( index == csr - 1 )
 			{

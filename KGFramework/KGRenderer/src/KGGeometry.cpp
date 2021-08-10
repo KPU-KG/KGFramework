@@ -66,7 +66,7 @@ void KG::Renderer::Geometry::Render( ID3D12GraphicsCommandList* commandList, UIN
 	if ( this->boneOffsetBuffer != nullptr )
 	{
 		auto addr = this->boneOffsetBuffer->GetGPUVirtualAddress();
-		commandList->SetGraphicsRootShaderResourceView( KG::Renderer::RootParameterIndex::BoneOffsetData, addr );
+		commandList->SetGraphicsRootShaderResourceView( KG::Renderer::GraphicRootParameterIndex::BoneOffsetData, addr );
 	}
 
 	if ( this->vertexBuffer )

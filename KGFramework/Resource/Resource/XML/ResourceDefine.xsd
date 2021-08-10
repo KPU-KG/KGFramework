@@ -14,6 +14,9 @@
             <xs:attribute name="enableBackfaceCulling" type="xs:boolean" use="required"/>
             <xs:attribute name="enableDepthCliping" type="xs:boolean" use="required"/>
             <xs:attribute name="materialParameterSize" type="xs:int" use="required"/>
+            <xs:attribute name="groupSizeX" type="xs:string"/>
+            <xs:attribute name="groupSizeY" type="xs:string"/>
+            <xs:attribute name="groupSizeZ" type="xs:string"/>
             <xs:attribute name="group" use="required">
               <xs:simpleType>
                 <xs:restriction base="xs:string">

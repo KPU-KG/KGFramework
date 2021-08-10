@@ -79,8 +79,7 @@ namespace KG::Component
 
 		KG::Component::RaycastCallbackFunc			raycastCallback = nullptr;
 
-        static constexpr int maxHp = 10;
-        int											hp = maxHp;
+		int											hp;// = maxHp;
 
 		float										attackInterval = 2;
 		float										attackTimer = 0;

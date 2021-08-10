@@ -179,6 +179,7 @@
   <ItemGroup>
     <ClCompile Include="src\ClientBaseComponent.cpp" />
     <ClCompile Include="src\ClientCharacterComponent.cpp" />
+    <ClCompile Include="src\ClientCubeAreaComponent.cpp" />
     <ClCompile Include="src\ClientEnemyControllerComponent.cpp" />
     <ClCompile Include="src\ClientGameManagerComponent.cpp" />
     <ClCompile Include="src\ClientLobbyComponent.cpp" />
@@ -193,6 +194,7 @@
   <ItemGroup>
     <ClInclude Include="export\ClientBaseComponent.h" />
     <ClInclude Include="export\ClientCharacterComponent.h" />
+    <ClInclude Include="export\ClientCubeAreaRedComponent.h" />
     <ClInclude Include="export\ClientEnemyControllerComponent.h" />
     <ClInclude Include="export\ClientGameManagerComponent.h" />
     <ClInclude Include="export\ClientLobbyComponent.h" />

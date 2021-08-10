@@ -281,25 +281,25 @@ void KG::GameFramework::PostSceneFunction()
 		}
 	);
 
-	// this->scene->AddObjectPreset("Missile",
-	// 	[this](KG::Core::GameObject& obj)
-	// 	{
-	// 		auto* t = this->system->transformSystem.GetNewComponent();
-	// 		t->SetScale(0.001, 0.001, 0.001);
-	// 
-	// 		auto* g = this->renderer->GetNewGeomteryComponent();
-	// 		g->AddGeometry(KG::Utill::HashString("CruiseMissile.fbx"));
-	// 		auto* m = this->renderer->GetNewMaterialComponent();
-	// 		m->PostMaterial(KG::Utill::HashString("missile"));
-	// 		auto* r = this->renderer->GetNewRenderComponent();
-	// 		obj.AddComponent(t);
-	// 		obj.AddComponent(g);
-	// 		obj.AddComponent(m);
-	// 		obj.AddComponent(r);
-	// 	}
-	// );
-
 	this->scene->AddModelPreset("Missile",
+		[]()
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("missile");
+
+			return std::make_pair(
+				KG::Utill::HashString("CruiseMissile.fbx"),
+				std::move(a)
+			);
+		}
+		,
+			[this](KG::Core::GameObject& obj)
+		{
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+		);
+
+	this->scene->AddModelPreset("CrawlerMissile",
 		[]()
 		{
 			KG::Resource::MaterialMatch a;
@@ -337,6 +337,30 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(c);
 		}
 	);
+
+	this->scene->AddObjectPreset("CubeAreaRed",
+		[this](KG::Core::GameObject& obj)
+		{
+			
+			// auto* t = obj.GetTransform();
+			// if (t == nullptr) {
+			// 	t = this->system->transformSystem.GetNewComponent();
+			// 	obj.AddComponent(t);
+			// }
+
+			auto* g = this->renderer->GetNewGeomteryComponent();
+			g->AddGeometry(KG::Utill::HashString("cube"));
+
+			auto* m = this->renderer->GetNewMaterialComponent();
+			m->PostMaterial(KG::Utill::HashString("area_red"));
+
+			auto* r = this->renderer->GetNewRenderComponent();
+
+			obj.AddComponent(g);
+			obj.AddComponent(m);
+			obj.AddComponent(r);
+		}
+		);
 
     this->scene->AddObjectPreset("2DUI",
         [this](KG::Core::GameObject& obj)
@@ -606,7 +630,7 @@ void KG::GameFramework::PostSceneFunction()
 			renderTextureDesc.height = this->setting.GetGameResolutionHeigth();
 			cam->renderTextureDesc = renderTextureDesc;
 			cam->SetFovY(90.0f);
-            cam->SetFarZ(350.0);
+            cam->SetFarZ(100000000.0);
 
 			cameraObj->AddComponent(cam);
 			cameraObj->GetTransform()->SetPosition(0.230, 1.45, 0.496);
@@ -717,7 +741,7 @@ void KG::GameFramework::PostSceneFunction()
 			auto* m = this->renderer->GetNewMaterialComponent();
 			auto* g = this->renderer->GetNewGeomteryComponent();
 			auto* r = this->renderer->GetNewRenderComponent();
-			m->PostShader(KG::Utill::HashString("AmbientLight"));
+			m->PostMaterial(KG::Utill::HashString("AmbientIBL"));
 			g->AddGeometry(KG::Utill::HashString("lightPlane"_id));
 			obj.AddComponent(t);
 			obj.AddComponent(m);

@@ -4,6 +4,7 @@
 #include "PhysicsComponent.h"
 #include "Debug.h"
 #include <vector>
+#include <queue>
 #include <array>
 #include <unordered_set>
 
@@ -18,20 +19,20 @@ namespace KG::Component
 		virtual void EndAction() override final;
 	};
 
-	struct CrawlerSetGoalAction : public Action {
-		CrawlerSetGoalAction(SEnemyUnitComponent* comp) : Action(comp) {}
-		virtual bool Execute(float elapsedTime) override final;
-		virtual void EndAction() override final;
-	};
-
 	struct CrawlerSetTargetAction : public Action {
 		CrawlerSetTargetAction(SEnemyUnitComponent* comp) : Action(comp) {}
 		virtual bool Execute(float elapsedTime) override final;
 		virtual void EndAction() override final;
 	};
 
-	struct CrawlerMoveAction : public Action {
-		CrawlerMoveAction(SEnemyUnitComponent* comp) : Action(comp) {}
+	struct CrawlerShootAction : public Action {
+		CrawlerShootAction(SEnemyUnitComponent* comp) : Action(comp) {}
+		virtual bool Execute(float elapsedTime) override final;
+		virtual void EndAction() override final;
+	};
+
+	struct CrawlerSetAreaAction : public Action {
+		CrawlerSetAreaAction(SEnemyUnitComponent* comp) : Action(comp) {}
 		virtual bool Execute(float elapsedTime) override final;
 		virtual void EndAction() override final;
 	};
@@ -42,8 +43,20 @@ namespace KG::Component
 		virtual void EndAction() override final;
 	};
 
-	struct CrawlerAttackAction : public Action {
-		CrawlerAttackAction(SEnemyUnitComponent* comp) : Action(comp) {}
+	struct CrawlerChargingAction : public Action {
+		CrawlerChargingAction(SEnemyUnitComponent* comp) : Action(comp) {}
+		virtual bool Execute(float elapsedTime) override final;
+		virtual void EndAction() override final;
+	};
+
+	struct CrawlerChargeAttackAction : public Action {
+		CrawlerChargeAttackAction(SEnemyUnitComponent* comp) : Action(comp) {}
+		virtual bool Execute(float elapsedTime) override final;
+		virtual void EndAction() override final;
+	};
+
+	struct CrawlerChargeDelayAction : public Action {
+		CrawlerChargeDelayAction(SEnemyUnitComponent* comp) : Action(comp) {}
 		virtual bool Execute(float elapsedTime) override final;
 		virtual void EndAction() override final;
 	};
@@ -52,41 +65,58 @@ namespace KG::Component
 	// Enemy States
 	//////////////////////////////////////////////////////////////////////////////
 
-	struct CrawlerWanderState : public State {
-		const static size_t WANDER_ACTION_COUNT = 4;
-		std::array<Action*, WANDER_ACTION_COUNT> action;
-		const static size_t WANDER_ACTION_IDLE = 0;
-		const static size_t WANDER_ACTION_SETGOAL = 1;
-		const static size_t WANDER_ACTION_ROTATE = 2;
-		const static size_t WANDER_ACTION_MOVE = 3;
+	struct CrawlerShootState : public State {
+		const static size_t SHOOT_ACTION_COUNT = 2;
+		std::array<Action*, SHOOT_ACTION_COUNT> action;
+							
+		bool isFinished = false;
 
-		int curAction = WANDER_ACTION_IDLE;
-		CrawlerWanderState(SEnemyUnitComponent* comp) : State(comp) {}
-		~CrawlerWanderState();
+		const static size_t SHOOT_ACTION_SET_AREA = 0;
+		const static size_t SHOOT_ACTION_ATTACK = 1;
+
+		int curAction = SHOOT_ACTION_SET_AREA;
+		CrawlerShootState(SEnemyUnitComponent* comp) : State(comp) {}
+		~CrawlerShootState();
 		virtual void InitState() override final;
-
 		virtual void Execute(float elapsedTime) override final;
-
 		virtual float GetValue() override final;
 	};
 
-	struct CrawlerTraceState : public State {
-		const static size_t TRACE_ACTION_COUNT = 3;
-		std::array<Action*, TRACE_ACTION_COUNT> action;
+	struct CrawlerChargeState : public State {
+		const static size_t SHOOT_ACTION_COUNT = 4;
+		std::array<Action*, SHOOT_ACTION_COUNT> action;
 
-		const static size_t TRACE_ACTION_SETGOAL = 0;
-		const static size_t TRACE_ACTION_ROTATE = 1;
-		const static size_t TRACE_ACTION_ATTACK = 2;
+		bool isFinished = false;
+		// 타겟은 정해진 상태로 스테이트가 변경된다
+		// 그러면 필요한거 : 회전 -> 대기(차징하면서 영역설정) -> 돌진 -> 대기(스턴)
 
-		int curAction = TRACE_ACTION_SETGOAL;
+		const static size_t CHARGE_ACTION_ROTATE = 0;
+		const static size_t CHARGE_ACTION_CHARGING = 1;
+		const static size_t CHARGE_ACTION_ATTACK = 2;
+		const static size_t CHARGE_ACTION_DELAY = 3;
 
-		CrawlerTraceState(SEnemyUnitComponent* comp) : State(comp) {}
-		~CrawlerTraceState();
-
+		int curAction = CHARGE_ACTION_ROTATE;
+		CrawlerChargeState(SEnemyUnitComponent* comp) : State(comp) {}
+		~CrawlerChargeState();
 		virtual void InitState() override final;
-
 		virtual void Execute(float elapsedTime) override final;
+		virtual float GetValue() override final;
+	};
 
+	struct CrawlerSetTargetState : public State {
+		const static size_t SET_TARGET_ACTION_COUNT = 2;
+		std::array<Action*, SET_TARGET_ACTION_COUNT> action;
+
+		const static size_t SET_TARGET_ACTION_IDLE = 0;
+		const static size_t SET_TARGET_ACTION_SET_TARGET = 1;
+
+		bool isFinished = false;
+
+		int curAction = SET_TARGET_ACTION_IDLE;
+		CrawlerSetTargetState(SEnemyUnitComponent* comp) : State(comp) {}
+		~CrawlerSetTargetState();
+		virtual void InitState() override final;
+		virtual void Execute(float elapsedTime) override final;
 		virtual float GetValue() override final;
 	};
 
@@ -95,10 +125,12 @@ namespace KG::Component
 	//////////////////////////////////////////////////////////////////////////////
 
 	struct CrawlerStateManager {
-		const static size_t STATE_WANDER = 0;
-		const static size_t STATE_TRACE = 1;
+		const static size_t STATE_SET_TARGET = 0;
+		const static size_t STATE_SHOOT_ATTACK = 1;
+		const static size_t STATE_CHARGE_ATTACK = 2;
 
-		const static size_t STATE_COUNT = 2;
+		const static size_t STATE_COUNT = 3;
+
 		std::array<State*, STATE_COUNT> state;
 		CrawlerStateManager(SEnemyUnitComponent* comp);
 		~CrawlerStateManager();
@@ -118,44 +150,56 @@ namespace KG::Component
 		const static UINT walk = 1U;
 	};
 
+	class SCubeAreaRedComponent;
+
+	struct AreaEvent {
+		SCubeAreaRedComponent* area = nullptr;
+		float timer = 2.6;
+	};
+
 	class DLL SEnemyCrawlerComponent : public SEnemyUnitComponent
 	{
 	protected:
-		DirectX::XMFLOAT3							goal = { 0,0,0 };
+		static constexpr int						maxHp = 100;
+		float										areaWidth = 3;
+		std::queue<std::pair<float, float>>			shootArea;
+		DirectX::XMFLOAT3							shootAreaCenter;
+		DirectX::XMFLOAT3							shootTarget;
 
-		float										distance = 0;
-		float										arriveTime = 0;
-		float										moveTime = 0;
+		float										rotateSpeed = 2;
 
-		DirectX::XMFLOAT2							angle;
-
-		float										traceRange = 10;
-		float										attackInterval = 2;
+		float										attackInterval = 0.5;
 		float										attackTimer = 0;
 
-		CrawlerStateManager* stateManager;
+		float										chargingTimer = 0;
+		float										chargingInterval = 2;
+		bool										isCharging = false;
 
+		float										chargeSpeed = 25;
+		float										chargeDist = 0;
+		float										moveDist = 0;
+
+		float										chargeDelay = 2;
+		float										chargeDelayTimer = 0;
+
+		SCubeAreaRedComponent*						area;
+		std::vector<AreaEvent>						areaEvent;
+		DirectX::XMFLOAT3							chargeTarget;
+		DirectX::XMFLOAT3							chargeOrigin;
+		DirectX::XMFLOAT3							prevPosition;
+
+		CrawlerStateManager*						stateManager;
+		bool										inShootAction = false;
+		bool										isFilledArea = false;
 	public:
-		void SetMoveTime(float t) { moveTime = t; }
-		void MoveTimer(float elapsedTime) { moveTime += elapsedTime; }
 		void SetIdleTime(float t) { idleTimer = t; }
 		void IdleTimer(float elapsedTime) { idleTimer += elapsedTime; }
 		void SetAttackTime(float t) { attackTimer = t; }
 		void AttackTimer(float elapsedTime) { attackTimer += elapsedTime; }
 		void ReadyNextAnimation(bool b) { changedAnimation = b; }
 
-		bool SetGoal();
-		bool RotateToGoal(float elapsedTime);
-		bool MoveToGoal(float elapsedTime);
 		void ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime = 0.1f, int repeat = 1);
 		float GetDistance2FromEnemy(DirectX::XMFLOAT3 pos) const;
-		bool IsInTraceRange(const DirectX::XMFLOAT3 pos) const;
-		bool IsInTraceRange(const float distance) const;
-		bool AttackTarget(float elapsedTime);
-		// 공격 패킷을 어떻게 보내야 할까
-		bool Idle(float elapsedTime);
-
-		// virtual void PostAttack() override;
 		virtual void Attack(SGameManagerComponent* gameManager) override;
 		SEnemyCrawlerComponent();
 
@@ -169,9 +213,14 @@ namespace KG::Component
 
 		virtual void HitBullet() override;
 
+		bool Idle(float elapsedTime);
 		bool SetTarget();
-		bool SetAttackRotation();
-		bool IsTargetInRange() const;
+		bool SetAttackArea();
+		bool Shoot(float elapsedTime);
+		bool Rotate(float elapsedTime);
+		bool Charging(float elapsedTime);
+		bool ChargeAttack(float elapsedTime);
+		bool ChargeDelay(float elapsedTIme);
 
 		virtual void Destroy() override;
 	};

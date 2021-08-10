@@ -19,6 +19,8 @@ namespace KG::Component
 	class SEnemyCrawlerComponent;
 	class EnemyGeneratorComponent;
 	class SProjectileComponent;
+	class SCrawlerMissileComponent;
+	class SCubeAreaRedComponent;
 	class SBaseComponent;
 	class SLobbyComponent;
 };
@@ -49,6 +51,8 @@ namespace KG::Server
 		virtual KG::Component::EnemyGeneratorComponent* GetNewEnemyGeneratorComponent() = 0;
 		virtual KG::Component::SProjectileComponent* GetNewProjectileComponent() = 0;
 		virtual KG::Component::SLobbyComponent* GetNewLobbyComponent() = 0;
+		virtual KG::Component::SCrawlerMissileComponent* GetNewCrawlerMissileComponent() = 0;
+		virtual KG::Component::SCubeAreaRedComponent* GetNewCubeAreaRedComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
 		virtual void DrawImGUI() = 0;
 		virtual bool isStarted() const = 0;

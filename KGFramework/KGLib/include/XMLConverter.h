@@ -179,9 +179,17 @@ namespace KG::Utill::XMLConverter
 		auto* currentElement = parentElement->FirstChildElement(title.c_str());
         if ( !currentElement ) return KG::Utill::HashString();
         KG::Utill::HashString result;
-		result = KG::Utill::HashString(currentElement->Attribute("srcString"));
-		auto value = currentElement->UnsignedAttribute("hash_id");
-		return  result.value != value ? KG::Utill::HashString(value) : result;
+		result = KG::Utill::HashString();
+        if (currentElement->Attribute("hash_id"))
+        {
+            result.value = currentElement->UnsignedAttribute("hash_id");
+            result.srcString = currentElement->Attribute("srcString");
+        }
+        else 
+        {
+            result = KG::Utill::HashString(currentElement->Attribute("srcString"));
+        }
+        return  result;
 	}
 
 	template<>

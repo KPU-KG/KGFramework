@@ -47,3 +47,10 @@ void KG::System::CLobbyComponentSystem::OnPostUpdate(float elapsedTime)
 void KG::System::CLobbyComponentSystem::OnPreRender()
 {
 }
+void KG::System::CCubeAreaRedComponentSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::CCubeAreaRedComponentSystem::OnPreRender()
+{
+}

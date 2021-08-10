@@ -15,5 +15,6 @@
 #include "AnimationComponent.h"
 #include "ShadowCasterComponent.h"
 #include "ParticleEmitterComponent.h"
+#include "PostProcessComponent.h"
 
 // 컴포넌트 모으는 헤더파일입니다.

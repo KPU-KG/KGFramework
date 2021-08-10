@@ -66,6 +66,9 @@
     <ClCompile Include="src\ClientLobbyComponent.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
+    <ClCompile Include="src\ClientCubeAreaComponent.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\framework.h">
@@ -105,6 +108,9 @@
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
     <ClInclude Include="export\ClientLobbyComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
+    <ClInclude Include="export\ClientCubeAreaRedComponent.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
   </ItemGroup>

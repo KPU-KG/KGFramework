@@ -25,7 +25,6 @@ namespace KG
 	class GameFramework
 	{
 		EngineDesc engineDesc;
-		Setting setting;
 		GameTimer timer;
 		std::unique_ptr<Systems> system;
 		std::unique_ptr<KG::Renderer::IKGRenderer> renderer;
@@ -38,6 +37,7 @@ namespace KG
 		KG::Component::ComponentProvider componentProvider;
 		ImGuiContext* guiContext = nullptr;
 	public:
+		inline static Setting setting;
 		GameFramework();
 		~GameFramework();
 		GameFramework(const GameFramework& rhs);

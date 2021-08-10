@@ -93,7 +93,7 @@ void GeometryShaderFunction(point ParticleVertexOutput input[1], inout TriangleS
     float halfW = data.size.x * 0.5f;
     float halfH = data.size.y * 0.5f;
     
-    float3 animatedPosition = float3(parentPivotUv[data.parentPivot] - (parentPivotUv[data.localPivot] * (data.size * 0.5f)) + data.position.xy, data.depth);
+    float3 animatedPosition = float3(parentPivotUv[data.parentPivot] - (parentPivotUv[data.localPivot] * (data.size * 0.5f)) + data.position.xy, 0.0f);
     
     float4 pVertices[4];
     pVertices[0] = float4(animatedPosition +  (halfW * right) - (halfH * up), 1.0f);

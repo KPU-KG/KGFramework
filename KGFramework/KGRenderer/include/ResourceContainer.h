@@ -9,6 +9,7 @@
 #include "KGGeometry.h"
 #include "KGModel.h"
 #include "KGShader.h"
+#include "PostProcess.h"
 #include "Texture.h"
 #include "GameObject.h"
 #include "ObjectContainer.h"
@@ -18,7 +19,8 @@ namespace KG::Resource
 	class ResourceContainer
 	{
 	private:
-		std::map<KG::Utill::HashString, KG::Renderer::Shader> shaders;
+        std::map<KG::Utill::HashString, KG::Renderer::Shader> shaders;
+        std::map<KG::Utill::HashString, KG::Renderer::PostProcess> postProcess;
 
 		std::map<KG::Utill::HashString, std::future<KG::Resource::FrameModel>> preloadModels;
 		std::map<KG::Utill::HashString, KG::Resource::FrameModel> models;
@@ -27,8 +29,9 @@ namespace KG::Resource
 		std::map<std::pair<KG::Utill::HashString, UINT>, KG::Renderer::Geometry> geometrys;
 		std::map<std::pair<D3D12_PRIMITIVE_TOPOLOGY, int>, KG::Renderer::Geometry> fakeGeometrys;
 		std::map<KG::Utill::HashString, KG::Resource::Texture> textures;
-		std::map<KG::Utill::HashString, std::pair<size_t, KG::Utill::HashString>> materials;
-		std::map<std::pair<KG::Utill::HashString, UINT>, KG::Utill::AnimationSet> animations;
+        std::map<KG::Utill::HashString, std::pair<size_t, KG::Utill::HashString>> materials;
+        std::map<KG::Utill::HashString, std::pair<size_t, KG::Utill::HashString>> postProcessMaterials;
+        std::map<std::pair<KG::Utill::HashString, UINT>, KG::Utill::AnimationSet> animations;
 		static std::unique_ptr<ResourceContainer> instance;
 	public:
 		ResourceContainer();
@@ -39,8 +42,9 @@ namespace KG::Resource
 		ResourceContainer& operator=( const ResourceContainer& other ) = delete;
 		ResourceContainer& operator=( ResourceContainer&& other ) = delete;
 
-		KG::Renderer::Shader* LoadShader(const KG::Utill::HashString& id);
-		KG::Resource::FrameModel* LoadModel( const KG::Utill::HashString& id );
+        KG::Renderer::Shader* LoadShader(const KG::Utill::HashString& id);
+        KG::Renderer::PostProcess* LoadPostProcess(const KG::Utill::HashString& id);
+        KG::Resource::FrameModel* LoadModel( const KG::Utill::HashString& id );
 		void PreLoadModels(std::vector<KG::Utill::HashString>&& vectors);
 		KG::Renderer::Geometry* LoadGeometry( const KG::Utill::HashString& id, UINT geometryIndex = 0 );
 		KG::Renderer::Geometry* LoadRawModel( const KG::Utill::HashString& id );
@@ -49,7 +53,8 @@ namespace KG::Resource
 		KG::Resource::Texture* LoadTexture( const KG::Utill::HashString& id );
 		KG::Resource::Texture* CreateTexture( const KG::Utill::HashString& id, ID3D12Resource* resource, const D3D12_SHADER_RESOURCE_VIEW_DESC& srvDesc);
 		KG::Utill::AnimationSet* LoadAnimation( const KG::Utill::HashString& id, UINT animationIndex );
-		std::pair<size_t, KG::Utill::HashString> LoadMaterial( const KG::Utill::HashString& id );
+        std::pair<size_t, KG::Utill::HashString> LoadMaterial(const KG::Utill::HashString& id);
+        std::pair<size_t, KG::Utill::HashString> LoadPostProcessMaterial(const KG::Utill::HashString& id);
 
 		//void AddAnimation( const KG::Utill::HashString& id, UINT animationIndex, const KG::Utill::AnimationSet& animation );
 		//void AddAnimation( const KG::Utill::HashString& id, UINT animationIndex, KG::Utill::AnimationSet&& animation );

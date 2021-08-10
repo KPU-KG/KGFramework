@@ -29,6 +29,7 @@ namespace KG::Packet
 		SC_PLAYER_INIT,
 		SC_ADD_OBJECT,
 		SC_REMOVE_OBJECT,
+		SC_SCALE_OBJECT,
 		// SC_REMOVE_TEAM_CHARACTOR, 따로 있을 필요가 있을까?? 11일에 생각해봅시다..
 		SC_REMOVE_PLAYER,
 		SC_FIRE, 
@@ -188,6 +189,12 @@ namespace KG::Packet
 		KG::Server::NET_OBJECT_ID newObjectId;
 		RawFloat3 position;
 		RawFloat4 rotation;
+	};
+
+	struct SC_SCALE_OBJECT
+	{
+		DEFAULT_PACKET_HEADER(SC_SCALE_OBJECT);
+		RawFloat3 scale;
 	};
 
 	struct SC_REMOVE_OBJECT

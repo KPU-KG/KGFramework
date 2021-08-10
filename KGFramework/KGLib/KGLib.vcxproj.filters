@@ -52,6 +52,9 @@
     <Filter Include="헤더 파일\Sound">
       <UniqueIdentifier>{e996269d-983b-4543-b91e-1140e47a463f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="헤더 파일\lua">
+      <UniqueIdentifier>{21fc8dd1-e53a-46fe-8703-16dd84eb35fa}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -271,6 +274,24 @@
     </ClInclude>
     <ClInclude Include="include\ISoundManager.h">
       <Filter>헤더 파일\Sound</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lua\lauxlib.h">
+      <Filter>헤더 파일\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lua\lua.h">
+      <Filter>헤더 파일\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lua\lua.hpp">
+      <Filter>헤더 파일\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lua\luaconf.h">
+      <Filter>헤더 파일\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="include\lua\lualib.h">
+      <Filter>헤더 파일\lua</Filter>
+    </ClInclude>
+    <ClInclude Include="include\KGLua.h">
+      <Filter>헤더 파일\lua</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

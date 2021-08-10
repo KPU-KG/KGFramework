@@ -72,7 +72,8 @@ void KG::Input::InputManager::ProcessInput(HWND hWnd)
 	//Æ¯¼öÅ°
     this->GetVKState(VK_LSHIFT);
     this->GetVKState(VK_RSHIFT);
-	this->GetVKState(VK_SPACE);
+    this->GetVKState(VK_SPACE);
+    //this->GetVKState(VK_LBUTTON);
 
 
 
