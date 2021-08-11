@@ -181,6 +181,7 @@ namespace KG::System
 	class SLobbyComponentSystem : public SBaseComponentSystem<SLobbyComponent>
 	{
 	public:
+		void DisconnectPlayer(KG::Server::SESSION_ID playerId);
 		virtual void OnUpdate(float elapsedTime) override
 		{
 			for (auto& com : *this)

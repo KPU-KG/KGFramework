@@ -20,7 +20,7 @@ KG::Component::SLobbyComponent::SLobbyComponent()
 //}
 
 void KG::Component::SLobbyComponent::DisconnectLobbyPlayer(KG::Server::SESSION_ID playerId) {
-	for (auto p : this->playerinfo)
+	for (auto &p : this->playerinfo)
 	{
 		if (p.id == playerId) {
 			p.state = LobbyState::Empty;
@@ -31,10 +31,10 @@ void KG::Component::SLobbyComponent::DisconnectLobbyPlayer(KG::Server::SESSION_I
 	KG::Packet::SC_LOBBY_DATA Packet;
 	for (size_t i = 0; i < PLAYERNUM; i++)
 	{
-		Packet.playerinfo[i] = this->playerinfo[i].state;
+		Packet.playerinfo[i] = (char)this->playerinfo[i].state;
 		Packet.mapnum = this->mapnum;
 	}
-	BroadcastPacket(&Packet);
+	this->BroadcastPacket(&Packet);
 }
 
 bool KG::Component::SLobbyComponent::OnDrawGUI()
@@ -96,7 +96,7 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 		for (size_t j = 0; j < PLAYERNUM; j++)
 		{
 			LobbyDataPacket.playerinfo[j] = this->playerinfo[j].state;
-			LobbyDataPacket.playerinfo[j] = this->mapnum;
+			LobbyDataPacket.mapnum = this->mapnum;
 		}
 		this->BroadcastPacket(&LobbyDataPacket);
 		// 갱신된 로비 정보 전송

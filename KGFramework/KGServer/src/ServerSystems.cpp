@@ -78,6 +78,14 @@ void KG::System::SLobbyComponentSystem::OnPreRender()
 {
 }
 
+void KG::System::SLobbyComponentSystem::DisconnectPlayer(KG::Server::SESSION_ID playerID)
+{
+	for (auto& com : *this) {
+		com.DisconnectLobbyPlayer(playerID);
+	}
+}
+
+
 void KG::System::SCubeAreaRedSystem::OnPostUpdate(float elapsedTime)
 {
 }

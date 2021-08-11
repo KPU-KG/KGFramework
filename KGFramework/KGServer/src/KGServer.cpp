@@ -444,6 +444,7 @@ void KG::Server::Server::Disconnect(SESSION_ID playerId)
 			SendRemovePlayer(playerCompId, pl.id);
 		}
 	}
+	sLobbySystem.DisconnectPlayer(playerId);
 }
 
 void KG::Server::Server::DoRecv(SESSION_ID key)
