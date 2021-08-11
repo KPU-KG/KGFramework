@@ -21,7 +21,7 @@ KG::Component::SLobbyComponent::SLobbyComponent()
 
 void KG::Component::SLobbyComponent::DisconnectLobbyPlayer(KG::Server::SESSION_ID playerId) {
 	std::cout << "disconnect lobby id: " << playerId << "\n";
-	for (size_t i = 0; i < 4; i++)
+	for (size_t i = 0; i < PLAYERNUM; i++)
 	{
 		std::cout << this->playerinfo[i].state << "\n";
 	}
@@ -33,6 +33,14 @@ void KG::Component::SLobbyComponent::DisconnectLobbyPlayer(KG::Server::SESSION_I
 			std::cout << "disconnect\n";
 		}
 	}
+
+	KG::Packet::SC_LOBBY_DATA Packet;
+	for (size_t i = 0; i < PLAYERNUM; i++)
+	{
+		Packet.playerinfo[i] = this->playerinfo[i].state;
+		Packet.mapnum = this->mapnum;
+	}
+	BroadcastPacket(&Packet);
 }
 
 bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender)
@@ -58,6 +66,7 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 				for (size_t j = 0; j < PLAYERNUM; j++)
 				{
 					LobbyDataPacket.playerinfo[j] = this->playerinfo[j].state;
+					LobbyDataPacket.mapnum = this->mapnum;
 				}
 				this->BroadcastPacket(&LobbyDataPacket);
 				// 갱신된 로비 정보 전송
@@ -80,6 +89,7 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 		for (size_t j = 0; j < PLAYERNUM; j++)
 		{
 			LobbyDataPacket.playerinfo[j] = this->playerinfo[j].state;
+			LobbyDataPacket.playerinfo[j] = this->mapnum;
 		}
 		this->BroadcastPacket(&LobbyDataPacket);
 		// 갱신된 로비 정보 전송
@@ -108,6 +118,15 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 	{
 		auto* Packet = KG::Packet::PacketCast<KG::Packet::CS_SELECT_MAP>(packet);
 		this->mapnum = Packet->mapnum;
+
+		KG::Packet::SC_LOBBY_DATA LobbyDataPacket;
+		for (size_t j = 0; j < PLAYERNUM; j++)
+		{
+			LobbyDataPacket.playerinfo[j] = this->playerinfo[j].state;
+			LobbyDataPacket.mapnum = this->mapnum;
+		}
+		this->BroadcastPacket(&LobbyDataPacket);
+		
 	}
 	return true;
 	}
