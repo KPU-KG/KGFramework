@@ -137,6 +137,7 @@ void KG::GameFramework::PostServerFunction()
 			phy->SetCollisionBox(box);
 			phy->SetApply(true);
 			phy->AddFilterGroup(KG::Component::FilterGroup::eENEMY, KG::Component::FilterGroup::eNONE);
+			phy->AddFilterGroup(KG::Component::FilterGroup::eNONE, KG::Component::FilterGroup::eBULLET);
 			obj.AddComponent(phy);
 
 

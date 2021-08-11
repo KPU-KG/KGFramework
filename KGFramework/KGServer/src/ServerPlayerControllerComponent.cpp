@@ -33,6 +33,24 @@ void KG::Component::SPlayerComponent::OnCreate(KG::Core::GameObject* obj)
 		if (filterOther & static_cast<uint32_t>(FilterGroup::eBULLET)) {
 			this->HitBullet(1);
 		}
+		if (filterOther & static_cast<uint32_t>(FilterGroup::eENEMY)) {
+			auto comp = other->GetGameObject()->GetComponent<SEnemyCrawlerComponent>();
+			if (comp != nullptr) {
+				if (comp->IsCharging() && !this->hitFlag) {
+					this->hitFlag = true;
+					this->hitTimer = 0;
+					this->HitBullet(3);
+					auto enemyPos = other->GetGameObject()->GetTransform()->GetWorldPosition();
+					auto myPos = my->GetGameObject()->GetTransform()->GetWorldPosition();
+					auto v = Math::Vector3::Subtract(myPos, enemyPos);
+					float dist = sqrt(v.x * v.x + v.z * v.z);
+					if (dist < this->hitDistance) {
+						auto dir = Math::Vector3::Normalize(v);
+						my->AddForce(dir, this->hitDistance - dist);
+					}
+				}
+			}
+		}
 		}
 	);
 	this->physicsScene = this->server->GetPhysicsScene();
@@ -49,6 +67,13 @@ void KG::Component::SPlayerComponent::Update(float elapsedTime)
 		//auto eulerInputs = KG::Math::Quaternion::ToEuler(this->inputs.rotation);
 		//this->physics->AddTorque(XMFLOAT3(0, 1, 0), 40000);
 		this->ProcessMove(elapsedTime);
+
+		this->hitTimer += elapsedTime;
+		if (this->hitTimer >= this->hitInterval) {
+			this->hitFlag = false;
+			this->hitTimer = 0;
+		}
+
 	}
 	packetSendTimer += elapsedTime;
 	if (packetSendTimer > this->packetInterval)
@@ -63,6 +88,8 @@ void KG::Component::SPlayerComponent::Respawn(float elapsedTime) {
 		this->isActive = true;
 		this->hpPoint = 5;
 		this->respawnTimer = 0;
+		this->hitFlag = false;
+		this->hitTimer = 0;
 	}
 	else {
 		this->respawnTimer += elapsedTime;

@@ -48,15 +48,18 @@ void KG::Component::SEnemyCrawlerComponent::OnCreate(KG::Core::GameObject* obj)
 	this->rigid->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
 		auto filterMy = my->GetFilterMask();
 		auto filterOther = other->GetFilterGroup();
+		// if (this->IsCharging()) {
+		if (filterOther & static_cast<uint32_t>(FilterGroup::ePLAYER)) {
+			auto col = other->GetCollisionCallback();
+			if (col != nullptr)
+				col(other, my);
+		}
+		// }
+
 		if (!(filterMy & filterOther)) {
 			auto col = other->GetCollisionCallback();
 			if (col != nullptr)
 				col(other, my);
-
-			// 플레이어 콜백 함수에 추가할것
-			// 1. 데미지 입고 일정 시간동안 차징에 데미지 안받는 것
-			// 2. 맞는 순간에 날아가는 것
-			// this->GetGameObject()->Destroy();
 		}
 		});
 }
@@ -116,6 +119,11 @@ void KG::Component::SEnemyCrawlerComponent::HitBullet() {
 	this->BroadcastPacket(&hp);
 }
 
+bool KG::Component::SEnemyCrawlerComponent::IsCharging() const
+{
+	return this->isCharging;
+}
+
 bool KG::Component::SEnemyCrawlerComponent::OnDrawGUI()
 {
 
@@ -161,6 +169,11 @@ void KG::Component::SEnemyCrawlerComponent::Destroy()
 			iter.area->GetGameObject()->Destroy();
 	}
 	this->areaEvent.clear();
+
+	if (this->area != nullptr) {
+		this->area->GetGameObject()->Destroy();
+		this->area = nullptr;
+	}
 
 	if (rigid)
 		rigid->ReleaseActor();

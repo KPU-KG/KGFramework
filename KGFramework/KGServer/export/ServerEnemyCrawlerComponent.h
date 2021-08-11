@@ -175,6 +175,7 @@ namespace KG::Component
 		float										chargingInterval = 2;
 		bool										isCharging = false;
 
+		constexpr static float maxChargeDist = 30;
 		float										chargeSpeed = 25;
 		float										chargeDist = 0;
 		float										moveDist = 0;
@@ -212,6 +213,8 @@ namespace KG::Component
 		virtual bool OnDrawGUI();
 
 		virtual void HitBullet() override;
+
+		bool IsCharging() const;
 
 		bool Idle(float elapsedTime);
 		bool SetTarget();
