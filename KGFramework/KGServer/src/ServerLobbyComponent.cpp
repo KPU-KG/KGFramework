@@ -122,8 +122,3 @@ void KG::Component::SLobbyComponent::OnCreate(KG::Core::GameObject* obj)
 	this->SetNetObjectId(KG::Server::LOBBY_ID);
 	this->server->SetServerObject(this->networkObjectId, this);
 }
-
-void KG::Component::SLobbyComponent::AddPlayers()
-{
-	//this->server->AddPlayers();
-}

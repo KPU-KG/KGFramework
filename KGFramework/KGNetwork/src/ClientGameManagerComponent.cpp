@@ -14,9 +14,6 @@ void KG::Component::CGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 
 void KG::Component::CGameManagerComponent::Update(float elapsedTime)
 {
-	/*char a = (char)this->network->GetLobbyInfo(0);
-	char b = (char)this->network->GetLobbyInfo(1);
-	std::cout << a << b << std::endl;*/
 }
 
 bool KG::Component::CGameManagerComponent::OnDrawGUI()

@@ -15,7 +15,6 @@ bool KG::Component::CLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
     }
     case KG::Packet::PacketType::SC_LOBBY_FULL:
     {
-        // *
         return true;
     }
     case KG::Packet::PacketType::SC_LOBBY_DATA:
@@ -33,8 +32,6 @@ bool KG::Component::CLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
         auto* Packet = KG::Packet::PacketCast<KG::Packet::SC_GAME_START>(packet);
         if (Packet->mapnum == 0) {
             //0¹ø¸Ê ·Îµå
-            /*auto* scene = this->GetGameObject()->GetScene();
-            scene->LoadScene();*/
         }
     }
     return true;
