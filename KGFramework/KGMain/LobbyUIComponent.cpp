@@ -275,8 +275,30 @@ namespace KG::Component
             fsmMap["lobby"_id] = [this](float delta, float current) -> KG::Utill::hashType
             {
                 float b = 0.25f + 0.1f * sinf(current * 3);
-                Anim("Select_day"_id).COLOR(b, b, b);
-                Anim("Select_sunset"_id).COLOR(b, b, b);
+                {
+                    float day = b;
+                    float sunset = b;
+#if SERVER_LOGIN == 1
+                    if (this->lobby->GetMap() == 0) 
+                        day = 1;
+                    else 
+                        sunset = 1;
+#endif
+                    Anim("Select_day"_id).COLOR(day, day, day);
+                    Anim("Select_sunset"_id).COLOR(sunset, sunset, sunset);
+                    if (IsClicked("Select_day"_id))
+                    {
+#if SERVER_LOGIN == 1
+                        this->lobby->SendSelectPacket(0);
+#endif
+                    }
+                    if (IsClicked("Select_sunset"_id))
+                    {
+#if SERVER_LOGIN == 1
+                        this->lobby->SendSelectPacket(1);
+#endif
+                    }
+                }
                 for (size_t i = 0; i < 4; i++)
                 {
                     int myId = TEST_ID;
@@ -344,7 +366,12 @@ namespace KG::Component
                 Anim("StartLOGO"_id).ON().MOVEX(0, current, end);
                 if (current > end)
                 {
-                    this->comp->GetGameObject()->GetScene()->LoadScene("Resource/Scenes/SceneData_Test_Post.xml");
+                    int map = 0;
+#if SERVER_LOGIN == 1
+                    map = this->lobby->GetMap();
+#endif
+                    static const std::string maps[] = { "Resource/Scenes/SceneData_86_client.xml", "Resource/Scenes/SceneData_86_client_sunset.xml" };
+                    this->comp->GetGameObject()->GetScene()->LoadScene(maps[map]);
 #if SERVER_LOGIN == 1
                     auto* root = this->scene->GetRootNode();
                     auto* manager = root->GetComponent<CGameManagerComponent>();

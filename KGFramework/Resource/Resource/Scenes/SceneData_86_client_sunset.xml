@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene>
-    <SkyBoxId hash_id="3325274414" srcString="SkyDay"/>
+    <SkyBoxId hash_id="2071956174" srcString="SkySunset"/>
     <GameObject instanceId="0">
         <Tag hash_id="2696201701" srcString="rootNode"/>
         <Component name="TransformComponent" hash_id="3882513520">
@@ -10,8 +10,8 @@
         </Component>
         <Component name="ILightComponent" hash_id="2391118483">
             <LightType value="0"/>
-            <Strength x="1" y="1" z="1"/>
-            <Direction x="-0.57735026" y="-0.57735026" z="-0.57735026"/>
+            <Strength x="0.40000001" y="0.2" z="0.1"/>
+            <Direction x="0.71887636" y="-0.5657075" z="-0.43398073"/>
         </Component>
         <Component name="IShadowCasterComponent" hash_id="1896069075"/>
         <Component name="IPostProcessManagerComponent" hash_id="2492596121">
@@ -26,7 +26,7 @@
                 <isActive value="true"/>
             </PostProcess>
             <PostProcess>
-                <id hash_id="1514760794" srcString="HDRTonemap_Day"/>
+                <id srcString="HDRTonemap_Sunset"/>
                 <isRaw value="false"/>
                 <isActive value="true"/>
             </PostProcess>
@@ -52,7 +52,7 @@
                 <MaterialDesc>
                     <Element>
                         <isRawShader value="false"/>
-                        <materialID hash_id="3325274414" srcString="SkyDay"/>
+                        <materialID hash_id="2071956174" srcString="SkySunset"/>
                         <slotIndex value="0"/>
                     </Element>
                 </MaterialDesc>
@@ -2020,7 +2020,7 @@
                 <MaterialDesc>
                     <Element>
                         <isRawShader value="false"/>
-                        <materialID hash_id="1802361946" srcString="AmbientIBL"/>
+                        <materialID hash_id="452798195" srcString="AmbientIBL_sunset"/>
                         <slotIndex value="0"/>
                     </Element>
                 </MaterialDesc>

@@ -8,10 +8,10 @@
     <isVsync value="false"/>
     <isPxDebugger value="false"/>
     <isEditMode value="false"/>
-    <isConsoleMode value="false"/>
+    <isConsoleMode value="true"/>
     <isStartClient value="false"/>
-    <isStartServer value="false"/>
+    <isStartServer value="true"/>
     <isStartLogin value="false"/>
     <ipAddress value="127.0.0.1"/>
-    <startScenePath value="Resource/Scenes/SceneData_UI.xml"/>
+    <startScenePath value="Resource/Scenes/SceneData_86.xml"/>
 </Settings>
