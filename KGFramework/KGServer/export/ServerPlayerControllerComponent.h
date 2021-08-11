@@ -48,6 +48,10 @@ namespace KG::Component
 
 		bool reloadFlag = false;
 
+		constexpr static float hitInterval = 3;
+		bool hitFlag = false;
+		float hitTimer = 0;
+
 		void SendSyncPacket();
 		void ProcessMove(float elapsedTime);
 		void Respawn(float elapsedTime);

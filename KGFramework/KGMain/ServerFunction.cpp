@@ -67,7 +67,7 @@ void KG::GameFramework::PostServerFunction()
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			auto& box = phy->GetCollisionBox();
 			box.position = { 0, 0, 0 };
-			box.scale = { 1,1,3 };
+			box.scale = { 0.7,0.7,1.5 };
 			phy->SetApply(true);
 			phy->AddFilterGroup(KG::Component::FilterGroup::eBULLET, KG::Component::FilterGroup::eENEMY);
 			phy->AddFilterGroup(KG::Component::FilterGroup::eNONE, KG::Component::FilterGroup::eBULLET);
@@ -86,7 +86,7 @@ void KG::GameFramework::PostServerFunction()
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			auto& box = phy->GetCollisionBox();
 			box.position = { 0, 0, 0 };
-			box.scale = { 1,1,3 };
+			box.scale = { 1,1,2 };
 			phy->SetApply(true);
 			phy->AddFilterGroup(KG::Component::FilterGroup::eBULLET, KG::Component::FilterGroup::eENEMY);
 			phy->AddFilterGroup(KG::Component::FilterGroup::eNONE, KG::Component::FilterGroup::eBULLET);
@@ -132,7 +132,7 @@ void KG::GameFramework::PostServerFunction()
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			KG::Component::CollisionBox box;
-			box.position = { 0, 3, 0 };
+			box.position = { 0, 2, 0 };
 			box.scale = { 4,6,4 };
 			phy->SetCollisionBox(box);
 			phy->SetApply(true);

@@ -213,6 +213,8 @@ namespace KG::Component
 
 		virtual void HitBullet() override;
 
+		bool IsCharging() const;
+
 		bool Idle(float elapsedTime);
 		bool SetTarget();
 		bool SetAttackArea();

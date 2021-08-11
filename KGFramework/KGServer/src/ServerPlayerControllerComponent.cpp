@@ -1,5 +1,6 @@
 #include "pch.h"
 #include "ServerPlayerControllerComponent.h"
+#include "ServerEnemyCrawlerComponent.h"
 #include "Transform.h"
 #include "KGServer.h"
 #include "PhysicsComponent.h"
@@ -33,6 +34,21 @@ void KG::Component::SPlayerComponent::OnCreate(KG::Core::GameObject* obj)
 		if (filterOther & static_cast<uint32_t>(FilterGroup::eBULLET)) {
 			this->HitBullet(1);
 		}
+		if (filterOther & static_cast<uint32_t>(FilterGroup::eENEMY)) {
+			auto comp = other->GetGameObject()->GetComponent<SEnemyCrawlerComponent>();
+			if (comp != nullptr) {
+				if (comp->IsCharging() && !this->hitFlag) {
+					this->HitBullet(3);
+					this->hitFlag = true;
+					this->hitTimer = 0;
+					// 데미지 입고
+					// 플래그 on
+					// 플래그 있는 동안 charging에는 데미지 안받음
+					// add force로 튕겨나가기? - 이건 좀 보고
+				}
+			}
+
+		}
 		}
 	);
 	this->physicsScene = this->server->GetPhysicsScene();
@@ -49,6 +65,13 @@ void KG::Component::SPlayerComponent::Update(float elapsedTime)
 		//auto eulerInputs = KG::Math::Quaternion::ToEuler(this->inputs.rotation);
 		//this->physics->AddTorque(XMFLOAT3(0, 1, 0), 40000);
 		this->ProcessMove(elapsedTime);
+		if (this->hitFlag) {
+			this->hitTimer += elapsedTime;
+			if (this->hitInterval <= this->hitTimer) {
+				this->hitFlag = false;
+				this->hitTimer = 0;
+			}
+		}
 	}
 	packetSendTimer += elapsedTime;
 	if (packetSendTimer > this->packetInterval)
@@ -63,6 +86,8 @@ void KG::Component::SPlayerComponent::Respawn(float elapsedTime) {
 		this->isActive = true;
 		this->hpPoint = 5;
 		this->respawnTimer = 0;
+		this->hitFlag = false;
+		this->hitTimer = 0;
 	}
 	else {
 		this->respawnTimer += elapsedTime;

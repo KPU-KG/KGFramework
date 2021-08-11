@@ -116,6 +116,11 @@ void KG::Component::SEnemyCrawlerComponent::HitBullet() {
 	this->BroadcastPacket(&hp);
 }
 
+bool KG::Component::SEnemyCrawlerComponent::IsCharging() const
+{
+	return this->isCharging;
+}
+
 bool KG::Component::SEnemyCrawlerComponent::OnDrawGUI()
 {
 
