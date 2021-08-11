@@ -43,6 +43,19 @@ void KG::Component::SLobbyComponent::DisconnectLobbyPlayer(KG::Server::SESSION_I
 	BroadcastPacket(&Packet);
 }
 
+bool KG::Component::SLobbyComponent::OnDrawGUI()
+{
+    if (ImGui::ComponentHeader<SLobbyComponent>())
+    {
+        for (size_t i = 0; i < 4; i++)
+        {
+            const char* txt[] = { "Empty","Wait","Ready" };
+            ImGui::BulletText("User %d : %s", i + 1, txt[this->playerinfo[i].state]);
+        }
+    }
+    return false;
+}
+
 bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender)
 {
 	switch (type)
@@ -96,16 +109,17 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 
 		for (size_t i = 0; i < PLAYERNUM; i++)
 		{
-			if (this->playerinfo[i].state != LobbyState::Ready) {
+			if (this->playerinfo[i].state == LobbyState::Wait) {
 				return true;
 			}
 		}
 
 		// 저장된 맵 번호로 서버 씬 로드 *
-		if (this->mapnum == 0) {
-		}
-		else if (this->mapnum == 1) {
-		}
+		//if (this->mapnum == 0) {
+		//}
+		//else if (this->mapnum == 1) {
+		//}
+        //서버씬은 로드 안해도 된다고 계속 말씀드린거같은데
 
 		KG::Packet::SC_GAME_START StartPacket;
 		StartPacket.mapnum = this->mapnum;

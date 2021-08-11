@@ -143,6 +143,11 @@ KG::Core::GameObject* KG::Core::Scene::FindObjectWithID(UINT32 instanceID) const
 	return this->GetIndexObject(instanceID);
 }
 
+KG::Core::GameObject* KG::Core::Scene::GetRootNode() const
+{
+    return this->rootNode;
+}
+
 UINT KG::Core::Scene::GetObjectCount() const
 {
 	return this->activePool.size() - std::count(this->activePool.begin(), this->activePool.end(), NULL_OBJECT);

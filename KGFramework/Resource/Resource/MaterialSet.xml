@@ -747,4 +747,25 @@
     <Material id="title_0004_wait.DDS" shaderID="UIDefault" hash_id="4074367257" shaderHashID="888949730">
         <Texture byte="4" comment="uiTexture" id="title_0004_wait.DDS" hash_id="4074367257"/>
     </Material>
+    <Material id="title_0005_cancel.DDS" shaderID="UIDefault" hash_id="2145254391" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0005_cancel.DDS"/>
+    </Material>
+    <Material id="title_0006_waiting.DDS" shaderID="UIDefault" hash_id="3847065707" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0006_waiting.DDS" hash_id="3847065707"/>
+    </Material>
+    <Material id="title_0007_you.DDS" shaderID="UIDefault" hash_id="2064009098" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0007_you.DDS" hash_id="2064009098"/>
+    </Material>
+    <Material id="title_0009_select.DDS" shaderID="UIDefault" hash_id="1853586693" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0009_select.DDS" hash_id="1853586693"/>
+    </Material>
+    <Material id="title_0010_day.DDS" shaderID="UIDefault" hash_id="1245851513" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0010_day.DDS" hash_id="1245851513"/>
+    </Material>
+    <Material id="title_0011_sunset.DDS" shaderID="UIDefault" hash_id="2528606270" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0011_sunset.DDS" hash_id="2528606270"/>
+    </Material>
+    <Material id="title_0012_start_game.DDS" shaderID="UIDefault" hash_id="1980192436" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0012_start_game.DDS" hash_id="1980192436"/>
+    </Material>
 </MaterialSet>

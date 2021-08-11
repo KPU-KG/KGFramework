@@ -55,6 +55,7 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 {
 	DebugNormalMessage("Initialize");
 	//Desc·ù ¼¼ÆÃ
+    instance = this;
 	this->engineDesc = engineDesc;
 	new(&this->setting) Setting(setting);
 

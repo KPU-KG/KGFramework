@@ -38,6 +38,7 @@ namespace KG
 		ImGuiContext* guiContext = nullptr;
 	public:
 		inline static Setting setting;
+        inline static GameFramework* instance = nullptr;
 		GameFramework();
 		~GameFramework();
 		GameFramework(const GameFramework& rhs);
