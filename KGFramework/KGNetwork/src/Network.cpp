@@ -266,3 +266,9 @@ char KG::Server::Network::GetLobbyInfo(int num)
 	return this->cLobbySystem.GetInfo(num);
 }
 
+int KG::Server::Network::GetMap()
+{
+	return this->cLobbySystem.GetMap();
+}
+
+

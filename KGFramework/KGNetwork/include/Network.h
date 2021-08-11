@@ -44,6 +44,7 @@ namespace KG::Server
 		void ProcessPacket(unsigned char* buffer);
 	public:
 		char GetLobbyInfo(int num);
+		int GetMap();
 		virtual void Initialize() override;
 		virtual void SetAddress(DWORD address) override;
         virtual void SetAddress(const std::string& address) override;

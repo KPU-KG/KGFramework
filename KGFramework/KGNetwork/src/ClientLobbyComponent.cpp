@@ -24,6 +24,7 @@ bool KG::Component::CLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
         for (size_t i = 0; i < PLAYERNUM; i++)
         {
             this->playerInfo[i] = Packet->playerinfo[i];
+            this->mapnum = Packet->mapnum
         }
         return true;
     }
@@ -75,7 +76,10 @@ char KG::Component::CLobbyComponent::GetLobbyInfo(int num)
     return this->playerInfo[num];
 }
 
-
+int KG::Component::CLobbyComponent::GetMap()
+{
+    return this->mapnum;
+}
 
 void KG::Component::CLobbyComponent::SendLoginPacket() {
     KG::Packet::CS_REQ_LOGIN login = {};
