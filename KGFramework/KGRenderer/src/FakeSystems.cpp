@@ -1,5 +1,4 @@
 #include "FakeSystems.h"
-#include "..\include_fake\FakeSystems.h"
 
 void KG::System::FakeGeometrySystem::OnPreRender()
 {

@@ -99,16 +99,17 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 
 		for (size_t i = 0; i < PLAYERNUM; i++)
 		{
-			if (this->playerinfo[i].state != LobbyState::Ready) {
+			if (this->playerinfo[i].state == LobbyState::Wait) {
 				return true;
 			}
 		}
 
 		// 저장된 맵 번호로 서버 씬 로드 *
-		if (this->mapnum == 0) {
-		}
-		else if (this->mapnum == 1) {
-		}
+		//if (this->mapnum == 0) {
+		//}
+		//else if (this->mapnum == 1) {
+		//}
+        //서버씬은 로드 안해도 된다고 계속 말씀드린거같은데
 
 		KG::Packet::SC_GAME_START StartPacket;
 		StartPacket.mapnum = this->mapnum;

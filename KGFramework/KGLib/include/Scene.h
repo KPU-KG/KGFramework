@@ -98,6 +98,8 @@ namespace KG::Core
 		KG::Core::GameObject* FindObjectWithTag(const KG::Utill::HashString& tag) const;
 		KG::Core::GameObject* FindObjectWithID(UINT32 instanceID) const;
 
+        KG::Core::GameObject* GetRootNode() const;
+
 		UINT GetObjectCount() const;
 
 		//Delete

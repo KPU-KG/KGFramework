@@ -91,7 +91,7 @@
                     </Component>
                     <Component name="IRender2DComponent" hash_id="3439219241">
                         <visible value="false"/>
-                        <Position x="0.64999998" y="-0.75"/>
+                        <Position x="0" y="-0.75"/>
                         <Size x="0.15000001" y="0.15000001"/>
                         <source x="256" y="64"/>
                         <RotationAngle value="0"/>
@@ -101,7 +101,7 @@
                         <MaterialID hash_id="29829928" srcString="title_0000_start.DDS"/>
                         <LeftTopUV x="0" y="0"/>
                         <RightBottomUV x="1" y="1"/>
-                        <Color r="1" g="0.99998999" b="0.99998999" a="1"/>
+                        <Color r="1" g="0.99998999" b="0.99998999" a="0"/>
                         <ProgressShape value="0"/>
                         <ProgressValue value="1"/>
                     </Component>
@@ -197,7 +197,7 @@
                         <MaterialID hash_id="384940511" srcString="title_0003_player1.DDS"/>
                         <LeftTopUV x="0" y="0"/>
                         <RightBottomUV x="1" y="1"/>
-                        <Color r="0.34947872" g="0.34947872" b="0.34947872" a="1"/>
+                        <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
                         <ProgressShape value="0"/>
                         <ProgressValue value="1"/>
                     </Component>
@@ -220,7 +220,7 @@
                             <MaterialID hash_id="4074367257" srcString="title_0004_wait.DDS"/>
                             <LeftTopUV x="0" y="0"/>
                             <RightBottomUV x="1" y="1"/>
-                            <Color r="0.34947872" g="0.34947872" b="0.34947872" a="1"/>
+                            <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
                             <ProgressShape value="0"/>
                             <ProgressValue value="1"/>
                         </Component>
@@ -244,7 +244,7 @@
                             <MaterialID hash_id="1002456789" srcString="title_0004_ready.DDS"/>
                             <LeftTopUV x="0" y="0"/>
                             <RightBottomUV x="1" y="1"/>
-                            <Color r="0.34947872" g="0.34947872" b="0.34947872" a="1"/>
+                            <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
                             <ProgressShape value="0"/>
                             <ProgressValue value="1"/>
                         </Component>
@@ -269,7 +269,7 @@
                         <MaterialID hash_id="1967613120" srcString="title_0003_player2.DDS"/>
                         <LeftTopUV x="0" y="0"/>
                         <RightBottomUV x="1" y="1"/>
-                        <Color r="0.34947872" g="0.34947872" b="0.34947872" a="1"/>
+                        <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
                         <ProgressShape value="0"/>
                         <ProgressValue value="1"/>
                     </Component>
@@ -292,7 +292,7 @@
                             <MaterialID hash_id="4074367257" srcString="title_0004_wait.DDS"/>
                             <LeftTopUV x="0" y="0"/>
                             <RightBottomUV x="1" y="1"/>
-                            <Color r="0.34947872" g="0.34947872" b="0.34947872" a="1"/>
+                            <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
                             <ProgressShape value="0"/>
                             <ProgressValue value="1"/>
                         </Component>
@@ -316,7 +316,7 @@
                             <MaterialID hash_id="1002456789" srcString="title_0004_ready.DDS"/>
                             <LeftTopUV x="0" y="0"/>
                             <RightBottomUV x="1" y="1"/>
-                            <Color r="0.34947872" g="0.34947872" b="0.34947872" a="1"/>
+                            <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
                             <ProgressShape value="0"/>
                             <ProgressValue value="1"/>
                         </Component>
@@ -341,7 +341,7 @@
                         <MaterialID hash_id="2793924165" srcString="title_0003_player3.DDS"/>
                         <LeftTopUV x="0" y="0"/>
                         <RightBottomUV x="1" y="1"/>
-                        <Color r="0.34947872" g="0.34947872" b="0.34947872" a="1"/>
+                        <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
                         <ProgressShape value="0"/>
                         <ProgressValue value="1"/>
                     </Component>
@@ -364,7 +364,7 @@
                             <MaterialID hash_id="4074367257" srcString="title_0004_wait.DDS"/>
                             <LeftTopUV x="0" y="0"/>
                             <RightBottomUV x="1" y="1"/>
-                            <Color r="0.34947872" g="0.34947872" b="0.34947872" a="1"/>
+                            <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
                             <ProgressShape value="0"/>
                             <ProgressValue value="1"/>
                         </Component>
@@ -388,7 +388,7 @@
                             <MaterialID hash_id="1002456789" srcString="title_0004_ready.DDS"/>
                             <LeftTopUV x="0" y="0"/>
                             <RightBottomUV x="1" y="1"/>
-                            <Color r="0.34947872" g="0.34947872" b="0.34947872" a="1"/>
+                            <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
                             <ProgressShape value="0"/>
                             <ProgressValue value="1"/>
                         </Component>
@@ -413,7 +413,7 @@
                         <MaterialID hash_id="74279750" srcString="title_0003_player4.DDS"/>
                         <LeftTopUV x="0" y="0"/>
                         <RightBottomUV x="1" y="1"/>
-                        <Color r="0.34947872" g="0.34947872" b="0.34947872" a="1"/>
+                        <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
                         <ProgressShape value="0"/>
                         <ProgressValue value="1"/>
                     </Component>
@@ -436,7 +436,7 @@
                             <MaterialID hash_id="4074367257" srcString="title_0004_wait.DDS"/>
                             <LeftTopUV x="0" y="0"/>
                             <RightBottomUV x="1" y="1"/>
-                            <Color r="0.34947872" g="0.34947872" b="0.34947872" a="1"/>
+                            <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
                             <ProgressShape value="0"/>
                             <ProgressValue value="1"/>
                         </Component>
@@ -460,7 +460,7 @@
                             <MaterialID hash_id="1002456789" srcString="title_0004_ready.DDS"/>
                             <LeftTopUV x="0" y="0"/>
                             <RightBottomUV x="1" y="1"/>
-                            <Color r="0.34947872" g="0.34947872" b="0.34947872" a="1"/>
+                            <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
                             <ProgressShape value="0"/>
                             <ProgressValue value="1"/>
                         </Component>
@@ -475,7 +475,7 @@
                     </Component>
                     <Component name="IRender2DComponent" hash_id="3439219241">
                         <visible value="true"/>
-                        <Position x="-0.67500001" y="0.15000001"/>
+                        <Position x="-0.22499999" y="0.15000001"/>
                         <Size x="0.075000003" y="0.075000003"/>
                         <source x="385" y="68"/>
                         <RotationAngle value="0"/>
@@ -498,7 +498,7 @@
                         </Component>
                         <Component name="IRender2DComponent" hash_id="3439219241">
                             <visible value="true"/>
-                            <Position x="-0.67500001" y="0.075000003"/>
+                            <Position x="-0.22499999" y="0.075000003"/>
                             <Size x="0.5" y="0.015"/>
                             <source x="1" y="1"/>
                             <RotationAngle value="0"/>
@@ -522,7 +522,7 @@
                         </Component>
                         <Component name="IRender2DComponent" hash_id="3439219241">
                             <visible value="true"/>
-                            <Position x="-0.67500001" y="-0.44999999"/>
+                            <Position x="-0.22499999" y="-0.44999999"/>
                             <Size x="0.5" y="0.015"/>
                             <source x="1" y="1"/>
                             <RotationAngle value="0"/>
@@ -558,6 +558,102 @@
                         <LeftTopUV x="0" y="0"/>
                         <RightBottomUV x="1" y="1"/>
                         <Color r="1" g="1" b="1" a="1"/>
+                        <ProgressShape value="0"/>
+                        <ProgressValue value="1"/>
+                    </Component>
+                </GameObject>
+                <GameObject instanceId="30">
+                    <Tag hash_id="982246325" srcString="Select"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IRender2DComponent" hash_id="3439219241">
+                        <visible value="true"/>
+                        <Position x="-0.63" y="-0.69999999"/>
+                        <Size x="0.075000003" y="0.075000003"/>
+                        <source x="612" y="68"/>
+                        <RotationAngle value="0"/>
+                        <Depth value="0"/>
+                        <ParentPivot value="1"/>
+                        <LocalPivot value="1"/>
+                        <MaterialID hash_id="1853586693" srcString="title_0009_select.DDS"/>
+                        <LeftTopUV x="0" y="0"/>
+                        <RightBottomUV x="1" y="1"/>
+                        <Color r="1" g="1" b="1" a="1"/>
+                        <ProgressShape value="0"/>
+                        <ProgressValue value="1"/>
+                    </Component>
+                </GameObject>
+                <GameObject instanceId="31">
+                    <Tag hash_id="128458590" srcString="Select_day"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IRender2DComponent" hash_id="3439219241">
+                        <visible value="true"/>
+                        <Position x="-0.70499998" y="-0.80000001"/>
+                        <Size x="0.059999999" y="0.059999999"/>
+                        <source x="612" y="68"/>
+                        <RotationAngle value="0"/>
+                        <Depth value="0"/>
+                        <ParentPivot value="1"/>
+                        <LocalPivot value="1"/>
+                        <MaterialID hash_id="1245851513" srcString="title_0010_day.DDS"/>
+                        <LeftTopUV x="0" y="0"/>
+                        <RightBottomUV x="1" y="1"/>
+                        <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
+                        <ProgressShape value="0"/>
+                        <ProgressValue value="1"/>
+                    </Component>
+                </GameObject>
+                <GameObject instanceId="32">
+                    <Tag hash_id="1415882494" srcString="Select_sunset"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IRender2DComponent" hash_id="3439219241">
+                        <visible value="true"/>
+                        <Position x="-0.46000001" y="-0.80000001"/>
+                        <Size x="0.059999999" y="0.059999999"/>
+                        <source x="612" y="68"/>
+                        <RotationAngle value="0"/>
+                        <Depth value="0"/>
+                        <ParentPivot value="1"/>
+                        <LocalPivot value="1"/>
+                        <MaterialID hash_id="2528606270" srcString="title_0011_sunset.DDS"/>
+                        <LeftTopUV x="0" y="0"/>
+                        <RightBottomUV x="1" y="1"/>
+                        <Color r="0.16888225" g="0.16888225" b="0.16888225" a="1"/>
+                        <ProgressShape value="0"/>
+                        <ProgressValue value="1"/>
+                    </Component>
+                </GameObject>
+                <GameObject instanceId="33">
+                    <Tag hash_id="687106710" srcString="StartLOGO"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="0"/>
+                        <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="IRender2DComponent" hash_id="3439219241">
+                        <visible value="false"/>
+                        <Position x="0" y="0"/>
+                        <Size x="0.15000001" y="0.15000001"/>
+                        <source x="852" y="90"/>
+                        <RotationAngle value="0"/>
+                        <Depth value="0"/>
+                        <ParentPivot value="1"/>
+                        <LocalPivot value="1"/>
+                        <MaterialID hash_id="1980192436" srcString="title_0012_start_game.DDS"/>
+                        <LeftTopUV x="0" y="0"/>
+                        <RightBottomUV x="1" y="1"/>
+                        <Color r="1" g="0.99998999" b="0.99998999" a="1"/>
                         <ProgressShape value="0"/>
                         <ProgressValue value="1"/>
                     </Component>

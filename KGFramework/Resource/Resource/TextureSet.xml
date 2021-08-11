@@ -398,4 +398,12 @@
     <Texture id="title_0006_waiting.DDS" fileDir="Resource/Texture/ui/title_0006_waiting.DDS" dimension="Texture2D" format="DDS" hash_id="3847065707"/>
     <!--Resource/Texture/ui/title_0007_you.DDS-->
     <Texture id="title_0007_you.DDS" fileDir="Resource/Texture/ui/title_0007_you.DDS" dimension="Texture2D" format="DDS" hash_id="2064009098"/>
+    <!--Resource/Texture/ui/title_0009_select.DDS-->
+    <Texture id="title_0009_select.DDS" fileDir="Resource/Texture/ui/title_0009_select.DDS" dimension="Texture2D" format="DDS" hash_id="1853586693"/>
+    <!--Resource/Texture/ui/title_0010_day.DDS-->
+    <Texture id="title_0010_day.DDS" fileDir="Resource/Texture/ui/title_0010_day.DDS" dimension="Texture2D" format="DDS" hash_id="1245851513"/>
+    <!--Resource/Texture/ui/title_0011_sunset.DDS-->
+    <Texture id="title_0011_sunset.DDS" fileDir="Resource/Texture/ui/title_0011_sunset.DDS" dimension="Texture2D" format="DDS" hash_id="2528606270"/>
+    <!--Resource/Texture/ui/title_0012_start_game.DDS-->
+    <Texture id="title_0012_start_game.DDS" fileDir="Resource/Texture/ui/title_0012_start_game.DDS" dimension="Texture2D" format="DDS" hash_id="1980192436"/>
 </TextureSet>
