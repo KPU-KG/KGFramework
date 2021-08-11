@@ -26,8 +26,10 @@ namespace KG::Component
 		void SendLoginPacket();
 		void SendSelectPacket(int mapnumber);
 		char GetLobbyInfo(int num);
+        char GetMyId() const;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
+        virtual bool OnDrawGUI() override;
 		virtual void OnDestroy() override
 		{
 			IComponent::OnDestroy();

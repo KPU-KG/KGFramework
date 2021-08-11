@@ -70,6 +70,26 @@ void KG::Component::CLobbyComponent::Update(float elapsedTime)
 {
 }
 
+bool KG::Component::CLobbyComponent::OnDrawGUI()
+{
+    if (ImGui::ComponentHeader<CLobbyComponent>())
+    {
+        for (size_t i = 0; i < 4; i++)
+        {
+            const char* txt[] = {"Empty","Wait","Ready"};
+            ImGui::BulletText("User %d : %s", i+1,txt[this->GetLobbyInfo((int)i)]);
+        }
+    }
+    return false;
+}
+
+char KG::Component::CLobbyComponent::GetMyId() const
+{
+    return id;
+}
+
+
+
 char KG::Component::CLobbyComponent::GetLobbyInfo(int num)
 {
     return this->playerInfo[num];
