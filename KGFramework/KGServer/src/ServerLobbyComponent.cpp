@@ -35,6 +35,19 @@ void KG::Component::SLobbyComponent::DisconnectLobbyPlayer(KG::Server::SESSION_I
 	}
 }
 
+bool KG::Component::SLobbyComponent::OnDrawGUI()
+{
+    if (ImGui::ComponentHeader<SLobbyComponent>())
+    {
+        for (size_t i = 0; i < 4; i++)
+        {
+            const char* txt[] = { "Empty","Wait","Ready" };
+            ImGui::BulletText("User %d : %s", i + 1, txt[this->playerinfo[i].state]);
+        }
+    }
+    return false;
+}
+
 bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender)
 {
 	switch (type)

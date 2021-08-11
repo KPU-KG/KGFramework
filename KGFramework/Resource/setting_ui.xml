@@ -10,8 +10,8 @@
     <isEditMode value="true"/>
     <isConsoleMode value="false"/>
     <isStartClient value="false"/>
-    <isStartServer value="true"/>
+    <isStartServer value="false"/>
     <isStartLogin value="false"/>
     <ipAddress value="127.0.0.1"/>
-    <startScenePath value="Resource/Scenes/SceneData_86.xml"/>
+    <startScenePath value="Resource/Scenes/SceneData_UI.xml"/>
 </Settings>

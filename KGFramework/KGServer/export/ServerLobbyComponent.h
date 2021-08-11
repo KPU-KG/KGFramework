@@ -36,7 +36,7 @@ namespace KG::Component
 		{
 			IComponent::OnDestroy();
 		}
-		//virtual bool OnDrawGUI();
+		virtual bool OnDrawGUI() override;
 		virtual bool OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type, KG::Server::SESSION_ID sender);
 		
 	};
