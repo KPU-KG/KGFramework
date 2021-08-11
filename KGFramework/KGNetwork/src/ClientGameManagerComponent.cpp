@@ -14,9 +14,9 @@ void KG::Component::CGameManagerComponent::OnCreate(KG::Core::GameObject* obj)
 
 void KG::Component::CGameManagerComponent::Update(float elapsedTime)
 {
-	//char a = (char)this->network->GetLobbyInfo(0);
-	//char b = (char)this->network->GetLobbyInfo(1);
-	//std::cout << a << b << std::endl;
+	/*char a = (char)this->network->GetLobbyInfo(0);
+	char b = (char)this->network->GetLobbyInfo(1);
+	std::cout << a << b << std::endl;*/
 }
 
 bool KG::Component::CGameManagerComponent::OnDrawGUI()
@@ -87,6 +87,7 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 		case KG::Packet::PacketType::SC_GAME_END:
 		{
 			// 게임 종료 패킷 수신 -> 씬초기화 + 로비 재접속?
+			GameReset();
 		}
 		return true;
 	}
@@ -97,4 +98,8 @@ void KG::Component::CGameManagerComponent::SendLoginPacket()
 {
     KG::Packet::CS_REQ_LOGIN login = {};
     this->SendPacket(&login);
+}
+
+void KG::Component::CGameManagerComponent::GameReset() {
+
 }

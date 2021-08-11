@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "Network.h"
 #include "ClientLobbyComponent.h"
+#include "Scene.h"
 
 bool KG::Component::CLobbyComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type)
 {
@@ -15,15 +16,12 @@ bool KG::Component::CLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
     case KG::Packet::PacketType::SC_LOBBY_FULL:
     {
         // *
-        // 연결 끊기
         return true;
     }
     case KG::Packet::PacketType::SC_LOBBY_DATA:
     {
         auto* Packet = KG::Packet::PacketCast<KG::Packet::SC_LOBBY_DATA>(packet);
-        // *
-        // 전부 레디면 바로시작? -> 시작 버튼 필요 X
-        // 시작 버튼 -> 시작 버튼을 쓰면 누가 누를지
+        // 시작 버튼 or 레디체크
         for (size_t i = 0; i < PLAYERNUM; i++)
         {
             this->playerInfo[i] = Packet->playerinfo[i];
@@ -35,6 +33,8 @@ bool KG::Component::CLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
         auto* Packet = KG::Packet::PacketCast<KG::Packet::SC_GAME_START>(packet);
         if (Packet->mapnum == 0) {
             //0번맵 로드
+            /*auto* scene = this->GetGameObject()->GetScene();
+            scene->LoadScene();*/
         }
     }
     return true;

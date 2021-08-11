@@ -82,7 +82,7 @@ namespace KG::Server
 		NET_OBJECT_ID GetNewObjectId();
 		void SetSessionState(SESSION_ID session, KG::Server::PLAYER_STATE state);
 		void SetSessionId(SESSION_ID session, KG::Server::NET_OBJECT_ID id);
-		bool isPlay = true;
+		bool isPlay = false;
 		//void AddPlayer();
 
 		// IServer을(를) 통해 상속됨

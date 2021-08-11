@@ -102,6 +102,7 @@ namespace KG::Component
 		EnemyGeneratorComponent* enemyGenerator;
 		void RegisterPlayersToEnemy();
 		void UpdatePlayerSession();
+		void GameReset();
 	public:
 		void SendEndPacket();
 		float updatetimer = 0;

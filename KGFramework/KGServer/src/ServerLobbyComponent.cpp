@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ServerLobbyComponent.h"
 #include "KGServer.h"
+#include "Scene.h"
 
 
 KG::Component::SLobbyComponent::SLobbyComponent()
@@ -40,6 +41,8 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 	{
 	case KG::Packet::PacketType::CS_REQ_LOGIN:
 	{
+		/*auto* scene = this->gameObject->GetScene();
+		scene->LoadScene("Resource/Scenes/SceneData_86_client.xml");*/
 		for (size_t i = 0; i < PLAYERNUM; i++)
 		{
 			if (this->playerinfo[i].state == LobbyState::Empty) {
@@ -88,12 +91,16 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 			}
 		}
 
-		// 저장된 맵 번호로 씬 로드 *
+		// 저장된 맵 번호로 서버 씬 로드 *
+		if (this->mapnum == 0) {
+		}
+		else if (this->mapnum == 1) {
+		}
 
 		KG::Packet::SC_GAME_START StartPacket;
 		StartPacket.mapnum = this->mapnum;
 		this->BroadcastPacket(&StartPacket);
-		//this->server->isPlay = true;
+		this->server->isPlay = true;
 		// 전부 레디면 시작 + 시작 패킷 전송
 	}
 	return true;
@@ -116,3 +123,7 @@ void KG::Component::SLobbyComponent::OnCreate(KG::Core::GameObject* obj)
 	this->server->SetServerObject(this->networkObjectId, this);
 }
 
+void KG::Component::SLobbyComponent::AddPlayers()
+{
+	//this->server->AddPlayers();
+}

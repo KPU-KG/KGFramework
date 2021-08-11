@@ -504,7 +504,3 @@ KG::Server::NET_OBJECT_ID KG::Server::Server::GetNewObjectId()
 	this->objectIdStart += 1;
 	return ret;
 }
-
-//void KG::Server::Server::AddPlayer(KG::Component::TransformComponent* trans) {
-//	
-//}

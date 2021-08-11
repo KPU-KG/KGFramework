@@ -12,6 +12,7 @@ namespace KG::Component
 	public:
 		KG::Packet::CS_INPUT inputPacket = {};
 		float updatetimer = 0;
+		void GameReset();
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override
