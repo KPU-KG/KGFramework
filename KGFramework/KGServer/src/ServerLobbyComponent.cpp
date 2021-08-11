@@ -20,17 +20,11 @@ KG::Component::SLobbyComponent::SLobbyComponent()
 //}
 
 void KG::Component::SLobbyComponent::DisconnectLobbyPlayer(KG::Server::SESSION_ID playerId) {
-	std::cout << "disconnect lobby id: " << playerId << "\n";
-	for (size_t i = 0; i < PLAYERNUM; i++)
-	{
-		std::cout << this->playerinfo[i].state << "\n";
-	}
 	for (auto p : this->playerinfo)
 	{
 		if (p.id == playerId) {
 			p.state = LobbyState::Empty;
 			p.id = -1;
-			std::cout << "disconnect\n";
 		}
 	}
 

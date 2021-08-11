@@ -24,7 +24,7 @@ bool KG::Component::CLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
         for (size_t i = 0; i < PLAYERNUM; i++)
         {
             this->playerInfo[i] = Packet->playerinfo[i];
-            this->mapnum = Packet->mapnum
+            this->mapnum = Packet->mapnum;
         }
         return true;
     }

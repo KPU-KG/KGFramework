@@ -324,7 +324,6 @@ void KG::Server::Server::BroadcastPacket(void* packet, SESSION_ID ignore)
 			// std::shared_lock<std::shared_mutex> lg{ i.second.sessionLock };
 			if ( i.second.state == PLAYER_STATE_INGAME )
 			{
-				std::cout << "send to :" << i.first << std::endl;
 				this->SendPacket(i.first, packet);
 			}
 		}
