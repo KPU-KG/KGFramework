@@ -41,6 +41,7 @@ namespace KG::Packet
 		SC_SYNC_ANIMATION,
 		SC_PLAYER_DATA,
         SC_ENEMY_HP,
+		SC_ENEMY_ZONE,
 		SC_LOGIN_OK,
 		SC_LOBBY_FULL,
 		SC_LOBBY_DATA,
@@ -252,6 +253,12 @@ namespace KG::Packet
         DEFAULT_PACKET_HEADER(SC_ENEMY_HP);
         float percentage;
     };
+
+	struct SC_ENEMY_ZONE
+	{
+		DEFAULT_PACKET_HEADER(SC_ENEMY_ZONE);
+		int num;
+	};
 
 	struct SC_LOBBY_DATA
 	{

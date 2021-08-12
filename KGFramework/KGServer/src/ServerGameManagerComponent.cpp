@@ -337,6 +337,10 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 	if (!this->generateEnemy)
 		return;
 
+	KG::Packet::SC_ENEMY_ZONE packet;
+	packet.num = this->currentRegion;
+	BroadcastPacket(&packet);
+
 	auto region = this->region[this->currentRegion];
 
 	switch (this->currentRegion) {
@@ -376,11 +380,11 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		auto* scene = this->gameObject->GetScene();
 		auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
 
-		auto t = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("EnemyMark"));
+		//auto t = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("EnemyMark"));
 
-		if (t) {
+		/*if (t) {
 			t->GetTransform()->SetPosition(region.position.x, 120, region.position.z);
-		}
+		}*/
 
 		DirectX::XMFLOAT3 genPos{
 			randomPos(genRegion) + region.position.x,
@@ -445,11 +449,15 @@ void KG::Component::EnemyGeneratorComponent::GenerateBoss()
 
 	this->generateBoss = true;
 
-	auto t = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("BossBarrier"));
+	KG::Packet::SC_ENEMY_ZONE packet;
+	packet.num = this->currentRegion;
+	BroadcastPacket(&packet);
 
+	auto t = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("BossBarrier"));
 	if (t) {
 		t->Destroy();
-	}
+	};
+
 	auto region = this->region[1];
 	// auto region = GetBossRegion();
 

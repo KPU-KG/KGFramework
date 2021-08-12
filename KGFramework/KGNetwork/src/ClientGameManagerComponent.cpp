@@ -82,6 +82,29 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 			//}
 		}
 		return true;
+		case KG::Packet::PacketType::SC_ENEMY_ZONE:
+		{
+			auto* Packet = KG::Packet::PacketCast<KG::Packet::SC_ENEMY_ZONE>(packet);
+			auto t = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("EnemyMark"));
+			if (t)
+			{
+				switch (Packet->num) {
+				case 0:
+					t->GetTransform()->SetPosition(62, 120, 0);
+					break;
+				case 1:
+					t->GetTransform()->SetPosition(39, 120, -110);
+					break;
+				case 2:
+					t->GetTransform()->SetPosition(175, 120, -108);
+					break;
+				case 3:
+					t->GetTransform()->SetPosition(-98, 120, 21);
+					break;
+				}
+			}
+		}
+		return true;
 		case KG::Packet::PacketType::SC_GAME_END:
 		{
 			// 게임 종료 패킷 수신 -> 씬초기화 + 로비 재접속?
