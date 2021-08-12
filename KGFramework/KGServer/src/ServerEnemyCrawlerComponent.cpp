@@ -277,6 +277,9 @@ bool KG::Component::SEnemyCrawlerComponent::Rotate(float elapsedTime)
 
 	float amount = min(abs(angle.x), this->rotateSpeed * elapsedTime);
 
+	if (angle.x < 0)
+		amount *= -1;
+
 	if (crs.y >= 0) {
 		amount *= -1;
 	}
@@ -390,8 +393,8 @@ inline void KG::Component::SEnemyCrawlerComponent::ChangeAnimation(const KG::Uti
 float KG::Component::SEnemyCrawlerComponent::GetDistance2FromEnemy(DirectX::XMFLOAT3 pos) const
 {
 	auto myPos = this->transform->GetWorldPosition();
-	float distance = (pos.x - myPos.x) * (pos.x - myPos.x) + (pos.z - myPos.z) * (pos.z - myPos.z);
-	return distance;
+	float goalDistance = (pos.x - myPos.x) * (pos.x - myPos.x) + (pos.z - myPos.z) * (pos.z - myPos.z);
+	return goalDistance;
 }
 
 void KG::Component::SEnemyCrawlerComponent::Attack(SGameManagerComponent* gameManager)

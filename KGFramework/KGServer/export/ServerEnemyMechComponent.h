@@ -141,18 +141,23 @@ namespace KG::Component
 
 		bool noObstacleInAttack = false;
 		bool isMovableInTrace = false;
-		// bool isPathFinding = false;
 		bool isAttackRotation = false;
 
-		DirectX::XMFLOAT3							goal = { 0,0,0 };
-		// std::vector<std::pair<int, int>>			path;
-		float traceStateSpeed = 3;
+		// DirectX::XMFLOAT3							goal = { 0,0,0 };
+		// float traceStateSpeed = 3;
 
+		float wanderRotateSpeed = 1;
+		float wanderMoveSpeed = 3;
 
-		float										distance = 0;
-		float										arriveTime = 0;
-		float										moveTime = 0;
-		int checkTime = 0;
+		float traceRotateSpeed = 3;
+		float traceMoveSpeed = 6;
+
+		float										goalDistance = 0;
+		float										moveDistance = 0;
+
+		// float										arriveTime = 0;
+		// float										moveTime = 0;
+		// int checkTime = 0;
 		DirectX::XMFLOAT2							angle;
 
 		float										traceRange = 70;
@@ -173,12 +178,12 @@ namespace KG::Component
 		void ReadyNextAnimation(bool b) { changedAnimation = b; }
 
 		bool SetGoal();
-		bool RotateToGoal(float elapsedTime);
-		bool MoveToGoal(float elapsedTime);
+		bool Rotate(float elapsedTime);
+		bool Move(float elapsedTime);
 		void ChangeAnimation(const KG::Utill::HashString animId, UINT animIndex, UINT nextState, float blendingTime = 0.1f, int repeat = 1);
 		float GetDistance2FromEnemy(DirectX::XMFLOAT3 pos) const;
 		bool IsInTraceRange(const DirectX::XMFLOAT3 pos) const;
-		bool IsInTraceRange(const float distance) const;
+		bool IsInTraceRange(const float goalDistance) const;
 		bool AttackTarget(float elapsedTime);
 		bool Idle(float elapsedTime);
 
