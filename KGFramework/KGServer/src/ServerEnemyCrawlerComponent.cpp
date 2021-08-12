@@ -186,8 +186,10 @@ bool KG::Component::SEnemyCrawlerComponent::SetAttackArea()
 	if (this->target == nullptr)
 		return true;
 
-	if (!this->target->isUsing())
+	if (!this->target->isUsing()) {
+		this->target = nullptr;
 		return true;
+	}
 
 	shootAreaCenter = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
 	shootAreaCenter.y = 0.1;

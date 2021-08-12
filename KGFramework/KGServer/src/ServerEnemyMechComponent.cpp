@@ -416,6 +416,14 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 
 	auto myPos = this->transform->GetWorldPosition();
 
+	if (this->target == nullptr) {
+		return true;
+	}
+	if (this->target->isUsing()) {
+		this->target = nullptr;
+		return true;
+	}
+
 	auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
 	for (int tx = -10; tx < 10; ++tx) {
 		for (int tz = -10; tz < 10; ++tz) {
@@ -659,12 +667,21 @@ void KG::Component::SEnemyMechComponent::Attack(SGameManagerComponent* gameManag
 	// auto presetName = "Projectile";
 	float interval = 3;
 	for (int i = 0; i < 2; ++i) {
+		if (this->target == nullptr) {
+			return;
+		}
+
+		if (!this->target->isUsing()) {
+			this->target = nullptr;
+			return;
+		}
 		auto presetName = "Missile";
 		auto presetId = KG::Utill::HashString(presetName);
 
 		auto* scene = this->gameObject->GetScene();
 		auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
 
+		
 		auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
 		targetPos.y += 1;
 		auto origin = this->transform->GetWorldPosition();
