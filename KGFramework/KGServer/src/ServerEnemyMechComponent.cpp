@@ -26,7 +26,7 @@ bool KG::Component::SEnemyMechComponent::SetGoal()
 	goal.z = mechGoalRange(mechGen) * range + center.z;
 
 	auto v = Math::Vector3::Subtract(goal, this->transform->GetWorldPosition());
-	this->goalDistance = v.x * v.x + v.z * v.z;
+	this->goalDistance = sqrt(v.x * v.x + v.z * v.z);
 	this->moveDistance = 0;
 
 	return true;
@@ -81,7 +81,8 @@ bool KG::Component::SEnemyMechComponent::Rotate(float elapsedTime)
 	gameObject->GetTransform()->Rotate(rot);
 	rigid->SetRotation(transform->GetRotation());
 
-	if (amount == abs(angle.x)) {
+	if (abs(amount) >= abs(angle.x)) {
+		this->prevPosition = this->transform->GetWorldPosition();
 		return true;
 	}
 
@@ -101,16 +102,23 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 	auto spd = this->wanderMoveSpeed;
 	if (this->stateManager->GetCurState() == MechStateManager::STATE_TRACE)
 		spd += this->traceMoveSpeed;
-
-
 	auto dir = Math::Vector3::Normalize(Math::Vector3::Subtract(goal, this->transform->GetWorldPosition()));
 
 	if (rigid) {
 		rigid->SetVelocity(dir, spd);
 	}
 
-	this->moveDistance += elapsedTime * spd;
+	float dist = abs(sqrt(GetDistance2FromEnemy(this->prevPosition)));
+	// this->prevPosition = this->transform->GetWorldPosition();
+	// 
+	// if (dist < 0.001) {
+	// 	this->moveDistance = 0;
+	// 	rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
+	// 	return true;
+	// }
 
+	this->moveDistance += dist;
+	this->prevPosition = this->transform->GetWorldPosition();
 	if (this->moveDistance >= this->goalDistance) {
 		this->moveDistance = 0;
 		rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
@@ -199,7 +207,6 @@ bool KG::Component::SEnemyMechComponent::OnDrawGUI()
 			ImGui::TextDisabled("Distance : %f", goalDistance);
 			auto angle = transform->GetEulerDegree();
 			ImGui::TextDisabled("rotation : (%f, %f, %f)", angle.x, angle.y, angle.z);
-			ImGui::TextDisabled("this->angle : (%f, %f)", this->angle.x, this->angle.y);
 		}
 		else {
 			std::string cs("position");
@@ -599,7 +606,7 @@ bool KG::Component::SEnemyMechComponent::AttackTarget(float elapsedTime)
 void KG::Component::SEnemyMechComponent::Attack(SGameManagerComponent* gameManager)
 {
 	// auto presetName = "Projectile";
-	float interval = 2.6;
+	float interval = 2;
 	for (int i = 0; i < 2; ++i) {
 		if (this->target == nullptr) {
 			return;

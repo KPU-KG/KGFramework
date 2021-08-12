@@ -146,19 +146,20 @@ namespace KG::Component
 		// DirectX::XMFLOAT3							goal = { 0,0,0 };
 		// float traceStateSpeed = 3;
 
-		float wanderRotateSpeed = 1;
-		float wanderMoveSpeed = 3;
+		float wanderRotateSpeed = 0.3;
+		float wanderMoveSpeed = 1;
 
-		float traceRotateSpeed = 3;
-		float traceMoveSpeed = 6;
+		float traceRotateSpeed = 1;
+		float traceMoveSpeed = 3;
 
 		float										goalDistance = 0;
 		float										moveDistance = 0;
+		DirectX::XMFLOAT3 prevPosition;
 
 		// float										arriveTime = 0;
 		// float										moveTime = 0;
 		// int checkTime = 0;
-		DirectX::XMFLOAT2							angle;
+		// DirectX::XMFLOAT2							angle;
 
 		float										traceRange = 70;
 		float										attackRange = 50;
@@ -169,8 +170,8 @@ namespace KG::Component
 		MechStateManager*							stateManager;
 
 	public:
-		void SetMoveTime(float t) { moveTime = t; }
-		void MoveTimer(float elapsedTime) { moveTime += elapsedTime; }
+		// void SetMoveTime(float t) { moveTime = t; }
+		// void MoveTimer(float elapsedTime) { moveTime += elapsedTime; }
 		void SetIdleTime(float t) { idleTimer = t; }
 		void IdleTimer(float elapsedTime) { idleTimer += elapsedTime; }
 		void SetAttackTime(float t) { attackTimer = t; }

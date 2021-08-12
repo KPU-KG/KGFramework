@@ -289,7 +289,7 @@ bool KG::Component::SEnemyCrawlerComponent::Rotate(float elapsedTime)
 	gameObject->GetTransform()->Rotate(rot);
 	rigid->SetRotation(transform->GetRotation());
 
-	if (amount == abs(angle.x)) {
+	if (abs(amount) >= abs(angle.x)) {
 		chargeOrigin = this->transform->GetWorldPosition();
 		chargeTarget = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
 		moveDist = 0;
