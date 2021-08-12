@@ -1,0 +1,1 @@
+KGMain.exe setting_client_day.xml

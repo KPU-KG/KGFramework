@@ -473,6 +473,9 @@
     <Material id="SpriteWhite" shaderID="SpriteDefault" hash_id="2585029165" shaderHashID="3480911269">
         <Texture byte="4" comment="" id="one" hash_id="94880491"/>
     </Material>
+    <Material id="point_line" shaderID="SpriteDefault" hash_id="1684921234" shaderHashID="3480911269">
+        <Texture byte="4" comment="" id="piont_line.dds" hash_id="2518190183"/>
+    </Material>
     <Material id="streetlight" shaderID="PBRMetalicSmooth" hash_id="3861455024" shaderHashID="1053346762">
         <Texture byte="4" comment="colorTexture" id="streetlight_color" hash_id="3488498860"/>
         <Texture byte="4" comment="normalTexture" id="streetlight_normal" hash_id="3068713474"/>
@@ -712,7 +715,15 @@
     </Material>
     <Material id="TrasparentWhite" shaderID="Transparent_Default" hash_id="1598743950" shaderHashID="875924835">
         <Texture byte="4" comment="ColorTexture" id="one" hash_id="94880491"/>
-        <FLOAT1 byte="4" comment="alphaValue" x="0.3"/>
+        <Color4 byte="16" comment="color" r="1" g="1" b="1" a="0.3"/>
+    </Material>
+    <Material id="point_circle" shaderID="Transparent_Default" hash_id="2835897276" shaderHashID="875924835">
+        <Texture byte="4" comment="ColorTexture" id="point_circle.dds" hash_id="818024805"/>
+        <ColorCode byte="16" comment="color" code="00FF22FF"/>
+    </Material>
+    <Material id="point_circle_sunset" shaderID="Transparent_Default" hash_id="3154066641" shaderHashID="875924835">
+        <Texture byte="4" comment="ColorTexture" id="point_circle.dds" hash_id="818024805"/>
+        <ColorCode byte="16" comment="color" code="FF9200FF"/>
     </Material>
     <!--<Material id="UIWhite" shaderID="UIDefault">
     <Texture byte="4" comment="" id="one"/>

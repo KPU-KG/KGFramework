@@ -86,7 +86,7 @@ void GeometryShaderFunction(point ParticleVertexOutput input[1], inout TriangleS
 {
     float3 up = float3(0.0f, 1.0f, 0.0f);
     float3 right = normalize(cross(up, look));
-    up = normalize(cross(look, right));
+    //up = normalize(cross(look, right));
     
     UIData data = uiInfo[input[0].InstanceID];
     MaterialData mat = materialData[data.materialIndex];

@@ -1,0 +1,1 @@
+start KGMain.exe setting_server86.xml

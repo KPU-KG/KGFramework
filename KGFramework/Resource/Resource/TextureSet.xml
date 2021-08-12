@@ -406,4 +406,8 @@
     <Texture id="title_0011_sunset.DDS" fileDir="Resource/Texture/ui/title_0011_sunset.DDS" dimension="Texture2D" format="DDS" hash_id="2528606270"/>
     <!--Resource/Texture/ui/title_0012_start_game.DDS-->
     <Texture id="title_0012_start_game.DDS" fileDir="Resource/Texture/ui/title_0012_start_game.DDS" dimension="Texture2D" format="DDS" hash_id="1980192436"/>
+    <!--Resource/Texture/effect/piont_line.dds-->
+    <Texture id="piont_line.dds" fileDir="Resource/Texture/effect/piont_line.dds" dimension="Texture2D" format="DDS" hash_id="2518190183"/>
+    <!--Resource/Texture/effect/point_circle.dds-->
+    <Texture id="point_circle.dds" fileDir="Resource/Texture/effect/point_circle.dds" dimension="Texture2D" format="DDS" hash_id="818024805"/>
 </TextureSet>

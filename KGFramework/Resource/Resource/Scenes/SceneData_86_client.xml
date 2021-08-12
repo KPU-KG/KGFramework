@@ -71,15 +71,15 @@
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="157.33231" y="33.845085" z="-155.22202"/>
-                <Rotation_Q x="-0.30358216" y="0.70763737" z="-0.46481937" w="-0.46218395"/>
+                <Position x="42.09938" y="29.549637" z="-79.990524"/>
+                <Rotation_Q x="0.25732717" y="-0.11743435" z="-0.031145465" w="-0.97045213"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
                 <IsMainCamera value="true"/>
                 <FovY value="90"/>
                 <AspectRatio value="1.7777778"/>
-                <Near-Z value="0.099999998"/>
+                <Near-Z value="0.1"/>
                 <Far-Z value="1000000"/>
                 <RenderTextureDesc>
                     <textureWidth value="1600"/>
@@ -92,6 +92,7 @@
                     <useRenderTarget value="true"/>
                     <useDeferredRender value="true"/>
                     <useDepthStencilBuffer value="true"/>
+                    <useHDR value="false"/>
                     <uploadSRVRenderTarget value="false"/>
                     <uploadSRVDepthBuffer value="false"/>
                     <renderTargetTextureId hash_id="0" srcString=""/>
@@ -19608,7 +19609,7 @@
                     <GameObject instanceId="264">
                         <Tag hash_id="2858297231" srcString="Bellevue_Place_LOD0"/>
                         <Component name="TransformComponent" hash_id="3882513520">
-                            <Position x="83762.063" y="-112273.34" z="-0.0035447842"/>
+                            <Position x="83762.062" y="-112273.34" z="-0.0035447842"/>
                             <Rotation_Q x="0" y="0" z="0" w="0.99999988"/>
                             <Scale x="1" y="1" z="1"/>
                         </Component>
@@ -27879,29 +27880,59 @@
         <GameObject instanceId="347">
             <Tag hash_id="1308024484" srcString="EnemyMark"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="62" y="120" z="0"/>
+                <Position x="62" y="203.60153" z="-4.2440333e-06"/>
                 <Rotation_Q x="0.70710683" y="0" z="0" w="-0.70710671"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
-            <Component name="IGeometryComponent" hash_id="1162546763">
-                <GeometryDescs>
-                    <Element>
-                        <geometryID hash_id="2818039298" srcString="ArmyBoxComplete.fbx"/>
-                        <slotIndex value="0"/>
-                        <subMeshIndex value="0"/>
-                    </Element>
-                </GeometryDescs>
-            </Component>
-            <Component name="IMaterialComponent" hash_id="308235170">
-                <MaterialDesc>
-                    <Element>
-                        <isRawShader value="false"/>
-                        <materialID hash_id="2709933745" srcString="armybox"/>
-                        <slotIndex value="0"/>
-                    </Element>
-                </MaterialDesc>
-            </Component>
-            <Component name="IRender3DComponent" hash_id="1184141904"/>
+            <GameObject instanceId="1780">
+                <Tag hash_id="1684921234" srcString="point_line"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="1.4305117e-05" z="0"/>
+                    <Rotation_Q x="0.70710683" y="0" z="0" w="0.70710671"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <Component name="IRenderSpriteComponent" hash_id="3234678978">
+                      <Position x="0" y="0"/>
+                    <Size x="15" y="183"/>
+                    <RotationAngle value="0"/>
+                    <Depth value="0"/>
+                    <ParentPivot value="0"/>
+                    <LocalPivot value="0"/>
+                    <MaterialID hash_id="1684921234" srcString="point_line"/>
+                    <LeftTopUV x="0" y="0"/>
+                    <RightBottomUV x="1" y="1"/>
+                    <Color r="0" g="1" b="0.13157868" a="1"/>
+                    <ProgressShape value="0"/>
+                    <ProgressValue value="1"/>
+                </Component>
+            </GameObject>
+            <GameObject instanceId="1782">
+                <Tag hash_id="2835897276" srcString="point_circle"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="1.4305117e-05" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="50" y="50" z="1"/>
+                </Component>
+                <Component name="IGeometryComponent" hash_id="1162546763">
+                    <GeometryDescs>
+                        <Element>
+                            <geometryID hash_id="3536424569" srcString="plane"/>
+                            <slotIndex value="0"/>
+                            <subMeshIndex value="0"/>
+                        </Element>
+                    </GeometryDescs>
+                </Component>
+                <Component name="IMaterialComponent" hash_id="308235170">
+                    <MaterialDesc>
+                        <Element>
+                            <isRawShader value="false"/>
+                            <materialID hash_id="2835897276" srcString="point_circle"/>
+                            <slotIndex value="0"/>
+                        </Element>
+                    </MaterialDesc>
+                </Component>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
+            </GameObject>
         </GameObject>
     </GameObject>
 </Scene>
