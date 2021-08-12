@@ -180,13 +180,18 @@ void KG::Component::SCrawlerMissileComponent::Update(float elapsedTime)
 	XMFLOAT3 crs;
 	XMStoreFloat3(&crs, XMVector3Cross(XMLoadFloat3(&look), XMLoadFloat3(&this->direction)));
 
-	XMFLOAT3 angle;
-	XMStoreFloat3(&angle, DirectX::XMVector3AngleBetweenVectors(XMLoadFloat3(&look), XMLoadFloat3(&this->direction)));
+	if (crs.x == 0 && crs.y == 0 && crs.z == 0) {
 
-	DirectX::XMFLOAT4 rot;
-	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), angle.x));
-	gameObject->GetTransform()->Rotate(rot);
-	rigid->SetRotation(transform->GetRotation());
+	}
+	else {
+		XMFLOAT3 angle;
+		XMStoreFloat3(&angle, DirectX::XMVector3AngleBetweenVectors(XMLoadFloat3(&look), XMLoadFloat3(&this->direction)));
+
+		DirectX::XMFLOAT4 rot;
+		XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), angle.x));
+		gameObject->GetTransform()->Rotate(rot);
+		rigid->SetRotation(transform->GetRotation());
+	}
 
 	sendTimer += elapsedTime;
 	if (sendInterval <= sendTimer) {

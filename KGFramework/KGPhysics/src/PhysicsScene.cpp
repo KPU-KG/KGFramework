@@ -5,6 +5,7 @@
 #include "ComponentProvider.h"
 #include "Transform.h"
 #include "MathHelper.h"
+#include "PhysicsComponent.h"
 #include <unordered_map>
 
 using namespace physx;
@@ -92,7 +93,12 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
         return physx::PxFilterFlag::eDEFAULT;
     }
 
-    // pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
+    if (filterData0.word0 & static_cast<uint32_t>(KG::Component::FilterGroup::eBOX) || filterData1.word0 & static_cast<uint32_t>(KG::Component::FilterGroup::eBOX)) {
+        pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT | physx::PxPairFlag::eCONTACT_DEFAULT;
+        return physx::PxFilterFlag::eDEFAULT;
+    }
+
+    pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
 
     if ( !(filterData0.word0 & filterData1.word1) && !(filterData0.word1 & filterData1.word0) )
     {

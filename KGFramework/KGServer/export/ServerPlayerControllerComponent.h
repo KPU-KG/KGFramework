@@ -46,6 +46,11 @@ namespace KG::Component
         static constexpr int MAX_HP = 5;
         int hpPoint = MAX_HP;
 
+		bool hitFlag = false;
+		float hitTimer = 0;
+		constexpr static float hitInterval = 1;
+		constexpr static float hitDistance = 3;
+
 		bool reloadFlag = false;
 
 		constexpr static float hitInterval = 3;

@@ -616,7 +616,7 @@ inline void KG::Component::SEnemyMechComponent::ChangeAnimation(const KG::Utill:
 float KG::Component::SEnemyMechComponent::GetDistance2FromEnemy(DirectX::XMFLOAT3 pos) const
 {
 	auto myPos = this->transform->GetWorldPosition();
-	float distance = (pos.x - myPos.x) * (pos.x - myPos.x) + (pos.y - myPos.y) * (pos.y - myPos.y);
+	float distance = (pos.x - myPos.x) * (pos.x - myPos.x) + (pos.z - myPos.z) * (pos.z - myPos.z);
 	return distance;
 }
 
