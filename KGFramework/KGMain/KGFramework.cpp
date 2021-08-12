@@ -653,7 +653,7 @@ void KG::GameFramework::PostSceneFunction()
 			obj.GetTransform()->SetPosition(10.0, 0.00f, 5.00f);
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
-			phy->AddFilterGroup(KG::Component::FilterGroup::ePLAYER, KG::Component::FilterGroup::eNONE);
+			// phy->AddFilterGroup(KG::Component::FilterGroup::ePLAYER, KG::Component::FilterGroup::eNONE);
 			obj.AddComponent(phy);
 
 			auto* snd = this->sound->GetNewSoundComponent();

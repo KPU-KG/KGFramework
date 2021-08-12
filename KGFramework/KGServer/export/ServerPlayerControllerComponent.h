@@ -48,7 +48,7 @@ namespace KG::Component
 
 		bool hitFlag = false;
 		float hitTimer = 0;
-		constexpr static float hitInterval = 3;
+		constexpr static float hitInterval = 1;
 		constexpr static float hitDistance = 3;
 
 		bool reloadFlag = false;

@@ -48,15 +48,14 @@ void KG::Component::SEnemyCrawlerComponent::OnCreate(KG::Core::GameObject* obj)
 	this->rigid->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
 		auto filterMy = my->GetFilterMask();
 		auto filterOther = other->GetFilterGroup();
-		// if (this->IsCharging()) {
-		if (filterOther & static_cast<uint32_t>(FilterGroup::ePLAYER)) {
-			auto col = other->GetCollisionCallback();
-			if (col != nullptr)
-				col(other, my);
+		if (this->IsCharging()) {
+			if (filterOther & static_cast<uint32_t>(FilterGroup::ePLAYER)) {
+				auto col = other->GetCollisionCallback();
+				if (col != nullptr)
+					col(other, my);
+			}
 		}
-		// }
-
-		if (!(filterMy & filterOther)) {
+		else if (!(filterMy & filterOther)) {
 			auto col = other->GetCollisionCallback();
 			if (col != nullptr)
 				col(other, my);
@@ -213,9 +212,13 @@ bool KG::Component::SEnemyCrawlerComponent::Shoot(float elapsedTime)
 	if (this->target == nullptr)
 		return true;
 
+	if (this->anim) {
+		if (!changedAnimation) {
+			ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::idle, ANIMSTATE_PLAYING, 0.1f, -1);
+		}
+	}
+
 	if (attackTimer == 0 && !isInAttackDelay) {
-		if (this->anim)
-			ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::idle, ANIMSTATE_STOP, 0.1, 1);
 		isAttackable = true;
 		isInAttackDelay = true;
 		if (shootArea.empty()) {
@@ -247,7 +250,18 @@ bool KG::Component::SEnemyCrawlerComponent::Rotate(float elapsedTime)
 	if (this->target == nullptr)
 		return true;
 
+	if (this->anim) {
+		if (!changedAnimation) {
+			ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
+		}
+	}
+
 	auto look = this->transform->GetWorldLook();
+	if (!this->target->isUsing()) {
+		this->target = nullptr;
+		return true;
+	}
+
 	auto dir = Math::Vector3::Subtract(this->target->GetGameObject()->GetTransform()->GetWorldPosition(), this->transform->GetWorldPosition());
 
 	look.y = 0;
@@ -273,7 +287,6 @@ bool KG::Component::SEnemyCrawlerComponent::Rotate(float elapsedTime)
 	if (amount == abs(angle.x)) {
 		chargeOrigin = this->transform->GetWorldPosition();
 		chargeTarget = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-		chargeDist = sqrt(GetDistance2FromEnemy(chargeTarget));
 		moveDist = 0;
 		prevPosition = this->chargeOrigin;
 		return true;
@@ -285,6 +298,12 @@ bool KG::Component::SEnemyCrawlerComponent::Charging(float elapsedTime)
 {
 	if (this->target == nullptr)
 		return true;
+
+	if (this->anim) {
+		if (!changedAnimation) {
+			ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::idle, ANIMSTATE_PLAYING, 0.1f, -1);
+		}
+	}
 
 	if (!isCharging) {
 		isCharging = true;
@@ -305,8 +324,10 @@ bool KG::Component::SEnemyCrawlerComponent::ChargeAttack(float elapsedTime)
 	if (this->target == nullptr)
 		return true;
 
-	if (!changedAnimation) {
-		ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
+	if (this->anim) {
+		if (!changedAnimation) {
+			ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
+		}
 	}
 	auto dir = Math::Vector3::Subtract(this->chargeTarget, this->chargeOrigin);
 	XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&dir)));
@@ -317,6 +338,7 @@ bool KG::Component::SEnemyCrawlerComponent::ChargeAttack(float elapsedTime)
 	if (moveDist >= chargeDist) {
 		this->rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
 		isCharging = false;
+		moveDist = 0;
 		return true;
 	}
 
@@ -325,6 +347,12 @@ bool KG::Component::SEnemyCrawlerComponent::ChargeAttack(float elapsedTime)
 
 bool KG::Component::SEnemyCrawlerComponent::ChargeDelay(float elapsedTIme)
 {
+	if (this->anim) {
+		if (!changedAnimation) {
+			ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::idle, ANIMSTATE_PLAYING, 0.1f, -1);
+		}
+	}
+
 	if (isFilledArea) {
 		if (this->area != nullptr) {
 			this->area->GetGameObject()->Destroy();
@@ -335,10 +363,6 @@ bool KG::Component::SEnemyCrawlerComponent::ChargeDelay(float elapsedTIme)
 
 	if (this->target == nullptr)
 		return true;
-
-	if (!changedAnimation) {
-		ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::idle, ANIMSTATE_PLAYING, 0.1f, -1);
-	}
 
 	chargeDelayTimer += elapsedTIme;
 
@@ -364,7 +388,7 @@ inline void KG::Component::SEnemyCrawlerComponent::ChangeAnimation(const KG::Uti
 float KG::Component::SEnemyCrawlerComponent::GetDistance2FromEnemy(DirectX::XMFLOAT3 pos) const
 {
 	auto myPos = this->transform->GetWorldPosition();
-	float distance = (pos.x - myPos.x) * (pos.x - myPos.x) + (pos.y - myPos.y) * (pos.y - myPos.y);
+	float distance = (pos.x - myPos.x) * (pos.x - myPos.x) + (pos.z - myPos.z) * (pos.z - myPos.z);
 	return distance;
 }
 
@@ -453,14 +477,15 @@ void KG::Component::SEnemyCrawlerComponent::Attack(SGameManagerComponent* gameMa
 
 			// x축 2 z축 타겟과의 거리?
 
-			float dist = sqrt(GetDistance2FromEnemy(this->chargeTarget));
+			float x = this->chargeOrigin.x - this->chargeTarget.x;
+			float z = this->chargeOrigin.z - this->chargeTarget.z;
+			float dist = sqrt(x * x + z * z);
 
-			XMFLOAT3 areaCenter;
-			XMStoreFloat3(&areaCenter, Math::Vector3::XMVectorLerp(XMLoadFloat3(&this->chargeOrigin), XMLoadFloat3(&this->chargeTarget), 0.5));
+			XMFLOAT3 areaCenter = Math::Vector3::Add(this->chargeOrigin, Math::Vector3::Multiply(this->chargeDist / 2, this->transform->GetWorldLook()));
 
 			areaCenter.y = 0.1;
 
-			XMFLOAT3 areaScale{ 3, 0.001, dist};
+			XMFLOAT3 areaScale{ 3, 0.001, this->chargeDist / 2};
 
 			KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
 			auto tag = KG::Utill::HashString(presetName);
@@ -726,6 +751,8 @@ void KG::Component::CrawlerStateManager::SetState() {
 					break;
 				}
 			}
+			// for test
+			curState = STATE_CHARGE_ATTACK;
 			break;
 		case STATE_SHOOT_ATTACK:
 			dynamic_cast<CrawlerShootState*>(state[curState])->isFinished = false;

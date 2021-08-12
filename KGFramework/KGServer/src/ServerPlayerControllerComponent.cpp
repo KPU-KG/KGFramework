@@ -43,11 +43,9 @@ void KG::Component::SPlayerComponent::OnCreate(KG::Core::GameObject* obj)
 					auto enemyPos = other->GetGameObject()->GetTransform()->GetWorldPosition();
 					auto myPos = my->GetGameObject()->GetTransform()->GetWorldPosition();
 					auto v = Math::Vector3::Subtract(myPos, enemyPos);
-					float dist = sqrt(v.x * v.x + v.z * v.z);
-					if (dist < this->hitDistance) {
-						auto dir = Math::Vector3::Normalize(v);
-						my->AddForce(dir, this->hitDistance - dist);
-					}
+					v.y += 3;
+					auto dir = Math::Vector3::Normalize(v);
+					my->SetVelocity(dir, this->hitDistance * 10);
 				}
 			}
 		}
@@ -60,13 +58,13 @@ void KG::Component::SPlayerComponent::Update(float elapsedTime)
 {
 	if (!this->isActive) {
 		this->Respawn(elapsedTime);
-		
 	}
 	else {
 		this->rotationTrasnform->SetRotation(this->inputs.rotation);
 		//auto eulerInputs = KG::Math::Quaternion::ToEuler(this->inputs.rotation);
 		//this->physics->AddTorque(XMFLOAT3(0, 1, 0), 40000);
-		this->ProcessMove(elapsedTime);
+		if (!hitFlag)
+			this->ProcessMove(elapsedTime);
 
 		this->hitTimer += elapsedTime;
 		if (this->hitTimer >= this->hitInterval) {
@@ -85,6 +83,10 @@ void KG::Component::SPlayerComponent::Update(float elapsedTime)
 
 void KG::Component::SPlayerComponent::Respawn(float elapsedTime) {
 	if (this->respawnTimer > 3.0f) {
+		DirectX::XMFLOAT3 pos(10, 0, 0);
+		this->physics->SetPosition(pos);
+		this->physics->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
+
 		this->isActive = true;
 		this->hpPoint = 5;
 		this->respawnTimer = 0;
@@ -242,8 +244,6 @@ void KG::Component::SPlayerComponent::HitBullet(int damage)
 	if (hpPoint <= 0) {
 		hpPoint = 0;
 		isActive = false;
-		DirectX::XMFLOAT3 pos(10, 0, 0);
-		this->physics->SetPosition(pos);
 	}
 }
 

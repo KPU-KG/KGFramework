@@ -175,9 +175,9 @@ namespace KG::Component
 		float										chargingInterval = 2;
 		bool										isCharging = false;
 
-		constexpr static float maxChargeDist = 30;
+		constexpr static float chargeDist = 25;
 		float										chargeSpeed = 25;
-		float										chargeDist = 0;
+		// float										chargeDist = 0;
 		float										moveDist = 0;
 
 		float										chargeDelay = 2;
