@@ -46,7 +46,7 @@ void KG::Component::SPlayerComponent::OnCreate(KG::Core::GameObject* obj)
 					auto v = Math::Vector3::Subtract(myPos, enemyPos);
 					v.y += 3;
 					auto dir = Math::Vector3::Normalize(v);
-					my->SetVelocity(dir, this->hitDistance * 10);
+					my->SetVelocity(dir, this->hitDistance);
 				}
 			}
 		}
