@@ -68,6 +68,7 @@ bool KG::Component::CEnemyControllerComponent::OnDrawGUI()
 				ImGui::TextDisabled("rotation : (%f, %f, %f)", angle.x, angle.y, angle.z);
 			}
 		}
+        ImGui::Text("netId = %d", this->networkObjectId);
 	}
 	return false;
 }

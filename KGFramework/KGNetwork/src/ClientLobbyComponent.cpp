@@ -78,6 +78,7 @@ bool KG::Component::CLobbyComponent::OnDrawGUI()
 {
     if (ImGui::ComponentHeader<CLobbyComponent>())
     {
+        ImGui::Text("netId = %d", this->networkObjectId);
         for (size_t i = 0; i < 4; i++)
         {
             const char* txt[] = { "Empty","Wait","Ready" };

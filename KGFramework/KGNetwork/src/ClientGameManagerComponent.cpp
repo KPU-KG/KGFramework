@@ -20,6 +20,7 @@ bool KG::Component::CGameManagerComponent::OnDrawGUI()
 {
 	if (ImGui::ComponentHeader<CGameManagerComponent>())
 	{
+        ImGui::Text("netId = %d", this->networkObjectId);
 		if (ImGui::Button("REQ_LOGIN"))
 		{
             this->SendLoginPacket();

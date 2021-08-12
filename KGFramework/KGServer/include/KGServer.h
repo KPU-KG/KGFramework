@@ -42,7 +42,7 @@ namespace KG::Server
 		SESSION_ID sessionIdStart = SERVER_ID + 1;
 
 		std::mutex objectIdStartMutex;
-		NET_OBJECT_ID objectIdStart = SCENE_CONTROLLER_ID + 1;
+		NET_OBJECT_ID objectIdStart = LOBBY_ID + 1;
 
 		EX_OVERLAPPED acceptOver;
 
