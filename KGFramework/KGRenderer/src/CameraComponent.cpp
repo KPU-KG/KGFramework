@@ -80,7 +80,7 @@ void KG::Component::CameraComponent::CalculateProjectionMatrix()
 	auto proj = DirectX::XMMatrixPerspectiveFovLH(
 		DirectX::XMConvertToRadians(this->fovY),
 		this->aspectRatio,
-		this->nearZ,
+		std::max(this->nearZ, 0.01f),
 		this->farZ
 	);
 	DirectX::XMStoreFloat4x4(&this->cameraData->projection, XMMatrixTranspose(proj));
@@ -179,7 +179,7 @@ DirectX::BoundingFrustum KG::Component::CameraComponent::GetFrustum()
     auto proj = DirectX::XMMatrixPerspectiveFovLH(
         DirectX::XMConvertToRadians(this->fovY),
         this->aspectRatio,
-        this->nearZ,
+        std::max(this->nearZ, 0.01f),
         newFarZ
     );
 	auto view = this->GetView();

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Scene>
-    <SkyBoxId hash_id="3325274414" srcString="SkyDay"/>
+    <SkyBoxId hash_id="2071956174" srcString="SkySunset"/>
     <GameObject instanceId="0">
         <Tag hash_id="2696201701" srcString="rootNode"/>
         <Component name="TransformComponent" hash_id="3882513520">
@@ -8,10 +8,15 @@
             <Rotation_Q x="0" y="0" z="0" w="1"/>
             <Scale x="1" y="1" z="1"/>
         </Component>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="0" y="0" z="0"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="1" y="1" z="1"/>
+        </Component>
         <Component name="ILightComponent" hash_id="2391118483">
             <LightType value="0"/>
-            <Strength x="1" y="1" z="1"/>
-            <Direction x="-0.57735026" y="-0.57735026" z="-0.57735026"/>
+            <Strength x="0.40000001" y="0.2" z="0.1"/>
+            <Direction x="0.71887636" y="-0.5657075" z="-0.43398073"/>
         </Component>
         <Component name="IShadowCasterComponent" hash_id="1896069075"/>
         <Component name="IPostProcessManagerComponent" hash_id="2492596121">
@@ -26,7 +31,7 @@
                 <isActive value="true"/>
             </PostProcess>
             <PostProcess>
-                <id hash_id="1514760794" srcString="HDRTonemap_Day"/>
+                <id hash_id="1000435066" srcString="HDRTonemap_Sunset"/>
                 <isRaw value="false"/>
                 <isActive value="true"/>
             </PostProcess>
@@ -52,7 +57,7 @@
                 <MaterialDesc>
                     <Element>
                         <isRawShader value="false"/>
-                        <materialID hash_id="3325274414" srcString="SkyDay"/>
+                        <materialID hash_id="2071956174" srcString="SkySunset"/>
                         <slotIndex value="0"/>
                     </Element>
                 </MaterialDesc>
@@ -71,8 +76,8 @@
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="42.09938" y="29.549637" z="-79.990524"/>
-                <Rotation_Q x="0.25732717" y="-0.11743435" z="-0.031145465" w="-0.97045213"/>
+                <Position x="24.058247" y="49.7831" z="-91.713974"/>
+                <Rotation_Q x="-0.19939385" y="0.070007697" z="0.014122834" w="0.98880869"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
@@ -2021,7 +2026,7 @@
                 <MaterialDesc>
                     <Element>
                         <isRawShader value="false"/>
-                        <materialID hash_id="1802361946" srcString="AmbientIBL"/>
+                        <materialID hash_id="452798195" srcString="AmbientIBL_sunset"/>
                         <slotIndex value="0"/>
                     </Element>
                 </MaterialDesc>
@@ -27892,7 +27897,7 @@
                     <Scale x="1" y="1" z="1"/>
                 </Component>
                 <Component name="IRenderSpriteComponent" hash_id="3234678978">
-                      <Position x="0" y="0"/>
+                    <Position x="0" y="0"/>
                     <Size x="15" y="183"/>
                     <RotationAngle value="0"/>
                     <Depth value="0"/>
@@ -27901,7 +27906,7 @@
                     <MaterialID hash_id="1684921234" srcString="point_line"/>
                     <LeftTopUV x="0" y="0"/>
                     <RightBottomUV x="1" y="1"/>
-                    <Color r="0" g="1" b="0.13157868" a="1"/>
+                    <Color r="1" g="0.57254905" b="0" a="1"/>
                     <ProgressShape value="0"/>
                     <ProgressValue value="1"/>
                 </Component>
@@ -27926,7 +27931,7 @@
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
-                            <materialID hash_id="2835897276" srcString="point_circle"/>
+                            <materialID hash_id="3154066641" srcString="point_circle_sunset"/>
                             <slotIndex value="0"/>
                         </Element>
                     </MaterialDesc>

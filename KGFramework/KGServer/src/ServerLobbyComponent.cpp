@@ -20,19 +20,21 @@ KG::Component::SLobbyComponent::SLobbyComponent()
 //}
 
 void KG::Component::SLobbyComponent::DisconnectLobbyPlayer(KG::Server::SESSION_ID playerId) {
-	std::cout << "disconnect lobby id: " << playerId << "\n";
-	for (size_t i = 0; i < 4; i++)
-	{
-		std::cout << this->playerinfo[i].state << "\n";
-	}
-	for (auto p : this->playerinfo)
+	for (auto &p : this->playerinfo)
 	{
 		if (p.id == playerId) {
 			p.state = LobbyState::Empty;
 			p.id = -1;
-			std::cout << "disconnect\n";
 		}
 	}
+
+	KG::Packet::SC_LOBBY_DATA Packet;
+	for (size_t i = 0; i < PLAYERNUM; i++)
+	{
+		Packet.playerinfo[i] = (char)this->playerinfo[i].state;
+		Packet.mapnum = this->mapnum;
+	}
+	this->BroadcastPacket(&Packet);
 }
 
 bool KG::Component::SLobbyComponent::OnDrawGUI()
@@ -71,6 +73,7 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 				for (size_t j = 0; j < PLAYERNUM; j++)
 				{
 					LobbyDataPacket.playerinfo[j] = this->playerinfo[j].state;
+					LobbyDataPacket.mapnum = this->mapnum;
 				}
 				this->BroadcastPacket(&LobbyDataPacket);
 				// 갱신된 로비 정보 전송
@@ -93,22 +96,24 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 		for (size_t j = 0; j < PLAYERNUM; j++)
 		{
 			LobbyDataPacket.playerinfo[j] = this->playerinfo[j].state;
+			LobbyDataPacket.mapnum = this->mapnum;
 		}
 		this->BroadcastPacket(&LobbyDataPacket);
 		// 갱신된 로비 정보 전송
 
 		for (size_t i = 0; i < PLAYERNUM; i++)
 		{
-			if (this->playerinfo[i].state != LobbyState::Ready) {
+			if (this->playerinfo[i].state == LobbyState::Wait) {
 				return true;
 			}
 		}
 
 		// 저장된 맵 번호로 서버 씬 로드 *
-		if (this->mapnum == 0) {
-		}
-		else if (this->mapnum == 1) {
-		}
+		//if (this->mapnum == 0) {
+		//}
+		//else if (this->mapnum == 1) {
+		//}
+        //서버씬은 로드 안해도 된다고 계속 말씀드린거같은데
 
 		KG::Packet::SC_GAME_START StartPacket;
 		StartPacket.mapnum = this->mapnum;
@@ -121,6 +126,15 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 	{
 		auto* Packet = KG::Packet::PacketCast<KG::Packet::CS_SELECT_MAP>(packet);
 		this->mapnum = Packet->mapnum;
+
+		KG::Packet::SC_LOBBY_DATA LobbyDataPacket;
+		for (size_t j = 0; j < PLAYERNUM; j++)
+		{
+			LobbyDataPacket.playerinfo[j] = this->playerinfo[j].state;
+			LobbyDataPacket.mapnum = this->mapnum;
+		}
+		this->BroadcastPacket(&LobbyDataPacket);
+		
 	}
 	return true;
 	}

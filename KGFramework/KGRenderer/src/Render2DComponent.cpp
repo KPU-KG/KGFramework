@@ -134,6 +134,7 @@ void KG::Component::Render2DComponent::OnDataLoad(tinyxml2::XMLElement* componen
     //Progress
     progressShapeProp.OnDataLoad(componentElement);
     progressValueProp.OnDataLoad(componentElement);
+    this->ReloadRender();
 }
 
 void KG::Component::Render2DComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
@@ -204,11 +205,11 @@ KG::Component::RenderSpriteComponent::RenderSpriteComponent()
     :
     positionProp("Position", transform2D.position),
     sizeProp("Size", transform2D.size),
-    rotationAngleProp("Rotation Angle", transform2D.rotationAngle),
+    rotationAngleProp("RotationAngle", transform2D.rotationAngle),
     depthProp("Depth", transform2D.depth),
-    materialIdProp("Material ID", material2D.materialId),
-    leftTopUVProp("LeftTop UV", material2D.leftTopUV),
-    rightBottomUVProp("RightBottom UV", material2D.rightBottomUV),
+    materialIdProp("MaterialID", material2D.materialId),
+    leftTopUVProp("LeftTopUV", material2D.leftTopUV),
+    rightBottomUVProp("RightBottomUV", material2D.rightBottomUV),
     colorProp("Color", material2D.color),
     parentPivotProp("ParentPivot", this->transform2D.parentPivot,
         {
@@ -235,7 +236,7 @@ KG::Component::RenderSpriteComponent::RenderSpriteComponent()
             { RectPivot::RIGHT_BOTTOM, "RIGHT_BOTTOM" }
         }),
     progressShapeProp(
-        "Progress Shape", this->progress.shape,
+        "ProgressShape", this->progress.shape,
         {
             {ProgressShape::RIGHT_LEFT, "RIGHT_LEFT"},
             {ProgressShape::TOP_BOTTOM, "TOP_BOTTOM"},
@@ -243,7 +244,7 @@ KG::Component::RenderSpriteComponent::RenderSpriteComponent()
             {ProgressShape::CIRCLE_CLOCK, "CIRCLE_CLOCK"},
             {ProgressShape::CIRCLE_RCLOCK, "CIRCLE_RCLOCK"}
         }),
-    progressValueProp("Progress Value", this->progress.value)
+    progressValueProp("ProgressValue", this->progress.value)
 {
 }
 
@@ -252,7 +253,7 @@ void KG::Component::RenderSpriteComponent::OnCreate(KG::Core::GameObject* gameOb
     this->transform = gameObject->GetComponent<KG::Component::TransformComponent>();
     this->uiGeometry = KG::Resource::ResourceContainer::GetInstance()->CreateFakeGeometry(D3D12_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_POINTLIST, 1);
     this->uiShader = KG::Resource::ResourceContainer::GetInstance()->LoadShader("SpriteDefault"_id);
-    this->material2D.materialId = KG::Utill::HashString("SpriteWhite");
+    //this->material2D.materialId = KG::Utill::HashString("SpriteWhite");
     this->renderJob = KG::Renderer::KGDXRenderer::GetInstance()->GetRenderEngine()->GetRenderJob(this->uiShader, this->uiGeometry);
     this->renderJob->OnObjectAdd(true);
     this->ReloadRender();
@@ -297,10 +298,51 @@ void KG::Component::RenderSpriteComponent::ReloadRender()
 
 void KG::Component::RenderSpriteComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
 {
+    //visibleProp.OnDataLoad(componentElement);
+
+    positionProp.OnDataLoad(componentElement);
+    sizeProp.OnDataLoad(componentElement);
+    //sourceProp.OnDataLoad(componentElement);
+    rotationAngleProp.OnDataLoad(componentElement);
+    depthProp.OnDataLoad(componentElement);
+    parentPivotProp.OnDataLoad(componentElement);
+    localPivotProp.OnDataLoad(componentElement);
+
+    //Material2D
+    materialIdProp.OnDataLoad(componentElement);
+    leftTopUVProp.OnDataLoad(componentElement);
+    rightBottomUVProp.OnDataLoad(componentElement);
+    colorProp.OnDataLoad(componentElement);
+
+    //Progress
+    progressShapeProp.OnDataLoad(componentElement);
+    progressValueProp.OnDataLoad(componentElement);
+    this->ReloadRender();
 }
 
 void KG::Component::RenderSpriteComponent::OnDataSave(tinyxml2::XMLElement* parentElement)
 {
+    auto* componentElement = parentElement->InsertNewChildElement("Component");
+    ADD_COMPONENT_ID_TO_ELEMENT(componentElement, KG::Component::RenderSpriteComponent);
+    //visibleProp.OnDataSave(componentElement);
+
+    positionProp.OnDataSave(componentElement);
+    sizeProp.OnDataSave(componentElement);
+    //sourceProp.OnDataSave(componentElement);
+    rotationAngleProp.OnDataSave(componentElement);
+    depthProp.OnDataSave(componentElement);
+    parentPivotProp.OnDataSave(componentElement);
+    localPivotProp.OnDataSave(componentElement);
+
+    //Material2D
+    materialIdProp.OnDataSave(componentElement);
+    leftTopUVProp.OnDataSave(componentElement);
+    rightBottomUVProp.OnDataSave(componentElement);
+    colorProp.OnDataSave(componentElement);
+
+    //Progress
+    progressShapeProp.OnDataSave(componentElement);
+    progressValueProp.OnDataSave(componentElement);
 }
 
 bool KG::Component::RenderSpriteComponent::OnDrawGUI()

@@ -562,7 +562,7 @@ void KG::Renderer::MaterialElement::DrawGUI(Resource::DynamicElementInterface& d
         case KG::Renderer::COLOR4:
         {
             XMFLOAT4 result = data.Get<XMFLOAT4>(this->offset);
-            if (ImGui::ColorEdit4("Value", &(float&)result, 0.01f))
+            if (ImGui::ColorPicker4("Value", &(float&)result))
             {
                 data.Set<XMFLOAT4>(this->offset, result);
             }
@@ -571,7 +571,7 @@ void KG::Renderer::MaterialElement::DrawGUI(Resource::DynamicElementInterface& d
         case KG::Renderer::COLOR3:
         {
             XMFLOAT3 result = data.Get<XMFLOAT3>(this->offset);
-            if (ImGui::ColorEdit3("Value", &(float&)result, 0.01f))
+            if (ImGui::ColorPicker3("Value", &(float&)result))
             {
                 data.Set<XMFLOAT3>(this->offset, result);
             }

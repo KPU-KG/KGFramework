@@ -7,6 +7,7 @@
 #include "Scene.h"
 #include "IKGNetwork.h"
 #include "ClientLobbyComponent.h"
+#include "ClientGameManagerComponent.h"
 
 #include <iostream>
 
@@ -169,6 +170,7 @@ namespace KG::Component
             this->comp = c;
             currentStateId = "start"_id;
             // add list
+            objs["bg"_id] = this->scene->FindObjectWithTag("BG"_id)->GetComponent<KG::Component::IRender2DComponent>();
             objs["btn_start"_id] = this->scene->FindObjectWithTag("btn_start"_id)->GetComponent<KG::Component::IRender2DComponent>();
             objs["title"_id] = this->scene->FindObjectWithTag("Title"_id)->GetComponent<KG::Component::IRender2DComponent>();
             objs["lobbyTitle"_id] = this->scene->FindObjectWithTag("lobbyTitle"_id)->GetComponent<KG::Component::IRender2DComponent>();
@@ -176,6 +178,10 @@ namespace KG::Component
             objs["youline1"_id] = this->scene->FindObjectWithTag("line_1"_id)->GetComponent<KG::Component::IRender2DComponent>();
             objs["youline2"_id] = this->scene->FindObjectWithTag("line_2"_id)->GetComponent<KG::Component::IRender2DComponent>();
             objs["WAITING"_id] = this->scene->FindObjectWithTag("WAITING"_id)->GetComponent<KG::Component::IRender2DComponent>();
+            objs["Select"_id] = this->scene->FindObjectWithTag("Select"_id)->GetComponent<KG::Component::IRender2DComponent>();
+            objs["Select_day"_id] = this->scene->FindObjectWithTag("Select_day"_id)->GetComponent<KG::Component::IRender2DComponent>();
+            objs["Select_sunset"_id] = this->scene->FindObjectWithTag("Select_sunset"_id)->GetComponent<KG::Component::IRender2DComponent>();
+            objs["StartLOGO"_id] = this->scene->FindObjectWithTag("StartLOGO"_id)->GetComponent<KG::Component::IRender2DComponent>();
 
             for (size_t i = 0; i < 4; i++)
             {
@@ -196,6 +202,10 @@ namespace KG::Component
                     Anim("youline1"_id).OFF().POSITIONX(-1.5);
                     Anim("youline2"_id).OFF().POSITIONX(-1.5);
                     Anim("WAITING"_id).OFF();
+                    Anim("Select"_id).OFF();
+                    Anim("Select_day"_id).OFF();
+                    Anim("Select_sunset"_id).OFF();
+                    Anim("StartLOGO"_id).OFF().POSITION(-2.0f, 0.0f);
                     for (size_t i = 0; i < 4; i++)
                     {
                         Anim(playerWait[i]).OFF().COLOR(0,0,0);
@@ -216,8 +226,12 @@ namespace KG::Component
                     std::cout << "btnStart" << std::endl;
 #if SERVER_LOGIN == 1
                     GameFramework::instance->StartClient();
-                    this->lobby = this->scene->FindObjectWithID(0)->GetComponent<CLobbyComponent>();
+                    this->lobby = this->scene->GetRootNode()->GetComponent<CLobbyComponent>();
                     this->lobby->SendLoginPacket();
+                    this->lobby->PostStartFunction([this]() {
+                        this->currentStateId = "ingameChange"_id; 
+                        this->currentStateTime = 0.0f;
+                });
 #endif
                     return "change_lobby"_id;
                 }
@@ -233,20 +247,23 @@ namespace KG::Component
                 if (current <= end1)
                 {
                     static float x[] = { -0.675f, -0.225, 0.225, 0.675 };
-                    Anim("btn_start"_id).FADEOFF(current, end1);
+                    Anim("btn_start"_id).FADEOFF(current, end1).MOVEY(-0.75f, current, end1);
                     Anim("title"_id).MOVE(-0.350f, 0.75f, current, end1);
                     Anim("lobbyTitle"_id).FADEON(current, end1);
                     Anim("WAITING"_id).FADEON(current, end1);
                     Anim("youText"_id).FADEON(current, end1).MOVEX(x[myId],current, end1);
                     Anim("youline1"_id).FADEON(current, end1).MOVEX(x[myId], current, end1);
                     Anim("youline2"_id).FADEON(current, end1).MOVEX(x[myId], current, end1);
+                    Anim("Select"_id).FADEON(current, end1);
+                    Anim("Select_day"_id).FADEON(current, end1).FADECOLOR(1.0f, 1.0f, 1.0f, current, end1);
+                    Anim("Select_sunset"_id).FADEON(current, end1).FADECOLOR(0.25f, 0.25f, 0.25f, current, end1);
                     for (size_t i = 0; i < 4; i++)
                     {
                         float color = 0.25f;
                         if (myId == i) color = 1.0f;
                         Anim(playerWait[i]).FADEON(current, end1).FADECOLOR(color, color, color, current, end1);
                         Anim(playerTitle[i]).FADEON(current, end1).FADECOLOR(color, color, color, current, end1);
-                        Anim(playerReady[i]).FADEON(current, end1).FADECOLOR(color, color, color, current, end1);
+                        Anim(playerReady[i]).FADEON(current, end1).FADECOLOR(0.25, 0.25, 0.25, current, end1);
                     }
                 }
                 else 
@@ -257,10 +274,34 @@ namespace KG::Component
             };
             fsmMap["lobby"_id] = [this](float delta, float current) -> KG::Utill::hashType
             {
+                float b = 0.25f + 0.1f * sinf(current * 3);
+                {
+                    float day = b;
+                    float sunset = b;
+#if SERVER_LOGIN == 1
+                    if (this->lobby->GetMap() == 0) 
+                        day = 1;
+                    else 
+                        sunset = 1;
+#endif
+                    Anim("Select_day"_id).COLOR(day, day, day);
+                    Anim("Select_sunset"_id).COLOR(sunset, sunset, sunset);
+                    if (IsClicked("Select_day"_id))
+                    {
+#if SERVER_LOGIN == 1
+                        this->lobby->SendSelectPacket(0);
+#endif
+                    }
+                    if (IsClicked("Select_sunset"_id))
+                    {
+#if SERVER_LOGIN == 1
+                        this->lobby->SendSelectPacket(1);
+#endif
+                    }
+                }
                 for (size_t i = 0; i < 4; i++)
                 {
                     int myId = TEST_ID;
-                    float b = 0.25f + 0.1f * sinf(current * 3);
                     float o = 1.0f;
                     float w = 0, t = 0, r = 0;
                     char flag = 0;
@@ -286,25 +327,66 @@ namespace KG::Component
 
                     if (i == myId && IsClicked(playerWait[i]))
                     {
+#if SERVER_LOGIN == 1
                         this->lobby->SendWaitPacket();
+#endif
                     }
                     if (i == myId && IsClicked(playerReady[i]))
                     {
+#if SERVER_LOGIN == 1
                         this->lobby->SendReadyPacket();
+#else
+                        this->currentStateId = "ingameChange"_id;
+                        this->currentStateTime = 0.0f;
+#endif
                     }
                 }
                 return 0;
             };
 
-            fsmMap["ingame"_id] = [this](float delta, float current) -> KG::Utill::hashType
+            fsmMap["ingameChange"_id] = [this](float delta, float current) -> KG::Utill::hashType
             {
-                Anim("title"_id).OFF();
-                Anim("btn_start"_id).OFF();
+                float end = 2.0f;
+                float out = 1.5f;
+                Anim("title"_id).MOVEX(out, current, end);
+                Anim("lobbyTitle"_id).MOVEX(out, current, end);
+                Anim("youText"_id).MOVEX(out, current, end);
+                Anim("youline1"_id).MOVEX(out, current, end);
+                Anim("youline2"_id).MOVEX(out, current, end);
+                Anim("WAITING"_id).MOVEX(out, current, end);
                 for (size_t i = 0; i < 4; i++)
                 {
-                    Anim(playerWait[i]).OFF();
-                    Anim(playerTitle[i]).OFF();
-                    Anim(playerReady[i]).OFF();
+                    Anim(playerTitle[i]).MOVEX(out, current, end);
+                    Anim(playerWait[i]).MOVEX(out, current, end);
+                    Anim(playerReady[i]).MOVEX(out, current, end);
+                }
+                Anim("Select"_id).MOVEX(out, current, end);
+                Anim("Select_day"_id).MOVEX(out, current, end);
+                Anim("Select_sunset"_id).MOVEX(out, current, end);
+                Anim("StartLOGO"_id).ON().MOVEX(0, current, end);
+                if (current > end)
+                {
+                    int map = 0;
+#if SERVER_LOGIN == 1
+                    map = this->lobby->GetMap();
+#endif
+                    static const std::string maps[] = { "Resource/Scenes/SceneData_86_client.xml", "Resource/Scenes/SceneData_86_client_sunset.xml" };
+                    this->comp->GetGameObject()->GetScene()->LoadScene(maps[map]);
+#if SERVER_LOGIN == 1
+                    auto* root = this->scene->GetRootNode();
+                    auto* manager = root->GetComponent<CGameManagerComponent>();
+                    manager->SendLoginPacket();
+#endif
+                    return "ingameFadeOut"_id;
+                }
+                return 0;
+            };
+
+            fsmMap["ingameFadeOut"_id] = [this](float delta, float current) -> KG::Utill::hashType
+            {
+                for (auto[id, ptr] : this->objs)
+                {
+                    Anim(id).FADEOFF(current, 2.0f);
                 }
                 return 0;
             };

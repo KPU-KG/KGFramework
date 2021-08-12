@@ -5,7 +5,7 @@
 struct MaterialData
 {
     uint ColorTextureIndex;
-    float alpha;
+    float4 color;
 };
 
 // Don't Touch This Line
@@ -42,8 +42,7 @@ float4 PixelShaderFunction(TransparentVertexOutput input) : SV_Target0
 {
     MaterialData mat = materialData[objectInfo[input.InstanceID].materialIndex];
     float4 color = shaderTexture[mat.ColorTextureIndex].Sample(gsamAnisotoropicClamp, input.uv);
-    color.rgb = GammaToLinear(color.rgb);
-    color.a = color.a * mat.alpha;
+    color = float4(GammaToLinear(color.rgb), color.a) * mat.color;
     return color;
 }
 

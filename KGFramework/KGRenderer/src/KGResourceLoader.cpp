@@ -348,9 +348,8 @@ namespace MaterialParser
         }
 		size_t byte = xml->IntAttribute( "byte" );
 		auto code = xml->Attribute( "code" );
-		int r, g, b;
-		sscanf_s( code, "%02x%02x%02x", &r, &g, &b );
-		float a = 1.0f;
+		int r, g, b, a;
+		sscanf_s( code, "%02x%02x%02x%02x", &r, &g, &b, &a );
 		element.Set( offset, r / 255.0f );
 		element.Set( offset + 4, g / 255.0f );
 		element.Set( offset + 8, b / 255.0f );

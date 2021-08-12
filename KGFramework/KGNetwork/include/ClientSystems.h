@@ -175,6 +175,12 @@ namespace KG::System
 				return com.GetLobbyInfo(num);
 			}
 		}
+		char GetMap() {
+			for (auto& com : *this)
+			{
+				return com.GetMap();
+			}
+		}
 		void SetNetworkInstance(KG::Server::Network* network)
 		{
 			this->network = network;

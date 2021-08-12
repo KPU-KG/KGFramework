@@ -257,6 +257,7 @@ namespace KG::Packet
 	{
 		DEFAULT_PACKET_HEADER(SC_LOBBY_DATA);
 		char playerinfo[4];
+		int mapnum;
 	};
 	
 	struct SC_LOGIN_OK

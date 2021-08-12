@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="30">
+        <Tag hash_id="982246325" srcString="Select"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="0" y="0" z="0"/>
+            <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+            <Scale x="1" y="1" z="1"/>
+        </Component>
+        <Component name="IRender2DComponent" hash_id="3439219241">
+            <visible value="true"/>
+            <Position x="-0.64999998" y="-0.64999998"/>
+            <Size x="0.075000003" y="0.075000003"/>
+            <source x="612" y="68"/>
+            <RotationAngle value="0"/>
+            <Depth value="0"/>
+            <ParentPivot value="1"/>
+            <LocalPivot value="1"/>
+            <MaterialID hash_id="1853586693" srcString="title_0009_select.DDS"/>
+            <LeftTopUV x="0" y="0"/>
+            <RightBottomUV x="1" y="1"/>
+            <Color r="1" g="1" b="1" a="1"/>
+            <ProgressShape value="0"/>
+            <ProgressValue value="1"/>
+        </Component>
+    </GameObject>
+</SavedGameObject>
