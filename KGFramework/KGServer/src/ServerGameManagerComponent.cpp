@@ -354,7 +354,7 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		break;
 	}
 
-	int enemyCount = 1; // randomSpawn(genRegion);
+	int enemyCount = 3; // randomSpawn(genRegion);
 
 	for (int i = 0; i < enemyCount; ++i) {
 		std::uniform_real_distribution<float> randomPos(-region.range, region.range);
@@ -454,7 +454,7 @@ void KG::Component::EnemyGeneratorComponent::GenerateBoss()
 	// auto region = GetBossRegion();
 
 	std::uniform_real_distribution<float> randomPos(-region.range, region.range);
-	auto presetName = "EnemyMech";
+	auto presetName = "EnemyCrawler";
 	auto presetId = KG::Utill::HashString(presetName);
 
 	auto* scene = this->gameObject->GetScene();
@@ -526,6 +526,14 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 		}
 	}
 
+	if (!this->server->isPlay && this->server->GetPlayerNum() == this->loginedplayer) {
+		if (starttimer > 5.0f) {
+			this->server->isPlay = true;
+		}
+		else {
+			starttimer += elapsedTime;
+		}
+	}
 	if (enemyGenerator != nullptr) {
 		if (enemyGenerator->IsGeneratable() && this->server->isPlay) {
 			if (enemyGenerator->GetScore() < 3) {
@@ -627,6 +635,7 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 		return false;
 	case KG::Packet::PacketType::CS_REQ_LOGIN:
 	{
+
 		auto newPlayerId = this->server->GetNewObjectId();
 
 		//플레이어 추가!
@@ -643,25 +652,25 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 		dyn->SetPosition(XMFLOAT3(newPlayerId + 10, 1, newPlayerId + 10));
 		playerObjects.insert(std::make_pair(newPlayerId, playerComp));
 		this->server->SetServerObject(newPlayerId, playerComp);
-		this->server->UnlockWorld();
+		
 
 		KG::Packet::SC_PLAYER_INIT initPacket = {};
 		initPacket.playerObjectId = newPlayerId;
 		initPacket.position = KG::Packet::RawFloat3(newPlayerId + 10, 1, newPlayerId + 5);
 		initPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
 		this->SendPacket(sender, &initPacket);
-
+		
 		KG::Packet::SC_ADD_PLAYER addPacket = {};
 		addPacket.playerObjectId = newPlayerId;
 		addPacket.position = KG::Packet::RawFloat3(newPlayerId + 10, 1, newPlayerId + 5);
 		addPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
 		this->BroadcastPacket(&addPacket, sender);
 
-		// if (enemyGenerator) {
-		// 	enemyGenerator->RegisterPlayerToEnemy(newPlayerId);
-		// }
+		/* if (enemyGenerator) {
+		 	enemyGenerator->RegisterPlayerToEnemy(newPlayerId);
+		 }*/
 
-		for (auto& [id, ptr] : this->playerObjects)
+		/*for (auto& [id, ptr] : this->playerObjects)
 		{
 			if (id == newPlayerId) continue;
 			std::shared_lock sl{ ptr->playerInfoLock };
@@ -671,13 +680,16 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 			addPacket.position = ptr->GetGameObject()->GetTransform()->GetPosition();
 			addPacket.rotation = ptr->GetGameObject()->GetTransform()->GetRotation();
 			this->SendPacket(sender, &addPacket);
-		}
+		}*/
 
+		this->server->UnlockWorld();
 		RegisterPlayersToEnemy();
 
 		// 이미 생성되어있는 적 추가
 		if (this->enemyGenerator)
 			this->enemyGenerator->SendAddEnemyPacket(sender);
+
+		this->loginedplayer += 1;
 	}
 	return true;
 	}

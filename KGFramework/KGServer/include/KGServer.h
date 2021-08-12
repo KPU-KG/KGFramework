@@ -72,7 +72,7 @@ namespace KG::Server
 		void DoRecv(SESSION_ID key);
 		void ProcessPacket(SESSION_ID playerId, unsigned char* buffer);
 
-		
+		int playernum = -1;
 
 	public:
 		std::mutex worldLock;
@@ -82,6 +82,8 @@ namespace KG::Server
 		NET_OBJECT_ID GetNewObjectId();
 		void SetSessionState(SESSION_ID session, KG::Server::PLAYER_STATE state);
 		void SetSessionId(SESSION_ID session, KG::Server::NET_OBJECT_ID id);
+		void SetPlayerNum(int num);
+		int GetPlayerNum();
 		bool isPlay = false;
 		//void AddPlayer();
 

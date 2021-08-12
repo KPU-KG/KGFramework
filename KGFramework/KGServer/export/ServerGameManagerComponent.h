@@ -61,7 +61,7 @@ namespace KG::Component
 		bool generateEnemy = false;
 		bool initialized = false;
 		bool generateBoss = false;
-
+		
 		unsigned int score = 0;
 		KG::Component::Region GetNextRegion();
 		//KG::Component::Region GetRegion0() { return region[0]; };
@@ -103,10 +103,13 @@ namespace KG::Component
 		void RegisterPlayersToEnemy();
 		void UpdatePlayerSession();
 		void GameReset();
-	public:
-		void SendEndPacket();
+		int loginedplayer = 0;
 		float updatetimer = 0;
 		float endtimer = 0;
+		float starttimer = 0;
+
+	public:
+		void SendEndPacket();
 		concurrency::concurrent_unordered_map<KG::Server::NET_OBJECT_ID, KG::Component::SPlayerComponent*> playerObjects;
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;

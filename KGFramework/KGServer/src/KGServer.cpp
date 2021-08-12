@@ -493,6 +493,14 @@ void KG::Server::Server::SetSessionId(SESSION_ID session, KG::Server::NET_OBJECT
 	this->players[session].netId = id;
 }
 
+void KG::Server::Server::SetPlayerNum(int num) {
+	this->playernum = num;
+}
+
+int KG::Server::Server::GetPlayerNum() {
+	return this->playernum;
+}
+
 KG::Server::NET_OBJECT_ID KG::Server::Server::GetNewObjectId()
 {
 	std::lock_guard lg{ this->objectIdStartMutex };
@@ -500,3 +508,5 @@ KG::Server::NET_OBJECT_ID KG::Server::Server::GetNewObjectId()
 	this->objectIdStart += 1;
 	return ret;
 }
+
+

@@ -100,25 +100,25 @@ bool KG::Component::SLobbyComponent::OnProcessPacket(unsigned char* packet, KG::
 		}
 		this->BroadcastPacket(&LobbyDataPacket);
 		// 갱신된 로비 정보 전송
+		
+		int playernum = 0; // 로비 접속 플레이어 확인
 
 		for (size_t i = 0; i < PLAYERNUM; i++)
 		{
 			if (this->playerinfo[i].state == LobbyState::Wait) {
 				return true;
 			}
+			if (this->playerinfo[i].state == LobbyState::Ready) {
+				playernum += 1;
+			}
 		}
 
-		// 저장된 맵 번호로 서버 씬 로드 *
-		//if (this->mapnum == 0) {
-		//}
-		//else if (this->mapnum == 1) {
-		//}
-        //서버씬은 로드 안해도 된다고 계속 말씀드린거같은데
+		this->server->SetPlayerNum(playernum);
 
 		KG::Packet::SC_GAME_START StartPacket;
 		StartPacket.mapnum = this->mapnum;
 		this->BroadcastPacket(&StartPacket);
-		this->server->isPlay = true;
+		//this->server->isPlay = true;
 		// 전부 레디면 시작 + 시작 패킷 전송
 	}
 	return true;
