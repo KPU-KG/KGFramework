@@ -10,6 +10,7 @@
 #include "GeometryComponent.h"
 
 #include <iostream>
+#include <future>
 
 using namespace DirectX;
 
@@ -386,9 +387,12 @@ void KG::Component::AnimationControllerComponent::PlayingUpdate(float elapsedTim
 					continue;
 				}
 
-				t[animCount][i] = GetAnimationTranslation(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
-				r[animCount][i] = GetAnimationRotation(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
-				s[animCount][i] = GetAnimationScale(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
+                auto t_result = std::async(GetAnimationTranslation, animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
+                auto r_result = std::async(GetAnimationRotation, animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
+                auto s_result = std::async(GetAnimationScale, animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
+                t[animCount][i] = t_result.get();
+                r[animCount][i] = r_result.get();
+                s[animCount][i] = s_result.get();
 			}
 			animCount++;
 		}
@@ -523,9 +527,12 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 				{
 					continue;
 				}
-				t[animCount][i] = GetAnimationTranslation(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
-				r[animCount][i] = GetAnimationRotation(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
-				s[animCount][i] = GetAnimationScale(animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
+                auto t_result = std::async(GetAnimationTranslation, animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
+                auto r_result = std::async(GetAnimationRotation, animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
+                auto s_result = std::async(GetAnimationScale, animSet->layers[0].nodeAnimations[i], T * anim->duration, anim->duration);
+                t[animCount][i] = t_result.get();
+                r[animCount][i] = r_result.get();
+                s[animCount][i] = s_result.get();
 			}
 			animCount++;
 		}
@@ -608,10 +615,12 @@ void KG::Component::AnimationControllerComponent::ChangingUpdate(float elapsedTi
 				{
 					continue;
 				}
-
-				t[animCount][i] = GetAnimationTranslation(animSet->layers[0].nodeAnimations[i], curT * anim->duration, anim->duration);
-				r[animCount][i] = GetAnimationRotation(animSet->layers[0].nodeAnimations[i], curT * anim->duration, anim->duration);
-				s[animCount][i] = GetAnimationScale(animSet->layers[0].nodeAnimations[i], curT * anim->duration, anim->duration);
+                auto t_result = std::async(GetAnimationTranslation, animSet->layers[0].nodeAnimations[i], curT * anim->duration, anim->duration);
+                auto r_result = std::async(GetAnimationRotation, animSet->layers[0].nodeAnimations[i], curT * anim->duration, anim->duration);
+                auto s_result = std::async(GetAnimationScale, animSet->layers[0].nodeAnimations[i], curT * anim->duration, anim->duration);
+                t[animCount][i] = t_result.get();
+				r[animCount][i] = r_result.get();
+				s[animCount][i] = s_result.get();
 			}
 			animCount++;
 		}
