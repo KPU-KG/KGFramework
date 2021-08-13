@@ -5,6 +5,7 @@
 #include "fbxImpoter.h"
 #include "KGDXRenderer.h"
 #include "RootParameterIndex.h"
+#include <future>
 
 const std::array<D3D12_INPUT_ELEMENT_DESC, 8> KG::Renderer::NormalVertex::inputElementDesc
 {
@@ -92,6 +93,8 @@ void KG::Renderer::Geometry::Render( ID3D12GraphicsCommandList* commandList, UIN
 void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandList* commandList )
 {
 	this->uploadFence = KGDXRenderer::GetInstance()->GetFenceValue();
+    auto f = std::async([this]()->bool {this->CreateAABB(); return true; });
+    this->CreateAABB();
 
 	if ( !this->vertices.empty() )
 	{
@@ -118,6 +121,14 @@ void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandLi
 		this->boneOffsetBuffer = CreateBufferResource( device, commandList, (void*)this->bones.offsetMatrixs.data(), 64 * sizeof( XMFLOAT4X4 ),
 			D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_PIXEL_SHADER_RESOURCE, &this->boneUploadBuffer );
 	}
+    auto result = f.get();
+    std::cout << "aabb createed" << std::endl;
+}
+
+void KG::Renderer::Geometry::CreateAABB()
+{
+    if(this->vertices.size() > 0)
+        DirectX::BoundingBox::CreateFromPoints(this->aabb, this->vertices.size(), (const XMFLOAT3A*)this->vertices.data(), sizeof(NormalVertex));
 }
 
 void KG::Renderer::Geometry::CreateFromMeshData( const KG::Utill::MeshData& data )

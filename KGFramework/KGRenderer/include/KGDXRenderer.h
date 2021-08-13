@@ -90,26 +90,27 @@ namespace KG::Renderer
         KGDXRenderer& operator=(const KGDXRenderer&) = delete;
         KGDXRenderer& operator=(KGDXRenderer&&) = delete;
 
-        virtual void Initialize() override;
-        virtual void SetGameTime(double gameTime) override;
-        virtual void Render() override;
-        virtual void PreRenderEditorUI() override;
-        virtual void PreloadModels(std::vector<KG::Utill::HashString>&& ids) override;
-        virtual void CubeCaemraRender();
-        virtual void NormalCameraRender();
-        virtual void ShadowMapRender();
-        virtual void CopyMainCamera();
-        virtual void EditorUIRender();
-        virtual void OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
-        virtual void TransparentRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
-        virtual void ParticleRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
-        virtual void SpriteRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
-        virtual void InGameUIRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
-        virtual void SSAORender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex, ID3D12Resource* data);
-        virtual void LightPassRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
-        virtual void SkyBoxRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
-        virtual void PostProcessRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex, ID3D12Resource* data);
-        virtual void PassRenderEnd(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+        void Initialize() override;
+        void SetGameTime(double gameTime) override;
+        void Render() override;
+        void PreRenderEditorUI() override;
+        void PreloadModels(std::vector<KG::Utill::HashString>&& ids) override;
+        void CubeCaemraRender();
+        void NormalCameraRender();
+        void ShadowMapRender();
+        void CopyMainCamera();
+        void EditorUIRender();
+        void ParticleReady();
+        void OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+        void TransparentRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+        void ParticleRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+        void SpriteRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+        void InGameUIRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+        void SSAORender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex, ID3D12Resource* data);
+        void LightPassRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+        void SkyBoxRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
+        void PostProcessRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex, ID3D12Resource* data);
+        void PassRenderEnd(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
 
         ParticleGenerator* GetParticleGenerator();
 
