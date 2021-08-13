@@ -155,6 +155,7 @@ namespace KG::Component
 		float										goalDistance = 0;
 		float										moveDistance = 0;
 		DirectX::XMFLOAT3 prevPosition;
+		DirectX::XMFLOAT3 prevDirection;
 
 		// float										arriveTime = 0;
 		// float										moveTime = 0;

@@ -280,8 +280,16 @@ bool KG::Component::SEnemyCrawlerComponent::Rotate(float elapsedTime)
 	if (angle.x < 0)
 		amount *= -1;
 
-	if (crs.y >= 0) {
-		amount *= -1;
+	// if (crs.y >= 0) {
+	// 	amount *= -1;
+	// }
+
+	if (crs.x == 0 && crs.y == 0 && crs.z == 0) {
+		chargeOrigin = this->transform->GetWorldPosition();
+		chargeTarget = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
+		moveDist = 0;
+		prevPosition = this->chargeOrigin;
+		return true;
 	}
 
 	DirectX::XMFLOAT4 rot;

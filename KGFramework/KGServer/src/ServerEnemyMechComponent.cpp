@@ -69,22 +69,27 @@ bool KG::Component::SEnemyMechComponent::Rotate(float elapsedTime)
 
 	float amount = min(abs(angle.x), speed * elapsedTime);
 
+	if (abs(amount) >= abs(angle.x)) {
+		this->prevPosition = this->transform->GetWorldPosition();
+		return true;
+	}
+
 	if (angle.x < 0)
 		amount *= -1;
 
-	if (crs.y >= 0) {
-		amount *= -1;
+	// if (crs.y >= 0) {
+	// 	amount *= -1;
+	// }
+
+	if (crs.x == 0 && crs.y == 0 && crs.z == 0) {
+		this->prevPosition = this->transform->GetWorldPosition();
+		return true;
 	}
 
 	DirectX::XMFLOAT4 rot;
 	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), amount));
 	gameObject->GetTransform()->Rotate(rot);
 	rigid->SetRotation(transform->GetRotation());
-
-	if (abs(amount) >= abs(angle.x)) {
-		this->prevPosition = this->transform->GetWorldPosition();
-		return true;
-	}
 
 	return false;
 }
@@ -101,21 +106,21 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 
 	auto spd = this->wanderMoveSpeed;
 	if (this->stateManager->GetCurState() == MechStateManager::STATE_TRACE)
-		spd += this->traceMoveSpeed;
-	auto dir = Math::Vector3::Normalize(Math::Vector3::Subtract(goal, this->transform->GetWorldPosition()));
+		spd = this->traceMoveSpeed;
+	auto pos = this->transform->GetWorldPosition();
+	pos.y = 0;
+	auto dir = Math::Vector3::Normalize(Math::Vector3::Subtract(goal, pos));
 
 	if (rigid) {
 		rigid->SetVelocity(dir, spd);
 	}
 
 	float dist = abs(sqrt(GetDistance2FromEnemy(this->prevPosition)));
-	// this->prevPosition = this->transform->GetWorldPosition();
-	// 
-	// if (dist < 0.001) {
-	// 	this->moveDistance = 0;
-	// 	rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
-	// 	return true;
-	// }
+	if (dist == 0) {
+		this->moveDistance = 0;
+		rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
+		return true;
+	}
 
 	this->moveDistance += dist;
 	this->prevPosition = this->transform->GetWorldPosition();
@@ -381,14 +386,14 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 	if (this->target == nullptr) {
 		return true;
 	}
-	if (this->target->isUsing()) {
+	if (!this->target->isUsing()) {
 		this->target = nullptr;
 		return true;
 	}
 
 	auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-	for (int tx = -10; tx < 10; ++tx) {
-		for (int tz = -10; tz < 10; ++tz) {
+	for (int tx = -attackRange; tx < attackRange; ++tx) {
+		for (int tz = -attackRange; tz < attackRange; ++tz) {
 
 			// auto center = this->transform->GetWorldPosition();
 			int dx = myPos.x + tx;

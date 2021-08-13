@@ -25,8 +25,12 @@ void KG::Component::SProjectileComponent::Initialize(DirectX::XMFLOAT3 origin, D
 	XMStoreFloat3(&angle, DirectX::XMVector3AngleBetweenVectors(XMLoadFloat3(&look), XMLoadFloat3(&dir)));
 
 	DirectX::XMFLOAT4 rot;
-	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), angle.x));
-	gameObject->GetTransform()->Rotate(rot);
+	if (crs.x == 0 && crs.y == 0 && crs.z == 0) {
+	}
+	else {
+		XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), angle.x));
+		gameObject->GetTransform()->Rotate(rot);
+	}
 	rigid->SetRotation(transform->GetRotation());
 
 	this->rigid->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
@@ -70,9 +74,13 @@ void KG::Component::SProjectileComponent::Update(float elapsedTime)
 	XMFLOAT3 angle;
 	XMStoreFloat3(&angle, DirectX::XMVector3AngleBetweenVectors(XMLoadFloat3(&look), XMLoadFloat3(&dir)));
 
-	DirectX::XMFLOAT4 rot;
-	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), angle.x));
-	gameObject->GetTransform()->Rotate(rot);
+	if (crs.x == 0 && crs.y == 0 && crs.z == 0) {
+	}
+	else {
+		DirectX::XMFLOAT4 rot;
+		XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), angle.x));
+		gameObject->GetTransform()->Rotate(rot);
+	}
 	rigid->SetRotation(transform->GetRotation());
 
 	sendTimer += elapsedTime;
@@ -136,8 +144,13 @@ void KG::Component::SCrawlerMissileComponent::Initialize(DirectX::XMFLOAT3 origi
 	XMStoreFloat3(&angle, DirectX::XMVector3AngleBetweenVectors(XMLoadFloat3(&look), XMLoadFloat3(&this->direction)));
 
 	DirectX::XMFLOAT4 rot;
-	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), angle.x));
-	gameObject->GetTransform()->Rotate(rot);
+	if (crs.x == 0 && crs.y == 0 && crs.z == 0) {
+
+	}
+	else {
+		XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), angle.x));
+		gameObject->GetTransform()->Rotate(rot);
+	}
 	rigid->SetRotation(transform->GetRotation());
 
 	// 충돌 콜백함수 설정
@@ -190,8 +203,8 @@ void KG::Component::SCrawlerMissileComponent::Update(float elapsedTime)
 		DirectX::XMFLOAT4 rot;
 		XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), angle.x));
 		gameObject->GetTransform()->Rotate(rot);
-		rigid->SetRotation(transform->GetRotation());
 	}
+	rigid->SetRotation(transform->GetRotation());
 
 	sendTimer += elapsedTime;
 	if (sendInterval <= sendTimer) {
