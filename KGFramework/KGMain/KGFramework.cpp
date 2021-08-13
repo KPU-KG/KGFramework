@@ -349,14 +349,15 @@ void KG::GameFramework::PostSceneFunction()
 			// 	obj.AddComponent(t);
 			// }
 
+
 			auto* g = this->renderer->GetNewGeomteryComponent();
 			g->AddGeometry(KG::Utill::HashString("cube"));
-
+			
 			auto* m = this->renderer->GetNewMaterialComponent();
-			m->PostMaterial(KG::Utill::HashString("area_red"));
-
+			m->PostMaterial(KG::Utill::HashString("point_circle"));
+			
 			auto* r = this->renderer->GetNewRenderComponent();
-
+			
 			obj.AddComponent(g);
 			obj.AddComponent(m);
 			obj.AddComponent(r);

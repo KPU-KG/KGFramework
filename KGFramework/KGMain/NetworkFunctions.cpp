@@ -180,6 +180,7 @@ void KG::GameFramework::PostNetworkFunction()
         {
             auto* comp = this->networkClient->GetNewCubeAreaRedComponent();
             obj.AddComponent(comp);
+
             return comp;
         }
     );
