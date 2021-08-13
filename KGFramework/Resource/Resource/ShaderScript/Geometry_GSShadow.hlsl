@@ -31,10 +31,12 @@ ShadowVSOutput VertexShaderFunction(VertexData input, uint InstanceID : SV_Insta
 [maxvertexcount(18)]
 void GeometryShaderFunction(triangle ShadowVSOutput inData[3], inout TriangleStream<ShadowGSOutput> outStream )
 {
+    [unroll]
     for (int index = 0; index < 6; ++index)
     {
         ShadowGSOutput output;
         output.renderIndex = index;
+        [unroll]
         for (int v = 0; v < 3; v++)
         {
             output.position = mul(inData[v].position, mul(view[index], projection));

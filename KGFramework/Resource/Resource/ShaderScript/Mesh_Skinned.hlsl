@@ -8,6 +8,7 @@ StructuredBuffer<float4x4> animationTransformInfo : register(t1, space3);
 float4x4 GetWorldMatrix(uint instanceID, VertexData vertex)
 {
     float4x4 animationMatrix = (float4x4) 0.0f;
+    [unroll]
     for (int i = 0; i < 4; i++)
     {
         int animationIndex = (MAX_COUNT_BONE * instanceID) + vertex.bone[i];

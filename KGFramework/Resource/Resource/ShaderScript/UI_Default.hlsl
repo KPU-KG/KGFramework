@@ -102,6 +102,7 @@ void GeometryShaderFunction(point ParticleVertexOutput input[1], inout TriangleS
     pVertices[3] = float4(animatedPosition - (halfW * right) + (halfH * up), 1.0f);
     
     ParticleGSOutput output;
+    [unroll]
     for (int i = 0; i < 4; i++)
     {
         output.positionW = pVertices[i].xyz;

@@ -27,7 +27,7 @@ float DirectionalShadowCascadePCF(float3 worldPosition, LightData lightData, Sha
     float2 uv = float2(1.0f, 1.0f);
     float depth = 1.0f;
     uint index = 0;
-    
+    [unroll]
     for (uint cascade = 0; cascade < 4; cascade++)
     {
         float4 projPos = mul(float4(worldPosition, 1.0f), shadowData.shadowMatrix[cascade]);
@@ -67,6 +67,7 @@ float DirectionalShadowCascadePCF(float3 worldPosition, LightData lightData, Sha
     //bias = 0.001f;
     //bias += 0.001f  + index * 0.001f;
     float result = 0.0f;
+    [unroll]
     for (uint n = 0; n < 16; n++)
     {
         result += shadowArray[shadowData.shadowMapIndex[0]].SampleCmpLevelZero(gsamAnisotoropicCompClamp, float3(uv + (poissonDisk[n] / 1400.0f), index), (depth - bias));

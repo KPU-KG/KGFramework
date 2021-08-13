@@ -100,6 +100,7 @@ void GeometryShaderFunction(point ParticleVertexOutput input[1], inout TriangleS
     ParticleGSOutput output;
     if (data.startTime + data.lifeTime > gameTime)
     {
+        [unroll]
         for (int i = 0; i < 4; i++)
         {
             output.positionW = pVertices[i].xyz;
