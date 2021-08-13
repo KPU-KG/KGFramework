@@ -768,8 +768,6 @@ void KG::Component::CrawlerStateManager::SetState() {
 					break;
 				}
 			}
-			// for test
-			curState = STATE_CHARGE_ATTACK;
 			break;
 		case STATE_SHOOT_ATTACK:
 			dynamic_cast<CrawlerShootState*>(state[curState])->isFinished = false;

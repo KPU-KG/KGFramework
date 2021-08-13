@@ -71,24 +71,24 @@ bool KG::Component::SEnemyMechComponent::Rotate(float elapsedTime)
 
 	if (abs(amount) >= abs(angle.x)) {
 		this->prevPosition = this->transform->GetWorldPosition();
+		this->prevDirection = this->transform->GetWorldLook();
 		return true;
 	}
 
 	if (angle.x < 0)
 		amount *= -1;
 
-	// if (crs.y >= 0) {
-	// 	amount *= -1;
-	// }
-
 	if (crs.x == 0 && crs.y == 0 && crs.z == 0) {
 		this->prevPosition = this->transform->GetWorldPosition();
+		auto pos = this->transform->GetWorldPosition();
+		pos.y = 0;
+		this->prevDirection = Math::Vector3::Normalize(Math::Vector3::Subtract(goal, pos));
 		return true;
 	}
 
 	DirectX::XMFLOAT4 rot;
 	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), amount));
-	gameObject->GetTransform()->Rotate(rot);
+	this->transform->Rotate(rot);
 	rigid->SetRotation(transform->GetRotation());
 
 	return false;
@@ -104,6 +104,8 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 	if (noObstacleInAttack)
 		return true;
 
+	
+
 	auto spd = this->wanderMoveSpeed;
 	if (this->stateManager->GetCurState() == MechStateManager::STATE_TRACE)
 		spd = this->traceMoveSpeed;
@@ -111,8 +113,11 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 	pos.y = 0;
 	auto dir = Math::Vector3::Normalize(Math::Vector3::Subtract(goal, pos));
 
-	if (rigid) {
-		rigid->SetVelocity(dir, spd);
+	if (dir.x != this->prevDirection.x || dir.z != this->prevDirection.z) {
+		if (rigid) {
+			rigid->SetVelocity(dir, spd);
+		}
+		this->prevDirection = dir;
 	}
 
 	float dist = abs(sqrt(GetDistance2FromEnemy(this->prevPosition)));
@@ -124,6 +129,8 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 
 	this->moveDistance += dist;
 	this->prevPosition = this->transform->GetWorldPosition();
+	this->prevDirection = this->transform->GetWorldLook();
+
 	if (this->moveDistance >= this->goalDistance) {
 		this->moveDistance = 0;
 		rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
@@ -589,9 +596,13 @@ bool KG::Component::SEnemyMechComponent::IsInTraceRange(const float distance2) c
 
 bool KG::Component::SEnemyMechComponent::AttackTarget(float elapsedTime)
 {
+	if (this->anim) {
+		if (!this->changedAnimation)
+			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_PLAYING, 0.1, 1);
+	}
+
 	if (attackTimer == 0 && !isInAttackDelay) {
-		if (this->anim)
-			ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon, ANIMSTATE_STOP, 0.1, 1);
+		
 		isAttackable = true;
 		isInAttackDelay = true;
 	}
@@ -611,7 +622,7 @@ bool KG::Component::SEnemyMechComponent::AttackTarget(float elapsedTime)
 void KG::Component::SEnemyMechComponent::Attack(SGameManagerComponent* gameManager)
 {
 	// auto presetName = "Projectile";
-	float interval = 2;
+	float interval = 1.5;
 	for (int i = 0; i < 2; ++i) {
 		if (this->target == nullptr) {
 			return;
@@ -698,9 +709,7 @@ bool KG::Component::MechMoveAction::Execute(float elapsedTime) {
 }
 
 void KG::Component::MechMoveAction::EndAction() {
-	// if (!dynamic_cast<SEnemyMechComponent*>(enemyComp)->IsPathFinding()) {
 	dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
-	// }
 }
 
 bool KG::Component::MechRotateAction::Execute(float elapsedTime) {
@@ -708,9 +717,7 @@ bool KG::Component::MechRotateAction::Execute(float elapsedTime) {
 }
 
 void KG::Component::MechRotateAction::EndAction() {
-	// if (!dynamic_cast<SEnemyMechComponent*>(enemyComp)->IsPathFinding()) {
-		dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
-	// }
+	dynamic_cast<SEnemyMechComponent*>(enemyComp)->ReadyNextAnimation(false);
 }
 
 bool KG::Component::MechAttackAction::Execute(float elapsedTime) {
