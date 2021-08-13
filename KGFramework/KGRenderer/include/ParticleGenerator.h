@@ -2,6 +2,7 @@
 //#include <vector>
 #include <array>
 #include <map>
+#include <future>
 #include "ParticleEmitterComponent.h"
 #include "KGGraphicBuffer.h"
 #include "KGShader.h"
@@ -10,7 +11,7 @@ namespace KG::Renderer
 {
 	class ParticleGenerator
 	{
-		static constexpr size_t MAX_PARTICLE_COUNT = 10'0000;
+		static constexpr size_t MAX_PARTICLE_COUNT = 10'000;
 		static constexpr float CLEAN_CYCLE_TIME = 2.5f;
 
         KG::Renderer::Geometry* particleGeometry = nullptr;
@@ -31,9 +32,12 @@ namespace KG::Renderer
 		size_t GetEmptyIndexFromAddParticles() const;
 		size_t GetEmptyIndexFromTransparentParticles() const;
 		void DestroyExpired();
-	public:
-		void PreRender();
-		void Initialize();
+        std::future<bool> copyAddFuture;
+        std::future<bool> copyTransparentFuture;
+    public:
+        void PreRenderStart();
+        void PreRenderCheck();
+        void Initialize();
         void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3& position);
         void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& baseSpeed);
         void EmitParticle(const KG::Utill::HashString& id, const DirectX::XMFLOAT3& position, const DirectX::XMFLOAT3& baseSpeed, float lifeTime);

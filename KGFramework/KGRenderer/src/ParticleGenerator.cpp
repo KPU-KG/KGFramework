@@ -36,6 +36,46 @@ void KG::Renderer::ParticleGenerator::DestroyExpired()
 	}
 }
 
+void KG::Renderer::ParticleGenerator::PreRenderStart()
+{
+    this->copyAddFuture = std::async(std::launch::async,
+        [this]() {
+            auto* renderJob = this->addRenderJob;
+            auto& particles = this->addParticles;
+            memcpy(renderJob->objectBuffer->mappedData, particles.data(), sizeof(particles[0]) * particles.size());
+            return true; 
+        }
+    );
+    this->copyTransparentFuture = std::async(std::launch::async,
+        [this]() {
+            auto* renderJob = this->transparentRenderJob;
+            auto& particles = this->transparentParticles;
+            memcpy(renderJob->objectBuffer->mappedData, particles.data(), sizeof(particles[0]) * particles.size());
+            return true;
+        }
+    );
+}
+
+void KG::Renderer::ParticleGenerator::PreRenderCheck()
+{
+    bool ret = this->copyAddFuture.get();
+    ret &= this->copyTransparentFuture.get();
+    if (!ret) { return; }
+    {
+        auto* renderJob = this->addRenderJob;
+        auto& particles = this->addParticles;
+        renderJob->SetUpdateCount(particles.size());
+        renderJob->SetVisibleSize(particles.size());
+    }
+
+    {
+        auto* renderJob = this->transparentRenderJob;
+        auto& particles = this->transparentParticles;
+        renderJob->SetUpdateCount(particles.size());
+        renderJob->SetVisibleSize(particles.size());
+    }
+}
+
 void KG::Renderer::ParticleGenerator::Initialize()
 {
 	this->particleGeometry = KG::Resource::ResourceContainer::GetInstance()->CreateFakeGeometry(D3D12_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_POINTLIST, 1);
@@ -108,25 +148,6 @@ void KG::Renderer::ParticleGenerator::EmitParticle(const KG::Component::Particle
 	if ( autoFillTime )
 	{
 		particles[index].startTime = KGDXRenderer::GetInstance()->GetGameTime();
-	}
-}
-
-void KG::Renderer::ParticleGenerator::PreRender()
-{
-	{
-		auto* renderJob = this->addRenderJob;
-		auto& particles = this->addParticles;
-		memcpy(renderJob->objectBuffer->mappedData, particles.data(), sizeof(particles[0]) * particles.size());
-		renderJob->SetUpdateCount(particles.size());
-		renderJob->SetVisibleSize(particles.size());
-	}
-
-	{
-		auto* renderJob = this->transparentRenderJob;
-		auto& particles = this->transparentParticles;
-		memcpy(renderJob->objectBuffer->mappedData, particles.data(), sizeof(particles[0]) * particles.size());
-		renderJob->SetUpdateCount(particles.size());
-		renderJob->SetVisibleSize(particles.size());
 	}
 }
 

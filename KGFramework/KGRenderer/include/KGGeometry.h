@@ -66,12 +66,16 @@ namespace KG::Renderer
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 		D3D12_INDEX_BUFFER_VIEW indexBufferView;
 		D3D12_PRIMITIVE_TOPOLOGY primitiveTopology = D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+
 	public:
+        DirectX::BoundingBox aabb;
 		/// @brief 해당 지오메트리를 렌더합니다.
 		/// @param commandList 렌더할 커맨드 리스트입니다.
 		/// @param nInstance 렌더할 지오메트리의 인스턴스 갯수입니다.
 		virtual void Render(ID3D12GraphicsCommandList* commandList, UINT nInstance);
 		void Load( ID3D12Device* device, ID3D12GraphicsCommandList* commandList );
+        void CreateAABB();
 		void CreateFromMeshData( const KG::Utill::MeshData& data );
 		void CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY topology, int vertexCount );
 		auto IsLoaded() const

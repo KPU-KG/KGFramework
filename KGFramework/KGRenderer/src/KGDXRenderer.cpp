@@ -276,7 +276,7 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
     {
         PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Normal Camera Render : Camera %d", _cameraCount++);
         normalCamera.SetCameraRender(this->mainCommandList);
-
+        this->ParticleReady();
         this->OpaqueRender(ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
         this->SSAORender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex(), normalCamera.GetCameraDataBuffer());
         this->LightPassRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
@@ -411,10 +411,15 @@ void KG::Renderer::KGDXRenderer::TransparentRender(ShaderGeometryType geoType, S
     PIXEndEvent(cmdList);
 }
 
+void KG::Renderer::KGDXRenderer::ParticleReady()
+{
+    this->particleGenerator.PreRenderStart();
+}
+
 void KG::Renderer::KGDXRenderer::ParticleRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
 {
     PIXBeginEvent(cmdList, PIX_COLOR_INDEX(2), "Particle Render");
-    this->particleGenerator.PreRender();
+    this->particleGenerator.PreRenderCheck();
     this->renderEngine->Render(ShaderGroup::ParticleTransparent, ShaderGeometryType::Particle, ShaderPixelType::Transparent, cmdList);
     this->renderEngine->Render(ShaderGroup::ParticleAdd, ShaderGeometryType::Particle, ShaderPixelType::Add, cmdList);
     PIXEndEvent(cmdList);
@@ -447,6 +452,8 @@ void KG::Renderer::KGDXRenderer::InGameUIRender(ID3D12GraphicsCommandList* cmdLi
     ApplyBarrierQueue(cmdList);
     PIXEndEvent(cmdList);
 }
+
+
 
 void KG::Renderer::KGDXRenderer::SSAORender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex, ID3D12Resource* data)
 {
