@@ -450,7 +450,7 @@ void KG::Component::EnemyGeneratorComponent::GenerateBoss()
 	this->generateBoss = true;
 
 	KG::Packet::SC_ENEMY_ZONE packet;
-	packet.num = this->currentRegion;
+	packet.num = 1;
 	BroadcastPacket(&packet);
 
 	auto t = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("BossBarrier"));
