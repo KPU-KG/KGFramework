@@ -12,12 +12,25 @@ void KG::Component::Render3DComponent::OnRender(ID3D12GraphicsCommandList* comma
 {
 }
 
+void KG::Component::Render3DComponent::CullingProcess(const DirectX::BoundingFrustum& frustum)
+{
+    const auto& mat = this->transform->GetGlobalWorldMatrix();
+    for (size_t i = 0; i < this->renderJobs.size(); i++)
+    {
+        auto* job = this->renderJobs[i];
+        BoundingBox aabb;
+        job->geometry->aabb.Transform(aabb, XMLoadFloat4x4(&mat));
+        jobCulled[i] = frustum.Intersects(aabb);
+        if (jobCulled[i]) job->AddCullObject();
+    }
+}
+
 void KG::Component::Render3DComponent::OnPreRender()
 {
 	for ( size_t i = 0; i < this->renderJobs.size(); i++ )
 	{
 		auto* renderJob = this->renderJobs[i];
-		int updateCount = renderJob->GetUpdateCount();
+		int updateCount = renderJob->GetUpdateCount(jobCulled[i]);
 		auto mat = Math::Matrix4x4::Transpose(this->transform->GetGlobalWorldMatrix());
 		renderJob->objectBuffer->mappedData[updateCount].object.world = mat;
 		if ( this->material )
@@ -52,7 +65,12 @@ void KG::Component::Render3DComponent::OnPreRender()
 				KG::Resource::ResourceContainer::GetInstance()->LoadTexture(KG::Renderer::KGDXRenderer::GetInstance()->GetSkymapTexutreId())->index;
 		}
 	}
+    this->cullingIndex = -1;
+    this->updateIndex = -1;
 }
+
+
+
 
 void KG::Component::Render3DComponent::OnCreate(KG::Core::GameObject* gameObject)
 {
@@ -160,8 +178,9 @@ void KG::Component::Render3DComponent::SetReflectionProbe(ICubeCameraComponent* 
 void KG::Component::Render3DComponent::AddRenderJob(KG::Renderer::KGRenderJob* renderJob, UINT materialIndex)
 {
 	this->renderJobs.push_back(renderJob);
-	this->jobMaterialIndexs.push_back(materialIndex);
-	renderJob->OnObjectAdd(this->isVisible);
+    this->jobMaterialIndexs.push_back(materialIndex);
+    this->jobCulled.push_back(false);
+    renderJob->OnObjectAdd(this->isVisible);
 }
 
 void KG::Component::Render3DComponent::RegisterTransform(TransformComponent* transform)

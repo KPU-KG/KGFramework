@@ -52,22 +52,22 @@ KGRenderJob* KG::Renderer::KGRenderEngine::GetRenderJob( Shader* shader, Geometr
 	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleAdd
 		|| shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleTransparent )
 	{
-		resultJob->objectSize = 100000;
+		resultJob->objectSize = 10000;
 	}
 	//KGRenderJob* resultJob = result != end ? &*result : &CreateRenderJob( target );
 	return resultJob;
 }
 
-void KG::Renderer::KGRenderEngine::Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType,
-	ID3D12GraphicsCommandList* cmdList)
+void KG::Renderer::KGRenderEngine::Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, bool culled)
 {
-	this->Render( group, geoType, pixType, ShaderTesselation::NormalMesh, cmdList );
+	this->Render( group, geoType, pixType, ShaderTesselation::NormalMesh, cmdList, culled );
 }
 
-void KG::Renderer::KGRenderEngine::Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType, ShaderTesselation tessel, ID3D12GraphicsCommandList* cmdList )
+void KG::Renderer::KGRenderEngine::Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType, ShaderTesselation tessel, ID3D12GraphicsCommandList* cmdList, bool culled)
 {
 	for ( KGRenderJob* job : this->group[group] )
 	{
+        if (culled) job->TurnOnCulledRenderOnce();
 		job->Render( geoType, pixType, tessel, cmdList, this->currentShader );
 	}
 }
@@ -101,7 +101,7 @@ void KG::Renderer::KGRenderJob::GetNewBuffer()
 	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleAdd
 		|| shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleTransparent )
 	{
-		this->objectSize = 100000;
+		this->objectSize = 10000;
 	}
 
 	if ( this->objectBuffer )
@@ -133,8 +133,8 @@ void KG::Renderer::KGRenderJob::OnObjectAdd( bool isVisible )
 	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleAdd
 		|| shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleTransparent )
 	{
-		this->objectSize = 100000;
-		this->visibleSize = 100000;
+		this->objectSize = 10000;
+		this->visibleSize = 10000;
 	}
 }
 
@@ -145,8 +145,8 @@ void KG::Renderer::KGRenderJob::OnObjectRemove(bool isVisible)
 	if ( shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleAdd
 		|| shader->GetGroup() == KG::Renderer::ShaderGroup::ParticleTransparent )
 	{
-		this->objectSize = 100000;
-		this->visibleSize = 100000;
+		this->objectSize = 10000;
+		this->visibleSize = 10000;
 	}
 }
 
@@ -165,6 +165,12 @@ void KG::Renderer::KGRenderJob::OnVisibleRemove()
 	this->visibleSize -= 1;
 }
 
+void KG::Renderer::KGRenderJob::AddCullObject()
+{
+    this->culledMax += 1;
+    this->notCullIndexStart = culledMax;
+}
+
 void KG::Renderer::KGRenderJob::SetObjectSize(int count)
 {
 	this->objectSize = count;
@@ -176,17 +182,34 @@ void KG::Renderer::KGRenderJob::SetUpdateCount(int count)
 	this->updateCount = count;
 }
 
-int KG::Renderer::KGRenderJob::GetUpdateCount()
+int KG::Renderer::KGRenderJob::GetUpdateCount(bool isCulled)
 {
 	if ( CheckBufferFull() ) GetNewBuffer();
-	auto result = this->updateCount;
-	this->updateCount++;
+    int result = 0;
+    if (isCulled)
+    {
+        result = this->updateCount;
+        this->updateCount++;
+    }
+    else 
+    {
+        result = this->notCullIndexStart;
+        this->notCullIndexStart++;
+    }
 	return result;
 }
+
 
 void KG::Renderer::KGRenderJob::ClearCount()
 {
 	this->updateCount = 0;
+    this->culledMax = 0;
+    this->notCullIndexStart = 0;
+}
+
+void KG::Renderer::KGRenderJob::TurnOnCulledRenderOnce()
+{
+    this->isCulling = true;
 }
 
 void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader )
@@ -196,6 +219,8 @@ void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelT
 
 void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelType pixType, ShaderTesselation tessel, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader )
 {
+    bool cull = this->isCulling;
+    this->isCulling = false;
 	if ( this->visibleSize == 0 ) return;
 	if ( prevShader != this->shader )
 	{
@@ -220,7 +245,7 @@ void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelT
 		cmdList->SetGraphicsRootShaderResourceView( GraphicRootParameterIndex::LightData, shadowAddr );
 	}
 
-	this->geometry->Render( cmdList, this->updateCount);
+	this->geometry->Render( cmdList, cull ? this->updateCount : this->notCullIndexStart);
 }
 
 

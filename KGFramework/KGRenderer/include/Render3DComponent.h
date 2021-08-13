@@ -25,6 +25,7 @@ namespace KG::Component
 		BoneTransformComponent* boneAnimation = nullptr;
 		CubeCameraComponent* reflectionProbe = nullptr;
 		std::vector<KG::Renderer::KGRenderJob*> renderJobs;
+        std::vector<bool> jobCulled;
 		std::vector<UINT> jobMaterialIndexs;
 		void AddRenderJob( KG::Renderer::KGRenderJob* renderJob, UINT materialIndex );
 		void RegisterTransform( TransformComponent* transform );
@@ -32,10 +33,13 @@ namespace KG::Component
 		void RegisterGeometry( GeometryComponent* geometry );
 		void RegisterBoneAnimation( BoneTransformComponent* anim );
 		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
+        int cullingIndex = -1;
+        int updateIndex = -1;
 	public:
 		bool isVisible = true;
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;
 		virtual void OnPreRender() override;
+        virtual void CullingProcess(const DirectX::BoundingFrustum& frustum);
 		virtual void SetVisible( bool visible ) override;
 		void SetReflectionProbe( CubeCameraComponent* probe );
 		void RemoveJobs();
