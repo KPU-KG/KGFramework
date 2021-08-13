@@ -71,10 +71,14 @@ public:
     void onContact(const PxContactPairHeader& pairHeader, const PxContactPair* pairs, PxU32 nbPairs) override
     {
         //DebugNormalMessage("Called onContact()");
-        if (CollisionCallback.count(pairHeader.actors[0]) != 0)
+        if (CollisionCallback.count(pairHeader.actors[0]) != 0) {
             CollisionCallback[pairHeader.actors[0]].DoCallback();
-        if (CollisionCallback.count(pairHeader.actors[1]) != 0)
+            CollisionCallback.erase(pairHeader.actors[0]);
+        }
+        if (CollisionCallback.count(pairHeader.actors[1]) != 0) {
             CollisionCallback[pairHeader.actors[1]].DoCallback();
+            CollisionCallback.erase(pairHeader.actors[1]);
+        }
     }
 };
 
@@ -90,55 +94,6 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
     if (physx::PxFilterObjectIsTrigger(attributes0) || physx::PxFilterObjectIsTrigger(attributes1))
     {
         pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT;
-        return physx::PxFilterFlag::eDEFAULT;
-    }
-
-    if (filterData0.word0 & static_cast<uint32_t>(KG::Component::FilterGroup::eBOX) || filterData1.word0 & static_cast<uint32_t>(KG::Component::FilterGroup::eBOX)) {
-        if (filterData0.word0 & static_cast<uint32_t>(KG::Component::FilterGroup::eBULLET) || filterData1.word0 & static_cast<uint32_t>(KG::Component::FilterGroup::eBULLET)) {
-            pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT | physx::PxPairFlag::eCONTACT_DEFAULT;
-
-            KG::Component::IRigidComponent* comp1 = nullptr;
-            KG::Component::IRigidComponent* comp2 = nullptr;
-
-            if (compIndex.count(filterData0.word2) != 0)
-                comp1 = compIndex[filterData0.word2];
-
-            if (compIndex.count(filterData1.word2) != 0)
-                comp2 = compIndex[filterData1.word2];
-
-
-            if (comp1 == nullptr)
-                ;
-            else if (CollisionCallback.count(comp1->GetActor()) == 0)
-            {
-                if (comp1->GetCollisionCallback() != nullptr)
-                {
-                    CallbackParam cp;
-                    cp.collisionCallback = comp1->GetCollisionCallback();
-                    cp.my = comp1;
-                    cp.other = comp2;
-                    CollisionCallback[comp1->GetActor()] = cp;
-                }
-            }
-
-            if (comp2 == nullptr)
-                ;
-            else if (CollisionCallback.count(comp2->GetActor()) == 0)
-            {
-                if (comp2->GetCollisionCallback() != nullptr)
-                {
-                    CallbackParam cp;
-                    cp.collisionCallback = comp2->GetCollisionCallback();
-                    cp.my = comp2;
-                    cp.other = comp1;
-                    CollisionCallback[comp2->GetActor()] = cp;
-                }
-            }
-            return physx::PxFilterFlag::eDEFAULT;
-        }
-
-
-        pairFlags = physx::PxPairFlag::eTRIGGER_DEFAULT | physx::PxPairFlag::eCONTACT_DEFAULT;
         return physx::PxFilterFlag::eDEFAULT;
     }
 

@@ -280,28 +280,24 @@ bool KG::Component::SEnemyCrawlerComponent::Rotate(float elapsedTime)
 	if (angle.x < 0)
 		amount *= -1;
 
-	// if (crs.y >= 0) {
-	// 	amount *= -1;
-	// }
-
 	if (crs.x == 0 && crs.y == 0 && crs.z == 0) {
-		chargeOrigin = this->transform->GetWorldPosition();
-		chargeTarget = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-		moveDist = 0;
-		prevPosition = this->chargeOrigin;
+		this->chargeOrigin = this->transform->GetWorldPosition();
+		this->chargeTarget = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
+		this->moveDist = 0;
+		this->prevPosition = this->chargeOrigin;
 		return true;
 	}
 
 	DirectX::XMFLOAT4 rot;
 	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), amount));
-	gameObject->GetTransform()->Rotate(rot);
-	rigid->SetRotation(transform->GetRotation());
+	this->transform->Rotate(rot);
+	this->rigid->SetRotation(transform->GetRotation());
 
 	if (abs(amount) >= abs(angle.x)) {
-		chargeOrigin = this->transform->GetWorldPosition();
-		chargeTarget = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-		moveDist = 0;
-		prevPosition = this->chargeOrigin;
+		this->chargeOrigin = this->transform->GetWorldPosition();
+		this->chargeTarget = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
+		this->moveDist = 0;
+		this->prevPosition = this->chargeOrigin;
 		return true;
 	}
 	return false;
@@ -313,19 +309,19 @@ bool KG::Component::SEnemyCrawlerComponent::Charging(float elapsedTime)
 		return true;
 
 	if (this->anim) {
-		if (!changedAnimation) {
+		if (!this->changedAnimation) {
 			ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::idle, ANIMSTATE_PLAYING, 0.1f, -1);
 		}
 	}
 
-	if (!isCharging) {
-		isCharging = true;
-		isAttackable = true;
+	if (!this->isCharging) {
+		this->isCharging = true;
+		this->isAttackable = true;
 	}
 
-	chargingTimer += elapsedTime;
-	if (chargingTimer >= chargingInterval) {
-		chargingTimer = 0;
+	this->chargingTimer += elapsedTime;
+	if (this->chargingTimer >= this->chargingInterval) {
+		this->chargingTimer = 0;
 		return true;
 	}
 
@@ -346,12 +342,20 @@ bool KG::Component::SEnemyCrawlerComponent::ChargeAttack(float elapsedTime)
 	XMStoreFloat3(&dir, XMVector3Normalize(XMLoadFloat3(&dir)));
 	this->rigid->SetVelocity(dir, this->chargeSpeed);
 
-	moveDist += sqrt(GetDistance2FromEnemy(this->prevPosition));
-	this->prevPosition = this->transform->GetWorldPosition();
-	if (moveDist >= chargeDist) {
+	this->moveDist += sqrt(GetDistance2FromEnemy(this->prevPosition));
+	if (this->moveDist == 0) {
 		this->rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
-		isCharging = false;
-		moveDist = 0;
+		this->isCharging = false;
+		this->moveDist = 0;
+		return true;
+	}
+
+	this->prevPosition = this->transform->GetWorldPosition();
+
+	if (this->moveDist >= chargeDist) {
+		this->rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
+		this->isCharging = false;
+		this->moveDist = 0;
 		return true;
 	}
 
@@ -361,26 +365,26 @@ bool KG::Component::SEnemyCrawlerComponent::ChargeAttack(float elapsedTime)
 bool KG::Component::SEnemyCrawlerComponent::ChargeDelay(float elapsedTIme)
 {
 	if (this->anim) {
-		if (!changedAnimation) {
+		if (!this->changedAnimation) {
 			ChangeAnimation(KG::Utill::HashString("crawler.fbx"_id), KG::Component::CrawlerAnimIndex::idle, ANIMSTATE_PLAYING, 0.1f, -1);
 		}
 	}
 
-	if (isFilledArea) {
+	if (this->isFilledArea) {
 		if (this->area != nullptr) {
 			this->area->GetGameObject()->Destroy();
 			this->area = nullptr;
 		}
-		isFilledArea = false;
+		this->isFilledArea = false;
 	}
 
 	if (this->target == nullptr)
 		return true;
 
-	chargeDelayTimer += elapsedTIme;
+	this->chargeDelayTimer += elapsedTIme;
 
-	if (chargeDelayTimer >= chargeDelay) {
-		chargeDelayTimer = 0;
+	if (this->chargeDelayTimer >= this->chargeDelay) {
+		this->chargeDelayTimer = 0;
 		return true;
 	}
 	return false;
