@@ -12,10 +12,7 @@ float4x4 GetWorldMatrix(uint instanceID, VertexData vertex)
     for (int i = 0; i < 4; i++)
     {
         int animationIndex = (MAX_COUNT_BONE * instanceID) + vertex.bone[i];
-        float4x4 bone = boneOffsetInfo[vertex.bone[i]];
-        float4x4 anim = animationTransformInfo[animationIndex];
-        float4x4 vTobone = mul(bone, anim);
-        animationMatrix += vertex.weight[i] * vTobone;
+        animationMatrix += vertex.weight[i] * mul(boneOffsetInfo[vertex.bone[i]], animationTransformInfo[animationIndex]);
     }
     return animationMatrix;
 }
