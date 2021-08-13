@@ -115,6 +115,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compute", "Compute", "{806B
 		Resource\Resource\ShaderScript\Compute_CopySwapChain.hlsl = Resource\Resource\ShaderScript\Compute_CopySwapChain.hlsl
 		Resource\Resource\ShaderScript\Compute_FXAA.hlsl = Resource\Resource\ShaderScript\Compute_FXAA.hlsl
 		Resource\Resource\ShaderScript\Compute_GC.hlsl = Resource\Resource\ShaderScript\Compute_GC.hlsl
+		Resource\Resource\ShaderScript\Compute_Grayscale.hlsl = Resource\Resource\ShaderScript\Compute_Grayscale.hlsl
 		Resource\Resource\ShaderScript\Compute_HDR_DEFINE.hlsl = Resource\Resource\ShaderScript\Compute_HDR_DEFINE.hlsl
 		Resource\Resource\ShaderScript\Compute_HDR_ONE.hlsl = Resource\Resource\ShaderScript\Compute_HDR_ONE.hlsl
 		Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_DAY.hlsl = Resource\Resource\ShaderScript\Compute_HDR_TONEMAP_DAY.hlsl
@@ -127,7 +128,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compute", "Compute", "{806B
 		Resource\Resource\ShaderScript\Compute_SSAO_ONE.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_ONE.hlsl
 		Resource\Resource\ShaderScript\Compute_SSAO_THREE.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_THREE.hlsl
 		Resource\Resource\ShaderScript\Compute_SSAO_TWO.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_TWO.hlsl
-		Resource\Resource\ShaderScript\Compute_Test.hlsl = Resource\Resource\ShaderScript\Compute_Test.hlsl
 	EndProjectSection
 EndProject
 Global

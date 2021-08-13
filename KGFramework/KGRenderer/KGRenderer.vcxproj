@@ -90,6 +90,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)include_fake;$(ProjectDir)include;$(SolutionDir)KGLib\include\imgui;$(SolutionDir)KGLib\include;$(ProjectDir)export;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\ALL\;$(SolutionDir)lib\Release_LIB\;$(LibraryPath)</LibraryPath>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

@@ -88,6 +88,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(SolutionDir)KGPhysics\export;$(SolutionDir)KGLib\include;$(SolutionDir)KGRenderer\export;$(SolutionDir)KGServer\export;$(SolutionDir)KGNetwork\export;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\Release_LIB;$(SolutionDir)lib\ALL;$(LibraryPath)</LibraryPath>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>

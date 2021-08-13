@@ -112,6 +112,7 @@
     <LinkIncremental>false</LinkIncremental>
     <IncludePath>$(ProjectDir)export;$(ProjectDir)include;$(SolutionDir)KGLib\include\imgui;$(SolutionDir)KGLib\include;$(IncludePath)</IncludePath>
     <LibraryPath>$(SolutionDir)lib\Release_LIB;$(SolutionDir)lib\ALL;$(ProjectDir)PhysX-4.1\physx\lib\release_lib;$(LibraryPath)</LibraryPath>
+    <PostBuildEventUseInBuild>false</PostBuildEventUseInBuild>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
