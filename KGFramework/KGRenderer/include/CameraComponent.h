@@ -133,6 +133,7 @@ namespace KG::Component
 		virtual DirectX::XMFLOAT4X4 GetViewProj() override;
 
 		virtual DirectX::BoundingFrustum GetFrustum() override;
+        DirectX::BoundingFrustum GetFrustum(float newNearZ, float newFarZ);
 		virtual void OnRender( ID3D12GraphicsCommandList* commandList ) override;
 		virtual void OnPreRender() override;
 

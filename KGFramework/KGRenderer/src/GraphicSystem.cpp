@@ -49,6 +49,14 @@ void KG::System::Render3DSystem::OnPreRender()
 	}
 }
 
+void KG::System::Render3DSystem::OnProcessCulling(const DirectX::BoundingFrustum& frustum)
+{
+    for (Render3DComponent& com : this->pool)
+    {
+        com.CullingProcess(frustum);
+    }
+}
+
 void KG::System::MaterialSystem::OnGetNewComponent(MaterialComponent* target)
 {
 }

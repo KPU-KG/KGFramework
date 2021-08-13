@@ -174,19 +174,24 @@ DirectX::XMFLOAT4X4 KG::Component::CameraComponent::GetViewProj()
 
 DirectX::BoundingFrustum KG::Component::CameraComponent::GetFrustum()
 {
-	DirectX::BoundingFrustum bf;
-    auto newFarZ = Math::Clamp(this->farZ, this->nearZ, 300.0f);
+    return this->GetFrustum(std::max(this->nearZ, 0.01f), 300.0f);
+}
+
+DirectX::BoundingFrustum KG::Component::CameraComponent::GetFrustum(float newNearZ, float newFarZ)
+{
+    DirectX::BoundingFrustum bf;
+    newFarZ = Math::Clamp(this->farZ, this->nearZ, newFarZ);
     auto proj = DirectX::XMMatrixPerspectiveFovLH(
         DirectX::XMConvertToRadians(this->fovY),
         this->aspectRatio,
-        std::max(this->nearZ, 0.01f),
+        newNearZ,
         newFarZ
     );
-	auto view = this->GetView();
-	DirectX::BoundingFrustum::CreateFromMatrix(bf, proj);
-	XMMATRIX inverseView = XMMatrixInverse(nullptr, XMMatrixTranspose(XMLoadFloat4x4(&view)));
-	bf.Transform(bf, inverseView);
-	return bf;
+    auto view = this->GetView();
+    DirectX::BoundingFrustum::CreateFromMatrix(bf, proj);
+    XMMATRIX inverseView = XMMatrixInverse(nullptr, XMMatrixTranspose(XMLoadFloat4x4(&view)));
+    bf.Transform(bf, inverseView);
+    return bf;
 }
 
 void KG::Component::CameraComponent::OnRender(ID3D12GraphicsCommandList* commandList)

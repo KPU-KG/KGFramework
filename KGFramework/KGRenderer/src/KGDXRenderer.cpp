@@ -33,6 +33,16 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
     KG::System::ParticleEmitterSystem particleSystem;
     KG::System::PostProcessorSystem postProcessorSystem;
 
+    void OnProcessCulling(const DirectX::BoundingFrustum& frustum)
+    {
+        this->render3DSystem.OnProcessCulling(frustum);
+    }
+
+    void OnCameraPreRender()
+    {
+        this->cameraSystem.OnPreRender();
+        this->cubeCameraSystem.OnPreRender();
+    }
     void OnPreRender()
     {
         this->geometrySystem.OnPreRender();
@@ -40,8 +50,8 @@ struct KG::Renderer::KGDXRenderer::GraphicSystems
         this->render2DSystem.OnPreRender();
         this->render3DSystem.OnPreRender();
         this->renderSpriteSystem.OnPreRender();
-        this->cameraSystem.OnPreRender();
-        this->cubeCameraSystem.OnPreRender();
+        //this->cameraSystem.OnPreRender();
+        //this->cubeCameraSystem.OnPreRender();
         this->shadowSystem.OnPreRender();
         this->lightSystem.OnPreRender();
         this->avatarSystem.OnPreRender();
@@ -172,6 +182,16 @@ void KGDXRenderer::Initialize()
 
 void KGDXRenderer::Render()
 {
+    this->graphicSystems->OnCameraPreRender();
+    for (KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem)
+    {
+        if (camera.isMainCamera)
+        {
+            auto frustum = camera.GetFrustum(0.01f, 1000.0f);
+            this->graphicSystems->OnProcessCulling(frustum);
+        }
+    }
+
     this->graphicSystems->OnPreRender();
 
     HRESULT hResult = this->mainCommandAllocator->Reset();
@@ -277,7 +297,7 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
         PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Normal Camera Render : Camera %d", _cameraCount++);
         normalCamera.SetCameraRender(this->mainCommandList);
         this->ParticleReady();
-        this->OpaqueRender(ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+        this->OpaqueRender(ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex(), false);
         this->SSAORender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex(), normalCamera.GetCameraDataBuffer());
         this->LightPassRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
         this->SkyBoxRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
@@ -379,7 +399,7 @@ void KG::Renderer::KGDXRenderer::CopyMainCamera()
     PIXEndEvent(mainCommandList);
 }
 
-void KG::Renderer::KGDXRenderer::OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
+void KG::Renderer::KGDXRenderer::OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex, bool culled)
 {
     PIXBeginEvent(cmdList, PIX_COLOR_INDEX(2), "Opaque Render");
     std::array<D3D12_CPU_DESCRIPTOR_HANDLE, 4> gbufferHandle =
@@ -399,8 +419,7 @@ void KG::Renderer::KGDXRenderer::OpaqueRender(ShaderGeometryType geoType, Shader
     this->mainCommandList->ClearDepthStencilView(dsvHandle,
         D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_DEPTH | D3D12_CLEAR_FLAGS::D3D12_CLEAR_FLAG_STENCIL,
         1.0f, 0, 0, nullptr);
-
-    this->renderEngine->Render(ShaderGroup::Opaque, geoType, pixType, cmdList);
+    this->renderEngine->Render(ShaderGroup::Opaque, geoType, pixType, cmdList, culled);
     PIXEndEvent(cmdList);
 }
 

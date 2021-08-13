@@ -24,6 +24,9 @@ namespace KG::Renderer
 		int objectSize = 0;
 		int visibleSize = 0;
 		int updateCount = 0;
+        int culledMax = 0;
+        int notCullIndexStart = 0;
+        bool isCulling = false;
 		KG::Renderer::ShaderMeshType meshType;
 		BufferPool<ObjectData>* objectBufferPool = nullptr;
 		PooledBuffer<ObjectData>* objectBuffer = nullptr;
@@ -43,13 +46,17 @@ namespace KG::Renderer
 		void SetVisibleSize(int count);
 		void OnVisibleAdd();
 		void OnVisibleRemove();
+        void AddCullObject();
 		void SetObjectSize(int count);
-		void SetUpdateCount(int count);
-		int GetUpdateCount();
+        void SetUpdateCount(int count);
+        int GetUpdateCount(bool isCulled = false);
 		void ClearCount();
+
+        void TurnOnCulledRenderOnce();
 
 		void Render( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader );
 		void Render( ShaderGeometryType geoType, ShaderPixelType pixType, ShaderTesselation tessel, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader );
+
 		static bool ShaderCompare( const KGRenderJob& a, const KGRenderJob& b );
 		static bool GeometryCompare( const KGRenderJob& a, const KGRenderJob& b );
 		static bool OrderCompare( const KGRenderJob& a, const KGRenderJob& b );
@@ -79,8 +86,8 @@ namespace KG::Renderer
 	public:
 		KGRenderEngine( ID3D12Device* device );
 		KGRenderJob* GetRenderJob( Shader* shader, Geometry* geometry );
-		void Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList );
-		void Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType, ShaderTesselation tessel, ID3D12GraphicsCommandList* cmdList );
+		void Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, bool culled = false);
+		void Render( ShaderGroup group, ShaderGeometryType geoType, ShaderPixelType pixType, ShaderTesselation tessel, ID3D12GraphicsCommandList* cmdList, bool culled = false);
 		void ClearJobs();
 		void ClearUpdateCount();
 		bool hasRenderJobs() const

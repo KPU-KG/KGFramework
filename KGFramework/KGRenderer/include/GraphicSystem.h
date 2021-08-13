@@ -38,6 +38,7 @@ namespace KG::System
 		virtual void OnUpdate(float elapsedTime) override;
 		virtual void OnPostUpdate(float elapsedTime) override;
 		virtual void OnPreRender() override;
+        void OnProcessCulling(const DirectX::BoundingFrustum& frustum);
 	};
 
 	struct MaterialSystem : public IComponentSystem<MaterialComponent>
