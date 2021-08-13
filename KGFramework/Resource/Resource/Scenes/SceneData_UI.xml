@@ -36,7 +36,7 @@
             <Component name="IRender3DComponent" hash_id="1184141904"/>
         </GameObject>
         <GameObject instanceId="2">
-            <Tag hash_id="133944175" srcString="SceneCameraObject"/>
+            <Tag hash_id="2469227" srcString="UICameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
                 <Position x="0" y="0" z="0"/>
                 <Rotation_Q x="-0.22623825" y="0.13212994" z="0.030990787" w="0.96457171"/>
