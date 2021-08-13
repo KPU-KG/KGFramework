@@ -45,6 +45,11 @@
                 <isRaw value="true"/>
                 <isActive value="true"/>
             </PostProcess>
+            <PostProcess>
+                <id hash_id="3217628718" srcString="PostGray"/>
+                <isRaw value="true"/>
+                <isActive value="false"/>
+            </PostProcess>
         </Component>
         <GameObject instanceId="0">
             <Tag hash_id="1077372698" srcString="SkyBoxObject"/>
