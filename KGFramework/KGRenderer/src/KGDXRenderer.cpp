@@ -294,6 +294,7 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
     size_t _cameraCount = 1;
     for (KG::Component::CameraComponent& normalCamera : this->graphicSystems->cameraSystem)
     {
+        if(!normalCamera.isMainCamera) continue;
         PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Normal Camera Render : Camera %d", _cameraCount++);
         normalCamera.SetCameraRender(this->mainCommandList);
         this->ParticleReady();
