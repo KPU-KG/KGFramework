@@ -4,6 +4,10 @@ void KG::Component::FakePostProcessManagerComponent::OnCreate(KG::Core::GameObje
 {
 }
 
+void KG::Component::FakePostProcessManagerComponent::SetActive(int, bool)
+{
+}
+
 void KG::Component::FakePostProcessManagerComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
 {
 }

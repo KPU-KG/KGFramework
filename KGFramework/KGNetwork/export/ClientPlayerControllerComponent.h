@@ -14,7 +14,9 @@ namespace KG::Component
 	class DynamicRigidComponent;
     class IParticleEmitterComponent;
     class IRender2DComponent;
-	class ISoundComponent;
+    class IRender3DComponent;
+    class IPostProcessManagerComponent;
+    class ISoundComponent;
 
 	class DLL CPlayerControllerComponent : public CBaseComponent
 	{
@@ -23,7 +25,12 @@ namespace KG::Component
 		IAnimationControllerComponent* characterAnimation = nullptr;
 		ICameraComponent* camera = nullptr;
 		TransformComponent* cameraTransform = nullptr;
-		IAnimationControllerComponent* vectorAnimation = nullptr;
+        IRender3DComponent* vectorRender = nullptr;
+        IRender3DComponent* armRender = nullptr;
+        IRender3DComponent* meshRender = nullptr;
+        IRender3DComponent* aimRender = nullptr;
+        IAnimationControllerComponent* vectorAnimation = nullptr;
+        IPostProcessManagerComponent* postProcess = nullptr;
 		DynamicRigidComponent* physics = nullptr;
 		IParticleEmitterComponent* particleGen = nullptr;
 		ISoundComponent* sound = nullptr;

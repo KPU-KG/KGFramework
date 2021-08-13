@@ -13,6 +13,7 @@ namespace KG::Component
     {
         virtual void OnCreate(KG::Core::GameObject* gameObject) override = 0;
     public:
+        virtual void SetActive(int index, bool isActive) = 0;
         virtual void OnDataLoad(tinyxml2::XMLElement* componentElement) = 0;
         virtual void OnDataSave(tinyxml2::XMLElement* parentElement) = 0;
         virtual bool OnDrawGUI() = 0;

@@ -8,6 +8,9 @@
 #include "IPhysicsScene.h"
 #include "PhysicsComponent.h"
 #include "ISoundComponent.h"
+#include "IRender3DComponent.h"
+#include "IPostProcessComponent.h"
+#include "Scene.h"
 
 using namespace KG::Math::Literal;
 
@@ -40,6 +43,7 @@ static struct VectorAnimSet
 void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* obj)
 {
     IComponent::OnCreate(obj);
+    this->postProcess = this->gameObject->GetScene()->GetRootNode()->GetComponent<IPostProcessManagerComponent>();
 
     auto* spine = this->gameObject->FindChildObject("Spine3"_id);
     spine->GetTransform()->SetScale(0, 0, 0);
@@ -54,6 +58,9 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
     this->camera = cameraObject->GetComponent<ICameraComponent>();
 
     auto* vectorObject = this->gameObject->FindChildObject("Vector"_id);
+    this->vectorRender = vectorObject->FindChildObject("Mesh_Vector"_id)->GetComponent<IRender3DComponent>();
+    this->armRender = vectorObject->FindChildObject("Mesh_Arm"_id)->GetComponent<IRender3DComponent>();
+    this->aimRender = vectorObject->FindChildObject("Cube.006"_id)->GetComponent<IRender3DComponent>();
     this->vectorAnimation = vectorObject->GetComponent<IAnimationControllerComponent>();
 
     auto* particleObject = this->gameObject->FindChildObject("ParticleGenerator"_id);
@@ -129,9 +136,17 @@ bool KG::Component::CPlayerControllerComponent::OnProcessPacket(unsigned char* p
             hpbar->progress.value = ScenePacket->playerHp;
             if (ScenePacket->playerHp <= 0 && this->isActive) {
                 this->isActive = false;
+                postProcess->SetActive(5, true);
+                this->armRender->SetVisible(this->isActive);
+                this->aimRender->SetVisible(this->isActive);
+                this->vectorRender->SetVisible(this->isActive);
             }
             else if (ScenePacket->playerHp > 0 && !this->isActive) {
                 this->isActive = true;
+                postProcess->SetActive(5, false);
+                this->armRender->SetVisible(this->isActive);
+                this->aimRender->SetVisible(this->isActive);
+                this->vectorRender->SetVisible(this->isActive);
             }
             //회전 정보 무시 = 에임 랙걸림
             return true;

@@ -8,6 +8,11 @@
             <Rotation_Q x="0" y="0" z="0" w="1"/>
             <Scale x="1" y="1" z="1"/>
         </Component>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="0" y="0" z="0"/>
+            <Rotation_Q x="0" y="0" z="0" w="1"/>
+            <Scale x="1" y="1" z="1"/>
+        </Component>
         <Component name="ILightComponent" hash_id="2391118483">
             <LightType value="0"/>
             <Strength x="1" y="1" z="1"/>
@@ -40,6 +45,11 @@
                 <isRaw value="true"/>
                 <isActive value="true"/>
             </PostProcess>
+            <PostProcess>
+                <id hash_id="3217628718" srcString="PostGray"/>
+                <isRaw value="true"/>
+                <isActive value="false"/>
+            </PostProcess>
         </Component>
         <GameObject instanceId="0">
             <Tag hash_id="1077372698" srcString="SkyBoxObject"/>
@@ -71,8 +81,8 @@
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="42.09938" y="29.549637" z="-79.990524"/>
-                <Rotation_Q x="0.25732717" y="-0.11743435" z="-0.031145465" w="-0.97045213"/>
+                <Position x="32.119392" y="127.04764" z="-21.408867"/>
+                <Rotation_Q x="-0.032024905" y="-0.89293504" z="0.060856171" w="-0.46979797"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
@@ -27892,7 +27902,7 @@
                     <Scale x="1" y="1" z="1"/>
                 </Component>
                 <Component name="IRenderSpriteComponent" hash_id="3234678978">
-                      <Position x="0" y="0"/>
+                    <Position x="0" y="0"/>
                     <Size x="15" y="183"/>
                     <RotationAngle value="0"/>
                     <Depth value="0"/>

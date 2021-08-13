@@ -583,6 +583,11 @@ void KG::Renderer::PostProcessor::OnDataLoad(tinyxml2::XMLElement* element)
     }
 }
 
+void KG::Renderer::PostProcessor::SetActive(size_t index, bool isActive)
+{
+    std::get<TupleActive>(this->processQueue[index]) = isActive;
+}
+
 void KG::Renderer::PostProcessor::Initialize()
 {
     auto* renderer = KGDXRenderer::GetInstance();

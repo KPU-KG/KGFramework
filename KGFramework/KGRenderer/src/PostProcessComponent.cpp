@@ -8,6 +8,11 @@ void KG::Component::PostProcessManagerComponent::OnCreate(KG::Core::GameObject* 
 {
 }
 
+void KG::Component::PostProcessManagerComponent::SetActive(int index, bool isActive)
+{
+    KG::Renderer::KGDXRenderer::GetInstance()->GetPostProcess()->SetActive(index, isActive);
+}
+
 void KG::Component::PostProcessManagerComponent::OnDataLoad(tinyxml2::XMLElement* componentElement)
 {
     KG::Renderer::KGDXRenderer::GetInstance()->GetPostProcess()->OnDataLoad(componentElement);
