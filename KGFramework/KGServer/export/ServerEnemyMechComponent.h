@@ -138,13 +138,12 @@ namespace KG::Component
 	{
 	protected:
 		static constexpr int maxHp = 10;
+		static constexpr int checkRootRange = 50;
 
 		bool noObstacleInAttack = false;
 		bool isMovableInTrace = false;
 		bool isAttackRotation = false;
-
-		// DirectX::XMFLOAT3							goal = { 0,0,0 };
-		// float traceStateSpeed = 3;
+		bool damaged = false;
 
 		float wanderRotateSpeed = 0.3;
 		float wanderMoveSpeed = 1;
@@ -157,11 +156,6 @@ namespace KG::Component
 		DirectX::XMFLOAT3 prevPosition;
 		DirectX::XMFLOAT3 prevDirection;
 
-		// float										arriveTime = 0;
-		// float										moveTime = 0;
-		// int checkTime = 0;
-		// DirectX::XMFLOAT2							angle;
-
 		float										traceRange = 70;
 		float										attackRange = 50;
 
@@ -171,8 +165,6 @@ namespace KG::Component
 		MechStateManager*							stateManager;
 
 	public:
-		// void SetMoveTime(float t) { moveTime = t; }
-		// void MoveTimer(float elapsedTime) { moveTime += elapsedTime; }
 		void SetIdleTime(float t) { idleTimer = t; }
 		void IdleTimer(float elapsedTime) { idleTimer += elapsedTime; }
 		void SetAttackTime(float t) { attackTimer = t; }
@@ -209,8 +201,9 @@ namespace KG::Component
 		bool NoObstacleInAttack() const;
 		bool CheckRoot();
 
+		virtual void Awake() override;
+
 		bool IsMobableInTrace() const;
-		// bool IsPathFinding() const;
 		bool IsAttackRotation() const;
 		virtual void Destroy() override;
 	};

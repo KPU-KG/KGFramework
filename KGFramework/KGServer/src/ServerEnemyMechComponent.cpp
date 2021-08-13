@@ -204,6 +204,8 @@ void KG::Component::SEnemyMechComponent::HitBullet() {
 	KG::Packet::SC_ENEMY_HP hp;
 	hp.percentage = float(this->hp) / float(maxHp);
 	this->BroadcastPacket(&hp);
+	
+	this->isAttacked = true;
 }
 
 bool KG::Component::SEnemyMechComponent::OnDrawGUI()
@@ -399,8 +401,8 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 	}
 
 	auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-	for (int tx = -attackRange; tx < attackRange; ++tx) {
-		for (int tz = -attackRange; tz < attackRange; ++tz) {
+	for (int tx = -checkRootRange; tx < checkRootRange; ++tx) {
+		for (int tz = -checkRootRange; tz < checkRootRange; ++tz) {
 
 			// auto center = this->transform->GetWorldPosition();
 			int dx = myPos.x + tx;
@@ -457,6 +459,21 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 	// 그리디 알고리즘으로 갈 수 있는지 체크 (가능하면 감)
 	// A* 사용
 
+	if (mx == INT16_MAX || mz == INT16_MAX) {
+		auto dir = Math::Vector3::Subtract(this->target->GetGameObject()->GetTransform()->GetWorldPosition(), this->transform->GetWorldPosition());
+		dir.y = 0;
+		dir = Math::Vector3::Multiply(10, Math::Vector3::Normalize(dir));
+
+		this->goal = Math::Vector3::Add(this->transform->GetWorldPosition(), dir);
+
+		// set rotation var
+		auto v = Math::Vector3::Subtract(goal, this->transform->GetWorldPosition());
+		this->goalDistance = v.x * v.x + v.z * v.z;
+
+		isMovableInTrace = true;
+		return true;
+	}
+
 	XMFLOAT3 pathPos{ (float)mx, targetPos.y, (float)mz };
 	auto v = Math::Vector3::Subtract(myPos, pathPos);
 	XMFLOAT3 dir = Math::Vector3::Normalize(v);
@@ -472,84 +489,19 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 
 		isMovableInTrace = true;
 		return true;
-	}/*
-	else {
-		std::set<Coord> open_list;
-		std::vector<Coord> closed_list;
-		Coord g(targetPos.x + (MAP_SIZE_X / 2), targetPos.z + (MAP_SIZE_Z / 2));
-		Coord s(myPos.x + (MAP_SIZE_X / 2), myPos.z + (MAP_SIZE_Z / 2));
-		open_list.insert(s);
-		int count = 0;
-		while (!open_list.empty()) {
-			if (count++ > 3000)
-				return false;
-			auto c = *(open_list.begin());
-			if (c == g) {
-				Coord* cur = c.parent;
-				while (cur->parent != nullptr) {
-					path.emplace_back(cur->x, cur->z);
-					cur = c.parent;
-				}
+	}
 
-				isPathFinding = true;
-				return true;
-			}
-			else {
-				for (int dx = -1; dx < 2; ++dx) {
-					int x = c.x + dx;
-
-					if (x < 0 || x >= MAP_SIZE_X)
-						continue;
-
-					for (int dz = -1; dz < 2;++dz) {
-						int z = c.z + dz;
-
-						if (z < 0 || z >= MAP_SIZE_Z)
-							continue;
-
-						if (session[x][z])
-							continue;
-
-						Coord newCoord(static_cast<int>(x + (MAP_SIZE_X / 2)), static_cast<int>(z + (MAP_SIZE_Z / 2)));
-
-						bool is_closed = false;
-						for (auto cl : closed_list) {
-							if (cl == newCoord) {
-								is_closed = true;
-								break;
-							}
-						}
-						if (is_closed)
-							continue;
-
-						newCoord.h = g.x * 10 + g.z * 10;
-						if (dx != 0 && dz != 0)
-							newCoord.g = c.g + 14;
-						else
-							newCoord.g = c.g + 10;
-						newCoord.parent = &c;
-
-						bool flag = false;
-						for (auto ol : open_list) {
-							if (ol == newCoord) {
-								flag = true;
-								if (newCoord.g < ol.g) {
-									ol.g = newCoord.g;
-									ol.parent = newCoord.parent;
-								}
-							}
-						}
-						if (!flag) {
-							open_list.insert(newCoord);
-						}
-					}
-				}
-				closed_list.emplace_back(c);
-				open_list.erase(c);
-			}
-		}*/
 	return true;
 	// }
+}
+
+void KG::Component::SEnemyMechComponent::Awake()
+{
+	this->isAttacked = true;
+	this->traceMoveSpeed = 6;
+	this->traceRotateSpeed = 2;
+	this->traceRange = 200;
+	this->attackRange = 180;
 }
 
 bool KG::Component::SEnemyMechComponent::IsMobableInTrace() const

@@ -61,7 +61,7 @@ namespace KG::Component
 		bool generateEnemy = false;
 		bool initialized = false;
 		bool generateBoss = false;
-		
+
 		unsigned int score = 0;
 		KG::Component::Region GetNextRegion();
 		//KG::Component::Region GetRegion0() { return region[0]; };
@@ -73,6 +73,7 @@ namespace KG::Component
 		KG::Component::Region GetCurrentRegion();
 	public:
 		bool isAttackable = false;
+		bool isAttacked = false;
 		EnemyGeneratorComponent();
 		~EnemyGeneratorComponent();
 		void Initialize();
@@ -87,6 +88,8 @@ namespace KG::Component
 		void RegisterPlayerToEnemy(KG::Server::NET_OBJECT_ID id);
 		void DeregisterPlayerToEnemy(KG::Server::NET_OBJECT_ID id);
 		void SendAttackPacket(SGameManagerComponent* gameManager);
+		void AwakeEnemy();
+		void SleepEnemy();
 	public:
 		void OnDataLoad(tinyxml2::XMLElement* componentElement);
 		void OnDataSave(tinyxml2::XMLElement* parentElement);

@@ -342,14 +342,6 @@ void KG::GameFramework::PostSceneFunction()
 	this->scene->AddObjectPreset("CubeAreaRed",
 		[this](KG::Core::GameObject& obj)
 		{
-			
-			// auto* t = obj.GetTransform();
-			// if (t == nullptr) {
-			// 	t = this->system->transformSystem.GetNewComponent();
-			// 	obj.AddComponent(t);
-			// }
-
-
 			auto* g = this->renderer->GetNewGeomteryComponent();
 			g->AddGeometry(KG::Utill::HashString("cube"));
 			

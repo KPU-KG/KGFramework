@@ -85,6 +85,7 @@ namespace KG::Component
 		float										attackTimer = 0;
 		bool										isInAttackDelay = false;
 		bool										isAttackable = false;
+		bool										isAttacked = false;
 
 	public:
 
@@ -115,6 +116,9 @@ namespace KG::Component
 		virtual void HitBullet();
 		bool IsDead() const;
 		bool IsDelete() const;
+		bool IsAttacked() const;
+		virtual void Awake();
+		virtual void Sleep();
 		
 		void RegisterPlayerId(KG::Server::NET_OBJECT_ID id);
 		void DeregisterPlayerId(KG::Server::NET_OBJECT_ID id);

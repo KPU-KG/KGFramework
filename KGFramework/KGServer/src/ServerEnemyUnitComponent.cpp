@@ -109,10 +109,25 @@ void KG::Component::SEnemyUnitComponent::RegisterPlayerId(KG::Server::NET_OBJECT
 		playerId.insert(id);
 }
 
+bool KG::Component::SEnemyUnitComponent::IsAttacked() const
+{
+	return this->isAttacked;
+}
+
 void KG::Component::SEnemyUnitComponent::DeregisterPlayerId(KG::Server::NET_OBJECT_ID id)
 {
 	if (playerId.count(id) > 0)
 		playerId.erase(id);
+}
+
+void KG::Component::SEnemyUnitComponent::Awake()
+{
+	this->isAttacked = true;
+}
+
+void KG::Component::SEnemyUnitComponent::Sleep()
+{
+	this->isAttacked = false;
 }
 
 void KG::Component::SEnemyUnitComponent::Destroy()

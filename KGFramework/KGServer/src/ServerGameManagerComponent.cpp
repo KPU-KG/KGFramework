@@ -143,6 +143,13 @@ void KG::Component::EnemyGeneratorComponent::Update(float elapsedTime)
 	}
 
 	for (auto& e : this->enemies) {
+		if (e->IsAttacked()) {
+			this->isAttacked = true;
+			break;
+		}
+	}
+
+	for (auto& e : this->enemies) {
 		if (e->IsAttackable()) {
 			this->isAttackable = true;
 			break;
@@ -324,6 +331,22 @@ void KG::Component::EnemyGeneratorComponent::SendAttackPacket(SGameManagerCompon
 	this->isAttackable = false;
 }
 
+void KG::Component::EnemyGeneratorComponent::AwakeEnemy()
+{
+	for (auto& e : this->enemies) {
+		e->Awake();
+	}
+	this->isAttacked = false;
+}
+
+void KG::Component::EnemyGeneratorComponent::SleepEnemy()
+{
+	for (auto& e : this->enemies) {
+		e->Sleep();
+	}
+	this->isAttacked = false;
+}
+
 void KG::Component::SGameManagerComponent::SendEndPacket()
 {
 	KG::Packet::SC_GAME_END Packet;
@@ -358,20 +381,12 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		break;
 	}
 
-	int enemyCount = 3; // randomSpawn(genRegion);
+	int enemyCount = 3;
 
 	for (int i = 0; i < enemyCount; ++i) {
 		std::uniform_real_distribution<float> randomPos(-region.range, region.range);
 		int type = enemyType(genRegion);
-		// const char* presetName = nullptr;
-		// switch (type) {
-		// case 0:
-		// 	presetName = "EnemyMech";
-		// 	break;
-		// case 1:
-		// 	presetName = "EnemyCrawler";
-		// 	break;
-		// }
+
 		// auto presetName = "EnemyCrawler";
 		auto presetName = "EnemyMech";
 
@@ -379,12 +394,6 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 
 		auto* scene = this->gameObject->GetScene();
 		auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
-
-		//auto t = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("EnemyMark"));
-
-		/*if (t) {
-			t->GetTransform()->SetPosition(region.position.x, 120, region.position.z);
-		}*/
 
 		DirectX::XMFLOAT3 genPos{
 			randomPos(genRegion) + region.position.x,
@@ -404,29 +413,6 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		comp->SetNetObjectId(id);
 		this->server->SetServerObject(id, comp);
 
-		// switch (type) {
-		// case 0:
-		// {
-		// 
-		// 	auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyMechComponent>();
-		// 	enemyCtrl->SetCenter(region.position);
-		// 	enemyCtrl->SetWanderRange(region.range);
-		// 	enemyCtrl->SetPosition(genPos);
-		// 	AddEnemyControllerCompoenent(enemyCtrl);
-		// }
-		// 	break;
-		// case 1:
-		// {
-		// 
-		// 	auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyCrawlerComponent>();
-		// 	enemyCtrl->SetCenter(region.position);
-		// 	enemyCtrl->SetWanderRange(region.range);
-		// 	enemyCtrl->SetPosition(genPos);
-		// 	AddEnemyControllerCompoenent(enemyCtrl);
-		// }
-		// 	break;
-		// }
-
 		// auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyCrawlerComponent>();
 		auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyMechComponent>();
 		enemyCtrl->SetCenter(region.position);
@@ -438,6 +424,8 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		this->GetGameObject()->GetTransform()->AddChild(comp->GetGameObject()->GetTransform());
 		this->BroadcastPacket(&addObjectPacket);
 	}
+
+	this->SleepEnemy();
 }
 
 void KG::Component::EnemyGeneratorComponent::GenerateBoss()
@@ -574,6 +562,9 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 		}
 		if (enemyGenerator->isAttackable) {
 			enemyGenerator->SendAttackPacket(this);
+		}
+		if (enemyGenerator->isAttacked) {
+			enemyGenerator->AwakeEnemy();
 		}
 	}
 }
