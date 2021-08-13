@@ -182,6 +182,8 @@ void KGDXRenderer::Initialize()
 
 void KGDXRenderer::Render()
 {
+    this->MoveToNextFrame();
+
     this->graphicSystems->OnCameraPreRender();
     for (KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem)
     {
@@ -232,7 +234,6 @@ void KGDXRenderer::Render()
 
     this->swapChainBufferIndex = this->swapChain->GetCurrentBackBufferIndex();
 
-    this->MoveToNextFrame();
 }
 
 void KG::Renderer::KGDXRenderer::PreRenderEditorUI()
