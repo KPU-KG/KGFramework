@@ -52,7 +52,7 @@
             </PostProcess>
         </Component>
         <Component name="EnemyGeneratorComponent" hash_id="1480576243">
-            <GenerateEnemy value="false"/>
+            <GenerateEnemy value="true"/>
             <Region>
                 <RegionPosition x="62" y="0" z="0"/>
                 <RegionRange value="25"/>
@@ -100,8 +100,8 @@
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="96.831337" y="82.548935" z="-138.67149"/>
-                <Rotation_Q x="-0.47951123" y="0.23042381" z="-0.12983863" w="-0.85103625"/>
+                <Position x="191.64131" y="63.779194" z="-112.06178"/>
+                <Rotation_Q x="-0.51597565" y="0.45509711" z="-0.3626425" w="-0.64754075"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
@@ -10994,6 +10994,11 @@
                         <Position x="181.077" y="0" z="-55.852287"/>
                         <Rotation_Q x="-0" y="0" z="-0" w="1"/>
                         <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <Component name="StaticRigidComponent" hash_id="591825997">
+                        <Position x="0" y="3" z="0"/>
+                        <Scale x="1" y="6" z="20"/>
+                        <Show value="1"/>
                     </Component>
                 </GameObject>
             </GameObject>
