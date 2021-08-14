@@ -135,7 +135,7 @@ LightVertexOutput VertexShaderFunction(uint InstanceID : SV_InstanceID)
 LightHSConstantOutput ConstantHS()
 {
     LightHSConstantOutput output;
-    float tessFactor = 18.0f;
+    float tessFactor = 8.0f;
     output.edges[0] = output.edges[1] = output.edges[2] = output.edges[3] = tessFactor;
     output.Inside[0] = output.Inside[1] = tessFactor;
     return output;
@@ -156,15 +156,15 @@ LightHSOutput HullShaderFunction(InputPatch<LightVertexOutput, 1> input, uint Pa
 [domain("quad")]
 LightPixelInput DomainShaderFunction(LightHSConstantOutput constant, float2 uv : SV_DomainLocation, OutputPatch<LightHSOutput, 4> quad)
 {
-    static float CylinderPortion = 0.1f;
+    static float CylinderPortion = 0.5f;
     static float ExpendAmount = (1.0f + CylinderPortion);
 
-    float SinAngle = sin(lightInfo[quad[0].InstanceID].Phi / 2.0f);
-    float CosAngle = cos(lightInfo[quad[0].InstanceID].Phi / 2.0f);
+    float SinAngle = -sin(lightInfo[quad[0].InstanceID].Phi / 2.0f);
+    float CosAngle = -cos(lightInfo[quad[0].InstanceID].Phi / 2.0f);
     
 	// Transform the UV's into clip-space
-    float2 posClipSpace = uv.xy * 2.0f + -1.0f;
-    //float2 posClipSpace = uv.xy * float2(2.0, -2.0) + float2(-1.0, 1.0);
+    //float2 posClipSpace = uv.xy * 2.0f + -1.0f;
+    float2 posClipSpace = uv.xy * float2(2.0, -2.0) + float2(-1.0, 1.0);
 
 	// Find the vertex offsets based on the UV
     float2 posClipSpaceAbs = abs(posClipSpace.xy);
@@ -176,7 +176,7 @@ LightPixelInput DomainShaderFunction(LightHSConstantOutput constant, float2 uv :
     float2 posClipSpaceNoCyl = sign(posClipSpace.xy) * posClipSpaceNoCylAbs;
 
 	// Convert the positions to half sphere with the cone vertices on the edge
-    float3 halfSpherePos = normalize(float3(posClipSpaceNoCyl.xy, 1.0 - maxLenNoCapsule));
+    float3 halfSpherePos = normalize(float3(posClipSpaceNoCyl.xy, (1.0 - maxLenNoCapsule)));
 
 	// Scale the sphere to the size of the cones rounded base
     halfSpherePos = normalize(float3(halfSpherePos.xy * SinAngle, CosAngle));
@@ -186,6 +186,9 @@ LightPixelInput DomainShaderFunction(LightHSConstantOutput constant, float2 uv :
 
 	// Offset the cone vertices to thier final position
     float4 posLS = float4(halfSpherePos.xy * (1.0 - cylinderOffsetZ), halfSpherePos.z - cylinderOffsetZ * CosAngle, 1.0);
+    //posLS.y = 1 - posLS.y;
+    //posLS.z = 1 - posLS.z;
+    //posLS.x = 1 - posLS.x;
     LightPixelInput output;
     
     float4x4 LightProjection = GetLightMatrix(lightInfo[quad[0].InstanceID]);
@@ -216,7 +219,9 @@ float4 PixelShaderFunction(LightPixelInput input) : SV_Target0
     
     float3 cameraDirection = look;
     //float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
-    float3 lightDirection = calcWorldPosition - lightData.Position;
+    float3 lp = lightData.Position - (lightData.FalloffStart * normalize(lightData.Direction));
+    float3 lightDirection = calcWorldPosition - lp;
+    
     float distance = length(lightDirection);
     
     float atten = saturate(CalcAttenuation(distance, lightData.FalloffStart, lightData.FalloffStart));
@@ -225,6 +230,7 @@ float4 PixelShaderFunction(LightPixelInput input) : SV_Target0
     //float shadowFactor = SpotLightShadowPoissonPCF(calcWorldPosition, lightData, shadowData, dot(normalize(lightDirection), normalize(pixelData.wNormal)));
     float shadowFactor = 1.0f;
     
+    //return float4(0, 0.1, 0, 1);
     return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(-cameraDirection), atten * spotFactor) * shadowFactor;
 }
 

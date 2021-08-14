@@ -185,12 +185,23 @@ void KG::Component::LightComponent::SetShadowCascadeMatrix(const std::array<Dire
 	}
 }
 
+using namespace KG::Math::Literal;
+
 void KG::Component::LightComponent::OnPreRender()
 {
 	int updateCount = this->renderJob->GetUpdateCount();
 	if ( this->isDirty || this->lightType == LightType::SpotLight || this->lightType == LightType::PointLight )
 	{
-	    this->light.Position = this->transform->GetWorldPosition();
+        if (this->lightType == LightType::SpotLight)
+        {
+            XMFLOAT3 llook = this->transform->GetLook();
+            XMStoreFloat3(&llook, XMVector3Normalize(XMLoadFloat3(&llook)) * this->light.FalloffStart);
+            this->light.Position = this->transform->GetWorldPosition() + llook;
+        }
+        else 
+        {
+	        this->light.Position = this->transform->GetWorldPosition();
+        }
 		this->isDirty = false;
 		std::memcpy(&this->renderJob->objectBuffer->mappedData[updateCount].light, &this->light, sizeof(this->light));
 		if ( this->renderJob->shadowLightBuffer != nullptr )
