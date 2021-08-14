@@ -48,7 +48,7 @@ namespace KG::Renderer
 		void OnVisibleRemove();
         void AddCullObject();
 		void SetObjectSize(int count);
-        void SetUpdateCount(int count);
+        void SetUpdateCount(int count, bool isCulled = false);
         int GetUpdateCount(bool isCulled = false);
 		void ClearCount();
 

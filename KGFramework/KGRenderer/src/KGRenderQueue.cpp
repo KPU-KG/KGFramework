@@ -176,10 +176,14 @@ void KG::Renderer::KGRenderJob::SetObjectSize(int count)
 	this->objectSize = count;
 }
 
-void KG::Renderer::KGRenderJob::SetUpdateCount(int count)
+void KG::Renderer::KGRenderJob::SetUpdateCount(int count, bool isCulled)
 {
-	if ( CheckBufferFull() ) GetNewBuffer();
-	this->updateCount = count;
+    if (CheckBufferFull()) GetNewBuffer();
+    this->updateCount = count;
+    if (!isCulled)
+    {
+        this->notCullIndexStart = this->updateCount;
+    }
 }
 
 int KG::Renderer::KGRenderJob::GetUpdateCount(bool isCulled)
