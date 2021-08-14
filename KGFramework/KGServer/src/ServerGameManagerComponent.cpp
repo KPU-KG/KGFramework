@@ -387,7 +387,6 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		std::uniform_real_distribution<float> randomPos(-region.range, region.range);
 		int type = enemyType(genRegion);
 
-		// auto presetName = "EnemyCrawler";
 		auto presetName = "EnemyMech";
 
 		auto presetId = KG::Utill::HashString(presetName);
@@ -398,7 +397,7 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		DirectX::XMFLOAT3 genPos{
 			randomPos(genRegion) + region.position.x,
 			region.position.y + region.heightOffset,
-			randomPos(genRegion) + region.position.z
+			(i - 1) * 10 + region.position.z
 		};
 
 		KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
@@ -413,7 +412,6 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		comp->SetNetObjectId(id);
 		this->server->SetServerObject(id, comp);
 
-		// auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyCrawlerComponent>();
 		auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyMechComponent>();
 		enemyCtrl->SetCenter(region.position);
 		enemyCtrl->SetWanderRange(region.range);
@@ -534,7 +532,7 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 	}
 	if (enemyGenerator != nullptr) {
 		if (enemyGenerator->IsGeneratable() && this->server->isPlay) {
-			if (enemyGenerator->GetScore() < 3) {
+			if (enemyGenerator->GetScore() < 6) {
 				enemyGenerator->Initialize();
 				enemyGenerator->GenerateEnemy();
 				for (auto& p : playerObjects) {

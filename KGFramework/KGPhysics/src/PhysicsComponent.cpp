@@ -108,6 +108,12 @@ void KG::Component::DynamicRigidComponent::SetPosition(DirectX::XMFLOAT3 pos)
 	actor->setGlobalPose(pose);
 }
 
+DirectX::XMFLOAT3 KG::Component::DynamicRigidComponent::GetVelocity() const
+{
+	auto vel = this->actor->getLinearVelocity();
+	return DirectX::XMFLOAT3(vel.x, vel.y, vel.z);
+}
+
 void KG::Component::DynamicRigidComponent::ReleaseActor()
 {
 	auto* inst = KG::Physics::PhysicsScene::GetInstance();

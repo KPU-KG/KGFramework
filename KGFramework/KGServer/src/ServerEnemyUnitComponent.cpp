@@ -68,8 +68,9 @@ void KG::Component::SEnemyUnitComponent::OnCreate(KG::Core::GameObject* obj)
 	this->transform = this->gameObject->GetTransform();
 	this->center = this->transform->GetWorldPosition();
 	this->rigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
-	if (this->rigid)
+	if (this->rigid) {
 		this->rigid->SetRaycastCallback(raycastCallback);
+	}
 	this->anim = this->gameObject->GetComponent<IAnimationControllerComponent>();
 }
 

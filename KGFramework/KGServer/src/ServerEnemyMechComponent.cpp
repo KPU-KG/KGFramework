@@ -122,12 +122,29 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 	auto dir = Math::Vector3::Normalize(v);
 
 	if (rigid) {
-		rigid->SetVelocity(dir, spd);
+		auto vel = rigid->GetVelocity();
+		float d = vel.x * vel.x + vel.z * vel.z;
+		if (d < spd * spd)
+			rigid->AddForce(dir, spd * 3);
+		static float t = 0;
+		if (d < 2) {
+			t += elapsedTime;
+			if (t >= 0.3f) {
+				goal.y = this->transform->GetWorldPosition().y;
+				rigid->SetPosition(goal);
+				rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
+				return true;
+			}
+		}
+		else
+			t = 0;
+		
 	}
 
 	float dist = sqrt(GetDistance2FromEnemy(this->goal));
 	
 	if (dist <= 0.5) {
+		goal.y = this->transform->GetWorldPosition().y;
 		rigid->SetPosition(goal);
 		rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
 		return true;
@@ -429,11 +446,13 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 			if (comp == nullptr)
 				continue;
 
+			mask |= static_cast<uint32_t>(FilterGroup::eENEMY);
+
 			auto pathVec = Math::Vector3::Subtract(myPos, pathPos);
 			auto pathDir = Math::Vector3::Normalize(pathVec);
 			float pathDist = sqrt(pathVec.x * pathVec.x + pathVec.z * pathVec.z);
 
-			auto pathComp = this->rigid->GetScene()->QueryRaycast(myPos, pathDir, pathDist, this->rigid->GetId());
+			auto pathComp = this->rigid->GetScene()->QueryRaycast(myPos, pathDir, pathDist, this->rigid->GetId(), mask);
 			if (pathComp != nullptr)
 				continue;
 			// 여기서 센터까지 레이캐스트로 아무것도 없으면 그냥 거리로 계산
@@ -450,10 +469,6 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 			}
 		}
 	}
-
-	// cal root
-	// 그리디 알고리즘으로 갈 수 있는지 체크 (가능하면 감)
-	// A* 사용
 
 	if (mx == INT16_MAX || mz == INT16_MAX) {
 		auto dir = Math::Vector3::Subtract(this->target->GetGameObject()->GetTransform()->GetWorldPosition(), this->transform->GetWorldPosition());

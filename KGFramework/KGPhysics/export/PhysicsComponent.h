@@ -111,6 +111,7 @@ namespace KG::Component
 		uint32_t GetFilterMask() { return maskGroup; }
 		virtual void SetPosition(DirectX::XMFLOAT3 pos) {};
 		virtual void SetApply(bool apply) {};
+		virtual DirectX::XMFLOAT3 GetVelocity() const { return DirectX::XMFLOAT3(); };
 		virtual void ReleaseActor() = 0;
 		void AddFilterGroup(FilterGroup filterGroup, FilterGroup filterMask);
 		// void SetQueryMaskGroup(uint32_t mask);
@@ -152,6 +153,7 @@ namespace KG::Component
 		virtual void AddTorque(DirectX::XMFLOAT3 axis, float power) override;
 		virtual void SetRotation(DirectX::XMFLOAT4 quat) override;
 		virtual void SetPosition(DirectX::XMFLOAT3 pos) override;
+		virtual DirectX::XMFLOAT3 GetVelocity() const override;
 		virtual void SetApply(bool apply) override { this->apply = apply; }
 		virtual void ReleaseActor() override;
 		// raycast Å×½ºÆ®
