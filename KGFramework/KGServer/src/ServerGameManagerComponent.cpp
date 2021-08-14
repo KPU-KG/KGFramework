@@ -443,7 +443,9 @@ void KG::Component::EnemyGeneratorComponent::GenerateBoss()
 
 	auto t = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("BossBarrier"));
 	if (t) {
+		t->GetComponent<StaticRigidComponent>()->ReleaseActor();
 		t->Destroy();
+		//t->GetTransform()->SetPosition(0, -120, 0);
 	};
 
 	auto region = this->region[1];
