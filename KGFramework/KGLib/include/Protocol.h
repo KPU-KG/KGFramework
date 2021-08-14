@@ -313,6 +313,14 @@ namespace KG::Packet
 		float distance;
 	};
 
+	struct SC_FIRE
+	{
+		DEFAULT_PACKET_HEADER(SC_FIRE);
+		RawFloat3 origin;
+		RawFloat3 direction;
+		float distance;
+	};
+
 	struct CS_RELOAD
 	{
 		DEFAULT_PACKET_HEADER(CS_RELOAD);

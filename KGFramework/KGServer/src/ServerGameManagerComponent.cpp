@@ -665,6 +665,7 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 		addPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
 		this->BroadcastPacket(&addPacket, sender);
 
+
 		/* if (enemyGenerator) {
 		 	enemyGenerator->RegisterPlayerToEnemy(newPlayerId);
 		 }*/
