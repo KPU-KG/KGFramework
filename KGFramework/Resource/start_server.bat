@@ -1,1 +1,1 @@
-start KGMain.exe setting_server86.xml
+start KGMain.exe setting_server87.xml
