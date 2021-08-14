@@ -128,7 +128,7 @@ void KG::Component::SCrawlerMissileComponent::Initialize(DirectX::XMFLOAT3 origi
 	this->isCurved = false;
 	this->speed = 30;
 
-	this->curveHeight = 20;
+	this->curveHeight = 30;
 	// 고점 설정
 	XMStoreFloat3(&this->topPosition, XMVectorLerp(XMLoadFloat3(&origin), XMLoadFloat3(&target), (2.f / 3.f)));
 	this->topPosition.y = this->curveHeight;

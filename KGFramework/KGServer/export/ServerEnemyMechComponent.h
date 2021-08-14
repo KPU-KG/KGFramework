@@ -145,16 +145,11 @@ namespace KG::Component
 		bool isAttackRotation = false;
 		bool damaged = false;
 
-		float wanderRotateSpeed = 0.3;
-		float wanderMoveSpeed = 1;
+		float wanderRotateSpeed = 0.8;
+		float wanderMoveSpeed = 3;
 
-		float traceRotateSpeed = 1;
-		float traceMoveSpeed = 3;
-
-		float										goalDistance = 0;
-		float										moveDistance = 0;
-		DirectX::XMFLOAT3 prevPosition;
-		DirectX::XMFLOAT3 prevDirection;
+		float traceRotateSpeed = 1.5;
+		float traceMoveSpeed = 5;
 
 		float										traceRange = 70;
 		float										attackRange = 50;

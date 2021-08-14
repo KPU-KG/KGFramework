@@ -161,21 +161,21 @@ namespace KG::Component
 	{
 	protected:
 		static constexpr int						maxHp = 100;
-		float										areaWidth = 3;
+		float										areaWidth = 10;
 		std::queue<std::pair<float, float>>			shootArea;
 		DirectX::XMFLOAT3							shootAreaCenter;
 		DirectX::XMFLOAT3							shootTarget;
 
 		float										rotateSpeed = 2;
 
-		float										attackInterval = 0.5;
+		float										attackInterval = 0.28;
 		float										attackTimer = 0;
 
 		float										chargingTimer = 0;
 		float										chargingInterval = 2;
 		bool										isCharging = false;
 
-		constexpr static float chargeDist = 25;
+		constexpr static float chargeDist = 30;
 		float										chargeSpeed = 25;
 		// float										chargeDist = 0;
 		float										moveDist = 0;

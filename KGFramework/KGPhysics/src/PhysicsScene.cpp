@@ -97,6 +97,11 @@ physx::PxFilterFlags contactReportFilterShader(physx::PxFilterObjectAttributes a
         return physx::PxFilterFlag::eDEFAULT;
     }
 
+    if ((filterData0.word0 & filterData1.word1) && (filterData1.word0 & filterData0.word1)) {
+        pairFlags = physx::PxPairFlag::eNOTIFY_TOUCH_FOUND;
+        return physx::PxFilterFlag::eDEFAULT;
+    }
+
     pairFlags = physx::PxPairFlag::eCONTACT_DEFAULT;
 
     if ( !(filterData0.word0 & filterData1.word1) && !(filterData0.word1 & filterData1.word0) )
