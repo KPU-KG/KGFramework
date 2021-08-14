@@ -218,6 +218,7 @@ bool KG::Component::SPlayerComponent::OnProcessPacket(unsigned char* packet, KG:
 			if (this->physicsScene) {
 				this->server->LockWorld();
 				auto* firePacket = KG::Packet::PacketCast<KG::Packet::CS_FIRE>(packet);
+				this->BroadcastPacket(&firePacket);
 				auto comp = this->physicsScene->QueryRaycast(firePacket->origin, firePacket->direction, firePacket->distance);
 				if (comp) {
 					auto callback = comp->GetRaycastCallback();
