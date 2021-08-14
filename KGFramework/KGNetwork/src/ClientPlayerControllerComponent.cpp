@@ -86,7 +86,7 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
     this->particleGen->AddParticleDesc(KG::Utill::HashString("Muzzle"), muzzleDesc);
 
     KG::Component::ParticleDesc sparkDesc;
-    sparkDesc.baselifeTime = 3.0f;
+    sparkDesc.baselifeTime = 1.0f;
     sparkDesc.baseEmitCount = 20;
     sparkDesc.rangeEmitCount = 20;
     sparkDesc.baseSize.x = 0.075;
