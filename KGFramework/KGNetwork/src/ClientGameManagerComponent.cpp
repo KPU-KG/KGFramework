@@ -99,7 +99,7 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 					t->GetTransform()->SetPosition(175, 120, -108);
 					break;
 				case 3:
-					t->GetTransform()->SetPosition(-98, 120, 21);
+					t->GetTransform()->SetPosition(176, 120, 23);
 					break;
 				}
 			}
