@@ -381,7 +381,7 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		break;
 	}
 
-	int enemyCount = 3;
+	int enemyCount = 1; // 3;
 
 	for (int i = 0; i < enemyCount; ++i) {
 		std::uniform_real_distribution<float> randomPos(-region.range, region.range);

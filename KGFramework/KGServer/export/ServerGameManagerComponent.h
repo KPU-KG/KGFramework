@@ -36,7 +36,7 @@ namespace KG::Component
 
 		DirectX::XMFLOAT3 position{ 0,0,0 };
 		float range{ 5 };
-		float heightOffset{ 3 };
+		float heightOffset{ 4 };
 		Region();
 		Region(DirectX::XMFLOAT3 position, float range, float heightOffset);
 		Region(const KG::Component::Region& other);
