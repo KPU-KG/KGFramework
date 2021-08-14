@@ -198,7 +198,7 @@ bool KG::Component::SEnemyCrawlerComponent::SetAttackArea()
 	while (!shootArea.empty())
 		shootArea.pop();
 
-	for (int i = 0; i < 8; ++i) {
+	for (int i = 0; i < 16; ++i) {
 		float x = shootAreaRange(crawlerGen) + shootAreaCenter.x;
 		float z = shootAreaRange(crawlerGen) + shootAreaCenter.z;
 		shootArea.push(std::make_pair(x, z));

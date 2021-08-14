@@ -168,7 +168,7 @@ namespace KG::Component
 
 		float										rotateSpeed = 2;
 
-		float										attackInterval = 0.5;
+		float										attackInterval = 0.28;
 		float										attackTimer = 0;
 
 		float										chargingTimer = 0;
