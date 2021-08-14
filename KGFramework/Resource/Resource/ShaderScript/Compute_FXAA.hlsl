@@ -1,7 +1,7 @@
 #include "Define_Compute.hlsl"
   #define FXAA_PC 1
   #define FXAA_HLSL_5 1
-  #define FXAA_QUALITY__PRESET 39
+  #define FXAA_QUALITY__PRESET 20
   #define FXAA_QUALITY__SUBPIX 1
 #include "FXAA.hlsl"
 

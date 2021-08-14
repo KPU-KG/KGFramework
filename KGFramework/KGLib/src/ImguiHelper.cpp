@@ -6,7 +6,8 @@ bool ImGui::TextureView(ImTextureID id, ImVec2 size, const char* popup)
     bool ret = false;
     ImGui::Image(id, size);
     ImGui::OpenPopupOnItemClick(popup, ImGuiPopupFlags_MouseButtonLeft);
-    ImGui::SetNextWindowSize(ImVec2(800, 800));
+    double ratio = size.y / size.x;
+    ImGui::SetNextWindowSize(ImVec2(800 + 100, 800 * ratio + 100));
     ImGui::SetNextWindowBgAlpha(1.0f);
     ret = ImGui::BeginPopup(popup);
     if (ret)

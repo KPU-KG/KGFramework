@@ -831,6 +831,13 @@ void KG::GameFramework::UIRender()
 		    	std::cout.clear();
 		    }
         }
+        if (ImGui::CollapsingHeader("Renderer UI", ImGuiTreeNodeFlags_DefaultOpen))
+        {
+            if (this->renderer)
+            {
+                this->renderer->DebugUIRender();
+            }
+        }
         if ( ImGui::CollapsingHeader("Network and Server", ImGuiTreeNodeFlags_DefaultOpen) )
         {
 	    	if ( this->networkClient == nullptr && this->networkServer == nullptr )

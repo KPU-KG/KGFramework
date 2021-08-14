@@ -156,7 +156,7 @@ LightHSOutput HullShaderFunction(InputPatch<LightVertexOutput, 1> input, uint Pa
 [domain("quad")]
 LightPixelInput DomainShaderFunction(LightHSConstantOutput constant, float2 uv : SV_DomainLocation, OutputPatch<LightHSOutput, 4> quad)
 {
-    static float CylinderPortion = 0.2f;
+    static float CylinderPortion = 0.1f;
     static float ExpendAmount = (1.0f + CylinderPortion);
 
     float SinAngle = sin(lightInfo[quad[0].InstanceID].Phi / 2.0f);
@@ -214,15 +214,16 @@ float4 PixelShaderFunction(LightPixelInput input) : SV_Target0
     ShadowData shadowData = shadowInfo[input.InstanceID];
     float3 calcWorldPosition = DepthToWorldPosition(depth, input.projPosition.xy, mul(inverseProjection, inverseView));
     
-    //float3 cameraDirection = look;
-    float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
+    float3 cameraDirection = look;
+    //float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
     float3 lightDirection = calcWorldPosition - lightData.Position;
     float distance = length(lightDirection);
     
-    float atten = CalcAttenuation(distance, lightData.FalloffStart, lightData.FalloffStart);
-    float spotFactor = CalcSpotFactor(normalize(lightDirection), lightData);
-    //float spotFactor = CalcSpotFactor(normalize(-lightDirection), lightData);
-    float shadowFactor = SpotLightShadowPoissonPCF(calcWorldPosition, lightData, shadowData, dot(normalize(lightDirection), normalize(pixelData.wNormal)));
+    float atten = saturate(CalcAttenuation(distance, lightData.FalloffStart, lightData.FalloffStart));
+    //float spotFactor = CalcSpotFactor(normalize(lightDirection), lightData);
+    float spotFactor = saturate(CalcSpotFactor(normalize(lightDirection), lightData));
+    //float shadowFactor = SpotLightShadowPoissonPCF(calcWorldPosition, lightData, shadowData, dot(normalize(lightDirection), normalize(pixelData.wNormal)));
+    float shadowFactor = 1.0f;
     
     return CustomLightCalculator(lightData, pixelData, normalize(lightDirection), normalize(-cameraDirection), atten * spotFactor) * shadowFactor;
 }

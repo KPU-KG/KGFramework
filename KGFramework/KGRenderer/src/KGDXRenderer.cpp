@@ -596,6 +596,51 @@ KG::Component::ICubeCameraComponent* KG::Renderer::KGDXRenderer::GetNewCubeCamer
     return static_cast<KG::Component::ICubeCameraComponent*>(this->graphicSystems->cubeCameraSystem.GetNewComponent());
 }
 
+void KG::Renderer::KGDXRenderer::DebugUIRender()
+{
+    if (ImGui::TreeNode("RenderTexture : deferred render"))
+    {
+        float sizeX = (ImGui::GetColumnWidth()) - 10.0f;
+        for (auto& camera : this->graphicSystems->cameraSystem)
+        {
+            if (camera.isMainCamera)
+            {
+                static const char* strings[] = {
+                    "gbuffer0\ndiffuse color(rgb)",
+                    "gbuffer1\nspecular (r), metalic (g), roughness (b)",
+                    "gbuffer2\nnormal (xy)",
+                    "gbuffer3\nenvirionment map index (x)",
+                    "gbuffer4\ndepth buffer (x)",
+                };
+                for (size_t i = 0; i < 4; i++)
+                {
+                    auto ptr = camera.GetRenderTexture().gbufferTextureResources[i].GetDescriptor(DescriptorType::SRV).GetGPUHandle().ptr;
+                    //ImGui::SameLine();
+                    ImGui::BeginGroup();
+                    ImGui::Text(strings[i]);
+                    ImGui::TextureView((ImTextureID)ptr, ImVec2(sizeX, sizeX * (9.0f / 16.0f)), strings[i]);
+                    ImGui::EndGroup();
+                }
+                {
+                    auto ptr = camera.GetRenderTexture().depthStencilBuffer.GetDescriptor(DescriptorType::SRV).GetGPUHandle().ptr;
+                    //ImGui::SameLine();
+                    ImGui::BeginGroup();
+                    ImGui::Text(strings[4]);
+                    ImGui::TextureView((ImTextureID)ptr, ImVec2(sizeX, sizeX * (9.0f / 16.0f)), strings[4]);
+                    ImGui::EndGroup();
+                }
+                break;
+            }
+        }
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("PostProcess"))
+    {
+        this->postProcessor->OnDrawGUI();
+        ImGui::TreePop();
+    }
+}
+
 KG::Component::ILightComponent* KG::Renderer::KGDXRenderer::GetNewLightComponent()
 {
     return static_cast<KG::Component::ILightComponent*>(this->graphicSystems->lightSystem.GetNewComponent());

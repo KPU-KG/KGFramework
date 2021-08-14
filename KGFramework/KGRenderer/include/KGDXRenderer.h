@@ -119,6 +119,7 @@ namespace KG::Renderer
 
         virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) override;
 
+        virtual void DebugUIRender() override;
         virtual void* GetImGUIContext();
         virtual KG::Component::IRender3DComponent* GetNewRenderComponent() override;
         virtual KG::Component::IRender2DComponent* GetNewRender2DComponent() override;

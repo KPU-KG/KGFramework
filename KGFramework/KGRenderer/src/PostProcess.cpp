@@ -548,6 +548,10 @@ void KG::Renderer::PostProcessor::OnDrawGUI()
             handle = this->buffer2PrevDebug.GetDescriptor(DescriptorType::SRV).GetGPUHandle();
             ImGui::TextureView((ImTextureID)handle.ptr, ImVec2(width, height), "Prev Buffer2");
             ImGui::EndGroup();
+            if (ImGui::Button("close"))
+            {
+                isOpenDebug = false;
+            }
         }
         ImGui::End();
     }

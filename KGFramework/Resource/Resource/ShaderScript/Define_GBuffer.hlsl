@@ -66,7 +66,8 @@ GBufferOut PixelEncode(Surface surface)
     result.gbuffer2.xy = EncodeNormal(surface.wNormal);
     
     result.gbuffer3.x = surface.environmentMap;
-    result.gbuffer3.yzw = surface.reserve0;
+    //result.gbuffer3.yzw = surface.reserve0;
+    result.gbuffer3.yzw = float3(0, 0, 1);
     
     return result;
 }
