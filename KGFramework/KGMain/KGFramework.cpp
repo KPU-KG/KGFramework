@@ -740,6 +740,19 @@ void KG::GameFramework::PostSceneFunction()
 
 			obj.AddComponent(dynCol);
 
+			auto* snd = this->sound->GetNewSoundComponent();
+			snd->LinkSystem(this->sound->GetFmodSystem(), this->sound->GetChannel());
+			// snd->RegisterSound(this->sound->GetSound(SOUND_EFF_SHOT), SOUND_EFF_SHOT);
+			// snd->RegisterSound(this->sound->GetSound(SOUND_EFF_RELOAD), SOUND_EFF_RELOAD);					// 장전 소리도 나게 해??
+			// snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::DRAW), VECTOR_SOUND::DRAW);
+			snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_1), VECTOR_SOUND::FIRE_1);
+			snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_2), VECTOR_SOUND::FIRE_2);
+			snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_3), VECTOR_SOUND::FIRE_3);
+			snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_4), VECTOR_SOUND::FIRE_4);
+			// snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::RELOAD), VECTOR_SOUND::RELOAD);
+			// snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::RELOAD_EMPTY), VECTOR_SOUND::RELOAD_EMPTY);
+			obj.AddComponent(snd);
+
 			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
 		}
 		);
