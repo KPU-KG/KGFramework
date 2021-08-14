@@ -3,8 +3,8 @@
 #include <functional>
 #include "IComponent.h"
 
-constexpr const unsigned int SOUND_EFF_SHOT = 0;
-constexpr const unsigned int SOUND_EFF_RELOAD = 1;
+constexpr unsigned int SOUND_EFF_SHOT = 0;
+constexpr unsigned int SOUND_EFF_RELOAD = 1;
 
 struct VECTOR_SOUND
 {
@@ -17,6 +17,12 @@ struct VECTOR_SOUND
 
     static constexpr unsigned int RELOAD = 7;
     static constexpr unsigned int RELOAD_EMPTY = 8;
+};
+
+struct ENEMY_SOUND
+{
+	static constexpr unsigned int LAUNCH = 9;
+	static constexpr unsigned int EXPLOSION = 10;
 };
 
 

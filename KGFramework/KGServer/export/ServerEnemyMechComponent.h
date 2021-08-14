@@ -151,6 +151,8 @@ namespace KG::Component
 		float traceRotateSpeed = 1.5;
 		float traceMoveSpeed = 5;
 
+		float defaultHeight = 0;
+
 		float										traceRange = 70;
 		float										attackRange = 50;
 

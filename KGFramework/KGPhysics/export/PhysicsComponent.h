@@ -156,6 +156,9 @@ namespace KG::Component
 		virtual DirectX::XMFLOAT3 GetVelocity() const override;
 		virtual void SetApply(bool apply) override { this->apply = apply; }
 		virtual void ReleaseActor() override;
+		void SetLinearLock(bool x, bool y, bool z);
+		void SetAngularLock(bool x, bool y, bool z);
+		void SetRigidFlags(bool ax, bool ay, bool az, bool lx, bool ly, bool lz);
 		// raycast Å×½ºÆ®
 
 	private:

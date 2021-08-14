@@ -18,6 +18,7 @@ KG::Component::SEnemyUnitComponent::SEnemyUnitComponent()
 	session.resize(MAP_SIZE_X);
 	for (int i = 0; i < session.size(); ++i)
 		session[i].resize(MAP_SIZE_Z);
+
 	// for (auto& iter : session)
 	// 	iter.resize(MAP_SIZE_Z);
 	// session = new char* [MAP_SIZE_X];

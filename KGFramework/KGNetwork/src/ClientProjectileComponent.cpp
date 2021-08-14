@@ -1,6 +1,7 @@
 #include "pch.h"
 #include "ClientProjectileComponent.h"
 #include "Transform.h"
+#include "ISoundComponent.h"
 
 KG::Component::CProjectileComponent::CProjectileComponent()
 {
@@ -10,10 +11,24 @@ void KG::Component::CProjectileComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	CBaseComponent::OnCreate(obj);
 	this->transform = this->gameObject->GetTransform();
+	this->sound = this->gameObject->GetComponent<ISoundComponent>();
+	if (this->sound)
+	{
+		this->sound->PlayEffectiveSound(ENEMY_SOUND::LAUNCH);
+	}
 }
 
 void KG::Component::CProjectileComponent::Update(float elapsedTime)
 {
+}
+
+void KG::Component::CProjectileComponent::OnDestroy()
+{
+	if (this->sound)
+	{
+		this->sound->PlayEffectiveSound(ENEMY_SOUND::EXPLOSION);
+	}
+	IComponent::OnDestroy();
 }
 
 bool KG::Component::CProjectileComponent::OnProcessPacket(unsigned char* packet, KG::Packet::PacketType type)

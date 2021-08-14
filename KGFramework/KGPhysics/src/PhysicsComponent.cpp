@@ -120,6 +120,55 @@ void KG::Component::DynamicRigidComponent::ReleaseActor()
 	inst->ReleaseActor(this);
 }
 
+void KG::Component::DynamicRigidComponent::SetLinearLock(bool x, bool y, bool z) {
+	// dyn Àá±Ý->setRigidDynamicLockFlags(PxRigidDynamicLockFlag::eLOCK_LINEAR_Z | PxRigidDynamicLockFlag::eLOCK_ANGULAR_X | PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y);
+	physx::PxRigidDynamicLockFlags p;
+	if (x)
+		p |= physx::PxRigidDynamicLockFlag::eLOCK_LINEAR_X;
+	if (y)
+		p |= physx::PxRigidDynamicLockFlag::eLOCK_LINEAR_Y;
+	if (z)
+		p |= physx::PxRigidDynamicLockFlag::eLOCK_LINEAR_Z;
+	this->actor->setRigidDynamicLockFlags(p);
+
+	// this->actor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_LINEAR_X, x);
+	// this->actor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_LINEAR_Y, y);
+	// this->actor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_LINEAR_Z, z);
+}
+
+void KG::Component::DynamicRigidComponent::SetAngularLock(bool x, bool y, bool z)
+{
+	physx::PxRigidDynamicLockFlags p;
+	if (x)
+		p |= physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_X;
+	if (y)
+		p |= physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y;
+	if (z)
+		p |= physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z;
+	this->actor->setRigidDynamicLockFlags(p);
+	// this->actor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_X, x);
+	// this->actor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y, y);
+	// this->actor->setRigidDynamicLockFlag(physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z, z);
+}
+
+void KG::Component::DynamicRigidComponent::SetRigidFlags(bool ax, bool ay, bool az, bool lx, bool ly, bool lz)
+{
+	physx::PxRigidDynamicLockFlags p;
+	if (lx)
+		p |= physx::PxRigidDynamicLockFlag::eLOCK_LINEAR_X;
+	if (ly)
+		p |= physx::PxRigidDynamicLockFlag::eLOCK_LINEAR_Y;
+	if (lz)
+		p |= physx::PxRigidDynamicLockFlag::eLOCK_LINEAR_Z;
+	if (ax)
+		p |= physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_X;
+	if (ay)
+		p |= physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_Y;
+	if (az)
+		p |= physx::PxRigidDynamicLockFlag::eLOCK_ANGULAR_Z;
+	this->actor->setRigidDynamicLockFlags(p);
+}
+
 
 void KG::Component::DynamicRigidComponent::SetupFiltering(unsigned int filterGroup, unsigned int filterMask)
 {

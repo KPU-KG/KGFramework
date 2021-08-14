@@ -22,7 +22,7 @@ std::uniform_real_distribution<float> mechGoalRange(-0.5, 0.5);
 bool KG::Component::SEnemyMechComponent::SetGoal()
 {
 	goal.x = mechGoalRange(mechGen) * range + center.x;
-	goal.y = 0;
+	goal.y = this->transform->GetWorldPosition().y;
 	goal.z = mechGoalRange(mechGen) * range + center.z;
 
 	auto v = Math::Vector3::Subtract(goal, this->transform->GetWorldPosition());
@@ -125,14 +125,15 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 		auto vel = rigid->GetVelocity();
 		float d = vel.x * vel.x + vel.z * vel.z;
 		if (d < spd * spd)
-			rigid->AddForce(dir, spd * 3);
+			rigid->AddForce(dir, spd * 5);
+		// rigid->SetVelocity(dir, spd);
 		static float t = 0;
 		if (d < 2) {
 			t += elapsedTime;
 			if (t >= 0.3f) {
-				goal.y = this->transform->GetWorldPosition().y;
-				rigid->SetPosition(goal);
-				rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
+				// goal.y = this->transform->GetWorldPosition().y;
+				// rigid->SetPosition(goal);
+				// rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
 				return true;
 			}
 		}
@@ -143,7 +144,7 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 
 	float dist = sqrt(GetDistance2FromEnemy(this->goal));
 	
-	if (dist <= 0.5) {
+	if (dist <= 0.01) {
 		goal.y = this->transform->GetWorldPosition().y;
 		rigid->SetPosition(goal);
 		rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
@@ -177,6 +178,17 @@ void KG::Component::SEnemyMechComponent::OnCreate(KG::Core::GameObject* obj)
 	this->stateManager = new MechStateManager(this);
 	stateManager->Init();
 	hp = maxHp;
+	if (this->rigid) {
+		this->rigid->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
+		auto filterMy = my->GetFilterMask();
+		auto filterOther = other->GetFilterGroup();
+		if (filterOther & static_cast<uint32_t>(FilterGroup::eBOX)) {
+			this->rigid->SetLinearLock(false, true, false);
+			this->defaultHeight = this->transform->GetWorldPosition().y;
+			// this->rigid->SetRigidFlags(true, false, true, false, true, false);
+		}
+		});
+ }
 }
 
 void KG::Component::SEnemyMechComponent::Update(float elapsedTime)
@@ -308,7 +320,7 @@ bool KG::Component::SEnemyMechComponent::SetAttackRotation()
 
 	if (noObstacleInAttack) {
 		this->goal = target->GetGameObject()->GetTransform()->GetWorldPosition();
-		this->goal.y = 0;
+		this->goal.y = this->transform->GetWorldPosition().y;
 		this->isAttackRotation = true;
 	}
 
@@ -476,7 +488,7 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 		dir = Math::Vector3::Multiply(10, Math::Vector3::Normalize(dir));
 
 		this->goal = Math::Vector3::Add(this->transform->GetWorldPosition(), dir);
-
+		this->goal.y = this->transform->GetWorldPosition().y;
 		isMovableInTrace = true;
 		return true;
 	}
@@ -488,6 +500,7 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 	auto comp = this->rigid->GetScene()->QueryRaycast(pathPos, dir, dist, this->rigid->GetId());
 	if (comp == nullptr) {
 		this->goal.x = mx;
+		this->goal.y = this->transform->GetWorldPosition().y;
 		this->goal.z = mz;
 
 		isMovableInTrace = true;

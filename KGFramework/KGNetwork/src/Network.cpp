@@ -258,7 +258,7 @@ void KG::Server::Network::Update(float elapsedTime)
 	this->cGameManagerSystem.OnUpdate(elapsedTime);
 	this->cPlayerSystem.OnUpdate(elapsedTime);
 	this->cCharacterSystem.OnUpdate(elapsedTime);
-	// this->cProjectileSystem.OnUpdate(elapsedTime);
+	this->cProjectileSystem.OnUpdate(elapsedTime);
 }
 
 char KG::Server::Network::GetLobbyInfo(int num)
