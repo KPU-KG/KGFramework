@@ -101,7 +101,7 @@
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
                 <Position x="75.810905" y="184.04161" z="-63.887848"/>
-                <Rotation_Q x="-0.019378899" y="0.75534922" z="-0.67296815" w="-0.021760061"/>
+                <Rotation_Q x="0.55833244" y="0.3298206" z="-0.25033191" w="0.73559862"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
@@ -28629,13 +28629,13 @@
         <GameObject instanceId="1540">
             <Tag hash_id="1163163131" srcString="BossBarrier"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="36" y="0" z="-107.90124"/>
+                <Position x="36" y="0" z="-108"/>
                 <Rotation_Q x="0" y="0" z="0" w="1"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="StaticRigidComponent" hash_id="591825997">
                 <Position x="0" y="5" z="0"/>
-                <Scale x="130" y="10" z="130"/>
+                <Scale x="135" y="10" z="135"/>
                 <Show value="1"/>
             </Component>
             <GameObject instanceId="1783">
