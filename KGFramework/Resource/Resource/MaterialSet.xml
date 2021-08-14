@@ -717,6 +717,18 @@
         <Texture byte="4" comment="ColorTexture" id="one" hash_id="94880491"/>
         <Color4 byte="16" comment="color" r="1" g="1" b="1" a="0.3"/>
     </Material>
+    <Material id="EnemyBarrierLine" shaderID="Transparent_Default" hash_id="3507455242" shaderHashID="875924835">
+        <Texture byte="4" comment="ColorTexture" id="barrier_line.dds" hash_id="3368358210"/>
+        <ColorCode byte="16" comment="color" code="FFFFFF9D"/>
+    </Material>
+    <Material id="EnemyBarrierLock" shaderID="Transparent_Default" hash_id="3517329517" shaderHashID="875924835">
+        <Texture byte="4" comment="ColorTexture" id="barrier_lock.dds" hash_id="3861867757"/>
+        <ColorCode byte="16" comment="color" code="FFFFFFFF"/>
+    </Material>
+    <Material id="EnemyAttackMark" shaderID="Transparent_Default" hash_id="924345020" shaderHashID="875924835">
+        <Texture byte="4" comment="ColorTexture" id="one" hash_id="94880491"/>
+        <Color4 byte="16" comment="color" r="1" g="1" b="1" a="0.3"/>
+    </Material>
     <Material id="point_circle" shaderID="Transparent_Default" hash_id="2835897276" shaderHashID="875924835">
         <Texture byte="4" comment="ColorTexture" id="point_circle.dds" hash_id="818024805"/>
         <ColorCode byte="16" comment="color" code="00FF22FF"/>

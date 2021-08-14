@@ -7,7 +7,7 @@
     <fullScreen value="false"/>
     <isVsync value="false"/>
     <isPxDebugger value="true"/>
-    <isEditMode value="true"/>
+    <isEditMode value="false"/>
     <isConsoleMode value="false"/>
     <isStartClient value="false"/>
     <isStartServer value="false"/>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="1788">
+        <Tag hash_id="658824887" srcString="Barrer_effect_lock_3"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="-66.347351" y="0" z="0"/>
+            <Rotation_Q x="-0" y="0.70710671" z="-0" w="0.70710683"/>
+            <Scale x="15" y="15" z="0.9999997"/>
+        </Component>
+        <Component name="IGeometryComponent" hash_id="1162546763">
+            <GeometryDescs>
+                <Element>
+                    <geometryID hash_id="3536424569" srcString="plane"/>
+                    <slotIndex value="0"/>
+                    <subMeshIndex value="0"/>
+                </Element>
+            </GeometryDescs>
+        </Component>
+        <Component name="IMaterialComponent" hash_id="308235170">
+            <MaterialDesc>
+                <Element>
+                    <isRawShader value="false"/>
+                    <materialID hash_id="3517329517" srcString="EnemyBarrierLock"/>
+                    <slotIndex value="0"/>
+                </Element>
+            </MaterialDesc>
+        </Component>
+        <Component name="IRender3DComponent" hash_id="1184141904"/>
+    </GameObject>
+</SavedGameObject>

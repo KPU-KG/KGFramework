@@ -410,4 +410,8 @@
     <Texture id="piont_line.dds" fileDir="Resource/Texture/effect/piont_line.dds" dimension="Texture2D" format="DDS" hash_id="2518190183"/>
     <!--Resource/Texture/effect/point_circle.dds-->
     <Texture id="point_circle.dds" fileDir="Resource/Texture/effect/point_circle.dds" dimension="Texture2D" format="DDS" hash_id="818024805"/>
+    <!--Resource/Texture/effect/barrier_line.dds-->
+    <Texture id="barrier_line.dds" fileDir="Resource/Texture/effect/barrier_line.dds" dimension="Texture2D" format="DDS" hash_id="3368358210"/>
+    <!--Resource/Texture/effect/barrier_lock.dds-->
+    <Texture id="barrier_lock.dds" fileDir="Resource/Texture/effect/barrier_lock.dds" dimension="Texture2D" format="DDS" hash_id="3861867757"/>
 </TextureSet>

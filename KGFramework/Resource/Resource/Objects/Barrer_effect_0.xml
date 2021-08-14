@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="1784">
+        <Tag hash_id="655398292" srcString="Barrer_effect_0"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="-3.9469223" y="14.333352" z="62.549744"/>
+            <Rotation_Q x="0" y="-0.99999988" z="0" w="4.4703484e-08"/>
+            <Scale x="65" y="12" z="1"/>
+        </Component>
+        <Component name="IGeometryComponent" hash_id="1162546763">
+            <GeometryDescs>
+                <Element>
+                    <geometryID hash_id="3536424569" srcString="plane"/>
+                    <slotIndex value="0"/>
+                    <subMeshIndex value="0"/>
+                </Element>
+            </GeometryDescs>
+        </Component>
+        <Component name="IMaterialComponent" hash_id="308235170">
+            <MaterialDesc>
+                <Element>
+                    <isRawShader value="false"/>
+                    <materialID hash_id="1598743950" srcString="TrasparentWhite"/>
+                    <slotIndex value="0"/>
+                </Element>
+            </MaterialDesc>
+        </Component>
+        <Component name="IRender3DComponent" hash_id="1184141904"/>
+    </GameObject>
+</SavedGameObject>
