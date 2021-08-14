@@ -18,6 +18,7 @@ KG::Component::SEnemyUnitComponent::SEnemyUnitComponent()
 	session.resize(MAP_SIZE_X);
 	for (int i = 0; i < session.size(); ++i)
 		session[i].resize(MAP_SIZE_Z);
+
 	// for (auto& iter : session)
 	// 	iter.resize(MAP_SIZE_Z);
 	// session = new char* [MAP_SIZE_X];
@@ -68,8 +69,9 @@ void KG::Component::SEnemyUnitComponent::OnCreate(KG::Core::GameObject* obj)
 	this->transform = this->gameObject->GetTransform();
 	this->center = this->transform->GetWorldPosition();
 	this->rigid = this->gameObject->GetComponent<KG::Component::DynamicRigidComponent>();
-	if (this->rigid)
+	if (this->rigid) {
 		this->rigid->SetRaycastCallback(raycastCallback);
+	}
 	this->anim = this->gameObject->GetComponent<IAnimationControllerComponent>();
 }
 

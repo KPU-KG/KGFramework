@@ -4,6 +4,7 @@
 #include "IAnimationComponent.h"
 #include "PhysicsComponent.h"
 #include "PhysicsScene.h"
+#include "ISoundComponent.h"
 
 using namespace KG::Math::Literal;
 
@@ -157,6 +158,7 @@ void KG::Component::CCharacterComponent::OnCreate(KG::Core::GameObject* obj)
 	this->rotationTransform = this->GetGameObject()->GetChild()->GetTransform();
 	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
 	this->physics->SetApply(false);
+	this->sound = this->gameObject->GetComponent<ISoundComponent>();
 }
 
 void KG::Component::CCharacterComponent::Update(float elapsedTime)
@@ -211,6 +213,16 @@ bool KG::Component::CCharacterComponent::OnProcessPacket(unsigned char* packet, 
 			if (this->physics)
 				this->physics->ReleaseActor();
 			this->gameObject->Destroy();
+			return true;
+		}
+
+		case KG::Packet::PacketType::SC_FIRE:
+		{
+			if (this->sound)
+			{
+				int randSound = KG::Math::RandomInt(VECTOR_SOUND::FIRE_1, VECTOR_SOUND::FIRE_4);
+				this->sound->PlayEffectiveSound(randSound);
+			}
 			return true;
 		}
 

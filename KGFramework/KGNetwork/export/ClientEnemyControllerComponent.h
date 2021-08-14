@@ -11,6 +11,7 @@ namespace KG::Component
 	class DynamicRigidComponent;
     class IAnimationControllerComponent;
     class IRenderSpriteComponent;
+	class ISoundComponent;
 
 	class DLL CEnemyControllerComponent : public CBaseComponent
 	{

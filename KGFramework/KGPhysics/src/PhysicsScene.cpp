@@ -219,8 +219,8 @@ void KG::Physics::PhysicsScene::Initialize()
     const char* strTransport = "127.0.0.1";
 
     allocator = new PxDefaultAllocator();
-    // errorCallback = new PxDefaultErrorCallback();
-    errorCallback = new ErrorCallback();
+    errorCallback = new PxDefaultErrorCallback();
+    // errorCallback = new ErrorCallback();
     // errorCallback->reportError()
 
     foundation = PxCreateFoundation(PX_PHYSICS_VERSION, *allocator, *errorCallback);
@@ -289,8 +289,8 @@ bool KG::Physics::PhysicsScene::Advance(float timeElapsed)
         scene->simulate(stepSize);
         scene->collide(stepSize);
         scene->fetchCollision(true);
+        scene->advance();
         scene->fetchResults(true);
-        
     }
     this->physicsSystems->OnPostUpdate(timeElapsed);
     return true;
@@ -527,28 +527,22 @@ RaycastResult KG::Physics::PhysicsScene::QueryRaycastResult(DirectX::XMFLOAT3 or
     PxVec3 org{ origin.x, origin.y, origin.z };
     PxVec3 dir{ direction.x, direction.y, direction.z };
     PxReal dst = maxDistance;
-    PxRaycastHit hit[2];
-    PxRaycastBuffer buf(hit, 2);
+    PxRaycastBuffer hit;
     RaycastResult result{};
-    if ( scene->raycast(org, dir, dst, buf) )
+    if (scene->raycast(org, dir, dst, hit))
     {
-        for ( int i = 0; i < buf.getNbTouches(); ++i )
+        PxU32 hitId = hit.block.shape->getSimulationFilterData().word2;
+        if (myId != hitId)
         {
-            PxU32 hitId = hit[i].shape->getSimulationFilterData().word2;
-            if ( myId != hitId )
-            {
-                if ( compIndex.count(hitId) != 0 )
-                {
-                    auto& curHit = hit[i];
-                    result.targetRigid = compIndex[hitId];
-                    result.hitPosition = DirectX::XMFLOAT3(curHit.position.x, curHit.position.y, curHit.position.z);
-                    result.normal = DirectX::XMFLOAT3(curHit.normal.x, curHit.normal.y, curHit.normal.z);
-                    result.uv = DirectX::XMFLOAT2(curHit.u, curHit.v);
-                    result.distance = curHit.distance;
+            auto& curHit = hit.block;
+            if (compIndex.count(hitId) != 0)
+                result.targetRigid = compIndex[hitId];
+            result.hitPosition = DirectX::XMFLOAT3(curHit.position.x, curHit.position.y, curHit.position.z);
+            result.normal = DirectX::XMFLOAT3(curHit.normal.x, curHit.normal.y, curHit.normal.z);
+            result.uv = DirectX::XMFLOAT2(curHit.u, curHit.v);
+            result.distance = curHit.distance;
 
-                    return result;
-                }
-            }
+            return result;
         }
     }
     return result;
