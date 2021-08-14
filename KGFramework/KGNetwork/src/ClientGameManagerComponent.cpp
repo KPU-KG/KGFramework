@@ -93,6 +93,8 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 					t->GetTransform()->SetPosition(62, 120, 0);
 					break;
 				case 1:
+					auto barrier = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("BossBarrierEffect"));
+					barrier->Destroy();
 					t->GetTransform()->SetPosition(39, 120, -110);
 					break;
 				case 2:
