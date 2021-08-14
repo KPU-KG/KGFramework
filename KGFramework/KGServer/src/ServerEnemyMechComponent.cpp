@@ -86,8 +86,11 @@ bool KG::Component::SEnemyMechComponent::Rotate(float elapsedTime)
 		return true;
 	}
 
+	DirectX::XMFLOAT3 axis{ 0,1,0 };
+	if (crs.y < 0)
+		axis.y = -1;
 	DirectX::XMFLOAT4 rot;
-	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), amount));
+	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&axis), amount));
 	this->transform->Rotate(rot);
 	rigid->SetRotation(transform->GetRotation());
 
@@ -113,16 +116,20 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 	pos.y = 0;
 	auto dir = Math::Vector3::Normalize(Math::Vector3::Subtract(goal, pos));
 
-	if (dir.x != this->prevDirection.x || dir.z != this->prevDirection.z) {
-		if (rigid) {
-			rigid->SetVelocity(dir, spd);
-		}
-		this->prevDirection = dir;
+	if (rigid) {
+		rigid->SetVelocity(dir, spd);
 	}
 
+	// if (dir.x != this->prevDirection.x || dir.z != this->prevDirection.z) {
+	// 	if (rigid) {
+	// 		rigid->SetVelocity(dir, spd);
+	// 	}
+	// 	this->prevDirection = dir;
+	// }
+
 	float dist = abs(sqrt(GetDistance2FromEnemy(this->prevPosition)));
-	if (dist == 0) {
-		this->moveDistance = 0;
+	if (dist <= 0.3) {
+		// this->moveDistance = 0;
 		rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
 		return true;
 	}
@@ -132,7 +139,7 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 	this->prevDirection = this->transform->GetWorldLook();
 
 	if (this->moveDistance >= this->goalDistance) {
-		this->moveDistance = 0;
+		// this->moveDistance = 0;
 		rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
 		return true;
 	}
@@ -408,6 +415,8 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 			int dx = myPos.x + tx;
 			int dz = myPos.z + tz;
 
+			
+
 			// 해당 위치가 맵 밖이면 체크 x
 			if (dx + (MAP_SIZE_X / 2) < 0 || dz + (MAP_SIZE_Z / 2) < 0 || dx + (MAP_SIZE_X / 2) >= MAP_SIZE_X || dz + (MAP_SIZE_Z / 2) >= MAP_SIZE_Z)
 				continue;
@@ -415,6 +424,11 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 			// 해당 위치가 건물이 있으면 체크 x
 			if (session[dx + (MAP_SIZE_X / 2)][dz + (MAP_SIZE_Z / 2)])
 				continue;
+
+			float dist = tx * tx + tz * tz;
+			if (minDist != FLT_MAX && minDist <= dist) {
+				continue;
+			}
 
 			XMFLOAT3 pathPos;
 

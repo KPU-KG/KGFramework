@@ -346,7 +346,7 @@ void KG::GameFramework::PostSceneFunction()
 			g->AddGeometry(KG::Utill::HashString("cube"));
 			
 			auto* m = this->renderer->GetNewMaterialComponent();
-			m->PostMaterial(KG::Utill::HashString("point_circle"));
+			m->PostMaterial(KG::Utill::HashString("EnemyAttackMark"));
 			
 			auto* r = this->renderer->GetNewRenderComponent();
 			
