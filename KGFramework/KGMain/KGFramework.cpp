@@ -408,7 +408,7 @@ void KG::GameFramework::PostSceneFunction()
     );
 
 	this->scene->AddModelPreset("Vector",
-		[]()
+		[this]()
 		{
 			KG::Resource::MaterialMatch a;
 			a.defaultMaterial.emplace_back("arms");

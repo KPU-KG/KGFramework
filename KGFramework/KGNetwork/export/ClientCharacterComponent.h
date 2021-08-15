@@ -11,6 +11,7 @@ namespace KG::Component
 	class IAnimationControllerComponent;
 	class DynamicRigidComponent;
 	class ISoundComponent;
+    class IParticleEmitterComponent;
 
 	class DLL CCharacterComponent : public CBaseComponent
 	{
@@ -19,7 +20,8 @@ namespace KG::Component
 		KG::Component::TransformComponent* rotationTransform = nullptr;
 		KG::Component::IAnimationControllerComponent* characterAnimation = nullptr;
 		KG::Component::DynamicRigidComponent* physics = nullptr;
-		KG::Component::ISoundComponent* sound = nullptr;
+        KG::Component::ISoundComponent* sound = nullptr;
+        KG::Component::IParticleEmitterComponent* particle = nullptr;
 
 		constexpr static float inputRatio = 25.0f;
 		constexpr static float inputRetRatio = 5.0f;
