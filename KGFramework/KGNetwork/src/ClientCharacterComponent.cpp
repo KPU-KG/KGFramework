@@ -193,7 +193,7 @@ void KG::Component::CCharacterComponent::InterpolatePosition(DirectX::XMFLOAT3 p
 	if (abs(a.x - position.x) + abs(a.z - position.z) > 3.0f) {
 		this->transform->SetPosition(position);
 	}
-	else if (abs(a.x - position.x) + abs(a.z - position.z) > 1.0f) {
+	else if (abs(a.x - position.x) + abs(a.z - position.z) > 0.1f) {
 		t.x = (a.x + position.x) / 2;
 		t.y = position.y;
 		t.z = (a.z + position.z) / 2;
