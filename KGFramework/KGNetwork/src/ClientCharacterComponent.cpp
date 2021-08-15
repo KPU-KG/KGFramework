@@ -6,6 +6,8 @@
 #include "PhysicsScene.h"
 #include "ISoundComponent.h"
 #include "IParticleEmitterComponent.h"
+#include "IRender3DComponent.h"
+#include "IRender2DComponent.h"
 #include "Scene.h"
 
 using namespace KG::Math::Literal;
@@ -163,6 +165,9 @@ void KG::Component::CCharacterComponent::OnCreate(KG::Core::GameObject* obj)
 	this->sound = this->gameObject->GetComponent<ISoundComponent>();
     this->gameObject->GetScene()->GetComponentProvider()->AddComponentToObject(KG::Component::ComponentID<IParticleEmitterComponent>::id(), this->gameObject);
     this->particle = this->gameObject->GetComponent<IParticleEmitterComponent>();
+    this->render3d = this->gameObject->FindChildObject("Soldier"_id)->GetComponent<IRender3DComponent>();
+    this->hpBar = this->gameObject->FindChildObject("HPBAR"_id)->GetComponent<KG::Component::IRenderSpriteComponent>();
+    this->vector3d = this->gameObject->FindChildObject("VectorDrop"_id)->GetComponent<IRender3DComponent>();
 }
 
 void KG::Component::CCharacterComponent::Update(float elapsedTime)
@@ -209,6 +214,17 @@ bool KG::Component::CCharacterComponent::OnProcessPacket(unsigned char* packet, 
 			this->rightValue = ScenePacket->rightValue;
 			this->forwardValue = ScenePacket->forwardValue;
 			this->inputs = ScenePacket->inputs; // 인풋 갱신, 클라 업데이트 -> 무브 프로세스
+            this->hpBar->progress.value = ScenePacket->playerHp;
+            if (ScenePacket->playerHp <= 0.1f)
+            {
+                this->render3d->SetVisible(false);
+                this->vector3d->SetVisible(false);
+            }
+            else
+            {
+                this->render3d->SetVisible(true);
+                this->vector3d->SetVisible(true);
+            }
 			return true;
 		}
 

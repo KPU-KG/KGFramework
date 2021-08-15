@@ -27,6 +27,7 @@ void KG::Component::Render3DComponent::CullingProcess(const DirectX::BoundingFru
 
 void KG::Component::Render3DComponent::OnPreRender()
 {
+    if (!this->isVisible) return;
 	for ( size_t i = 0; i < this->renderJobs.size(); i++ )
 	{
 		auto* renderJob = this->renderJobs[i];

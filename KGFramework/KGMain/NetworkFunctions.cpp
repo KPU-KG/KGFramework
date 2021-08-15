@@ -25,8 +25,21 @@ void KG::GameFramework::PostNetworkFunction()
 		KG::Utill::HashString("TeamCharacter"),
 		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent*
 		{
-			auto* comp = this->networkClient->GetNewCharacterComponent();
-			obj.AddComponent(comp);
+            {
+                auto* uiObj = this->scene->CallPreset("SPRITEUI"_id);
+                uiObj->tag = KG::Utill::HashString("HPBAR");
+                auto* r2d = uiObj->GetComponent<KG::Component::IRenderSpriteComponent>();
+                r2d->material2D.materialId = "SpriteWhite"_id;
+                r2d->transform2D.position = DirectX::XMFLOAT2(0, 2.25f);
+                r2d->transform2D.size = DirectX::XMFLOAT2(2, 0.25);
+                r2d->transform2D.parentPivot = KG::Component::RectPivot::CENTER;
+                r2d->transform2D.localPivot = KG::Component::RectPivot::CENTER;
+                r2d->material2D.color = KG::Utill::Color(0, 1, 0, 1);
+                r2d->ReloadRender();
+                obj.GetTransform()->AddChild(uiObj->GetTransform());
+            }
+            auto* comp = this->networkClient->GetNewCharacterComponent();
+            obj.AddComponent(comp);
 			return comp;
 		}
 	);
