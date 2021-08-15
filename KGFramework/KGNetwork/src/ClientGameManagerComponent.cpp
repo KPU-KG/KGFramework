@@ -108,8 +108,7 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 		return true;
 		case KG::Packet::PacketType::SC_GAME_END:
 		{
-			// 게임 종료 패킷 수신 -> 씬초기화 + 로비 재접속?
-			GameReset();
+			GameClear();
 		}
 		return true;
 	}
@@ -122,6 +121,14 @@ void KG::Component::CGameManagerComponent::SendLoginPacket()
     this->SendPacket(&login);
 }
 
-void KG::Component::CGameManagerComponent::GameReset() {
+void KG::Component::CGameManagerComponent::GameClear() 
+{
+    std::cout << "GameClear" << std::endl;
+    if (this->clearFunction)
+        this->clearFunction();
+}
 
+void KG::Component::CGameManagerComponent::PostGameClearFunction(const std::function<void()>& func)
+{
+    this->clearFunction = func;
 }

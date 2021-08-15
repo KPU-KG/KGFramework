@@ -414,4 +414,8 @@
     <Texture id="barrier_line.dds" fileDir="Resource/Texture/effect/barrier_line.dds" dimension="Texture2D" format="DDS" hash_id="3368358210"/>
     <!--Resource/Texture/effect/barrier_lock.dds-->
     <Texture id="barrier_lock.dds" fileDir="Resource/Texture/effect/barrier_lock.dds" dimension="Texture2D" format="DDS" hash_id="3861867757"/>
+    <!--Resource/Texture/ui/title_0013_game_clear.DDS-->
+    <Texture id="title_0013_game_clear.DDS" fileDir="Resource/Texture/ui/title_0013_game_clear.DDS" dimension="Texture2D" format="DDS" hash_id="1927438666"/>
+    <!--Resource/Texture/ui/title_0013_game_clear.DDS-->
+    <Texture id="title_0013_game_clear.DDS" fileDir="Resource/Texture/ui/title_0013_game_clear.DDS" dimension="Texture2D" format="DDS"/>
 </TextureSet>

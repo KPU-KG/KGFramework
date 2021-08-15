@@ -67,7 +67,7 @@ namespace KG::Renderer
 		D3D12_INDEX_BUFFER_VIEW indexBufferView;
 		D3D12_PRIMITIVE_TOPOLOGY primitiveTopology = D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-
+        bool isLoaded = false;
 	public:
         DirectX::BoundingBox aabb;
 		/// @brief 해당 지오메트리를 렌더합니다.
@@ -80,7 +80,7 @@ namespace KG::Renderer
 		void CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY topology, int vertexCount );
 		auto IsLoaded() const
 		{
-			return this->vertexBuffer != nullptr;
+			return isLoaded;
 		};
 		auto HasBone() const
 		{

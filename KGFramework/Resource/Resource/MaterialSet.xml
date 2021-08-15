@@ -791,4 +791,7 @@
     <Material id="title_0012_start_game.DDS" shaderID="UIDefault" hash_id="1980192436" shaderHashID="888949730">
         <Texture byte="4" comment="uiTexture" id="title_0012_start_game.DDS" hash_id="1980192436"/>
     </Material>
+    <Material id="title_0013_game_clear.DDS" shaderID="UIDefault" hash_id="1927438666" shaderHashID="888949730">
+        <Texture byte="4" comment="uiTexture" id="title_0013_game_clear.DDS" hash_id="1927438666"/>
+    </Material>
 </MaterialSet>
