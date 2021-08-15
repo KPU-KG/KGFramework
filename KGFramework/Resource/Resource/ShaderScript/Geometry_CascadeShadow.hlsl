@@ -36,11 +36,10 @@ void GeometryShaderFunction(triangle ShadowVSOutput inData[3], inout TriangleStr
     {
         ShadowGSOutput output;
         output.renderIndex = index;
-        float4x4 vp = mul(view[index], projection[index]);
         [unroll]
         for (int v = 0; v < 3; v++)
         {
-            output.position = mul(inData[v].position, vp);
+            output.position = mul(inData[v].position, mul(view[index], projection[index]));
             //output.position.z = clamp(output.position.z, 0, 1);
             output.position.z = max(0, output.position.z);
             outStream.Append( output );
