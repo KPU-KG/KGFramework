@@ -62,7 +62,7 @@ bool KG::Component::CEnemyControllerComponent::OnProcessPacket(unsigned char* pa
         this->hpBar->progress.value = p->percentage;
         if(prevHP > this->hpBar->progress.value)
         {
-            this->particle->EmitParticle("EnemyHit"_id, this->pelvis->GetWorldPosition());
+            this->particle->EmitParticle("EXPSpark"_id, this->pelvis->GetWorldPosition());
         }
         return true;
     }

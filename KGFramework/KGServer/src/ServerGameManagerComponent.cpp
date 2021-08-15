@@ -592,15 +592,10 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 					p.second->playerInfoLock.unlock();
 				}
 			}
-			else { // 보스 잡으면 종료 패킷 보내기 -> 시간유예? 일단 5초
-				if (endtimer > 3.f && !isEnd) {
-					isEnd = true;
-					SendEndPacket();
-					GameReset();
-				}
-				else {
-					endtimer += elapsedTime;
-				}
+			else if (!isEnd) {// 보스 잡으면 종료 패킷 보내기
+				isEnd = true;
+				SendEndPacket();
+				GameReset();
 			}
 		}
 		if (enemyGenerator->isAttackable) {
@@ -694,14 +689,14 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 		dyn->SetPosition(XMFLOAT3(newPlayerId + 10, 1, newPlayerId + 10));
 		playerObjects.insert(std::make_pair(newPlayerId, playerComp));
 		this->server->SetServerObject(newPlayerId, playerComp);
-		
+
 
 		KG::Packet::SC_PLAYER_INIT initPacket = {};
 		initPacket.playerObjectId = newPlayerId;
 		initPacket.position = KG::Packet::RawFloat3(newPlayerId + 10, 1, newPlayerId + 5);
 		initPacket.rotation = KG::Packet::RawFloat4(0, 0, 0, 1);
 		this->SendPacket(sender, &initPacket);
-		
+
 		KG::Packet::SC_ADD_PLAYER addPacket = {};
 		addPacket.playerObjectId = newPlayerId;
 		addPacket.position = KG::Packet::RawFloat3(newPlayerId + 10, 1, newPlayerId + 5);
@@ -710,20 +705,20 @@ bool KG::Component::SGameManagerComponent::OnProcessPacket(unsigned char* packet
 
 
 		/* if (enemyGenerator) {
-		 	enemyGenerator->RegisterPlayerToEnemy(newPlayerId);
+			enemyGenerator->RegisterPlayerToEnemy(newPlayerId);
 		 }*/
 
-		/*for (auto& [id, ptr] : this->playerObjects)
-		{
-			if (id == newPlayerId) continue;
-			std::shared_lock sl{ ptr->playerInfoLock };
+		 /*for (auto& [id, ptr] : this->playerObjects)
+		 {
+			 if (id == newPlayerId) continue;
+			 std::shared_lock sl{ ptr->playerInfoLock };
 
-			KG::Packet::SC_ADD_PLAYER addPacket = {};
-			addPacket.playerObjectId = id;
-			addPacket.position = ptr->GetGameObject()->GetTransform()->GetPosition();
-			addPacket.rotation = ptr->GetGameObject()->GetTransform()->GetRotation();
-			this->SendPacket(sender, &addPacket);
-		}*/
+			 KG::Packet::SC_ADD_PLAYER addPacket = {};
+			 addPacket.playerObjectId = id;
+			 addPacket.position = ptr->GetGameObject()->GetTransform()->GetPosition();
+			 addPacket.rotation = ptr->GetGameObject()->GetTransform()->GetRotation();
+			 this->SendPacket(sender, &addPacket);
+		 }*/
 
 		this->server->UnlockWorld();
 		RegisterPlayersToEnemy();
