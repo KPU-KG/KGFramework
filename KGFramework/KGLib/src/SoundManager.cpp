@@ -9,92 +9,102 @@ FMOD_RESULT result;
 // 다 뒤집을듯 ㅋㅋ
 
 inline void KG::Sound::SoundManager::ErrorCheck(FMOD_RESULT result) {
-	if (result != FMOD_OK) {
-		DebugNormalMessage(FMOD_ErrorString(result));
-	}
+    if (result != FMOD_OK) {
+        DebugNormalMessage(FMOD_ErrorString(result));
+    }
 }
 
 KG::Sound::SoundManager::~SoundManager()
 {
-	for (auto& sound : sounds) {
-		sound.second->release();
-	}
-	system->close();
-	system->release();
-
+    for (auto& sound : sounds) {
+        sound.second->release();
+    }
+    system->close();
+    system->release();
 }
 
 void KG::Sound::SoundManager::Initialize()
 {
-	soundSystem = new KG::System::SoundSystem();
+    soundSystem = new KG::System::SoundSystem();
 
-	result = FMOD::System_Create(&system);
-	ErrorCheck(result);
+    result = FMOD::System_Create(&system);
+    ErrorCheck(result);
 
-	result = system->getVersion(&version);
-	ErrorCheck(result);
+    result = system->getVersion(&version);
+    ErrorCheck(result);
 
-	if (version < FMOD_VERSION) {
-		DebugNormalMessage("FMOD Initialize : library version dismatch");
-	}
+    if (version < FMOD_VERSION) {
+        DebugNormalMessage("FMOD Initialize : library version dismatch");
+    }
 
-	result = system->init(32, FMOD_INIT_NORMAL, extradriverdata);
-	ErrorCheck(result);
+    result = system->init(32, FMOD_INIT_NORMAL, extradriverdata);
+    ErrorCheck(result);
+    //system->set3DSettings()
 }
 
-void KG::Sound::SoundManager::RegisterSound(const char* path, SoundType type, unsigned int id)
+void KG::Sound::SoundManager::RegisterSound(const char* path, SoundType type, unsigned int id, bool is3d)
 {
-	if (sounds.count(id) != 0) {
-		DebugNormalMessage("Register Sound : already exist sound");
-		return;
-	}
-	FMOD::Sound* sound;
-	result = system->createSound(path, FMOD_DEFAULT, 0, &sound);
-	sounds[id] = sound;
-	ErrorCheck(result);
+    if (sounds.count(id) != 0) {
+        DebugNormalMessage("Register Sound : already exist sound");
+        return;
+    }
 
-	switch (type) {
-	case KG::Sound::SoundType::EFFECTIVE:
-		result = sound->setMode(FMOD_LOOP_OFF);
-		ErrorCheck(result);
-		break;
-	case KG::Sound::SoundType::BACKGROUND:
-		result = sound->setMode(FMOD_LOOP_NORMAL);
-		ErrorCheck(result);
-		break;
-	}
+
+    switch (type) {
+    case KG::Sound::SoundType::EFFECTIVE:
+    {
+        FMOD::Sound* sound;
+        auto flag = is3d ? FMOD_3D | FMOD_3D_LINEARROLLOFF : FMOD_DEFAULT;
+        result = system->createSound(path, flag, 0, &sound);
+        sounds[id] = sound;
+        ErrorCheck(result);
+        result = sound->setMode(FMOD_LOOP_OFF);
+        ErrorCheck(result);
+    }
+    break;
+    case KG::Sound::SoundType::BACKGROUND:
+    {
+        FMOD::Sound* sound;
+        result = system->createSound(path, FMOD_DEFAULT, 0, &sound);
+        sounds[id] = sound;
+        ErrorCheck(result);
+        result = sound->setMode(FMOD_LOOP_NORMAL);
+        ErrorCheck(result);
+    }
+    break;
+    }
 }
 
 void KG::Sound::SoundManager::Update(float timeElapsed)
 {
-	result = system->update();
-	ErrorCheck(result);
+    result = system->update();
+    ErrorCheck(result);
 }
 
 KG::Component::ISoundComponent* KG::Sound::SoundManager::GetNewSoundComponent()
 {
-	auto* comp = soundSystem->GetNewComponent();
-	return comp;
+    auto* comp = soundSystem->GetNewComponent();
+    return comp;
 }
 
 void KG::Sound::SoundManager::PostComponentProvider(KG::Component::ComponentProvider& provider)
 {
-	soundSystem->OnPostProvider(provider);
+    soundSystem->OnPostProvider(provider);
 }
 
 FMOD::Sound* KG::Sound::SoundManager::GetSound(unsigned int id)
 {
-	if (sounds.count(id) == 0)
-		return nullptr;
-	return sounds[id];
+    if (sounds.count(id) == 0)
+        return nullptr;
+    return sounds[id];
 }
 
 FMOD::System* KG::Sound::SoundManager::GetFmodSystem()
 {
-	return this->system;
+    return this->system;
 }
 
 FMOD::Channel* KG::Sound::SoundManager::GetChannel()
 {
-	return this->channel;
+    return this->channel;
 }

@@ -14,6 +14,8 @@ namespace KG::Component
 		virtual void PlayEffectiveSound(UINT soundId, int loop = 1) override;
 		virtual void PlayBackgroundSound(UINT soundId, int loop = -1) override;
 		virtual void RegisterSound(FMOD::Sound* sound, UINT soundId) override;
+        virtual void SetListener(KG::Component::TransformComponent* transform, float deltaTime) override;
+        virtual void Play3DSound(UINT soundId, const DirectX::XMFLOAT3& position) override;
 		// virtual void RegisterSound(const char* path, UINT soundId) override;
 	};
 

@@ -223,16 +223,17 @@ bool KG::Component::CCharacterComponent::OnProcessPacket(unsigned char* packet, 
 		case KG::Packet::PacketType::SC_FIRE:
 		{
             auto* firePacket = KG::Packet::PacketCast<KG::Packet::SC_FIRE>(packet);
-
-			if (this->sound)
-			{
-				int randSound = KG::Math::RandomInt(VECTOR_SOUND::FIRE_1, VECTOR_SOUND::FIRE_4);
-				this->sound->PlayEffectiveSound(randSound);
-			}
-
             float speed = 50.0f;
             auto start = firePacket->origin;
             auto direction = firePacket->direction * speed;
+
+			if (this->sound)
+			{
+				int randSound = KG::Math::RandomInt(VECTOR_SOUND::FIRE_1_3D, VECTOR_SOUND::FIRE_4_3D);
+				//this->sound->PlayEffectiveSound(randSound);
+                this->sound->Play3DSound(randSound, start);
+			}
+
             this->particle->EmitParticle(KG::Utill::HashString("Muzzle"_id), start);
             this->particle->EmitParticle(KG::Utill::HashString("TeamBulletLine"_id), start, direction, 10.0f);
 			return true;
