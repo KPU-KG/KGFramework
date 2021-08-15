@@ -61,6 +61,7 @@ namespace KG::Component
 		bool generateEnemy = false;
 		bool initialized = false;
 		bool generateBoss = false;
+		bool bossInActive = false;
 
 		unsigned int score = 0;
 		KG::Component::Region GetNextRegion();
@@ -80,6 +81,10 @@ namespace KG::Component
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		bool IsGeneratable() const;
+		bool IsBossGenerated() const;
+		bool IsBossInActive() const { return bossInActive; }
+		void CheckBossInActive();
+		void SetBossInActive(bool a);
 		void GenerateEnemy();
 		void AddEnemyControllerCompoenent(SEnemyUnitComponent* comp);
 		void GenerateBoss();

@@ -38,12 +38,16 @@ KG::Component::SEnemyCrawlerComponent::SEnemyCrawlerComponent()
 
 }
 
+void KG::Component::SEnemyCrawlerComponent::SetIsAttacked(bool a) { this->isAttacked = a; }
+
 void KG::Component::SEnemyCrawlerComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	SEnemyUnitComponent::OnCreate(obj);
 	this->stateManager = new CrawlerStateManager(this);
 	stateManager->Init();
 	hp = maxHp;
+
+	this->isAttacked = false;
 
 	this->rigid->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
 		auto filterMy = my->GetFilterMask();
@@ -79,6 +83,9 @@ void KG::Component::SEnemyCrawlerComponent::Update(float elapsedTime)
 				rigid = nullptr;
 			}
 		}
+	}
+	else if (!this->isInActive) {
+		;
 	}
 	else {
 		stateManager->Execute(elapsedTime);

@@ -205,6 +205,8 @@ namespace KG::Component
 		virtual void Attack(SGameManagerComponent* gameManager) override;
 		SEnemyCrawlerComponent();
 
+		void SetIsAttacked(bool a);
+
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
 		virtual void Update(float elapsedTime) override;
 		virtual void OnDestroy() override

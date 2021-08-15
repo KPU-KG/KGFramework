@@ -231,6 +231,11 @@ bool KG::Component::EnemyGeneratorComponent::IsGeneratable() const
 	return allDead;
 }
 
+bool KG::Component::EnemyGeneratorComponent::IsBossGenerated() const
+{
+	return this->generateBoss;
+}
+
 KG::Component::Region KG::Component::EnemyGeneratorComponent::GetNextRegion()
 {
 	std::uniform_int_distribution<int> randomRegion(0, this->region.size() - 1);
@@ -351,6 +356,25 @@ void KG::Component::SGameManagerComponent::SendEndPacket()
 {
 	KG::Packet::SC_GAME_END Packet;
 	this->BroadcastPacket(&Packet);
+}
+
+void KG::Component::EnemyGeneratorComponent::CheckBossInActive()
+{
+	for (auto e : enemies) {
+		if (e->IsAttacked()) {
+			e->SetInActive(true);
+			this->bossInActive = true;
+		}
+	}
+
+}
+
+void KG::Component::EnemyGeneratorComponent::SetBossInActive(bool a)
+{
+	for (auto e : enemies) {
+		e->SetInActive(true);
+		this->bossInActive = true;
+	}
 }
 
 void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
@@ -478,11 +502,15 @@ void KG::Component::EnemyGeneratorComponent::GenerateBoss()
 	enemyCtrl->SetCenter(region.position);
 	enemyCtrl->SetWanderRange(region.range);
 	enemyCtrl->SetPosition(genPos);
-
+	if (enemyCtrl->IsAttacked()) {
+		enemyCtrl->SetIsAttacked(false);
+	}
 	AddEnemyControllerCompoenent(enemyCtrl);
 
 	this->GetGameObject()->GetTransform()->AddChild(comp->GetGameObject()->GetTransform());
 	this->BroadcastPacket(&addObjectPacket);
+
+	this->SleepEnemy();
 }
 
 void  KG::Component::SGameManagerComponent::RegisterPlayersToEnemy() {
@@ -531,6 +559,20 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 		}
 	}
 	if (enemyGenerator != nullptr) {
+		if (enemyGenerator->IsBossGenerated() && !enemyGenerator->IsBossInActive()) {
+			int min_x = 36 - 65;
+			int max_x = 36 + 65;
+			int min_z = -107 - 65;
+			int max_z = -107 + 65;
+			for (auto& p : playerObjects) {
+				auto pos = p.second->GetGameObject()->GetTransform()->GetWorldPosition();
+				if (pos.x < max_x && pos.x > min_x && pos.z < max_z && pos.z > min_z) {
+					enemyGenerator->SetBossInActive(true);
+				}
+			}
+			enemyGenerator->CheckBossInActive();
+		}
+
 		if (enemyGenerator->IsGeneratable() && this->server->isPlay) {
 			if (enemyGenerator->GetScore() < 6) {
 				enemyGenerator->Initialize();

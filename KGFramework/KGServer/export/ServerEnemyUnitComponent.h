@@ -87,6 +87,8 @@ namespace KG::Component
 		bool										isAttackable = false;
 		bool										isAttacked = false;
 
+		bool										isInActive = false;
+
 	public:
 
 		bool IsAttackable() const;
@@ -124,6 +126,8 @@ namespace KG::Component
 		void DeregisterPlayerId(KG::Server::NET_OBJECT_ID id);
 		KG::Server::NET_OBJECT_ID GetNetId() const { return this->networkObjectId; }
 		virtual void Destroy() override;
+		void SetInActive(bool a) { this->isInActive = a; }
+		bool GetInActive() const { return this->isInActive; }
 	};
 
 	REGISTER_COMPONENT_ID(SEnemyUnitComponent);
