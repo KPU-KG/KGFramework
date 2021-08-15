@@ -241,7 +241,7 @@ void KG::Component::CPlayerControllerComponent::ProcessMove(float elapsedTime)
     auto input = KG::Input::InputManager::GetInputManager();
     bool forwardInput = false;
     bool rightInput = false;
-    float speed = input->IsTouching(VK_LSHIFT) ? 6.0f : 2.0f;
+    float speed = input->IsTouching(VK_LSHIFT) ? 10.0f : 6.0f;
     speed *= speedValue;
     if ( input->IsTouching('W') )
     {
