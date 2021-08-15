@@ -110,6 +110,7 @@ namespace KG::Component
 		float updatetimer = 0;
 		float endtimer = 0;
 		float starttimer = 0;
+		bool isEnd = false;
 
 	public:
 		void SendEndPacket();

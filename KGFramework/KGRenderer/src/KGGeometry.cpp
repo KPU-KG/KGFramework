@@ -92,6 +92,7 @@ void KG::Renderer::Geometry::Render( ID3D12GraphicsCommandList* commandList, UIN
 
 void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandList* commandList )
 {
+    isLoaded = true;
 	this->uploadFence = KGDXRenderer::GetInstance()->GetFenceValue();
     auto f = std::async([this]()->bool {this->CreateAABB(); return true; });
     this->CreateAABB();

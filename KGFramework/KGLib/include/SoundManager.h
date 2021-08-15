@@ -36,7 +36,7 @@ namespace KG::Sound
 	public:
 		~SoundManager();
 		void Initialize();
-		void RegisterSound(const char* path, SoundType type, unsigned int id);
+		void RegisterSound(const char* path, SoundType type, unsigned int id, bool is3D = false);
 		void Update(float timeElapsed);
 		KG::Component::ISoundComponent* GetNewSoundComponent();
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider);

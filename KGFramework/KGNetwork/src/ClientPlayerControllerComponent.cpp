@@ -85,6 +85,11 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
 
     this->particleGen->AddParticleDesc(KG::Utill::HashString("Muzzle"), muzzleDesc);
 
+    muzzleDesc.baseSize.x = 8.0;
+    muzzleDesc.baseSize.y = 8.0;
+    this->particleGen->AddParticleDesc(KG::Utill::HashString("EnemyHit"), muzzleDesc);
+
+
     KG::Component::ParticleDesc sparkDesc;
     sparkDesc.baselifeTime = 1.0f;
     sparkDesc.baseEmitCount = 20;
@@ -112,12 +117,18 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
 
     this->particleGen->AddParticleDesc(KG::Utill::HashString("BulletLine"), bulletLine);
 
+    bulletLine.baseSize.x = 0.5;
+    bulletLine.baseSize.y = 0.5;
+
+    this->particleGen->AddParticleDesc(KG::Utill::HashString("TeamBulletLine"), bulletLine);
+
 }
 
 void KG::Component::CPlayerControllerComponent::Update(float elapsedTime)
 {
     this->InternalUpdate(elapsedTime);
     this->SendUpdate(elapsedTime);
+    this->sound->SetListener(this->characterTransform, elapsedTime);
 }
 
 bool KG::Component::CPlayerControllerComponent::OnDrawGUI()
@@ -230,7 +241,7 @@ void KG::Component::CPlayerControllerComponent::ProcessMove(float elapsedTime)
     auto input = KG::Input::InputManager::GetInputManager();
     bool forwardInput = false;
     bool rightInput = false;
-    float speed = input->IsTouching(VK_LSHIFT) ? 6.0f : 2.0f;
+    float speed = input->IsTouching(VK_LSHIFT) ? 10.0f : 6.0f;
     speed *= speedValue;
     if ( input->IsTouching('W') )
     {
@@ -444,6 +455,7 @@ void KG::Component::CPlayerControllerComponent::TryShoot(float elapsedTime)
         {
             int randSound = KG::Math::RandomInt(VECTOR_SOUND::FIRE_1, VECTOR_SOUND::FIRE_4);
             this->sound->PlayEffectiveSound(randSound);
+            //this->sound->Play3DSound(randSound, this->cameraTransform->GetWorldPosition());
         }
         Packet::CS_FIRE p = { };
         p.origin = this->cameraTransform->GetWorldPosition();
@@ -465,7 +477,7 @@ void KG::Component::CPlayerControllerComponent::TryShoot(float elapsedTime)
                 this->particleGen->EmitParticle(KG::Utill::HashString("BulletLine"_id), start, direction, lifeTime);
             }
         }
-        else 
+        //else 
         {
             auto start = this->particleGen->GetGameObject()->GetTransform()->GetWorldPosition();
             float speed = 50.0f;
@@ -488,6 +500,7 @@ void KG::Component::CPlayerControllerComponent::TryReload(float elapsedTime)
             this->vectorAnimation->SetAnimation(VectorAnimSet::reload, 0, 1, 1.0f);
             if (this->sound)
                 this->sound->PlayEffectiveSound(VECTOR_SOUND::RELOAD);
+                //this->sound->Play3DSound(VECTOR_SOUND::RELOAD, this->cameraTransform->GetWorldPosition());
         }
         else
         {
@@ -495,6 +508,7 @@ void KG::Component::CPlayerControllerComponent::TryReload(float elapsedTime)
             this->vectorAnimation->SetAnimation(VectorAnimSet::reload_e, 0, 1, 1.0f);
             if (this->sound)
                 this->sound->PlayEffectiveSound(VECTOR_SOUND::RELOAD_EMPTY);
+                //this->sound->Play3DSound(VECTOR_SOUND::RELOAD_EMPTY, this->cameraTransform->GetWorldPosition());
         }
         Packet::CS_RELOAD packet;
         this->SendPacket(&packet);

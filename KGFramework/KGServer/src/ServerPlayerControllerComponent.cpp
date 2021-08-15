@@ -127,7 +127,7 @@ void KG::Component::SPlayerComponent::ProcessMove(float elapsedTime)
 {
 	bool forwardInput = false;
 	bool rightInput = false;
-	float speed = IsTouching(this->inputs.stateShift) ? 6.0f : 2.0f;
+	float speed = IsTouching(this->inputs.stateShift) ? 10.0f : 6.0f;
 	speed *= speedValue;
 	if ( IsTouching(this->inputs.stateW) )
 	{

@@ -5,6 +5,8 @@
 #include "PhysicsComponent.h"
 #include "PhysicsScene.h"
 #include "ISoundComponent.h"
+#include "IParticleEmitterComponent.h"
+#include "Scene.h"
 
 using namespace KG::Math::Literal;
 
@@ -92,7 +94,7 @@ void KG::Component::CCharacterComponent::ProcessMove(float elapsedTime)
 {
 	bool forwardInput = false;
 	bool rightInput = false;
-	float speed = this->inputs.stateShift ? 6.0f : 2.0f;
+	float speed = this->inputs.stateShift ? 10.0f : 6.0f;
 	speed *= speedValue;
 	if (inputs.stateW)
 	{
@@ -159,6 +161,8 @@ void KG::Component::CCharacterComponent::OnCreate(KG::Core::GameObject* obj)
 	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
 	this->physics->SetApply(false);
 	this->sound = this->gameObject->GetComponent<ISoundComponent>();
+    this->gameObject->GetScene()->GetComponentProvider()->AddComponentToObject(KG::Component::ComponentID<IParticleEmitterComponent>::id(), this->gameObject);
+    this->particle = this->gameObject->GetComponent<IParticleEmitterComponent>();
 }
 
 void KG::Component::CCharacterComponent::Update(float elapsedTime)
@@ -218,11 +222,20 @@ bool KG::Component::CCharacterComponent::OnProcessPacket(unsigned char* packet, 
 
 		case KG::Packet::PacketType::SC_FIRE:
 		{
+            auto* firePacket = KG::Packet::PacketCast<KG::Packet::SC_FIRE>(packet);
+            float speed = 50.0f;
+            auto start = firePacket->origin;
+            auto direction = firePacket->direction * speed;
+
 			if (this->sound)
 			{
-				int randSound = KG::Math::RandomInt(VECTOR_SOUND::FIRE_1, VECTOR_SOUND::FIRE_4);
-				this->sound->PlayEffectiveSound(randSound);
+				int randSound = KG::Math::RandomInt(VECTOR_SOUND::FIRE_1_3D, VECTOR_SOUND::FIRE_4_3D);
+				//this->sound->PlayEffectiveSound(randSound);
+                this->sound->Play3DSound(randSound, start);
 			}
+
+            this->particle->EmitParticle(KG::Utill::HashString("Muzzle"_id), start);
+            this->particle->EmitParticle(KG::Utill::HashString("TeamBulletLine"_id), start, direction, 10.0f);
 			return true;
 		}
 

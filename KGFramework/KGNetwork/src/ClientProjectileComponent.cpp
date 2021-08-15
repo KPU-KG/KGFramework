@@ -14,8 +14,9 @@ void KG::Component::CProjectileComponent::OnCreate(KG::Core::GameObject* obj)
 	this->sound = this->gameObject->GetComponent<ISoundComponent>();
 	if (this->sound)
 	{
-		this->sound->PlayEffectiveSound(ENEMY_SOUND::LAUNCH);
-	}
+        this->sound->Play3DSound(ENEMY_SOUND::LAUNCH, this->transform->GetWorldPosition());
+        //this->sound->PlayEffectiveSound(ENEMY_SOUND::LAUNCH);
+    }
 }
 
 void KG::Component::CProjectileComponent::Update(float elapsedTime)
@@ -26,8 +27,8 @@ void KG::Component::CProjectileComponent::OnDestroy()
 {
 	if (this->sound)
 	{
-		this->sound->PlayEffectiveSound(ENEMY_SOUND::EXPLOSION);
-	}
+        this->sound->Play3DSound(ENEMY_SOUND::EXPLOSION, this->transform->GetWorldPosition());
+    }
 	IComponent::OnDestroy();
 }
 

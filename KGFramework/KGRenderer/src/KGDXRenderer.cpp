@@ -639,6 +639,29 @@ void KG::Renderer::KGDXRenderer::DebugUIRender()
         this->postProcessor->OnDrawGUI();
         ImGui::TreePop();
     }
+    static KG::Component::CameraComponent* mainCamera = nullptr;
+    static KG::Component::CameraComponent* sceneCamera = nullptr;
+    if (ImGui::Button("ToggleCamera"))
+    {
+        if (mainCamera == nullptr)
+        {
+            for (auto& camera : this->graphicSystems->cameraSystem)
+            {
+                if (camera.GetGameObject()->tag == "SceneCameraObject"_id)
+                    sceneCamera = &camera;
+                if (camera.GetGameObject()->tag == "FPCamera"_id)
+                    mainCamera = &camera;
+            }
+        }
+        if (mainCamera->isMainCamera)
+        {
+            sceneCamera->SetMainCamera();
+        }
+        else 
+        {
+            mainCamera->SetMainCamera();
+        }
+    }
 }
 
 KG::Component::ILightComponent* KG::Renderer::KGDXRenderer::GetNewLightComponent()

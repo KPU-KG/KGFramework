@@ -82,7 +82,7 @@
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
                 <Position x="93.621803" y="131.05624" z="-55.410755"/>
-                <Rotation_Q x="0.21700172" y="-0.7770468" z="0.51624715" w="0.32664093"/>
+                <Rotation_Q x="0.2780225" y="-0.72563505" z="0.51852643" w="0.38908297"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
@@ -29161,6 +29161,230 @@
                 <Rotation_Q x="0" y="0" z="0" w="1"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
+            <GameObject instanceId="1783">
+                <Tag hash_id="847784816" srcString="BossBarrierEffect"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0.091884613" y="11.067557" z="0.6696167"/>
+                    <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="1784">
+                    <Tag hash_id="655398292" srcString="Barrer_effect_0"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="65"/>
+                        <Rotation_Q x="0" y="-0.99999988" z="0" w="4.4703484e-08"/>
+                        <Scale x="65" y="12" z="1"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="3507455242" srcString="EnemyBarrierLine"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+                <GameObject instanceId="1785">
+                    <Tag hash_id="655399253" srcString="Barrer_effect_1"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="-65"/>
+                        <Rotation_Q x="0" y="0" z="0" w="-0.99999994"/>
+                        <Scale x="64.999969" y="12" z="0.99999952"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="3507455242" srcString="EnemyBarrierLine"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+                <GameObject instanceId="1786">
+                    <Tag hash_id="655400214" srcString="Barrer_effect_2"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="65" y="0" z="0"/>
+                        <Rotation_Q x="0" y="-0.70710677" z="0" w="-0.70710695"/>
+                        <Scale x="64.999969" y="12" z="0.99999952"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="3507455242" srcString="EnemyBarrierLine"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+                <GameObject instanceId="1787">
+                    <Tag hash_id="655401175" srcString="Barrer_effect_3"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-65" y="0" z="0"/>
+                        <Rotation_Q x="0" y="-0.70710677" z="0" w="-0.70710677"/>
+                        <Scale x="64.999969" y="12" z="0.99999952"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="3507455242" srcString="EnemyBarrierLine"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+                <GameObject instanceId="1788">
+                    <Tag hash_id="658824887" srcString="Barrer_effect_lock_3"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-66.5" y="0" z="0"/>
+                        <Rotation_Q x="-0" y="0.70710671" z="-0" w="0.70710683"/>
+                        <Scale x="15" y="15" z="0.9999997"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="3517329517" srcString="EnemyBarrierLock"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+                <GameObject instanceId="1789">
+                    <Tag hash_id="658823926" srcString="Barrer_effect_lock_2"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="66.5" y="0" z="0"/>
+                        <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710683"/>
+                        <Scale x="14.999999" y="15" z="0.99999964"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="3517329517" srcString="EnemyBarrierLock"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+                <GameObject instanceId="1790">
+                    <Tag hash_id="658822965" srcString="Barrer_effect_lock_1"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="-66.5"/>
+                        <Rotation_Q x="0" y="0" z="0" w="0.99999994"/>
+                        <Scale x="14.999999" y="15" z="0.99999964"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="3517329517" srcString="EnemyBarrierLock"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+                <GameObject instanceId="1791">
+                    <Tag hash_id="658822004" srcString="Barrer_effect_lock_0"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="0" z="66.5"/>
+                        <Rotation_Q x="0" y="0" z="0" w="0.99999994"/>
+                        <Scale x="14.999999" y="15" z="0.99999964"/>
+                    </Component>
+                    <Component name="IGeometryComponent" hash_id="1162546763">
+                        <GeometryDescs>
+                            <Element>
+                                <geometryID hash_id="3536424569" srcString="plane"/>
+                                <slotIndex value="0"/>
+                                <subMeshIndex value="0"/>
+                            </Element>
+                        </GeometryDescs>
+                    </Component>
+                    <Component name="IMaterialComponent" hash_id="308235170">
+                        <MaterialDesc>
+                            <Element>
+                                <isRawShader value="false"/>
+                                <materialID hash_id="3517329517" srcString="EnemyBarrierLock"/>
+                                <slotIndex value="0"/>
+                            </Element>
+                        </MaterialDesc>
+                    </Component>
+                    <Component name="IRender3DComponent" hash_id="1184141904"/>
+                </GameObject>
+            </GameObject>
         </GameObject>
         <GameObject instanceId="347">
             <Tag hash_id="1308024484" srcString="EnemyMark"/>
@@ -29212,230 +29436,6 @@
                         <Element>
                             <isRawShader value="false"/>
                             <materialID hash_id="3154066641" srcString="point_circle_sunset"/>
-                            <slotIndex value="0"/>
-                        </Element>
-                    </MaterialDesc>
-                </Component>
-                <Component name="IRender3DComponent" hash_id="1184141904"/>
-            </GameObject>
-        </GameObject>
-        <GameObject instanceId="1783">
-            <Tag hash_id="847784816" srcString="BossBarrierEffect"/>
-            <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="36.091885" y="11.067557" z="-107.33038"/>
-                <Rotation_Q x="-0" y="0" z="-0" w="1"/>
-                <Scale x="1" y="1" z="1"/>
-            </Component>
-            <GameObject instanceId="1784">
-                <Tag hash_id="655398292" srcString="Barrer_effect_0"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="0" y="0" z="65"/>
-                    <Rotation_Q x="0" y="-0.99999988" z="0" w="4.4703484e-08"/>
-                    <Scale x="65" y="12" z="1"/>
-                </Component>
-                <Component name="IGeometryComponent" hash_id="1162546763">
-                    <GeometryDescs>
-                        <Element>
-                            <geometryID hash_id="3536424569" srcString="plane"/>
-                            <slotIndex value="0"/>
-                            <subMeshIndex value="0"/>
-                        </Element>
-                    </GeometryDescs>
-                </Component>
-                <Component name="IMaterialComponent" hash_id="308235170">
-                    <MaterialDesc>
-                        <Element>
-                            <isRawShader value="false"/>
-                            <materialID hash_id="3507455242" srcString="EnemyBarrierLine"/>
-                            <slotIndex value="0"/>
-                        </Element>
-                    </MaterialDesc>
-                </Component>
-                <Component name="IRender3DComponent" hash_id="1184141904"/>
-            </GameObject>
-            <GameObject instanceId="1785">
-                <Tag hash_id="655399253" srcString="Barrer_effect_1"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="0" y="0" z="-65"/>
-                    <Rotation_Q x="0" y="0" z="0" w="-0.99999994"/>
-                    <Scale x="64.999969" y="12" z="0.99999952"/>
-                </Component>
-                <Component name="IGeometryComponent" hash_id="1162546763">
-                    <GeometryDescs>
-                        <Element>
-                            <geometryID hash_id="3536424569" srcString="plane"/>
-                            <slotIndex value="0"/>
-                            <subMeshIndex value="0"/>
-                        </Element>
-                    </GeometryDescs>
-                </Component>
-                <Component name="IMaterialComponent" hash_id="308235170">
-                    <MaterialDesc>
-                        <Element>
-                            <isRawShader value="false"/>
-                            <materialID hash_id="3507455242" srcString="EnemyBarrierLine"/>
-                            <slotIndex value="0"/>
-                        </Element>
-                    </MaterialDesc>
-                </Component>
-                <Component name="IRender3DComponent" hash_id="1184141904"/>
-            </GameObject>
-            <GameObject instanceId="1786">
-                <Tag hash_id="655400214" srcString="Barrer_effect_2"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="65" y="0" z="0"/>
-                    <Rotation_Q x="0" y="-0.70710677" z="0" w="-0.70710695"/>
-                    <Scale x="64.999969" y="12" z="0.99999952"/>
-                </Component>
-                <Component name="IGeometryComponent" hash_id="1162546763">
-                    <GeometryDescs>
-                        <Element>
-                            <geometryID hash_id="3536424569" srcString="plane"/>
-                            <slotIndex value="0"/>
-                            <subMeshIndex value="0"/>
-                        </Element>
-                    </GeometryDescs>
-                </Component>
-                <Component name="IMaterialComponent" hash_id="308235170">
-                    <MaterialDesc>
-                        <Element>
-                            <isRawShader value="false"/>
-                            <materialID hash_id="3507455242" srcString="EnemyBarrierLine"/>
-                            <slotIndex value="0"/>
-                        </Element>
-                    </MaterialDesc>
-                </Component>
-                <Component name="IRender3DComponent" hash_id="1184141904"/>
-            </GameObject>
-            <GameObject instanceId="1787">
-                <Tag hash_id="655401175" srcString="Barrer_effect_3"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="-65" y="0" z="0"/>
-                    <Rotation_Q x="0" y="-0.70710677" z="0" w="-0.70710677"/>
-                    <Scale x="64.999969" y="12" z="0.99999952"/>
-                </Component>
-                <Component name="IGeometryComponent" hash_id="1162546763">
-                    <GeometryDescs>
-                        <Element>
-                            <geometryID hash_id="3536424569" srcString="plane"/>
-                            <slotIndex value="0"/>
-                            <subMeshIndex value="0"/>
-                        </Element>
-                    </GeometryDescs>
-                </Component>
-                <Component name="IMaterialComponent" hash_id="308235170">
-                    <MaterialDesc>
-                        <Element>
-                            <isRawShader value="false"/>
-                            <materialID hash_id="3507455242" srcString="EnemyBarrierLine"/>
-                            <slotIndex value="0"/>
-                        </Element>
-                    </MaterialDesc>
-                </Component>
-                <Component name="IRender3DComponent" hash_id="1184141904"/>
-            </GameObject>
-            <GameObject instanceId="1788">
-                <Tag hash_id="658824887" srcString="Barrer_effect_lock_3"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="-66.5" y="0" z="0"/>
-                    <Rotation_Q x="-0" y="0.70710671" z="-0" w="0.70710683"/>
-                    <Scale x="15" y="15" z="0.9999997"/>
-                </Component>
-                <Component name="IGeometryComponent" hash_id="1162546763">
-                    <GeometryDescs>
-                        <Element>
-                            <geometryID hash_id="3536424569" srcString="plane"/>
-                            <slotIndex value="0"/>
-                            <subMeshIndex value="0"/>
-                        </Element>
-                    </GeometryDescs>
-                </Component>
-                <Component name="IMaterialComponent" hash_id="308235170">
-                    <MaterialDesc>
-                        <Element>
-                            <isRawShader value="false"/>
-                            <materialID hash_id="3517329517" srcString="EnemyBarrierLock"/>
-                            <slotIndex value="0"/>
-                        </Element>
-                    </MaterialDesc>
-                </Component>
-                <Component name="IRender3DComponent" hash_id="1184141904"/>
-            </GameObject>
-            <GameObject instanceId="1789">
-                <Tag hash_id="658823926" srcString="Barrer_effect_lock_2"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="66.5" y="0" z="0"/>
-                    <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710683"/>
-                    <Scale x="14.999999" y="15" z="0.99999964"/>
-                </Component>
-                <Component name="IGeometryComponent" hash_id="1162546763">
-                    <GeometryDescs>
-                        <Element>
-                            <geometryID hash_id="3536424569" srcString="plane"/>
-                            <slotIndex value="0"/>
-                            <subMeshIndex value="0"/>
-                        </Element>
-                    </GeometryDescs>
-                </Component>
-                <Component name="IMaterialComponent" hash_id="308235170">
-                    <MaterialDesc>
-                        <Element>
-                            <isRawShader value="false"/>
-                            <materialID hash_id="3517329517" srcString="EnemyBarrierLock"/>
-                            <slotIndex value="0"/>
-                        </Element>
-                    </MaterialDesc>
-                </Component>
-                <Component name="IRender3DComponent" hash_id="1184141904"/>
-            </GameObject>
-            <GameObject instanceId="1790">
-                <Tag hash_id="658822965" srcString="Barrer_effect_lock_1"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="0" y="0" z="-66.5"/>
-                    <Rotation_Q x="0" y="0" z="0" w="0.99999994"/>
-                    <Scale x="14.999999" y="15" z="0.99999964"/>
-                </Component>
-                <Component name="IGeometryComponent" hash_id="1162546763">
-                    <GeometryDescs>
-                        <Element>
-                            <geometryID hash_id="3536424569" srcString="plane"/>
-                            <slotIndex value="0"/>
-                            <subMeshIndex value="0"/>
-                        </Element>
-                    </GeometryDescs>
-                </Component>
-                <Component name="IMaterialComponent" hash_id="308235170">
-                    <MaterialDesc>
-                        <Element>
-                            <isRawShader value="false"/>
-                            <materialID hash_id="3517329517" srcString="EnemyBarrierLock"/>
-                            <slotIndex value="0"/>
-                        </Element>
-                    </MaterialDesc>
-                </Component>
-                <Component name="IRender3DComponent" hash_id="1184141904"/>
-            </GameObject>
-            <GameObject instanceId="1791">
-                <Tag hash_id="658822004" srcString="Barrer_effect_lock_0"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="0" y="0" z="66.5"/>
-                    <Rotation_Q x="0" y="0" z="0" w="0.99999994"/>
-                    <Scale x="14.999999" y="15" z="0.99999964"/>
-                </Component>
-                <Component name="IGeometryComponent" hash_id="1162546763">
-                    <GeometryDescs>
-                        <Element>
-                            <geometryID hash_id="3536424569" srcString="plane"/>
-                            <slotIndex value="0"/>
-                            <subMeshIndex value="0"/>
-                        </Element>
-                    </GeometryDescs>
-                </Component>
-                <Component name="IMaterialComponent" hash_id="308235170">
-                    <MaterialDesc>
-                        <Element>
-                            <isRawShader value="false"/>
-                            <materialID hash_id="3517329517" srcString="EnemyBarrierLock"/>
                             <slotIndex value="0"/>
                         </Element>
                     </MaterialDesc>
@@ -29993,7 +29993,7 @@
             </GameObject>
         </GameObject>
         <GameObject instanceId="3002">
-            <Tag hash_id="1918545801" srcString="EnemyCrawler"/>
+            <Tag hash_id="3514707905" srcString="CrawlerDummy"/>
             <Component name="TransformComponent" hash_id="3882513520">
                 <Position x="36" y="3.694124e-06" z="-108"/>
                 <Rotation_Q x="0" y="0" z="0" w="1"/>

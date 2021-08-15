@@ -150,10 +150,12 @@ namespace KG::Component
         LobbyUIComponent* comp;
         CLobbyComponent* lobby;
         std::unordered_map<KG::Utill::hashType, KG::Component::IRender2DComponent*> objs;
+        std::unordered_map<KG::Utill::hashType, KG::Component::IRender2DComponent*> clears;
         std::pair<KG::Utill::hashType, KG::Component::IRender2DComponent*> lastResult;
         std::unordered_map<KG::Utill::hashType, std::function<KG::Utill::hashType(float, float)>> fsmMap;
         KG::Utill::hashType currentStateId;
         float currentStateTime = 0.0f;
+        bool clearFlag = false;
 
         static constexpr KG::Utill::hashType playerTitle[] = { "PLAYER1"_id, "PLAYER2"_id,"PLAYER3"_id,"PLAYER4"_id };
         static constexpr KG::Utill::hashType playerWait[] = { "WAIT1"_id, "WAIT2"_id,"WAIT3"_id,"WAIT4"_id };
@@ -163,6 +165,12 @@ namespace KG::Component
         {
             return _Anim(objs[id]);
         }
+
+        auto ClearAnim(KG::Utill::hashType id)
+        {
+            return _Anim(clears[id]);
+        }
+
 
         void Init(KG::Core::Scene* s, LobbyUIComponent* c)
         {
@@ -182,7 +190,8 @@ namespace KG::Component
             objs["Select_day"_id] = this->scene->FindObjectWithTag("Select_day"_id)->GetComponent<KG::Component::IRender2DComponent>();
             objs["Select_sunset"_id] = this->scene->FindObjectWithTag("Select_sunset"_id)->GetComponent<KG::Component::IRender2DComponent>();
             objs["StartLOGO"_id] = this->scene->FindObjectWithTag("StartLOGO"_id)->GetComponent<KG::Component::IRender2DComponent>();
-
+            clears["ClearBG"_id] = this->scene->FindObjectWithTag("ClearBG"_id)->GetComponent<KG::Component::IRender2DComponent>();
+            clears["GameClear"_id] = this->scene->FindObjectWithTag("GameClear"_id)->GetComponent<KG::Component::IRender2DComponent>();
             for (size_t i = 0; i < 4; i++)
             {
                 auto id = playerTitle[i]; objs[id] = this->scene->FindObjectWithTag(id)->GetComponent<KG::Component::IRender2DComponent>();
@@ -227,6 +236,14 @@ namespace KG::Component
 #if SERVER_LOGIN == 1
                     GameFramework::instance->StartClient();
                     this->lobby = this->scene->GetRootNode()->GetComponent<CLobbyComponent>();
+                    this->scene->GetRootNode()->GetComponent<CGameManagerComponent>()->PostGameClearFunction([this]() {
+                        if (!clearFlag)
+                        {
+                            this->currentStateId = "gameClear_1"_id;
+                            this->currentStateTime = 0.0f;
+                            clearFlag = true;
+                        }
+                        });
                     this->lobby->SendLoginPacket();
                     this->lobby->PostStartFunction([this]() {
                         this->currentStateId = "ingameChange"_id; 
@@ -370,6 +387,7 @@ namespace KG::Component
 #if SERVER_LOGIN == 1
                     map = this->lobby->GetMap();
 #endif
+                    KG::Input::InputManager::GetInputManager()->SetMouseCapture(true);
                     static const std::string maps[] = { "Resource/Scenes/SceneData_87_client_barrier_.xml", "Resource/Scenes/SceneData_87_client_barrier_sunset_spot.xml" };
                     this->comp->GetGameObject()->GetScene()->LoadScene(maps[map]);
 #if SERVER_LOGIN == 1
@@ -384,9 +402,41 @@ namespace KG::Component
 
             fsmMap["ingameFadeOut"_id] = [this](float delta, float current) -> KG::Utill::hashType
             {
-                for (auto[id, ptr] : this->objs)
+                if (current < 2.0f)
                 {
-                    Anim(id).FADEOFF(current, 2.0f);
+                    for (auto [id, ptr] : this->objs)
+                    {
+                        Anim(id).FADEOFF(current, 2.0f);
+                    }
+                }
+                return 0;
+            };
+
+            fsmMap["gameClear_1"_id] = [this](float delta, float current) -> KG::Utill::hashType
+            {
+                if (current <= 1.5f)
+                {
+                    ClearAnim("ClearBG"_id).FADEON(current, 1.5f);
+                    ClearAnim("GameClear"_id).FADEON(current, 1.5f);
+                    //ClearAnim("ClearBG"_id).ON().ALPHA(current / 1.5f);
+                    //ClearAnim("GameClear"_id).ON().ALPHA((current / 1.5f) * 0.7f);
+                }
+                else 
+                {
+                    return "gameClear_2"_id;
+                }
+                return 0;
+            };
+            fsmMap["gameClear_2"_id] = [this](float delta, float current) -> KG::Utill::hashType
+            {
+                if (current <= 1.5f)
+                {
+                    ClearAnim("ClearBG"_id).FADEOFF(current, 1.5f);
+                    ClearAnim("GameClear"_id).FADEOFF(current, 1.5f);
+                }
+                else
+                {
+                    return "ingameFadeOut"_id;
                 }
                 return 0;
             };

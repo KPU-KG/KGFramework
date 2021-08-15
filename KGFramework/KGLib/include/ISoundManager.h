@@ -40,7 +40,7 @@ namespace KG::Sound
 	public:
 		// ~SoundManager();
 		virtual void Initialize() = 0;
-		virtual void RegisterSound(const char* path, SoundType type, unsigned int id) = 0;
+        virtual void RegisterSound(const char* path, SoundType type, unsigned int id, bool is3D) = 0;
 		virtual void Update(float timeElapsed) = 0;
 		virtual KG::Component::ISoundComponent* GetNewSoundComponent() = 0;
 		virtual void PostComponentProvider(KG::Component::ComponentProvider& provider) = 0;
