@@ -46,8 +46,8 @@ void KG::Component::ShadowCasterComponent::InitializeAsDirectionalLightShadow()
     desc.useDepthStencilBuffer = true;
     desc.uploadSRVDepthBuffer = true;
     desc.uploadSRVRenderTarget = false;
-    desc.width = 2048;
-    desc.height = 2048;
+    desc.width = 1024;
+    desc.height = 1024;
     //desc.width = 4096;
     //desc.height = 4096;
     desc.length = 4;
