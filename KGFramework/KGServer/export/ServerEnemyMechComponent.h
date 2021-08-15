@@ -161,6 +161,8 @@ namespace KG::Component
 
 		MechStateManager*							stateManager;
 
+		std::vector<std::pair<int, int>>			path;
+
 	public:
 		void SetIdleTime(float t) { idleTimer = t; }
 		void IdleTimer(float elapsedTime) { idleTimer += elapsedTime; }
@@ -192,7 +194,7 @@ namespace KG::Component
 		virtual void HitBullet() override;
 
 		bool SetTarget();
-		bool SetAttackRotation();
+		bool SetTargetRotation();
 		bool IsTargetInRange() const;
 		bool CheckAttackable();
 		bool NoObstacleInAttack() const;
@@ -202,6 +204,7 @@ namespace KG::Component
 
 		bool IsMobableInTrace() const;
 		bool IsAttackRotation() const;
+		bool IsPathEmpty() const;
 		virtual void Destroy() override;
 	};
 
