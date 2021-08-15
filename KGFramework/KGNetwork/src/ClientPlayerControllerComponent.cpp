@@ -105,6 +105,43 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
 
     this->particleGen->AddParticleDesc(KG::Utill::HashString("Spark"), sparkDesc);
 
+    KG::Component::ParticleDesc expDesc;
+    expDesc.baselifeTime = 0.075f;
+    expDesc.rangelifeTime = 0.025f;
+    expDesc.baseEmitCount = 20;
+    expDesc.rangeEmitCount = 20;
+    expDesc.baseSize.x = 5.0;
+    expDesc.baseSize.y = 5.0;
+    expDesc.rangeSize.x = 3.0f;
+    expDesc.rangeSize.x = 3.0f;
+    expDesc.rangeDeltaPosition.x = 2;
+    expDesc.rangeDeltaPosition.y = 2;
+    expDesc.rangeDeltaPosition.z = 2;
+    expDesc.type = ParticleType::Add;
+    expDesc.color.SetByFloat(1, 0.75f, 0);
+    expDesc.materialId = KG::Utill::HashString("FlashParticle");
+
+    this->particleGen->AddParticleDesc(KG::Utill::HashString("EXPSpark"), expDesc);
+
+    KG::Component::ParticleDesc missileSpark;
+    missileSpark.baselifeTime = 1.0f;
+    missileSpark.baseEmitCount = 20;
+    missileSpark.rangeEmitCount = 20;
+    missileSpark.baseSize.x = 0.25;
+    missileSpark.baseSize.y = 0.25;
+    missileSpark.rangeSize.x = 0.1;
+    missileSpark.rangeSize.y = 0.1;
+    missileSpark.rangeSpeed.x = 8;
+    missileSpark.rangeSpeed.y = 5;
+    missileSpark.rangeSpeed.z = 8;
+    missileSpark.type = ParticleType::Add;
+    missileSpark.color.SetByFloat(1, 1, 0);
+    missileSpark.materialId = KG::Utill::HashString("SparkParticle");
+
+    this->particleGen->AddParticleDesc(KG::Utill::HashString("MissileSpark"), missileSpark);
+
+
+
     KG::Component::ParticleDesc bulletLine;
     bulletLine.baselifeTime = 3.0f;
     bulletLine.baseEmitCount = 1;

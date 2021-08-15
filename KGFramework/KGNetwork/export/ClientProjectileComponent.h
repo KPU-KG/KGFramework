@@ -10,12 +10,14 @@ namespace KG::Component
 {
 	class DynamicRigidComponent;
 	class ISoundComponent;
+    class IParticleEmitterComponent;
 
 	class DLL CProjectileComponent : public CBaseComponent
 	{
 	private:
 		TransformComponent* transform = nullptr;
 		ISoundComponent* sound = nullptr;
+        IParticleEmitterComponent* particle = nullptr;
 	public:
 		CProjectileComponent();
 		virtual void OnCreate(KG::Core::GameObject* obj) override;
