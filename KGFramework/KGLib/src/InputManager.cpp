@@ -140,7 +140,14 @@ void KG::Input::InputManager::PostProcessInput()
 void KG::Input::InputManager::SetMouseCapture(bool startMouseCapture)
 {
 	this->startMouseCapture = startMouseCapture;
-	ShowCursor(!startMouseCapture);
+    if (this->startMouseCapture)
+    {
+        while (ShowCursor(!this->startMouseCapture) > -1);
+    }
+    else 
+    {
+        while (ShowCursor(!this->startMouseCapture) < 0);
+    }
 }
 
 bool KG::Input::InputManager::GetMouseCapture() const

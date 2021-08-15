@@ -387,6 +387,7 @@ namespace KG::Component
 #if SERVER_LOGIN == 1
                     map = this->lobby->GetMap();
 #endif
+                    KG::Input::InputManager::GetInputManager()->SetMouseCapture(true);
                     static const std::string maps[] = { "Resource/Scenes/SceneData_87_client_barrier_.xml", "Resource/Scenes/SceneData_87_client_barrier_sunset_spot.xml" };
                     this->comp->GetGameObject()->GetScene()->LoadScene(maps[map]);
 #if SERVER_LOGIN == 1
