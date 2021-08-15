@@ -12,14 +12,18 @@ namespace KG::Component
     class IAnimationControllerComponent;
     class IRenderSpriteComponent;
 	class ISoundComponent;
+    class IParticleEmitterComponent;
 
 	class DLL CEnemyControllerComponent : public CBaseComponent
 	{
 	private:
-		TransformComponent* transform = nullptr;
-		IAnimationControllerComponent* anim = nullptr;
+        TransformComponent* transform = nullptr;
+        TransformComponent* pelvis = nullptr;
+        IAnimationControllerComponent* anim = nullptr;
         IRenderSpriteComponent* hpBar = nullptr;
+        IParticleEmitterComponent* particle = nullptr;
 
+        float prevHP = 0.0f;
 	public:
 		CEnemyControllerComponent();
 		virtual void OnCreate(KG::Core::GameObject* obj) override;

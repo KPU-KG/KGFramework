@@ -5,6 +5,8 @@
 #include "PhysicsComponent.h"
 #include "PhysicsScene.h"
 #include "ISoundComponent.h"
+#include "IParticleEmitterComponent.h"
+#include "Scene.h"
 
 using namespace KG::Math::Literal;
 
@@ -159,6 +161,8 @@ void KG::Component::CCharacterComponent::OnCreate(KG::Core::GameObject* obj)
 	this->physics = this->gameObject->GetComponent<DynamicRigidComponent>();
 	this->physics->SetApply(false);
 	this->sound = this->gameObject->GetComponent<ISoundComponent>();
+    this->gameObject->GetScene()->GetComponentProvider()->AddComponentToObject(KG::Component::ComponentID<IParticleEmitterComponent>::id(), this->gameObject);
+    this->particle = this->gameObject->GetComponent<IParticleEmitterComponent>();
 }
 
 void KG::Component::CCharacterComponent::Update(float elapsedTime)
@@ -218,11 +222,19 @@ bool KG::Component::CCharacterComponent::OnProcessPacket(unsigned char* packet, 
 
 		case KG::Packet::PacketType::SC_FIRE:
 		{
+            auto* firePacket = KG::Packet::PacketCast<KG::Packet::SC_FIRE>(packet);
+
 			if (this->sound)
 			{
 				int randSound = KG::Math::RandomInt(VECTOR_SOUND::FIRE_1, VECTOR_SOUND::FIRE_4);
 				this->sound->PlayEffectiveSound(randSound);
 			}
+
+            float speed = 50.0f;
+            auto start = firePacket->origin;
+            auto direction = firePacket->direction * speed;
+            this->particle->EmitParticle(KG::Utill::HashString("Muzzle"_id), start);
+            this->particle->EmitParticle(KG::Utill::HashString("TeamBulletLine"_id), start, direction, 10.0f);
 			return true;
 		}
 

@@ -5,6 +5,8 @@
 #include "IRender2DComponent.h"
 #include "imgui/imgui.h"
 #include "Transform.h"
+#include "Scene.h"
+#include "IParticleEmitterComponent.h"
 
 KG::Component::CEnemyControllerComponent::CEnemyControllerComponent()
 {
@@ -18,6 +20,13 @@ void KG::Component::CEnemyControllerComponent::OnCreate(KG::Core::GameObject* ob
 	this->transform = this->gameObject->GetTransform();
 	this->anim = this->gameObject->GetComponent<IAnimationControllerComponent>();
     this->hpBar = this->gameObject->FindChildObject("HPBAR"_id)->GetComponent<KG::Component::IRenderSpriteComponent>();
+    this->gameObject->GetScene()->GetComponentProvider()->AddComponentToObject(KG::Component::ComponentID<IParticleEmitterComponent>::id(), this->gameObject);
+    this->particle = this->gameObject->GetComponent<IParticleEmitterComponent>();
+
+    auto* pe = this->gameObject->FindChildObject("Pelvis"_id);
+    if(!pe)
+        pe = this->gameObject->FindChildObject("joint23"_id);
+    this->pelvis = pe->GetComponent<TransformComponent>();
 }
 
 void KG::Component::CEnemyControllerComponent::Update(float elapsedTime)
@@ -49,7 +58,12 @@ bool KG::Component::CEnemyControllerComponent::OnProcessPacket(unsigned char* pa
     case KG::Packet::PacketType::SC_ENEMY_HP:
     {
         auto* p = KG::Packet::PacketCast<KG::Packet::SC_ENEMY_HP>(packet);
+        prevHP = this->hpBar->progress.value;
         this->hpBar->progress.value = p->percentage;
+        if(prevHP > this->hpBar->progress.value)
+        {
+            this->particle->EmitParticle("EnemyHit"_id, this->pelvis->GetWorldPosition());
+        }
         return true;
     }
 	}

@@ -85,6 +85,11 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
 
     this->particleGen->AddParticleDesc(KG::Utill::HashString("Muzzle"), muzzleDesc);
 
+    muzzleDesc.baseSize.x = 8.0;
+    muzzleDesc.baseSize.y = 8.0;
+    this->particleGen->AddParticleDesc(KG::Utill::HashString("EnemyHit"), muzzleDesc);
+
+
     KG::Component::ParticleDesc sparkDesc;
     sparkDesc.baselifeTime = 1.0f;
     sparkDesc.baseEmitCount = 20;
@@ -111,6 +116,11 @@ void KG::Component::CPlayerControllerComponent::OnCreate(KG::Core::GameObject* o
     bulletLine.materialId = KG::Utill::HashString("SparkParticle");
 
     this->particleGen->AddParticleDesc(KG::Utill::HashString("BulletLine"), bulletLine);
+
+    bulletLine.baseSize.x = 0.5;
+    bulletLine.baseSize.y = 0.5;
+
+    this->particleGen->AddParticleDesc(KG::Utill::HashString("TeamBulletLine"), bulletLine);
 
 }
 
@@ -465,7 +475,7 @@ void KG::Component::CPlayerControllerComponent::TryShoot(float elapsedTime)
                 this->particleGen->EmitParticle(KG::Utill::HashString("BulletLine"_id), start, direction, lifeTime);
             }
         }
-        else 
+        //else 
         {
             auto start = this->particleGen->GetGameObject()->GetTransform()->GetWorldPosition();
             float speed = 50.0f;
