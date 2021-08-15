@@ -92,6 +92,10 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
     this->sound->RegisterSound("Resource/Sound/VectorFire2.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_2);
     this->sound->RegisterSound("Resource/Sound/VectorFire3.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_3);
     this->sound->RegisterSound("Resource/Sound/VectorFire4.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_4);
+    this->sound->RegisterSound("Resource/Sound/VectorFire1.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_1_3D, true);
+    this->sound->RegisterSound("Resource/Sound/VectorFire2.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_2_3D, true);
+    this->sound->RegisterSound("Resource/Sound/VectorFire3.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_3_3D, true);
+    this->sound->RegisterSound("Resource/Sound/VectorFire4.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_4_3D, true);
     this->sound->RegisterSound("Resource/Sound/VectorReload.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::RELOAD);
     this->sound->RegisterSound("Resource/Sound/VectorReloadEmpty.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::RELOAD_EMPTY);
     this->sound->RegisterSound("Resource/Sound/launch.mp3", KG::Sound::SoundType::EFFECTIVE, ENEMY_SOUND::LAUNCH);
@@ -745,10 +749,10 @@ void KG::GameFramework::PostSceneFunction()
 			// snd->RegisterSound(this->sound->GetSound(SOUND_EFF_SHOT), SOUND_EFF_SHOT);
 			// snd->RegisterSound(this->sound->GetSound(SOUND_EFF_RELOAD), SOUND_EFF_RELOAD);					// 장전 소리도 나게 해??
 			// snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::DRAW), VECTOR_SOUND::DRAW);
-			snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_1), VECTOR_SOUND::FIRE_1);
-			snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_2), VECTOR_SOUND::FIRE_2);
-			snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_3), VECTOR_SOUND::FIRE_3);
-			snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_4), VECTOR_SOUND::FIRE_4);
+			snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_1_3D), VECTOR_SOUND::FIRE_1_3D);
+			snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_2_3D), VECTOR_SOUND::FIRE_2_3D);
+			snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_3_3D), VECTOR_SOUND::FIRE_3_3D);
+			snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::FIRE_4_3D), VECTOR_SOUND::FIRE_4_3D);
 			// snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::RELOAD), VECTOR_SOUND::RELOAD);
 			// snd->RegisterSound(this->sound->GetSound(VECTOR_SOUND::RELOAD_EMPTY), VECTOR_SOUND::RELOAD_EMPTY);
 			obj.AddComponent(snd);
