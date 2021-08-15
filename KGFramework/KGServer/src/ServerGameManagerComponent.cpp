@@ -368,12 +368,12 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 
 	switch (this->currentRegion) {
 	case 0:
-		this->currentRegion = 2;
-		break;
-	case 2:
 		this->currentRegion = 3;
 		break;
 	case 3:
+		this->currentRegion = 2;
+		break;
+	case 2:
 		this->currentRegion = 0;
 		break;
 	default:
