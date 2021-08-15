@@ -94,7 +94,7 @@ void KG::Component::CCharacterComponent::ProcessMove(float elapsedTime)
 {
 	bool forwardInput = false;
 	bool rightInput = false;
-	float speed = this->inputs.stateShift ? 6.0f : 2.0f;
+	float speed = this->inputs.stateShift ? 10.0f : 6.0f;
 	speed *= speedValue;
 	if (inputs.stateW)
 	{
@@ -188,7 +188,7 @@ void KG::Component::CCharacterComponent::InterpolatePosition(DirectX::XMFLOAT3 p
 	if (abs(a.x - position.x) + abs(a.z - position.z) > 3.0f) {
 		this->transform->SetPosition(position);
 	}
-	else if (abs(a.x - position.x) + abs(a.z - position.z) > 1.0f) {
+	else if (abs(a.x - position.x) + abs(a.z - position.z) > 0.5f) {
 		t.x = (a.x + position.x) / 2;
 		t.y = position.y;
 		t.z = (a.z + position.z) / 2;

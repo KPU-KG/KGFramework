@@ -28713,7 +28713,7 @@
             </GameObject>
         </GameObject>
         <GameObject instanceId="1797">
-            <Tag hash_id="1918545801" srcString="EnemyCrawler"/>
+            <Tag hash_id="3514707905" srcString="CrawlerDummy"/>
             <Component name="TransformComponent" hash_id="3882513520">
                 <Position x="36" y="-1.282354e-07" z="-108"/>
                 <Rotation_Q x="0" y="0" z="0" w="1"/>
