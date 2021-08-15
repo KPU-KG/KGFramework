@@ -78,6 +78,10 @@ namespace KG::Renderer
         void CreateAABB();
 		void CreateFromMeshData( const KG::Utill::MeshData& data );
 		void CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY topology, int vertexCount );
+        auto GetCounts() const
+        {
+            return std::make_pair(this->vertices.size(), this->indices.size());
+        }
 		auto IsLoaded() const
 		{
 			return isLoaded;
