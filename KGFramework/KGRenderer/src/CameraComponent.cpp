@@ -780,7 +780,7 @@ void KG::Component::GSCascadeCameraComponent::RefreshCascadeViewProj()
         //auto proj = DirectX::XMMatrixPerspectiveFovLH(3.141592f * 0.5f, 1.0f, 0.01f, radius * 2);
         XMStoreFloat4(&this->cameraData->cameraWorldPosition[cascade], eyePos);
         XMStoreFloat4x4(&this->cameraData->view[cascade], XMMatrixTranspose(view));
-        XMStoreFloat4x4(&this->cameraData->projection[cascade], XMMatrixMultiply(XMMatrixTranspose(proj), XMMatrixTranspose(view)));
+        XMStoreFloat4x4(&this->cameraData->projection[cascade], XMMatrixTranspose(proj));
     }
 
 }
