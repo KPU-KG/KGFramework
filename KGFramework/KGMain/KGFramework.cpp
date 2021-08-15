@@ -589,7 +589,7 @@ void KG::GameFramework::PostSceneFunction()
 			ctrl->SetIgnoreScale(false);
 			ctrl->SetIgnoreTranslate(true);
 			obj.AddComponent(ctrl);
-			obj.GetTransform()->GetChild()->SetScale(0.2f, 0.2f, 0.2f);
+			obj.GetTransform()->GetChild()->SetScale(0.6f, 0.6f, 0.6f);
 		}
 		);
 

@@ -27,8 +27,8 @@ namespace KG::Component
 	constexpr int SESSION_TYPE_BUILDING = 1;
 	constexpr int SESSION_TYPE_UNIT = 2;
 
-	constexpr unsigned int MAP_SIZE_X = 340;
-	constexpr unsigned int MAP_SIZE_Z = 460;
+	constexpr unsigned int MAP_SIZE_X = 400;
+	constexpr unsigned int MAP_SIZE_Z = 520;
 
 	struct Region {
 		friend KG::Component::EnemyGeneratorComponent;
