@@ -175,8 +175,8 @@ namespace KG::Component
 		float										chargingInterval = 2;
 		bool										isCharging = false;
 
-		constexpr static float chargeDist = 30;
-		float										chargeSpeed = 25;
+		constexpr static float chargeDist = 60;
+		float										chargeSpeed = 40;
 		// float										chargeDist = 0;
 		float										moveDist = 0;
 
@@ -192,6 +192,7 @@ namespace KG::Component
 		CrawlerStateManager*						stateManager;
 		bool										inShootAction = false;
 		bool										isFilledArea = false;
+		// bool 
 	public:
 		void SetIdleTime(float t) { idleTimer = t; }
 		void IdleTimer(float elapsedTime) { idleTimer += elapsedTime; }

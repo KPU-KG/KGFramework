@@ -84,8 +84,7 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 
 	this->sound = std::make_unique<KG::Sound::SoundManager>();
 	this->sound->Initialize();
-    this->sound->RegisterSound("Resource/Sound/shot.wav", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_SHOT);
-    this->sound->RegisterSound("Resource/Sound/shot.wav", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_SHOT_3D);
+	this->sound->RegisterSound("Resource/Sound/shot.wav", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_SHOT);
     this->sound->RegisterSound("Resource/Sound/reload.wav", KG::Sound::SoundType::EFFECTIVE, SOUND_EFF_RELOAD);
 
     this->sound->RegisterSound("Resource/Sound/VectorDraw.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::DRAW);
@@ -93,16 +92,10 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
     this->sound->RegisterSound("Resource/Sound/VectorFire2.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_2);
     this->sound->RegisterSound("Resource/Sound/VectorFire3.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_3);
     this->sound->RegisterSound("Resource/Sound/VectorFire4.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_4);
-
-    this->sound->RegisterSound("Resource/Sound/VectorFire1.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_1_3D, true);
-    this->sound->RegisterSound("Resource/Sound/VectorFire2.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_2_3D, true);
-    this->sound->RegisterSound("Resource/Sound/VectorFire3.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_3_3D, true);
-    this->sound->RegisterSound("Resource/Sound/VectorFire4.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::FIRE_4_3D, true);
-
     this->sound->RegisterSound("Resource/Sound/VectorReload.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::RELOAD);
     this->sound->RegisterSound("Resource/Sound/VectorReloadEmpty.wav", KG::Sound::SoundType::EFFECTIVE, VECTOR_SOUND::RELOAD_EMPTY);
-    this->sound->RegisterSound("Resource/Sound/launch.mp3", KG::Sound::SoundType::EFFECTIVE, ENEMY_SOUND::LAUNCH, true);
-    this->sound->RegisterSound("Resource/Sound/explosion.wav", KG::Sound::SoundType::EFFECTIVE, ENEMY_SOUND::EXPLOSION, true);
+    this->sound->RegisterSound("Resource/Sound/launch.mp3", KG::Sound::SoundType::EFFECTIVE, ENEMY_SOUND::LAUNCH);
+    this->sound->RegisterSound("Resource/Sound/explosion.wav", KG::Sound::SoundType::EFFECTIVE, ENEMY_SOUND::EXPLOSION);
 
 
 	this->renderer->Initialize(renderDesc, renderSetting);
@@ -415,7 +408,7 @@ void KG::GameFramework::PostSceneFunction()
     );
 
 	this->scene->AddModelPreset("Vector",
-		[this]()
+		[]()
 		{
 			KG::Resource::MaterialMatch a;
 			a.defaultMaterial.emplace_back("arms");
