@@ -144,6 +144,7 @@ namespace KG::Component
 		bool isMovableInTrace = false;
 		bool isAttackRotation = false;
 		bool damaged = false;
+		bool failedMoveToGoal = false;
 
 		float wanderRotateSpeed = 0.8;
 		float wanderMoveSpeed = 3;

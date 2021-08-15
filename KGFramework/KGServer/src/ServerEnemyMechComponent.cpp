@@ -95,6 +95,8 @@ bool KG::Component::SEnemyMechComponent::Rotate(float elapsedTime)
 
 bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 {
+	failedMoveToGoal = false;
+
 	if (anim) {
 		if (!changedAnimation)
 			; // ChangeAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walk, ANIMSTATE_PLAYING, 0.1f, -1);
@@ -113,6 +115,14 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 		}
 	}
 
+	// static float timer = 0;
+	// timer += elapsedTime;
+	// if (timer > 3) {
+	// 	timer = 0;
+	// 	failedMoveToGoal = true;
+	// 	return true;
+	// }
+
 	auto spd = this->wanderMoveSpeed;
 	if (this->stateManager->GetCurState() == MechStateManager::STATE_TRACE)
 		spd = this->traceMoveSpeed;
@@ -122,18 +132,21 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 	v.y = 0;
 	auto dir = Math::Vector3::Normalize(v);
 
+	float dist = sqrt(GetDistance2FromEnemy(this->goal));
+
 	if (rigid) {
 		auto vel = rigid->GetVelocity();
 		float d = vel.x * vel.x + vel.z * vel.z;
 		if (d < spd * spd)
 			rigid->AddForce(dir, spd * 5);
-		// rigid->SetVelocity(dir, spd);
 		static float t = 0;
 		if (d < 2) {
 			t += elapsedTime;
-			if (t >= 0.3f) {
-				goal.y = this->transform->GetWorldPosition().y;
-				rigid->SetPosition(goal);
+			if (t >= 1.0f) {
+				if (dist <= 0.01) {
+					goal.y = this->transform->GetWorldPosition().y;
+					rigid->SetPosition(goal);
+				}
 				rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
 				return true;
 			}
@@ -143,12 +156,12 @@ bool KG::Component::SEnemyMechComponent::Move(float elapsedTime)
 		
 	}
 
-	float dist = sqrt(GetDistance2FromEnemy(this->goal));
 	
 	if (dist <= 0.01) {
 		goal.y = this->transform->GetWorldPosition().y;
 		rigid->SetPosition(goal);
 		rigid->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
+		// timer = 0;
 		return true;
 	}
 
@@ -179,19 +192,18 @@ void KG::Component::SEnemyMechComponent::OnCreate(KG::Core::GameObject* obj)
 	this->stateManager = new MechStateManager(this);
 	stateManager->Init();
 	hp = maxHp;
-	if (this->rigid) {
-		this->rigid->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
-		auto filterMy = my->GetFilterMask();
-		auto filterOther = other->GetFilterGroup();
-		if (other->GetActor() != nullptr && my->GetActor() != nullptr) {
-			if (filterOther & static_cast<uint32_t>(FilterGroup::eBOX)) {
-				this->rigid->SetLinearLock(false, true, false);
-				this->defaultHeight = this->transform->GetWorldPosition().y;
-				// this->rigid->SetRigidFlags(true, false, true, false, true, false);
-			}
-		}
-		});
- }
+	// if (this->rigid) {
+	// 	this->rigid->SetCollisionCallback([this](KG::Component::IRigidComponent* my, KG::Component::IRigidComponent* other) {
+	// 	auto filterMy = my->GetFilterMask();
+	// 	auto filterOther = other->GetFilterGroup();
+	// 	if (other->GetActor() != nullptr && my->GetActor() != nullptr) {
+	// 		if (filterOther & static_cast<uint32_t>(FilterGroup::eBOX)) {
+	// 			this->rigid->SetLinearLock(false, true, false);
+	// 			this->defaultHeight = this->transform->GetWorldPosition().y;
+	// 			// this->rigid->SetRigidFlags(true, false, true, false, true, false);
+	// 		}
+	// 	}
+	// 	});
 }
 
 void KG::Component::SEnemyMechComponent::Update(float elapsedTime)
@@ -380,6 +392,12 @@ bool KG::Component::SEnemyMechComponent::CheckAttackable()
 		}
 	}
 
+	if (!noObstacleInAttack) {
+		if (failedMoveToGoal) {
+			path.clear();
+		}
+	}
+
 	return true;
 }
 
@@ -513,17 +531,28 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 				auto prev = path.begin();
 				int prev_x = prev->first;
 				int prev_z = prev->second;
+				int conCount = 0;
 				for (auto iter = path.begin() + 1; iter != path.end();) {
 					int dir_x = iter->first - prev_x;
 					int dir_z = iter->second - prev_z;
 					
 					bool flag = false;
 
-					if (dir_x == prev_dir_x && dir_z == prev_dir_z) {
+					if (conCount > 5) {
+						prev = iter;
+						prev_dir_x = dir_x;
+						prev_dir_z = dir_z;
+						prev_x = iter->first;
+						prev_z = iter->second;
+						conCount = 0;
+						iter++;
+					}
+					else if (dir_x == prev_dir_x && dir_z == prev_dir_z) {
 						prev_x = iter->first;
 						prev_z = iter->second;
 						prev = path.erase(prev);
 						iter = prev + 1;
+						conCount++;
 					}
 					else {
 						prev = iter;
@@ -531,6 +560,7 @@ bool KG::Component::SEnemyMechComponent::CheckRoot()
 						prev_dir_z = dir_z;
 						prev_x = iter->first;
 						prev_z = iter->second;
+						conCount = 0;
 						iter++;
 					}					
 				}

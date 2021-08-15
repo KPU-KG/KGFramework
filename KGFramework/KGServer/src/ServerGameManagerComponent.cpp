@@ -189,8 +189,8 @@ void KG::Component::EnemyGeneratorComponent::Initialize()
 	for (auto extent : actorExtents) {
 		auto bound = extent.first;
 		auto center = extent.second;
-		int bx = bound.first;
-		int bz = bound.second;
+		int bx = bound.first + 3;
+		int bz = bound.second + 3;
 		int cx = center.first + (MAP_SIZE_X / 2);
 		int cz = center.second + (MAP_SIZE_Z / 2);
 
