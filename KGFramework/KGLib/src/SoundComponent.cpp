@@ -29,6 +29,7 @@ void KG::Component::SoundComponent::PlayEffectiveSound(UINT soundId, int loop)
     }
     sounds[soundId]->setLoopCount(loop);
     this->system->playSound(sounds[soundId], 0, false, &this->channel);
+    this->channel->setVolume(1.0f * 0.1f);
 }
 
 
@@ -46,8 +47,9 @@ void KG::Component::SoundComponent::Play3DSound(UINT soundId, const DirectX::XMF
     this->system->playSound(sounds[soundId], 0, false, &this->channel);
     this->channel->set3DAttributes(&listener_pos, &listener_vel);
     //this->channel->set
-    this->channel->set3DMinMaxDistance(0, 100);
-    this->channel->setVolume(0.5f);
+    this->channel->setVolume(0.25f * 0.1f);
+    this->channel->set3DMinMaxDistance(0, 1000);
+    this->channel->set3DLevel(0.15f);
 }
 
 
