@@ -362,13 +362,11 @@
     <!--mechCyan-->
     <Texture id="mechCyan_color" fileDir="Resource/Geometry/mech/Texture/mechCyan/color.dds" dimension="Texture2D" format="DDS" hash_id="2169118699"/>
     <Texture id="mechCyan_normal" fileDir="Resource/Geometry/mech/Texture/mechCyan/normal.dds" dimension="Texture2D" format="DDS" hash_id="3571105011"/>
-    <Texture id="mechCyan_rough" fileDir="Resource/Geometry/mech/Texture/mechCyan/rough.dds" dimension="Texture2D" format="DDS" hash_id="1870321057"/>
-    <Texture id="mechCyan_metalic" fileDir="Resource/Geometry/mech/Texture/mechCyan/metalic.dds" dimension="Texture2D" format="DDS" hash_id="3523430035"/>
+    <Texture id="mechCyan_mask" fileDir="Resource/Geometry/mech/Texture/mechCyan/mask.dds" dimension="Texture2D" format="DDS" hash_id="2112899826"/>
     <!--missile-->
     <Texture id="missile_color" fileDir="Resource/Geometry/missile/Textures/missile/color.dds" dimension="Texture2D" format="DDS" hash_id="3896858263"/>
     <Texture id="missile_normal" fileDir="Resource/Geometry/missile/Textures/missile/normal.dds" dimension="Texture2D" format="DDS" hash_id="3255239263"/>
-    <Texture id="missile_rough" fileDir="Resource/Geometry/missile/Textures/missile/rough.dds" dimension="Texture2D" format="DDS" hash_id="2651637069"/>
-    <Texture id="missile_metalic" fileDir="Resource/Geometry/missile/Textures/missile/metalic.dds" dimension="Texture2D" format="DDS" hash_id="437528647"/>
+    <Texture id="missile_mask" fileDir="Resource/Geometry/missile/Textures/missile/mask.dds" dimension="Texture2D" format="DDS" hash_id="148082438"/>
     <!--area_red-->
     <Texture id="area_red_color" fileDir="Resource/Texture/area_red/color.dds" dimension="Texture2D" format="DDS" hash_id="2306373458"/>
     <Texture id="area_red_normal" fileDir="Resource/Texture/area_red/normal.dds" dimension="Texture2D" format="DDS" hash_id="1372604208"/>
@@ -417,5 +415,5 @@
     <!--Resource/Texture/ui/title_0013_game_clear.DDS-->
     <Texture id="title_0013_game_clear.DDS" fileDir="Resource/Texture/ui/title_0013_game_clear.DDS" dimension="Texture2D" format="DDS" hash_id="1927438666"/>
     <!--Resource/Texture/ui/title_0013_game_clear.DDS-->
-    <Texture id="title_0013_game_clear.DDS" fileDir="Resource/Texture/ui/title_0013_game_clear.DDS" dimension="Texture2D" format="DDS"/>
+    <Texture id="title_0013_game_clear.DDS" fileDir="Resource/Texture/ui/title_0013_game_clear.DDS" dimension="Texture2D" format="DDS" hash_id="1927438666"/>
 </TextureSet>

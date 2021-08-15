@@ -670,23 +670,21 @@
         <FLOAT2 byte="8" comment="UVsize" x="60" y="60"/>
         <Padding byte="4"/>
     </Material>
-    <Material id="mechCyan" shaderID="PBRDefault" hash_id="86225507" shaderHashID="3533550914">
+    <Material id="mechCyan" shaderID="PBRMetalicSmooth" hash_id="86225507" shaderHashID="1053346762">
         <Texture byte="4" comment="colorTexture" id="mechCyan_color" hash_id="2169118699"/>
         <Texture byte="4" comment="normalTexture" id="mechCyan_normal" hash_id="3571105011"/>
-        <Texture byte="4" comment="metalicTexture" id="mechCyan_metalic" hash_id="3523430035"/>
-        <Texture byte="4" comment="roughTexture" id="mechCyan_rough" hash_id="1870321057"/>
+        <Texture byte="4" comment="maskTexture" id="mechCyan_mask" hash_id="2112899826"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
-        <Padding byte="4"/>
+        <Padding byte="8"/>
     </Material>
-    <Material id="missile" shaderID="PBRDefault" hash_id="3666496559" shaderHashID="3533550914">
+    <Material id="missile" shaderID="PBRMetalicSmooth" hash_id="3666496559" shaderHashID="1053346762">
         <Texture byte="4" comment="colorTexture" id="missile_color" hash_id="3896858263"/>
         <Texture byte="4" comment="normalTexture" id="missile_normal" hash_id="3255239263"/>
-        <Texture byte="4" comment="metalicTexture" id="missile_metalic" hash_id="437528647"/>
-        <Texture byte="4" comment="roughTexture" id="missile_rough" hash_id="2651637069"/>
+        <Texture byte="4" comment="maskTexture" id="missile_mask" hash_id="148082438"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
-        <Padding byte="4"/>
+        <Padding byte="8"/>
     </Material>
     <Material id="area_red" shaderID="PBRDefault" hash_id="1008453098" shaderHashID="3533550914">
         <Texture byte="4" comment="colorTexture" id="area_red_color" hash_id="2306373458"/>
