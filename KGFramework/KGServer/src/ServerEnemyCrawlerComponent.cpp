@@ -463,7 +463,7 @@ void KG::Component::SEnemyCrawlerComponent::Attack(SGameManagerComponent* gameMa
 		auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
 
 		auto pos = this->transform->GetWorldPosition();
-		pos.y += 3;
+		pos.y += 7;
 
 		KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
 		auto tag = KG::Utill::HashString(presetName);
@@ -502,7 +502,7 @@ void KG::Component::SEnemyCrawlerComponent::Attack(SGameManagerComponent* gameMa
 
 			areaCenter.y = 0.1;
 
-			XMFLOAT3 areaScale{ 3, 0.001, this->chargeDist / 2};
+			XMFLOAT3 areaScale{ 6, 0.001, this->chargeDist / 2};
 
 			KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
 			auto tag = KG::Utill::HashString(presetName);
