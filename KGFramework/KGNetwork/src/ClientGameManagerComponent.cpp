@@ -85,15 +85,19 @@ bool KG::Component::CGameManagerComponent::OnProcessPacket(unsigned char* packet
 		{
 			auto* Packet = KG::Packet::PacketCast<KG::Packet::SC_ENEMY_ZONE>(packet);
 			auto enemymark = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("EnemyMark"));
-			auto barrier = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("BossBarrier"));
+			
 			if (enemymark)
 			{
 				switch (Packet->num) {
 				case 0:
 					enemymark->GetTransform()->SetPosition(62, 120, 0);
 					break;
-				case 1:
+				case 1: {
+					auto barrier = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("BossBarrier"));
 					barrier->Destroy();
+					auto crawler = GetGameObject()->GetScene()->FindObjectWithTag(KG::Utill::HashString("CrawlerDummy"));
+					crawler->Destroy();
+				}
 					enemymark->GetTransform()->SetPosition(39, 120, -110);
 					break;
 				case 2:
