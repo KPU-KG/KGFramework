@@ -21,7 +21,7 @@ namespace KG::Component
 	class DLL SPlayerComponent : public SBaseComponent
 	{
 	private:
-		static constexpr float packetInterval = 1 / 10.0f;
+		static constexpr float packetInterval = 1 / 20.0f;
 		float packetSendTimer = 0;
 		KG::Packet::CS_INPUT inputs;
 		KG::Component::TransformComponent* trasnform = nullptr;
