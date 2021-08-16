@@ -101,3 +101,11 @@ void KG::System::SCrawlerMissileComponentSystem::OnPostUpdate(float elapsedTime)
 void KG::System::SCrawlerMissileComponentSystem::OnPreRender()
 {
 }
+
+void KG::System::SEnemyTurretComponentSystem::OnPostUpdate(float elapsedTime)
+{
+}
+
+void KG::System::SEnemyTurretComponentSystem::OnPreRender()
+{
+}

@@ -3,6 +3,7 @@
 #include "ServerBaseComponent.h"
 #include "ServerEnemyMechComponent.h"
 #include "ServerEnemyCrawlerComponent.h"
+#include "ServerEnemyTurretComponent.h"
 #include "ServerGameManagerComponent.h"
 #include "ServerPlayerControllerComponent.h"
 #include "ServerLobbyComponent.h"
@@ -65,6 +66,22 @@ namespace KG::System
 	};
 
 	class SEnemyCrawlerComponentSystem : public KG::System::SBaseComponentSystem<SEnemyCrawlerComponent>
+	{
+	public:
+		virtual void OnUpdate(float elapsedTime) override
+		{
+			for (auto& com : *this)
+			{
+				com.Update(elapsedTime);
+			}
+		}
+
+		// IComponentSystem을(를) 통해 상속됨
+		virtual void OnPostUpdate(float elapsedTime) override;
+		virtual void OnPreRender() override;
+	};
+
+	class SEnemyTurretComponentSystem : public KG::System::SBaseComponentSystem<SEnemyTurretComponent>
 	{
 	public:
 		virtual void OnUpdate(float elapsedTime) override

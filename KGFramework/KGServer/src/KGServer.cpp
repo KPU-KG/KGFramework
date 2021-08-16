@@ -232,6 +232,13 @@ KG::Component::SEnemyCrawlerComponent* KG::Server::Server::GetNewEnemyCrawlerCom
 	return comp;
 }
 
+KG::Component::SEnemyTurretComponent* KG::Server::Server::GetNewEnemyTurretComponent()
+{
+	auto* comp = this->sEnemyTurretSystem.GetNewComponent();
+	comp->SetServerInstance(this);
+	return comp;
+}
+
 KG::Component::EnemyGeneratorComponent* KG::Server::Server::GetNewEnemyGeneratorComponent()
 {
 	auto* comp = this->enemyGeneratorSystem.GetNewComponent();
@@ -273,6 +280,7 @@ void KG::Server::Server::PostComponentProvider(KG::Component::ComponentProvider&
 	this->sPlayerSystem.OnPostProvider(provider);
 	this->sEnemyMechSystem.OnPostProvider(provider);
 	this->sEnemyCrawlerSystem.OnPostProvider(provider);
+	this->sEnemyTurretSystem.OnPostProvider(provider);
 	this->enemyGeneratorSystem.OnPostProvider(provider);
 	this->sProjectileSystem.OnPostProvider(provider);
 	this->sLobbySystem.OnPostProvider(provider);
@@ -379,6 +387,7 @@ void KG::Server::Server::Update(float elapsedTime)
 	this->sPlayerSystem.OnUpdate(elapsedTime);
 	this->sEnemyMechSystem.OnUpdate(elapsedTime);
 	this->sEnemyCrawlerSystem.OnUpdate(elapsedTime);
+	this->sEnemyTurretSystem.OnUpdate(elapsedTime);
 	this->enemyGeneratorSystem.OnUpdate(elapsedTime);
 	this->sProjectileSystem.OnUpdate(elapsedTime);
 	this->sCrawlerMissileSystem.OnUpdate(elapsedTime);

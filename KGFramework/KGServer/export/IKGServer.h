@@ -17,6 +17,7 @@ namespace KG::Component
 	class SPlayerComponent;
 	class SEnemyMechComponent;
 	class SEnemyCrawlerComponent;
+	class SEnemyTurretComponent;
 	class EnemyGeneratorComponent;
 	class SProjectileComponent;
 	class SCrawlerMissileComponent;
@@ -48,6 +49,7 @@ namespace KG::Server
 		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() = 0;
 		virtual KG::Component::SEnemyMechComponent* GetNewEnemyMechComponent() = 0;
 		virtual KG::Component::SEnemyCrawlerComponent* GetNewEnemyCrawlerComponent() = 0;
+		virtual KG::Component::SEnemyTurretComponent* GetNewEnemyTurretComponent() = 0;
 		virtual KG::Component::EnemyGeneratorComponent* GetNewEnemyGeneratorComponent() = 0;
 		virtual KG::Component::SProjectileComponent* GetNewProjectileComponent() = 0;
 		virtual KG::Component::SLobbyComponent* GetNewLobbyComponent() = 0;

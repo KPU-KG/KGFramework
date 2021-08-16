@@ -19,6 +19,7 @@ namespace KG::Component
 	private:
         TransformComponent* transform = nullptr;
         TransformComponent* pelvis = nullptr;
+		TransformComponent* gunTransform = nullptr;
         IAnimationControllerComponent* anim = nullptr;
         IRenderSpriteComponent* hpBar = nullptr;
         IParticleEmitterComponent* particle = nullptr;

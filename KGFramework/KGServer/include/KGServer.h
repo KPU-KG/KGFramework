@@ -51,6 +51,7 @@ namespace KG::Server
 		KG::System::SPlayerComponentSystem sPlayerSystem;
 		KG::System::SEnemyMechComponentSystem sEnemyMechSystem;
 		KG::System::SEnemyCrawlerComponentSystem sEnemyCrawlerSystem;
+		KG::System::SEnemyTurretComponentSystem sEnemyTurretSystem;
 		KG::System::EnemyGeneratorSystem enemyGeneratorSystem;
 		KG::System::SProjectileComponentSystem sProjectileSystem;
 		KG::System::SCrawlerMissileComponentSystem sCrawlerMissileSystem;
@@ -97,6 +98,7 @@ namespace KG::Server
 		virtual KG::Component::SPlayerComponent* GetNewPlayerComponent() override;
 		virtual KG::Component::SEnemyMechComponent* GetNewEnemyMechComponent() override;
 		virtual KG::Component::SEnemyCrawlerComponent* GetNewEnemyCrawlerComponent() override;
+		virtual KG::Component::SEnemyTurretComponent* GetNewEnemyTurretComponent() override;
 		virtual KG::Component::EnemyGeneratorComponent* GetNewEnemyGeneratorComponent() override;
 		virtual KG::Component::SProjectileComponent* GetNewProjectileComponent() override;
 		virtual KG::Component::SLobbyComponent* GetNewLobbyComponent() override;

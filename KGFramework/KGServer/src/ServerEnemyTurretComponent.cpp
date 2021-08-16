@@ -1,7 +1,9 @@
+#include "pch.h"
 #include "ServerEnemyTurretComponent.h"
 #include "KGServer.h"
 #include "Transform.h"
 #include "IPhysicsScene.h"
+#include "Scene.h"
 #include <random>
 
 std::random_device turretRd;
@@ -34,12 +36,12 @@ bool KG::Component::SEnemyTurretComponent::SetTarget()
 			auto pos = this->transform->GetWorldPosition();
 			auto dir = Math::Vector3::Subtract(targetPos, pos);
 
-			auto c = this->rigid->GetScene()->QueryRaycast(pos, dir, this->attackRange, rigid->GetId());
+			// auto c = this->rigid->GetScene()->QueryRaycast(pos, dir, this->attackRange, rigid->GetId());
 
-			if (c != nullptr) {
-				if (c->GetFilterGroup() & static_cast<uint32_t>(FilterGroup::ePLAYER))
+			// if (c != nullptr) {
+			// 	if (c->GetFilterGroup() & static_cast<uint32_t>(FilterGroup::ePLAYER))
 					inRangePlayer.push_back(id);
-			}
+			// }
 		}
 	}
 
@@ -137,16 +139,52 @@ bool KG::Component::SEnemyTurretComponent::IsInAttack() const
 
 void KG::Component::SEnemyTurretComponent::Attack(SGameManagerComponent* gameManager)
 {
+	if (this->target == nullptr) {
+		return;
+	}
+
+	if (!this->target->isUsing()) {
+		this->target = nullptr;
+		return;
+	}
+
+	this->curAttackCount++;
+
+	auto presetName = "Missile";
+	auto presetId = KG::Utill::HashString(presetName);
+
+	auto* scene = this->gameObject->GetScene();
+	auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
 
 
+	auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
+	targetPos.y += 1;
+	auto origin = this->transform->GetWorldPosition();
+	origin.y += 2;
+	
+	auto direction = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, origin));
+
+	KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
+	auto tag = KG::Utill::HashString(presetName);
+	addObjectPacket.objectTag = tag;
+	addObjectPacket.parentTag = 0;
+	addObjectPacket.presetId = tag;
+	addObjectPacket.position = origin;
+
+	auto id = this->server->GetNewObjectId();
+	addObjectPacket.newObjectId = id;
+	comp->SetNetObjectId(id);
+	this->server->SetServerObject(id, comp);
+
+	auto projectile = comp->GetGameObject()->GetComponent<SProjectileComponent>();
 
 
+	projectile->Initialize(origin, direction, 25, 1);
+	projectile->SetTargetPosition(targetPos);
 
-
-
-
-
-
+	this->server->SetServerObject(id, projectile);
+	gameManager->BroadcastPacket(&addObjectPacket);
+	this->GetGameObject()->GetTransform()->GetParent()->AddChild(comp->GetGameObject()->GetTransform());
 }
 
 KG::Component::SEnemyTurretComponent::SEnemyTurretComponent()
@@ -156,6 +194,7 @@ KG::Component::SEnemyTurretComponent::SEnemyTurretComponent()
 void KG::Component::SEnemyTurretComponent::OnCreate(KG::Core::GameObject* obj)
 {
 	SEnemyUnitComponent::OnCreate(obj);
+	this->gunTransform = this->gameObject->FindChildObject("TurretGun"_id)->GetTransform();
 	this->stateManager = new TurretStateManager(this);
 	stateManager->Init();
 	hp = maxHp;
@@ -201,6 +240,11 @@ void KG::Component::SEnemyTurretComponent::HitBullet()
 	this->BroadcastPacket(&hp);
 
 	this->isAttacked;
+}
+
+void KG::Component::SEnemyTurretComponent::Awake()
+{
+	this->isInActive = true;
 }
 
 void KG::Component::SEnemyTurretComponent::Destroy()

@@ -86,7 +86,7 @@ namespace KG::Component
 		static constexpr int attackCount = 3;
 
 		int curAttackCount = 0;
-		float rotateSpeed = 3;
+		float rotateSpeed = 30;
 		float attackRange = 70;
 		
 		bool inAttack = false;

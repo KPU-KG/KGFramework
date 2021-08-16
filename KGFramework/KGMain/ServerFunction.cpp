@@ -16,6 +16,7 @@
 #include "ServerEnemyCrawlerComponent.h"
 #include "ServerProjectileComponent.h"
 #include "ServerCubeAreaRed.h"
+#include "ServerEnemyTurretComponent.h"
 #include "InputManager.h"
 
 void KG::GameFramework::PostServerFunction()
@@ -204,6 +205,36 @@ void KG::GameFramework::PostServerFunction()
 			comp->SetRotateInterval(3);
 			comp->SetSpeed(3);
 			comp->SetWanderRange(3);
+			comp->SetRaycastCallback([this, comp](KG::Component::RaycastType type, KG::Component::IRigidComponent* other) {
+				if (type == KG::Component::RaycastType::BULLET_HIT) {
+					comp->HitBullet();
+				}
+				});
+			obj.AddComponent(comp);
+			return comp;
+		}
+	);
+
+	this->scene->AddNetworkCreator(
+		KG::Utill::HashString("Turret"),
+		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent* {
+
+			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			KG::Component::CollisionBox box;
+			box.position = { 0, 2, 0 };
+			box.scale = { 2,4,2 };
+			phy->SetCollisionBox(box);
+			phy->SetApply(true);
+			phy->AddFilterGroup(KG::Component::FilterGroup::eENEMY, KG::Component::FilterGroup::eBULLET);
+			// phy->AddFilterGroup(KG::Component::FilterGroup::eNONE, KG::Component::FilterGroup::eBULLET);
+			obj.AddComponent(phy);
+
+			auto* comp = this->networkServer->GetNewEnemyTurretComponent();
+
+			// comp->SetIdleInterval(2);
+			// comp->SetRotateInterval(3);
+			// comp->SetSpeed(3);
+			// comp->SetWanderRange(3);
 			comp->SetRaycastCallback([this, comp](KG::Component::RaycastType type, KG::Component::IRigidComponent* other) {
 				if (type == KG::Component::RaycastType::BULLET_HIT) {
 					comp->HitBullet();

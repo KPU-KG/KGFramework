@@ -26,7 +26,13 @@ void KG::Component::CEnemyControllerComponent::OnCreate(KG::Core::GameObject* ob
     auto* pe = this->gameObject->FindChildObject("Pelvis"_id);
     if(!pe)
         pe = this->gameObject->FindChildObject("joint23"_id);
-    this->pelvis = pe->GetComponent<TransformComponent>();
+	if (pe)
+		this->pelvis = pe->GetComponent<TransformComponent>();
+
+	auto* gun = this->gameObject->FindChildObject("TurretGun"_id);
+	if (gun) {
+		this->gunTransform = gun->GetComponent<TransformComponent>();
+	}
 }
 
 void KG::Component::CEnemyControllerComponent::Update(float elapsedTime)
@@ -41,7 +47,12 @@ bool KG::Component::CEnemyControllerComponent::OnProcessPacket(unsigned char* pa
 	{
 		auto* p = KG::Packet::PacketCast<KG::Packet::SC_MOVE_OBJECT>(packet);
 		this->transform->SetPosition(p->position);
-		this->transform->SetRotation(p->rotation);
+		if (this->gunTransform) {
+			this->gunTransform->SetRotation(p->rotation);
+		}
+		else {
+			this->transform->SetRotation(p->rotation);
+		}
 		return true;
 	}
 	case KG::Packet::PacketType::SC_CHANGE_ANIMATION:
@@ -62,7 +73,10 @@ bool KG::Component::CEnemyControllerComponent::OnProcessPacket(unsigned char* pa
         this->hpBar->progress.value = p->percentage;
         if(prevHP > this->hpBar->progress.value)
         {
-            this->particle->EmitParticle("EXPSpark"_id, this->pelvis->GetWorldPosition());
+			if (this->pelvis)
+				this->particle->EmitParticle("EXPSpark"_id, this->pelvis->GetWorldPosition());
+			else if (this->gunTransform)
+				this->particle->EmitParticle("EXPSpark"_id, this->gunTransform->GetWorldPosition());
         }
         return true;
     }
