@@ -732,8 +732,8 @@
         <FLOAT1 byte="4" comment="LimWhiteSQR" x="5.8"/>
     </Material>
     <Material id="HDRTonemap_Sunset" shaderID="PostHDR_TONE" hash_id="1000435066" shaderHashID="3494680670">
-        <FLOAT1 byte="4" comment="MiddleGray" x="1.129"/>
-        <FLOAT1 byte="4" comment="LimWhiteSQR" x="5.8"/>
+        <FLOAT1 byte="4" comment="MiddleGray" x="2.8"/>
+        <FLOAT1 byte="4" comment="LimWhiteSQR" x="3.0"/>
     </Material>
     <Material id="SSAO_TWO_MAT" shaderID="PostSSAO_Two" hash_id="2850377983" shaderHashID="3436939178">
         <FLOAT1 byte="4" comment="offsetRadius" x="10"/>
