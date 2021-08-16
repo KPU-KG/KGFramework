@@ -81,8 +81,8 @@
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="87.38681" y="91.988548" z="-25.710163"/>
-                <Rotation_Q x="-0.10378859" y="0.90003824" z="-0.37555414" w="-0.24875191"/>
+                <Position x="157.27567" y="5.349339" z="-25.902527"/>
+                <Rotation_Q x="-0.22989455" y="-0.097834378" z="0.022939064" w="-0.98023993"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
@@ -5150,7 +5150,7 @@
             <GameObject instanceId="83">
                 <Tag hash_id="188330653" srcString="Dumpster.fbx"/>
                 <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="0.6005249" y="-0.3861033" z="-72.890732"/>
+                    <Position x="0.6005249" y="-0.096272387" z="-72.890732"/>
                     <Rotation_Q x="0" y="0" z="0" w="1"/>
                     <Scale x="1" y="1" z="1"/>
                 </Component>
@@ -11076,100 +11076,6 @@
                     <Scale x="19" y="4" z="10.272923"/>
                     <Show value="1"/>
                 </Component>
-            </GameObject>
-        </GameObject>
-        <GameObject instanceId="405">
-            <Tag hash_id="2331119045" srcString="Props"/>
-            <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="0" y="0" z="0"/>
-                <Rotation_Q x="0" y="0" z="0" w="1"/>
-                <Scale x="1" y="1" z="1"/>
-            </Component>
-            <GameObject instanceId="408">
-                <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="101.14497" y="-1.9073486e-06" z="-39.037422"/>
-                    <Rotation_Q x="0" y="0.70710683" z="0" w="0.70710671"/>
-                    <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
-                </Component>
-                <GameObject instanceId="406">
-                    <Tag hash_id="4257772165" srcString="RootNode"/>
-                    <Component name="TransformComponent" hash_id="3882513520">
-                        <Position x="0" y="0" z="0"/>
-                        <Rotation_Q x="0" y="0" z="0" w="1"/>
-                        <Scale x="1" y="1" z="1"/>
-                    </Component>
-                    <GameObject instanceId="407">
-                        <Tag hash_id="1541361718" srcString="cavalete"/>
-                        <Component name="TransformComponent" hash_id="3882513520">
-                            <Position x="0" y="0" z="0"/>
-                            <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
-                            <Scale x="100" y="100" z="100"/>
-                        </Component>
-                        <Component name="IGeometryComponent" hash_id="1162546763">
-                            <GeometryDescs>
-                                <Element>
-                                    <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
-                                    <slotIndex value="0"/>
-                                    <subMeshIndex value="0"/>
-                                </Element>
-                            </GeometryDescs>
-                        </Component>
-                        <Component name="IMaterialComponent" hash_id="308235170">
-                            <MaterialDesc>
-                                <Element>
-                                    <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
-                                    <slotIndex value="0"/>
-                                </Element>
-                            </MaterialDesc>
-                        </Component>
-                        <Component name="IRender3DComponent" hash_id="1184141904"/>
-                    </GameObject>
-                </GameObject>
-            </GameObject>
-            <GameObject instanceId="636">
-                <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
-                <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="100.92899" y="9.4824162e-07" z="-32.855503"/>
-                    <Rotation_Q x="0" y="0.70710677" z="0" w="0.70710677"/>
-                    <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
-                </Component>
-                <GameObject instanceId="406">
-                    <Tag hash_id="4257772165" srcString="RootNode"/>
-                    <Component name="TransformComponent" hash_id="3882513520">
-                        <Position x="0" y="0" z="0"/>
-                        <Rotation_Q x="0" y="0" z="0" w="1"/>
-                        <Scale x="1" y="1" z="1"/>
-                    </Component>
-                    <GameObject instanceId="407">
-                        <Tag hash_id="1541361718" srcString="cavalete"/>
-                        <Component name="TransformComponent" hash_id="3882513520">
-                            <Position x="0" y="0" z="0"/>
-                            <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
-                            <Scale x="100" y="100" z="100"/>
-                        </Component>
-                        <Component name="IGeometryComponent" hash_id="1162546763">
-                            <GeometryDescs>
-                                <Element>
-                                    <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
-                                    <slotIndex value="0"/>
-                                    <subMeshIndex value="0"/>
-                                </Element>
-                            </GeometryDescs>
-                        </Component>
-                        <Component name="IMaterialComponent" hash_id="308235170">
-                            <MaterialDesc>
-                                <Element>
-                                    <isRawShader value="false"/>
-                                    <materialID hash_id="441810431" srcString="PBRTile"/>
-                                    <slotIndex value="0"/>
-                                </Element>
-                            </MaterialDesc>
-                        </Component>
-                        <Component name="IRender3DComponent" hash_id="1184141904"/>
-                    </GameObject>
-                </GameObject>
             </GameObject>
         </GameObject>
         <GameObject instanceId="489">
@@ -31081,6 +30987,484 @@
                                 </Component>
                                 <Component name="IRender3DComponent" hash_id="1184141904"/>
                             </GameObject>
+                        </GameObject>
+                    </GameObject>
+                </GameObject>
+            </GameObject>
+        </GameObject>
+        <GameObject instanceId="2984">
+            <Tag hash_id="2568774794" srcString="trafficeasel"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="0" z="0"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="1" y="1" z="1"/>
+            </Component>
+            <GameObject instanceId="3004">
+                <Tag hash_id="3770819148" srcString="traffic"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-36" y="0" z="-185.45621"/>
+                    <Rotation_Q x="0" y="0.70710683" z="0" w="-0.70710671"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="636">
+                    <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="9.4824162e-07" z="3"/>
+                        <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710683"/>
+                        <Scale x="0.0099999979" y="0.0099999998" z="0.0099999979"/>
+                    </Component>
+                    <GameObject instanceId="406">
+                        <Tag hash_id="4257772165" srcString="RootNode"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <GameObject instanceId="407">
+                            <Tag hash_id="1541361718" srcString="cavalete"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="0" y="0" z="0"/>
+                                <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                                <Scale x="100" y="100" z="100"/>
+                            </Component>
+                            <Component name="IGeometryComponent" hash_id="1162546763">
+                                <GeometryDescs>
+                                    <Element>
+                                        <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
+                                        <slotIndex value="0"/>
+                                        <subMeshIndex value="0"/>
+                                    </Element>
+                                </GeometryDescs>
+                            </Component>
+                            <Component name="IMaterialComponent" hash_id="308235170">
+                                <MaterialDesc>
+                                    <Element>
+                                        <isRawShader value="false"/>
+                                        <materialID hash_id="3770819148" srcString="traffic"/>
+                                        <slotIndex value="0"/>
+                                    </Element>
+                                </MaterialDesc>
+                            </Component>
+                            <Component name="IRender3DComponent" hash_id="1184141904"/>
+                        </GameObject>
+                    </GameObject>
+                </GameObject>
+                <GameObject instanceId="3003">
+                    <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="9.4824162e-07" z="-3"/>
+                        <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710695"/>
+                        <Scale x="0.009999997" y="0.0099999998" z="0.009999997"/>
+                    </Component>
+                    <GameObject instanceId="406">
+                        <Tag hash_id="4257772165" srcString="RootNode"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <GameObject instanceId="407">
+                            <Tag hash_id="1541361718" srcString="cavalete"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="0" y="0" z="0"/>
+                                <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                                <Scale x="100" y="100" z="100"/>
+                            </Component>
+                            <Component name="IGeometryComponent" hash_id="1162546763">
+                                <GeometryDescs>
+                                    <Element>
+                                        <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
+                                        <slotIndex value="0"/>
+                                        <subMeshIndex value="0"/>
+                                    </Element>
+                                </GeometryDescs>
+                            </Component>
+                            <Component name="IMaterialComponent" hash_id="308235170">
+                                <MaterialDesc>
+                                    <Element>
+                                        <isRawShader value="false"/>
+                                        <materialID hash_id="3770819148" srcString="traffic"/>
+                                        <slotIndex value="0"/>
+                                    </Element>
+                                </MaterialDesc>
+                            </Component>
+                            <Component name="IRender3DComponent" hash_id="1184141904"/>
+                        </GameObject>
+                    </GameObject>
+                </GameObject>
+            </GameObject>
+            <GameObject instanceId="3005">
+                <Tag hash_id="3770819148" srcString="traffic"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="-36" y="0" z="-36"/>
+                    <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+                    <Scale x="1" y="1" z="1"/>
+                </Component>
+                <GameObject instanceId="636">
+                    <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="9.4824162e-07" z="3"/>
+                        <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710683"/>
+                        <Scale x="0.0099999979" y="0.0099999998" z="0.0099999979"/>
+                    </Component>
+                    <GameObject instanceId="406">
+                        <Tag hash_id="4257772165" srcString="RootNode"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <GameObject instanceId="407">
+                            <Tag hash_id="1541361718" srcString="cavalete"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="0" y="0" z="0"/>
+                                <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                                <Scale x="100" y="100" z="100"/>
+                            </Component>
+                            <Component name="IGeometryComponent" hash_id="1162546763">
+                                <GeometryDescs>
+                                    <Element>
+                                        <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
+                                        <slotIndex value="0"/>
+                                        <subMeshIndex value="0"/>
+                                    </Element>
+                                </GeometryDescs>
+                            </Component>
+                            <Component name="IMaterialComponent" hash_id="308235170">
+                                <MaterialDesc>
+                                    <Element>
+                                        <isRawShader value="false"/>
+                                        <materialID hash_id="3770819148" srcString="traffic"/>
+                                        <slotIndex value="0"/>
+                                    </Element>
+                                </MaterialDesc>
+                            </Component>
+                            <Component name="IRender3DComponent" hash_id="1184141904"/>
+                        </GameObject>
+                    </GameObject>
+                </GameObject>
+                <GameObject instanceId="3003">
+                    <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="9.4824162e-07" z="-3"/>
+                        <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710695"/>
+                        <Scale x="0.009999997" y="0.0099999998" z="0.009999997"/>
+                    </Component>
+                    <GameObject instanceId="406">
+                        <Tag hash_id="4257772165" srcString="RootNode"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <GameObject instanceId="407">
+                            <Tag hash_id="1541361718" srcString="cavalete"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="0" y="0" z="0"/>
+                                <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                                <Scale x="100" y="100" z="100"/>
+                            </Component>
+                            <Component name="IGeometryComponent" hash_id="1162546763">
+                                <GeometryDescs>
+                                    <Element>
+                                        <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
+                                        <slotIndex value="0"/>
+                                        <subMeshIndex value="0"/>
+                                    </Element>
+                                </GeometryDescs>
+                            </Component>
+                            <Component name="IMaterialComponent" hash_id="308235170">
+                                <MaterialDesc>
+                                    <Element>
+                                        <isRawShader value="false"/>
+                                        <materialID hash_id="3770819148" srcString="traffic"/>
+                                        <slotIndex value="0"/>
+                                    </Element>
+                                </MaterialDesc>
+                            </Component>
+                            <Component name="IRender3DComponent" hash_id="1184141904"/>
+                        </GameObject>
+                    </GameObject>
+                </GameObject>
+            </GameObject>
+            <GameObject instanceId="3006">
+                <Tag hash_id="3770819148" srcString="traffic"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="240" y="0" z="-36"/>
+                    <Rotation_Q x="0" y="1" z="0" w="-1.4901165e-08"/>
+                    <Scale x="0.99999976" y="1" z="0.99999976"/>
+                </Component>
+                <GameObject instanceId="636">
+                    <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="9.4824162e-07" z="3"/>
+                        <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710683"/>
+                        <Scale x="0.0099999979" y="0.0099999998" z="0.0099999979"/>
+                    </Component>
+                    <GameObject instanceId="406">
+                        <Tag hash_id="4257772165" srcString="RootNode"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <GameObject instanceId="407">
+                            <Tag hash_id="1541361718" srcString="cavalete"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="0" y="0" z="0"/>
+                                <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                                <Scale x="100" y="100" z="100"/>
+                            </Component>
+                            <Component name="IGeometryComponent" hash_id="1162546763">
+                                <GeometryDescs>
+                                    <Element>
+                                        <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
+                                        <slotIndex value="0"/>
+                                        <subMeshIndex value="0"/>
+                                    </Element>
+                                </GeometryDescs>
+                            </Component>
+                            <Component name="IMaterialComponent" hash_id="308235170">
+                                <MaterialDesc>
+                                    <Element>
+                                        <isRawShader value="false"/>
+                                        <materialID hash_id="3770819148" srcString="traffic"/>
+                                        <slotIndex value="0"/>
+                                    </Element>
+                                </MaterialDesc>
+                            </Component>
+                            <Component name="IRender3DComponent" hash_id="1184141904"/>
+                        </GameObject>
+                    </GameObject>
+                </GameObject>
+                <GameObject instanceId="3003">
+                    <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="9.4824162e-07" z="-3"/>
+                        <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710695"/>
+                        <Scale x="0.009999997" y="0.0099999998" z="0.009999997"/>
+                    </Component>
+                    <GameObject instanceId="406">
+                        <Tag hash_id="4257772165" srcString="RootNode"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <GameObject instanceId="407">
+                            <Tag hash_id="1541361718" srcString="cavalete"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="0" y="0" z="0"/>
+                                <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                                <Scale x="100" y="100" z="100"/>
+                            </Component>
+                            <Component name="IGeometryComponent" hash_id="1162546763">
+                                <GeometryDescs>
+                                    <Element>
+                                        <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
+                                        <slotIndex value="0"/>
+                                        <subMeshIndex value="0"/>
+                                    </Element>
+                                </GeometryDescs>
+                            </Component>
+                            <Component name="IMaterialComponent" hash_id="308235170">
+                                <MaterialDesc>
+                                    <Element>
+                                        <isRawShader value="false"/>
+                                        <materialID hash_id="3770819148" srcString="traffic"/>
+                                        <slotIndex value="0"/>
+                                    </Element>
+                                </MaterialDesc>
+                            </Component>
+                            <Component name="IRender3DComponent" hash_id="1184141904"/>
+                        </GameObject>
+                    </GameObject>
+                </GameObject>
+            </GameObject>
+            <GameObject instanceId="3007">
+                <Tag hash_id="3770819148" srcString="traffic"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="240" y="0" z="-180"/>
+                    <Rotation_Q x="0" y="1" z="0" w="-1.4901165e-08"/>
+                    <Scale x="0.99999976" y="1" z="0.99999976"/>
+                </Component>
+                <GameObject instanceId="636">
+                    <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="9.4824162e-07" z="3"/>
+                        <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710683"/>
+                        <Scale x="0.0099999979" y="0.0099999998" z="0.0099999979"/>
+                    </Component>
+                    <GameObject instanceId="406">
+                        <Tag hash_id="4257772165" srcString="RootNode"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <GameObject instanceId="407">
+                            <Tag hash_id="1541361718" srcString="cavalete"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="0" y="0" z="0"/>
+                                <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                                <Scale x="100" y="100" z="100"/>
+                            </Component>
+                            <Component name="IGeometryComponent" hash_id="1162546763">
+                                <GeometryDescs>
+                                    <Element>
+                                        <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
+                                        <slotIndex value="0"/>
+                                        <subMeshIndex value="0"/>
+                                    </Element>
+                                </GeometryDescs>
+                            </Component>
+                            <Component name="IMaterialComponent" hash_id="308235170">
+                                <MaterialDesc>
+                                    <Element>
+                                        <isRawShader value="false"/>
+                                        <materialID hash_id="3770819148" srcString="traffic"/>
+                                        <slotIndex value="0"/>
+                                    </Element>
+                                </MaterialDesc>
+                            </Component>
+                            <Component name="IRender3DComponent" hash_id="1184141904"/>
+                        </GameObject>
+                    </GameObject>
+                </GameObject>
+                <GameObject instanceId="3003">
+                    <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="9.4824162e-07" z="-3"/>
+                        <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710695"/>
+                        <Scale x="0.009999997" y="0.0099999998" z="0.009999997"/>
+                    </Component>
+                    <GameObject instanceId="406">
+                        <Tag hash_id="4257772165" srcString="RootNode"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <GameObject instanceId="407">
+                            <Tag hash_id="1541361718" srcString="cavalete"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="0" y="0" z="0"/>
+                                <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                                <Scale x="100" y="100" z="100"/>
+                            </Component>
+                            <Component name="IGeometryComponent" hash_id="1162546763">
+                                <GeometryDescs>
+                                    <Element>
+                                        <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
+                                        <slotIndex value="0"/>
+                                        <subMeshIndex value="0"/>
+                                    </Element>
+                                </GeometryDescs>
+                            </Component>
+                            <Component name="IMaterialComponent" hash_id="308235170">
+                                <MaterialDesc>
+                                    <Element>
+                                        <isRawShader value="false"/>
+                                        <materialID hash_id="3770819148" srcString="traffic"/>
+                                        <slotIndex value="0"/>
+                                    </Element>
+                                </MaterialDesc>
+                            </Component>
+                            <Component name="IRender3DComponent" hash_id="1184141904"/>
+                        </GameObject>
+                    </GameObject>
+                </GameObject>
+            </GameObject>
+            <GameObject instanceId="3008">
+                <Tag hash_id="3770819148" srcString="traffic"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="108" y="0" z="-186"/>
+                    <Rotation_Q x="-0" y="-0.70710671" z="-0" w="0.70710683"/>
+                    <Scale x="0.9999997" y="1" z="0.9999997"/>
+                </Component>
+                <GameObject instanceId="636">
+                    <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="9.4824162e-07" z="3"/>
+                        <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710683"/>
+                        <Scale x="0.0099999979" y="0.0099999998" z="0.0099999979"/>
+                    </Component>
+                    <GameObject instanceId="406">
+                        <Tag hash_id="4257772165" srcString="RootNode"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <GameObject instanceId="407">
+                            <Tag hash_id="1541361718" srcString="cavalete"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="0" y="0" z="0"/>
+                                <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                                <Scale x="100" y="100" z="100"/>
+                            </Component>
+                            <Component name="IGeometryComponent" hash_id="1162546763">
+                                <GeometryDescs>
+                                    <Element>
+                                        <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
+                                        <slotIndex value="0"/>
+                                        <subMeshIndex value="0"/>
+                                    </Element>
+                                </GeometryDescs>
+                            </Component>
+                            <Component name="IMaterialComponent" hash_id="308235170">
+                                <MaterialDesc>
+                                    <Element>
+                                        <isRawShader value="false"/>
+                                        <materialID hash_id="3770819148" srcString="traffic"/>
+                                        <slotIndex value="0"/>
+                                    </Element>
+                                </MaterialDesc>
+                            </Component>
+                            <Component name="IRender3DComponent" hash_id="1184141904"/>
+                        </GameObject>
+                    </GameObject>
+                </GameObject>
+                <GameObject instanceId="3003">
+                    <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="0" y="9.4824162e-07" z="-3"/>
+                        <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710695"/>
+                        <Scale x="0.009999997" y="0.0099999998" z="0.009999997"/>
+                    </Component>
+                    <GameObject instanceId="406">
+                        <Tag hash_id="4257772165" srcString="RootNode"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="0" y="0" z="0"/>
+                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <GameObject instanceId="407">
+                            <Tag hash_id="1541361718" srcString="cavalete"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="0" y="0" z="0"/>
+                                <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
+                                <Scale x="100" y="100" z="100"/>
+                            </Component>
+                            <Component name="IGeometryComponent" hash_id="1162546763">
+                                <GeometryDescs>
+                                    <Element>
+                                        <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
+                                        <slotIndex value="0"/>
+                                        <subMeshIndex value="0"/>
+                                    </Element>
+                                </GeometryDescs>
+                            </Component>
+                            <Component name="IMaterialComponent" hash_id="308235170">
+                                <MaterialDesc>
+                                    <Element>
+                                        <isRawShader value="false"/>
+                                        <materialID hash_id="3770819148" srcString="traffic"/>
+                                        <slotIndex value="0"/>
+                                    </Element>
+                                </MaterialDesc>
+                            </Component>
+                            <Component name="IRender3DComponent" hash_id="1184141904"/>
                         </GameObject>
                     </GameObject>
                 </GameObject>
