@@ -475,18 +475,60 @@ KG::Component::IRigidComponent* KG::Physics::PhysicsScene::QueryRaycast(DirectX:
 
     PxQueryFilterData filter = PxQueryFilterData();
     filter.data.word0 = mask;
-    if (mask == 0) {
-        filter.data.word0 = UINT32_MAX;
-    }
-    if (scene->raycast(org, dir, dst, hit, PxHitFlag::eDEFAULT, filter))
-    {
-        PxU32 hitId = hit.block.shape->getSimulationFilterData().word2;
-        if (myId != hitId)
+    if (mask != 0) {
+        // if (scene->raycast(org, dir, dst, buf, PxHitFlag::eDEFAULT, filter))
+        if (scene->raycast(org, dir, dst, hit, PxHitFlag::eDEFAULT, filter))
         {
-            if (compIndex.count(hitId) != 0)
-                return compIndex[hitId];
+            PxU32 hitId = hit.block.shape->getSimulationFilterData().word2;
+            if (myId != hitId)
+            {
+                if (compIndex.count(hitId) != 0)
+                    return compIndex[hitId];
+            }
+            // for (int i = 0; i < buf.getNbTouches(); ++i)
+            // {
+            //     PxU32 hitId = hit[i].shape->getSimulationFilterData().word2;
+            //     if (myId != hitId)
+            //     {
+            //         if (compIndex.count(hitId) != 0)
+            //             return compIndex[hitId];
+            //     }
+            // }
         }
     }
+    else {
+        //  if (scene->raycast(org, dir, dst, buf))
+        if (scene->raycast(org, dir, dst, hit))
+        {
+            PxU32 hitId = hit.block.shape->getSimulationFilterData().word2;
+            if (myId != hitId)
+            {
+                if (compIndex.count(hitId) != 0)
+                    return compIndex[hitId];
+            }
+            // for (int i = 0; i < buf.getNbTouches(); ++i)
+            // {
+            //     PxU32 hitId = hit[i].shape->getSimulationFilterData().word2;
+            //     if (myId != hitId)
+            //     {
+            //         if (compIndex.count(hitId) != 0)
+            //             return compIndex[hitId];
+            //     }
+            // }
+        }
+    }
+    // if (mask == 0) {
+    //     filter.data.word0 = UINT32_MAX;
+    // }
+    // if (scene->raycast(org, dir, dst, hit, PxHitFlag::eDEFAULT, filter))
+    // {
+    //     PxU32 hitId = hit.block.shape->getSimulationFilterData().word2;
+    //     if (myId != hitId)
+    //     {
+    //         if (compIndex.count(hitId) != 0)
+    //             return compIndex[hitId];
+    //     }
+    // }
     return nullptr;
 }
 

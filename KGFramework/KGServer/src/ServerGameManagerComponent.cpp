@@ -404,39 +404,41 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		this->currentRegion = 0;
 		break;
 	}
-	auto presetName = "Turret";
-	auto presetId = KG::Utill::HashString(presetName);
-	std::uniform_real_distribution<float> randomPos(-region.range, region.range);
-	auto* scene = this->gameObject->GetScene();
-	auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
+	
+	for (int i = 0; i < 2; ++i) {
+		auto presetName = "Turret";
+		auto presetId = KG::Utill::HashString(presetName);
+		std::uniform_real_distribution<float> randomPos(-region.range, region.range);
+		auto* scene = this->gameObject->GetScene();
+		auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
 
-	DirectX::XMFLOAT3 genPos{
-		randomPos(genRegion) + region.position.x,
-		region.position.y + region.heightOffset,
-		region.position.z
-	};
+		DirectX::XMFLOAT3 genPos{
+			(i - 1 / 2) * 10 + region.position.x,
+			region.position.y + region.heightOffset - 1,
+			randomPos(genRegion) + region.position.z
+		};
 
-	KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
-	auto tag = KG::Utill::HashString(presetName);
-	addObjectPacket.objectTag = tag;
-	addObjectPacket.parentTag = 0;
-	addObjectPacket.presetId = tag;
-	addObjectPacket.position = genPos;
+		KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
+		auto tag = KG::Utill::HashString(presetName);
+		addObjectPacket.objectTag = tag;
+		addObjectPacket.parentTag = 0;
+		addObjectPacket.presetId = tag;
+		addObjectPacket.position = genPos;
 
-	auto id = this->server->GetNewObjectId();
-	addObjectPacket.newObjectId = id;
-	comp->SetNetObjectId(id);
-	this->server->SetServerObject(id, comp);
+		auto id = this->server->GetNewObjectId();
+		addObjectPacket.newObjectId = id;
+		comp->SetNetObjectId(id);
+		this->server->SetServerObject(id, comp);
 
-	auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyTurretComponent>();
-	enemyCtrl->SetPosition(genPos);
-	AddEnemyControllerCompoenent(enemyCtrl);
-	enemyCtrl->SetEnemyPresetName(presetName);
-	enemyCtrl->SetSession(session);
-	this->GetGameObject()->GetTransform()->AddChild(comp->GetGameObject()->GetTransform());
-	this->BroadcastPacket(&addObjectPacket);
-
-	/*
+		auto enemyCtrl = comp->GetGameObject()->GetComponent<SEnemyTurretComponent>();
+		enemyCtrl->SetPosition(genPos);
+		AddEnemyControllerCompoenent(enemyCtrl);
+		enemyCtrl->SetEnemyPresetName(presetName);
+		enemyCtrl->SetSession(session);
+		this->GetGameObject()->GetTransform()->AddChild(comp->GetGameObject()->GetTransform());
+		this->BroadcastPacket(&addObjectPacket);
+	}
+	
 	int enemyCount = 6;
 
 	for (int i = 0; i < enemyCount; ++i) {
@@ -467,7 +469,7 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		DirectX::XMFLOAT3 genPos{
 			randomPos(genRegion) + region.position.x,
 			region.position.y + region.heightOffset,
-			(i - enemyCount / 2) * 10 + region.position.z
+			(i - enemyCount / 2) * 8 + region.position.z
 		};
 
 		KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
@@ -492,7 +494,6 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		this->GetGameObject()->GetTransform()->AddChild(comp->GetGameObject()->GetTransform());
 		this->BroadcastPacket(&addObjectPacket);
 	}
-	*/
 	this->SleepEnemy();
 }
 

@@ -857,7 +857,7 @@ void KG::GameFramework::PostSceneFunction()
         ,
             [this](KG::Core::GameObject& obj)
         {
-            obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+            obj.GetTransform()->GetChild()->SetScale(0.03f, 0.03f, 0.03f);
             obj.GetTransform()->GetChild()->AddChild(this->scene->CallPreset("TurretStick"_id)->GetTransform());
             obj.GetTransform()->GetChild()->AddChild(this->scene->CallPreset("TurretGun"_id)->GetTransform());
         }                      

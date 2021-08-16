@@ -86,13 +86,13 @@ namespace KG::Component
 		static constexpr int attackCount = 3;
 
 		int curAttackCount = 0;
-		float rotateSpeed = 30;
+		float rotateSpeed = 1;
 		float attackRange = 70;
 		
 		bool inAttack = false;
-		float										attackInterval = 2;
+		float										attackInterval = 1;
 		float										attackTimer = 0;
-
+		float tempAttackTimer = 0;
 		TransformComponent* gunTransform = nullptr;
 		TurretStateManager* stateManager;
 

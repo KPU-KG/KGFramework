@@ -35,13 +35,7 @@ bool KG::Component::SEnemyTurretComponent::SetTarget()
 		if (d < this->attackRange * this->attackRange) {
 			auto pos = this->transform->GetWorldPosition();
 			auto dir = Math::Vector3::Subtract(targetPos, pos);
-
-			// auto c = this->rigid->GetScene()->QueryRaycast(pos, dir, this->attackRange, rigid->GetId());
-
-			// if (c != nullptr) {
-			// 	if (c->GetFilterGroup() & static_cast<uint32_t>(FilterGroup::ePLAYER))
-					inRangePlayer.push_back(id);
-			// }
+			inRangePlayer.push_back(id);
 		}
 	}
 
@@ -80,13 +74,21 @@ bool KG::Component::SEnemyTurretComponent::Rotate(float elapsedTime)
 	XMFLOAT3 crs;
 	XMStoreFloat3(&crs, XMVector3Cross(XMLoadFloat3(&look), XMLoadFloat3(&dir)));
 
+	crs = Math::Vector3::Normalize(crs);
+
 	float amount = min(abs(angle.x), this->rotateSpeed * elapsedTime);
 
 	if (angle.x < 0)
 		amount *= -1;
 
-	this->gunTransform->RotateAxis(crs, amount);
-	// rigid->SetRotation(this->gunTransform->GetRotation());
+	DirectX::XMFLOAT4 rot;
+	XMStoreFloat4(&rot, XMQuaternionRotationAxis(XMLoadFloat3(&crs), amount));
+	this->gunTransform->Rotate(rot);
+
+	if (this->inAttack) {
+		this->tempAttackTimer += elapsedTime;
+		return true;
+	}
 
 	if (abs(amount) >= abs(angle.x)) {
 		return true;
@@ -110,16 +112,19 @@ bool KG::Component::SEnemyTurretComponent::AttackTarget(float elapsedTime)
 		if (this->curAttackCount >= this->attackCount) {
 			this->curAttackCount = 0;
 			this->inAttack = false;
-			return true;
 		}
+		return true;
 	}
 
 	if (isInAttackDelay) {
-		attackTimer += elapsedTime;
+		attackTimer += elapsedTime + this->tempAttackTimer;
+		this->tempAttackTimer = 0;
 		if (attackTimer >= attackInterval) {
 			isInAttackDelay = false;
 			attackTimer = 0;
 		}
+		if (this->inAttack)
+			return true;
 	}
 
 	return false;
@@ -158,11 +163,14 @@ void KG::Component::SEnemyTurretComponent::Attack(SGameManagerComponent* gameMan
 
 
 	auto targetPos = this->target->GetGameObject()->GetTransform()->GetWorldPosition();
-	targetPos.y += 1;
+	targetPos.y += 0.3;
 	auto origin = this->transform->GetWorldPosition();
-	origin.y += 2;
+	origin.y += 3.5;
 	
-	auto direction = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, origin));
+	// auto direction = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, origin));
+	auto dir = this->gunTransform->GetWorldLook();
+	dir.y *= 0.7;
+	auto direction = Math::Vector3::Normalize(dir);
 
 	KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
 	auto tag = KG::Utill::HashString(presetName);
@@ -244,7 +252,8 @@ void KG::Component::SEnemyTurretComponent::HitBullet()
 
 void KG::Component::SEnemyTurretComponent::Awake()
 {
-	this->isInActive = true;
+	this->isAttacked = true;
+	this->attackRange = 180;
 }
 
 void KG::Component::SEnemyTurretComponent::Destroy()

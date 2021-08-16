@@ -376,7 +376,7 @@ bool KG::Component::SEnemyMechComponent::CheckAttackable()
 
 
 	auto pos = this->transform->GetWorldPosition();
-	pos.y = 0.5;
+	pos.y = 2;
 
 	XMFLOAT3 dir = Math::Vector3::Normalize(Math::Vector3::Subtract(this->target->GetGameObject()->GetTransform()->GetWorldPosition(), pos));
 	uint32_t mask = static_cast<uint32_t>(FilterGroup::ePLAYER);

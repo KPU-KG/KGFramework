@@ -105,7 +105,7 @@ void KG::GameFramework::PostServerFunction()
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			KG::Component::CollisionBox box;
-			box.position = { 0, 3, 0 };
+			box.position = { 0, 3.3, 0 };
 			box.scale = { 4,6,4 };
 			phy->SetCollisionBox(box);
 			phy->SetApply(true);
@@ -133,7 +133,7 @@ void KG::GameFramework::PostServerFunction()
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			KG::Component::CollisionBox box;
-			box.position = { 0, 3, 0 };
+			box.position = { 0, 3.3, 0 };
 			box.scale = { 4,6,4 };
 			phy->SetCollisionBox(box);
 			phy->SetApply(true);
@@ -161,7 +161,7 @@ void KG::GameFramework::PostServerFunction()
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			KG::Component::CollisionBox box;
-			box.position = { 0, 3, 0 };
+			box.position = { 0, 3.3, 0 };
 			box.scale = { 4,6,4 };
 			phy->SetCollisionBox(box);
 			phy->SetApply(true);
@@ -221,20 +221,14 @@ void KG::GameFramework::PostServerFunction()
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			KG::Component::CollisionBox box;
-			box.position = { 0, 2, 0 };
-			box.scale = { 2,4,2 };
+			box.position = { 0, 5, 0 };
+			box.scale = { 6,8,6 };
 			phy->SetCollisionBox(box);
 			phy->SetApply(true);
 			phy->AddFilterGroup(KG::Component::FilterGroup::eENEMY, KG::Component::FilterGroup::eBULLET);
-			// phy->AddFilterGroup(KG::Component::FilterGroup::eNONE, KG::Component::FilterGroup::eBULLET);
 			obj.AddComponent(phy);
 
 			auto* comp = this->networkServer->GetNewEnemyTurretComponent();
-
-			// comp->SetIdleInterval(2);
-			// comp->SetRotateInterval(3);
-			// comp->SetSpeed(3);
-			// comp->SetWanderRange(3);
 			comp->SetRaycastCallback([this, comp](KG::Component::RaycastType type, KG::Component::IRigidComponent* other) {
 				if (type == KG::Component::RaycastType::BULLET_HIT) {
 					comp->HitBullet();
