@@ -11,7 +11,7 @@
 std::random_device rdRegion;
 std::mt19937 genRegion(rdRegion());
 std::uniform_int_distribution<int> randomSpawn(3, 4);
-std::uniform_int_distribution<int> enemyType(0, 1);
+std::uniform_int_distribution<int> enemyType(0, 2);
 
 KG::Component::Region::Region()
 	:
@@ -405,13 +405,27 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		break;
 	}
 
-	int enemyCount = 3;
+	int enemyCount = 6;
 
 	for (int i = 0; i < enemyCount; ++i) {
 		std::uniform_real_distribution<float> randomPos(-region.range, region.range);
 		int type = enemyType(genRegion);
+		const char* presetName;
 
-		auto presetName = "EnemyMech";
+		switch (type) {
+		case 0:
+			presetName = "EnemyMech";
+			break;
+		case 1:
+			presetName = "EnemyMechMetal";
+			break;
+		case 2:
+			presetName = "EnemyMechGreen";
+			break;
+		default:
+			presetName = "EnemyMech";
+			break;
+		}
 
 		auto presetId = KG::Utill::HashString(presetName);
 
@@ -421,7 +435,7 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		DirectX::XMFLOAT3 genPos{
 			randomPos(genRegion) + region.position.x,
 			region.position.y + region.heightOffset,
-			(i - 1) * 10 + region.position.z
+			(i - enemyCount / 2) * 10 + region.position.z
 		};
 
 		KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
@@ -574,7 +588,7 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 		}
 
 		if (enemyGenerator->IsGeneratable() && this->server->isPlay) {
-			if (enemyGenerator->GetScore() < 6) {
+			if (nodeCount < 3) {
 				enemyGenerator->Initialize();
 				enemyGenerator->GenerateEnemy();
 				for (auto& p : playerObjects) {
@@ -582,8 +596,9 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 					enemyGenerator->RegisterPlayerToEnemy(p.first);
 					p.second->playerInfoLock.unlock();
 				}
+				nodeCount += 1;
 			}
-			else if (enemyGenerator->GetScore() < 100) {
+			else if (nodeCount == 3) {
 				enemyGenerator->Initialize();
 				enemyGenerator->GenerateBoss();
 				for (auto& p : playerObjects) {
@@ -591,12 +606,37 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 					enemyGenerator->RegisterPlayerToEnemy(p.first);
 					p.second->playerInfoLock.unlock();
 				}
+				nodeCount += 1;
 			}
-			else if (!isEnd) {// 보스 잡으면 종료 패킷 보내기
+			else if (!isEnd) {
 				isEnd = true;
 				SendEndPacket();
 				GameReset();
 			}
+
+			// if (enemyGenerator->GetScore() < 6) {
+			// 	enemyGenerator->Initialize();
+			// 	enemyGenerator->GenerateEnemy();
+			// 	for (auto& p : playerObjects) {
+			// 		p.second->playerInfoLock.lock();
+			// 		enemyGenerator->RegisterPlayerToEnemy(p.first);
+			// 		p.second->playerInfoLock.unlock();
+			// 	}
+			// }
+			// else if (enemyGenerator->GetScore() < 100) {
+			// 	enemyGenerator->Initialize();
+			// 	enemyGenerator->GenerateBoss();
+			// 	for (auto& p : playerObjects) {
+			// 		p.second->playerInfoLock.lock();
+			// 		enemyGenerator->RegisterPlayerToEnemy(p.first);
+			// 		p.second->playerInfoLock.unlock();
+			// 	}
+			// }
+			// else if (!isEnd) {// 보스 잡으면 종료 패킷 보내기
+			// 	isEnd = true;
+			// 	SendEndPacket();
+			// 	GameReset();
+			// }
 		}
 		if (enemyGenerator->isAttackable) {
 			enemyGenerator->SendAttackPacket(this);

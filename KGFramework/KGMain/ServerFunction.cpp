@@ -127,6 +127,62 @@ void KG::GameFramework::PostServerFunction()
 	);
 
 	this->scene->AddNetworkCreator(
+		KG::Utill::HashString("EnemyMechMetal"),
+		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent* {
+
+			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			KG::Component::CollisionBox box;
+			box.position = { 0, 3, 0 };
+			box.scale = { 4,6,4 };
+			phy->SetCollisionBox(box);
+			phy->SetApply(true);
+			phy->AddFilterGroup(KG::Component::FilterGroup::eENEMY, KG::Component::FilterGroup::eBULLET);
+			obj.AddComponent(phy);
+
+			auto* comp = this->networkServer->GetNewEnemyMechComponent();
+			comp->SetIdleInterval(2);
+			comp->SetRotateInterval(3);
+			comp->SetSpeed(3);
+			comp->SetWanderRange(3);
+			comp->SetRaycastCallback([this, comp](KG::Component::RaycastType type, KG::Component::IRigidComponent* other) {
+				if (type == KG::Component::RaycastType::BULLET_HIT) {
+					comp->HitBullet();
+				}
+				});
+			obj.AddComponent(comp);
+			return comp;
+		}
+	);
+
+	this->scene->AddNetworkCreator(
+		KG::Utill::HashString("EnemyMechGreen"),
+		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent* {
+
+			auto* phy = this->physics->GetNewDynamicRigidComponent();
+			KG::Component::CollisionBox box;
+			box.position = { 0, 3, 0 };
+			box.scale = { 4,6,4 };
+			phy->SetCollisionBox(box);
+			phy->SetApply(true);
+			phy->AddFilterGroup(KG::Component::FilterGroup::eENEMY, KG::Component::FilterGroup::eBULLET);
+			obj.AddComponent(phy);
+
+			auto* comp = this->networkServer->GetNewEnemyMechComponent();
+			comp->SetIdleInterval(2);
+			comp->SetRotateInterval(3);
+			comp->SetSpeed(3);
+			comp->SetWanderRange(3);
+			comp->SetRaycastCallback([this, comp](KG::Component::RaycastType type, KG::Component::IRigidComponent* other) {
+				if (type == KG::Component::RaycastType::BULLET_HIT) {
+					comp->HitBullet();
+				}
+				});
+			obj.AddComponent(comp);
+			return comp;
+		}
+	);
+
+	this->scene->AddNetworkCreator(
 		KG::Utill::HashString("EnemyCrawler"),
 		[this](KG::Core::GameObject& obj) -> KG::Component::IComponent* {
 
