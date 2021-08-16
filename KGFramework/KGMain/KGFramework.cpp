@@ -561,6 +561,66 @@ void KG::GameFramework::PostSceneFunction()
 		}
 		);
 
+	this->scene->AddModelPreset("EnemyMechGreen",
+		[]()
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("mechGreen");
+
+			return std::make_pair(
+				KG::Utill::HashString("mech.fbx"),
+				std::move(a)
+			);
+		}
+		,
+			[this](KG::Core::GameObject& obj)
+		{
+			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::shotSmallCanon);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::walk);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::walkInPlace);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::dead);
+
+			ctrl->SetAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace);
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon);
+			ctrl->SetIgnoreScale(false);
+			ctrl->SetIgnoreTranslate(true);
+			obj.AddComponent(ctrl);
+
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+		);
+
+	this->scene->AddModelPreset("EnemyMechMetal",
+		[]()
+		{
+			KG::Resource::MaterialMatch a;
+			a.defaultMaterial.emplace_back("mechMetal");
+
+			return std::make_pair(
+				KG::Utill::HashString("mech.fbx"),
+				std::move(a)
+			);
+		}
+		,
+			[this](KG::Core::GameObject& obj)
+		{
+			auto* ctrl = this->renderer->GetNewAnimationControllerComponent();
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::shotSmallCanon);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::walk);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::walkInPlace);
+			ctrl->RegisterAnimation("mech.fbx"_id, KG::Component::MechAnimIndex::dead);
+
+			ctrl->SetAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::walkInPlace);
+			ctrl->SetDefaultAnimation(KG::Utill::HashString("mech.fbx"_id), KG::Component::MechAnimIndex::shotSmallCanon);
+			ctrl->SetIgnoreScale(false);
+			ctrl->SetIgnoreTranslate(true);
+			obj.AddComponent(ctrl);
+
+			obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+		}
+		);
+
 	this->scene->AddModelPreset("EnemyCrawler",
 		[]()
 		{
