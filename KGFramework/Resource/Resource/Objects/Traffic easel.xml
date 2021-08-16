@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <SavedGameObject>
-    <GameObject instanceId="408">
+    <GameObject instanceId="636">
         <Tag hash_id="735422160" srcString="Traffic easel.fbx"/>
         <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="37.351364" y="0" z="-28.769955"/>
-            <Rotation_Q x="0" y="0" z="0" w="1"/>
-            <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
+            <Position x="0" y="9.4824162e-07" z="3"/>
+            <Rotation_Q x="-0" y="0.70710665" z="-0" w="0.70710683"/>
+            <Scale x="0.0099999979" y="0.0099999998" z="0.0099999979"/>
         </Component>
         <GameObject instanceId="406">
             <Tag hash_id="4257772165" srcString="RootNode"/>
@@ -21,7 +21,7 @@
                     <Rotation_Q x="-0.70710683" y="0" z="0" w="0.70710671"/>
                     <Scale x="100" y="100" z="100"/>
                 </Component>
-                <Component name="GeometryComponent" hash_id="36578682">
+                <Component name="IGeometryComponent" hash_id="1162546763">
                     <GeometryDescs>
                         <Element>
                             <geometryID hash_id="735422160" srcString="Traffic easel.fbx"/>
@@ -30,16 +30,16 @@
                         </Element>
                     </GeometryDescs>
                 </Component>
-                <Component name="MaterialComponent" hash_id="1886146475">
+                <Component name="IMaterialComponent" hash_id="308235170">
                     <MaterialDesc>
                         <Element>
                             <isRawShader value="false"/>
-                            <materialID hash_id="441810431" srcString="PBRTile"/>
+                            <materialID hash_id="3770819148" srcString="traffic"/>
                             <slotIndex value="0"/>
                         </Element>
                     </MaterialDesc>
                 </Component>
-                <Component name="Render3DComponent" hash_id="4070531333"/>
+                <Component name="IRender3DComponent" hash_id="1184141904"/>
             </GameObject>
         </GameObject>
     </GameObject>
