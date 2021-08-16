@@ -679,17 +679,33 @@
         <Padding byte="8"/>
     </Material>
     <Material id="mechGreen" shaderID="PBRMetalicSmooth" hash_id="1727859923" shaderHashID="1053346762">
-        <Texture byte="4" comment="colorTexture" id="mechGreen_color" hash_id="669674267"/>
-        <Texture byte="4" comment="normalTexture" id="mechGreen_normal" hash_id="558911491"/>
-        <Texture byte="4" comment="maskTexture" id="mechGreen_mask" hash_id="1233950978"/>
+        <Texture byte="4" comment="colorTexture" id="mechGreen_color"/>
+        <Texture byte="4" comment="normalTexture" id="mechGreen_normal"/>
+        <Texture byte="4" comment="maskTexture" id="mechGreen_mask"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="8"/>
     </Material>
     <Material id="mechMetal" shaderID="PBRMetalicSmooth" hash_id="1880629667" shaderHashID="1053346762">
-        <Texture byte="4" comment="colorTexture" id="mechMetal_color" hash_id="1454993451"/>
-        <Texture byte="4" comment="normalTexture" id="mechMetal_normal" hash_id="3925005875"/>
-        <Texture byte="4" comment="maskTexture" id="mechMetal_mask" hash_id="44450354"/>
+        <Texture byte="4" comment="colorTexture" id="mechMetal_color"/>
+        <Texture byte="4" comment="normalTexture" id="mechMetal_normal"/>
+        <Texture byte="4" comment="maskTexture" id="mechMetal_mask"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
+        <Padding byte="8"/>
+    </Material>
+    <Material id="turretGround" shaderID="PBRMetalicSmooth" hash_id="2303068306" shaderHashID="1053346762">
+        <Texture byte="4" comment="colorTexture" id="turretGround_color" hash_id="3490656858"/>
+        <Texture byte="4" comment="normalTexture" id="turretGround_normal" hash_id="4282864408"/>
+        <Texture byte="4" comment="maskTexture" id="turretGround_mask" hash_id="3855602853"/>
+        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
+        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
+        <Padding byte="8"/>
+    </Material>
+    <Material id="turretTower" shaderID="PBRMetalicSmooth" hash_id="2694698210" shaderHashID="1053346762">
+        <Texture byte="4" comment="colorTexture" id="turretTower_color" hash_id="2028297834"/>
+        <Texture byte="4" comment="normalTexture" id="turretTower_normal" hash_id="3957311496"/>
+        <Texture byte="4" comment="maskTexture" id="turretTower_mask" hash_id="3537761493"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="8"/>

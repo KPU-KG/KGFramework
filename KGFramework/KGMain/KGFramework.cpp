@@ -842,6 +842,68 @@ void KG::GameFramework::PostSceneFunction()
 			obj.AddComponent(p);
 		}
 	);
+
+    this->scene->AddModelPreset("Turret",
+        []()
+        {
+            KG::Resource::MaterialMatch a;
+            a.defaultMaterial.emplace_back("turretGround");
+
+            return std::make_pair(
+                KG::Utill::HashString("turretGround"),
+                std::move(a)
+            );
+        }
+        ,
+            [this](KG::Core::GameObject& obj)
+        {
+            obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+            obj.GetTransform()->GetChild()->AddChild(this->scene->CallPreset("TurretStick"_id)->GetTransform());
+            obj.GetTransform()->GetChild()->AddChild(this->scene->CallPreset("TurretGun"_id)->GetTransform());
+        }                      
+        );
+
+    this->scene->AddModelPreset("TurretStick",
+        []()
+        {
+            KG::Resource::MaterialMatch a;
+            a.defaultMaterial.emplace_back("turretTower");
+
+            return std::make_pair(
+                KG::Utill::HashString("turrethigh"),
+                std::move(a)
+            );
+        }
+        ,
+            [this](KG::Core::GameObject& obj)
+        {
+            //obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+        }
+        );
+
+
+    this->scene->AddModelPreset("TurretGun",
+        []()
+        {
+            KG::Resource::MaterialMatch a;
+            a.defaultMaterial.emplace_back("turretTower");
+
+            return std::make_pair(
+                KG::Utill::HashString("turretlow"),
+                std::move(a)
+            );
+        }
+        ,
+            [this](KG::Core::GameObject& obj)
+        {
+            //obj.GetTransform()->GetChild()->SetScale(0.01f, 0.01f, 0.01f);
+        }
+        );
+
+
+
+
+
 	this->scene->AddModelCreator(
 		[this](const KG::Utill::HashString& modelID, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& material)
 		{

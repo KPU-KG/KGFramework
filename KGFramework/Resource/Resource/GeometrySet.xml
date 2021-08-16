@@ -172,4 +172,14 @@
     <Geometry id="VectorDropModel.fbx" fileDir="Resource/Geometry/vector/VectorDropModel.fbx" rawMesh="true" hash_id="3538754280"/>
     <!--CruiseMissile.fbx-->
     <Geometry id="CruiseMissile.fbx" fileDir="Resource/Geometry/missile/Models/CruiseMissile.fbx" rawMesh="true" hash_id="358065974"/>
+    <!--CruiseMissile.fbx-->
+    <Geometry id="CruiseMissile.fbx" fileDir="Resource/Geometry/missile/Models/CruiseMissile.fbx" rawMesh="true" hash_id="358065974"/>
+    <!--CruiseMissile.fbx-->
+    <Geometry id="CruiseMissile.fbx" fileDir="Resource/Geometry/missile/Models/CruiseMissile.fbx" rawMesh="true" hash_id="358065974"/>
+    <!--turretGround-->
+    <Geometry id="turretGround" fileDir="Resource/Geometry/turret/ground/Osmall.fbx" rawMesh="false" hash_id="2303068306"/>
+    <!--turretlow-->
+    <Geometry id="turretlow" fileDir="Resource/Geometry/turret/tower/TBasic_lvl1_top.fbx" rawMesh="false" hash_id="1948754931"/>
+    <!--turrethigh-->
+    <Geometry id="turrethigh" fileDir="Resource/Geometry/turret/tower/TBasic_lvl1_bot.fbx" rawMesh="false" hash_id="168975891"/>
 </GeometrySet>
