@@ -432,4 +432,7 @@
     <Texture id="title_0013_game_clear.DDS" fileDir="Resource/Texture/ui/title_0013_game_clear.DDS" dimension="Texture2D" format="DDS" hash_id="1927438666"/>
     <!--Resource/Texture/ui/title_0013_game_clear.DDS-->
     <Texture id="title_0013_game_clear.DDS" fileDir="Resource/Texture/ui/title_0013_game_clear.DDS" dimension="Texture2D" format="DDS" hash_id="1927438666"/>
+    <!--traffic-->
+    <Texture id="traffic_color" fileDir="Resource/Texture/traffic/color.dds" dimension="Texture2D" format="DDS" hash_id="3951947144"/>
+    <Texture id="traffic_normal" fileDir="Resource/Texture/traffic/normal.dds" dimension="Texture2D" format="DDS" hash_id="719547806"/>
 </TextureSet>
