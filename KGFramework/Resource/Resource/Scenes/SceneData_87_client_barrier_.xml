@@ -95,7 +95,7 @@
                     <textureWidth value="1600"/>
                     <textureHeight value="900"/>
                     <arrayCount value="1"/>
-                    <useScreenSize value="false"/>
+                    <useScreenSize value="true"/>
                     <useCubeRender value="false"/>
                     <useGSCubeRender value="false"/>
                     <useGSArrayRender value="false"/>
