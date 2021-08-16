@@ -117,6 +117,8 @@ namespace KG::Component
 		float starttimer = 0;
 		bool isEnd = false;
 
+		int nodeCount = 0;
+
 	public:
 		void SendEndPacket();
 		concurrency::concurrent_unordered_map<KG::Server::NET_OBJECT_ID, KG::Component::SPlayerComponent*> playerObjects;

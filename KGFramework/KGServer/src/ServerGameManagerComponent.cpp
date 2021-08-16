@@ -588,7 +588,7 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 		}
 
 		if (enemyGenerator->IsGeneratable() && this->server->isPlay) {
-			if (enemyGenerator->GetScore() < 6) {
+			if (nodeCount < 3) {
 				enemyGenerator->Initialize();
 				enemyGenerator->GenerateEnemy();
 				for (auto& p : playerObjects) {
@@ -596,8 +596,9 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 					enemyGenerator->RegisterPlayerToEnemy(p.first);
 					p.second->playerInfoLock.unlock();
 				}
+				nodeCount += 1;
 			}
-			else if (enemyGenerator->GetScore() < 100) {
+			else if (nodeCount == 3) {
 				enemyGenerator->Initialize();
 				enemyGenerator->GenerateBoss();
 				for (auto& p : playerObjects) {
@@ -605,12 +606,37 @@ void KG::Component::SGameManagerComponent::Update(float elapsedTime)
 					enemyGenerator->RegisterPlayerToEnemy(p.first);
 					p.second->playerInfoLock.unlock();
 				}
+				nodeCount += 1;
 			}
-			else if (!isEnd) {// 보스 잡으면 종료 패킷 보내기
+			else if (!isEnd) {
 				isEnd = true;
 				SendEndPacket();
 				GameReset();
 			}
+
+			// if (enemyGenerator->GetScore() < 6) {
+			// 	enemyGenerator->Initialize();
+			// 	enemyGenerator->GenerateEnemy();
+			// 	for (auto& p : playerObjects) {
+			// 		p.second->playerInfoLock.lock();
+			// 		enemyGenerator->RegisterPlayerToEnemy(p.first);
+			// 		p.second->playerInfoLock.unlock();
+			// 	}
+			// }
+			// else if (enemyGenerator->GetScore() < 100) {
+			// 	enemyGenerator->Initialize();
+			// 	enemyGenerator->GenerateBoss();
+			// 	for (auto& p : playerObjects) {
+			// 		p.second->playerInfoLock.lock();
+			// 		enemyGenerator->RegisterPlayerToEnemy(p.first);
+			// 		p.second->playerInfoLock.unlock();
+			// 	}
+			// }
+			// else if (!isEnd) {// 보스 잡으면 종료 패킷 보내기
+			// 	isEnd = true;
+			// 	SendEndPacket();
+			// 	GameReset();
+			// }
 		}
 		if (enemyGenerator->isAttackable) {
 			enemyGenerator->SendAttackPacket(this);
