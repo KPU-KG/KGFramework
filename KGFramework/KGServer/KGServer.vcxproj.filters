@@ -81,6 +81,9 @@
     <ClInclude Include="export\ServerCubeAreaRed.h">
       <Filter>헤더 파일\Component</Filter>
     </ClInclude>
+    <ClInclude Include="export\ServerEnemyTurretComponent.h">
+      <Filter>헤더 파일\Component</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\dllmain.cpp">
@@ -123,6 +126,9 @@
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
     <ClCompile Include="src\ServerCubeAreaRed.cpp">
+      <Filter>소스 파일\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ServerEnemyTurretComponent.cpp">
       <Filter>소스 파일\Component</Filter>
     </ClCompile>
   </ItemGroup>

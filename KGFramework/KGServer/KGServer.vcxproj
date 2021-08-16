@@ -185,6 +185,7 @@
     <ClInclude Include="export\ServerEnemyCrawlerComponent.h" />
     <ClInclude Include="export\ServerEnemyMechComponent.h" />
     <ClInclude Include="export\ServerBaseComponent.h" />
+    <ClInclude Include="export\ServerEnemyTurretComponent.h" />
     <ClInclude Include="export\ServerEnemyUnitComponent.h" />
     <ClInclude Include="export\ServerGameManagerComponent.h" />
     <ClInclude Include="export\ServerLobbyComponent.h" />
@@ -205,6 +206,7 @@
     <ClCompile Include="src\ServerCubeAreaRed.cpp" />
     <ClCompile Include="src\ServerEnemyCrawlerComponent.cpp" />
     <ClCompile Include="src\ServerEnemyMechComponent.cpp" />
+    <ClCompile Include="src\ServerEnemyTurretComponent.cpp" />
     <ClCompile Include="src\ServerEnemyUnitComponent.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">NotUsing</PrecompiledHeader>
     </ClCompile>
