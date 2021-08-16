@@ -412,10 +412,11 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		auto* scene = this->gameObject->GetScene();
 		auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
 
+
 		DirectX::XMFLOAT3 genPos{
-			(i - 1 / 2) * 10 + region.position.x,
+			region.position.x + 15,
 			region.position.y + region.heightOffset - 1,
-			randomPos(genRegion) + region.position.z
+			i * 12 + region.position.z
 		};
 
 		KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
@@ -466,10 +467,17 @@ void KG::Component::EnemyGeneratorComponent::GenerateEnemy()
 		auto* scene = this->gameObject->GetScene();
 		auto* comp = static_cast<SBaseComponent*>(scene->CallNetworkCreator(KG::Utill::HashString(presetName)));
 
+
+		float x = 0;
+		if (i < 3)
+			x = -5;
+		else
+			x = 5;
+
 		DirectX::XMFLOAT3 genPos{
-			randomPos(genRegion) + region.position.x,
+			x + region.position.x,
 			region.position.y + region.heightOffset,
-			(i - enemyCount / 2) * 8 + region.position.z
+		(i % 3) * 12 + region.position.z
 		};
 
 		KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
