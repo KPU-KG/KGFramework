@@ -794,7 +794,7 @@ void KG::GameFramework::PostSceneFunction()
 			rootNode->SetPosition(-23.3, 0, -15.8);
 
 			auto* dynCol = this->physics->GetNewDynamicRigidComponent();
-			dynCol->GetCollisionBox().position.y = 1.0f;
+			dynCol->GetCollisionBox().position.y = 1.05f;
 			dynCol->GetCollisionBox().scale.x = 0.7;
 			dynCol->GetCollisionBox().scale.y = 2.1;
 			dynCol->GetCollisionBox().scale.z = 0.7;

@@ -52,6 +52,10 @@ bool KG::Component::SEnemyTurretComponent::SetTarget()
 bool KG::Component::SEnemyTurretComponent::Rotate(float elapsedTime)
 {
 	if (this->target == nullptr) {
+		this->inAttack = false;
+		this->curAttackCount = 0;
+		this->tempAttackTimer = 0;
+		this->attackTimer = 0;
 		return true;
 	}
 	if (!this->target->isUsing()) {
@@ -169,7 +173,7 @@ void KG::Component::SEnemyTurretComponent::Attack(SGameManagerComponent* gameMan
 	
 	// auto direction = Math::Vector3::Normalize(Math::Vector3::Subtract(targetPos, origin));
 	auto dir = this->gunTransform->GetWorldLook();
-	dir.y *= 0.7;
+	dir.y *= 0.5;
 	auto direction = Math::Vector3::Normalize(dir);
 
 	KG::Packet::SC_ADD_OBJECT addObjectPacket = {};
