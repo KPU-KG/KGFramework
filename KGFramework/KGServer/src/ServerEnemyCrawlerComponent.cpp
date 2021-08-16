@@ -123,6 +123,8 @@ void KG::Component::SEnemyCrawlerComponent::HitBullet() {
 	KG::Packet::SC_ENEMY_HP hp;
 	hp.percentage = float(this->hp) / float(maxHp);
 	this->BroadcastPacket(&hp);
+
+	this->isAttacked;
 }
 
 bool KG::Component::SEnemyCrawlerComponent::IsCharging() const
