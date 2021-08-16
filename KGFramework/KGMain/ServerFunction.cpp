@@ -105,7 +105,7 @@ void KG::GameFramework::PostServerFunction()
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			KG::Component::CollisionBox box;
-			box.position = { 0, 3.3, 0 };
+			box.position = { 0, 3, 0 };
 			box.scale = { 4,6,4 };
 			phy->SetCollisionBox(box);
 			phy->SetApply(true);
@@ -133,7 +133,7 @@ void KG::GameFramework::PostServerFunction()
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			KG::Component::CollisionBox box;
-			box.position = { 0, 3.3, 0 };
+			box.position = { 0, 3, 0 };
 			box.scale = { 4,6,4 };
 			phy->SetCollisionBox(box);
 			phy->SetApply(true);
@@ -161,7 +161,7 @@ void KG::GameFramework::PostServerFunction()
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			KG::Component::CollisionBox box;
-			box.position = { 0, 3.3, 0 };
+			box.position = { 0, 3, 0 };
 			box.scale = { 4,6,4 };
 			phy->SetCollisionBox(box);
 			phy->SetApply(true);
@@ -221,7 +221,7 @@ void KG::GameFramework::PostServerFunction()
 
 			auto* phy = this->physics->GetNewDynamicRigidComponent();
 			KG::Component::CollisionBox box;
-			box.position = { 0, 5, 0 };
+			box.position = { 0, 4.5, 0 };
 			box.scale = { 6,8,6 };
 			phy->SetCollisionBox(box);
 			phy->SetApply(true);
