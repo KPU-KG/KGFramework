@@ -84,7 +84,7 @@ void KG::Component::SPlayerComponent::Update(float elapsedTime)
 
 void KG::Component::SPlayerComponent::Respawn(float elapsedTime) {
 	if (this->respawnTimer > 3.0f) {
-		DirectX::XMFLOAT3 pos(10, 0, networkObjectId * 3);
+		DirectX::XMFLOAT3 pos(10, 1, networkObjectId * 3);
 		this->physics->SetPosition(pos);
 		this->physics->SetVelocity(XMFLOAT3{ 0,0,0 }, 0);
 
