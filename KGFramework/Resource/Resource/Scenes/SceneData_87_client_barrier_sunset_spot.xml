@@ -81,8 +81,8 @@
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="211.96234" y="25.397308" z="-32.069569"/>
-                <Rotation_Q x="-0.17894246" y="-0.7759943" z="0.24093203" w="-0.57631242"/>
+                <Position x="160.76529" y="2.0257494" z="-23.178183"/>
+                <Rotation_Q x="0.064184316" y="0.24603364" z="-0.016114905" w="0.97953194"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
@@ -5150,7 +5150,7 @@
             <GameObject instanceId="83">
                 <Tag hash_id="188330653" srcString="Dumpster.fbx"/>
                 <Component name="TransformComponent" hash_id="3882513520">
-                    <Position x="0.6005249" y="-0.3861033" z="-72.890732"/>
+                    <Position x="0.6005249" y="-0.091252185" z="-72.890732"/>
                     <Rotation_Q x="0" y="0" z="0" w="1"/>
                     <Scale x="1" y="1" z="1"/>
                 </Component>
