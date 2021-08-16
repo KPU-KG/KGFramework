@@ -100,8 +100,8 @@
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="227.78725" y="80.607201" z="-2.1856008"/>
-                <Rotation_Q x="0.14562671" y="-0.86328673" z="0.39795953" w="0.31591958"/>
+                <Position x="31.811672" y="20.285751" z="-153.31566"/>
+                <Rotation_Q x="0.021792078" y="-0.6711297" z="0.019320915" w="0.75724059"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
@@ -29454,7 +29454,7 @@
                 <Tag hash_id="1576330561" srcString="EmptyObject"/>
                 <Component name="TransformComponent" hash_id="3882513520">
                     <Position x="66.889084" y="-1.505064e-05" z="-73.864052"/>
-                    <Rotation_Q x="-0" y="0" z="-0" w="1"/>
+                    <Rotation_Q x="0" y="0.28401542" z="0" w="0.95881939"/>
                     <Scale x="1" y="1" z="1"/>
                 </Component>
                 <Component name="StaticRigidComponent" hash_id="591825997">
