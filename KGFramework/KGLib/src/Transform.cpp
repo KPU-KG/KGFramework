@@ -259,7 +259,7 @@ XMFLOAT3 KG::Component::TransformComponent::GetLook() const
 		auto q = XMLoadFloat4(&this->rotation);
 		auto r = XMVector3Rotate(p, q);
 		XMFLOAT3 result;
-		XMStoreFloat3(&result, r);
+		XMStoreFloat3(&result, XMVector3Normalize(r));
 		return result;
 	}
 }
@@ -280,7 +280,7 @@ XMFLOAT3 KG::Component::TransformComponent::GetUp() const
 		auto q = XMLoadFloat4(&this->rotation);
 		auto r = XMVector3Rotate(p, q);
 		XMFLOAT3 result;
-		XMStoreFloat3(&result, r);
+		XMStoreFloat3(&result, XMVector3Normalize(r));
 		return result;
 	}
 }
@@ -301,7 +301,7 @@ XMFLOAT3 KG::Component::TransformComponent::GetRight() const
 		auto q = XMLoadFloat4(&this->rotation);
 		auto r = XMVector3Rotate(p, q);
 		XMFLOAT3 result;
-		XMStoreFloat3(&result, r);
+		XMStoreFloat3(&result, XMVector3Normalize(r));
 		return result;
 	}
 }
@@ -312,7 +312,7 @@ XMFLOAT3 KG::Component::TransformComponent::GlobalTransformNormal(const XMFLOAT3
 	auto m = XMLoadFloat4x4(&this->GetGlobalWorldMatrix());
 	auto r = XMVector3TransformNormal(p, m);
 	XMFLOAT3 result;
-	XMStoreFloat3(&result, r);
+	XMStoreFloat3(&result, XMVector3Normalize(r));
 	return result;
 }
 
