@@ -363,14 +363,22 @@
     <Texture id="mechCyan_color" fileDir="Resource/Geometry/mech/Texture/mechCyan/color.dds" dimension="Texture2D" format="DDS" hash_id="2169118699"/>
     <Texture id="mechCyan_normal" fileDir="Resource/Geometry/mech/Texture/mechCyan/normal.dds" dimension="Texture2D" format="DDS" hash_id="3571105011"/>
     <Texture id="mechCyan_mask" fileDir="Resource/Geometry/mech/Texture/mechCyan/mask.dds" dimension="Texture2D" format="DDS" hash_id="2112899826"/>
-  <!--mechGreen-->
-  <Texture id="mechGreen_color" fileDir="Resource/Geometry/mech/Texture/mechGreen/color.dds" dimension="Texture2D" format="DDS"/>
-  <Texture id="mechGreen_normal" fileDir="Resource/Geometry/mech/Texture/mechGreen/normal.dds" dimension="Texture2D" format="DDS"/>
-  <Texture id="mechGreen_mask" fileDir="Resource/Geometry/mech/Texture/mechGreen/mask.dds" dimension="Texture2D" format="DDS"/>
-  <!--mechMetal-->
-  <Texture id="mechMetal_color" fileDir="Resource/Geometry/mech/Texture/MechMetal/color.dds" dimension="Texture2D" format="DDS"/>
-  <Texture id="mechMetal_normal" fileDir="Resource/Geometry/mech/Texture/MechMetal/normal.dds" dimension="Texture2D" format="DDS"/>
-  <Texture id="mechMetal_mask" fileDir="Resource/Geometry/mech/Texture/MechMetal/mask.dds" dimension="Texture2D" format="DDS"/>
+    <!--mechGreen-->
+    <Texture id="mechGreen_color" fileDir="Resource/Geometry/mech/Texture/mechGreen/color.dds" dimension="Texture2D" format="DDS" hash_id="669674267"/>
+    <Texture id="mechGreen_normal" fileDir="Resource/Geometry/mech/Texture/mechGreen/normal.dds" dimension="Texture2D" format="DDS" hash_id="558911491"/>
+    <Texture id="mechGreen_mask" fileDir="Resource/Geometry/mech/Texture/mechGreen/mask.dds" dimension="Texture2D" format="DDS" hash_id="1233950978"/>
+    <!--mechMetal-->
+    <Texture id="mechMetal_color" fileDir="Resource/Geometry/mech/Texture/MechMetal/color.dds" dimension="Texture2D" format="DDS" hash_id="1454993451"/>
+    <Texture id="mechMetal_normal" fileDir="Resource/Geometry/mech/Texture/MechMetal/normal.dds" dimension="Texture2D" format="DDS" hash_id="3925005875"/>
+    <Texture id="mechMetal_mask" fileDir="Resource/Geometry/mech/Texture/MechMetal/mask.dds" dimension="Texture2D" format="DDS" hash_id="44450354"/>
+    <!--turretGround-->
+    <Texture id="turretGround_color" fileDir="Resource/Geometry/turret/ground/texture/color.dds" dimension="Texture2D" format="DDS" hash_id="3490656858"/>
+    <Texture id="turretGround_normal" fileDir="Resource/Geometry/turret/ground/texture/normal.dds" dimension="Texture2D" format="DDS" hash_id="4282864408"/>
+    <Texture id="turretGround_mask" fileDir="Resource/Geometry/turret/ground/texture/mask.dds" dimension="Texture2D" format="DDS" hash_id="3855602853"/>
+    <!--turretTower-->
+    <Texture id="turretTower_color" fileDir="Resource/Geometry/turret/tower/texture/color.dds" dimension="Texture2D" format="DDS" hash_id="2028297834"/>
+    <Texture id="turretTower_normal" fileDir="Resource/Geometry/turret/tower/texture/normal.dds" dimension="Texture2D" format="DDS" hash_id="3957311496"/>
+    <Texture id="turretTower_mask" fileDir="Resource/Geometry/turret/tower/texture/mask.dds" dimension="Texture2D" format="DDS" hash_id="3537761493"/>
     <!--missile-->
     <Texture id="missile_color" fileDir="Resource/Geometry/missile/Textures/missile/color.dds" dimension="Texture2D" format="DDS" hash_id="3896858263"/>
     <Texture id="missile_normal" fileDir="Resource/Geometry/missile/Textures/missile/normal.dds" dimension="Texture2D" format="DDS" hash_id="3255239263"/>
