@@ -400,3 +400,5 @@ KGFramework/Resource/KGNetwork.dll
 KGFramework/Resource/KGPhysics.dll
 KGFramework/Resource/KGServer.dll
 KGFramework/Resource/KGRenderer.dll
+KGFramework/Resource/dxcompiler.dll
+KGFramework/Resource/dxil.dll

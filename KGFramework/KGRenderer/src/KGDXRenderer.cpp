@@ -12,6 +12,9 @@
 #include "DescriptorHeapManager.h"
 #include "d3dx12.h"
 #include "Texture.h"
+#include "KGRTXSubRenderer.h"
+
+
 
 using namespace KG::Renderer;
 
@@ -178,6 +181,8 @@ void KGDXRenderer::Initialize()
 
     this->particleGenerator.Initialize();
     this->postProcessor = std::make_unique<PostProcessor>();
+
+    this->CreateDXR();
 }
 
 void KGDXRenderer::Render()
@@ -210,10 +215,31 @@ void KGDXRenderer::Render()
         this->renderTargetResources[this->swapChainBufferIndex].AddTransitionQueue(D3D12_RESOURCE_STATE_RENDER_TARGET);
         ApplyBarrierQueue(this->mainCommandList);
     }
-    this->ShadowMapRender();
-    this->CubeCaemraRender();
-    this->NormalCameraRender();
-    this->CopyMainCamera();
+    if (!this->rtxMain)
+    {
+        this->ShadowMapRender();
+        this->CubeCaemraRender();
+        this->NormalCameraRender();
+        this->CopyMainCamera();
+    }
+    if (this->rtxOn || this->rtxMain)
+    {
+        this->dxrRenderer->Render();
+    }
+    if (this->rtxMain)
+    {
+        PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Present MainCamera On DXR");
+        for (KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem)
+        {
+            if (camera.isMainCamera)
+            {
+                this->postProcessor->CopyToSwapchainOnDXR(this->mainCommandList, this->dxrRenderer->GetRenderTarget(), this->renderTargetResources[this->swapChainBufferIndex]);
+            }
+        }
+        PIXEndEvent(mainCommandList);
+    }
+
+
     this->EditorUIRender();
 
     hResult = this->mainCommandList->Close();
@@ -598,9 +624,17 @@ KG::Component::ICubeCameraComponent* KG::Renderer::KGDXRenderer::GetNewCubeCamer
 
 void KG::Renderer::KGDXRenderer::DebugUIRender()
 {
+    float sizeX = (ImGui::GetColumnWidth()) - 10.0f;
+    ImGui::Checkbox("DXR ON", &this->rtxOn);
+    ImGui::Checkbox("DXR MAIN", &this->rtxMain);
+    if (ImGui::TreeNode("DXR"))
+    {
+        auto ptr = this->dxrRenderer->GetRenderTarget().GetDescriptor(DescriptorType::SRV).GetGPUHandle().ptr;
+        ImGui::TextureView((ImTextureID)ptr, ImVec2(sizeX, sizeX * (9.0f / 16.0f)), "DXR Result");
+        ImGui::TreePop();
+    }
     if (ImGui::TreeNode("RenderTexture : deferred render"))
     {
-        float sizeX = (ImGui::GetColumnWidth()) - 10.0f;
         for (auto& camera : this->graphicSystems->cameraSystem)
         {
             if (camera.isMainCamera)
@@ -788,6 +822,18 @@ void KG::Renderer::KGDXRenderer::QueryHardwareFeature()
     {
         DebugNormalMessage("D3D12 Stencil Ref Not Supported");
     }
+}
+
+void KG::Renderer::KGDXRenderer::CreateDXR()
+{
+    this->dxrRenderer = new RTX::KGRTXSubRenderer();
+    RTX::Setting setting;
+    setting.setting = this->setting;
+    RTX::DXInterface dxInter;
+    dxInter.commandList = this->mainCommandList;
+    dxInter.device = this->d3dDevice;
+    dxInter.heap = this->descriptorHeapManager.get();
+    this->dxrRenderer->Initialize(setting, dxInter);
 }
 
 void KG::Renderer::KGDXRenderer::CreateD3DDevice()

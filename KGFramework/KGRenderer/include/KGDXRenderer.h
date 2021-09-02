@@ -12,10 +12,15 @@ namespace KG::Renderer
     class KGRenderEngine;
     class PostProcessor;
     class DescriptorHeapManager;
+    namespace RTX
+    {
+        class KGRTXSubRenderer;
+    };
     struct RenderTexture;
     using std::vector;
     class KGDXRenderer : public IKGRenderer
     {
+        friend class RTX::KGRTXSubRenderer;
     private:
         IDXGIFactory4* dxgiFactory = nullptr;
         IDXGISwapChain3* swapChain = nullptr;
@@ -23,6 +28,8 @@ namespace KG::Renderer
         ID3D12Device* d3dDevice = nullptr;
 
         UINT swapChainBufferIndex = 0;
+
+        RTX::KGRTXSubRenderer* dxrRenderer;
 
         //vector<ID3D12Resource*> renderTargetBuffers;
         //ID3D12DescriptorHeap* rtvDescriptorHeap = nullptr;
@@ -46,6 +53,8 @@ namespace KG::Renderer
 
         bool isWireFrame = false;
         bool isRenderEditUI = false;
+        bool rtxOn = true;
+        bool rtxMain = true;
 
         size_t imguiFontDescIndex = 0;
 
@@ -63,6 +72,8 @@ namespace KG::Renderer
 
     private:
         void QueryHardwareFeature();
+
+        void CreateDXR();
 
         void CreateD3DDevice();
         void CreateSwapChain();

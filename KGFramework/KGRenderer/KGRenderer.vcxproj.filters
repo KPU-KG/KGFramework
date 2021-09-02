@@ -85,6 +85,9 @@
     <Filter Include="헤더 파일\Fake\FakeComponent">
       <UniqueIdentifier>{5e1a87eb-e267-4504-82d6-9edc9d9d7939}</UniqueIdentifier>
     </Filter>
+    <Filter Include="소스 파일\KGDXRenderer\RTX">
+      <UniqueIdentifier>{e493751b-072a-41e6-895c-cf374068e444}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\pch.cpp">
@@ -215,6 +218,9 @@
     </ClCompile>
     <ClCompile Include="src\PostProcessComponent.cpp">
       <Filter>소스 파일\KGDXRenderer\Component</Filter>
+    </ClCompile>
+    <ClCompile Include="src_rtx\KGRTXSubRenderer.cpp">
+      <Filter>소스 파일\KGDXRenderer\Core</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -424,6 +430,9 @@
     </ClInclude>
     <ClInclude Include="include\KGDX12Resource.h">
       <Filter>헤더 파일\KGDXRenderer\Core\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="include_rtx\KGRTXSubRenderer.h">
+      <Filter>헤더 파일\KGDXRenderer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

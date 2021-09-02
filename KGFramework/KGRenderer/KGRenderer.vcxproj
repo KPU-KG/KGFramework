@@ -144,7 +144,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)include_fake;$(ProjectDir)Include;$(SolutionDir)KGLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)include_fake;$(ProjectDir)Include_rtx;$(ProjectDir)Include;$(SolutionDir)KGLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -168,7 +168,7 @@
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
-      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)include_fake;$(ProjectDir)Include;$(SolutionDir)KGLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectDir)export;$(ProjectDir)include_fake;$(ProjectDir)Include_rtx;$(ProjectDir)Include;$(SolutionDir)KGLib\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -231,6 +231,7 @@
     <ClCompile Include="src\ResourceContainer.cpp" />
     <ClCompile Include="src\ShadowCasterComponent.cpp" />
     <ClCompile Include="src\Texture.cpp" />
+    <ClCompile Include="src_rtx\KGRTXSubRenderer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="export\FakePostProcessComponent.h" />
@@ -302,6 +303,7 @@
     <ClInclude Include="include_fake\FakeShadowCasterComponent.h" />
     <ClInclude Include="include_fake\FakeSystems.h" />
     <ClInclude Include="include_fake\KGFakeRenderer.h" />
+    <ClInclude Include="include_rtx\KGRTXSubRenderer.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KGLib\KGLib.vcxproj">

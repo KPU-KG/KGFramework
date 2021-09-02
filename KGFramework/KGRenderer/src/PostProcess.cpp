@@ -348,6 +348,13 @@ void KG::Renderer::PostProcessor::CopyToSwapchain(ID3D12GraphicsCommandList* cmd
     cmdList->CopyResource(swapchain, bufferLDR);
 }
 
+void KG::Renderer::PostProcessor::CopyToSwapchainOnDXR(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, KG::Resource::DXResource& swapchain)
+{
+    auto* rootSignature = KGDXRenderer::GetInstance()->GetPostProcessRootSignature();
+    cmdList->SetComputeRootSignature(rootSignature);
+    this->CopyToSwapchain(cmdList, target, swapchain);
+}
+
 void KG::Renderer::PostProcessor::CopyToOutput(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, RenderTexture& renderTexture, size_t cubeIndex)
 {
     auto prev = this->currentOutputIndex == 0 ? 1 : 0;

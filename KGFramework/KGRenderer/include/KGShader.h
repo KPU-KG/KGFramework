@@ -18,6 +18,7 @@ namespace KG::Renderer
 		GS_5_0, GS_5_1,
 		HS_5_0, HS_5_1,
 		PS_5_0, PS_5_1,
+
 	};
 
 	enum ShaderGroup
