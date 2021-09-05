@@ -156,7 +156,7 @@ bool KG::GameFramework::Initialize(const EngineDesc& engineDesc, const Setting& 
 		KG::Utill::HashString("Soldier@WalkLeft.fbx"),
 		KG::Utill::HashString("Soldier@WalkRight.fbx"),
 	};
-	this->renderer->PreloadModels(std::move(preLoads));
+	//this->renderer->PreloadModels(std::move(preLoads));
 
 
 	this->PostSceneFunction();

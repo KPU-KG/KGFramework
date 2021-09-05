@@ -69,6 +69,13 @@ namespace KG::Renderer
 		ID3D12Resource** ppd3dUploadBuffer = nullptr
 	);
 
+    ID3D12Resource* CreateASBufferResource(
+        ID3D12Device* pd3dDevice,
+        ID3D12GraphicsCommandList* pd3dCommandList,
+        UINT nBytes,
+        D3D12_RESOURCE_STATES d3dResourceStates
+    );
+
 	ID3D12Resource* CreateRenderTargetResource(
 		ID3D12Device* pd3dDevice,
 		size_t width,

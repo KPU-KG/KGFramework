@@ -56,6 +56,7 @@ namespace KG::Renderer
         bool rtxOn = true;
         bool rtxMain = true;
 
+
         size_t imguiFontDescIndex = 0;
 
         double gameTime = 0.0f;
@@ -166,6 +167,16 @@ namespace KG::Renderer
         {
             return this->postProcessor.get();
         };
+
+        auto* GetRayRender() const
+        {
+            return this->dxrRenderer;
+        }
+
+        bool isRayRender() const
+        {
+            return rtxOn || rtxMain;
+        }
 
         static KGDXRenderer* GetInstance();
         ID3D12RootSignature* GetGeneralRootSignature() const;

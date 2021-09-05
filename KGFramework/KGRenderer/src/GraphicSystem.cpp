@@ -57,6 +57,22 @@ void KG::System::Render3DSystem::OnProcessCulling(const DirectX::BoundingFrustum
     }
 }
 
+void KG::System::Render3DSystem::OnPostDXR()
+{
+    for (Render3DComponent& com : this->pool)
+    {
+        com.OnPostDXR();
+    }
+}
+
+void KG::System::Render3DSystem::OnUpdateTLAS(ID3D12Device5* device, ID3D12GraphicsCommandList4* cmdList)
+{
+    for (Render3DComponent& com : this->pool)
+    {
+        com.OnUpdateTLAS(device, cmdList);
+    }
+}
+
 void KG::System::MaterialSystem::OnGetNewComponent(MaterialComponent* target)
 {
 }

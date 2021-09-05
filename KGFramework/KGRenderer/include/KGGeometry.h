@@ -66,8 +66,13 @@ namespace KG::Renderer
 		D3D12_VERTEX_BUFFER_VIEW vertexBufferView;
 		D3D12_INDEX_BUFFER_VIEW indexBufferView;
 		D3D12_PRIMITIVE_TOPOLOGY primitiveTopology = D3D_PRIMITIVE_TOPOLOGY::D3D10_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-
+    public:
+        ID3D12Resource* blasScratch = nullptr;
+        ID3D12Resource* blasResult = nullptr;
+        std::wstring debugName = L"NONAME";
+    private:
         bool isLoaded = false;
+        bool isLoadedDXR = false;
 	public:
         DirectX::BoundingBox aabb;
 		/// @brief 해당 지오메트리를 렌더합니다.
@@ -75,9 +80,14 @@ namespace KG::Renderer
 		/// @param nInstance 렌더할 지오메트리의 인스턴스 갯수입니다.
 		virtual void Render(ID3D12GraphicsCommandList* commandList, UINT nInstance);
 		void Load( ID3D12Device* device, ID3D12GraphicsCommandList* commandList );
+        void LoadToDXR(ID3D12Device5* device, ID3D12GraphicsCommandList4* commandList);
         void CreateAABB();
 		void CreateFromMeshData( const KG::Utill::MeshData& data );
 		void CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY topology, int vertexCount );
+        auto isFake() const
+        {
+            return this->fakeVertexCount;
+        }
         auto GetCounts() const
         {
             return std::make_pair(this->vertices.size(), this->indices.size());
@@ -86,9 +96,17 @@ namespace KG::Renderer
 		{
 			return isLoaded;
 		};
+        auto IsLoadedDXR() const
+        {
+            return isLoadedDXR;
+        };
 		auto HasBone() const
 		{
 			return this->hasBone;
 		};
+        auto GetBLAS() const
+        {
+            return this->blasResult->GetGPUVirtualAddress();
+        }
 	};
 };

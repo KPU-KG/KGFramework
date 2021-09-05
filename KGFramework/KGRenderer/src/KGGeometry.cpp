@@ -101,6 +101,7 @@ void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandLi
 	{
 		this->vertexBuffer = CreateBufferResource( device, commandList, (void*)this->vertices.data(), this->vertices.size() * sizeof( NormalVertex ),
 			D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, &this->vertexUploadBuffer );
+        this->vertexBuffer->SetName(this->debugName.c_str());
 
 		this->vertexBufferView.BufferLocation = this->vertexBuffer->GetGPUVirtualAddress();
 		this->vertexBufferView.StrideInBytes = sizeof( NormalVertex );
@@ -124,6 +125,61 @@ void KG::Renderer::Geometry::Load( ID3D12Device* device, ID3D12GraphicsCommandLi
 	}
     auto result = f.get();
     std::cout << "aabb createed" << std::endl;
+}
+
+void KG::Renderer::Geometry::LoadToDXR(ID3D12Device5* device, ID3D12GraphicsCommandList4* commandList)
+{
+    if (!this->IsLoaded()) this->Load(device, commandList);
+    D3D12_RAYTRACING_GEOMETRY_DESC rtgDesc;
+    ZeroDesc(rtgDesc);
+    rtgDesc.Type = D3D12_RAYTRACING_GEOMETRY_TYPE::D3D12_RAYTRACING_GEOMETRY_TYPE_TRIANGLES;
+    rtgDesc.Flags = D3D12_RAYTRACING_GEOMETRY_FLAGS::D3D12_RAYTRACING_GEOMETRY_FLAG_OPAQUE;
+    //Vertex
+    rtgDesc.Triangles.VertexBuffer.StartAddress = this->vertexBuffer->GetGPUVirtualAddress();
+    rtgDesc.Triangles.VertexBuffer.StrideInBytes = sizeof(NormalVertex);
+    rtgDesc.Triangles.VertexCount = this->vertices.size();
+    rtgDesc.Triangles.VertexFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+    //Index
+    rtgDesc.Triangles.IndexBuffer = this->indexBuffer->GetGPUVirtualAddress();
+    rtgDesc.Triangles.IndexCount = this->indices.size();
+    rtgDesc.Triangles.IndexFormat = DXGI_FORMAT_R32_UINT;
+    //Transform
+    rtgDesc.Triangles.Transform3x4 = 0;
+    
+    D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS inputs;
+    ZeroDesc(inputs);
+    inputs.Type = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL;
+    inputs.Flags = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_NONE;
+    inputs.NumDescs = 1;
+    inputs.DescsLayout = D3D12_ELEMENTS_LAYOUT_ARRAY;
+    inputs.pGeometryDescs = &rtgDesc;
+
+    D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO prebuild;
+    device->GetRaytracingAccelerationStructurePrebuildInfo(&inputs, &prebuild);
+    this->blasResult = CreateASBufferResource(device, commandList, prebuild.ResultDataMaxSizeInBytes, D3D12_RESOURCE_STATE_RAYTRACING_ACCELERATION_STRUCTURE);
+    this->blasScratch = CreateASBufferResource(device, commandList, prebuild.ScratchDataSizeInBytes, D3D12_RESOURCE_STATE_COMMON);
+
+    D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC buildDesc;
+    ZeroDesc(buildDesc);
+    buildDesc.Inputs = inputs;
+    buildDesc.DestAccelerationStructureData = this->blasResult->GetGPUVirtualAddress();
+    buildDesc.ScratchAccelerationStructureData = this->blasScratch->GetGPUVirtualAddress();
+    {
+        D3D12_RESOURCE_BARRIER barrier[2] = {
+            CD3DX12_RESOURCE_BARRIER::Transition(this->vertexBuffer, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE),
+            CD3DX12_RESOURCE_BARRIER::Transition(this->indexBuffer, D3D12_RESOURCE_STATE_INDEX_BUFFER, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE),
+        };
+        commandList->ResourceBarrier(2, barrier);
+    }
+    commandList->BuildRaytracingAccelerationStructure(&buildDesc, 0, nullptr);
+    {
+        D3D12_RESOURCE_BARRIER barrier[2] = {
+            CD3DX12_RESOURCE_BARRIER::Transition(this->vertexBuffer, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER),
+            CD3DX12_RESOURCE_BARRIER::Transition(this->indexBuffer, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_INDEX_BUFFER),
+        };
+        commandList->ResourceBarrier(2, barrier);
+    }
+    isLoadedDXR = true;
 }
 
 void KG::Renderer::Geometry::CreateAABB()

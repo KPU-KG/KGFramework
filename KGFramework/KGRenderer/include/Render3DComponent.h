@@ -35,12 +35,15 @@ namespace KG::Component
 		virtual void OnCreate( KG::Core::GameObject* gameObject ) override;
         int cullingIndex = -1;
         int updateIndex = -1;
+        std::vector<UINT> dxrIndexs;
 	public:
 		bool isVisible = true;
 		virtual void OnRender( ID3D12GraphicsCommandList* commadList ) override;
 		virtual void OnPreRender() override;
         virtual void CullingProcess(const DirectX::BoundingFrustum& frustum);
 		virtual void SetVisible( bool visible ) override;
+        void OnPostDXR();
+        void OnUpdateTLAS(ID3D12Device5* device, ID3D12GraphicsCommandList4* cmdList);
 		void SetReflectionProbe( CubeCameraComponent* probe );
 		void RemoveJobs();
 		virtual void ReloadRender() override;

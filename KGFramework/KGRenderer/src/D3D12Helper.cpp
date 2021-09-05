@@ -27,7 +27,7 @@ ID3D12Resource* KG::Renderer::CreateBufferResource(ID3D12Device* pd3dDevice, ID3
 	d3dResourceDesc.SampleDesc.Count = 1;
 	d3dResourceDesc.SampleDesc.Quality = 0;
 	d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
-	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
+	d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
 
 	D3D12_RESOURCE_STATES d3dResourceInitialStates = D3D12_RESOURCE_STATE_COPY_DEST;
 
@@ -55,6 +55,7 @@ ID3D12Resource* KG::Renderer::CreateBufferResource(ID3D12Device* pd3dDevice, ID3
 		{
 			if (ppd3dUploadBuffer)
 			{
+                d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_NONE;
 				d3dHeapPropertiesDesc.Type = D3D12_HEAP_TYPE_UPLOAD;
 				auto result = pd3dDevice->CreateCommittedResource(&d3dHeapPropertiesDesc,
 					D3D12_HEAP_FLAG_NONE, &d3dResourceDesc, D3D12_RESOURCE_STATE_GENERIC_READ, nullptr,
@@ -96,6 +97,41 @@ ID3D12Resource* KG::Renderer::CreateBufferResource(ID3D12Device* pd3dDevice, ID3
 	}
 	return pd3dBuffer;
 
+}
+
+ID3D12Resource* KG::Renderer::CreateASBufferResource(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nBytes, D3D12_RESOURCE_STATES d3dResourceStates)
+{
+    ID3D12Resource* pd3dBuffer = nullptr;
+
+    D3D12_HEAP_PROPERTIES d3dHeapPropertiesDesc;
+    ZeroDesc(d3dHeapPropertiesDesc);
+    d3dHeapPropertiesDesc.Type = D3D12_HEAP_TYPE_DEFAULT;
+    d3dHeapPropertiesDesc.CPUPageProperty = D3D12_CPU_PAGE_PROPERTY_UNKNOWN;
+    d3dHeapPropertiesDesc.MemoryPoolPreference = D3D12_MEMORY_POOL_UNKNOWN;
+    d3dHeapPropertiesDesc.CreationNodeMask = 1;
+    d3dHeapPropertiesDesc.VisibleNodeMask = 1;
+
+    D3D12_RESOURCE_DESC d3dResourceDesc;
+    ZeroDesc(d3dResourceDesc);
+    d3dResourceDesc.Dimension = D3D12_RESOURCE_DIMENSION_BUFFER;
+    d3dResourceDesc.Alignment = 0;
+    d3dResourceDesc.Width = nBytes;
+    d3dResourceDesc.Height = 1;
+    d3dResourceDesc.DepthOrArraySize = 1;
+    d3dResourceDesc.MipLevels = 1;
+    d3dResourceDesc.Format = DXGI_FORMAT_UNKNOWN;
+    d3dResourceDesc.SampleDesc.Count = 1;
+    d3dResourceDesc.SampleDesc.Quality = 0;
+    d3dResourceDesc.Layout = D3D12_TEXTURE_LAYOUT_ROW_MAJOR;
+    d3dResourceDesc.Flags = D3D12_RESOURCE_FLAG_ALLOW_UNORDERED_ACCESS;
+
+    HRESULT hResult = pd3dDevice->CreateCommittedResource(
+        &d3dHeapPropertiesDesc, D3D12_HEAP_FLAG_NONE, &d3dResourceDesc,
+        d3dResourceStates, nullptr, IID_PPV_ARGS(&pd3dBuffer)
+    );
+
+    ThrowIfFailed(hResult);
+    return pd3dBuffer;
 }
 
 ID3D12Resource* KG::Renderer::CreateRenderTargetResource( ID3D12Device* pd3dDevice, size_t width, size_t height, DXGI_FORMAT format )

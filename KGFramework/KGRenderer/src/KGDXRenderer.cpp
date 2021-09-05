@@ -224,6 +224,10 @@ void KGDXRenderer::Render()
     }
     if (this->rtxOn || this->rtxMain)
     {
+        this->graphicSystems->render3DSystem.OnPostDXR();
+        this->dxrRenderer->ReallocateInstanceBuffer();
+        this->graphicSystems->render3DSystem.OnUpdateTLAS(this->dxrRenderer->GetDevice(), this->dxrRenderer->GetCommandList());
+        this->dxrRenderer->BuildTLAS();
         this->dxrRenderer->Render();
     }
     if (this->rtxMain)
