@@ -130,6 +130,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Compute", "Compute", "{806B
 		Resource\Resource\ShaderScript\Compute_SSAO_TWO.hlsl = Resource\Resource\ShaderScript\Compute_SSAO_TWO.hlsl
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DXR", "DXR", "{4825802F-8794-4D50-AE5B-C871C5AEF8ED}"
+	ProjectSection(SolutionItems) = preProject
+		Resource\Resource\ShaderScript\DXR\Define.hlsl = Resource\Resource\ShaderScript\DXR\Define.hlsl
+		Resource\Resource\ShaderScript\DXR\HitMiss.hlsl = Resource\Resource\ShaderScript\DXR\HitMiss.hlsl
+		Resource\Resource\ShaderScript\DXR\RAY_GEN.hlsl = Resource\Resource\ShaderScript\DXR\RAY_GEN.hlsl
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -209,6 +216,7 @@ Global
 		{43F92087-EC1C-4518-9AE2-D3F2971C21F3} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
 		{96B900F6-5155-42BF-9A04-808233534E8B} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
 		{806BF353-281F-4440-BEE1-9C5C6E2D78E8} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
+		{4825802F-8794-4D50-AE5B-C871C5AEF8ED} = {612EE3CC-1D6B-4E8F-8C11-7510E32215FA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {EA476DDC-7B81-4DFD-9585-518EB4B6393F}

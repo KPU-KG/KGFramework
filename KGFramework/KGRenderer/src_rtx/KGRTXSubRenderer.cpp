@@ -58,7 +58,7 @@ static struct HLSLCompiler
         result->GetErrorBuffer(&error);
         if (error != nullptr && error->GetBufferSize() != 0)
         {
-            DebugErrorMessage(L"DXC ERROR : " << error->GetBufferPointer());
+            DebugErrorMessage(L"DXC ERROR : " << (LPCSTR)error->GetBufferPointer());
         }
         result->GetResult(&blob);
         return blob;
@@ -69,7 +69,8 @@ static HLSLCompiler hlslCompiler;
 
 static struct ShaderTable
 {
-    struct ShaderParam
+    //256 Á¤·Ä
+    struct __declspec(align(256)) ShaderParam
     {
         char shaderIdentifier[D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES];
         UINT64 rootParams[1];
@@ -152,7 +153,7 @@ void KG::Renderer::RTX::KGRTXSubRenderer::CreateRootSignature()
 {
     HRESULT result;
     constexpr UINT rangeCount = 1;
-    constexpr UINT rootParamCount = 1;
+    constexpr UINT rootParamCount = 3;
     D3D12_DESCRIPTOR_RANGE rtvRange[rangeCount]{};
     rtvRange[0].RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
     rtvRange[0].NumDescriptors = 1;
@@ -164,6 +165,14 @@ void KG::Renderer::RTX::KGRTXSubRenderer::CreateRootSignature()
     rootParameter[0].ParameterType = D3D12_ROOT_PARAMETER_TYPE::D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
     rootParameter[0].DescriptorTable.NumDescriptorRanges = 1;
     rootParameter[0].DescriptorTable.pDescriptorRanges = rtvRange;
+
+    rootParameter[1].ParameterType = D3D12_ROOT_PARAMETER_TYPE::D3D12_ROOT_PARAMETER_TYPE_SRV;
+    rootParameter[1].Descriptor.RegisterSpace = 0;
+    rootParameter[1].Descriptor.ShaderRegister = 0;
+
+    rootParameter[2].ParameterType = D3D12_ROOT_PARAMETER_TYPE::D3D12_ROOT_PARAMETER_TYPE_CBV;
+    rootParameter[2].Descriptor.RegisterSpace = 0;
+    rootParameter[2].Descriptor.ShaderRegister = 0;
 
     D3D12_ROOT_SIGNATURE_DESC rootSignatureDesc{};
     rootSignatureDesc.NumParameters = rootParamCount;
@@ -185,25 +194,58 @@ void KG::Renderer::RTX::KGRTXSubRenderer::CreateRootSignature()
 void KG::Renderer::RTX::KGRTXSubRenderer::CreateStateObject()
 {
     HRESULT result;
-    auto* blob = hlslCompiler.CompileShader(L"Resource/ShaderScript/DXR/RAY_GEN.hlsl");
+    auto* rayGenblob = hlslCompiler.CompileShader(L"Resource/ShaderScript/DXR/RAY_GEN.hlsl");
+    auto* hitMissGenblob = hlslCompiler.CompileShader(L"Resource/ShaderScript/DXR/HitMiss.hlsl");
 
     D3D12_EXPORT_DESC rayGenExport;
     rayGenExport.Name = L"RayGeneration";
     rayGenExport.ExportToRename = nullptr;
     rayGenExport.Flags = D3D12_EXPORT_FLAG_NONE;
 
+    D3D12_EXPORT_DESC hitMissExport[2];
+    hitMissExport[0].Name = L"Hit";
+    hitMissExport[0].ExportToRename = nullptr;
+    hitMissExport[0].Flags = D3D12_EXPORT_FLAG_NONE;
+
+    hitMissExport[1].Name = L"Miss";
+    hitMissExport[1].ExportToRename = nullptr;
+    hitMissExport[1].Flags = D3D12_EXPORT_FLAG_NONE;
+
+
     D3D12_DXIL_LIBRARY_DESC rayGenerationLibDesc;
-    rayGenerationLibDesc.DXILLibrary.pShaderBytecode = blob->GetBufferPointer();
-    rayGenerationLibDesc.DXILLibrary.BytecodeLength = blob->GetBufferSize();
+    rayGenerationLibDesc.DXILLibrary.pShaderBytecode = rayGenblob->GetBufferPointer();
+    rayGenerationLibDesc.DXILLibrary.BytecodeLength = rayGenblob->GetBufferSize();
     rayGenerationLibDesc.NumExports = 1;
     rayGenerationLibDesc.pExports = &rayGenExport;
 
-    D3D12_STATE_SUBOBJECT shaders;
-    shaders.Type = D3D12_STATE_SUBOBJECT_TYPE_DXIL_LIBRARY;
-    shaders.pDesc = &rayGenerationLibDesc;
+    D3D12_DXIL_LIBRARY_DESC hitMissLibDesc;
+    hitMissLibDesc.DXILLibrary.pShaderBytecode = hitMissGenblob->GetBufferPointer();
+    hitMissLibDesc.DXILLibrary.BytecodeLength = hitMissGenblob->GetBufferSize();
+    hitMissLibDesc.NumExports = 2;
+    hitMissLibDesc.pExports = hitMissExport;
 
+    D3D12_STATE_SUBOBJECT rayGenShaders;
+    rayGenShaders.Type = D3D12_STATE_SUBOBJECT_TYPE_DXIL_LIBRARY;
+    rayGenShaders.pDesc = &rayGenerationLibDesc;
+
+    D3D12_STATE_SUBOBJECT hitMissShaders;
+    hitMissShaders.Type = D3D12_STATE_SUBOBJECT_TYPE_DXIL_LIBRARY;
+    hitMissShaders.pDesc = &hitMissLibDesc;
+
+    D3D12_HIT_GROUP_DESC hitGroup;
+    hitGroup.HitGroupExport = L"HitGroup0";
+    hitGroup.Type = D3D12_HIT_GROUP_TYPE_TRIANGLES;
+    hitGroup.AnyHitShaderImport = nullptr;
+    hitGroup.ClosestHitShaderImport = L"Hit";
+    hitGroup.IntersectionShaderImport = nullptr;
+
+    D3D12_STATE_SUBOBJECT hitGroupObject;
+    hitGroupObject.Type = D3D12_STATE_SUBOBJECT_TYPE_HIT_GROUP;
+    hitGroupObject.pDesc = &hitGroup;
+
+    
     D3D12_RAYTRACING_SHADER_CONFIG shaderConfig;
-    shaderConfig.MaxPayloadSizeInBytes = 0;
+    shaderConfig.MaxPayloadSizeInBytes = sizeof(float[4]);
     shaderConfig.MaxAttributeSizeInBytes = sizeof(float[2]);
 
     D3D12_STATE_SUBOBJECT config;
@@ -223,7 +265,9 @@ void KG::Renderer::RTX::KGRTXSubRenderer::CreateStateObject()
 
     D3D12_STATE_SUBOBJECT subobjects[] =
     {
-        shaders,
+        rayGenShaders,
+        hitMissShaders,
+        hitGroupObject,
         config,
         globalRS,
         pipeline
@@ -241,11 +285,19 @@ void KG::Renderer::RTX::KGRTXSubRenderer::CreateStateObject()
 }
 
 ShaderTable rayTable;
+ShaderTable hitTable;
+ShaderTable missTable;
 
 void KG::Renderer::RTX::KGRTXSubRenderer::CreateShaderTables()
 {
     rayTable.CreateBuffer(this->rtxDevice, 1);
     rayTable.BufferCopy(0, this->stateObjectProp->GetShaderIdentifier(L"RayGeneration"));
+
+    hitTable.CreateBuffer(this->rtxDevice, 1);
+    hitTable.BufferCopy(0, this->stateObjectProp->GetShaderIdentifier(L"HitGroup0"));
+
+    missTable.CreateBuffer(this->rtxDevice, 1);
+    missTable.BufferCopy(0, this->stateObjectProp->GetShaderIdentifier(L"Miss"));
 }
 
 void KG::Renderer::RTX::KGRTXSubRenderer::ReallocateInstanceBuffer()
@@ -272,7 +324,8 @@ UINT KG::Renderer::RTX::KGRTXSubRenderer::GetUpdateCounts()
 
 void KG::Renderer::RTX::KGRTXSubRenderer::UpdateInstanceData(UINT index, const D3D12_RAYTRACING_INSTANCE_DESC& desc)
 {
-    memcpy(std::next(this->instances, index), &desc, sizeof(D3D12_RAYTRACING_INSTANCE_DESC));
+    auto* target = std::next(this->instances, index);
+    memcpy(target, &desc, sizeof(D3D12_RAYTRACING_INSTANCE_DESC));
 }
 
 void KG::Renderer::RTX::KGRTXSubRenderer::BuildTLAS()
@@ -321,61 +374,35 @@ void KG::Renderer::RTX::KGRTXSubRenderer::Render()
     this->rtxCommandList->SetDescriptorHeaps(1, this->dxInterface.heap->GetAddressOf());
     this->rtxCommandList->SetComputeRootSignature(this->rtxRootSign);
     this->rtxCommandList->SetComputeRootDescriptorTable(0, this->renderTarget.GetDescriptor(DescriptorType::UAV).GetGPUHandle());
+    this->rtxCommandList->SetComputeRootShaderResourceView(1, this->tlasResult->GetGPUVirtualAddress());
+    this->rtxCommandList->SetComputeRootConstantBufferView(2, this->cameraData->GetGPUVirtualAddress());
     this->rtxCommandList->SetPipelineState1(this->stateObject);
 
     D3D12_DISPATCH_RAYS_DESC rayDesc;
     ZeroDesc(rayDesc);
     rayDesc.RayGenerationShaderRecord.StartAddress = rayTable.table->GetGPUVirtualAddress();
     rayDesc.RayGenerationShaderRecord.SizeInBytes = sizeof(ShaderTable::ShaderParam);
+
+    rayDesc.HitGroupTable.StartAddress = hitTable.table->GetGPUVirtualAddress();
+    rayDesc.HitGroupTable.SizeInBytes = sizeof(ShaderTable::ShaderParam);
+    rayDesc.HitGroupTable.StrideInBytes = sizeof(ShaderTable::ShaderParam);
+
+    rayDesc.MissShaderTable.StartAddress = missTable.table->GetGPUVirtualAddress();
+    rayDesc.MissShaderTable.SizeInBytes = sizeof(ShaderTable::ShaderParam);
+    rayDesc.MissShaderTable.StrideInBytes = sizeof(ShaderTable::ShaderParam);
+
     rayDesc.Width = this->setting.setting.clientWidth;
     rayDesc.Height = this->setting.setting.clientHeight;
     rayDesc.Depth = 1;
 
+    auto renderTargetBarrier = CD3DX12_RESOURCE_BARRIER::UAV(this->renderTarget);
+    this->rtxCommandList->ResourceBarrier(1, &renderTargetBarrier);
     this->rtxCommandList->DispatchRays(&rayDesc);
+    this->cameraData = nullptr;
     PIXEndEvent(this->rtxCommandList);
 }
 
-//void KG::Renderer::RTX::KGRTXSubRenderer::CompileShader()
-//{
-//    _UniqueCOMPtr<IDxcUtils> utills{ nullptr };
-//    _UniqueCOMPtr<IDxcCompiler3> compiler{ nullptr };
-//
-//    DxcCreateInstance(CLSID_DxcUtils, IID_PPV_ARGS(&utills));
-//    DxcCreateInstance(CLSID_DxcCompiler, IID_PPV_ARGS(&compiler));
-//
-//    _UniqueCOMPtr<IDxcIncludeHandler> includeHandler{ nullptr };
-//    utills->CreateDefaultIncludeHandler(&includeHandler);
-//
-//    LPCWSTR args[] =
-//    {
-//        L"myshader.hlsl",            // Optional shader source file name for error reporting and for PIX shader source view.  
-//        L"-E", L"main",              // Entry point.
-//        L"-T", L"lib_6_3",            // Target.
-//        L"-Zs",                      // Enable debug information (slim format)
-//        L"-D", L"MYDEFINE=1",        // A single define.
-//        L"-Fo", L"myshader.bin",     // Optional. Stored in the pdb. 
-//        L"-Fd", L"myshader.pdb",     // The file name of the pdb. This must either be supplied or the autogenerated file name must be used.
-//        L"-Qstrip_reflect",          // Strip reflection into a separate blob. 
-//    };
-//
-//    _UniqueCOMPtr<IDxcBlobEncoding> source = nullptr;
-//    utills->LoadFile(L"myshader.hlsl", nullptr, &source);
-//    DxcBuffer buffer;
-//    buffer.Ptr = source->GetBufferPointer();
-//    buffer.Size = source->GetBufferSize();
-//    buffer.Encoding = DXC_CP_ACP;
-//
-//    _UniqueCOMPtr<IDxcResult> result = nullptr;
-//    compiler->Compile(&buffer, args, _countof(args), includeHandler, IID_PPV_ARGS(&result));
-//
-//    _UniqueCOMPtr<IDxcBlobUtf8> errors = nullptr;
-//    result->GetOutput(DXC_OUT_ERRORS, IID_PPV_ARGS(&errors), nullptr);
-//
-//    if(errors != nullptr && errors->GetStringLength() != 0)
-//        DebugErrorMessage()
-//    //result->GetOutput(DXC_OUT_ERRORS, IID)
-//
-//
-//
-//    //DxcCreateInstance()
-//}
+void KG::Renderer::RTX::KGRTXSubRenderer::SetCameraData(ID3D12Resource* cameraData)
+{
+    this->cameraData = cameraData;
+}

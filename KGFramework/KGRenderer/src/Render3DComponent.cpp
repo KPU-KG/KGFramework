@@ -152,7 +152,7 @@ void KG::Component::Render3DComponent::OnUpdateTLAS(ID3D12Device5* device, ID3D1
         auto transform = this->transform->GetGlobalWorldMatrix();
         XMMATRIX mat = XMLoadFloat4x4(&transform);
 
-        mat = XMMatrixTranspose(mat);
+        //mat = XMMatrixTranspose(mat);
         XMStoreFloat3x4((XMFLOAT3X4*)desc.Transform, mat);
 
         dxr->UpdateInstanceData(dxrIndexs[i], desc);

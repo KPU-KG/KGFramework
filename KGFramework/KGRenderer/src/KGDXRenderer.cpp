@@ -187,7 +187,6 @@ void KGDXRenderer::Initialize()
 
 void KGDXRenderer::Render()
 {
-    this->MoveToNextFrame();
 
     this->graphicSystems->OnCameraPreRender();
     for (KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem)
@@ -224,9 +223,19 @@ void KGDXRenderer::Render()
     }
     if (this->rtxOn || this->rtxMain)
     {
+        ID3D12Resource* mainCamraData = nullptr;
+        for (KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem)
+        {
+            if (camera.isMainCamera)
+            {
+                mainCamraData = camera.GetCameraDataBuffer();
+            }
+        }
+
         this->graphicSystems->render3DSystem.OnPostDXR();
         this->dxrRenderer->ReallocateInstanceBuffer();
         this->graphicSystems->render3DSystem.OnUpdateTLAS(this->dxrRenderer->GetDevice(), this->dxrRenderer->GetCommandList());
+        this->dxrRenderer->SetCameraData(mainCamraData);
         this->dxrRenderer->BuildTLAS();
         this->dxrRenderer->Render();
     }
@@ -252,6 +261,9 @@ void KGDXRenderer::Render()
 
     ID3D12CommandList* d3dCommandLists[] = { this->mainCommandList };
     this->commandQueue->ExecuteCommandLists(1, d3dCommandLists);
+
+    this->MoveToNextFrame();
+
 
     this->renderEngine->ClearUpdateCount();
 

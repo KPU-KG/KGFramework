@@ -49,6 +49,7 @@ namespace KG::Renderer::RTX
         UINT updateCount = 0;
 
         KG::Resource::DXResource renderTarget;
+        ID3D12Resource* cameraData = nullptr;
     public:
         void Initialize(Setting setting, DXInterface dxInterface);
         void CompileShader();
@@ -61,6 +62,7 @@ namespace KG::Renderer::RTX
         void UpdateInstanceData(UINT index, const D3D12_RAYTRACING_INSTANCE_DESC& desc);
         void BuildTLAS();
         void Render();
+        void SetCameraData(ID3D12Resource* cameraData);
         auto& GetRenderTarget()
         {
             return this->renderTarget;

@@ -201,6 +201,7 @@ void KG::Component::CameraComponent::OnRender(ID3D12GraphicsCommandList* command
 void KG::Component::CameraComponent::OnPreRender()
 {
 	this->RefreshCameraData();
+    std::memcpy(this->mappedCameraData, this->cameraData, sizeof(CameraData));
 }
 
 void KG::Component::CameraComponent::SetMainCamera()
@@ -215,7 +216,7 @@ void KG::Component::CameraComponent::SetMainCamera()
 
 void KG::Component::CameraComponent::SetCameraRender(ID3D12GraphicsCommandList* commandList)
 {
-	std::memcpy(this->mappedCameraData, this->cameraData, sizeof(CameraData));
+
 	commandList->SetGraphicsRootConstantBufferView(KG::Renderer::GraphicRootParameterIndex::CameraData, this->cameraDataBuffer->GetGPUVirtualAddress());
 
 	commandList->RSSetViewports(1, &this->viewport);
