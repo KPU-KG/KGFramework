@@ -434,6 +434,12 @@
     <ClInclude Include="include_rtx\KGRTXSubRenderer.h">
       <Filter>헤더 파일\KGDXRenderer</Filter>
     </ClInclude>
+    <ClInclude Include="include\KGMaterial.h">
+      <Filter>헤더 파일\KGDXRenderer\Core\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="include_rtx\ShaderTableManager.h">
+      <Filter>헤더 파일\KGDXRenderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

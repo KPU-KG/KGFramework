@@ -75,18 +75,5 @@ namespace KG::Renderer::RTX
         {
             return this->rtxDevice;
         };
- /*       void DiffuseRayRender();
-        void ReflectionRayRender();
-        void TransparentRayRender();
-        void AORayRender();
-        void ShadowRayRender();
-        void TemporalCompileShader();*/
-        //컴파일러 파고
-        // 지오메트리 설정하고
-        // 렌더링 연결
-
-        // 확장은 나중에
-        // 어차피 인터페이스부터 전부 다 뜯어 고쳐야 하니
-        // 나중에 합시다~~~~
     };
 }

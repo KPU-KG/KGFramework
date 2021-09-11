@@ -270,6 +270,7 @@
     <ClInclude Include="include\KGDXRenderer.h" />
     <ClInclude Include="include\KGGeometry.h" />
     <ClInclude Include="include\KGGraphicBuffer.h" />
+    <ClInclude Include="include\KGMaterial.h" />
     <ClInclude Include="include\KGModel.h" />
     <ClInclude Include="include\KGRenderQueue.h" />
     <ClInclude Include="include\KGResourceLoader.h" />
@@ -304,6 +305,7 @@
     <ClInclude Include="include_fake\FakeSystems.h" />
     <ClInclude Include="include_fake\KGFakeRenderer.h" />
     <ClInclude Include="include_rtx\KGRTXSubRenderer.h" />
+    <ClInclude Include="include_rtx\ShaderTableManager.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\KGLib\KGLib.vcxproj">
