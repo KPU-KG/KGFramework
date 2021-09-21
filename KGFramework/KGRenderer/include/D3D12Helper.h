@@ -123,6 +123,20 @@ namespace KG::Renderer
     );
 
 	ID3D12Resource* CreateUploadHeapBuffer(ID3D12Device* device, size_t bufferSize);
+
+    template <class Ty>
+    struct _UniqueCOMPtr
+    {
+        using rawType = std::remove_all_extents_t<Ty>;
+        rawType* ptr = nullptr;
+
+        _UniqueCOMPtr(rawType* ptr) : ptr(ptr) {};
+        ~_UniqueCOMPtr() { TryRelease(ptr); }
+
+        operator rawType* () { return ptr; }
+        rawType* operator->() { return ptr; }
+        rawType** operator& () { return &ptr; }
+    };
 };
 
 using KG::Renderer::ThrowIfFailed;

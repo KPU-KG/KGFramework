@@ -585,3 +585,94 @@ void KG::Renderer::MaterialElement::DrawGUI(Resource::DynamicElementInterface& d
         ImGui::TreePop();
     }
 }
+
+#include "../lib/inc/dxcapi.h"
+#include "../lib/inc/dxcapi.use.h"
+#include "../lib/inc/d3d12shader.h"
+
+static struct HLSLCompiler
+{
+    dxc::DxcDllSupport dxcHelper;
+    _UniqueCOMPtr<IDxcLibrary> lib{ nullptr };
+    _UniqueCOMPtr<IDxcCompiler> compiler{ nullptr };
+    _UniqueCOMPtr<IDxcIncludeHandler> includeHandler{ nullptr };
+    bool isStarted = false;
+
+    void Initialize()
+    {
+        isStarted = true;
+        dxcHelper.Initialize();
+        dxcHelper.CreateInstance(CLSID_DxcCompiler, &compiler.ptr);
+        dxcHelper.CreateInstance(CLSID_DxcLibrary, &lib.ptr);
+
+        HRESULT hr = lib->CreateIncludeHandler(&includeHandler.ptr);
+        if (FAILED(hr)) DebugErrorMessage(L"DXC Include Handler Error");
+    }
+
+    IDxcBlob* CompileShader(const std::wstring& fileName)
+    {
+        if (!isStarted) this->Initialize();
+
+        IDxcBlob* blob = nullptr;
+        UINT codePage(0);
+        _UniqueCOMPtr<IDxcBlobEncoding> shaderText = nullptr;
+        _UniqueCOMPtr<IDxcBlobEncoding> error = nullptr;
+        _UniqueCOMPtr<IDxcOperationResult> result = nullptr;
+
+        lib->CreateBlobFromFile(fileName.c_str(), &codePage, &shaderText);
+
+        compiler->Compile(shaderText, fileName.c_str(), L"main", L"lib_6_3", nullptr, 0, nullptr, 0, includeHandler, &result);
+        result->GetErrorBuffer(&error);
+        if (error != nullptr && error->GetBufferSize() != 0)
+        {
+            DebugErrorMessage(L"DXC ERROR : " << (LPCSTR)error->GetBufferPointer());
+        }
+        result->GetResult(&blob);
+        return blob;
+    }
+};
+
+static HLSLCompiler hlslCompiler;
+
+static std::wstring GetNameFromFileDir(const std::wstring& fileDir)
+{
+    std::wstring result = fileDir.substr(fileDir.rfind(L"/") + 1, fileDir.length() - 5);
+    return result;
+}
+
+void KG::Renderer::DXRShader::CreateRayGenerationShader(const std::wstring& fileDir)
+{
+    auto* blob = hlslCompiler.CompileShader(fileDir);
+    name = GetNameFromFileDir(fileDir);
+    rayName = name + postpixRayGen;
+
+    exportDesc[0].Name = L"RayGenration";
+    exportDesc[0].ExportToRename = rayName.c_str();
+    exportDesc[0].Flags = D3D12_EXPORT_FLAG_NONE;
+
+    libDesc.DXILLibrary.pShaderBytecode = blob->GetBufferPointer();
+    libDesc.DXILLibrary.BytecodeLength = blob->GetBufferSize();
+    libDesc.NumExports = 1;
+    libDesc.pExports = exportDesc;
+}
+
+void KG::Renderer::DXRShader::CreateHitMissShader(const std::wstring& fileDir, bool hasIntersetcion, bool hasAnyHit)
+{
+    auto* blob = hlslCompiler.CompileShader(fileDir);
+    name = GetNameFromFileDir(fileDir);
+    closestHitName = name + postpixClosestHit;
+    missName = name + postpixMiss;
+
+    exportDesc[0].Name = L"Hit";
+    exportDesc[0].ExportToRename = closestHitName.c_str();
+    exportDesc[0].Flags = D3D12_EXPORT_FLAG_NONE;
+
+    exportDesc[1].Name = L"Miss";
+    exportDesc[1].ExportToRename = missName.c_str();
+    exportDesc[1].Flags = D3D12_EXPORT_FLAG_NONE;
+
+    libDesc.DXILLibrary.pShaderBytecode = blob->GetBufferPointer();
+    libDesc.DXILLibrary.BytecodeLength = blob->GetBufferSize();
+    libDesc.NumExports = 2;
+    libDesc.pExports = exportDesc;
+}

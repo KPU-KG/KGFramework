@@ -183,8 +183,11 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="include\Context.cpp" />
     <ClCompile Include="src\AnimationComponent.cpp" />
+    <ClCompile Include="src\MaterialCore.cpp" />
     <ClCompile Include="src\CameraComponent.cpp" />
+    <ClCompile Include="src\Context.cpp" />
     <ClCompile Include="src\D3D12Helper.cpp" />
     <ClCompile Include="src\DDSTextureLoader.cpp" />
     <ClCompile Include="src\DescriptorHeapManager.cpp" />
@@ -229,7 +232,9 @@
     <ClCompile Include="src\Render3DComponent.cpp" />
     <ClCompile Include="src\RenderTexture.cpp" />
     <ClCompile Include="src\ResourceContainer.cpp" />
+    <ClCompile Include="src\ShaderTableManager.cpp" />
     <ClCompile Include="src\ShadowCasterComponent.cpp" />
+    <ClCompile Include="src\StateObjectManager.cpp" />
     <ClCompile Include="src\Texture.cpp" />
     <ClCompile Include="src_rtx\KGRTXSubRenderer.cpp" />
   </ItemGroup>
@@ -249,11 +254,10 @@
     <ClInclude Include="export\IShadowCasterComponent.h" />
     <ClInclude Include="export\KGRenderer.h" />
     <ClInclude Include="export\RendererDesc.h" />
-    <ClInclude Include="export\Texture.h" />
     <ClInclude Include="include\AnimationComponent.h" />
-    <ClInclude Include="include\BoneData.h" />
-    <ClInclude Include="include\BoneDataBufferManager.h" />
+    <ClInclude Include="include\MaterialCore.h" />
     <ClInclude Include="include\CameraComponent.h" />
+    <ClInclude Include="include\Context.h" />
     <ClInclude Include="include\DDSTextureLoader.h" />
     <ClInclude Include="include\DynamicData.h" />
     <ClInclude Include="include\DynamicConstantBufferManager.h" />
@@ -264,7 +268,6 @@
     <ClInclude Include="include\GeometryComponent.h" />
     <ClInclude Include="include\GraphicComponent.h" />
     <ClInclude Include="include\GraphicSystem.h" />
-    <ClInclude Include="include\IDXRenderComponent.h" />
     <ClInclude Include="include\IndexAllocator.h" />
     <ClInclude Include="include\KGDX12Resource.h" />
     <ClInclude Include="include\KGDXRenderer.h" />
@@ -289,7 +292,9 @@
     <ClInclude Include="include\ShaderData.h" />
     <ClInclude Include="include\pch.h" />
     <ClInclude Include="include\ResourceContainer.h" />
+    <ClInclude Include="include\ShaderTableManager.h" />
     <ClInclude Include="include\ShadowCasterComponent.h" />
+    <ClInclude Include="include\StateObjectManager.h" />
     <ClInclude Include="include\Texture.h" />
     <ClInclude Include="include_fake\FakeAnimationComponent.h" />
     <ClInclude Include="include_fake\FakeCameraComponent.h" />

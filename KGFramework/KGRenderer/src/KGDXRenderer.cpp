@@ -757,6 +757,36 @@ KG::Core::GameObject* KG::Renderer::KGDXRenderer::LoadFromModel(const KG::Utill:
     return KG::Resource::ResourceContainer::GetInstance()->CreateObjectFromModel(id, scene, materials);
 }
 
+RendererSetting KG::Renderer::KGDXRenderer::GetSetting() const
+{
+    return this->setting;
+}
+
+ID3D12Device* KG::Renderer::KGDXRenderer::GetD3DDevice() const
+{
+    return this->d3dDevice;
+}
+
+UINT64 KG::Renderer::KGDXRenderer::GetFenceValue() const
+{
+    return this->fenceValue;
+}
+
+KG::Renderer::PostProcessor* KG::Renderer::KGDXRenderer::GetPostProcess() const
+{
+    return this->postProcessor.get();
+}
+
+KG::Renderer::RTX::KGRTXSubRenderer* KG::Renderer::KGDXRenderer::GetRayRender() const
+{
+    return this->dxrRenderer;
+}
+
+bool KG::Renderer::KGDXRenderer::isRayRender() const
+{
+    return rtxOn || rtxMain;
+}
+
 KG::Renderer::KGDXRenderer* KG::Renderer::KGDXRenderer::GetInstance()
 {
     return KGDXRenderer::instance;
@@ -775,6 +805,11 @@ ID3D12RootSignature* KG::Renderer::KGDXRenderer::GetPostProcessRootSignature() c
 KGRenderEngine* KG::Renderer::KGDXRenderer::GetRenderEngine() const
 {
     return this->renderEngine.get();
+}
+
+const HardwareFeature& KG::Renderer::KGDXRenderer::GetHWFeature() const
+{
+    return this->hwFeature;
 }
 
 DescriptorHeapManager* KG::Renderer::KGDXRenderer::GetDescriptorHeapManager() const
@@ -807,37 +842,10 @@ void KG::Renderer::KGDXRenderer::QueryHardwareFeature()
     D3D12_FEATURE_DATA_D3D12_OPTIONS featureSupport;
     ZeroDesc(featureSupport);
 
-    d3dDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS, &featureSupport, sizeof(featureSupport));
-
-    switch (featureSupport.ResourceBindingTier)
-    {
-    case D3D12_RESOURCE_BINDING_TIER_1:
-    {
-        DebugNormalMessage("D3D12 RESOURCE BINDING TIER : 1");
-    }
-    break;
-
-    case D3D12_RESOURCE_BINDING_TIER_2:
-    {
-        DebugNormalMessage("D3D12 RESOURCE BINDING TIER : 2");
-    }
-    break;
-
-    case D3D12_RESOURCE_BINDING_TIER_3:
-    {
-        DebugNormalMessage("D3D12 RESOURCE BINDING TIER: 3");
-    }
-    break;
-    }
-
-    if (featureSupport.PSSpecifiedStencilRefSupported)
-    {
-        DebugNormalMessage("D3D12 Stencil Ref Supported");
-    }
-    else
-    {
-        DebugNormalMessage("D3D12 Stencil Ref Not Supported");
-    }
+    this->hwFeature.srvDescriptorSize = this->d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
+    this->hwFeature.dsvDescriptorSize = this->d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
+    this->hwFeature.rtvDescriptorSize = this->d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
+    this->hwFeature.frameResourceCount = 3;
 }
 
 void KG::Renderer::KGDXRenderer::CreateDXR()

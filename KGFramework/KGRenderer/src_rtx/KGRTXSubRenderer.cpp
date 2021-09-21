@@ -13,60 +13,6 @@
 #include "PIXEventsCommon.h"
 
 
-template <class Ty>
-struct _UniqueCOMPtr
-{
-    using rawType = std::remove_all_extents_t<Ty>;
-    rawType* ptr = nullptr;
-
-    _UniqueCOMPtr(rawType* ptr) : ptr(ptr) {};
-    ~_UniqueCOMPtr() { TryRelease(ptr); }
-
-    operator rawType* () { return ptr; }
-    rawType* operator->() { return ptr; }
-    rawType** operator& () { return &ptr; }
-};
-
-static struct HLSLCompiler
-{
-    dxc::DxcDllSupport dxcHelper;
-    _UniqueCOMPtr<IDxcLibrary> lib{ nullptr };
-    _UniqueCOMPtr<IDxcCompiler> compiler{ nullptr };
-    _UniqueCOMPtr<IDxcIncludeHandler> includeHandler{ nullptr };
-
-    void Initialize()
-    {
-        dxcHelper.Initialize();
-        dxcHelper.CreateInstance(CLSID_DxcCompiler, &compiler.ptr);
-        dxcHelper.CreateInstance(CLSID_DxcLibrary, &lib.ptr);
-
-        HRESULT hr = lib->CreateIncludeHandler(&includeHandler.ptr);
-        if (FAILED(hr)) DebugErrorMessage(L"DXC Include Handler Error");
-    }
-
-    IDxcBlob* CompileShader(const std::wstring& fileName)
-    {
-        IDxcBlob* blob = nullptr;
-        UINT codePage(0);
-        _UniqueCOMPtr<IDxcBlobEncoding> shaderText = nullptr;
-        _UniqueCOMPtr<IDxcBlobEncoding> error = nullptr;
-        _UniqueCOMPtr<IDxcOperationResult> result = nullptr;
-
-        lib->CreateBlobFromFile(fileName.c_str(), &codePage, &shaderText);
-
-        compiler->Compile(shaderText, fileName.c_str(), L"main", L"lib_6_3", nullptr, 0, nullptr, 0, includeHandler, &result);
-        result->GetErrorBuffer(&error);
-        if (error != nullptr && error->GetBufferSize() != 0)
-        {
-            DebugErrorMessage(L"DXC ERROR : " << (LPCSTR)error->GetBufferPointer());
-        }
-        result->GetResult(&blob);
-        return blob;
-    }
-};
-
-static HLSLCompiler hlslCompiler;
-
 static struct ShaderTable
 {
     //256 Á¤·Ä

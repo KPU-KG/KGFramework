@@ -18,6 +18,16 @@ namespace KG::Renderer
     };
     struct RenderTexture;
     using std::vector;
+
+    constexpr UINT maxFrameCount = 3;
+    struct HardwareFeature
+    {
+        UINT rtvDescriptorSize = 0;
+        UINT srvDescriptorSize = 0;
+        UINT dsvDescriptorSize = 0;
+        UINT frameResourceCount = maxFrameCount;
+        bool isAbleDXR = false;
+    };
     class KGDXRenderer : public IKGRenderer
     {
         friend class RTX::KGRTXSubRenderer;
@@ -36,9 +46,7 @@ namespace KG::Renderer
         vector<KG::Resource::DXResource> renderTargetResources;
         DescriptorHeapManager rtvDescriptorHeap;
 
-        UINT rtvDescriptorSize = 0;
-        UINT srvDescriptorSize = 0;
-        UINT dsvDescriptoSize = 0;
+        HardwareFeature hwFeature;
 
         ID3D12CommandQueue* commandQueue = nullptr;
         ID3D12CommandAllocator* mainCommandAllocator = nullptr;
@@ -149,52 +157,19 @@ namespace KG::Renderer
         virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::ObjectContainer& container, const KG::Resource::MaterialMatch& materials) override;
         virtual KG::Core::GameObject* LoadFromModel(const KG::Utill::HashString& id, KG::Core::Scene& scene, const KG::Resource::MaterialMatch& materials) override;
 
-        auto GetSetting() const
-        {
-            return this->setting;
-        }
-
-        auto GetD3DDevice() const
-        {
-            return this->d3dDevice;
-        };
-        auto GetFenceValue() const
-        {
-            return this->fenceValue;
-        };
-
-        auto GetPostProcess() const
-        {
-            return this->postProcessor.get();
-        };
-
-        auto* GetRayRender() const
-        {
-            return this->dxrRenderer;
-        }
-
-        bool isRayRender() const
-        {
-            return rtxOn || rtxMain;
-        }
-
+        RendererSetting GetSetting() const;
+        ID3D12Device* GetD3DDevice() const;
+        UINT64 GetFenceValue() const;
+        KG::Renderer::PostProcessor* GetPostProcess() const;
+        KG::Renderer::RTX::KGRTXSubRenderer* GetRayRender() const;
+        bool isRayRender() const;
         static KGDXRenderer* GetInstance();
         ID3D12RootSignature* GetGeneralRootSignature() const;
         ID3D12RootSignature* GetPostProcessRootSignature() const;
         KGRenderEngine* GetRenderEngine() const;
         DescriptorHeapManager* GetDescriptorHeapManager() const;
-        UINT GetRTVSize() const
-        {
-            return this->rtvDescriptorSize;
-        };
-        UINT GetSRVSize() const
-        {
-            return this->srvDescriptorSize;
-        };
-        UINT GetDSVSize() const
-        {
-            return this->dsvDescriptoSize;
-        };
+        
+        const HardwareFeature& GetHWFeature() const;
 
         // IKGRenderer을(를) 통해 상속됨
         virtual double GetGameTime() const override;

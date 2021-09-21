@@ -213,6 +213,39 @@ namespace KG::Renderer
         void DrawGUI(Resource::DynamicElementInterface& data);
     };
 
+    struct DXRShader
+    {
+        enum class Type
+        {
+            None,
+            RayGeneration,
+            HitMiss,
+        } type = Type::None;
+
+        bool useDXR = false;
+        bool isInitShader = false;
+        bool isInitObject = false;
+
+        D3D12_EXPORT_DESC exportDesc[2];
+        D3D12_DXIL_LIBRARY_DESC libDesc;
+
+        std::wstring name;
+        std::wstring hitgroupName;
+        std::wstring rayName;
+        std::wstring closestHitName;
+        std::wstring missName;
+        inline static const std::wstring closestHitShaderName = L"ClosestHit";
+        inline static const std::wstring missShaderName = L"Miss";
+        inline static const std::wstring rayGenerationShaderName = L"RayGeneration";
+        inline static const std::wstring postpixClosestHit = L"CH";
+        inline static const std::wstring postpixMiss= L"MS";
+        inline static const std::wstring postpixRayGen = L"RG";
+        inline static const std::wstring postpixHitGroup= L"HG";
+
+        void CreateRayGenerationShader(const std::wstring& fileDir);
+        void CreateHitMissShader(const std::wstring& fileDir, bool hasIntersetcion = false, bool hasAnyHit = false);
+    };
+
 	class Shader
 	{
 	protected:
@@ -244,4 +277,7 @@ namespace KG::Renderer
         Resource::DynamicElementInterface GetMaterialElement(const KG::Utill::HashString& ID);
         Resource::DynamicElementInterface GetMaterialElement(UINT index);
     };
+
+
+
 }
