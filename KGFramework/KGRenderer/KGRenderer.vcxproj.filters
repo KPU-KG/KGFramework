@@ -54,9 +54,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\KGDXRenderer.cpp">
-      <Filter>프로젝트 파일\Core\KGDXRenderer\Core</Filter>
-    </ClCompile>
     <ClCompile Include="src\ResourceContainer.cpp">
       <Filter>프로젝트 파일\Core\KGDXRenderer\ResourceLoader</Filter>
     </ClCompile>
@@ -186,17 +183,25 @@
     <ClCompile Include="src\KGRenderer.cpp">
       <Filter>프로젝트 파일\Export\Interface</Filter>
     </ClCompile>
-    <ClCompile Include="include\Context.cpp" />
-    <ClCompile Include="src\Context.cpp">
-      <Filter>프로젝트 파일\Core\KGDXRenderer\Core</Filter>
+    <ClCompile Include="src\TLASManager.cpp">
+      <Filter>프로젝트 파일\Core\KGDXRenderer\Core\Resource</Filter>
     </ClCompile>
-    <ClCompile Include="src\MaterialCore.cpp">
-      <Filter>프로젝트 파일\Core\KGDXRenderer\Core</Filter>
+    <ClCompile Include="src\InstanceTable.cpp">
+      <Filter>프로젝트 파일\Core\KGDXRenderer\Core\Resource</Filter>
     </ClCompile>
     <ClCompile Include="src\ShaderTableManager.cpp">
       <Filter>프로젝트 파일\Core\KGDXRenderer\Core\Resource</Filter>
     </ClCompile>
     <ClCompile Include="src\StateObjectManager.cpp">
+      <Filter>프로젝트 파일\Core\KGDXRenderer\Core\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\DXRRenderScene.cpp">
+      <Filter>프로젝트 파일\Core\KGDXRenderer\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KGDXRenderer.cpp">
+      <Filter>프로젝트 파일\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\LightTable.cpp">
       <Filter>프로젝트 파일\Core\KGDXRenderer\Core\Resource</Filter>
     </ClCompile>
   </ItemGroup>
@@ -405,16 +410,22 @@
     <ClInclude Include="include\PostProcess.h">
       <Filter>프로젝트 파일\Core\KGDXRenderer\Core</Filter>
     </ClInclude>
-    <ClInclude Include="include\Context.h">
-      <Filter>프로젝트 파일\Core\KGDXRenderer\Core</Filter>
-    </ClInclude>
-    <ClInclude Include="include\MaterialCore.h">
-      <Filter>프로젝트 파일\Core\KGDXRenderer\Core</Filter>
-    </ClInclude>
     <ClInclude Include="include\StateObjectManager.h">
       <Filter>프로젝트 파일\Core\KGDXRenderer\Core\Resource</Filter>
     </ClInclude>
     <ClInclude Include="include\ShaderTableManager.h">
+      <Filter>프로젝트 파일\Core\KGDXRenderer\Core\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="include\DXRRenderScene.h">
+      <Filter>프로젝트 파일\Core\KGDXRenderer\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="include\InstanceTable.h">
+      <Filter>프로젝트 파일\Core\KGDXRenderer\Core\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="include\TLASManager.h">
+      <Filter>프로젝트 파일\Core\KGDXRenderer\Core\Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="include\LightTable.h">
       <Filter>프로젝트 파일\Core\KGDXRenderer\Core\Resource</Filter>
     </ClInclude>
   </ItemGroup>

@@ -70,6 +70,7 @@ namespace KG::Component
 		virtual void OnPreRender() override;
         virtual LightType GetLightType() const override { return this->lightType; }
 		virtual void SetVisible( bool visible ) override;
+        LightData GetLightData() const { return this->light; }
 	private:
 		KG::Core::SerializableEnumProperty<KG::Component::LightType> lightTypeProp;
 		KG::Core::SerializableProperty<DirectX::XMFLOAT3> strengthProp;

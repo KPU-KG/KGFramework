@@ -240,7 +240,9 @@ namespace KG::Renderer
         inline static const std::wstring postpixClosestHit = L"CH";
         inline static const std::wstring postpixMiss= L"MS";
         inline static const std::wstring postpixRayGen = L"RG";
-        inline static const std::wstring postpixHitGroup= L"HG";
+        inline static const std::wstring postpixHitGroup = L"HG";
+        inline static const std::wstring postpixInterval = L"_";
+
 
         void CreateRayGenerationShader(const std::wstring& fileDir);
         void CreateHitMissShader(const std::wstring& fileDir, bool hasIntersetcion = false, bool hasAnyHit = false);
@@ -254,6 +256,8 @@ namespace KG::Renderer
 		KG::Resource::Metadata::ShaderSetData shaderSetData;
 		std::unique_ptr<Resource::DynamicConstantBufferManager> materialBuffer;
 		std::map<KG::Utill::HashString, size_t> materialIndex;
+        bool isDXRCompatible = false;
+        std::unique_ptr<DXRShader> dxrShaders;
 		void CreateMaterialBuffer( const KG::Resource::Metadata::ShaderSetData& data );
 		ID3D12PipelineState* GetPSO( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType, ShaderTesselation tessel = ShaderTesselation::NormalMesh );
 		D3D12_RASTERIZER_DESC CreateRasterizerState( ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType );
@@ -276,6 +280,10 @@ namespace KG::Renderer
 		size_t RequestMaterialIndex( const KG::Utill::HashString& ID );
         Resource::DynamicElementInterface GetMaterialElement(const KG::Utill::HashString& ID);
         Resource::DynamicElementInterface GetMaterialElement(UINT index);
+        D3D12_GPU_VIRTUAL_ADDRESS GetMaterialBufferGPUAddress() const;
+        bool IsDXRCompatible() const;
+        DXRShader* GetDXRShader() const;
+
     };
 
 

@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ShaderSet xmlns="KGResource.xsd">
-    <SurfaceShaderSet id="PBRDefault" fileDir="Resource/ShaderScript/Surface_DefaultPBR.hlsl" group="Opaque" enableBackfaceCulling="true" enableDepthCliping="true" materialParameterSize="32" hash_id="3533550914"/>
-    <SurfaceShaderSet id="PBRMetalicSmooth" fileDir="Resource/ShaderScript/Surface_PBRFPSMask.hlsl" group="Opaque" enableBackfaceCulling="true" enableDepthCliping="true" materialParameterSize="32" hash_id="1053346762"/>
+    <SurfaceShaderSet id="PBRDefault" fileDir="Resource/ShaderScript/Surface_DefaultPBR.hlsl" dxrFileDir="Resource/ShaderScript/DXR/DXR_HITMISS_PBRDefault.hlsl" group="Opaque" enableBackfaceCulling="true" enableDepthCliping="true" materialParameterSize="32" hash_id="3533550914"/>
+    <SurfaceShaderSet id="PBRMetalicSmooth" fileDir="Resource/ShaderScript/Surface_PBRFPSMask.hlsl"  dxrFileDir="Resource/ShaderScript/DXR/DXR_HITMISS_PBRMetalicSmooth.hlsl" group="Opaque" enableBackfaceCulling="true" enableDepthCliping="true" materialParameterSize="32" hash_id="1053346762"/>
     <!--<SurfaceShaderSet id="PBRMetalicSmooth" fileDir="Resource/ShaderScript/Surface_PBRFPSMask.hlsl" group="Opaque" enableBackfaceCulling="true" enableDepthCliping="true" materialParameterSize="32" hash_id="1311731000"/>-->
     <SurfaceShaderSet id="SkyBox" fileDir="Resource/ShaderScript/SkyBox_Default.hlsl" group="SkyBox" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="4" hash_id="3327424171"/>
     <SurfaceShaderSet id="Empty" fileDir="Resource/ShaderScript/Surface_Empty.hlsl" group="Opaque" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="0" hash_id="2407270716"/>

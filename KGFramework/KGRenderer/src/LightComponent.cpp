@@ -202,6 +202,11 @@ void KG::Component::LightComponent::OnPreRender()
         {
 	        this->light.Position = this->transform->GetWorldPosition();
         }
+        if (this->lightType == LightType::SpotLight)
+        {
+            this->light.Direction = (this->transform->GetWorldLook());
+            this->light.Up = (this->transform->GetWorldUp());
+        }
 		this->isDirty = false;
 		std::memcpy(&this->renderJob->objectBuffer->mappedData[updateCount].light, &this->light, sizeof(this->light));
 		if ( this->renderJob->shadowLightBuffer != nullptr )

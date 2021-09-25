@@ -36,7 +36,7 @@ void KG::Renderer::RenderTexture::CreateRenderTargetView()
 	d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
 	d3dDescriptorHeapDesc.NodeMask = 0;
 
-    rtvDescriptorHeap.Initialize(device, d3dDescriptorHeapDesc, KGDXRenderer::GetInstance()->GetRTVSize());
+    rtvDescriptorHeap.Initialize(device, d3dDescriptorHeapDesc, KGDXRenderer::GetInstance()->GetHWFeature().rtvDescriptorSize);
 	if ( this->desc.useCubeRender )
 	{
 		D3D12_RENDER_TARGET_VIEW_DESC rtvDesc;
@@ -83,7 +83,7 @@ void KG::Renderer::RenderTexture::CreateGBuffer()
 void KG::Renderer::RenderTexture::CreateGBufferRTView()
 {
 	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
-	auto rtvSize = KGDXRenderer::GetInstance()->GetRTVSize();
+	auto rtvSize = KGDXRenderer::GetInstance()->GetHWFeature().rtvDescriptorSize;
 
 	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
 	ZeroDesc(d3dDescriptorHeapDesc);
@@ -109,7 +109,7 @@ void KG::Renderer::RenderTexture::CreateGBufferRTView()
 void KG::Renderer::RenderTexture::CreateGBufferSRView()
 {
 	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
-	auto srvSize = KGDXRenderer::GetInstance()->GetSRVSize();
+	auto srvSize = KGDXRenderer::GetInstance()->GetHWFeature().srvDescriptorSize;
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	ZeroDesc(srvDesc);
@@ -157,7 +157,7 @@ void KG::Renderer::RenderTexture::CreateDepthStencilBuffer()
 void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
 {
 	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
-	auto dsvSize = KGDXRenderer::GetInstance()->GetDSVSize();
+	auto dsvSize = KGDXRenderer::GetInstance()->GetHWFeature().dsvDescriptorSize;
 
 	D3D12_DESCRIPTOR_HEAP_DESC d3dDescriptorHeapDesc;
 	ZeroDesc(d3dDescriptorHeapDesc);
@@ -208,7 +208,7 @@ void KG::Renderer::RenderTexture::CreateDepthStencilBufferView()
 UINT KG::Renderer::RenderTexture::PostRenderTargetSRV()
 {
 	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
-	auto srvSize = KGDXRenderer::GetInstance()->GetSRVSize();
+	auto srvSize = KGDXRenderer::GetInstance()->GetHWFeature().srvDescriptorSize;
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
 	ZeroDesc(srvDesc);
@@ -263,7 +263,7 @@ KG::Resource::Texture* KG::Renderer::RenderTexture::PostRenderTargetTexture()
 UINT KG::Renderer::RenderTexture::PostDepthStencilSRV()
 {
 	auto device = KGDXRenderer::GetInstance()->GetD3DDevice();
-	auto srvSize = KGDXRenderer::GetInstance()->GetSRVSize();
+	auto srvSize = KGDXRenderer::GetInstance()->GetHWFeature().srvDescriptorSize;
 	auto descManager = KGDXRenderer::GetInstance()->GetDescriptorHeapManager();
 
 	D3D12_SHADER_RESOURCE_VIEW_DESC srvDesc;
@@ -410,14 +410,14 @@ void KG::Renderer::RenderTexture::Initialize(const RenderTextureDesc& desc)
 D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::RenderTexture::GetRenderTargetRTVHandle(size_t index)
 {
 	CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-	handle.Offset(index, KGDXRenderer::GetInstance()->GetRTVSize());
+	handle.Offset(index, KGDXRenderer::GetInstance()->GetHWFeature().rtvDescriptorSize);
 	return handle;
 }
 
 D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::RenderTexture::GetGBufferRTVHandle(size_t index)
 {
 	CD3DX12_CPU_DESCRIPTOR_HANDLE handle = CD3DX12_CPU_DESCRIPTOR_HANDLE(this->gbufferDescriptorHeap->GetCPUDescriptorHandleForHeapStart());
-	handle.Offset(index, KGDXRenderer::GetInstance()->GetRTVSize());
+	handle.Offset(index, KGDXRenderer::GetInstance()->GetHWFeature().rtvDescriptorSize);
 	return handle;
 }
 

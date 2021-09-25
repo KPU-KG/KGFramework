@@ -45,8 +45,8 @@ float4 PixelShaderFunction(LightVertexOut input) : SV_Target0
     LightData lightData = lightInfo[input.InstanceID];
     float3 calcWorldPosition = DepthToWorldPosition(depth, input.projPosition.xy, mul(inverseProjection, inverseView));
     float3 cameraDirection = calcWorldPosition - cameraWorldPosition;
-    
-    return CustomAmbientLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(cameraDirection), saturate(pixelData.ao),
+    //saturate(pixelData.ao)
+    return CustomAmbientLightCalculator(lightData, pixelData, normalize(lightData.Direction), normalize(cameraDirection), 1.0f,
     materialData[0].lutTextureIndex, materialData[0].irradianceIndex, materialData[0].radianceIndex);
 }
 

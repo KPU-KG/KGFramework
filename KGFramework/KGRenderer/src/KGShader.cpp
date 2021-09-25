@@ -32,6 +32,18 @@ KG::Resource::DynamicElementInterface KG::Renderer::Shader::GetMaterialElement(U
 {
     return this->materialBuffer->GetElement(index);
 }
+D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::Shader::GetMaterialBufferGPUAddress() const
+{
+    return this->materialBuffer->GetBuffer()->GetGPUVirtualAddress();
+}
+bool KG::Renderer::Shader::IsDXRCompatible() const
+{
+    return this->shaderSetData.dxrFileDir.size() != 0;
+}
+DXRShader* KG::Renderer::Shader::GetDXRShader() const
+{
+    return this->dxrShaders.get();
+}
 D3D12_RASTERIZER_DESC KG::Renderer::Shader::CreateRasterizerState(ShaderMeshType meshType, ShaderPixelType pixType, ShaderGeometryType geoType)
 {
     D3D12_RASTERIZER_DESC d3dRasterizerDesc;
@@ -344,7 +356,14 @@ void KG::Renderer::Shader::CreateMaterialBuffer(const KG::Resource::Metadata::Sh
 
 KG::Renderer::Shader::Shader(const KG::Resource::Metadata::ShaderSetData& data)
 {
+    static std::wstring buffer;
     this->shaderSetData = data;
+    if (data.dxrFileDir.size() != 0)
+    {
+        this->dxrShaders = std::make_unique<DXRShader>();
+        buffer.assign(data.dxrFileDir.begin(), data.dxrFileDir.end());
+        this->dxrShaders->CreateHitMissShader(buffer.c_str());
+    }
     this->CreateMaterialBuffer(this->shaderSetData);
 }
 
@@ -620,7 +639,7 @@ static struct HLSLCompiler
         _UniqueCOMPtr<IDxcOperationResult> result = nullptr;
 
         lib->CreateBlobFromFile(fileName.c_str(), &codePage, &shaderText);
-
+        //나중에 디파인 해야함
         compiler->Compile(shaderText, fileName.c_str(), L"main", L"lib_6_3", nullptr, 0, nullptr, 0, includeHandler, &result);
         result->GetErrorBuffer(&error);
         if (error != nullptr && error->GetBufferSize() != 0)
@@ -636,18 +655,21 @@ static HLSLCompiler hlslCompiler;
 
 static std::wstring GetNameFromFileDir(const std::wstring& fileDir)
 {
-    std::wstring result = fileDir.substr(fileDir.rfind(L"/") + 1, fileDir.length() - 5);
+    auto start = fileDir.rfind(L"/") + 1;
+    auto end = fileDir.length() - 5;
+    std::wstring result = fileDir.substr(fileDir.rfind(L"/") + 1, end - start);
     return result;
 }
 
 void KG::Renderer::DXRShader::CreateRayGenerationShader(const std::wstring& fileDir)
 {
+    this->type = DXRShader::Type::RayGeneration;
     auto* blob = hlslCompiler.CompileShader(fileDir);
     name = GetNameFromFileDir(fileDir);
-    rayName = name + postpixRayGen;
+    rayName = name + postpixInterval + postpixRayGen;
 
-    exportDesc[0].Name = L"RayGenration";
-    exportDesc[0].ExportToRename = rayName.c_str();
+    exportDesc[0].ExportToRename = L"RayGeneration";
+    exportDesc[0].Name= rayName.c_str();
     exportDesc[0].Flags = D3D12_EXPORT_FLAG_NONE;
 
     libDesc.DXILLibrary.pShaderBytecode = blob->GetBufferPointer();
@@ -658,17 +680,19 @@ void KG::Renderer::DXRShader::CreateRayGenerationShader(const std::wstring& file
 
 void KG::Renderer::DXRShader::CreateHitMissShader(const std::wstring& fileDir, bool hasIntersetcion, bool hasAnyHit)
 {
+    this->type = DXRShader::Type::HitMiss;
     auto* blob = hlslCompiler.CompileShader(fileDir);
     name = GetNameFromFileDir(fileDir);
-    closestHitName = name + postpixClosestHit;
-    missName = name + postpixMiss;
+    hitgroupName = name + postpixInterval + postpixHitGroup;
+    closestHitName = name + postpixInterval + postpixClosestHit;
+    missName = name + postpixInterval + postpixMiss;
 
-    exportDesc[0].Name = L"Hit";
-    exportDesc[0].ExportToRename = closestHitName.c_str();
+    exportDesc[0].ExportToRename = L"Hit";
+    exportDesc[0].Name = closestHitName.c_str(); 
     exportDesc[0].Flags = D3D12_EXPORT_FLAG_NONE;
 
-    exportDesc[1].Name = L"Miss";
-    exportDesc[1].ExportToRename = missName.c_str();
+    exportDesc[1].ExportToRename = L"Miss"; 
+    exportDesc[1].Name = missName.c_str();
     exportDesc[1].Flags = D3D12_EXPORT_FLAG_NONE;
 
     libDesc.DXILLibrary.pShaderBytecode = blob->GetBufferPointer();

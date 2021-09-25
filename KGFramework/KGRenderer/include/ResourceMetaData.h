@@ -5,6 +5,7 @@ namespace KG::Resource::Metadata
 	struct ShaderSetData
 	{
 		std::string fileDir;
+        std::string dxrFileDir;
 		int shaderGroup;
 		bool enableCullBackface;
 		bool enableDepthCliping;

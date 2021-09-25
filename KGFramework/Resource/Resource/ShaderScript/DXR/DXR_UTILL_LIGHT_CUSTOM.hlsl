@@ -1,9 +1,8 @@
 #ifndef __CUSTOM_LIGHT_DEFINE__
 #define __CUSTOM_LIGHT_DEFINE__
 
-#include "Define_Global.hlsl"
-#include "Define_GBuffer.hlsl"
-#include "Define_Light.hlsl"
+#include "DXR_GLOBAL_DEFINE.hlsl"
+#include "DXR_DEFINE_LIGHT.hlsl"
 
 #define PI  3.14159265359
 
@@ -142,10 +141,10 @@ float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightD
     //float3 reflec = reflect(-cameraDir, info.wNormal);
     float3 reflec = reflect(cameraDir, info.wNormal);
     
-    float3 diffuseIrradiance = GammaToLinear(shaderTextureCube[diffuseRad].Sample(gsamAnisotoropicWrap, N).rgb);
+    float3 diffuseIrradiance = GammaToLinear(shaderTextureCube[diffuseRad].SampleLevel(gsamAnisotoropicWrap, N, 0).rgb);
     float3 diffuseIBL = kd * info.albedo * diffuseIrradiance;
     
-    float2 specularBRDF = shaderTexture[lutIndex].Sample(gsamLinearClamp, float2(VDotH, (1 - info.roughness))).rg;
+    float2 specularBRDF = shaderTexture[lutIndex].SampleLevel(gsamLinearClamp, float2(VDotH, (1 - info.roughness)), 0).rg;
     uint specularTextureLevel = querySpecularTextureLevels(specularRad);
     float3 specularIrradiance = GammaToLinear(shaderTextureCube[specularRad].SampleLevel(gsamAnisotoropicWrap, normalize(reflec), specularTextureLevel * (info.roughness)).rgb);
     float3 specularIBL = (F0 * specularBRDF.x + specularBRDF.y) * specularIrradiance;

@@ -77,6 +77,9 @@ KG::Resource::Metadata::ShaderSetData KG::Resource::ResourceLoader::LoadShaderSe
             data.groupCountY = gy ? gy : "1";
             data.groupCountZ = gz ? gz : "1";
             data.fileDir = shaderSets->Attribute( "fileDir" );
+            const char* dxr =  shaderSets->Attribute("dxrFileDir");
+            data.dxrFileDir = dxr ? dxr : "";
+
 			break;
 		}
 		else
@@ -444,7 +447,7 @@ std::pair<size_t, KG::Utill::HashString> KG::Resource::ResourceLoader::LoadMater
 				int offset = 0;
 				while ( childs )
 				{
-                    DebugNormalMessage(L"메테리얼 읽는 중 ");
+                    //DebugNormalMessage(L"메테리얼 읽는 중 ");
                     auto* a = hasMaterialDesc ? nullptr : &currentShader->MaterialDescription.emplace_back();
 					MaterialParser::parsers.at( childs->Name() )(childs, elementInterface, offset, isDirty, a);
                     if( a && a->type == KG::Renderer::MaterialType::PADDING) currentShader->MaterialDescription.pop_back();

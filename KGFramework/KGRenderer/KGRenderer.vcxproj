@@ -183,15 +183,13 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="include\Context.cpp" />
     <ClCompile Include="src\AnimationComponent.cpp" />
-    <ClCompile Include="src\MaterialCore.cpp" />
     <ClCompile Include="src\CameraComponent.cpp" />
-    <ClCompile Include="src\Context.cpp" />
     <ClCompile Include="src\D3D12Helper.cpp" />
     <ClCompile Include="src\DDSTextureLoader.cpp" />
     <ClCompile Include="src\DescriptorHeapManager.cpp" />
     <ClCompile Include="src\dllmain.cpp" />
+    <ClCompile Include="src\DXRRenderScene.cpp" />
     <ClCompile Include="src\FakeAnimationComponent.cpp" />
     <ClCompile Include="src\FakeCameraComponent.cpp" />
     <ClCompile Include="src\FakeGeometryComponent.cpp" />
@@ -206,6 +204,7 @@
     <ClCompile Include="src\FakeSystems.cpp" />
     <ClCompile Include="src\GeometryComponent.cpp" />
     <ClCompile Include="src\GraphicSystem.cpp" />
+    <ClCompile Include="src\InstanceTable.cpp" />
     <ClCompile Include="src\IParticleEmitterComponent.cpp" />
     <ClCompile Include="src\KGDX12Resource.cpp" />
     <ClCompile Include="src\KGDXRenderer.cpp" />
@@ -217,6 +216,7 @@
     <ClCompile Include="src\KGResourceLoader.cpp" />
     <ClCompile Include="src\KGShader.cpp" />
     <ClCompile Include="src\LightComponent.cpp" />
+    <ClCompile Include="src\LightTable.cpp" />
     <ClCompile Include="src\MaterialComponent.cpp" />
     <ClCompile Include="src\ParticleEmitterComponent.cpp" />
     <ClCompile Include="src\ParticleGenerator.cpp" />
@@ -236,7 +236,11 @@
     <ClCompile Include="src\ShadowCasterComponent.cpp" />
     <ClCompile Include="src\StateObjectManager.cpp" />
     <ClCompile Include="src\Texture.cpp" />
-    <ClCompile Include="src_rtx\KGRTXSubRenderer.cpp" />
+    <ClCompile Include="src\TLASManager.cpp" />
+    <ClCompile Include="src_rtx\KGRTXSubRenderer.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="export\FakePostProcessComponent.h" />
@@ -255,9 +259,9 @@
     <ClInclude Include="export\KGRenderer.h" />
     <ClInclude Include="export\RendererDesc.h" />
     <ClInclude Include="include\AnimationComponent.h" />
-    <ClInclude Include="include\MaterialCore.h" />
+    <ClInclude Include="include\DXRRenderScene.h" />
+    <ClInclude Include="include\InstanceTable.h" />
     <ClInclude Include="include\CameraComponent.h" />
-    <ClInclude Include="include\Context.h" />
     <ClInclude Include="include\DDSTextureLoader.h" />
     <ClInclude Include="include\DynamicData.h" />
     <ClInclude Include="include\DynamicConstantBufferManager.h" />
@@ -279,6 +283,7 @@
     <ClInclude Include="include\KGResourceLoader.h" />
     <ClInclude Include="include\KGShader.h" />
     <ClInclude Include="include\LightComponent.h" />
+    <ClInclude Include="include\LightTable.h" />
     <ClInclude Include="include\MaterialComponent.h" />
     <ClInclude Include="include\ParticleEmitterComponent.h" />
     <ClInclude Include="include\ParticleGenerator.h" />
@@ -296,6 +301,7 @@
     <ClInclude Include="include\ShadowCasterComponent.h" />
     <ClInclude Include="include\StateObjectManager.h" />
     <ClInclude Include="include\Texture.h" />
+    <ClInclude Include="include\TLASManager.h" />
     <ClInclude Include="include_fake\FakeAnimationComponent.h" />
     <ClInclude Include="include_fake\FakeCameraComponent.h" />
     <ClInclude Include="include_fake\FakeGeometryComponent.h" />
@@ -309,7 +315,10 @@
     <ClInclude Include="include_fake\FakeShadowCasterComponent.h" />
     <ClInclude Include="include_fake\FakeSystems.h" />
     <ClInclude Include="include_fake\KGFakeRenderer.h" />
-    <ClInclude Include="include_rtx\KGRTXSubRenderer.h" />
+    <ClInclude Include="include_rtx\KGRTXSubRenderer.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="include_rtx\ShaderTableManager.h" />
   </ItemGroup>
   <ItemGroup>

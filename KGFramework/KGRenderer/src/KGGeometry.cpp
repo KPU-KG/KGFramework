@@ -231,3 +231,13 @@ void KG::Renderer::Geometry::CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY topolo
 	this->primitiveTopology = topology;
 	this->fakeVertexCount = vertexCount;
 }
+
+D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::Geometry::GetVertexBufferGPUAddress() const
+{
+    return this->vertexBuffer->GetGPUVirtualAddress();
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::Geometry::GetIndexBufferGPUAddress() const
+{
+    return this->indexBuffer->GetGPUVirtualAddress();
+}

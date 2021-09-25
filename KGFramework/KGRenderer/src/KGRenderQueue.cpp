@@ -6,6 +6,7 @@
 #include "KGGeometry.h"
 #include "KGShader.h"
 #include "RootParameterIndex.h"
+#include "KGDXRenderer.h"
 using namespace KG::Renderer;
 // 이거 추후에 버디 얼로케이터 같은 걸로 바꿔야 함
 
@@ -44,6 +45,7 @@ KGRenderJob* KG::Renderer::KGRenderEngine::GetRenderJob( Shader* shader, Geometr
 	if ( result == renderJobs.end() )
 	{
 		resultJob = &CreateRenderJob( target );
+        KGDXRenderer::GetInstance()->AddNewRenderJob(resultJob);
 	}
 	else
 	{
@@ -107,6 +109,7 @@ void KG::Renderer::KGRenderJob::GetNewBuffer()
 	if ( this->objectBuffer )
 		this->objectBuffer->isUsing = false;
 	this->objectBuffer = this->objectBufferPool->GetNewBuffer( this->objectSize );
+    this->matrixs.resize(this->objectSize);
 
 	if ( meshType == ShaderMeshType::SkinnedMesh )
 	{
@@ -214,6 +217,26 @@ void KG::Renderer::KGRenderJob::ClearCount()
 void KG::Renderer::KGRenderJob::TurnOnCulledRenderOnce()
 {
     this->isCulling = true;
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::KGRenderJob::GetVertexBufferGPUAddress() const
+{
+    return this->geometry->GetVertexBufferGPUAddress();
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::KGRenderJob::GetIndexBufferGPUAddress() const
+{
+    return this->geometry->GetIndexBufferGPUAddress();
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::KGRenderJob::GetObjectBufferGPUAddress() const
+{
+    return this->objectBuffer->buffer.resource->GetGPUVirtualAddress();
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::KGRenderJob::GetMaterialBufferGPUAddress() const
+{
+    return this->shader->GetMaterialBufferGPUAddress();
 }
 
 void KG::Renderer::KGRenderJob::Render( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader )

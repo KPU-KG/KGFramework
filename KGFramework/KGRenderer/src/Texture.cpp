@@ -70,7 +70,7 @@ void KG::Resource::Texture::UploadToDescriptorHeap()
 	auto renderer = KG::Renderer::KGDXRenderer::GetInstance();
 	auto device = renderer->GetD3DDevice();
 	auto descHeap = renderer->GetDescriptorHeapManager();
-	DebugNormalMessage( L"리소스 뷰 생성" );
+	//DebugNormalMessage( L"리소스 뷰 생성" );
 	auto descDesc = this->GetDescriptorDesc();
 	device->CreateShaderResourceView( this->resource.Get(), &descDesc, descHeap->GetCPUHandle( this->index ) );
 }
@@ -86,7 +86,7 @@ void KG::Resource::Texture::ReleaseFromDescriptorHeap()
 
 void KG::Resource::Texture::LoadResource( ID3D12GraphicsCommandList* cmdList )
 {
-	DebugNormalMessage( L"텍스처 로딩" )
+	//DebugNormalMessage( L"텍스처 로딩" )
 	static std::wstring buffer;
 	buffer.clear();
 	buffer.assign( this->metaData.fileDir.begin(), this->metaData.fileDir.end() );
@@ -118,7 +118,7 @@ void KG::Resource::Texture::Process( ID3D12GraphicsCommandList* cmdList )
 	}
 	else if ( !this->resource )
 	{
-		DebugNormalMessage(L"리소스 로딩")
+		//DebugNormalMessage(L"리소스 로딩")
 		LoadResource( cmdList );
 	}
 

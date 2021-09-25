@@ -11,6 +11,7 @@
           <xs:complexType>
             <xs:attribute name="id" type="xs:string" use="required"/>
             <xs:attribute name="fileDir" type="xs:anyURI" use="required"/>
+            <xs:attribute name="dxrFileDir" type="xs:anyURI" use="optional"/>
             <xs:attribute name="enableBackfaceCulling" type="xs:boolean" use="required"/>
             <xs:attribute name="enableDepthCliping" type="xs:boolean" use="required"/>
             <xs:attribute name="materialParameterSize" type="xs:int" use="required"/>

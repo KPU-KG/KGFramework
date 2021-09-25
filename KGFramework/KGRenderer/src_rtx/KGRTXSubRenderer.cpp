@@ -13,35 +13,6 @@
 #include "PIXEventsCommon.h"
 
 
-static struct ShaderTable
-{
-    //256 Á¤·Ä
-    struct __declspec(align(256)) ShaderParam
-    {
-        char shaderIdentifier[D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES];
-        UINT64 rootParams[1];
-    };
-
-    _UniqueCOMPtr<ID3D12Resource> table = nullptr;
-    ShaderParam* mappedTable = nullptr;
-
-    void CreateBuffer(ID3D12Device5* device, UINT size)
-    {
-        this->table.ptr = KG::Renderer::CreateUploadHeapBuffer(device, sizeof(ShaderParam) * size);
-        this->table->Map(0, nullptr, (void**)&mappedTable);
-    }
-
-    void BufferCopy(UINT index, ShaderParam& param)
-    {
-        this->mappedTable[index] = param;
-    }
-
-    void BufferCopy(UINT index, void* param)
-    {
-        memcpy(this->mappedTable + index, param, sizeof(char) * D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES);
-    }
-};
-
 void KG::Renderer::RTX::KGRTXSubRenderer::Initialize(KG::Renderer::RTX::Setting setting, DXInterface dxInterface)
 {
     this->setting = setting;
@@ -188,7 +159,6 @@ void KG::Renderer::RTX::KGRTXSubRenderer::CreateStateObject()
     D3D12_STATE_SUBOBJECT hitGroupObject;
     hitGroupObject.Type = D3D12_STATE_SUBOBJECT_TYPE_HIT_GROUP;
     hitGroupObject.pDesc = &hitGroup;
-
     
     D3D12_RAYTRACING_SHADER_CONFIG shaderConfig;
     shaderConfig.MaxPayloadSizeInBytes = sizeof(float[4]);

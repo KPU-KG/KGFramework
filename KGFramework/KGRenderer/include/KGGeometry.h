@@ -84,6 +84,8 @@ namespace KG::Renderer
         void CreateAABB();
 		void CreateFromMeshData( const KG::Utill::MeshData& data );
 		void CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY topology, int vertexCount );
+        D3D12_GPU_VIRTUAL_ADDRESS GetVertexBufferGPUAddress() const;
+        D3D12_GPU_VIRTUAL_ADDRESS GetIndexBufferGPUAddress() const;
         auto isFake() const
         {
             return this->fakeVertexCount;

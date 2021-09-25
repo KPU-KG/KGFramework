@@ -15,6 +15,21 @@ namespace KG::Renderer
         inline static constexpr size_t GBufferHeap = 9;
 	};
 
+    struct DXRRootParameterIndex
+    {
+        inline static constexpr size_t InstanceIndexData = 0;
+        inline static constexpr size_t LightData = 1;
+        inline static constexpr size_t CameraData = 2;
+        inline static constexpr size_t RWTexture = 3;
+        inline static constexpr size_t AccelerationStructure = 4;
+        inline static constexpr size_t Texture = 5;
+        inline static constexpr size_t TextureArray = 6;
+        inline static constexpr size_t TextureCube = 7;
+        inline static constexpr size_t Ambient = 8;
+        //inline static constexpr size_t GBufferHeap = 9;
+    };
+
+
     struct ComputeRootParameterIndex
     {
         inline static constexpr size_t Result = 0;

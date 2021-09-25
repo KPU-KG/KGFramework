@@ -38,6 +38,12 @@ void KG::Component::Render3DComponent::OnPreRender()
         int updateCount = renderJob->GetUpdateCount(jobCulled[i]);
         auto mat = Math::Matrix4x4::Transpose(this->transform->GetGlobalWorldMatrix());
         renderJob->objectBuffer->mappedData[updateCount].object.world = mat;
+
+        XMFLOAT3X4 dxrFloat;
+        XMMATRIX dxrMat = XMLoadFloat4x4(&this->transform->GetGlobalWorldMatrix());
+        XMStoreFloat3x4(&dxrFloat, dxrMat);
+        renderJob->matrixs[updateCount] = dxrFloat;
+
         if (this->material)
         {
             renderJob->objectBuffer->mappedData[updateCount].object.materialIndex = this->material->GetMaterialIndex(this->jobMaterialIndexs[i]);
@@ -113,52 +119,52 @@ void KG::Component::Render3DComponent::SetVisible(bool visible)
     }
 }
 
-void KG::Component::Render3DComponent::OnPostDXR()
-{
-    auto* renderer = KG::Renderer::KGDXRenderer::GetInstance();
-    auto* dxr = renderer->GetRayRender();
-    for (size_t i = 0; i < this->geometry->geometrys.size(); i++)
-    {
-        auto* geo = this->geometry->geometrys[i];
-        auto count = geo->GetCounts();
-        if (!count.first || !count.second) continue;
-        auto index = dxr->GetUpdateCounts();
-        dxrIndexs.push_back(index);
-    }
-}
-
-void KG::Component::Render3DComponent::OnUpdateTLAS(ID3D12Device5* device, ID3D12GraphicsCommandList4* cmdList)
-{
-    auto* renderer = KG::Renderer::KGDXRenderer::GetInstance();
-    auto* dxr = renderer->GetRayRender();
-
-    for (size_t i = 0; i < this->geometry->geometrys.size(); i++)
-    {
-        auto* geo = this->geometry->geometrys[i];
-        auto count = geo->GetCounts();
-        if (!count.first || !count.second) continue;
-
-        if (!geo->IsLoadedDXR()) 
-            geo->LoadToDXR(device, cmdList);
-
-        D3D12_RAYTRACING_INSTANCE_DESC desc;
-        KG::Renderer::ZeroDesc(desc);
-        desc.InstanceID = dxrIndexs[i];
-        desc.InstanceMask = 0xFF;
-        desc.InstanceContributionToHitGroupIndex = 0;
-        desc.Flags = D3D12_RAYTRACING_INSTANCE_FLAG_NONE;
-        desc.AccelerationStructure = geo->GetBLAS();
-
-        auto transform = this->transform->GetGlobalWorldMatrix();
-        XMMATRIX mat = XMLoadFloat4x4(&transform);
-
-        //mat = XMMatrixTranspose(mat);
-        XMStoreFloat3x4((XMFLOAT3X4*)desc.Transform, mat);
-
-        dxr->UpdateInstanceData(dxrIndexs[i], desc);
-    }
-    dxrIndexs.clear();
-}
+//void KG::Component::Render3DComponent::OnPostDXR()
+//{
+//    auto* renderer = KG::Renderer::KGDXRenderer::GetInstance();
+//    auto* dxr = renderer->GetRayRender();
+//    for (size_t i = 0; i < this->geometry->geometrys.size(); i++)
+//    {
+//        auto* geo = this->geometry->geometrys[i];
+//        auto count = geo->GetCounts();
+//        if (!count.first || !count.second) continue;
+//        auto index = dxr->GetUpdateCounts();
+//        dxrIndexs.push_back(index);
+//    }
+//}
+//
+//void KG::Component::Render3DComponent::OnUpdateTLAS(ID3D12Device5* device, ID3D12GraphicsCommandList4* cmdList)
+//{
+//    auto* renderer = KG::Renderer::KGDXRenderer::GetInstance();
+//    auto* dxr = renderer->GetRayRender();
+//
+//    for (size_t i = 0; i < this->geometry->geometrys.size(); i++)
+//    {
+//        auto* geo = this->geometry->geometrys[i];
+//        auto count = geo->GetCounts();
+//        if (!count.first || !count.second) continue;
+//
+//        if (!geo->IsLoadedDXR()) 
+//            geo->LoadToDXR(device, cmdList);
+//
+//        D3D12_RAYTRACING_INSTANCE_DESC desc;
+//        KG::Renderer::ZeroDesc(desc);
+//        desc.InstanceID = dxrIndexs[i];
+//        desc.InstanceMask = 0xFF;
+//        desc.InstanceContributionToHitGroupIndex = 0;
+//        desc.Flags = D3D12_RAYTRACING_INSTANCE_FLAG_NONE;
+//        desc.AccelerationStructure = geo->GetBLAS();
+//
+//        auto transform = this->transform->GetGlobalWorldMatrix();
+//        XMMATRIX mat = XMLoadFloat4x4(&transform);
+//
+//        //mat = XMMatrixTranspose(mat);
+//        XMStoreFloat3x4((XMFLOAT3X4*)desc.Transform, mat);
+//
+//        dxr->UpdateInstanceData(dxrIndexs[i], desc);
+//    }
+//    dxrIndexs.clear();
+//}
 
 void KG::Component::Render3DComponent::SetReflectionProbe(CubeCameraComponent* probe)
 {

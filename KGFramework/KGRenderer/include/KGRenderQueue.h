@@ -28,6 +28,7 @@ namespace KG::Renderer
         int notCullIndexStart = 0;
         bool isCulling = false;
 		KG::Renderer::ShaderMeshType meshType;
+        std::vector<XMFLOAT3X4> matrixs;
 		BufferPool<ObjectData>* objectBufferPool = nullptr;
 		PooledBuffer<ObjectData>* objectBuffer = nullptr;
 
@@ -53,6 +54,11 @@ namespace KG::Renderer
 		void ClearCount();
 
         void TurnOnCulledRenderOnce();
+
+        D3D12_GPU_VIRTUAL_ADDRESS GetVertexBufferGPUAddress() const;
+        D3D12_GPU_VIRTUAL_ADDRESS GetIndexBufferGPUAddress() const;
+        D3D12_GPU_VIRTUAL_ADDRESS GetObjectBufferGPUAddress() const;
+        D3D12_GPU_VIRTUAL_ADDRESS GetMaterialBufferGPUAddress() const;
 
 		void Render( ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader );
 		void Render( ShaderGeometryType geoType, ShaderPixelType pixType, ShaderTesselation tessel, ID3D12GraphicsCommandList* cmdList, Shader*& prevShader );

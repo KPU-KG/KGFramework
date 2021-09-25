@@ -200,6 +200,7 @@ void KGDXRenderer::Render()
 
     this->graphicSystems->OnPreRender();
 
+
     HRESULT hResult = this->mainCommandAllocator->Reset();
     hResult = this->mainCommandList->Reset(this->mainCommandAllocator, nullptr);
 
@@ -208,6 +209,12 @@ void KGDXRenderer::Render()
     this->mainCommandList->SetGraphicsRootSignature(this->generalRootSignature);
     ID3D12DescriptorHeap* heaps[] = { this->descriptorHeapManager->Get() };
     this->mainCommandList->SetDescriptorHeaps(1, heaps);
+
+    if (this->rtxOn)
+    {
+        this->dxrScene->UpdateLight(this->graphicSystems->lightSystem.begin(), this->graphicSystems->lightSystem.end());
+        this->dxrScene->PrepareRender(dxrDevice, dxrCommandList);
+    }
 
     if (!this->renderEngine->hasRenderJobs())
     {
@@ -221,36 +228,36 @@ void KGDXRenderer::Render()
         this->NormalCameraRender();
         this->CopyMainCamera();
     }
-    if (this->rtxOn || this->rtxMain)
+    else 
     {
-        ID3D12Resource* mainCamraData = nullptr;
-        for (KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem)
-        {
-            if (camera.isMainCamera)
-            {
-                mainCamraData = camera.GetCameraDataBuffer();
-            }
-        }
+        DXRDiffuseRender();
+        this->CopyMainCamera();
+    }
 
-        this->graphicSystems->render3DSystem.OnPostDXR();
-        this->dxrRenderer->ReallocateInstanceBuffer();
-        this->graphicSystems->render3DSystem.OnUpdateTLAS(this->dxrRenderer->GetDevice(), this->dxrRenderer->GetCommandList());
-        this->dxrRenderer->SetCameraData(mainCamraData);
-        this->dxrRenderer->BuildTLAS();
-        this->dxrRenderer->Render();
-    }
-    if (this->rtxMain)
-    {
-        PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Present MainCamera On DXR");
-        for (KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem)
-        {
-            if (camera.isMainCamera)
-            {
-                this->postProcessor->CopyToSwapchainOnDXR(this->mainCommandList, this->dxrRenderer->GetRenderTarget(), this->renderTargetResources[this->swapChainBufferIndex]);
-            }
-        }
-        PIXEndEvent(mainCommandList);
-    }
+    //if (this->rtxMain)
+    //{
+    //    ID3D12Resource* mainCamraData = nullptr;
+    //    for (KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem)
+    //    {
+    //        if (camera.isMainCamera)
+    //        {
+    //            mainCamraData = camera.GetCameraDataBuffer();
+    //        }
+    //    }
+    //    //this->DXRRender()
+    //}
+    //if (this->rtxMain)
+    //{
+    //    PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Present MainCamera On DXR");
+    //    for (KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem)
+    //    {
+    //        if (camera.isMainCamera)
+    //        {
+    //            this->postProcessor->CopyToSwapchainOnDXR(this->mainCommandList, this->dxrRenderer->GetRenderTarget(), this->renderTargetResources[this->swapChainBufferIndex]);
+    //        }
+    //    }
+    //    PIXEndEvent(mainCommandList);
+    //}
 
 
     this->EditorUIRender();
@@ -275,6 +282,8 @@ void KGDXRenderer::Render()
     this->swapChain->Present1(this->setting.isVsync, 0, &dxgiPresentParameters);
 
     this->swapChainBufferIndex = this->swapChain->GetCurrentBackBufferIndex();
+
+    HRESULT reason = this->dxrDevice->GetDeviceRemovedReason();
 
 }
 
@@ -419,7 +428,8 @@ void KG::Renderer::KGDXRenderer::EditorUIRender()
         ApplyBarrierQueue(this->mainCommandList);
         ImGui::PopStyleColor(1);
         PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(0), "ImGui UI Render");
-        auto rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart()).Offset(this->swapChainBufferIndex, this->rtvDescriptorSize);
+        auto rtvHandle = CD3DX12_CPU_DESCRIPTOR_HANDLE(this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart())
+            .Offset(this->swapChainBufferIndex, this->hwFeature.rtvDescriptorSize);
         this->mainCommandList->OMSetRenderTargets(1, &rtvHandle, true, nullptr);
         ImGui::Render();
         ImGui_ImplDX12_RenderDrawData(ImGui::GetDrawData(), this->mainCommandList);
@@ -432,6 +442,7 @@ void KG::Renderer::KGDXRenderer::EditorUIRender()
 
 void KG::Renderer::KGDXRenderer::CopyMainCamera()
 {
+    this->mainCommandList->SetComputeRootSignature(this->postProcessRootSignature);
     PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Present MainCamera");
     for (KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem)
     {
@@ -477,6 +488,24 @@ void KG::Renderer::KGDXRenderer::TransparentRender(ShaderGeometryType geoType, S
 void KG::Renderer::KGDXRenderer::ParticleReady()
 {
     this->particleGenerator.PreRenderStart();
+}
+
+void KG::Renderer::KGDXRenderer::DXRDiffuseRender()
+{
+    this->dxrCommandList->SetComputeRootSignature(this->dxrRootSignature);
+
+    for (KG::Component::CameraComponent& normalCamera : this->graphicSystems->cameraSystem)
+    {
+        if (!normalCamera.isMainCamera) continue;
+        normalCamera.SetCameraRender(dxrCommandList);
+        dxrCommandList->SetComputeRootConstantBufferView(DXRRootParameterIndex::CameraData, normalCamera.GetCameraDataBuffer()->GetGPUVirtualAddress());
+        dxrCommandList->SetComputeRootDescriptorTable(DXRRootParameterIndex::Texture, this->descriptorHeapManager->GetGPUHandle(0));
+        dxrCommandList->SetComputeRootDescriptorTable(DXRRootParameterIndex::TextureArray, this->descriptorHeapManager->GetGPUHandle(0));
+        dxrCommandList->SetComputeRootDescriptorTable(DXRRootParameterIndex::TextureCube, this->descriptorHeapManager->GetGPUHandle(0));
+        this->dxrScene->Render(normalCamera.GetRenderTexture().renderTargetResource, dxrCommandList, this->setting.clientWidth, this->setting.clientHeight);
+        normalCamera.EndCameraRender(dxrCommandList);
+        break;
+    }
 }
 
 void KG::Renderer::KGDXRenderer::ParticleRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
@@ -643,12 +672,12 @@ void KG::Renderer::KGDXRenderer::DebugUIRender()
     float sizeX = (ImGui::GetColumnWidth()) - 10.0f;
     ImGui::Checkbox("DXR ON", &this->rtxOn);
     ImGui::Checkbox("DXR MAIN", &this->rtxMain);
-    if (ImGui::TreeNode("DXR"))
-    {
-        auto ptr = this->dxrRenderer->GetRenderTarget().GetDescriptor(DescriptorType::SRV).GetGPUHandle().ptr;
-        ImGui::TextureView((ImTextureID)ptr, ImVec2(sizeX, sizeX * (9.0f / 16.0f)), "DXR Result");
-        ImGui::TreePop();
-    }
+    //if (ImGui::TreeNode("DXR"))
+    //{
+    //    auto ptr = this->dxrRenderer->GetRenderTarget().GetDescriptor(DescriptorType::SRV).GetGPUHandle().ptr;
+    //    ImGui::TextureView((ImTextureID)ptr, ImVec2(sizeX, sizeX * (9.0f / 16.0f)), "DXR Result");
+    //    ImGui::TreePop();
+    //}
     if (ImGui::TreeNode("RenderTexture : deferred render"))
     {
         for (auto& camera : this->graphicSystems->cameraSystem)
@@ -777,11 +806,6 @@ KG::Renderer::PostProcessor* KG::Renderer::KGDXRenderer::GetPostProcess() const
     return this->postProcessor.get();
 }
 
-KG::Renderer::RTX::KGRTXSubRenderer* KG::Renderer::KGDXRenderer::GetRayRender() const
-{
-    return this->dxrRenderer;
-}
-
 bool KG::Renderer::KGDXRenderer::isRayRender() const
 {
     return rtxOn || rtxMain;
@@ -817,6 +841,19 @@ DescriptorHeapManager* KG::Renderer::KGDXRenderer::GetDescriptorHeapManager() co
     return this->descriptorHeapManager.get();
 }
 
+KG::Renderer::DXRRenderScene* KG::Renderer::KGDXRenderer::GetDXRScene() const
+{
+    return this->dxrScene;
+}
+
+void KG::Renderer::KGDXRenderer::AddNewRenderJob(KGRenderJob* job)
+{
+    if (this->hwFeature.isAbleDXR)
+    {
+        this->dxrScene->AddNewRenderJobs(this->dxrDevice, job);
+    }
+}
+
 double KG::Renderer::KGDXRenderer::GetGameTime() const
 {
     return this->gameTime;
@@ -846,18 +883,29 @@ void KG::Renderer::KGDXRenderer::QueryHardwareFeature()
     this->hwFeature.dsvDescriptorSize = this->d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_DSV);
     this->hwFeature.rtvDescriptorSize = this->d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
     this->hwFeature.frameResourceCount = 3;
+
+    D3D12_FEATURE_DATA_D3D12_OPTIONS5 options5 = {}; 
+    ThrowIfFailed(d3dDevice->CheckFeatureSupport(D3D12_FEATURE_D3D12_OPTIONS5, &options5, sizeof(options5)));
+    if (options5.RaytracingTier < D3D12_RAYTRACING_TIER_1_0)
+    {
+        DebugNormalMessage("This System Can't Use DXR");
+    }
+    else
+    {
+        this->hwFeature.isAbleDXR = true;
+    }
 }
 
 void KG::Renderer::KGDXRenderer::CreateDXR()
 {
-    this->dxrRenderer = new RTX::KGRTXSubRenderer();
-    RTX::Setting setting;
-    setting.setting = this->setting;
-    RTX::DXInterface dxInter;
-    dxInter.commandList = this->mainCommandList;
-    dxInter.device = this->d3dDevice;
-    dxInter.heap = this->descriptorHeapManager.get();
-    this->dxrRenderer->Initialize(setting, dxInter);
+    this->dxrScene = new DXRRenderScene();
+    if (this->hwFeature.isAbleDXR)
+    {
+        this->d3dDevice->QueryInterface(&this->dxrDevice);
+        this->mainCommandList->QueryInterface(&this->dxrCommandList);
+    }
+    this->CreateDXRRootSignature();
+    this->dxrScene->Initialize(this->dxrDevice, this->dxrRootSignature);
 }
 
 void KG::Renderer::KGDXRenderer::CreateD3DDevice()
@@ -865,7 +913,7 @@ void KG::Renderer::KGDXRenderer::CreateD3DDevice()
     HRESULT hResult;
     UINT dxgiFactoryFlags = 0;
 #if defined(_DEBUG) | defined(DEBUF)
-    ID3D12Debug* d3dDebugController = nullptr;
+    ID3D12Debug3* d3dDebugController = nullptr;
     hResult = D3D12GetDebugInterface(IID_PPV_ARGS(&d3dDebugController));
     if (d3dDebugController)
     {
@@ -965,8 +1013,7 @@ void KG::Renderer::KGDXRenderer::CreateRtvDescriptorHeaps()
     d3dDescriptorHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
     d3dDescriptorHeapDesc.NodeMask = 0;
 
-    this->rtvDescriptorSize = this->d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_RTV);
-    this->rtvDescriptorHeap.Initialize(d3dDevice, d3dDescriptorHeapDesc, rtvDescriptorSize);
+    this->rtvDescriptorHeap.Initialize(d3dDevice, d3dDescriptorHeapDesc, this->hwFeature.rtvDescriptorSize);
 }
 
 void KG::Renderer::KGDXRenderer::CreateSRVDescriptorHeaps()
@@ -977,8 +1024,7 @@ void KG::Renderer::KGDXRenderer::CreateSRVDescriptorHeaps()
     srvHeapDesc.NumDescriptors = 120000;
     srvHeapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV;
     srvHeapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAGS::D3D12_DESCRIPTOR_HEAP_FLAG_SHADER_VISIBLE;
-    this->srvDescriptorSize = this->d3dDevice->GetDescriptorHandleIncrementSize(D3D12_DESCRIPTOR_HEAP_TYPE::D3D12_DESCRIPTOR_HEAP_TYPE_CBV_SRV_UAV);
-    this->descriptorHeapManager->Initialize(this->d3dDevice, srvHeapDesc, this->srvDescriptorSize);
+    this->descriptorHeapManager->Initialize(this->d3dDevice, srvHeapDesc, this->hwFeature.srvDescriptorSize);
 }
 
 void KG::Renderer::KGDXRenderer::CreateCommandQueueAndList()
@@ -1164,6 +1210,137 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
     TryRelease(pd3dErrorBlob);
 }
 
+void KG::Renderer::KGDXRenderer::CreateDXRRootSignature()
+{
+    D3D12_ROOT_PARAMETER pd3dRootParameters[9]{};
+
+    pd3dRootParameters[DXRRootParameterIndex::InstanceIndexData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+    pd3dRootParameters[DXRRootParameterIndex::InstanceIndexData].Descriptor.ShaderRegister = 0;
+    pd3dRootParameters[DXRRootParameterIndex::InstanceIndexData].Descriptor.RegisterSpace = 0;
+    pd3dRootParameters[DXRRootParameterIndex::InstanceIndexData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[DXRRootParameterIndex::LightData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+    pd3dRootParameters[DXRRootParameterIndex::LightData].Descriptor.ShaderRegister = 1;
+    pd3dRootParameters[DXRRootParameterIndex::LightData].Descriptor.RegisterSpace = 0;
+    pd3dRootParameters[DXRRootParameterIndex::LightData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[DXRRootParameterIndex::CameraData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+    pd3dRootParameters[DXRRootParameterIndex::CameraData].Descriptor.ShaderRegister = 0;
+    pd3dRootParameters[DXRRootParameterIndex::CameraData].Descriptor.RegisterSpace = 0;
+    pd3dRootParameters[DXRRootParameterIndex::CameraData].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[DXRRootParameterIndex::Ambient].ParameterType = D3D12_ROOT_PARAMETER_TYPE_CBV;
+    pd3dRootParameters[DXRRootParameterIndex::Ambient].Descriptor.ShaderRegister = 1;
+    pd3dRootParameters[DXRRootParameterIndex::Ambient].Descriptor.RegisterSpace = 0;
+    pd3dRootParameters[DXRRootParameterIndex::Ambient].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+    D3D12_DESCRIPTOR_RANGE UAVRange;
+    ZeroDesc(UAVRange);
+    UAVRange.BaseShaderRegister = 0;
+    UAVRange.NumDescriptors = 1;
+    UAVRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    UAVRange.RegisterSpace = 0;
+    UAVRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+
+    pd3dRootParameters[DXRRootParameterIndex::RWTexture].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[DXRRootParameterIndex::RWTexture].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[DXRRootParameterIndex::RWTexture].DescriptorTable.pDescriptorRanges = &UAVRange;
+    pd3dRootParameters[DXRRootParameterIndex::RWTexture].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[DXRRootParameterIndex::AccelerationStructure].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+    pd3dRootParameters[DXRRootParameterIndex::AccelerationStructure].Descriptor.ShaderRegister = 2;
+    pd3dRootParameters[DXRRootParameterIndex::AccelerationStructure].Descriptor.RegisterSpace = 0;
+    pd3dRootParameters[DXRRootParameterIndex::AccelerationStructure].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+
+    // 6 : Space 1 : SRV 0 : Texture Data1 // unbounded : 1
+
+    D3D12_DESCRIPTOR_RANGE txtureData1Range;
+    ZeroDesc(txtureData1Range);
+    txtureData1Range.BaseShaderRegister = 0;
+    txtureData1Range.NumDescriptors = -1;
+    txtureData1Range.OffsetInDescriptorsFromTableStart = 0;
+    txtureData1Range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    txtureData1Range.RegisterSpace = 1;
+
+    pd3dRootParameters[DXRRootParameterIndex::Texture].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[DXRRootParameterIndex::Texture].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[DXRRootParameterIndex::Texture].DescriptorTable.pDescriptorRanges = &txtureData1Range;
+    pd3dRootParameters[DXRRootParameterIndex::Texture].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+    // 7 : Space 2 : SRV 0 : Texture Array // unbounded : 1
+
+    D3D12_DESCRIPTOR_RANGE txtureData2Range;
+    ZeroDesc(txtureData2Range);
+    txtureData2Range.BaseShaderRegister = 0;
+    txtureData2Range.NumDescriptors = -1;
+    txtureData2Range.OffsetInDescriptorsFromTableStart = 0;
+    txtureData2Range.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    txtureData2Range.RegisterSpace = 2;
+
+    pd3dRootParameters[DXRRootParameterIndex::TextureArray].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[DXRRootParameterIndex::TextureArray].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[DXRRootParameterIndex::TextureArray].DescriptorTable.pDescriptorRanges = &txtureData2Range;
+    pd3dRootParameters[DXRRootParameterIndex::TextureArray].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+    // 8 : space 3 : SRV 0 : Texture Cube // unbounded : 1
+    D3D12_DESCRIPTOR_RANGE txtureCubeRange;
+    ZeroDesc(txtureCubeRange);
+    txtureCubeRange.BaseShaderRegister = 0;
+    txtureCubeRange.NumDescriptors = -1;
+    txtureCubeRange.OffsetInDescriptorsFromTableStart = 0;
+    txtureCubeRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    txtureCubeRange.RegisterSpace = 3;
+
+    pd3dRootParameters[DXRRootParameterIndex::TextureCube].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[DXRRootParameterIndex::TextureCube].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[DXRRootParameterIndex::TextureCube].DescriptorTable.pDescriptorRanges = &txtureCubeRange;
+    pd3dRootParameters[DXRRootParameterIndex::TextureCube].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+    // 9 : Space 0 : SRV 2,3,4,5,6 : G Buffer // unbounded : 1
+
+    //D3D12_DESCRIPTOR_RANGE GbufferRange;
+    //ZeroDesc(GbufferRange);
+    //GbufferRange.BaseShaderRegister = 2;
+    //GbufferRange.NumDescriptors = 5;
+    //GbufferRange.OffsetInDescriptorsFromTableStart = 0;
+    //GbufferRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    //GbufferRange.RegisterSpace = 0;
+
+    //pd3dRootParameters[GraphicRootParameterIndex::GBufferHeap].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    //pd3dRootParameters[GraphicRootParameterIndex::GBufferHeap].DescriptorTable.NumDescriptorRanges = 1;
+    //pd3dRootParameters[GraphicRootParameterIndex::GBufferHeap].DescriptorTable.pDescriptorRanges = &GbufferRange;
+    //pd3dRootParameters[GraphicRootParameterIndex::GBufferHeap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
+
+    D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+    //D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags =
+    //	D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+    //	D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+    //	D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
+
+    D3D12_ROOT_SIGNATURE_DESC d3dRootSignatureDesc;
+    auto staticSampler = GetStaticSamplers();
+
+    ZeroDesc(d3dRootSignatureDesc);
+    d3dRootSignatureDesc.NumParameters = _countof(pd3dRootParameters);
+    d3dRootSignatureDesc.pParameters = pd3dRootParameters;
+    d3dRootSignatureDesc.NumStaticSamplers = staticSampler.size();
+    d3dRootSignatureDesc.pStaticSamplers = staticSampler.data();
+    d3dRootSignatureDesc.Flags = d3dRootSignatureFlags;
+
+    ID3DBlob* pd3dSignatureBlob = nullptr;
+    ID3DBlob* pd3dErrorBlob = nullptr;
+
+    auto result = ::D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
+    if (FAILED(result))
+    {
+        DebugErrorMessage((const char*)pd3dErrorBlob->GetBufferPointer());
+    }
+    this->d3dDevice->CreateRootSignature(0, pd3dSignatureBlob->GetBufferPointer(), pd3dSignatureBlob->GetBufferSize(), IID_PPV_ARGS(&this->dxrRootSignature));
+    TryRelease(pd3dSignatureBlob);
+    TryRelease(pd3dErrorBlob);
+}
+
 void KG::Renderer::KGDXRenderer::CreatePostProcessRootSignature()
 {
     //딱히 디스크립터 힙으로 엮으라는 말 없다! -> 텍스처는 디스크립터힙만 된다!
@@ -1323,7 +1500,7 @@ void KG::Renderer::KGDXRenderer::MoveToNextFrame()
 D3D12_CPU_DESCRIPTOR_HANDLE KG::Renderer::KGDXRenderer::GetCurrentRenderTargetHandle() const
 {
     D3D12_CPU_DESCRIPTOR_HANDLE d3dRtvCPUDescriptorHandle = this->rtvDescriptorHeap->GetCPUDescriptorHandleForHeapStart();
-    d3dRtvCPUDescriptorHandle.ptr += (this->swapChainBufferIndex * this->rtvDescriptorSize);
+    d3dRtvCPUDescriptorHandle.ptr += (this->swapChainBufferIndex * this->hwFeature.rtvDescriptorSize);
     return d3dRtvCPUDescriptorHandle;
 }
 

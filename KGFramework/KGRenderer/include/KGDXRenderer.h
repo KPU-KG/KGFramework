@@ -7,15 +7,12 @@
 #include "KGRenderer.h"
 #include "KGShader.h"
 #include "ParticleGenerator.h"
+#include "DXRRenderScene.h"
 namespace KG::Renderer
 {
     class KGRenderEngine;
     class PostProcessor;
     class DescriptorHeapManager;
-    namespace RTX
-    {
-        class KGRTXSubRenderer;
-    };
     struct RenderTexture;
     using std::vector;
 
@@ -30,16 +27,16 @@ namespace KG::Renderer
     };
     class KGDXRenderer : public IKGRenderer
     {
-        friend class RTX::KGRTXSubRenderer;
     private:
         IDXGIFactory4* dxgiFactory = nullptr;
         IDXGISwapChain3* swapChain = nullptr;
 
         ID3D12Device* d3dDevice = nullptr;
+        ID3D12Device5* dxrDevice = nullptr;
 
         UINT swapChainBufferIndex = 0;
 
-        RTX::KGRTXSubRenderer* dxrRenderer;
+        DXRRenderScene* dxrScene;
 
         //vector<ID3D12Resource*> renderTargetBuffers;
         //ID3D12DescriptorHeap* rtvDescriptorHeap = nullptr;
@@ -51,8 +48,10 @@ namespace KG::Renderer
         ID3D12CommandQueue* commandQueue = nullptr;
         ID3D12CommandAllocator* mainCommandAllocator = nullptr;
         ID3D12GraphicsCommandList* mainCommandList = nullptr;
+        ID3D12GraphicsCommandList4* dxrCommandList = nullptr;
 
         ID3D12RootSignature* generalRootSignature = nullptr;
+        ID3D12RootSignature* dxrRootSignature = nullptr;
         ID3D12RootSignature* postProcessRootSignature = nullptr;
 
         ID3D12Fence* fence = nullptr;
@@ -94,6 +93,7 @@ namespace KG::Renderer
         void InitializeImGui();
 
         void CreateGeneralRootSignature();
+        void CreateDXRRootSignature();
         void CreatePostProcessRootSignature();
 
         void AllocateGBufferHeap();
@@ -121,6 +121,8 @@ namespace KG::Renderer
         void CopyMainCamera();
         void EditorUIRender();
         void ParticleReady();
+        void DXRDiffuseRender(); //
+
         void OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex, bool culled = false);
         void TransparentRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
         void ParticleRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
@@ -161,7 +163,6 @@ namespace KG::Renderer
         ID3D12Device* GetD3DDevice() const;
         UINT64 GetFenceValue() const;
         KG::Renderer::PostProcessor* GetPostProcess() const;
-        KG::Renderer::RTX::KGRTXSubRenderer* GetRayRender() const;
         bool isRayRender() const;
         static KGDXRenderer* GetInstance();
         ID3D12RootSignature* GetGeneralRootSignature() const;
@@ -169,6 +170,10 @@ namespace KG::Renderer
         KGRenderEngine* GetRenderEngine() const;
         DescriptorHeapManager* GetDescriptorHeapManager() const;
         
+        DXRRenderScene* GetDXRScene() const;
+
+        void AddNewRenderJob(KGRenderJob* job);
+
         const HardwareFeature& GetHWFeature() const;
 
         // IKGRenderer을(를) 통해 상속됨

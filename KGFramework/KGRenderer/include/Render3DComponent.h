@@ -42,8 +42,8 @@ namespace KG::Component
 		virtual void OnPreRender() override;
         virtual void CullingProcess(const DirectX::BoundingFrustum& frustum);
 		virtual void SetVisible( bool visible ) override;
-        void OnPostDXR();
-        void OnUpdateTLAS(ID3D12Device5* device, ID3D12GraphicsCommandList4* cmdList);
+        //void OnPostDXR();
+        //void OnUpdateTLAS(ID3D12Device5* device, ID3D12GraphicsCommandList4* cmdList);
 		void SetReflectionProbe( CubeCameraComponent* probe );
 		void RemoveJobs();
 		virtual void ReloadRender() override;
