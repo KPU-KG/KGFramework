@@ -49,7 +49,7 @@ void Hit(inout Payload payload : SV_Payload, Built_in_attribute attr)
 [shader("miss")]
 void Miss(inout Payload payload : SV_Payload)
 {
-    payload.color = shaderTextureCube[ambient.skyBoxId].SampleLevel(gsamAnisotoropicWrap, WorldRayDirection(), 0);
+    payload.color = GammaToLinear(shaderTextureCube[ambient.skyBoxId].SampleLevel(gsamAnisotoropicWrap, WorldRayDirection(), 0));
 }
 
 #endif 

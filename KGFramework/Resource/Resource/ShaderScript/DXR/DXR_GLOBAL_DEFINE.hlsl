@@ -142,6 +142,16 @@ float3 GammaToLinear(float3 rgb)
     return pow(rgb, 2.2);
 }
 
+float4 LinearToGamma(float4 rgb)
+{
+    return float4(pow(rgb.rgb, 1 / 2.2), rgb.a);
+}
+
+float4 GammaToLinear(float4 rgb)
+{
+    return float4(pow(rgb.rgb, 2.2), rgb.a);
+}
+
 float3 HitAttribute(float3 vertexAttribute[3], Built_in_attribute attr)
 {
     return vertexAttribute[0] +
@@ -179,6 +189,29 @@ VertexData HitAttribute(VertexData vertex[3], Built_in_attribute attr)
     result.bitangent *= orientation;
     
     return result;
+}
+
+float4 TraceRadiance(float3 origin, float3 direction)
+{
+    RayDesc ray;
+    ray.Origin = origin;
+    ray.Direction = direction;
+    ray.TMin = 0.0f;
+    ray.TMax = 1000.0f;
+    
+    Payload payload;
+    payload.color = 0;
+    TraceRay(
+        scene,
+        RAY_FLAG_CULL_BACK_FACING_TRIANGLES,
+        0xFF,
+        0,
+        1,
+        0,
+        ray,
+        payload
+    );
+    return payload.color;
 }
 
 #endif
