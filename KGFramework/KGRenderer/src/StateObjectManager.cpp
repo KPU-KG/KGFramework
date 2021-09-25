@@ -77,7 +77,7 @@ void KG::Renderer::StateObjectManager::CreateDefaultSubObject()
 {
     // 쉐이더 컨픽
     {
-        shaderConfig.MaxPayloadSizeInBytes = sizeof(float[4]);
+        shaderConfig.MaxPayloadSizeInBytes = sizeof(float[4]) + sizeof(UINT);
         shaderConfig.MaxAttributeSizeInBytes = sizeof(float[2]);
 
         auto& obj = subobjects.emplace_back();
@@ -93,7 +93,7 @@ void KG::Renderer::StateObjectManager::CreateDefaultSubObject()
     }
     // 파이프라인 컨픽
     {
-        pipelineConfig.MaxTraceRecursionDepth = 1;
+        pipelineConfig.MaxTraceRecursionDepth = 10;
 
         auto& obj = subobjects.emplace_back();
         obj.Type = D3D12_STATE_SUBOBJECT_TYPE_RAYTRACING_PIPELINE_CONFIG;

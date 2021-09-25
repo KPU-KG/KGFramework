@@ -12,5 +12,5 @@ void RayGeneration()
 
     float4 unproj = mul(float4(ndc, 0, 1), mul(camera.inverseProjection, camera.inverseView));
     float3 world = unproj.xyz / unproj.w;
-    output[launchIndex] = TraceRadiance(camera.cameraWorldPosition, normalize(world - camera.cameraWorldPosition));
+    output[launchIndex] = TraceRadiance(camera.cameraWorldPosition, normalize(world - camera.cameraWorldPosition), 0);
 }

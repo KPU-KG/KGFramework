@@ -119,7 +119,9 @@ StructuredBuffer<InstanceData> objectInfo : register(t2, space4);
 struct Payload
 {
     float4 color;
+    uint recursionDepth;
 };
+static const uint maxRecursionDepth = 5;
 
 struct Built_in_attribute
 {
@@ -191,7 +193,7 @@ VertexData HitAttribute(VertexData vertex[3], Built_in_attribute attr)
     return result;
 }
 
-float4 TraceRadiance(float3 origin, float3 direction)
+float4 TraceRadiance(float3 origin, float3 direction, uint recursionDepth)
 {
     RayDesc ray;
     ray.Origin = origin;
@@ -201,6 +203,7 @@ float4 TraceRadiance(float3 origin, float3 direction)
     
     Payload payload;
     payload.color = 0;
+    payload.recursionDepth = recursionDepth;
     TraceRay(
         scene,
         RAY_FLAG_CULL_BACK_FACING_TRIANGLES,
