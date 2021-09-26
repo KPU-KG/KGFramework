@@ -26,7 +26,7 @@ float DownScale4x4(uint2 CurPixel, uint groupThreadId, DownscaleInfo info)
             [unroll]
             for (int j = 0; j < 4; ++j)
             {
-                vDownScaled += prevResult.Load(iFullResPos + int3(j, i, 0));
+                vDownScaled += clamp(prevResult.Load(iFullResPos + int3(j, i, 0)), 0, 3);
             }
         }
         vDownScaled /= 16;

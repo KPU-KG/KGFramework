@@ -503,6 +503,7 @@ void KG::Renderer::KGDXRenderer::DXRDiffuseRender()
         dxrCommandList->SetComputeRootDescriptorTable(DXRRootParameterIndex::TextureArray, this->descriptorHeapManager->GetGPUHandle(0));
         dxrCommandList->SetComputeRootDescriptorTable(DXRRootParameterIndex::TextureCube, this->descriptorHeapManager->GetGPUHandle(0));
         this->dxrScene->Render(normalCamera.GetRenderTexture().renderTargetResource, dxrCommandList, this->setting.clientWidth, this->setting.clientHeight);
+        this->PostProcessRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex(), normalCamera.GetCameraDataBuffer());
         normalCamera.EndCameraRender(dxrCommandList);
         break;
     }

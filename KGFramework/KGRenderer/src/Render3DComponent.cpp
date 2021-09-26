@@ -211,11 +211,13 @@ bool KG::Component::Render3DComponent::OnDrawGUI()
         ImGui::Checkbox("IsVisible", &this->isVisible);
         ImGui::BulletText("Geometry Info");
         ImGui::Indent();
-        for (size_t i = 0; i < this->geometry->geometrys.size(); i++)
+        if (this->geometry)
         {
-
-            auto counts = this->geometry->geometrys[i]->GetCounts();
-            ImGui::BulletText("%d. v : %d / i : %d / p : %d", i, counts.first, counts.second, counts.second / 3);
+            for (size_t i = 0; i < this->geometry->geometrys.size(); i++)
+            {
+                auto counts = this->geometry->geometrys[i]->GetCounts();
+                ImGui::BulletText("%d. v : %d / i : %d / p : %d", i, counts.first, counts.second, counts.second / 3);
+            }
         }
         ImGui::Unindent();
         ImGui::BulletText("RenderJobs Count : %d", this->renderJobs.size());

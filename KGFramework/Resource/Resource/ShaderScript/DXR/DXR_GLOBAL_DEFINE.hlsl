@@ -121,7 +121,8 @@ struct Payload
     float4 color;
     uint recursionDepth;
 };
-static const uint maxRecursionDepth = 5;
+
+static const uint maxRecursionDepth = 2;
 
 struct Built_in_attribute
 {
@@ -193,13 +194,15 @@ VertexData HitAttribute(VertexData vertex[3], Built_in_attribute attr)
     return result;
 }
 
+static const float FLT_MAX = asfloat(0x7F7FFFFF);
+
 float4 TraceRadiance(float3 origin, float3 direction, uint recursionDepth)
 {
     RayDesc ray;
     ray.Origin = origin;
     ray.Direction = direction;
     ray.TMin = 0.0f;
-    ray.TMax = 1000.0f;
+    ray.TMax = FLT_MAX;
     
     Payload payload;
     payload.color = 0;
@@ -209,12 +212,46 @@ float4 TraceRadiance(float3 origin, float3 direction, uint recursionDepth)
         RAY_FLAG_CULL_BACK_FACING_TRIANGLES,
         0xFF,
         0,
-        1,
+        2,
         0,
         ray,
         payload
     );
     return payload.color;
 }
+
+float4 TraceShadow(float3 origin, float3 direction, uint recursionDepth)
+{
+    RayDesc ray;
+    ray.Origin = origin;
+    ray.Direction = direction;
+    ray.TMin = 0.0f;
+    ray.TMax = FLT_MAX;
+    
+    Payload payload;
+    payload.color = 0;
+    payload.recursionDepth = 30;
+    TraceRay(
+        scene,
+        RAY_FLAG_CULL_BACK_FACING_TRIANGLES,
+        0xFF,
+        1,
+        2,
+        1,
+        ray,
+        payload
+    );
+    return payload.color;
+}
+
+
+float4 SampleLevelT(Texture2D tex, SamplerState sam, float2 uv)
+{
+    uint width, height, levels;
+    tex.GetDimensions(0, width, height, levels);
+    float currentLevel = levels * log10(RayTCurrent() / 250.0f);
+    return tex.SampleLevel(sam, uv, currentLevel);
+}
+
 
 #endif

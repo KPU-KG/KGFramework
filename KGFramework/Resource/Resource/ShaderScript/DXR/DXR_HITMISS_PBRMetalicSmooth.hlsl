@@ -23,6 +23,7 @@ Surface UserSurfaceFunction(SurfaceInput input)
 
     float2x2 uvScale = float2x2(mat.UVSize.x, 0, 0, mat.UVSize.y);
     float2 uv = mul(input.uv, uvScale);
+    //result.albedo = float4(1, 0, 0, 1);
     result.albedo = GammaToLinear(shaderTexture[mat.ColorTextureIndex].SampleLevel(gsamAnisotoropicWrap, uv, 0).xyz);
     //result.reflection = objectInfo[input.InstanceID].environmentMapIndex / 12000.0f;
 

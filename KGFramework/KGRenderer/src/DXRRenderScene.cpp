@@ -7,9 +7,12 @@
 void KG::Renderer::DXRRenderScene::Initialize(ID3D12Device5* device, ID3D12RootSignature* globalRootSign)
 {
     rayGenrationShader.CreateRayGenerationShader(L"Resource/ShaderScript/DXR/DXR_RAY_GEN.hlsl");
+    shadowHitMissShader.CreateHitMissShader(L"Resource/ShaderScript/DXR/DXR_SHADOW_HITMISS.hlsl");
     stateObjects.Initialize(device, globalRootSign);
     stateObjects.AddShader(&rayGenrationShader);
+    stateObjects.AddShader(&shadowHitMissShader);
     shaderTables.AddRayGeneration(device);
+
     lights.Initialize(device, 10);
     tlas.Initialize(device, 100);
 }
@@ -37,6 +40,10 @@ void KG::Renderer::DXRRenderScene::UpdateLight(KG::System::UsingComponentIterato
 void KG::Renderer::DXRRenderScene::PrepareRender(ID3D12Device5* device, ID3D12GraphicsCommandList4* cmdList)
 {
     stateObjects.Rebuild(device);
+
+    shaderTables.PostShadowHit(stateObjects.GetHitShaderIndetifier(&shadowHitMissShader));
+    shaderTables.PostShadowMiss(stateObjects.GetMissShaderIndetifier(&shadowHitMissShader));
+
     shaderTables.UpdateRay(stateObjects.GetRayShaderIndetifier(&this->rayGenrationShader));
 
     UINT objectSize = 0;
@@ -61,7 +68,7 @@ void KG::Renderer::DXRRenderScene::PrepareRender(ID3D12Device5* device, ID3D12Gr
 
         D3D12_RAYTRACING_INSTANCE_DESC desc;
         KG::Renderer::ZeroDesc(desc);
-        desc.InstanceContributionToHitGroupIndex = shaderTables.GetHitgroupIndex(job);;
+        desc.InstanceContributionToHitGroupIndex = shaderTables.GetHitgroupIndex(job) * 2;
         desc.Flags = D3D12_RAYTRACING_INSTANCE_FLAG_NONE;
         desc.InstanceMask = 0xFF;
         desc.AccelerationStructure = job->geometry->GetBLAS();
@@ -93,22 +100,23 @@ void KG::Renderer::DXRRenderScene::Render(KG::Resource::DXResource& renderTarget
     D3D12_DISPATCH_RAYS_DESC rayDesc;
     ZeroDesc(rayDesc);
     rayDesc.RayGenerationShaderRecord.StartAddress = shaderTables.GetRayShaderTableGPUAddress();
-    rayDesc.RayGenerationShaderRecord.SizeInBytes = sizeof(ShaderParameter);
+    rayDesc.RayGenerationShaderRecord.SizeInBytes = sizeof(ShaderParameter) / 2;
 
     rayDesc.HitGroupTable.StartAddress = shaderTables.GetHitShaderTableGPUAddress();
-    rayDesc.HitGroupTable.SizeInBytes = sizeof(ShaderParameter);
-    rayDesc.HitGroupTable.StrideInBytes = sizeof(ShaderParameter);
+    rayDesc.HitGroupTable.SizeInBytes = sizeof(ShaderParameter) * shaderTables.GetHitCount();
+    rayDesc.HitGroupTable.StrideInBytes = sizeof(ShaderParameter) / 2;
 
     rayDesc.MissShaderTable.StartAddress = shaderTables.GetMissShaderTableGPUAddress();
-    rayDesc.MissShaderTable.SizeInBytes = sizeof(ShaderParameter);
-    rayDesc.MissShaderTable.StrideInBytes = sizeof(ShaderParameter);
+    rayDesc.MissShaderTable.SizeInBytes = sizeof(ShaderParameter) * shaderTables.GetMissCount();
+    rayDesc.MissShaderTable.StrideInBytes = sizeof(ShaderParameter) / 2;
 
     rayDesc.Width = width;
     rayDesc.Height = height;
     rayDesc.Depth = 1;
 
-    //renderTarget.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
-    //ApplyBarrierQueue(cmdList);
+    renderTarget.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_UNORDERED_ACCESS);
+    ApplyBarrierQueue(cmdList);
     cmdList->DispatchRays(&rayDesc);
-
+    renderTarget.AddTransitionQueue(D3D12_RESOURCE_STATES::D3D12_RESOURCE_STATE_COMMON);
+    ApplyBarrierQueue(cmdList);
 }

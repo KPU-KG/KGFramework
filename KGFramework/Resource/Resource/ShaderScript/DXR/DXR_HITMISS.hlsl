@@ -37,7 +37,10 @@ void Hit(inout Payload payload : SV_Payload, Built_in_attribute attr)
     {
         if(lightInfo[i].lightType.x == 0)
         {
-            payload.color += CustomLightCalculator(lightInfo[i], surface, normalize(lightInfo[i].Direction), normalize(-WorldRayDirection()), 1.0);
+            float4 shadow = float4(1,1,1, 1);
+            shadow = TraceShadow(HitWorldPosition(), normalize(-lightInfo[i].Direction), 0);
+            shadow = clamp(shadow, float4(0.3, 0.3, 0.3, 1.0f), float4(1, 1, 1, 1));
+            payload.color += CustomLightCalculator(lightInfo[i], surface, normalize(lightInfo[i].Direction), normalize(-WorldRayDirection()), 1.0) * shadow;
         }
     }
     //payload.color += CustomAmbientLightCalculator(lightInfo[i], surface, normalize(lightInfo[i].Direction), normalize(WorldRayDirection()), 1.0, ambient.iblLut, ambient.iblIrrad, ambient.iblRad);

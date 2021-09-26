@@ -14,6 +14,9 @@ struct MaterialData
 // Don't Touch This Line
 StructuredBuffer<MaterialData> materialData : register(t3, space4);
 
+
+
+
 // Write User Surface Shader Code
 Surface UserSurfaceFunction(SurfaceInput input)
 {
@@ -23,7 +26,9 @@ Surface UserSurfaceFunction(SurfaceInput input)
     
     float2x2 uvScale = float2x2(mat.UVSize.x, 0, 0, mat.UVSize.y);
     float2 uv = mul(input.uv, uvScale);
-    result.albedo = GammaToLinear(shaderTexture[mat.ColorTextureIndex].SampleLevel(gsamAnisotoropicWrap, uv, 0).xyz);
+    
+    //result.albedo = GammaToLinear(shaderTexture[mat.ColorTextureIndex].SampleLevel(gsamAnisotoropicWrap, uv, 0).xyz);
+    result.albedo = GammaToLinear(SampleLevelT(shaderTexture[mat.ColorTextureIndex], gsamAnisotoropicWrap, uv).xyz);
     //result.reflection = objectInfo[input.InstanceID].environmentMapIndex / 12000.0f;
     
     result.specular = mat.SpecularValue;

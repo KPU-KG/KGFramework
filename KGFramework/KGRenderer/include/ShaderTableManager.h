@@ -5,8 +5,7 @@
 
 namespace KG::Renderer
 {
-    //256 정렬
-    struct __declspec(align(256)) ShaderParameter
+    struct __declspec(align(D3D12_RAYTRACING_SHADER_RECORD_BYTE_ALIGNMENT)) RadianceShaderParameter
     {
         char shaderIdentifier[D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES];
         D3D12_GPU_VIRTUAL_ADDRESS vertexBuffer; //대충 버텍스 버퍼
@@ -14,6 +13,23 @@ namespace KG::Renderer
         D3D12_GPU_VIRTUAL_ADDRESS objectBuffer; //대충 오브젝트 버퍼
         D3D12_GPU_VIRTUAL_ADDRESS materialBuffer; //대충 메테리얼 버퍼
     };
+
+    struct __declspec(align(D3D12_RAYTRACING_SHADER_RECORD_BYTE_ALIGNMENT)) ShadowShaderParameter
+    {
+        char shaderIdentifier[D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES];
+        D3D12_GPU_VIRTUAL_ADDRESS vertexBuffer; //대충 버텍스 버퍼
+        D3D12_GPU_VIRTUAL_ADDRESS indexBuffer; //대충 인덱스 버퍼
+        D3D12_GPU_VIRTUAL_ADDRESS objectBuffer; //대충 오브젝트 버퍼
+        D3D12_GPU_VIRTUAL_ADDRESS materialBuffer; //대충 메테리얼 버퍼
+    };
+
+    //256 정렬
+    struct  ShaderParameter
+    {
+        RadianceShaderParameter radiance;
+        ShadowShaderParameter shadow;
+    };
+
 
     struct ShaderTable
     {
@@ -52,6 +68,7 @@ namespace KG::Renderer
         UINT Add(ID3D12Device* device, const ShaderParameter& parameter);
         void Update(UINT index, const ShaderParameter& parameter);
         D3D12_GPU_VIRTUAL_ADDRESS GetGPUAddress() const;
+        UINT GetCount() const;
     };
 
     class StateObjectManager;
@@ -61,19 +78,29 @@ namespace KG::Renderer
         ManagedShaderTable hitST;
         ManagedShaderTable missST;
         std::map<KGRenderJob*, UINT> hitMap;
+        void* shadowHitIdentifier = nullptr;
+        void* shadowMissIdentifier = nullptr;
 
-        static void CopyShaderIdentifier(ShaderParameter& param, void* shaderIdentifier);
+
+        static void CopyShaderIdentifier(RadianceShaderParameter& param, void* shaderIdentifier);
+        static void CopyShaderIdentifier(ShadowShaderParameter& param, void* shaderIdentifier);
     public:
         void AddRayGeneration(ID3D12Device* device);
 
         void AddHit(ID3D12Device* device, KGRenderJob* job);
         void AddMiss(ID3D12Device* device, KGRenderJob* job);
 
+        void PostShadowHit(void* shaderIdentifier);
+        void PostShadowMiss(void* shaderIdentifier);
+
         void UpdateRay(void* shaderIdentifier);
         void UpdateHit(void* shaderIdentifier, KGRenderJob* job);
         void UpdateMiss(void* shaderIdentifier, KGRenderJob* job);
 
         UINT GetHitgroupIndex(KGRenderJob* job) const;
+
+        UINT GetHitCount() const;
+        UINT GetMissCount() const;
 
         D3D12_GPU_VIRTUAL_ADDRESS GetRayShaderTableGPUAddress(UINT index = 0) const;
         D3D12_GPU_VIRTUAL_ADDRESS GetHitShaderTableGPUAddress() const;

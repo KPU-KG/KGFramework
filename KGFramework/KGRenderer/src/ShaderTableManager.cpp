@@ -99,9 +99,20 @@ D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::ManagedShaderTable::GetGPUAddress() cons
     return this->table.table->GetGPUVirtualAddress();
 }
 
-void KG::Renderer::ShaderTableManager::CopyShaderIdentifier(ShaderParameter& param, void* shaderIdentifier)
+UINT KG::Renderer::ManagedShaderTable::GetCount() const
 {
-    if(shaderIdentifier)
+    return this->parameters.size();
+}
+
+void KG::Renderer::ShaderTableManager::CopyShaderIdentifier(RadianceShaderParameter& param, void* shaderIdentifier)
+{
+    if (shaderIdentifier)
+        memcpy(param.shaderIdentifier, shaderIdentifier, D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES);
+}
+
+void KG::Renderer::ShaderTableManager::CopyShaderIdentifier(ShadowShaderParameter& param, void* shaderIdentifier)
+{
+    if (shaderIdentifier)
         memcpy(param.shaderIdentifier, shaderIdentifier, D3D12_SHADER_IDENTIFIER_SIZE_IN_BYTES);
 }
 
@@ -124,7 +135,7 @@ void KG::Renderer::ShaderTableManager::UpdateRay(void* shaderIdentifier)
 {
     ShaderParameter param;
     ZeroDesc(param);
-    CopyShaderIdentifier(param, shaderIdentifier);
+    CopyShaderIdentifier(param.radiance, shaderIdentifier);
     rayGenerationST.Update(0, param);
 }
 
@@ -132,11 +143,12 @@ void KG::Renderer::ShaderTableManager::UpdateHit(void* shaderIdentifier, KGRende
 {
     auto index = this->hitMap[job];
     ShaderParameter param;
-    CopyShaderIdentifier(param, shaderIdentifier);
-    param.vertexBuffer = job->GetVertexBufferGPUAddress();
-    param.indexBuffer = job->GetIndexBufferGPUAddress();
-    param.objectBuffer = job->GetObjectBufferGPUAddress();
-    param.materialBuffer = job->GetMaterialBufferGPUAddress();
+    CopyShaderIdentifier(param.radiance, shaderIdentifier);
+    CopyShaderIdentifier(param.shadow, shadowHitIdentifier);
+    param.radiance.vertexBuffer = job->GetVertexBufferGPUAddress();
+    param.radiance.indexBuffer = job->GetIndexBufferGPUAddress();
+    param.radiance.objectBuffer = job->GetObjectBufferGPUAddress();
+    param.radiance.materialBuffer = job->GetMaterialBufferGPUAddress();
     hitST.Update(index, param);
 }
 
@@ -144,11 +156,12 @@ void KG::Renderer::ShaderTableManager::UpdateMiss(void* shaderIdentifier, KGRend
 {
     auto index = this->hitMap[job];
     ShaderParameter param;
-    CopyShaderIdentifier(param, shaderIdentifier);
-    param.vertexBuffer = job->GetVertexBufferGPUAddress();
-    param.indexBuffer = job->GetIndexBufferGPUAddress();
-    param.objectBuffer = job->GetObjectBufferGPUAddress();
-    param.materialBuffer = job->GetMaterialBufferGPUAddress();
+    CopyShaderIdentifier(param.radiance, shaderIdentifier);
+    CopyShaderIdentifier(param.shadow, shadowMissIdentifier);
+    param.radiance.vertexBuffer = job->GetVertexBufferGPUAddress();
+    param.radiance.indexBuffer = job->GetIndexBufferGPUAddress();
+    param.radiance.objectBuffer = job->GetObjectBufferGPUAddress();
+    param.radiance.materialBuffer = job->GetMaterialBufferGPUAddress();
     missST.Update(index, param);
 }
 
@@ -159,9 +172,29 @@ void KG::Renderer::ShaderTableManager::AddMiss(ID3D12Device* device, KGRenderJob
     missST.Add(device, param);
 }
 
+void KG::Renderer::ShaderTableManager::PostShadowHit(void* shaderIdentifier)
+{
+    this->shadowHitIdentifier = shaderIdentifier;
+}
+
+void KG::Renderer::ShaderTableManager::PostShadowMiss(void* shaderIdentifier)
+{
+    this->shadowMissIdentifier = shaderIdentifier;
+}
+
 UINT KG::Renderer::ShaderTableManager::GetHitgroupIndex(KGRenderJob* job) const
 {
     return hitMap.at(job);
+}
+
+UINT KG::Renderer::ShaderTableManager::GetHitCount() const
+{
+    return this->hitST.GetCount();
+}
+
+UINT KG::Renderer::ShaderTableManager::GetMissCount() const
+{
+    return 1;
 }
 
 D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::ShaderTableManager::GetRayShaderTableGPUAddress(UINT index) const

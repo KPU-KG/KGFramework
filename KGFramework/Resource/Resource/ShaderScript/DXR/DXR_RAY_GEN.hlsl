@@ -1,6 +1,6 @@
 #include "DXR_GLOBAL_DEFINE.hlsl"
 
-static const float FLT_MAX = asfloat(0x7F7FFFFF);
+
 
 [shader("raygeneration")]
 void RayGeneration()

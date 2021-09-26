@@ -19,11 +19,13 @@ namespace KG::Renderer
         LightTable lights;
         std::vector<KGRenderJob*> jobs;
         DXRShader rayGenrationShader;
+        DXRShader shadowHitMissShader;
     public:
         void Initialize(ID3D12Device5* device, ID3D12RootSignature* globalRootSign);
         void AddNewRenderJobs(ID3D12Device5* device, KGRenderJob* job);
         void UpdateLight(KG::System::UsingComponentIterator<KG::Component::LightComponent> begin, KG::System::UsingComponentIterator<KG::Component::LightComponent> end);
         void PrepareRender(ID3D12Device5* device, ID3D12GraphicsCommandList4* cmdList);
         void Render(KG::Resource::DXResource& renderTarget, ID3D12GraphicsCommandList4* cmdList, UINT width, UINT height);
+   
     };
 }

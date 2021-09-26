@@ -139,6 +139,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DXR", "DXR", "{4825802F-879
 		Resource\Resource\ShaderScript\DXR\DXR_HITMISS_PBRDefault.hlsl = Resource\Resource\ShaderScript\DXR\DXR_HITMISS_PBRDefault.hlsl
 		Resource\Resource\ShaderScript\DXR\DXR_HITMISS_PBRMetalicSmooth.hlsl = Resource\Resource\ShaderScript\DXR\DXR_HITMISS_PBRMetalicSmooth.hlsl
 		Resource\Resource\ShaderScript\DXR\DXR_RAY_GEN.hlsl = Resource\Resource\ShaderScript\DXR\DXR_RAY_GEN.hlsl
+		Resource\Resource\ShaderScript\DXR\DXR_SHADOW_HITMISS.hlsl = Resource\Resource\ShaderScript\DXR\DXR_SHADOW_HITMISS.hlsl
 		Resource\Resource\ShaderScript\DXR\DXR_UTILL_LIGHT_CUSTOM.hlsl = Resource\Resource\ShaderScript\DXR\DXR_UTILL_LIGHT_CUSTOM.hlsl
 		Resource\Resource\ShaderScript\DXR\HitMiss.hlsl = Resource\Resource\ShaderScript\DXR\HitMiss.hlsl
 		Resource\Resource\ShaderScript\DXR\RAY_GEN.hlsl = Resource\Resource\ShaderScript\DXR\RAY_GEN.hlsl
