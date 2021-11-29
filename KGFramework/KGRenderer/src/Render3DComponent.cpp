@@ -29,6 +29,11 @@ void KG::Component::Render3DComponent::CullingProcess(const DirectX::BoundingFru
     }
 }
 
+// 문제 1 현재 프레임 캐시에 월드 매트릭스 잇음
+// 다른게 문제가 아니라 최종 계산 시 문제
+// 그럼 걍 최종 쉐이딩 계산 할 때 완성된 버텍스를 받아오자
+// -> 그럼 쉐이더 테이블 추가로 필요
+
 void KG::Component::Render3DComponent::OnPreRender()
 {
     if (!this->isVisible) return;
@@ -50,7 +55,9 @@ void KG::Component::Render3DComponent::OnPreRender()
         }
         if (this->boneAnimation && renderJob->animationBuffer != nullptr)
         {
-            for (size_t k = 0; k < this->boneAnimation->frameCache[i].size(); k++)
+			//renderJob->SetAnimationCount(this->boneAnimation->frameCache.size());
+			renderJob->SetAnimationCount(updateCount + 1);
+			for (size_t k = 0; k < this->boneAnimation->frameCache[i].size(); k++)
             {
                 //auto finalAnim = Math::Matrix4x4::Inverse(this->boneAnimation->frameCache[i][k]->GetTransform()->GetGlobalWorldMatrix());
                 if (this->boneAnimation->frameCache[i][k])

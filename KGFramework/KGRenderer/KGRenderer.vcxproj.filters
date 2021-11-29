@@ -198,11 +198,11 @@
     <ClCompile Include="src\DXRRenderScene.cpp">
       <Filter>프로젝트 파일\Core\KGDXRenderer\Core</Filter>
     </ClCompile>
-    <ClCompile Include="src\KGDXRenderer.cpp">
-      <Filter>프로젝트 파일\Core</Filter>
-    </ClCompile>
     <ClCompile Include="src\LightTable.cpp">
       <Filter>프로젝트 파일\Core\KGDXRenderer\Core\Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\KGDXRenderer.cpp">
+      <Filter>프로젝트 파일\Core\KGDXRenderer</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

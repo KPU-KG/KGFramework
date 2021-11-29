@@ -1,4 +1,4 @@
-#include "DXR_GLOBAL_DEFINE.hlsl"
+#include "DXR_GLOBAL_DEFINE_RAY.hlsl"
 #include "DXR_DEFINE_LIGHT.hlsl"
 #include "DXR_UTILL_LIGHT_CUSTOM.hlsl"
 

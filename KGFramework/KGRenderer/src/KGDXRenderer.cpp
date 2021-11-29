@@ -171,6 +171,8 @@ void KGDXRenderer::Initialize()
     this->CreateRenderTargetView();
     this->CreateGeneralRootSignature();
     this->CreatePostProcessRootSignature();
+    this->CreateDXRRootSignature();
+	this->CreateAnimationRootSignature();
 
     this->renderEngine = std::make_unique<KGRenderEngine>(this->d3dDevice);
     this->graphicSystems = std::make_unique<GraphicSystems>();
@@ -210,10 +212,27 @@ void KGDXRenderer::Render()
     ID3D12DescriptorHeap* heaps[] = { this->descriptorHeapManager->Get() };
     this->mainCommandList->SetDescriptorHeaps(1, heaps);
 
-    if (this->rtxOn)
+    if (this->isRayRender())
     {
         this->dxrScene->UpdateLight(this->graphicSystems->lightSystem.begin(), this->graphicSystems->lightSystem.end());
-        this->dxrScene->PrepareRender(dxrDevice, dxrCommandList);
+        this->dxrScene->PrepareRender(dxrDevice, dxrCommandList, this->renderType == AllRaytracing ? RenderMode::PathTrace : RenderMode::Hybrid);
+    }
+
+    {
+        hResult = this->mainCommandList->Close();
+
+        ThrowIfFailed(hResult);
+
+        ID3D12CommandList* d3dCommandLists[] = { this->mainCommandList };
+        this->commandQueue->ExecuteCommandLists(1, d3dCommandLists);
+
+        HRESULT hResult = this->subCommandAllocator->Reset();
+        hResult = this->mainCommandList->Reset(this->subCommandAllocator, nullptr);
+
+        this->mainCommandList->SetGraphicsRootSignature(this->generalRootSignature);
+        ID3D12DescriptorHeap* heaps[] = { this->descriptorHeapManager->Get() };
+        this->mainCommandList->SetDescriptorHeaps(1, heaps);
+
     }
 
     if (!this->renderEngine->hasRenderJobs())
@@ -221,20 +240,19 @@ void KGDXRenderer::Render()
         this->renderTargetResources[this->swapChainBufferIndex].AddTransitionQueue(D3D12_RESOURCE_STATE_RENDER_TARGET);
         ApplyBarrierQueue(this->mainCommandList);
     }
-    if (!this->rtxMain)
+    switch (this->renderType) 
     {
-        this->ShadowMapRender();
-        this->CubeCaemraRender();
-        this->NormalCameraRender();
-        this->CopyMainCamera();
-    }
-    else 
-    {
-        DXRDiffuseRender();
-        this->CopyMainCamera();
+    case DefaultRaster:
+        this->RenderRoutineDefault();
+        break;
+    case AllRaytracing:
+        this->RenderRoutineAllRay();
+        break;
+    case Hybrid:
+        this->RenderRoutineHybridRay();
+        break;
     }
 
-    //if (this->rtxMain)
     //{
     //    ID3D12Resource* mainCamraData = nullptr;
     //    for (KG::Component::CameraComponent& camera : this->graphicSystems->cameraSystem)
@@ -367,6 +385,45 @@ void KG::Renderer::KGDXRenderer::NormalCameraRender()
     PIXEndEvent(mainCommandList);
 }
 
+void KG::Renderer::KGDXRenderer::DXRNormalCameraRender()
+{
+    this->dxrCommandList->SetComputeRootSignature(this->dxrRootSignature);
+    PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "DXRNormalCameraRender / Only GBuffer");
+    size_t _cameraCount = 1;
+    for (KG::Component::CameraComponent& normalCamera : this->graphicSystems->cameraSystem)
+    {
+        if (!normalCamera.isMainCamera) continue;
+        PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "Normal Camera Render : Camera %d", _cameraCount++);
+        normalCamera.SetCameraRender(this->mainCommandList);
+        this->ParticleReady();
+        this->OpaqueRender(ShaderGeometryType::Default, ShaderPixelType::Deferred, this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex(), true);
+
+
+        dxrCommandList->SetComputeRootConstantBufferView(DXRRootParameterIndex::CameraData, normalCamera.GetCameraDataBuffer()->GetGPUVirtualAddress());
+        dxrCommandList->SetComputeRootDescriptorTable(DXRRootParameterIndex::RWHeaps, this->descriptorHeapManager->GetGPUHandle(0));
+        dxrCommandList->SetComputeRootDescriptorTable(DXRRootParameterIndex::Texture, this->descriptorHeapManager->GetGPUHandle(0));
+        dxrCommandList->SetComputeRootDescriptorTable(DXRRootParameterIndex::TextureArray, this->descriptorHeapManager->GetGPUHandle(0));
+        dxrCommandList->SetComputeRootDescriptorTable(DXRRootParameterIndex::TextureCube, this->descriptorHeapManager->GetGPUHandle(0));
+
+        this->dxrScene->RenderHybridRaytracingShadow(normalCamera.GetRenderTexture(), this->dxrCommandList, this->setting.clientWidth, this->setting.clientHeight);
+        this->dxrScene->RenderHybridRaytracingAmbient(normalCamera.GetRenderTexture(), this->dxrCommandList, this->setting.clientWidth, this->setting.clientHeight);
+        this->postProcessor->HybridLight(this->dxrCommandList);
+        //this->SSAORender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex(), normalCamera.GetCameraDataBuffer());
+        //this->LightPassRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+        //this->SkyBoxRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+        //this->TransparentRender(ShaderGeometryType::Default, ShaderPixelType::Transparent, this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+        //this->ParticleRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+        //this->SpriteRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+        this->PostProcessRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex(), normalCamera.GetCameraDataBuffer());
+        //this->InGameUIRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+        this->PassRenderEnd(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex());
+
+        normalCamera.EndCameraRender(this->mainCommandList);
+        PIXEndEvent(mainCommandList);
+    }
+    PIXEndEvent(mainCommandList);
+}
+
 void KG::Renderer::KGDXRenderer::ShadowMapRender()
 {
     PIXBeginEvent(mainCommandList, PIX_COLOR_INDEX(1), "ShadowCameraRender");
@@ -454,6 +511,8 @@ void KG::Renderer::KGDXRenderer::CopyMainCamera()
     PIXEndEvent(mainCommandList);
 }
 
+
+
 void KG::Renderer::KGDXRenderer::OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex, bool culled)
 {
     PIXBeginEvent(cmdList, PIX_COLOR_INDEX(2), "Opaque Render");
@@ -502,11 +561,50 @@ void KG::Renderer::KGDXRenderer::DXRDiffuseRender()
         dxrCommandList->SetComputeRootDescriptorTable(DXRRootParameterIndex::Texture, this->descriptorHeapManager->GetGPUHandle(0));
         dxrCommandList->SetComputeRootDescriptorTable(DXRRootParameterIndex::TextureArray, this->descriptorHeapManager->GetGPUHandle(0));
         dxrCommandList->SetComputeRootDescriptorTable(DXRRootParameterIndex::TextureCube, this->descriptorHeapManager->GetGPUHandle(0));
-        this->dxrScene->Render(normalCamera.GetRenderTexture().renderTargetResource, dxrCommandList, this->setting.clientWidth, this->setting.clientHeight);
+        this->dxrScene->RenderAllRaytracing(normalCamera.GetRenderTexture().renderTargetResource, dxrCommandList, this->setting.clientWidth, this->setting.clientHeight);
+
+        {
+            HRESULT hResult = this->mainCommandList->Close();
+
+            ThrowIfFailed(hResult);
+
+            ID3D12CommandList* d3dCommandLists[] = { this->mainCommandList };
+            this->commandQueue->ExecuteCommandLists(1, d3dCommandLists);
+
+            hResult = this->triCommandAllocator->Reset();
+            hResult = this->mainCommandList->Reset(this->triCommandAllocator, nullptr);
+
+            this->mainCommandList->SetGraphicsRootSignature(this->generalRootSignature);
+            ID3D12DescriptorHeap* heaps[] = { this->descriptorHeapManager->Get() };
+            this->mainCommandList->SetDescriptorHeaps(1, heaps);
+
+        }
+
+
         this->PostProcessRender(this->mainCommandList, normalCamera.GetRenderTexture(), normalCamera.GetCubeIndex(), normalCamera.GetCameraDataBuffer());
         normalCamera.EndCameraRender(dxrCommandList);
         break;
     }
+}
+
+void KG::Renderer::KGDXRenderer::RenderRoutineDefault()
+{
+    this->ShadowMapRender();
+    this->CubeCaemraRender();
+    this->NormalCameraRender();
+    this->CopyMainCamera();
+}
+
+void KG::Renderer::KGDXRenderer::RenderRoutineAllRay()
+{
+    DXRDiffuseRender();
+    this->CopyMainCamera();
+}
+
+void KG::Renderer::KGDXRenderer::RenderRoutineHybridRay()
+{
+    DXRNormalCameraRender();
+    this->CopyMainCamera();
 }
 
 void KG::Renderer::KGDXRenderer::ParticleRender(ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex)
@@ -671,14 +769,16 @@ KG::Component::ICubeCameraComponent* KG::Renderer::KGDXRenderer::GetNewCubeCamer
 void KG::Renderer::KGDXRenderer::DebugUIRender()
 {
     float sizeX = (ImGui::GetColumnWidth()) - 10.0f;
-    ImGui::Checkbox("DXR ON", &this->rtxOn);
-    ImGui::Checkbox("DXR MAIN", &this->rtxMain);
-    //if (ImGui::TreeNode("DXR"))
-    //{
-    //    auto ptr = this->dxrRenderer->GetRenderTarget().GetDescriptor(DescriptorType::SRV).GetGPUHandle().ptr;
-    //    ImGui::TextureView((ImTextureID)ptr, ImVec2(sizeX, sizeX * (9.0f / 16.0f)), "DXR Result");
-    //    ImGui::TreePop();
-    //}
+    bool isRaster = renderType == DefaultRaster;
+    bool isRay = renderType == AllRaytracing;
+    bool isHybrid = renderType == Hybrid;
+    if (ImGui::Checkbox("Rasterization", &isRaster))
+        renderType = DefaultRaster;
+    if (ImGui::Checkbox("All Raytracing", &isRay))
+        renderType = AllRaytracing;
+    if (ImGui::Checkbox("Hybrid Raytracing", &isHybrid))
+        renderType = Hybrid;
+
     if (ImGui::TreeNode("RenderTexture : deferred render"))
     {
         for (auto& camera : this->graphicSystems->cameraSystem)
@@ -809,7 +909,7 @@ KG::Renderer::PostProcessor* KG::Renderer::KGDXRenderer::GetPostProcess() const
 
 bool KG::Renderer::KGDXRenderer::isRayRender() const
 {
-    return rtxOn || rtxMain;
+    return this->renderType == AllRaytracing || this->renderType == Hybrid;
 }
 
 KG::Renderer::KGDXRenderer* KG::Renderer::KGDXRenderer::GetInstance()
@@ -825,6 +925,16 @@ ID3D12RootSignature* KG::Renderer::KGDXRenderer::GetGeneralRootSignature() const
 ID3D12RootSignature* KG::Renderer::KGDXRenderer::GetPostProcessRootSignature() const
 {
     return this->postProcessRootSignature;
+}
+
+ID3D12RootSignature* KG::Renderer::KGDXRenderer::GetDXRRootSignature() const
+{
+    return this->dxrRootSignature;
+}
+
+ID3D12RootSignature* KG::Renderer::KGDXRenderer::GetAnimationRootSignature() const
+{
+    return this->animationRootSignature;
 }
 
 KGRenderEngine* KG::Renderer::KGDXRenderer::GetRenderEngine() const
@@ -905,8 +1015,7 @@ void KG::Renderer::KGDXRenderer::CreateDXR()
         this->d3dDevice->QueryInterface(&this->dxrDevice);
         this->mainCommandList->QueryInterface(&this->dxrCommandList);
     }
-    this->CreateDXRRootSignature();
-    this->dxrScene->Initialize(this->dxrDevice, this->dxrRootSignature);
+    this->dxrScene->Initialize(this->dxrDevice, this->dxrRootSignature, this->descriptorHeapManager.get(), this->setting.clientWidth, this->setting.clientHeight);
 }
 
 void KG::Renderer::KGDXRenderer::CreateD3DDevice()
@@ -990,7 +1099,7 @@ void KG::Renderer::KGDXRenderer::CreateSwapChain()
 
     DXGI_SWAP_CHAIN_FULLSCREEN_DESC dxgiSwapChainFullScreenDesc;
     ::ZeroMemory(&dxgiSwapChainFullScreenDesc, sizeof(decltype(dxgiSwapChainFullScreenDesc)));
-    dxgiSwapChainFullScreenDesc.RefreshRate.Numerator = 60;
+    dxgiSwapChainFullScreenDesc.RefreshRate.Numerator = 144;
     dxgiSwapChainFullScreenDesc.RefreshRate.Denominator = 1;
     dxgiSwapChainFullScreenDesc.ScanlineOrdering = DXGI_MODE_SCANLINE_ORDER::DXGI_MODE_SCANLINE_ORDER_UNSPECIFIED;
     dxgiSwapChainFullScreenDesc.Scaling = DXGI_MODE_SCALING::DXGI_MODE_SCALING_UNSPECIFIED;
@@ -1037,6 +1146,8 @@ void KG::Renderer::KGDXRenderer::CreateCommandQueueAndList()
 
     HRESULT hResult = this->d3dDevice->CreateCommandQueue(&d3dCommandQueueDesc, IID_PPV_ARGS(&this->commandQueue));
     hResult = this->d3dDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&this->mainCommandAllocator));
+    hResult = this->d3dDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&this->subCommandAllocator));
+    hResult = this->d3dDevice->CreateCommandAllocator(D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT, IID_PPV_ARGS(&this->triCommandAllocator));
     hResult = this->d3dDevice->CreateCommandList(0, D3D12_COMMAND_LIST_TYPE::D3D12_COMMAND_LIST_TYPE_DIRECT, this->mainCommandAllocator, NULL, IID_PPV_ARGS(&this->mainCommandList));
     hResult = this->mainCommandList->Close();
 }
@@ -1213,7 +1324,7 @@ void KG::Renderer::KGDXRenderer::CreateGeneralRootSignature()
 
 void KG::Renderer::KGDXRenderer::CreateDXRRootSignature()
 {
-    D3D12_ROOT_PARAMETER pd3dRootParameters[9]{};
+    D3D12_ROOT_PARAMETER pd3dRootParameters[11]{};
 
     pd3dRootParameters[DXRRootParameterIndex::InstanceIndexData].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
     pd3dRootParameters[DXRRootParameterIndex::InstanceIndexData].Descriptor.ShaderRegister = 0;
@@ -1247,6 +1358,19 @@ void KG::Renderer::KGDXRenderer::CreateDXRRootSignature()
     pd3dRootParameters[DXRRootParameterIndex::RWTexture].DescriptorTable.NumDescriptorRanges = 1;
     pd3dRootParameters[DXRRootParameterIndex::RWTexture].DescriptorTable.pDescriptorRanges = &UAVRange;
     pd3dRootParameters[DXRRootParameterIndex::RWTexture].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
+
+    D3D12_DESCRIPTOR_RANGE shadowUAVRange;
+    ZeroDesc(shadowUAVRange);
+    shadowUAVRange.BaseShaderRegister = 1;
+    shadowUAVRange.NumDescriptors = -1;
+    shadowUAVRange.OffsetInDescriptorsFromTableStart = D3D12_DESCRIPTOR_RANGE_OFFSET_APPEND;
+    shadowUAVRange.RegisterSpace = 0;
+    shadowUAVRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_UAV;
+
+    pd3dRootParameters[DXRRootParameterIndex::RWHeaps].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[DXRRootParameterIndex::RWHeaps].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[DXRRootParameterIndex::RWHeaps].DescriptorTable.pDescriptorRanges = &shadowUAVRange;
+    pd3dRootParameters[DXRRootParameterIndex::RWHeaps].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
     pd3dRootParameters[DXRRootParameterIndex::AccelerationStructure].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
     pd3dRootParameters[DXRRootParameterIndex::AccelerationStructure].Descriptor.ShaderRegister = 2;
@@ -1300,18 +1424,18 @@ void KG::Renderer::KGDXRenderer::CreateDXRRootSignature()
 
     // 9 : Space 0 : SRV 2,3,4,5,6 : G Buffer // unbounded : 1
 
-    //D3D12_DESCRIPTOR_RANGE GbufferRange;
-    //ZeroDesc(GbufferRange);
-    //GbufferRange.BaseShaderRegister = 2;
-    //GbufferRange.NumDescriptors = 5;
-    //GbufferRange.OffsetInDescriptorsFromTableStart = 0;
-    //GbufferRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
-    //GbufferRange.RegisterSpace = 0;
+    D3D12_DESCRIPTOR_RANGE GbufferRange;
+    ZeroDesc(GbufferRange);
+    GbufferRange.BaseShaderRegister = 3;
+    GbufferRange.NumDescriptors = 5;
+    GbufferRange.OffsetInDescriptorsFromTableStart = 0;
+    GbufferRange.RangeType = D3D12_DESCRIPTOR_RANGE_TYPE::D3D12_DESCRIPTOR_RANGE_TYPE_SRV;
+    GbufferRange.RegisterSpace = 0;
 
-    //pd3dRootParameters[GraphicRootParameterIndex::GBufferHeap].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
-    //pd3dRootParameters[GraphicRootParameterIndex::GBufferHeap].DescriptorTable.NumDescriptorRanges = 1;
-    //pd3dRootParameters[GraphicRootParameterIndex::GBufferHeap].DescriptorTable.pDescriptorRanges = &GbufferRange;
-    //pd3dRootParameters[GraphicRootParameterIndex::GBufferHeap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_PIXEL;
+    pd3dRootParameters[DXRRootParameterIndex::GBufferHeap].ParameterType = D3D12_ROOT_PARAMETER_TYPE_DESCRIPTOR_TABLE;
+    pd3dRootParameters[DXRRootParameterIndex::GBufferHeap].DescriptorTable.NumDescriptorRanges = 1;
+    pd3dRootParameters[DXRRootParameterIndex::GBufferHeap].DescriptorTable.pDescriptorRanges = &GbufferRange;
+    pd3dRootParameters[DXRRootParameterIndex::GBufferHeap].ShaderVisibility = D3D12_SHADER_VISIBILITY::D3D12_SHADER_VISIBILITY_ALL;
 
     D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
     //D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags =
@@ -1471,6 +1595,72 @@ void KG::Renderer::KGDXRenderer::CreatePostProcessRootSignature()
     TryRelease(pd3dSignatureBlob);
     TryRelease(pd3dErrorBlob);
 
+}
+
+void KG::Renderer::KGDXRenderer::CreateAnimationRootSignature()
+{
+    D3D12_ROOT_PARAMETER pd3dRootParameters[6];
+    ZeroMemory(pd3dRootParameters, 6 * sizeof(D3D12_ROOT_PARAMETER));
+
+    pd3dRootParameters[AnimationRootParameterIndex::Result].ParameterType = D3D12_ROOT_PARAMETER_TYPE_UAV;
+    pd3dRootParameters[AnimationRootParameterIndex::Result].Descriptor.RegisterSpace = 0;
+    pd3dRootParameters[AnimationRootParameterIndex::Result].Descriptor.ShaderRegister = 0;
+    pd3dRootParameters[AnimationRootParameterIndex::Result].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[AnimationRootParameterIndex::Source].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+    pd3dRootParameters[AnimationRootParameterIndex::Source].Descriptor.RegisterSpace = 0;
+    pd3dRootParameters[AnimationRootParameterIndex::Source].Descriptor.ShaderRegister = 0;
+    pd3dRootParameters[AnimationRootParameterIndex::Source].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[AnimationRootParameterIndex::Bone].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+    pd3dRootParameters[AnimationRootParameterIndex::Bone].Descriptor.RegisterSpace = 0;
+    pd3dRootParameters[AnimationRootParameterIndex::Bone].Descriptor.ShaderRegister = 1;
+    pd3dRootParameters[AnimationRootParameterIndex::Bone].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    pd3dRootParameters[AnimationRootParameterIndex::Animation].ParameterType = D3D12_ROOT_PARAMETER_TYPE_SRV;
+    pd3dRootParameters[AnimationRootParameterIndex::Animation].Descriptor.RegisterSpace = 0;
+    pd3dRootParameters[AnimationRootParameterIndex::Animation].Descriptor.ShaderRegister = 2;
+    pd3dRootParameters[AnimationRootParameterIndex::Animation].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	pd3dRootParameters[AnimationRootParameterIndex::InstanceID].ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
+	pd3dRootParameters[AnimationRootParameterIndex::InstanceID].Constants.Num32BitValues = 1;
+	pd3dRootParameters[AnimationRootParameterIndex::InstanceID].Constants.RegisterSpace = 0;
+	pd3dRootParameters[AnimationRootParameterIndex::InstanceID].Constants.ShaderRegister = 0;
+	pd3dRootParameters[AnimationRootParameterIndex::InstanceID].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+	pd3dRootParameters[AnimationRootParameterIndex::World].ParameterType = D3D12_ROOT_PARAMETER_TYPE_32BIT_CONSTANTS;
+	pd3dRootParameters[AnimationRootParameterIndex::World].Constants.Num32BitValues = 16;
+	pd3dRootParameters[AnimationRootParameterIndex::World].Constants.RegisterSpace = 0;
+	pd3dRootParameters[AnimationRootParameterIndex::World].Constants.ShaderRegister = 1;
+	pd3dRootParameters[AnimationRootParameterIndex::World].ShaderVisibility = D3D12_SHADER_VISIBILITY_ALL;
+
+    D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags = D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT;
+    //D3D12_ROOT_SIGNATURE_FLAGS d3dRootSignatureFlags =
+    //	D3D12_ROOT_SIGNATURE_FLAG_ALLOW_INPUT_ASSEMBLER_INPUT_LAYOUT |
+    //	D3D12_ROOT_SIGNATURE_FLAG_DENY_HULL_SHADER_ROOT_ACCESS |
+    //	D3D12_ROOT_SIGNATURE_FLAG_DENY_DOMAIN_SHADER_ROOT_ACCESS;
+
+    D3D12_ROOT_SIGNATURE_DESC d3dRootSignatureDesc;
+    auto staticSampler = GetStaticSamplers();
+
+    ZeroDesc(d3dRootSignatureDesc);
+    d3dRootSignatureDesc.NumParameters = _countof(pd3dRootParameters);
+    d3dRootSignatureDesc.pParameters = pd3dRootParameters;
+    d3dRootSignatureDesc.NumStaticSamplers = 0;
+    d3dRootSignatureDesc.pStaticSamplers = nullptr;
+    d3dRootSignatureDesc.Flags = d3dRootSignatureFlags;
+
+    ID3DBlob* pd3dSignatureBlob = nullptr;
+    ID3DBlob* pd3dErrorBlob = nullptr;
+
+    auto result = ::D3D12SerializeRootSignature(&d3dRootSignatureDesc, D3D_ROOT_SIGNATURE_VERSION_1, &pd3dSignatureBlob, &pd3dErrorBlob);
+    if (FAILED(result)) DebugErrorMessage((const char*)pd3dErrorBlob->GetBufferPointer());
+    this->d3dDevice->CreateRootSignature(0,
+        pd3dSignatureBlob->GetBufferPointer(),
+        pd3dSignatureBlob->GetBufferSize(),
+        IID_PPV_ARGS(&this->animationRootSignature));
+    TryRelease(pd3dSignatureBlob);
+    TryRelease(pd3dErrorBlob);
 }
 
 void KG::Renderer::KGDXRenderer::AllocateGBufferHeap()

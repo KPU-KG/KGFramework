@@ -39,6 +39,10 @@ static int ReadShaderGroup( const std::string& attribute )
         return KG::Renderer::ShaderGroup::Sprite;
     else if ( attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::UI) )
         return KG::Renderer::ShaderGroup::UI;
+    else if (attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::DXR))
+        return KG::Renderer::ShaderGroup::DXR;
+    else if (attribute == KG::Renderer::ConvertToMacroString(KG::Renderer::ShaderGroup::ANIMATION))
+        return KG::Renderer::ShaderGroup::ANIMATION;
 	else return -1;
 }
 

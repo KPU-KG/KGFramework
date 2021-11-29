@@ -1,6 +1,4 @@
-#include "DXR_GLOBAL_DEFINE.hlsl"
-
-
+#include "DXR_GLOBAL_DEFINE_RAY.hlsl"
 
 [shader("raygeneration")]
 void RayGeneration()

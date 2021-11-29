@@ -25,6 +25,7 @@ namespace KG::Renderer
 		int visibleSize = 0;
 		int updateCount = 0;
         int culledMax = 0;
+		int animationCount = 0;
         int notCullIndexStart = 0;
         bool isCulling = false;
 		KG::Renderer::ShaderMeshType meshType;
@@ -38,6 +39,10 @@ namespace KG::Renderer
 		BufferPool<ShadowLightData>* shadowLightBufferPool = nullptr;
 		PooledBuffer<ShadowLightData>* shadowLightBuffer = nullptr;
 
+        std::vector<ID3D12Resource*> animatedVertex;
+        std::vector<ID3D12Resource*> blasScratchs;
+        std::vector<ID3D12Resource*> blasResults;
+
 		bool CheckBufferFull() const;
 		void GetNewBuffer();
 
@@ -45,6 +50,7 @@ namespace KG::Renderer
 		void OnObjectAdd( bool isVisible );
 		void OnObjectRemove( bool isVisible );
 		void SetVisibleSize(int count);
+		void SetAnimationCount(int count);
 		void OnVisibleAdd();
 		void OnVisibleRemove();
         void AddCullObject();
@@ -55,7 +61,10 @@ namespace KG::Renderer
 
         void TurnOnCulledRenderOnce();
 
-        D3D12_GPU_VIRTUAL_ADDRESS GetVertexBufferGPUAddress() const;
+        void BuildAnimatedBLAS(ID3D12Device5* device, ID3D12GraphicsCommandList4* commandList);
+
+		D3D12_GPU_VIRTUAL_ADDRESS GetBLAS(int animationIndex = -1) const;
+        D3D12_GPU_VIRTUAL_ADDRESS GetVertexBufferGPUAddress(int animationIndex = -1) const;
         D3D12_GPU_VIRTUAL_ADDRESS GetIndexBufferGPUAddress() const;
         D3D12_GPU_VIRTUAL_ADDRESS GetObjectBufferGPUAddress() const;
         D3D12_GPU_VIRTUAL_ADDRESS GetMaterialBufferGPUAddress() const;

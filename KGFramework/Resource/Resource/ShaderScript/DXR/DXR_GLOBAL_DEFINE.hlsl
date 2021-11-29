@@ -26,6 +26,7 @@ struct _AmbientData
     uint iblLut;
     uint iblRad;
     uint iblIrrad;
+    uint specularOutput;
 };
 
 StructuredBuffer<uint> instanceIndexBuffer : register(t0);
@@ -40,7 +41,7 @@ cbuffer AmbientData : register(b1)
 };
 
 RWTexture2D<float4> output : register(u0);
-RaytracingAccelerationStructure scene : register(t2);
+RWTexture2D<float4> rwTexture[] : register(u1);
 Texture2D<float4> shaderTexture[] : register(t0, space1);
 Texture2DArray<float4> shaderTextureArray[] : register(t0, space2);
 TextureCube<float4> shaderTextureCube[] : register(t0, space3);
@@ -109,6 +110,12 @@ struct InstanceData
     uint2 padding;
 };
 StructuredBuffer<InstanceData> objectInfo : register(t2, space4);
+
+Texture2D InputGBuffer0 : register(t3, space0);
+Texture2D InputGBuffer1 : register(t4, space0);
+Texture2D InputGBuffer2 : register(t5, space0);
+Texture2D<uint4> InputGBuffer3 : register(t6, space0);
+Texture2D InputGBuffer4 : register(t7, space0);
 //Vertex
 //Index
 //Object
@@ -122,18 +129,70 @@ struct Payload
     uint recursionDepth;
 };
 
-static const uint maxRecursionDepth = 2;
+static const uint maxRecursionDepth = 1;
 
-struct Built_in_attribute
-{
-    float BaryX;
-    float BaryY;
-};
 
-float3 HitWorldPosition()
+float3 SNORMTOUNORM(float3 normal)
 {
-    return WorldRayOrigin() + RayTCurrent() * WorldRayDirection();
+    normal *= 0.5f;
+    normal += 0.5f;
+    return normal;
 }
+
+float3 UNORMTOSNORM(float3 normal)
+{
+    normal -= 0.5f;
+    normal *= 2.0f;
+    return normal;
+}
+
+// http://c0de517e.blogspot.com/2015/01/notes-on-g-buffer-normal-encodings.html
+// https://knarkowicz.wordpress.com/2014/04/16/octahedron-normal-vector-encoding/
+float2 OctWrap(float2 v)
+{
+    return (1.0 - abs(v.yx)) * (v.xy >= 0.0 ? 1.0 : -1.0);
+}
+ 
+float2 EncodeNormal(float3 n)
+{
+    n /= (abs(n.x) + abs(n.y) + abs(n.z));
+    n.xy = n.z >= 0.0 ? n.xy : OctWrap(n.xy);
+    n.xy = n.xy * 0.5 + 0.5;
+    return n.xy;
+}
+ 
+float3 DecodeNormal(float2 f)
+{
+    f = f * 2.0 - 1.0;
+ 
+    // https://twitter.com/Stubbesaurus/status/937994790553227264
+    float3 n = float3(f.x, f.y, 1.0 - abs(f.x) - abs(f.y));
+    float t = saturate(-n.z);
+    n.xy += n.xy >= 0.0 ? -t : t;
+    return normalize(n);
+}
+
+Surface PixelDecode(float4 gbuffer0, float4 gbuffer1, float4 gbuffer2, uint4 gbuffer3)
+{
+    Surface result;
+    result.albedo = gbuffer0.xyz;
+    result.emssion = gbuffer0.w;
+    
+    result.specular = gbuffer1.x;
+    result.metalic = gbuffer1.y;
+    result.roughness = gbuffer1.z;
+    result.ao = gbuffer1.w;
+    
+    
+    result.wNormal = normalize(DecodeNormal(gbuffer2.xy));
+    
+    result.environmentMap = gbuffer3.x;
+    result.reserve0 = gbuffer3.yzw;
+    
+    return result;
+}
+
+
 
 float3 LinearToGamma(float3 rgb)
 {
@@ -154,104 +213,5 @@ float4 GammaToLinear(float4 rgb)
 {
     return float4(pow(rgb.rgb, 2.2), rgb.a);
 }
-
-float3 HitAttribute(float3 vertexAttribute[3], Built_in_attribute attr)
-{
-    return vertexAttribute[0] +
-        attr.BaryX * (vertexAttribute[1] - vertexAttribute[0]) +
-        attr.BaryY * (vertexAttribute[2] - vertexAttribute[0]);
-}
-float3 HitAttribute(float3 v0, float3 v1 , float3 v2, Built_in_attribute attr)
-{
-    return v0 + attr.BaryX * (v1 - v0) + attr.BaryY * (v2 - v0);
-}
-float2 HitAttribute(float2 vertexAttribute[3], Built_in_attribute attr)
-{
-    return vertexAttribute[0] +
-        attr.BaryX * (vertexAttribute[1] - vertexAttribute[0]) +
-        attr.BaryY * (vertexAttribute[2] - vertexAttribute[0]);
-}
-float2 HitAttribute(float2 v0, float2 v1, float2 v2, Built_in_attribute attr)
-{
-    return v0 + attr.BaryX * (v1 - v0) + attr.BaryY * (v2 - v0);
-}
-
-VertexData HitAttribute(VertexData vertex[3], Built_in_attribute attr)
-{
-    VertexData result;
-    result.position = HitAttribute(vertex[0].position, vertex[1].position, vertex[2].position, attr);
-    result.normal = HitAttribute(vertex[0].normal, vertex[1].normal, vertex[2].normal, attr);
-    result.tangent = HitAttribute(vertex[0].tangent, vertex[1].tangent, vertex[2].tangent, attr);
-    result.bitangent = HitAttribute(vertex[0].bitangent, vertex[1].bitangent, vertex[2].bitangent, attr);
-    result.uv = HitAttribute(vertex[0].uv, vertex[1].uv, vertex[2].uv, attr);
-    result.uv1 = HitAttribute(vertex[0].uv1, vertex[1].uv1, vertex[2].uv1, attr);
-    
-    float orientation = HitKind() == HIT_KIND_TRIANGLE_FRONT_FACE ? 1 : -1;
-    result.normal *= orientation;
-    result.tangent *= orientation;
-    result.bitangent *= orientation;
-    
-    return result;
-}
-
-static const float FLT_MAX = asfloat(0x7F7FFFFF);
-
-float4 TraceRadiance(float3 origin, float3 direction, uint recursionDepth)
-{
-    RayDesc ray;
-    ray.Origin = origin;
-    ray.Direction = direction;
-    ray.TMin = 0.0f;
-    ray.TMax = FLT_MAX;
-    
-    Payload payload;
-    payload.color = 0;
-    payload.recursionDepth = recursionDepth;
-    TraceRay(
-        scene,
-        RAY_FLAG_CULL_BACK_FACING_TRIANGLES,
-        0xFF,
-        0,
-        2,
-        0,
-        ray,
-        payload
-    );
-    return payload.color;
-}
-
-float4 TraceShadow(float3 origin, float3 direction, uint recursionDepth)
-{
-    RayDesc ray;
-    ray.Origin = origin;
-    ray.Direction = direction;
-    ray.TMin = 0.0f;
-    ray.TMax = FLT_MAX;
-    
-    Payload payload;
-    payload.color = 0;
-    payload.recursionDepth = 30;
-    TraceRay(
-        scene,
-        RAY_FLAG_CULL_BACK_FACING_TRIANGLES,
-        0xFF,
-        1,
-        2,
-        1,
-        ray,
-        payload
-    );
-    return payload.color;
-}
-
-
-float4 SampleLevelT(Texture2D tex, SamplerState sam, float2 uv)
-{
-    uint width, height, levels;
-    tex.GetDimensions(0, width, height, levels);
-    float currentLevel = levels * log10(RayTCurrent() / 250.0f);
-    return tex.SampleLevel(sam, uv, currentLevel);
-}
-
 
 #endif

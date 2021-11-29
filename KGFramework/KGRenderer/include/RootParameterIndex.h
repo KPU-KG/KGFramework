@@ -26,7 +26,8 @@ namespace KG::Renderer
         inline static constexpr size_t TextureArray = 6;
         inline static constexpr size_t TextureCube = 7;
         inline static constexpr size_t Ambient = 8;
-        //inline static constexpr size_t GBufferHeap = 9;
+        inline static constexpr size_t GBufferHeap = 9;
+        inline static constexpr size_t RWHeaps = 10;
     };
 
 
@@ -44,5 +45,15 @@ namespace KG::Renderer
         inline static constexpr size_t FrameData = 9;
         inline static constexpr size_t Texture1Heap = 10;
         inline static constexpr size_t Texture2Heap = 11;
+    };
+
+    struct AnimationRootParameterIndex
+    {
+        inline static constexpr size_t Result = 0;
+        inline static constexpr size_t Source = 1;
+        inline static constexpr size_t Bone = 2;
+        inline static constexpr size_t Animation = 3;
+		inline static constexpr size_t InstanceID = 4;
+		inline static constexpr size_t World = 5;
     };
 }

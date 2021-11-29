@@ -7,6 +7,7 @@
 #include "KGShader.h"
 #include "RootParameterIndex.h"
 #include "KGDXRenderer.h"
+#include "PostProcess.h"
 using namespace KG::Renderer;
 // 이거 추후에 버디 얼로케이터 같은 걸로 바꿔야 함
 
@@ -109,7 +110,7 @@ void KG::Renderer::KGRenderJob::GetNewBuffer()
 	if ( this->objectBuffer )
 		this->objectBuffer->isUsing = false;
 	this->objectBuffer = this->objectBufferPool->GetNewBuffer( this->objectSize );
-    this->matrixs.resize(this->objectSize);
+    this->matrixs.resize(this->objectBuffer->GetSize());
 
 	if ( meshType == ShaderMeshType::SkinnedMesh )
 	{
@@ -156,6 +157,11 @@ void KG::Renderer::KGRenderJob::OnObjectRemove(bool isVisible)
 void KG::Renderer::KGRenderJob::SetVisibleSize(int count)
 {
 	this->visibleSize = count;
+}
+
+void KG::Renderer::KGRenderJob::SetAnimationCount(int count)
+{
+	this->animationCount = count;
 }
 
 void KG::Renderer::KGRenderJob::OnVisibleAdd()
@@ -219,9 +225,111 @@ void KG::Renderer::KGRenderJob::TurnOnCulledRenderOnce()
     this->isCulling = true;
 }
 
-D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::KGRenderJob::GetVertexBufferGPUAddress() const
+void KG::Renderer::KGRenderJob::BuildAnimatedBLAS(ID3D12Device5* device, ID3D12GraphicsCommandList4* commandList)
 {
-    return this->geometry->GetVertexBufferGPUAddress();
+	auto updateCount = this->animationCount;
+	if (updateCount <= 0) return;
+    auto [vCount, iCount] = this->geometry->GetCounts();
+    auto [preResultSize, preScratchSize] = this->geometry->GetPrebuildInfo();
+
+    while(this->animatedVertex.size() < updateCount)
+        this->animatedVertex.push_back(::CreateBufferResource(device, commandList, vCount * sizeof(NormalVertex)));
+
+    while (this->blasResults.size() < updateCount)
+        this->blasResults.push_back(::CreateASBufferResource(device, commandList, preResultSize, D3D12_RESOURCE_STATE_RAYTRACING_ACCELERATION_STRUCTURE));
+
+    while (this->blasScratchs.size() < updateCount)
+        this->blasScratchs.push_back(::CreateASBufferResource(device, commandList, preScratchSize, D3D12_RESOURCE_STATE_COMMON));
+
+
+	for (size_t i = 0; i < updateCount; i++)
+	{
+		//XMMatrixTranspose
+		auto mat = XMMatrixTranspose(XMMatrixInverse(0, XMLoadFloat3x4(&this->matrixs[i])));
+		XMFLOAT4X4 world;
+		XMStoreFloat4x4(&world, mat);
+		world._44 = 1;
+		KGDXRenderer::GetInstance()->GetPostProcess()->CalculateAnimation(
+			commandList,
+			this->animatedVertex[i]->GetGPUVirtualAddress(),
+			this->geometry->GetVertexBufferGPUAddress(),
+			this->geometry->GetBoneOffsetGPUAddress(),
+			this->animationBuffer->buffer.resource->GetGPUVirtualAddress(),
+			vCount,
+			i,
+			world
+		);
+	}
+
+     // 후처리로 스키닝 연산
+
+    for (size_t i = 0; i < updateCount; i++)
+    {
+        D3D12_RAYTRACING_GEOMETRY_DESC rtgDesc;
+        ZeroDesc(rtgDesc);
+        rtgDesc.Type = D3D12_RAYTRACING_GEOMETRY_TYPE::D3D12_RAYTRACING_GEOMETRY_TYPE_TRIANGLES;
+        rtgDesc.Flags = D3D12_RAYTRACING_GEOMETRY_FLAGS::D3D12_RAYTRACING_GEOMETRY_FLAG_OPAQUE;
+        //Vertex
+        rtgDesc.Triangles.VertexBuffer.StartAddress = this->animatedVertex[i]->GetGPUVirtualAddress();
+        rtgDesc.Triangles.VertexBuffer.StrideInBytes = sizeof(NormalVertex);
+        rtgDesc.Triangles.VertexCount = vCount;
+        rtgDesc.Triangles.VertexFormat = DXGI_FORMAT_R32G32B32_FLOAT;
+        //Index
+        rtgDesc.Triangles.IndexBuffer = this->geometry->GetIndexBufferGPUAddress();
+        rtgDesc.Triangles.IndexCount = iCount;
+        rtgDesc.Triangles.IndexFormat = DXGI_FORMAT_R32_UINT;
+        //Transform
+        rtgDesc.Triangles.Transform3x4 = 0;
+
+        D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_INPUTS inputs;
+        ZeroDesc(inputs);
+        inputs.Type = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_TYPE_BOTTOM_LEVEL;
+        inputs.Flags = D3D12_RAYTRACING_ACCELERATION_STRUCTURE_BUILD_FLAG_NONE;
+        inputs.NumDescs = 1;
+        inputs.DescsLayout = D3D12_ELEMENTS_LAYOUT_ARRAY;
+        inputs.pGeometryDescs = &rtgDesc;
+
+        D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO prebuild;
+        device->GetRaytracingAccelerationStructurePrebuildInfo(&inputs, &prebuild);
+
+        D3D12_BUILD_RAYTRACING_ACCELERATION_STRUCTURE_DESC buildDesc;
+        ZeroDesc(buildDesc);
+        buildDesc.Inputs = inputs;
+        buildDesc.DestAccelerationStructureData = this->blasResults[i]->GetGPUVirtualAddress();
+        buildDesc.ScratchAccelerationStructureData = this->blasScratchs[i]->GetGPUVirtualAddress();
+        {
+            D3D12_RESOURCE_BARRIER barrier[2] = {
+                CD3DX12_RESOURCE_BARRIER::Transition(this->animatedVertex[i], D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE),
+                CD3DX12_RESOURCE_BARRIER::Transition(this->geometry->GetIndexBuffer(), D3D12_RESOURCE_STATE_INDEX_BUFFER, D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE),
+            };
+            commandList->ResourceBarrier(2, barrier);
+        }
+        commandList->BuildRaytracingAccelerationStructure(&buildDesc, 0, nullptr);
+        {
+            D3D12_RESOURCE_BARRIER barrier[2] = {
+                CD3DX12_RESOURCE_BARRIER::Transition(this->animatedVertex[i], D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_VERTEX_AND_CONSTANT_BUFFER),
+                CD3DX12_RESOURCE_BARRIER::Transition(this->geometry->GetIndexBuffer(), D3D12_RESOURCE_STATE_NON_PIXEL_SHADER_RESOURCE, D3D12_RESOURCE_STATE_INDEX_BUFFER),
+            };
+            commandList->ResourceBarrier(2, barrier);
+        }
+		{
+			D3D12_RESOURCE_BARRIER barrier[2] = {
+				CD3DX12_RESOURCE_BARRIER::UAV(this->blasResults[i]),
+				CD3DX12_RESOURCE_BARRIER::UAV(this->blasScratchs[i])
+			};
+			commandList->ResourceBarrier(2, barrier);
+		}
+    }
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::KGRenderJob::GetBLAS(int animationIndex) const
+{
+	return animationIndex == -1 ? this->geometry->GetBLAS() : this->blasResults[animationIndex]->GetGPUVirtualAddress();
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::KGRenderJob::GetVertexBufferGPUAddress(int animationIndex) const
+{
+	return animationIndex == -1 ? this->geometry->GetVertexBufferGPUAddress() : this->animatedVertex[animationIndex]->GetGPUVirtualAddress();
 }
 
 D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::KGRenderJob::GetIndexBufferGPUAddress() const

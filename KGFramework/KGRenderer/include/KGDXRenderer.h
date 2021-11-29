@@ -25,6 +25,10 @@ namespace KG::Renderer
         UINT frameResourceCount = maxFrameCount;
         bool isAbleDXR = false;
     };
+    constexpr int DefaultRaster = 0;
+    constexpr int AllRaytracing = 1;
+    constexpr int Hybrid = 2;
+
     class KGDXRenderer : public IKGRenderer
     {
     private:
@@ -47,12 +51,15 @@ namespace KG::Renderer
 
         ID3D12CommandQueue* commandQueue = nullptr;
         ID3D12CommandAllocator* mainCommandAllocator = nullptr;
+        ID3D12CommandAllocator* subCommandAllocator = nullptr;
+        ID3D12CommandAllocator* triCommandAllocator = nullptr;
         ID3D12GraphicsCommandList* mainCommandList = nullptr;
         ID3D12GraphicsCommandList4* dxrCommandList = nullptr;
 
         ID3D12RootSignature* generalRootSignature = nullptr;
         ID3D12RootSignature* dxrRootSignature = nullptr;
         ID3D12RootSignature* postProcessRootSignature = nullptr;
+        ID3D12RootSignature* animationRootSignature = nullptr;
 
         ID3D12Fence* fence = nullptr;
         UINT64 fenceValue = 0;
@@ -60,9 +67,7 @@ namespace KG::Renderer
 
         bool isWireFrame = false;
         bool isRenderEditUI = false;
-        bool rtxOn = true;
-        bool rtxMain = true;
-
+        int renderType = Hybrid;
 
         size_t imguiFontDescIndex = 0;
 
@@ -95,6 +100,7 @@ namespace KG::Renderer
         void CreateGeneralRootSignature();
         void CreateDXRRootSignature();
         void CreatePostProcessRootSignature();
+        void CreateAnimationRootSignature();
 
         void AllocateGBufferHeap();
 
@@ -117,11 +123,15 @@ namespace KG::Renderer
         void PreloadModels(std::vector<KG::Utill::HashString>&& ids) override;
         void CubeCaemraRender();
         void NormalCameraRender();
+        void DXRNormalCameraRender();
         void ShadowMapRender();
         void CopyMainCamera();
         void EditorUIRender();
         void ParticleReady();
         void DXRDiffuseRender(); //
+        void RenderRoutineDefault();
+        void RenderRoutineAllRay();
+        void RenderRoutineHybridRay();
 
         void OpaqueRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex, bool culled = false);
         void TransparentRender(ShaderGeometryType geoType, ShaderPixelType pixType, ID3D12GraphicsCommandList* cmdList, KG::Renderer::RenderTexture& rt, size_t cubeIndex);
@@ -167,6 +177,8 @@ namespace KG::Renderer
         static KGDXRenderer* GetInstance();
         ID3D12RootSignature* GetGeneralRootSignature() const;
         ID3D12RootSignature* GetPostProcessRootSignature() const;
+        ID3D12RootSignature* GetDXRRootSignature() const;
+        ID3D12RootSignature* GetAnimationRootSignature() const;
         KGRenderEngine* GetRenderEngine() const;
         DescriptorHeapManager* GetDescriptorHeapManager() const;
         

@@ -62,8 +62,14 @@ ID3D12PipelineState* KG::Renderer::PostProcess::CreatePSO()
     D3D12_CACHED_PIPELINE_STATE d3dCachedPipelineState = { };
     D3D12_COMPUTE_PIPELINE_STATE_DESC psDesc;
     ::ZeroMemory(&psDesc, sizeof(D3D12_COMPUTE_PIPELINE_STATE_DESC));
-
-    psDesc.pRootSignature = KGDXRenderer::GetInstance()->GetPostProcessRootSignature();
+	if (this->shaderSetData.shaderGroup == ShaderGroup::DXR)
+		psDesc.pRootSignature = KGDXRenderer::GetInstance()->GetDXRRootSignature();
+	else if(this->shaderSetData.shaderGroup == ShaderGroup::ANIMATION)
+		psDesc.pRootSignature = KGDXRenderer::GetInstance()->GetAnimationRootSignature();
+	else
+		psDesc.pRootSignature = KGDXRenderer::GetInstance()->GetPostProcessRootSignature();
+    
+    //
     ID3DBlob* computeShader = this->CompileShaderFromMetadata();
 
     D3D12_SHADER_BYTECODE byteCode;
@@ -166,6 +172,12 @@ KG::Renderer::PostProcessor::PostProcessor()
     this->Initialize();
     this->copyProcess = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess("PostCopy"_id);
     this->copyProcess->id = KG::Utill::HashString("PostCopy");
+
+    this->dxrLight = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess("DXR_LIGHT"_id);
+    this->dxrLight->id = KG::Utill::HashString("DXR_LIGHT");
+
+    this->animationCalc = KG::Resource::ResourceContainer::GetInstance()->LoadPostProcess("ANIM_CALC"_id);
+    this->animationCalc->id = KG::Utill::HashString("ANIM_CALC");
 
     {
         auto& ref = this->ssaoQueue.emplace_back();
@@ -416,6 +428,23 @@ void KG::Renderer::PostProcessor::CopyToDebug(ID3D12GraphicsCommandList* cmdList
     KG::Resource::DXResource::ApplyBarrierQueue(cmdList);
 }
 
+void KG::Renderer::PostProcessor::HybridLight(ID3D12GraphicsCommandList* cmdList)
+{
+    this->dxrLight->Draw(cmdList, this->width, this->height, this->parser);
+}
+
+void KG::Renderer::PostProcessor::CalculateAnimation(ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS result, D3D12_GPU_VIRTUAL_ADDRESS src, D3D12_GPU_VIRTUAL_ADDRESS bone, D3D12_GPU_VIRTUAL_ADDRESS anim, int vCount, int instanceID, const XMFLOAT4X4& world)
+{
+    auto* computeRootSign = KGDXRenderer::GetInstance()->GetAnimationRootSignature();
+    cmdList->SetComputeRootSignature(computeRootSign);
+    cmdList->SetComputeRootUnorderedAccessView(AnimationRootParameterIndex::Result, result);
+    cmdList->SetComputeRootShaderResourceView(AnimationRootParameterIndex::Source, src);
+    cmdList->SetComputeRootShaderResourceView(AnimationRootParameterIndex::Bone, bone);
+    cmdList->SetComputeRootShaderResourceView(AnimationRootParameterIndex::Animation, anim);
+	cmdList->SetComputeRoot32BitConstant(AnimationRootParameterIndex::InstanceID, instanceID, 0);
+	cmdList->SetComputeRoot32BitConstants(AnimationRootParameterIndex::World, 16, &world, 0);
+	this->animationCalc->Draw(cmdList, vCount, 1, this->parser);
+}
 
 void KG::Renderer::PostProcessor::OnDrawGUI()
 {

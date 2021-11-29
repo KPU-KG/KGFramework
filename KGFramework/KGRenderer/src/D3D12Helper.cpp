@@ -99,6 +99,11 @@ ID3D12Resource* KG::Renderer::CreateBufferResource(ID3D12Device* pd3dDevice, ID3
 
 }
 
+ID3D12Resource* KG::Renderer::CreateBufferResource(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nBytes)
+{
+    return CreateBufferResource(pd3dDevice, pd3dCommandList, nullptr, nBytes, D3D12_HEAP_TYPE_DEFAULT, D3D12_RESOURCE_STATE_UNORDERED_ACCESS, nullptr);
+}
+
 ID3D12Resource* KG::Renderer::CreateASBufferResource(ID3D12Device* pd3dDevice, ID3D12GraphicsCommandList* pd3dCommandList, UINT nBytes, D3D12_RESOURCE_STATES d3dResourceStates)
 {
     ID3D12Resource* pd3dBuffer = nullptr;

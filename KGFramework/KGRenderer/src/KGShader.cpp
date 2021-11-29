@@ -287,7 +287,7 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata(ShaderTarget shaderT
         &errorPreProcBlob);
     if (errorPreProcBlob != nullptr)
     {
-        DebugErrorMessage(L"셰이더 컴파일 오류 : " << (char*)errorPreProcBlob->GetBufferPointer());
+        //DebugErrorMessage(L"셰이더 컴파일 오류 : " << (char*)errorPreProcBlob->GetBufferPointer());
     }
     else
     {
@@ -313,7 +313,7 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata(ShaderTarget shaderT
         newFile.close();
         if (errorPreProcBlob != nullptr)
         {
-            DebugErrorMessage(L"셰이더 컴파일 오류 : " << (char*)errorPreProcBlob->GetBufferPointer());
+            //DebugErrorMessage(L"셰이더 컴파일 오류 : " << (char*)errorPreProcBlob->GetBufferPointer());
         }
         buffer.assign(newPath.begin(), newPath.end());
     }
@@ -337,7 +337,7 @@ ID3D10Blob* KG::Renderer::Shader::CompileShaderFromMetadata(ShaderTarget shaderT
 
     if (errorblob != nullptr)
     {
-        DebugErrorMessage(L"셰이더 컴파일 오류 : " << (char*)errorblob->GetBufferPointer());
+        //DebugErrorMessage(L"셰이더 컴파일 오류 : " << (char*)errorblob->GetBufferPointer());
     }
     return shaderBlob;
 }

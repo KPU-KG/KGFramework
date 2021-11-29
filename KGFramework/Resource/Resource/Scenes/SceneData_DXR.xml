@@ -8,11 +8,6 @@
             <Rotation_Q x="0" y="0" z="0" w="1"/>
             <Scale x="1" y="1" z="1"/>
         </Component>
-        <Component name="TransformComponent" hash_id="3882513520">
-            <Position x="0" y="0" z="0"/>
-            <Rotation_Q x="0" y="0" z="0" w="1"/>
-            <Scale x="1" y="1" z="1"/>
-        </Component>
         <Component name="ILightComponent" hash_id="2391118483">
             <LightType value="0"/>
             <Strength x="1" y="1" z="1"/>
@@ -81,8 +76,8 @@
         <GameObject instanceId="1">
             <Tag hash_id="133944175" srcString="SceneCameraObject"/>
             <Component name="TransformComponent" hash_id="3882513520">
-                <Position x="57.026047" y="11.158298" z="-23.358528"/>
-                <Rotation_Q x="0.14223456" y="-0.20050766" z="0.029074078" w="0.98110896"/>
+                <Position x="44.079178" y="3.0853424" z="-3.9584379"/>
+                <Rotation_Q x="0.10731094" y="-0.38709223" z="0.0447862" w="0.9276284"/>
                 <Scale x="1" y="1" z="1"/>
             </Component>
             <Component name="ICameraComponent" hash_id="1509592448">
@@ -31523,6 +31518,601 @@
                 </MaterialDesc>
             </Component>
             <Component name="IRender3DComponent" hash_id="1184141904"/>
+        </GameObject>
+        <GameObject instanceId="3075">
+            <Tag hash_id="4026660583" srcString="TeamCharacter"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="42.078739" y="3.5866346e-06" z="-3.3150871"/>
+                <Rotation_Q x="0" y="0" z="0" w="1"/>
+                <Scale x="2" y="2" z="2"/>
+            </Component>
+            <Component name="DynamicRigidComponent" hash_id="409460406">
+                <Position x="0" y="1.05" z="0"/>
+                <Rotation x="0" y="0" z="0"/>
+                <Scale x="0.69999999" y="2.0999999" z="0.69999999"/>
+                <Apply value="false"/>
+                <Show value="1"/>
+                <CollisionFilter value="4"/>
+            </Component>
+            <GameObject instanceId="3077">
+                <Tag hash_id="4068546208" srcString="RotateHelper"/>
+                <Component name="TransformComponent" hash_id="3882513520">
+                    <Position x="0" y="0" z="0"/>
+                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                    <Scale x="0.0099999998" y="0.0099999998" z="0.0099999998"/>
+                </Component>
+                <GameObject instanceId="3011">
+                    <Tag hash_id="4257772165" srcString="RootNode"/>
+                    <Component name="TransformComponent" hash_id="3882513520">
+                        <Position x="-23.299999" y="0" z="-15.8"/>
+                        <Rotation_Q x="0" y="0" z="0" w="1"/>
+                        <Scale x="1" y="1" z="1"/>
+                    </Component>
+                    <GameObject instanceId="3012">
+                        <Tag hash_id="109935930" srcString="Pelvis"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="22.337996" y="94.598259" z="14.542244"/>
+                            <Rotation_Q x="0.18637249" y="-0.23833333" z="-0.6409539" w="0.70543635"/>
+                            <Scale x="1" y="1" z="1"/>
+                        </Component>
+                        <GameObject instanceId="3013">
+                            <Tag hash_id="4268609547" srcString="LLegUpper"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="3.4340897" y="-0.31900883" z="8.619215"/>
+                                <Rotation_Q x="-0.21206383" y="0.93315268" z="0.27461177" w="0.094039105"/>
+                                <Scale x="1" y="1" z="1"/>
+                            </Component>
+                            <GameObject instanceId="3014">
+                                <Tag hash_id="2658106547" srcString="LLegCalf"/>
+                                <Component name="TransformComponent" hash_id="3882513520">
+                                    <Position x="-41.55471" y="-9.5367432e-07" z="1.9073486e-06"/>
+                                    <Rotation_Q x="-0.12717965" y="-0.10393605" z="0.31746522" w="0.93393707"/>
+                                    <Scale x="1" y="1" z="1"/>
+                                </Component>
+                                <GameObject instanceId="3015">
+                                    <Tag hash_id="3161339690" srcString="LLegAnkle"/>
+                                    <Component name="TransformComponent" hash_id="3882513520">
+                                        <Position x="-37.377937" y="-9.5367432e-07" z="-3.8146973e-06"/>
+                                        <Rotation_Q x="-0.059491388" y="0.067416348" z="-0.40917695" w="0.90801442"/>
+                                        <Scale x="1" y="1" z="1"/>
+                                    </Component>
+                                    <GameObject instanceId="3016">
+                                        <Tag hash_id="3150327864" srcString="LLegToe1"/>
+                                        <Component name="TransformComponent" hash_id="3882513520">
+                                            <Position x="-15.988005" y="0" z="1.9073486e-06"/>
+                                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                            <Scale x="1" y="1" z="1"/>
+                                        </Component>
+                                    </GameObject>
+                                </GameObject>
+                            </GameObject>
+                        </GameObject>
+                        <GameObject instanceId="3017">
+                            <Tag hash_id="3364150599" srcString="Spine1"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="0" y="0" z="0"/>
+                                <Rotation_Q x="0.004258215" y="-0.00040514304" z="-0.046031784" w="0.99893087"/>
+                                <Scale x="1" y="1" z="1"/>
+                            </Component>
+                            <GameObject instanceId="3018">
+                                <Tag hash_id="3364147716" srcString="Spine2"/>
+                                <Component name="TransformComponent" hash_id="3882513520">
+                                    <Position x="-20.237976" y="0" z="0"/>
+                                    <Rotation_Q x="0.0096482625" y="-0.0030135284" z="-0.042693533" w="0.99903709"/>
+                                    <Scale x="1" y="1" z="1"/>
+                                </Component>
+                                <GameObject instanceId="3019">
+                                    <Tag hash_id="3364148677" srcString="Spine3"/>
+                                    <Component name="TransformComponent" hash_id="3882513520">
+                                        <Position x="-20.237984" y="0" z="0"/>
+                                        <Rotation_Q x="0.0089664226" y="-0.00098264287" z="-0.073543601" w="0.99725121"/>
+                                        <Scale x="1" y="1" z="1"/>
+                                    </Component>
+                                    <GameObject instanceId="3020">
+                                        <Tag hash_id="366312157" srcString="Neck1"/>
+                                        <Component name="TransformComponent" hash_id="3882513520">
+                                            <Position x="-25.793365" y="1.4305115e-05" z="0"/>
+                                            <Rotation_Q x="0.075734101" y="-9.2774746e-05" z="-0.022069464" w="0.99688381"/>
+                                            <Scale x="1" y="1" z="1"/>
+                                        </Component>
+                                        <GameObject instanceId="3021">
+                                            <Tag hash_id="1412962334" srcString="NeckHead"/>
+                                            <Component name="TransformComponent" hash_id="3882513520">
+                                                <Position x="-7.2049713" y="0" z="0"/>
+                                                <Rotation_Q x="0.39069664" y="0.053566385" z="-0.0062193014" w="0.91893858"/>
+                                                <Scale x="1" y="1" z="1"/>
+                                            </Component>
+                                            <GameObject instanceId="3022">
+                                                <Tag hash_id="4193608619" srcString="Reyelid"/>
+                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                    <Position x="-6.7535858" y="9.0698452" z="-3.4393024"/>
+                                                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                    <Scale x="1" y="1" z="1"/>
+                                                </Component>
+                                            </GameObject>
+                                            <GameObject instanceId="3023">
+                                                <Tag hash_id="2183547705" srcString="Leyelid"/>
+                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                    <Position x="-6.7535858" y="9.0698433" z="3.4393024"/>
+                                                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                    <Scale x="1" y="1" z="1"/>
+                                                </Component>
+                                            </GameObject>
+                                            <GameObject instanceId="3024">
+                                                <Tag hash_id="602747839" srcString="Rbrow"/>
+                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                    <Position x="-8.311676" y="10.492083" z="-3.5565662"/>
+                                                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                    <Scale x="1" y="1" z="1"/>
+                                                </Component>
+                                            </GameObject>
+                                            <GameObject instanceId="3025">
+                                                <Tag hash_id="1320911149" srcString="Lbrow"/>
+                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                    <Position x="-8.311676" y="10.492079" z="3.5565739"/>
+                                                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                    <Scale x="1" y="1" z="1"/>
+                                                </Component>
+                                            </GameObject>
+                                            <GameObject instanceId="3026">
+                                                <Tag hash_id="3395027534" srcString="Rmouth"/>
+                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                    <Position x="1.9930725" y="10.492085" z="-2.9921761"/>
+                                                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                    <Scale x="1" y="1" z="1"/>
+                                                </Component>
+                                            </GameObject>
+                                            <GameObject instanceId="3027">
+                                                <Tag hash_id="723320732" srcString="Lmouth"/>
+                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                    <Position x="1.9930725" y="10.492079" z="2.992178"/>
+                                                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                    <Scale x="1" y="1" z="1"/>
+                                                </Component>
+                                            </GameObject>
+                                        </GameObject>
+                                    </GameObject>
+                                    <GameObject instanceId="3028">
+                                        <Tag hash_id="106889768" srcString="RArmCollarbone"/>
+                                        <Component name="TransformComponent" hash_id="3882513520">
+                                            <Position x="-21.716293" y="-9.5367432e-07" z="-0.91666222"/>
+                                            <Rotation_Q x="0.024273783" y="-0.66251707" z="-0.1012814" w="0.7417708"/>
+                                            <Scale x="1" y="1" z="1"/>
+                                        </Component>
+                                        <GameObject instanceId="3029">
+                                            <Tag hash_id="683039044" srcString="RArmUpper1"/>
+                                            <Component name="TransformComponent" hash_id="3882513520">
+                                                <Position x="-17.200966" y="0" z="3.0517578e-05"/>
+                                                <Rotation_Q x="-0.5982582" y="-0.18630199" z="-0.51497686" w="0.58495945"/>
+                                                <Scale x="1" y="1" z="1"/>
+                                            </Component>
+                                            <GameObject instanceId="3030">
+                                                <Tag hash_id="683041927" srcString="RArmUpper2"/>
+                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                    <Position x="-13.350479" y="0" z="-1.5258789e-05"/>
+                                                    <Rotation_Q x="-0.13134894" y="-9.9130277e-09" z="-1.273362e-08" w="0.99133623"/>
+                                                    <Scale x="1" y="1" z="1"/>
+                                                </Component>
+                                                <GameObject instanceId="3031">
+                                                    <Tag hash_id="3396307196" srcString="RArmForearm1"/>
+                                                    <Component name="TransformComponent" hash_id="3882513520">
+                                                        <Position x="-13.350491" y="-7.6293945e-06" z="-7.6293945e-06"/>
+                                                        <Rotation_Q x="-0.098292768" y="0.70883673" z="0.16912462" w="0.67770636"/>
+                                                        <Scale x="1" y="1" z="1"/>
+                                                    </Component>
+                                                    <GameObject instanceId="3032">
+                                                        <Tag hash_id="3396310079" srcString="RArmForearm2"/>
+                                                        <Component name="TransformComponent" hash_id="3882513520">
+                                                            <Position x="-13.349838" y="-7.6293945e-06" z="-1.5258789e-05"/>
+                                                            <Rotation_Q x="-0.066589922" y="-1.5199326e-08" z="-2.2549923e-08" w="0.99778044"/>
+                                                            <Scale x="1" y="1" z="1"/>
+                                                        </Component>
+                                                        <GameObject instanceId="3033">
+                                                            <Tag hash_id="2010440306" srcString="RArmHand"/>
+                                                            <Component name="TransformComponent" hash_id="3882513520">
+                                                                <Position x="-13.349844" y="0" z="0"/>
+                                                                <Rotation_Q x="0.49624094" y="0.2176145" z="-0.054189097" w="0.83872074"/>
+                                                                <Scale x="1" y="1" z="1"/>
+                                                            </Component>
+                                                            <GameObject instanceId="3034">
+                                                                <Tag hash_id="991486855" srcString="RArmPinky1"/>
+                                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                                    <Position x="-9.0510864" y="-0.26820374" z="-4.5439835"/>
+                                                                    <Rotation_Q x="0.28396389" y="-0.04983088" z="0.0016662022" w="0.95753783"/>
+                                                                    <Scale x="1" y="1" z="1"/>
+                                                                </Component>
+                                                                <GameObject instanceId="3035">
+                                                                    <Tag hash_id="991483972" srcString="RArmPinky2"/>
+                                                                    <Component name="TransformComponent" hash_id="3882513520">
+                                                                        <Position x="-3.4455872" y="0" z="0"/>
+                                                                        <Rotation_Q x="4.5448542e-07" y="-0.24433166" z="-0.69018054" w="0.6811409"/>
+                                                                        <Scale x="1" y="1" z="1"/>
+                                                                    </Component>
+                                                                    <GameObject instanceId="3036">
+                                                                        <Tag hash_id="991484933" srcString="RArmPinky3"/>
+                                                                        <Component name="TransformComponent" hash_id="3882513520">
+                                                                            <Position x="-1.8170433" y="7.6293945e-06" z="0"/>
+                                                                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                                            <Scale x="1" y="1" z="1"/>
+                                                                        </Component>
+                                                                    </GameObject>
+                                                                </GameObject>
+                                                            </GameObject>
+                                                            <GameObject instanceId="3037">
+                                                                <Tag hash_id="4137839500" srcString="RArmRing1"/>
+                                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                                    <Position x="-9.9753571" y="-0.7782135" z="-2.1833267"/>
+                                                                    <Rotation_Q x="0.14155477" y="-0.06726183" z="-0.05023266" w="0.98636442"/>
+                                                                    <Scale x="1" y="1" z="1"/>
+                                                                </Component>
+                                                                <GameObject instanceId="3038">
+                                                                    <Tag hash_id="4137842383" srcString="RArmRing2"/>
+                                                                    <Component name="TransformComponent" hash_id="3882513520">
+                                                                        <Position x="-4.8661041" y="-7.6293945e-06" z="-1.5258789e-05"/>
+                                                                        <Rotation_Q x="1.1175871e-07" y="-0.11188795" z="-0.83194691" w="0.54345703"/>
+                                                                        <Scale x="1" y="1" z="1"/>
+                                                                    </Component>
+                                                                    <GameObject instanceId="3039">
+                                                                        <Tag hash_id="4137841422" srcString="RArmRing3"/>
+                                                                        <Component name="TransformComponent" hash_id="3882513520">
+                                                                            <Position x="-2.7177887" y="1.5258789e-05" z="1.5258789e-05"/>
+                                                                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                                            <Scale x="1" y="1" z="1"/>
+                                                                        </Component>
+                                                                    </GameObject>
+                                                                </GameObject>
+                                                            </GameObject>
+                                                            <GameObject instanceId="3040">
+                                                                <Tag hash_id="2153271814" srcString="RArmMid1"/>
+                                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                                    <Position x="-9.7014465" y="-0.84095383" z="0.58332825"/>
+                                                                    <Rotation_Q x="-0.0693442" y="-0.078456618" z="0.033988908" w="0.99392194"/>
+                                                                    <Scale x="1" y="1" z="1"/>
+                                                                </Component>
+                                                                <GameObject instanceId="3041">
+                                                                    <Tag hash_id="2153270853" srcString="RArmMid2"/>
+                                                                    <Component name="TransformComponent" hash_id="3882513520">
+                                                                        <Position x="-6.0842209" y="7.6293945e-06" z="0"/>
+                                                                        <Rotation_Q x="1.3841782e-07" y="0.0035000551" z="-0.78309762" w="0.62188888"/>
+                                                                        <Scale x="1" y="1" z="1"/>
+                                                                    </Component>
+                                                                    <GameObject instanceId="3042">
+                                                                        <Tag hash_id="2153269892" srcString="RArmMid3"/>
+                                                                        <Component name="TransformComponent" hash_id="3882513520">
+                                                                            <Position x="-2.747963" y="7.6293945e-06" z="0"/>
+                                                                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                                            <Scale x="1" y="1" z="1"/>
+                                                                        </Component>
+                                                                    </GameObject>
+                                                                </GameObject>
+                                                            </GameObject>
+                                                            <GameObject instanceId="3043">
+                                                                <Tag hash_id="1583642112" srcString="RArmIndex1"/>
+                                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                                    <Position x="-9.1602402" y="-0.2146759" z="3.6640396"/>
+                                                                    <Rotation_Q x="-0.083530501" y="-0.020787535" z="-0.0035879542" w="0.99628192"/>
+                                                                    <Scale x="1" y="1" z="1"/>
+                                                                </Component>
+                                                                <GameObject instanceId="3044">
+                                                                    <Tag hash_id="1583644995" srcString="RArmIndex2"/>
+                                                                    <Component name="TransformComponent" hash_id="3882513520">
+                                                                        <Position x="-5.188179" y="0" z="1.5258789e-05"/>
+                                                                        <Rotation_Q x="-7.878989e-07" y="0.0087782051" z="-0.10047426" w="0.99490088"/>
+                                                                        <Scale x="1" y="1" z="1"/>
+                                                                    </Component>
+                                                                    <GameObject instanceId="3045">
+                                                                        <Tag hash_id="1583644034" srcString="RArmIndex3"/>
+                                                                        <Component name="TransformComponent" hash_id="3882513520">
+                                                                            <Position x="-2.4820328" y="0" z="0"/>
+                                                                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                                            <Scale x="1" y="1" z="1"/>
+                                                                        </Component>
+                                                                    </GameObject>
+                                                                </GameObject>
+                                                            </GameObject>
+                                                            <GameObject instanceId="3046">
+                                                                <Tag hash_id="1876515520" srcString="RArmThumb1"/>
+                                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                                    <Position x="-0.9992981" y="1.4168091" z="3.2520599"/>
+                                                                    <Rotation_Q x="0.34280792" y="0.092307165" z="-0.24668846" w="0.90172446"/>
+                                                                    <Scale x="1" y="1" z="1"/>
+                                                                </Component>
+                                                                <GameObject instanceId="3047">
+                                                                    <Tag hash_id="1876518403" srcString="RArmThumb2"/>
+                                                                    <Component name="TransformComponent" hash_id="3882513520">
+                                                                        <Position x="-3.8333893" y="-1.5258789e-05" z="0"/>
+                                                                        <Rotation_Q x="-0.0054681543" y="-0.0884744" z="0.17082673" w="0.98130554"/>
+                                                                        <Scale x="1" y="1" z="1"/>
+                                                                    </Component>
+                                                                    <GameObject instanceId="3048">
+                                                                        <Tag hash_id="1876517442" srcString="RArmThumb3"/>
+                                                                        <Component name="TransformComponent" hash_id="3882513520">
+                                                                            <Position x="-4.3233948" y="-1.1444092e-05" z="-7.6293945e-06"/>
+                                                                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                                            <Scale x="1" y="1" z="1"/>
+                                                                        </Component>
+                                                                    </GameObject>
+                                                                </GameObject>
+                                                            </GameObject>
+                                                            <GameObject instanceId="3076">
+                                                                <Tag hash_id="3210868991" srcString="VectorDrop"/>
+                                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                                    <Position x="-24.799999" y="1.809" z="0.889"/>
+                                                                    <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                                    <Scale x="1.75" y="1.75" z="1.75"/>
+                                                                </Component>
+                                                                <Component name="IGeometryComponent" hash_id="1162546763">
+                                                                    <GeometryDescs>
+                                                                        <Element>
+                                                                            <geometryID hash_id="3538754280" srcString="VectorDropModel.fbx"/>
+                                                                            <slotIndex value="0"/>
+                                                                            <subMeshIndex value="0"/>
+                                                                        </Element>
+                                                                    </GeometryDescs>
+                                                                </Component>
+                                                                <Component name="IMaterialComponent" hash_id="308235170">
+                                                                    <MaterialDesc>
+                                                                        <Element>
+                                                                            <isRawShader value="false"/>
+                                                                            <materialID hash_id="2018951961" srcString="vectorNormal"/>
+                                                                            <slotIndex value="0"/>
+                                                                        </Element>
+                                                                    </MaterialDesc>
+                                                                </Component>
+                                                                <Component name="IRender3DComponent" hash_id="1184141904"/>
+                                                            </GameObject>
+                                                        </GameObject>
+                                                    </GameObject>
+                                                </GameObject>
+                                            </GameObject>
+                                        </GameObject>
+                                    </GameObject>
+                                    <GameObject instanceId="3049">
+                                        <Tag hash_id="2861902838" srcString="LArmCollarbone"/>
+                                        <Component name="TransformComponent" hash_id="3882513520">
+                                            <Position x="-21.716293" y="0" z="0.9166584"/>
+                                            <Rotation_Q x="-0.139258" y="0.68663085" z="-0.16898265" w="0.69324613"/>
+                                            <Scale x="1" y="1" z="1"/>
+                                        </Component>
+                                        <GameObject instanceId="3050">
+                                            <Tag hash_id="4194117830" srcString="LArmUpper1"/>
+                                            <Component name="TransformComponent" hash_id="3882513520">
+                                                <Position x="-17.200966" y="0" z="-1.5258789e-05"/>
+                                                <Rotation_Q x="0.20401406" y="0.48195446" z="-0.26221499" w="0.81076598"/>
+                                                <Scale x="1" y="1" z="1"/>
+                                            </Component>
+                                            <GameObject instanceId="3051">
+                                                <Tag hash_id="4194116869" srcString="LArmUpper2"/>
+                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                    <Position x="-13.350479" y="2.8610229e-06" z="-1.5258789e-05"/>
+                                                    <Rotation_Q x="0.1381879" y="-3.9626986e-09" z="3.9890228e-08" w="0.99040604"/>
+                                                    <Scale x="1" y="1" z="1"/>
+                                                </Component>
+                                                <GameObject instanceId="3052">
+                                                    <Tag hash_id="348799618" srcString="LArmForearm1"/>
+                                                    <Component name="TransformComponent" hash_id="3882513520">
+                                                        <Position x="-13.350494" y="1.9073486e-06" z="7.6293945e-06"/>
+                                                        <Rotation_Q x="-0.27219984" y="-0.51719391" z="-0.44649202" w="0.67754155"/>
+                                                        <Scale x="1" y="1" z="1"/>
+                                                    </Component>
+                                                    <GameObject instanceId="3053">
+                                                        <Tag hash_id="348798657" srcString="LArmForearm2"/>
+                                                        <Component name="TransformComponent" hash_id="3882513520">
+                                                            <Position x="-13.349834" y="0" z="-7.6293945e-06"/>
+                                                            <Rotation_Q x="-0.076839976" y="5.0926277e-09" z="5.0342193e-09" w="0.99704343"/>
+                                                            <Scale x="1" y="1" z="1"/>
+                                                        </Component>
+                                                        <GameObject instanceId="3054">
+                                                            <Tag hash_id="1592748084" srcString="LArmHand"/>
+                                                            <Component name="TransformComponent" hash_id="3882513520">
+                                                                <Position x="-13.349846" y="-7.6293945e-06" z="-7.6293945e-06"/>
+                                                                <Rotation_Q x="-0.49065819" y="-0.080112241" z="-0.06726402" w="0.86505038"/>
+                                                                <Scale x="1" y="1" z="1"/>
+                                                            </Component>
+                                                            <GameObject instanceId="3055">
+                                                                <Tag hash_id="4180835621" srcString="LArmPinky1"/>
+                                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                                    <Position x="-9.0511131" y="-0.26821899" z="4.5439796"/>
+                                                                    <Rotation_Q x="0.028488752" y="-0.023601653" z="-0.014169596" w="0.99921501"/>
+                                                                    <Scale x="1" y="1" z="1"/>
+                                                                </Component>
+                                                                <GameObject instanceId="3056">
+                                                                    <Tag hash_id="4180836582" srcString="LArmPinky2"/>
+                                                                    <Component name="TransformComponent" hash_id="3882513520">
+                                                                        <Position x="-3.4455872" y="0" z="-1.9073486e-06"/>
+                                                                        <Rotation_Q x="-6.2584877e-07" y="-0.035033301" z="-0.43398374" w="0.90023935"/>
+                                                                        <Scale x="1" y="1" z="1"/>
+                                                                    </Component>
+                                                                    <GameObject instanceId="3057">
+                                                                        <Tag hash_id="4180837543" srcString="LArmPinky3"/>
+                                                                        <Component name="TransformComponent" hash_id="3882513520">
+                                                                            <Position x="-1.8170395" y="1.1444092e-05" z="0"/>
+                                                                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                                            <Scale x="1" y="1" z="1"/>
+                                                                        </Component>
+                                                                    </GameObject>
+                                                                </GameObject>
+                                                            </GameObject>
+                                                            <GameObject instanceId="3058">
+                                                                <Tag hash_id="216336266" srcString="LArmRing1"/>
+                                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                                    <Position x="-9.9753723" y="-0.77824402" z="2.1833115"/>
+                                                                    <Rotation_Q x="0.12205191" y="-0.038188189" z="-0.10929586" w="0.98574811"/>
+                                                                    <Scale x="1" y="1" z="1"/>
+                                                                </Component>
+                                                                <GameObject instanceId="3059">
+                                                                    <Tag hash_id="216335305" srcString="LArmRing2"/>
+                                                                    <Component name="TransformComponent" hash_id="3882513520">
+                                                                        <Position x="-4.8661003" y="7.6293945e-06" z="0"/>
+                                                                        <Rotation_Q x="3.0919909e-07" y="-0.057486501" z="-0.5639537" w="0.82380307"/>
+                                                                        <Scale x="1" y="1" z="1"/>
+                                                                    </Component>
+                                                                    <GameObject instanceId="3060">
+                                                                        <Tag hash_id="216334344" srcString="LArmRing3"/>
+                                                                        <Component name="TransformComponent" hash_id="3882513520">
+                                                                            <Position x="-2.7177963" y="0" z="-1.9073486e-06"/>
+                                                                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                                            <Scale x="1" y="1" z="1"/>
+                                                                        </Component>
+                                                                    </GameObject>
+                                                                </GameObject>
+                                                            </GameObject>
+                                                            <GameObject instanceId="3061">
+                                                                <Tag hash_id="1270866900" srcString="LArmMid1"/>
+                                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                                    <Position x="-9.7014465" y="-0.8409729" z="-0.58332443"/>
+                                                                    <Rotation_Q x="0.22397536" y="-0.040724795" z="-0.13036782" w="0.96497709"/>
+                                                                    <Scale x="1" y="1" z="1"/>
+                                                                </Component>
+                                                                <GameObject instanceId="3062">
+                                                                    <Tag hash_id="1270869783" srcString="LArmMid2"/>
+                                                                    <Component name="TransformComponent" hash_id="3882513520">
+                                                                        <Position x="-6.0842361" y="0" z="-1.9073486e-06"/>
+                                                                        <Rotation_Q x="4.6566129e-08" y="-0.059068456" z="-0.38568509" w="0.92073774"/>
+                                                                        <Scale x="1" y="1" z="1"/>
+                                                                    </Component>
+                                                                    <GameObject instanceId="3063">
+                                                                        <Tag hash_id="1270868822" srcString="LArmMid3"/>
+                                                                        <Component name="TransformComponent" hash_id="3882513520">
+                                                                            <Position x="-2.7479401" y="-1.1444092e-05" z="-3.8146973e-06"/>
+                                                                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                                            <Scale x="1" y="1" z="1"/>
+                                                                        </Component>
+                                                                    </GameObject>
+                                                                </GameObject>
+                                                            </GameObject>
+                                                            <GameObject instanceId="3064">
+                                                                <Tag hash_id="952065730" srcString="LArmIndex1"/>
+                                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                                    <Position x="-9.1602478" y="-0.2146759" z="-3.6640701"/>
+                                                                    <Rotation_Q x="0.20936821" y="-0.036361497" z="-0.13210361" w="0.96818972"/>
+                                                                    <Scale x="1" y="1" z="1"/>
+                                                                </Component>
+                                                                <GameObject instanceId="3065">
+                                                                    <Tag hash_id="952064769" srcString="LArmIndex2"/>
+                                                                    <Component name="TransformComponent" hash_id="3882513520">
+                                                                        <Position x="-5.1881714" y="-1.5258789e-05" z="1.9073486e-06"/>
+                                                                        <Rotation_Q x="-5.5134296e-07" y="-0.032905832" z="-0.24473481" w="0.96903151"/>
+                                                                        <Scale x="1" y="1" z="1"/>
+                                                                    </Component>
+                                                                    <GameObject instanceId="3066">
+                                                                        <Tag hash_id="952063808" srcString="LArmIndex3"/>
+                                                                        <Component name="TransformComponent" hash_id="3882513520">
+                                                                            <Position x="-2.4820328" y="-1.5258789e-05" z="4.7683716e-07"/>
+                                                                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                                            <Scale x="1" y="1" z="1"/>
+                                                                        </Component>
+                                                                    </GameObject>
+                                                                </GameObject>
+                                                            </GameObject>
+                                                            <GameObject instanceId="3067">
+                                                                <Tag hash_id="1503009562" srcString="LArmThumb1"/>
+                                                                <Component name="TransformComponent" hash_id="3882513520">
+                                                                    <Position x="-0.99929047" y="1.4167862" z="-3.2520561"/>
+                                                                    <Rotation_Q x="-0.63356471" y="0.0043823421" z="-0.2848008" w="0.7193504"/>
+                                                                    <Scale x="1" y="1" z="1"/>
+                                                                </Component>
+                                                                <GameObject instanceId="3068">
+                                                                    <Tag hash_id="1503008601" srcString="LArmThumb2"/>
+                                                                    <Component name="TransformComponent" hash_id="3882513520">
+                                                                        <Position x="-3.8333969" y="9.5367432e-07" z="7.6293945e-06"/>
+                                                                        <Rotation_Q x="0.045748219" y="0.017249024" z="0.12160891" w="0.99137324"/>
+                                                                        <Scale x="1" y="1" z="1"/>
+                                                                    </Component>
+                                                                    <GameObject instanceId="3069">
+                                                                        <Tag hash_id="1503007640" srcString="LArmThumb3"/>
+                                                                        <Component name="TransformComponent" hash_id="3882513520">
+                                                                            <Position x="-4.3233929" y="0" z="0"/>
+                                                                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                                                            <Scale x="1" y="1" z="1"/>
+                                                                        </Component>
+                                                                    </GameObject>
+                                                                </GameObject>
+                                                            </GameObject>
+                                                        </GameObject>
+                                                    </GameObject>
+                                                </GameObject>
+                                            </GameObject>
+                                        </GameObject>
+                                    </GameObject>
+                                </GameObject>
+                            </GameObject>
+                        </GameObject>
+                        <GameObject instanceId="3070">
+                            <Tag hash_id="3682792461" srcString="RLegUpper"/>
+                            <Component name="TransformComponent" hash_id="3882513520">
+                                <Position x="3.434082" y="-0.31900883" z="-8.6192131"/>
+                                <Rotation_Q x="0.1839921" y="-0.9165113" z="0.32516792" w="0.14289717"/>
+                                <Scale x="1" y="1" z="1"/>
+                            </Component>
+                            <GameObject instanceId="3071">
+                                <Tag hash_id="1824095101" srcString="RLegCalf"/>
+                                <Component name="TransformComponent" hash_id="3882513520">
+                                    <Position x="-41.554691" y="0" z="0"/>
+                                    <Rotation_Q x="0.027434193" y="0.1383405" z="0.38365391" w="0.91264385"/>
+                                    <Scale x="1" y="1" z="1"/>
+                                </Component>
+                                <GameObject instanceId="3072">
+                                    <Tag hash_id="2449927592" srcString="RLegAnkle"/>
+                                    <Component name="TransformComponent" hash_id="3882513520">
+                                        <Position x="-37.377937" y="-9.5367432e-07" z="-3.8146973e-06"/>
+                                        <Rotation_Q x="0.050609242" y="-0.12562917" z="-0.51373249" w="0.84719235"/>
+                                        <Scale x="1" y="1" z="1"/>
+                                    </Component>
+                                    <GameObject instanceId="3073">
+                                        <Tag hash_id="2434646270" srcString="RLegToe1"/>
+                                        <Component name="TransformComponent" hash_id="3882513520">
+                                            <Position x="-15.988006" y="-1.9073486e-06" z="-3.8146973e-06"/>
+                                            <Rotation_Q x="0" y="0" z="0" w="1"/>
+                                            <Scale x="1" y="1" z="1"/>
+                                        </Component>
+                                    </GameObject>
+                                </GameObject>
+                            </GameObject>
+                        </GameObject>
+                    </GameObject>
+                    <GameObject instanceId="3074">
+                        <Tag hash_id="3520064513" srcString="Soldier"/>
+                        <Component name="TransformComponent" hash_id="3882513520">
+                            <Position x="21.965088" y="0" z="12.988585"/>
+                            <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
+                            <Scale x="92.686722" y="92.686722" z="92.686722"/>
+                        </Component>
+                        <Component name="IGeometryComponent" hash_id="1162546763">
+                            <GeometryDescs>
+                                <Element>
+                                    <geometryID hash_id="139117345" srcString="soldier"/>
+                                    <slotIndex value="0"/>
+                                    <subMeshIndex value="0"/>
+                                </Element>
+                                <Element>
+                                    <geometryID hash_id="139117345" srcString="soldier"/>
+                                    <slotIndex value="1"/>
+                                    <subMeshIndex value="1"/>
+                                </Element>
+                            </GeometryDescs>
+                        </Component>
+                        <Component name="IMaterialComponent" hash_id="308235170">
+                            <MaterialDesc>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="3947457455" srcString="soldierHead"/>
+                                    <slotIndex value="0"/>
+                                </Element>
+                                <Element>
+                                    <isRawShader value="false"/>
+                                    <materialID hash_id="4246576393" srcString="soldierBody"/>
+                                    <slotIndex value="1"/>
+                                </Element>
+                            </MaterialDesc>
+                        </Component>
+                        <Component name="IBoneTransformComponent" hash_id="4139637">
+                            <RootNodeID hash_id="4257772165" srcString="RootNode"/>
+                        </Component>
+                        <Component name="IRender3DComponent" hash_id="1184141904"/>
+                    </GameObject>
+                </GameObject>
+            </GameObject>
         </GameObject>
     </GameObject>
 </Scene>

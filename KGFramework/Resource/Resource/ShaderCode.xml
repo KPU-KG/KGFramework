@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ShaderSet xmlns="KGResource.xsd">
     <SurfaceShaderSet id="PBRDefault" fileDir="Resource/ShaderScript/Surface_DefaultPBR.hlsl" dxrFileDir="Resource/ShaderScript/DXR/DXR_HITMISS_PBRDefault.hlsl" group="Opaque" enableBackfaceCulling="true" enableDepthCliping="true" materialParameterSize="32" hash_id="3533550914"/>
-    <SurfaceShaderSet id="PBRMetalicSmooth" fileDir="Resource/ShaderScript/Surface_PBRFPSMask.hlsl"  dxrFileDir="Resource/ShaderScript/DXR/DXR_HITMISS_PBRMetalicSmooth.hlsl" group="Opaque" enableBackfaceCulling="true" enableDepthCliping="true" materialParameterSize="32" hash_id="1053346762"/>
+    <SurfaceShaderSet id="PBRMetalicSmooth" fileDir="Resource/ShaderScript/Surface_PBRFPSMask.hlsl" dxrFileDir="Resource/ShaderScript/DXR/DXR_HITMISS_PBRMetalicSmooth.hlsl" group="Opaque" enableBackfaceCulling="true" enableDepthCliping="true" materialParameterSize="32" hash_id="1053346762"/>
     <!--<SurfaceShaderSet id="PBRMetalicSmooth" fileDir="Resource/ShaderScript/Surface_PBRFPSMask.hlsl" group="Opaque" enableBackfaceCulling="true" enableDepthCliping="true" materialParameterSize="32" hash_id="1311731000"/>-->
     <SurfaceShaderSet id="SkyBox" fileDir="Resource/ShaderScript/SkyBox_Default.hlsl" group="SkyBox" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="4" hash_id="3327424171"/>
     <SurfaceShaderSet id="Empty" fileDir="Resource/ShaderScript/Surface_Empty.hlsl" group="Opaque" enableBackfaceCulling="false" enableDepthCliping="true" materialParameterSize="0" hash_id="2407270716"/>
@@ -28,4 +28,6 @@
     <SurfaceShaderSet id="PostSSAO_Four" fileDir="Resource/ShaderScript/Compute_SSAO_Four.hlsl" group="Transparent" enableBackfaceCulling="true" enableDepthCliping="true" materialParameterSize="0" groupSizeX="math.ceil((sx / 2) / (128 - 12)) + 1" groupSizeY="sy / 2" groupSizeZ="1" hash_id="3165354352"/>
     <SurfaceShaderSet id="PostSSAO_FIVE" fileDir="Resource/ShaderScript/Compute_SSAO_FIVE.hlsl" group="Transparent" enableBackfaceCulling="true" enableDepthCliping="true" materialParameterSize="8" groupSizeX="math.ceil(sx / 32)" groupSizeY="math.ceil(sy / 32)" groupSizeZ="1" hash_id="3191908704"/>
     <SurfaceShaderSet id="Transparent_Default" fileDir="Resource/ShaderScript/Utill_Transparent.hlsl" group="Transparent" enableBackfaceCulling="true" enableDepthCliping="false" materialParameterSize="20" groupSizeX="0" groupSizeY="0" groupSizeZ="0" hash_id="875924835"/>
+    <SurfaceShaderSet id="DXR_LIGHT" fileDir="Resource/ShaderScript/DXR/DXR_HYBRID_LIGHT_DIFFUSE.hlsl" group="DXR" enableBackfaceCulling="true" enableDepthCliping="false" materialParameterSize="0" groupSizeX="math.ceil(sx / 32)" groupSizeY="math.ceil(sy / 32)" groupSizeZ="1" hash_id="3210170732"/>
+    <SurfaceShaderSet id="ANIM_CALC" fileDir="Resource/ShaderScript/DXR/DXR_ANIMATION.hlsl" group="ANIMATION" enableBackfaceCulling="true" enableDepthCliping="false" materialParameterSize="0" groupSizeX="math.ceil(sx / 32)" groupSizeY="1" groupSizeZ="1" hash_id="1655115482"/>
 </ShaderSet>

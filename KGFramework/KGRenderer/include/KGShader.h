@@ -33,6 +33,8 @@ namespace KG::Renderer
 		ParticleTransparent = 7,
         Sprite = 8,
         UI = 9,
+        DXR = 10,
+        ANIMATION = 11,
         MaxShaderCount,
 	};
 
@@ -101,6 +103,10 @@ namespace KG::Renderer
                 return "Sprite";
             case KG::Renderer::UI:
                 return "UI";
+            case KG::Renderer::DXR:
+                return "DXR";
+            case KG::Renderer::ANIMATION:
+                return "ANIMATION";
 		}
 	}
 

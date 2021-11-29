@@ -1,7 +1,7 @@
 #ifndef __CUSTOM_LIGHT_DEFINE__
 #define __CUSTOM_LIGHT_DEFINE__
 
-#include "DXR_GLOBAL_DEFINE_RAY.hlsl"
+#include "DXR_GLOBAL_DEFINE.hlsl"
 #include "DXR_DEFINE_LIGHT.hlsl"
 
 #define PI  3.14159265359
@@ -155,7 +155,7 @@ uint querySpecularTextureLevels(uint irrad)
     
 }
 
-float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightDir, float3 cameraDir, float atten, uint lutIndex, uint diffuseRad, uint specularRad, uint recursionDepth)
+float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightDir, float3 cameraDir, float atten, uint lutIndex, uint diffuseRad, uint specularRad, uint recursionDepth, uint2 uv)
 {
     float3 L = -lightDir;
     float3 V = cameraDir;
@@ -186,92 +186,9 @@ float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightD
     uint specularTextureLevel = querySpecularTextureLevels(specularRad);
     //float3 specularIrradiance = GammaToLinear(shaderTextureCube[specularRad].SampleLevel(gsamAnisotoropicWrap, normalize(reflec), specularTextureLevel * (info.roughness)).rgb);
     
-    float3 specularIrradiance = float3(0,0,0);
-    if(recursionDepth < maxRecursionDepth)
-    {
-        //float3 color = float3(0, 0, 0);
-        //[unroll]
-        //for (int i = 0; i < 16; ++i)
-        //{
-        //    float2 Xi = Hammersley(i, 16);
-        //    float3 H = ImportanceSampleGGX(Xi, N, info.roughness);
-        //    float3 L = normalize(2.0 * dot(V, H) * H - V);
-            
-        //    color += TraceRadiance(HitWorldPosition(), -L, recursionDepth + 1).rgb;
-        //}
-        //specularIrradiance = color / 16.0f;
-        specularIrradiance = TraceRadiance(HitWorldPosition(), normalize(reflec), recursionDepth + 30).rgb;
-    }
-    else
-    {
-        specularIrradiance = GammaToLinear(shaderTextureCube[specularRad].SampleLevel(gsamAnisotoropicWrap, normalize(reflec), specularTextureLevel * (info.roughness)).rgb);
-    }
-
+    float3 specularIrradiance = rwTexture[ambient.specularOutput][uv];
     float3 specularIBL = (F0 * specularBRDF.x + specularBRDF.y) * specularIrradiance;
     return float4(atten * (diffuseIBL + specularIBL), 1.0f);
 }
-
-
-float4 CustomAmbientLightCalculatorHybrid(LightData light, Surface info, float3 lightDir, float3 cameraDir, float atten, uint lutIndex, uint diffuseRad, uint specularRad, uint recursionDepth, float3 worldPosition)
-{
-    float3 reflec = reflect(cameraDir, info.wNormal);
-    return TraceRadiance(worldPosition, normalize(reflec), recursionDepth + 30);
-}
-
-//float4 CustomAmbientLightCalculatorHybrid(LightData light, Surface info, float3 lightDir, float3 cameraDir, float atten, uint lutIndex, uint diffuseRad, uint specularRad, uint recursionDepth, float3 worldPosition)
-//{
-//    float3 L = -lightDir;
-//    float3 V = cameraDir;
-//    float3 N = info.wNormal;
-//    float3 H = normalize(L + V);
-    
-//    float NDotV = saturate(dot(N, V));
-//    float NDotL = saturate(dot(N, L));
-//    float NDotH = saturate(dot(N, H));
-//    float VDotH = saturate(dot(V, H));
-    
-//    float cosLo = max(dot(N, -V), 0.0f);
-    
-//    float Fdielectric = 0.04f;
-//    float3 F0 = lerp(Fdielectric.xxx, info.albedo.xyz, info.metalic.xxx);
-    
-//    float3 F = fresnelSchlick(F0, VDotH);
-//    float G = gaSchlickGGX(NDotL, NDotV, clamp(info.roughness, 0.0001, 1));
- 
-//    float3 kd = lerp(float3(1, 1, 1) - F, float3(0.0f, 0.0f, 0.0f), info.metalic.xxx);
-//    //float3 reflec = reflect(-cameraDir, info.wNormal);
-//    float3 reflec = reflect(cameraDir, info.wNormal);
-    
-//    float3 diffuseIrradiance = GammaToLinear(shaderTextureCube[diffuseRad].SampleLevel(gsamAnisotoropicWrap, N, 0).rgb);
-//    float3 diffuseIBL = kd * info.albedo * diffuseIrradiance;
-    
-//    float2 specularBRDF = shaderTexture[lutIndex].SampleLevel(gsamLinearClamp, float2(VDotH, (1 - info.roughness)), 0).rg;
-//    uint specularTextureLevel = querySpecularTextureLevels(specularRad);
-//    //float3 specularIrradiance = GammaToLinear(shaderTextureCube[specularRad].SampleLevel(gsamAnisotoropicWrap, normalize(reflec), specularTextureLevel * (info.roughness)).rgb);
-    
-//    float3 specularIrradiance = float3(0, 0, 0);
-//    if (recursionDepth < maxRecursionDepth)
-//    {
-//        //float3 color = float3(0, 0, 0);
-//        //[unroll]
-//        //for (int i = 0; i < 16; ++i)
-//        //{
-//        //    float2 Xi = Hammersley(i, 16);
-//        //    float3 H = ImportanceSampleGGX(Xi, N, info.roughness);
-//        //    float3 L = normalize(2.0 * dot(V, H) * H - V);
-            
-//        //    color += TraceRadiance(HitWorldPosition(), -L, recursionDepth + 1).rgb;
-//        //}
-//        //specularIrradiance = color / 16.0f;
-//        specularIrradiance = TraceRadiance(worldPosition, normalize(reflec), recursionDepth + 30).rgb;
-//    }
-//    else
-//    {
-//        specularIrradiance = GammaToLinear(shaderTextureCube[specularRad].SampleLevel(gsamAnisotoropicWrap, normalize(reflec), specularTextureLevel * (info.roughness)).rgb);
-//    }
-
-//    float3 specularIBL = (F0 * specularBRDF.x + specularBRDF.y) * specularIrradiance;
-//    return float4(atten * (diffuseIBL + specularIBL), 1.0f);
-//}
 
 #endif

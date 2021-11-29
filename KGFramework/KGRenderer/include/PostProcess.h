@@ -107,6 +107,9 @@ namespace KG::Renderer
         PostProcess* copyProcess;
         PostProcessMaterial* debugProcess;
 
+        PostProcess* dxrLight;
+        PostProcess* animationCalc;
+
         std::vector<PostProcessMaterial> processQueue;
         std::vector<PostProcessMaterial> ssaoQueue;
         void Initialize();
@@ -121,6 +124,8 @@ namespace KG::Renderer
         void CopyToOutput(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, RenderTexture& renderTexture, size_t cubeIndex);
         void CopyToResult(ID3D12GraphicsCommandList* cmdList, KG::Resource::DXResource& target, RenderTexture& renderTexture, size_t cubeIndex);
         void CopyToDebug(ID3D12GraphicsCommandList* cmdList);
+        void HybridLight(ID3D12GraphicsCommandList* cmdList);
+		void CalculateAnimation(ID3D12GraphicsCommandList* cmdList, D3D12_GPU_VIRTUAL_ADDRESS result, D3D12_GPU_VIRTUAL_ADDRESS src, D3D12_GPU_VIRTUAL_ADDRESS bone, D3D12_GPU_VIRTUAL_ADDRESS anim, int vCount, int instannceID, const XMFLOAT4X4& world);
         void SetActive(size_t index, bool isActive);
         void OnDrawGUI();
         void OnDataSave(tinyxml2::XMLElement* element);

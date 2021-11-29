@@ -4,8 +4,8 @@
     xmlns="KGResource.xsd"
     elementFormDefault="qualified">
 
-  <xs:element name="ShaderSet">
-    <xs:complexType>
+  
+  <xs:complexType>
       <xs:sequence>        
         <xs:element name="SurfaceShaderSet" minOccurs ="0" maxOccurs="unbounded">
           <xs:complexType>
@@ -31,6 +31,8 @@
                   <xs:enumeration value="ParticleTransparent"/>
                   <xs:enumeration value="Sprite"/>
                   <xs:enumeration value="UI"/>
+                  <xs:enumeration value="DXR"/>
+                  <xs:enumeration value="ANIMATION"/>
                 </xs:restriction>
               </xs:simpleType>
             </xs:attribute>

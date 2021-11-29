@@ -77,27 +77,28 @@ namespace KG::Renderer
         ManagedShaderTable rayGenerationST;
         ManagedShaderTable hitST;
         ManagedShaderTable missST;
-        std::map<KGRenderJob*, UINT> hitMap;
+        std::map<std::pair<KGRenderJob*, int>, UINT> hitMap;
+        std::map<std::pair<KGRenderJob*, int>, UINT> missMap;
         void* shadowHitIdentifier = nullptr;
         void* shadowMissIdentifier = nullptr;
 
+        UINT GetHitIndex(ID3D12Device* device, KGRenderJob* job, int animtaionIndex = -1);
+        UINT GetMissIndex(ID3D12Device* device, KGRenderJob* job, int animtaionIndex = -1);
 
         static void CopyShaderIdentifier(RadianceShaderParameter& param, void* shaderIdentifier);
         static void CopyShaderIdentifier(ShadowShaderParameter& param, void* shaderIdentifier);
     public:
         void AddRayGeneration(ID3D12Device* device);
 
-        void AddHit(ID3D12Device* device, KGRenderJob* job);
-        void AddMiss(ID3D12Device* device, KGRenderJob* job);
 
         void PostShadowHit(void* shaderIdentifier);
         void PostShadowMiss(void* shaderIdentifier);
 
-        void UpdateRay(void* shaderIdentifier);
-        void UpdateHit(void* shaderIdentifier, KGRenderJob* job);
-        void UpdateMiss(void* shaderIdentifier, KGRenderJob* job);
+        void UpdateRay(void* shaderIdentifier, UINT index);
+		void UpdateHit(ID3D12Device* device, void* shaderIdentifier, KGRenderJob* job, int animationIndex);
+		void UpdateMiss(ID3D12Device* device, void* shaderIdentifier, KGRenderJob* job, int animationIndex);
 
-        UINT GetHitgroupIndex(KGRenderJob* job) const;
+        UINT GetHitgroupIndex(KGRenderJob* job, int animationIndex = -1) const;
 
         UINT GetHitCount() const;
         UINT GetMissCount() const;

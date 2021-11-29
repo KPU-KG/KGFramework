@@ -156,6 +156,8 @@ void KG::Renderer::Geometry::LoadToDXR(ID3D12Device5* device, ID3D12GraphicsComm
 
     D3D12_RAYTRACING_ACCELERATION_STRUCTURE_PREBUILD_INFO prebuild;
     device->GetRaytracingAccelerationStructurePrebuildInfo(&inputs, &prebuild);
+    this->blasPrebuildResultSize = prebuild.ResultDataMaxSizeInBytes;
+    this->blasPrebuildScratchSize = prebuild.ScratchDataSizeInBytes;
     this->blasResult = CreateASBufferResource(device, commandList, prebuild.ResultDataMaxSizeInBytes, D3D12_RESOURCE_STATE_RAYTRACING_ACCELERATION_STRUCTURE);
     this->blasScratch = CreateASBufferResource(device, commandList, prebuild.ScratchDataSizeInBytes, D3D12_RESOURCE_STATE_COMMON);
 
@@ -240,4 +242,9 @@ D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::Geometry::GetVertexBufferGPUAddress() co
 D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::Geometry::GetIndexBufferGPUAddress() const
 {
     return this->indexBuffer->GetGPUVirtualAddress();
+}
+
+D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::Geometry::GetBoneOffsetGPUAddress() const
+{
+	return this->boneOffsetBuffer->GetGPUVirtualAddress();
 }

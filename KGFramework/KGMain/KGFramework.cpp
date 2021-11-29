@@ -1016,7 +1016,7 @@ void KG::GameFramework::UIRender()
 
 void KG::GameFramework::OnProcess()
 {
-	this->timer.Tick(60.0f);
+	this->timer.Tick(144.0f);
 	this->UpdateWindowText();
 	this->ServerProcess();
 	this->UIPreRender();

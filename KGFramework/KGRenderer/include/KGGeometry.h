@@ -69,6 +69,8 @@ namespace KG::Renderer
     public:
         ID3D12Resource* blasScratch = nullptr;
         ID3D12Resource* blasResult = nullptr;
+        UINT blasPrebuildResultSize;
+        UINT blasPrebuildScratchSize;
         std::wstring debugName = L"NONAME";
     private:
         bool isLoaded = false;
@@ -85,8 +87,9 @@ namespace KG::Renderer
 		void CreateFromMeshData( const KG::Utill::MeshData& data );
 		void CreateFakeGeometry( D3D12_PRIMITIVE_TOPOLOGY topology, int vertexCount );
         D3D12_GPU_VIRTUAL_ADDRESS GetVertexBufferGPUAddress() const;
-        D3D12_GPU_VIRTUAL_ADDRESS GetIndexBufferGPUAddress() const;
-        auto isFake() const
+		D3D12_GPU_VIRTUAL_ADDRESS GetIndexBufferGPUAddress() const;
+		D3D12_GPU_VIRTUAL_ADDRESS GetBoneOffsetGPUAddress() const;
+		auto isFake() const
         {
             return this->fakeVertexCount;
         }
@@ -109,6 +112,18 @@ namespace KG::Renderer
         auto GetBLAS() const
         {
             return this->blasResult->GetGPUVirtualAddress();
+        }
+        auto GetPrebuildInfo() const
+        {
+            return std::make_pair(this->blasPrebuildResultSize, this->blasPrebuildScratchSize);
+        }
+        auto GetIndexBuffer() const
+        {
+            return this->indexBuffer;
+        }
+        auto GetVertexBuffer() const
+        {
+            return this->vertexBuffer;
         }
 	};
 };
