@@ -33,8 +33,8 @@ Surface UserSurfaceFunction(SurfaceInput input)
     
     result.specular = mat.SpecularValue;
     result.metalic = shaderTexture[mat.MetalicTextureIndex].SampleLevel(gsamAnisotoropicWrap, uv, 0).x;
-    result.roughness = shaderTexture[mat.RoughnessTextureIndex].SampleLevel(gsamAnisotoropicWrap, uv, 0).x;
-    result.roughness = 0.0f;
+    result.roughness = 1 - shaderTexture[mat.RoughnessTextureIndex].SampleLevel(gsamAnisotoropicWrap, uv, 0).x;
+    //result.roughness = 0.0f;
     result.emssion = 0.0f;
     
     float3x3 TBN = float3x3(

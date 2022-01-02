@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SavedGameObject>
+    <GameObject instanceId="97">
+        <Tag hash_id="3612174708" srcString="container.FBX"/>
+        <Component name="TransformComponent" hash_id="3882513520">
+            <Position x="16.482521" y="-7.4679704" z="22.702087"/>
+            <Rotation_Q x="0" y="0.61566156" z="0" w="0.78801048"/>
+            <Scale x="1" y="1" z="1"/>
+        </Component>
+        <GameObject instanceId="92">
+            <Tag hash_id="225237078" srcString="Container_v1_whole"/>
+            <Component name="TransformComponent" hash_id="3882513520">
+                <Position x="0" y="1.6" z="0"/>
+                <Rotation_Q x="-0.70710677" y="0" z="0" w="0.70710671"/>
+                <Scale x="1.3" y="1.3" z="1.3"/>
+            </Component>
+            <Component name="IGeometryComponent" hash_id="1162546763">
+                <GeometryDescs>
+                    <Element>
+                        <geometryID hash_id="3612174708" srcString="container.FBX"/>
+                        <slotIndex value="0"/>
+                        <subMeshIndex value="3"/>
+                    </Element>
+                </GeometryDescs>
+            </Component>
+            <Component name="IMaterialComponent" hash_id="308235170">
+                <MaterialDesc>
+                    <Element>
+                        <isRawShader value="false"/>
+                        <materialID hash_id="1845058789" srcString="container_blue"/>
+                        <slotIndex value="0"/>
+                    </Element>
+                </MaterialDesc>
+            </Component>
+            <Component name="IRender3DComponent" hash_id="1184141904"/>
+        </GameObject>
+    </GameObject>
+</SavedGameObject>

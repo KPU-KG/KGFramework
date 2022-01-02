@@ -42,14 +42,17 @@ void KG::Renderer::LightTable::CopyLight(UINT index, KG::Component::LightType li
 void KG::Renderer::LightTable::UpdateAmbient()
 {
     auto skyboxId = KGDXRenderer::GetInstance()->GetSkymapTexutreId();
-    auto RadId = skyboxId == "SkyDay"_id ? "SkyDay_radiance"_id : "SkySunset_radiance"_id;
-    auto IrradId = skyboxId == "SkyDay"_id ? "SkyDay_irradiance"_id : "SkySunset_irradiance"_id;
-    auto lutId = "iblLUT"_id;
-    mappedAmbientTable->skyboxID = KG::Resource::ResourceContainer::GetInstance()->LoadTexture(skyboxId)->index;
-    mappedAmbientTable->ibllut = KG::Resource::ResourceContainer::GetInstance()->LoadTexture(lutId)->index;;
-    mappedAmbientTable->iblIrrad = KG::Resource::ResourceContainer::GetInstance()->LoadTexture(IrradId)->index;;
-    mappedAmbientTable->iblRad = KG::Resource::ResourceContainer::GetInstance()->LoadTexture(RadId)->index;;
-    mappedAmbientTable->specularOutput = this->specularOutput.GetDescriptor(DescriptorType::UAV).HeapIndex;
+	if (skyboxId != 0)
+	{
+		auto RadId = skyboxId == "SkyDay"_id ? "SkyDay_radiance"_id : "SkySunset_radiance"_id;
+		auto IrradId = skyboxId == "SkyDay"_id ? "SkyDay_irradiance"_id : "SkySunset_irradiance"_id;
+		auto lutId = "iblLUT"_id;
+		mappedAmbientTable->skyboxID = KG::Resource::ResourceContainer::GetInstance()->LoadTexture(skyboxId)->index;
+		mappedAmbientTable->ibllut = KG::Resource::ResourceContainer::GetInstance()->LoadTexture(lutId)->index;;
+		mappedAmbientTable->iblIrrad = KG::Resource::ResourceContainer::GetInstance()->LoadTexture(IrradId)->index;;
+		mappedAmbientTable->iblRad = KG::Resource::ResourceContainer::GetInstance()->LoadTexture(RadId)->index;;
+		mappedAmbientTable->specularOutput = this->specularOutput.GetDescriptor(DescriptorType::UAV).HeapIndex;
+	}
 }
 
 D3D12_GPU_VIRTUAL_ADDRESS KG::Renderer::LightTable::GetLightGPUAddress() const

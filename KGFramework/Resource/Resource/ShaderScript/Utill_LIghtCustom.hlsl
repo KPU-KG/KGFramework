@@ -117,6 +117,12 @@ uint querySpecularTextureLevels(uint irrad)
     return levels;
 }
 
+float3 fresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
+{
+    float3 a = float3((1.0f - roughness).xxx);
+    return F0 + (max(a, F0) - F0) * pow(clamp(1.0f - cosTheta, 0.0f, 1.0f), 5.0f);
+}
+
 float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightDir, float3 cameraDir, float atten, uint lutIndex, uint diffuseRad, uint specularRad)
 {
     
@@ -135,8 +141,9 @@ float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightD
     float Fdielectric = 0.04f;
     float3 F0 = lerp(Fdielectric.xxx, info.albedo.xyz, info.metalic.xxx);
     
-    float3 F = fresnelSchlick(F0, VDotH);
-    float G = gaSchlickGGX(NDotL, NDotV, clamp(info.roughness, 0.0001, 1));
+    float3 F = fresnelSchlickRoughness(NDotV, F0, 1 - info.roughness);
+    float D = ndfGGX(NDotH, clamp(1 - info.roughness, 0.0001, 1));
+    float G = gaSchlickGGX(NDotL, NDotV, clamp(1 - info.roughness, 0.0001, 1));
  
     float3 kd = lerp(float3(1, 1, 1) - F, float3(0.0f, 0.0f, 0.0f), info.metalic.xxx);
     //float3 reflec = reflect(-cameraDir, info.wNormal);
@@ -145,10 +152,10 @@ float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightD
     float3 diffuseIrradiance = GammaToLinear(shaderTextureCube[diffuseRad].Sample(gsamAnisotoropicWrap, N).rgb);
     float3 diffuseIBL = kd * info.albedo * diffuseIrradiance;
     
-    float2 specularBRDF = shaderTexture[lutIndex].Sample(gsamLinearClamp, float2(VDotH, (1 - info.roughness))).rg;
+    float2 specularBRDF = shaderTexture[lutIndex].Sample(gsamLinearClamp, float2(NDotV, (1 - info.roughness))).rg;
     uint specularTextureLevel = querySpecularTextureLevels(specularRad);
     float3 specularIrradiance = GammaToLinear(shaderTextureCube[specularRad].SampleLevel(gsamAnisotoropicWrap, normalize(reflec), specularTextureLevel * (info.roughness)).rgb);
-    float3 specularIBL = (F0 * specularBRDF.x + specularBRDF.y) * specularIrradiance;
+    float3 specularIBL = (F * specularBRDF.x + specularBRDF.y) * specularIrradiance;
     return float4(atten * (diffuseIBL + specularIBL), 1.0f);
 }
 

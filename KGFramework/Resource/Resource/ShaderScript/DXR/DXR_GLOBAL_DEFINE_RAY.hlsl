@@ -97,7 +97,7 @@ float4 TraceShadow(float3 origin, float3 direction, uint recursionDepth, bool on
     payload.recursionDepth = 30;
     TraceRay(
         scene,
-        RAY_FLAG_CULL_BACK_FACING_TRIANGLES | RAY_FLAG_SKIP_CLOSEST_HIT_SHADER | RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH,
+        RAY_FLAG_SKIP_CLOSEST_HIT_SHADER | RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH,
         //RAY_FLAG_SKIP_CLOSEST_HIT_SHADER,
         0xFF,
         1,

@@ -54,7 +54,7 @@
         <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
         <Texture byte="4" comment="roughnessTexture" id="tile_rough" hash_id="1273007583"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
-        <FLOAT2 byte="8" comment="UVsize" x="4" y="4"/>
+        <FLOAT2 byte="8" comment="UVsize" x="240" y="240"/>
         <Padding byte="4"/>
     </Material>
     <Material id="PBRTile" shaderID="PBRDefault" hash_id="441810431" shaderHashID="3533550914">
@@ -238,28 +238,28 @@
         <Padding byte="4"/>
     </Material>
     <Material id="container_red" shaderID="PBRDefault" hash_id="1707120234" shaderHashID="3533550914">
-        <Texture byte="4" comment="colorTexture" id="container_red_color"/>
-        <Texture byte="4" comment="normalTexture" id="container_red_normal"/>
-        <Texture byte="4" comment="metalicTexture" id="zero"/>
-        <Texture byte="4" comment="roughTexture" id="container_red_rough"/>
+        <Texture byte="4" comment="colorTexture" id="container_red_color" hash_id="1801381842"/>
+        <Texture byte="4" comment="normalTexture" id="container_red_normal" hash_id="2897733296"/>
+        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="container_red_rough" hash_id="4031279624"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
     </Material>
     <Material id="container_green" shaderID="PBRDefault" hash_id="1868566050" shaderHashID="3533550914">
-        <Texture byte="4" comment="colorTexture" id="container_green_color"/>
-        <Texture byte="4" comment="normalTexture" id="container_green_normal"/>
-        <Texture byte="4" comment="metalicTexture" id="zero"/>
-        <Texture byte="4" comment="roughTexture" id="container_green_rough"/>
+        <Texture byte="4" comment="colorTexture" id="container_green_color" hash_id="3569604522"/>
+        <Texture byte="4" comment="normalTexture" id="container_green_normal" hash_id="205960776"/>
+        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="container_green_rough" hash_id="1260748528"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
     </Material>
     <Material id="container_gray" shaderID="PBRDefault" hash_id="1999809580" shaderHashID="3533550914">
-        <Texture byte="4" comment="colorTexture" id="container_gray_color"/>
-        <Texture byte="4" comment="normalTexture" id="container_gray_normal"/>
-        <Texture byte="4" comment="metalicTexture" id="zero"/>
-        <Texture byte="4" comment="roughTexture" id="container_gray_rough"/>
+        <Texture byte="4" comment="colorTexture" id="container_gray_color" hash_id="653918248"/>
+        <Texture byte="4" comment="normalTexture" id="container_gray_normal" hash_id="2584379198"/>
+        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
+        <Texture byte="4" comment="roughTexture" id="container_gray_rough" hash_id="2647659890"/>
         <FLOAT1 byte="4" comment="Specular" x="0.5"/>
         <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
         <Padding byte="4"/>
@@ -731,6 +731,10 @@
         <FLOAT1 byte="4" comment="MiddleGray" x="3.429"/>
         <FLOAT1 byte="4" comment="LimWhiteSQR" x="5.8"/>
     </Material>
+    <Material id="HDRTonemap_DXR" shaderID="PostHDR_TONE" hash_id="1513057902" shaderHashID="3494680670">
+        <FLOAT1 byte="4" comment="MiddleGray" x="5"/>
+        <FLOAT1 byte="4" comment="LimWhiteSQR" x="7"/>
+    </Material>
     <Material id="HDRTonemap_Sunset" shaderID="PostHDR_TONE" hash_id="1000435066" shaderHashID="3494680670">
         <FLOAT1 byte="4" comment="MiddleGray" x="2.8"/>
         <FLOAT1 byte="4" comment="LimWhiteSQR" x="3.0"/>
@@ -824,13 +828,32 @@
     <Material id="title_0013_game_clear.DDS" shaderID="UIDefault" hash_id="1927438666" shaderHashID="888949730">
         <Texture byte="4" comment="uiTexture" id="title_0013_game_clear.DDS" hash_id="1927438666"/>
     </Material>
-    <Material id="traffic" shaderID="PBRDefault" hash_id="3770819148" shaderHashID="3533550914">
-        <Texture byte="4" comment="colorTexture" id="traffic_color" hash_id="3951947144"/>
-        <Texture byte="4" comment="normalTexture" id="traffic_normal" hash_id="719547806"/>
-        <Texture byte="4" comment="metalicTexture" id="zero" hash_id="3256532051"/>
-        <Texture byte="4" comment="roughTexture" id="zero" hash_id="3256532051"/>
-        <FLOAT1 byte="4" comment="Specular" x="0.5"/>
-        <FLOAT2 byte="8" comment="UVsize" x="1" y="1"/>
+    <Material id="redParam" shaderID="PBRParam" hash_id="3660522021" shaderHashID="315660894">
+        <Color4 byte="16" comment="color" r="1" g="0" b="0" a="1"/>
+        <FLOAT1 byte="4" comment="r" x="1.0"/>
+        <FLOAT1 byte="4" comment="m" x="0.0"/>
+        <FLOAT1 byte="4" comment="s" x="0.0"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="greenParam" shaderID="PBRParam" hash_id="325498621" shaderHashID="315660894">
+        <Color4 byte="16" comment="color" r="0" g="1" b="0" a="1"/>
+        <FLOAT1 byte="4" comment="r" x="0.5"/>
+        <FLOAT1 byte="4" comment="m" x="0.5"/>
+        <FLOAT1 byte="4" comment="s" x="0.5"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="blueParam" shaderID="PBRParam" hash_id="1023467872" shaderHashID="315660894">
+        <Color4 byte="16" comment="color" r="0" g="0" b="1" a="1"/>
+        <FLOAT1 byte="4" comment="r" x="0.5"/>
+        <FLOAT1 byte="4" comment="m" x="0.5"/>
+        <FLOAT1 byte="4" comment="s" x="0.5"/>
+        <Padding byte="4"/>
+    </Material>
+    <Material id="blackParam" shaderID="PBRParam" hash_id="2171184053" shaderHashID="315660894">
+        <Color4 byte="16" comment="color" r="0" g="0" b="0" a="1"/>
+        <FLOAT1 byte="4" comment="r" x="0.5"/>
+        <FLOAT1 byte="4" comment="m" x="0.5"/>
+        <FLOAT1 byte="4" comment="s" x="0.5"/>
         <Padding byte="4"/>
     </Material>
 </MaterialSet>

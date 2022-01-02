@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30225.117
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "KGMain", "KGMain\KGMain.vcxproj", "{4883D189-E844-4E93-A4F4-EBB922FFAB56}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -98,6 +98,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Surface", "Surface", "{96B9
 		Resource\Resource\ShaderScript\Surface_Empty.hlsl = Resource\Resource\ShaderScript\Surface_Empty.hlsl
 		Resource\Resource\ShaderScript\Surface_PBRFPSMask.hlsl = Resource\Resource\ShaderScript\Surface_PBRFPSMask.hlsl
 		Resource\Resource\ShaderScript\Surface_PBRGlossSmooth.hlsl = Resource\Resource\ShaderScript\Surface_PBRGlossSmooth.hlsl
+		Resource\Resource\ShaderScript\Surface_PBRParam.hlsl = Resource\Resource\ShaderScript\Surface_PBRParam.hlsl
 		Resource\Resource\ShaderScript\Surface_SkyBox.hlsl = Resource\Resource\ShaderScript\Surface_SkyBox.hlsl
 	EndProjectSection
 EndProject
@@ -141,6 +142,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DXR", "DXR", "{4825802F-879
 		Resource\Resource\ShaderScript\DXR\DXR_HITMISS_HYBRID.hlsl = Resource\Resource\ShaderScript\DXR\DXR_HITMISS_HYBRID.hlsl
 		Resource\Resource\ShaderScript\DXR\DXR_HITMISS_PBRDefault.hlsl = Resource\Resource\ShaderScript\DXR\DXR_HITMISS_PBRDefault.hlsl
 		Resource\Resource\ShaderScript\DXR\DXR_HITMISS_PBRMetalicSmooth.hlsl = Resource\Resource\ShaderScript\DXR\DXR_HITMISS_PBRMetalicSmooth.hlsl
+		Resource\Resource\ShaderScript\DXR\DXR_HITMISS_PBRParam.hlsl = Resource\Resource\ShaderScript\DXR\DXR_HITMISS_PBRParam.hlsl
 		Resource\Resource\ShaderScript\DXR\DXR_HYBRID_LIGHT_DIFFUSE.hlsl = Resource\Resource\ShaderScript\DXR\DXR_HYBRID_LIGHT_DIFFUSE.hlsl
 		Resource\Resource\ShaderScript\DXR\DXR_RAY_GEN.hlsl = Resource\Resource\ShaderScript\DXR\DXR_RAY_GEN.hlsl
 		Resource\Resource\ShaderScript\DXR\DXR_RAY_GEN_HYBRID_AMBIENT.hlsl = Resource\Resource\ShaderScript\DXR\DXR_RAY_GEN_HYBRID_AMBIENT.hlsl
@@ -148,6 +150,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "DXR", "DXR", "{4825802F-879
 		Resource\Resource\ShaderScript\DXR\DXR_SHADOW_HITMISS.hlsl = Resource\Resource\ShaderScript\DXR\DXR_SHADOW_HITMISS.hlsl
 		Resource\Resource\ShaderScript\DXR\DXR_UTILL_LIGHT_CUSTOM.hlsl = Resource\Resource\ShaderScript\DXR\DXR_UTILL_LIGHT_CUSTOM.hlsl
 		Resource\Resource\ShaderScript\DXR\DXR_UTILL_LIGHT_CUSTOM_DIFFUSE.hlsl = Resource\Resource\ShaderScript\DXR\DXR_UTILL_LIGHT_CUSTOM_DIFFUSE.hlsl
+		Resource\Resource\ShaderScript\DXR\DXR_UTILL_RANDOM_SEQ.hlsl = Resource\Resource\ShaderScript\DXR\DXR_UTILL_RANDOM_SEQ.hlsl
 		Resource\Resource\ShaderScript\DXR\HitMiss.hlsl = Resource\Resource\ShaderScript\DXR\HitMiss.hlsl
 		Resource\Resource\ShaderScript\DXR\RAY_GEN.hlsl = Resource\Resource\ShaderScript\DXR\RAY_GEN.hlsl
 	EndProjectSection

@@ -2,7 +2,8 @@
 
 void KG::Renderer::InstanceTable::ResizeBuffer(ID3D12Device* device, UINT size)
 {
-    if (this->maxSize < size)
+	size = max(size, 1);
+    if (this->maxSize < size + 1)
     {
         if (this->table) this->Release();
 

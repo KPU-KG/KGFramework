@@ -29,7 +29,7 @@ Surface UserSurfaceFunction(SurfaceInput input)
 
     result.specular = mat.SpecularValue;
     result.metalic = shaderTexture[mat.MaskMapTextureIndex].SampleLevel(gsamAnisotoropicWrap, uv, 0).r;
-    result.roughness = 1 - shaderTexture[mat.MaskMapTextureIndex].SampleLevel(gsamAnisotoropicWrap, uv, 0).a;
+    result.roughness = 1- shaderTexture[mat.MaskMapTextureIndex].SampleLevel(gsamAnisotoropicWrap, uv, 0).a;
      //result.roughness = 1.0f;
     result.emssion = 0.0f;
 
