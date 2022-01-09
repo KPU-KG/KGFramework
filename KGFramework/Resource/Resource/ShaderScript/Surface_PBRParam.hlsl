@@ -25,6 +25,7 @@ Surface UserSurfaceFunction(SurfaceInput input)
     result.albedo = mat.albedo.rgb;
     result.specular = mat.specular;
     result.metalic = mat.metalic;
+    //result.roughness = mat.roughness;
     result.roughness = mat.roughness;
     result.emssion = 0.0f;
     

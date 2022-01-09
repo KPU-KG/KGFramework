@@ -62,6 +62,7 @@ static const float FLT_MAX = asfloat(0x7F7FFFFF);
 
 float4 TraceRadiance(float3 origin, float3 direction, uint recursionDepth, bool on = true)
 {
+    on &= maxRecursionDepth > recursionDepth;
     RayDesc ray;
     ray.Origin = origin;
     ray.Direction = direction;
@@ -86,6 +87,7 @@ float4 TraceRadiance(float3 origin, float3 direction, uint recursionDepth, bool 
 
 float4 TraceShadow(float3 origin, float3 direction, uint recursionDepth, bool on = true)
 {
+    on &= maxRecursionDepth > recursionDepth;
     RayDesc ray;
     ray.Origin = origin;
     ray.Direction = direction;
@@ -94,7 +96,7 @@ float4 TraceShadow(float3 origin, float3 direction, uint recursionDepth, bool on
     
     Payload payload;
     payload.color = float4(0, 0, 0, 1);
-    payload.recursionDepth = 30;
+    payload.recursionDepth = recursionDepth;
     TraceRay(
         scene,
         RAY_FLAG_SKIP_CLOSEST_HIT_SHADER | RAY_FLAG_ACCEPT_FIRST_HIT_AND_END_SEARCH,

@@ -44,7 +44,7 @@ void Hit(inout Payload payload : SV_Payload, Built_in_attribute attr)
         }
     }
     //payload.color += CustomAmbientLightCalculator(lightInfo[i], surface, normalize(lightInfo[i].Direction), normalize(WorldRayDirection()), 1.0, ambient.iblLut, ambient.iblIrrad, ambient.iblRad);
-    payload.color += CustomAmbientLightCalculator(lightInfo[0], surface, float3(0, 1, 0), WorldRayDirection(), 1.0f, ambient.iblLut, ambient.iblIrrad, ambient.iblRad, payload.recursionDepth);
+    payload.color += CustomAmbientLightCalculator(lightInfo[0], surface, float3(0, 1, 0), WorldRayDirection(), surface.ao, ambient.iblLut, ambient.iblIrrad, ambient.iblRad, payload.recursionDepth);
     //ambient.iblLut, ambient.iblRad, ambient.iblIrrad);
 
 }

@@ -31,7 +31,7 @@ void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadID : SV_G
             InputGBuffer3.Load(float3(launchIndex, 0)));
         
         float4 shadow = rwTexture[lightInfo[0].lightType[1]][launchIndex].rrrr;
-        const float shadowMin = 0.001f;
+        const float shadowMin = 0.01f;
         shadow = clamp(shadow, float4(shadowMin, shadowMin, shadowMin, 1.0f), float4(1, 1, 1, 1));
         [unroll]
         for (int i = 0; i < 1; ++i)
@@ -42,7 +42,10 @@ void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadID : SV_G
             }
         }
         //color = float4(0, 0, 0, 1);
-        color += CustomAmbientLightCalculator(lightInfo[0], surface, float3(0, 1, 0), -dir, shadow.x, ambient.iblLut, ambient.iblIrrad, ambient.iblRad, 1, launchIndex);
+        color += CustomAmbientLightCalculator(lightInfo[0], surface, float3(0, 1, 0), -dir, surface.ao, ambient.iblLut, ambient.iblIrrad, ambient.iblRad, 1, launchIndex);
+
+        //color = color / (color + float4(1.0f, 1.0f, 1.0f, 1.0f));
+
     }
     output[launchIndex] = color;
 }

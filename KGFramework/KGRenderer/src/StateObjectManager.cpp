@@ -93,7 +93,7 @@ void KG::Renderer::StateObjectManager::CreateDefaultSubObject()
     }
     // 파이프라인 컨픽
     {
-        pipelineConfig.MaxTraceRecursionDepth = 10;
+        pipelineConfig.MaxTraceRecursionDepth = 3;
 
         auto& obj = subobjects.emplace_back();
         obj.Type = D3D12_STATE_SUBOBJECT_TYPE_RAYTRACING_PIPELINE_CONFIG;

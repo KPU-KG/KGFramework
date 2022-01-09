@@ -124,15 +124,15 @@ float3 EnvBRDFApprox(float3 SpecularColor, float Roughness, float NoV)
 }
 float4 CustomLightCalculator(LightData light, Surface info, float3 lightDir, float3 cameraDir, float atten)
 {
-    float3 L = -lightDir;
-    float3 V = cameraDir;
-    float3 N = info.wNormal;
+    float3 L = normalize(-lightDir);
+    float3 V = normalize(cameraDir);
+    float3 N = normalize(info.wNormal);
     float3 H = normalize(L + V);
     
-    float NDotV = saturate(dot(N, V));
-    float NDotL = saturate(dot(N, L));
-    float NDotH = saturate(dot(N, H));
-    float VDotH = saturate(dot(V, H));
+    float NDotV = max(dot(N, V), 0.0f);
+    float NDotL = max(dot(N, L), 0.0f);
+    float NDotH = max(dot(N, H), 0.0f);
+    float VDotH = max(dot(V, H), 0.0f);
     
     float Fdielectric = 0.04f;
     float3 F0 = lerp(Fdielectric.xxx, info.albedo.xyz, info.metalic.xxx);
@@ -144,13 +144,12 @@ float4 CustomLightCalculator(LightData light, Surface info, float3 lightDir, flo
 
     float3 numerator = NDF * G * F;
 
-    float denominator = 4 * NDotV * NDotL + 0.0001f;
-    float3 specular = numerator / denominator * info.specular;
-
     float3 kS = F;
     float3 kD = float3(1, 1, 1) - kS;
     kD *= 1.0f - info.metalic;
 
+    float denominator = 4 * NDotV * NDotL + 0.0001f;
+    float3 specular = numerator / denominator;
  
     return float4((kD * info.albedo / PI + specular) * light.Strength * atten * NDotL, 1.0f);
    
@@ -171,10 +170,10 @@ float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightD
     float3 N = info.wNormal;
     float3 H = normalize(L + V);
     
-    float NDotV = saturate(dot(N, V));
-    float NDotL = saturate(dot(N, L));
-    float NDotH = saturate(dot(N, H));
-    float VDotH = saturate(dot(V, H));
+    float NDotV = max(dot(N, V), 0);
+    float NDotL = max(dot(N, L), 0);
+    float NDotH = max(dot(N, H), 0);
+    float VDotH = max(dot(V, H), 0);
     
     float cosLo = max(dot(N, -V), 0.0f);
     
@@ -189,14 +188,15 @@ float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightD
     float3 reflec = reflect(-cameraDir, info.wNormal);
     //float3 reflec = reflect(cameraDir, info.wNormal);
     
-    float3 diffuseIrradiance = GammaToLinear(shaderTextureCube[diffuseRad].SampleLevel(gsamAnisotoropicWrap, -N, 0).rgb) * info.albedo;
+    float3 diffuseIrradiance = GammaToLinear(shaderTextureCube[diffuseRad].SampleLevel(gsamAnisotoropicWrap, N, 0).rgb) * info.albedo * 0.05f;
     
     float2 specularBRDF = shaderTexture[lutIndex].SampleLevel(gsamLinearClamp, float2(NDotV, (info.roughness)), 0).rg;
     uint specularTextureLevel = querySpecularTextureLevels(specularRad);
-    float3 specularIBLTexture = shaderTextureCube[specularRad].SampleLevel(gsamAnisotoropicWrap, normalize(reflec), specularTextureLevel * (info.roughness)).rgb;
+    float3 specularIBLTexture = float3(0, 0, 0);
+    //float3 specularIBLTexture = shaderTextureCube[specularRad].SampleLevel(gsamAnisotoropicWrap, normalize(reflec), specularTextureLevel * (info.roughness)).rgb;
     float3 specularIrradiance = float3(0, 0, 0);
 
-    specularIrradiance = lerp(rwTexture[ambient.specularOutput][uv].rgb, specularIBLTexture, pow(info.roughness.xxx, 2));
+    specularIrradiance = lerp(rwTexture[ambient.specularOutput][uv].rgb, specularIBLTexture, pow(info.roughness.xxx, 16));
     //specularIrradiance = rwTexture[ambient.specularOutput][uv].rgb;
     
     //float3 specularIBL = EnvBRDFApprox(specularIrradiance, info.roughness, NDotV);
@@ -205,8 +205,9 @@ float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightD
     //return float4(atten * (specularIBL), 1.0f);
     //float3 specularIBL = (F0 * specularBRDF.x + specularBRDF.y) * specularIrradiance;
     //return float4(atten * (specularIBL), 1.0f);
-    kD = float3(0, 0, 0);
-    return float4((atten * kD * diffuseIrradiance + specularIrradiance), 1.0f);
+    //return float4((specularIrradiance), 1.0f);
+    //return float4((kD * diffuseIrradiance + specularIrradiance), 1.0f);
+    return float4((kD * diffuseIrradiance + specularIrradiance), 1.0f);
 }
 
 #endif

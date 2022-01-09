@@ -129,7 +129,7 @@ struct Payload
     uint recursionDepth;
 };
 
-static const uint maxRecursionDepth = 1;
+static const uint maxRecursionDepth = 3;
 
 
 float3 SNORMTOUNORM(float3 normal)
