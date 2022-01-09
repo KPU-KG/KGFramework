@@ -31,7 +31,8 @@ void ComputeShaderFunction(uint3 groupId : SV_GroupID, int3 groupThreadID : SV_G
             InputGBuffer3.Load(float3(launchIndex, 0)));
         
         float4 shadow = rwTexture[lightInfo[0].lightType[1]][launchIndex].rrrr;
-        shadow = clamp(shadow, float4(0.1, 0.1, 0.1, 1.0f), float4(1, 1, 1, 1));
+        const float shadowMin = 0.001f;
+        shadow = clamp(shadow, float4(shadowMin, shadowMin, shadowMin, 1.0f), float4(1, 1, 1, 1));
         [unroll]
         for (int i = 0; i < 1; ++i)
         {

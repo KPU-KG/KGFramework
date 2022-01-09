@@ -135,8 +135,8 @@ void KG::Renderer::DXRRenderScene::PrepareRender(ID3D12Device5* device, ID3D12Gr
             instanceBufferIndex++;
         }
     }
-    tlas.Build(device, cmdList, objectSize);
-    lights.UpdateAmbient();
+	tlas.Build(device, cmdList, objectSize);
+	lights.UpdateAmbient();
 }
 
 void KG::Renderer::DXRRenderScene::RenderAllRaytracing(KG::Resource::DXResource& renderTarget, ID3D12GraphicsCommandList4* cmdList, UINT width, UINT height)

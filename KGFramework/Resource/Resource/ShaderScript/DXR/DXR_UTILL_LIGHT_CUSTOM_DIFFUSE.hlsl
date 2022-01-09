@@ -205,6 +205,7 @@ float4 CustomAmbientLightCalculator(LightData light, Surface info, float3 lightD
     //return float4(atten * (specularIBL), 1.0f);
     //float3 specularIBL = (F0 * specularBRDF.x + specularBRDF.y) * specularIrradiance;
     //return float4(atten * (specularIBL), 1.0f);
+    kD = float3(0, 0, 0);
     return float4((atten * kD * diffuseIrradiance + specularIrradiance), 1.0f);
 }
 

@@ -184,6 +184,7 @@ void KG::Renderer::StateObjectManager::Rebuild(ID3D12Device5* device)
         for (auto& [k, e] : this->missShaderIdentifiers)
             e = this->GetShaderIndetifier(k->missName);
     }
+	this->isDirty = false;
 }
 
 void KG::Renderer::StateObjectManager::Set(ID3D12GraphicsCommandList4* cmdList)
